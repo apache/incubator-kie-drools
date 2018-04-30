@@ -81,6 +81,9 @@ public class RuleContext {
     }
 
     Declaration getDeclaration( Variable variable ) {
+        if (variable == null) {
+            return null;
+        }
         if ( variable.isFact() ) {
             Declaration declaration = innerDeclaration.get( variable );
             if (declaration == null) {

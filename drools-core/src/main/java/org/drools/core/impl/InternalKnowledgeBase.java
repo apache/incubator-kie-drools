@@ -29,6 +29,7 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -142,4 +143,6 @@ public interface InternalKnowledgeBase extends KieBase {
     boolean hasUnits();
 
     SessionConfiguration getSessionConfiguration();
+
+    void addReceiveNode(AsyncReceiveNode node);
 }

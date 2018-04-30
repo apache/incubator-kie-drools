@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.model.Binding;
+import org.drools.model.Condition;
 import org.drools.model.Constraint;
 import org.drools.model.Pattern;
 import org.drools.model.SingleConstraint;
@@ -18,6 +19,7 @@ import org.drools.model.impl.ModelComponent;
 public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>, ModelComponent {
 
     private final Variable<T> variable;
+    private final Condition.Type type;
     private Variable[] inputVariables;
     private Constraint constraint;
     private List<Binding> bindings;
@@ -28,13 +30,31 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     }
 
     public PatternImpl(Variable<T> variable, Constraint constraint) {
-        this(variable, constraint, null);
+        this(variable, constraint, null, Type.PATTERN);
+    }
+
+    public PatternImpl(Variable<T> variable, Condition.Type type) {
+        this(variable, SingleConstraint.TRUE, type );
+    }
+
+    public PatternImpl(Variable<T> variable, Constraint constraint, Condition.Type type) {
+        this(variable, constraint, null, type);
     }
 
     public PatternImpl(Variable<T> variable, Constraint constraint, List<Binding> bindings) {
+        this(variable, constraint, bindings, Type.PATTERN);
+    }
+
+    public PatternImpl(Variable<T> variable, Constraint constraint, List<Binding> bindings, Condition.Type type) {
         this.variable = variable;
         this.constraint = constraint;
         this.bindings = bindings;
+        this.type = type;
+    }
+
+    @Override
+    public Condition.Type getType() {
+        return type;
     }
 
     @Override

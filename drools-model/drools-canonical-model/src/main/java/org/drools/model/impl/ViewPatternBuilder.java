@@ -26,12 +26,14 @@ import java.util.stream.Stream;
 import org.drools.model.Condition;
 import org.drools.model.ConditionalConsequence;
 import org.drools.model.Consequence;
+import org.drools.model.PatternDSL.ExchangeDefImpl;
 import org.drools.model.PatternDSL.PatternBindingImpl;
 import org.drools.model.PatternDSL.PatternDefImpl;
 import org.drools.model.PatternDSL.PatternExprImpl;
 import org.drools.model.PatternDSL.PatternItem;
 import org.drools.model.RuleItem;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.Variable;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
@@ -89,7 +91,8 @@ public class ViewPatternBuilder implements ViewBuilder {
     private static Condition ruleItem2Condition(RuleItem ruleItem) {
         if ( ruleItem instanceof PatternDefImpl ) {
             PatternDefImpl<?> patternDef = ( PatternDefImpl ) ruleItem;
-            PatternImpl pattern = new PatternImpl( patternDef.getFirstVariable() );
+            Variable<?> patternVariable = patternDef.getFirstVariable();
+            PatternImpl pattern = new PatternImpl( patternVariable, patternVariable instanceof Exchange ? Condition.Type.RECEIVER : Condition.Type.PATTERN );
             for (PatternItem patternItem : patternDef.getItems()) {
                 if ( patternItem instanceof PatternExprImpl ) {
                     pattern.addConstraint( (( PatternExprImpl ) patternItem).asConstraint( patternDef ) );
@@ -132,6 +135,11 @@ public class ViewPatternBuilder implements ViewBuilder {
 
         if ( ruleItem instanceof ExprViewItem ) {
             return new EvalImpl( createConstraint( (ExprViewItem) ruleItem ) );
+        }
+
+        if ( ruleItem instanceof ExchangeDefImpl ) {
+            ExchangeDefImpl<?> exchangeDef = ( ExchangeDefImpl ) ruleItem;
+            return new PatternImpl( exchangeDef.getFirstVariable(), Condition.Type.SENDER );
         }
 
         throw new UnsupportedOperationException( "Unknown " + ruleItem );

@@ -60,6 +60,7 @@ import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
@@ -188,6 +189,8 @@ public class KnowledgeBaseImpl
     private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
 
     private SessionConfiguration sessionConfiguration;
+
+    private List<AsyncReceiveNode> receiveNodes;
 
     public KnowledgeBaseImpl() { }
 
@@ -358,6 +361,7 @@ public class KnowledgeBaseImpl
         WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
         StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( nextWorkingMemoryCounter(), this,
                                                                                                                sessionConfig, environment );
+        session.registerReceiveNodes(receiveNodes);
         if ( sessionConfig.isKeepReference() ) {
             addStatefulSession(session);
         }
@@ -1797,5 +1801,12 @@ public class KnowledgeBaseImpl
 
     public boolean hasUnits() {
         return ruleUnitRegistry.hasUnits();
+    }
+
+    public void addReceiveNode(AsyncReceiveNode node) {
+        if (receiveNodes == null) {
+            receiveNodes = new ArrayList<>();
+        }
+        receiveNodes.add(node);
     }
 }

@@ -38,6 +38,8 @@ import org.drools.model.constraints.SingleConstraint7;
 import org.drools.model.constraints.SingleConstraint8;
 import org.drools.model.constraints.SingleConstraint9;
 import org.drools.model.constraints.VariableTemporalConstraint;
+import org.drools.model.constraints.TemporalConstraint;
+import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
@@ -55,6 +57,7 @@ import org.drools.model.functions.Predicate8;
 import org.drools.model.functions.Predicate9;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.impl.Exchange;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
@@ -77,7 +80,7 @@ public class PatternDSL extends DSL {
 
     private static final ViewBuilder VIEW_BUILDER = ViewBuilder.PATTERN;
 
-    public static <T> PatternDef<T> pattern(Variable<T> var) {
+    public static <T> PatternDef<T> pattern( Variable<T> var ) {
         return new PatternDefImpl<>( var );
     }
 
@@ -94,7 +97,7 @@ public class PatternDSL extends DSL {
         return new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
     }
 
-    public static ReactOn reactOn(String... reactOn) {
+    public static ReactOn reactOn( String... reactOn ) {
         return new ReactOn( reactOn );
     }
 
@@ -105,25 +108,36 @@ public class PatternDSL extends DSL {
         PatternDef<T> endOr();
 
         PatternDef<T> expr( Predicate1<T> predicate );
+
         PatternDef<T> expr( String exprId, Predicate1<T> predicate );
+
         PatternDef<T> expr( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index );
+
         PatternDef<T> expr( String exprId, Predicate1<T> predicate, ReactOn reactOn );
+
         PatternDef<T> expr( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index, ReactOn reactOn );
 
         <U> PatternDef<T> expr( Variable<U> var2, Predicate2<T, U> predicate );
+
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate );
+
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index );
+
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, ReactOn reactOn );
+
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn );
 
-        <A, B> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate );
-        <A, B> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn );
+        <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate );
 
-        <A, B, C> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate );
-        <A, B, C> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn );
+        <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn );
 
-        <A, B, C, D> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate );
-        <A, B, C, D> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn );
+        <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate );
+
+        <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn );
+
+        <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate );
+
+        <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn );
 
         <A, B, C, D, E> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Predicate6<T, A, B, C, D, E> predicate );
         <A, B, C, D, E> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Predicate6<T, A, B, C, D, E> predicate, ReactOn reactOn );
@@ -189,15 +203,18 @@ public class PatternDSL extends DSL {
         <U> PatternDef<T> expr( String exprId, Function1<T,?> fThis, Variable<U> var1, Function1<U,?> fVar, TemporalPredicate temporalPredicate );
 
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f );
+
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f, ReactOn reactOn );
 
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function1<U, A> f );
+
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function1<U, A> f, ReactOn reactOn );
 
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f );
+
         <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn );
 
-        PatternDef<T> watch(String... watch);
+        PatternDef<T> watch( String... watch );
     }
 
     public static class PatternDefImpl<T> implements PatternDef<T> {
@@ -250,97 +267,97 @@ public class PatternDSL extends DSL {
 
         @Override
         public PatternDef<T> expr( Predicate1<T> predicate ) {
-            items.add( new PatternExpr1<>( new Predicate1.Impl<>(predicate), null, null ) );
+            items.add( new PatternExpr1<>( new Predicate1.Impl<>( predicate ), null, null ) );
             return this;
         }
 
         @Override
         public PatternDef<T> expr( String exprId, Predicate1<T> predicate ) {
-            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>(predicate), null, null ) );
+            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>( predicate ), null, null ) );
             return this;
         }
 
         @Override
         public PatternDef<T> expr( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index ) {
-            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>(predicate), index, null ) );
+            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>( predicate ), index, null ) );
             return this;
         }
 
         @Override
         public PatternDef<T> expr( String exprId, Predicate1<T> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>(predicate), null, reactOn ) );
+            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>( predicate ), null, reactOn ) );
             return this;
         }
 
         @Override
         public PatternDef<T> expr( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index, ReactOn reactOn ) {
-            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>(predicate), index, reactOn ) );
+            items.add( new PatternExpr1<>( exprId, new Predicate1.Impl<>( predicate ), index, reactOn ) );
             return this;
         }
 
         @Override
         public <U> PatternDef<T> expr( Variable<U> var2, Predicate2<T, U> predicate ) {
-            items.add( new PatternExpr2<>( var2, new Predicate2.Impl<>(predicate), null, null ) );
+            items.add( new PatternExpr2<>( var2, new Predicate2.Impl<>( predicate ), null, null ) );
             return this;
         }
 
         @Override
         public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate ) {
-            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), null, null ) );
+            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), null, null ) );
             return this;
         }
 
         @Override
         public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index ) {
-            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), index, null ) );
+            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), index, null ) );
             return this;
         }
 
         @Override
         public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), null, reactOn ) );
+            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), null, reactOn ) );
             return this;
         }
 
         @Override
         public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn ) {
-            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>(predicate), index, reactOn ) );
+            items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), index, reactOn ) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate ) {
-            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>(predicate), null ) );
+        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate ) {
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), null ) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>(predicate), reactOn ) );
+        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), reactOn ) );
             return this;
         }
 
         @Override
-        public <A, B, C> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate ) {
-            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>(predicate), null ) );
+        public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate ) {
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), null ) );
             return this;
         }
 
         @Override
-        public <A, B, C> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>(predicate), reactOn ) );
+        public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), reactOn ) );
             return this;
         }
 
         @Override
-        public <A, B, C, D> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate ) {
-            items.add( new PatternExpr5<>( exprId, var2, var3, var4, var5, new Predicate5.Impl<>(predicate), null ) );
+        public <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate ) {
+            items.add( new PatternExpr5<>( exprId, var2, var3, var4, var5, new Predicate5.Impl<>( predicate ), null ) );
             return this;
         }
 
         @Override
-        public <A, B, C, D> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr5<>( exprId, var2, var3, var4, var5, new Predicate5.Impl<>(predicate), reactOn ) );
+        public <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr5<>( exprId, var2, var3, var4, var5, new Predicate5.Impl<>( predicate ), reactOn ) );
             return this;
         }
 
@@ -508,42 +525,42 @@ public class PatternDSL extends DSL {
 
         @Override
         public <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f ) {
-            items.add( new PatternBinding1<>(boundVar, f, null) );
+            items.add( new PatternBinding1<>( boundVar, f, null ) );
             return this;
         }
 
         @Override
         public <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f, ReactOn reactOn ) {
-            items.add( new PatternBinding1<>(boundVar, f, reactOn) );
+            items.add( new PatternBinding1<>( boundVar, f, reactOn ) );
             return this;
         }
 
         @Override
         public <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function1<U, A> f ) {
-            items.add( new PatternBinding2<>(boundVar, otherVar, (t,u) -> f.apply( u ), null) );
+            items.add( new PatternBinding2<>( boundVar, otherVar, ( t, u ) -> f.apply( u ), null ) );
             return this;
         }
 
         @Override
         public <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function1<U, A> f, ReactOn reactOn ) {
-            items.add( new PatternBinding2<>(boundVar, otherVar, (t,u) -> f.apply( u ), reactOn) );
+            items.add( new PatternBinding2<>( boundVar, otherVar, ( t, u ) -> f.apply( u ), reactOn ) );
             return this;
         }
 
         @Override
         public <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f ) {
-            items.add( new PatternBinding2<>(boundVar, otherVar, f, null) );
+            items.add( new PatternBinding2<>( boundVar, otherVar, f, null ) );
             return this;
         }
 
         @Override
         public <A, U> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn ) {
-            items.add( new PatternBinding2<>(boundVar, otherVar, f, reactOn) );
+            items.add( new PatternBinding2<>( boundVar, otherVar, f, reactOn ) );
             return this;
         }
 
         @Override
-        public PatternDef<T> watch(String... watch) {
+        public PatternDef<T> watch( String... watch ) {
             this.watch = watch;
             return this;
         }
@@ -594,7 +611,7 @@ public class PatternDSL extends DSL {
 
     public interface PatternItem<T> { }
 
-    public static abstract class PatternExprImpl<T> implements PatternItem<T>  {
+    public static abstract class PatternExprImpl<T> implements PatternItem<T> {
         private final String exprId;
         private final ReactOn reactOn;
 
@@ -644,8 +661,8 @@ public class PatternDSL extends DSL {
 
         private final AlphaIndex<T, ?> index;
 
-        public PatternExpr1(Predicate1<T> predicate, AlphaIndex<T, ?> index, ReactOn reactOn) {
-            this(randomUUID().toString(), predicate, index, reactOn);
+        public PatternExpr1( Predicate1<T> predicate, AlphaIndex<T, ?> index, ReactOn reactOn ) {
+            this( randomUUID().toString(), predicate, index, reactOn );
         }
 
         public PatternExpr1( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index, ReactOn reactOn ) {
@@ -663,8 +680,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDefImpl patternDef) {
-            SingleConstraint1 constraint = new SingleConstraint1(getExprId(), patternDef.getFirstVariable(), getPredicate());
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            SingleConstraint1 constraint = new SingleConstraint1( getExprId(), patternDef.getFirstVariable(), getPredicate() );
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
@@ -677,8 +694,8 @@ public class PatternDSL extends DSL {
 
         private final BetaIndex<T, U, ?> index;
 
-        public PatternExpr2(Variable<U> var2, Predicate2<T, U> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn) {
-            this(randomUUID().toString(), var2, predicate, index, reactOn);
+        public PatternExpr2( Variable<U> var2, Predicate2<T, U> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, predicate, index, reactOn );
         }
 
         public PatternExpr2( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn ) {
@@ -697,8 +714,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDefImpl patternDef) {
-            SingleConstraint2 constraint = new SingleConstraint2(getExprId(), patternDef.getFirstVariable(), var2, getPredicate());
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            SingleConstraint2 constraint = new SingleConstraint2( getExprId(), patternDef.getFirstVariable(), var2, getPredicate() );
             constraint.setIndex( getIndex() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
@@ -710,8 +727,8 @@ public class PatternDSL extends DSL {
         private final Variable<B> var3;
         private final Predicate3<T, A, B> predicate;
 
-        public PatternExpr3(Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn) {
-            this(randomUUID().toString(), var2, var3, predicate, reactOn);
+        public PatternExpr3( Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, var3, predicate, reactOn );
         }
 
         public PatternExpr3( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
@@ -726,8 +743,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDefImpl patternDef) {
-            SingleConstraint3 constraint = new SingleConstraint3(getExprId(), patternDef.getFirstVariable(), var2, var3, getPredicate());
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            SingleConstraint3 constraint = new SingleConstraint3( getExprId(), patternDef.getFirstVariable(), var2, var3, getPredicate() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
         }
@@ -739,8 +756,8 @@ public class PatternDSL extends DSL {
         private final Variable<C> var4;
         private final Predicate4<T, A, B, C> predicate;
 
-        public PatternExpr4(Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn) {
-            this(randomUUID().toString(), var2, var3, var4, predicate, reactOn);
+        public PatternExpr4( Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, var3, var4, predicate, reactOn );
         }
 
         public PatternExpr4( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
@@ -756,8 +773,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDefImpl patternDef) {
-            SingleConstraint4 constraint = new SingleConstraint4(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, getPredicate());
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            SingleConstraint4 constraint = new SingleConstraint4( getExprId(), patternDef.getFirstVariable(), var2, var3, var4, getPredicate() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
         }
@@ -770,8 +787,8 @@ public class PatternDSL extends DSL {
         private final Variable<D> var5;
         private final Predicate5<T, A, B, C, D> predicate;
 
-        public PatternExpr5(Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn) {
-            this(randomUUID().toString(), var2, var3, var4, var5, predicate, reactOn);
+        public PatternExpr5( Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, var3, var4, var5, predicate, reactOn );
         }
 
         public PatternExpr5( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn ) {
@@ -788,8 +805,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public Constraint asConstraint(PatternDefImpl patternDef) {
-            SingleConstraint5 constraint = new SingleConstraint5(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, getPredicate());
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            SingleConstraint5 constraint = new SingleConstraint5( getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, getPredicate() );
             constraint.setReactiveProps( getReactOn() );
             return constraint;
         }
@@ -1226,12 +1243,12 @@ public class PatternDSL extends DSL {
 
         public PatternBinding1( Variable<A> boundVar, Function1<T, A> f, ReactOn reactOn ) {
             super( boundVar, reactOn );
-            this.f = new Function1.Impl<>(f);
+            this.f = new Function1.Impl<>( f );
         }
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem1(boundVar, f, patternDef.getFirstVariable(), getReactOn(), null);
+            return new BindViewItem1( boundVar, f, patternDef.getFirstVariable(), getReactOn(), null );
         }
     }
 
@@ -1241,46 +1258,46 @@ public class PatternDSL extends DSL {
 
         public PatternBinding2( Variable<A> boundVar, Variable<U> otherVar, Function2<T, U, A> f, ReactOn reactOn ) {
             super( boundVar, reactOn );
-            this.f = new Function2.Impl<>(f);
+            this.f = new Function2.Impl<>( f );
             this.otherVar = otherVar;
         }
 
         @Override
         public Binding asBinding( PatternDefImpl patternDef ) {
-            return new BindViewItem2(boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn(), null);
+            return new BindViewItem2( boundVar, f, patternDef.getFirstVariable(), otherVar, getReactOn(), null );
         }
     }
 
     // -- Conditional Named Consequnce --
 
-    public static <A> ConditionalConsequenceBuilder when( Variable<A> var, Predicate1<A> predicate) {
+    public static <A> ConditionalConsequenceBuilder when( Variable<A> var, Predicate1<A> predicate ) {
         return when( FlowDSL.expr( var, predicate ) );
     }
 
-    public static <A> ConditionalConsequenceBuilder when(String exprId, Variable<A> var, Predicate1<A> predicate) {
+    public static <A> ConditionalConsequenceBuilder when( String exprId, Variable<A> var, Predicate1<A> predicate ) {
         return when( FlowDSL.expr( exprId, var, predicate ) );
     }
 
-    public static <A, B> ConditionalConsequenceBuilder when(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+    public static <A, B> ConditionalConsequenceBuilder when( Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate ) {
         return when( FlowDSL.expr( var1, var2, predicate ) );
     }
 
-    public static <A, B> ConditionalConsequenceBuilder when(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+    public static <A, B> ConditionalConsequenceBuilder when( String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate ) {
         return when( FlowDSL.expr( exprId, var1, var2, predicate ) );
     }
 
-    public static ConditionalConsequenceBuilder when(ExprViewItem expr) {
+    public static ConditionalConsequenceBuilder when( ExprViewItem expr ) {
         return new ConditionalConsequenceBuilder( expr );
     }
 
     // -- rule --
 
-    public static RuleBuilder rule( String name) {
+    public static RuleBuilder rule( String name ) {
         return new RuleBuilder( VIEW_BUILDER, name );
     }
 
-    public static RuleBuilder rule(String pkg, String name) {
-        return new RuleBuilder( VIEW_BUILDER, pkg, name);
+    public static RuleBuilder rule( String pkg, String name ) {
+        return new RuleBuilder( VIEW_BUILDER, pkg, name );
     }
 
     // -- query --
@@ -1298,61 +1315,101 @@ public class PatternDSL extends DSL {
     }
 
     public static <A> Query1Def<A> query( String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, name, type1, arg1name);
+        return new Query1DefImpl<>( VIEW_BUILDER, name, type1, arg1name );
     }
 
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1 ) {
         return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1 );
     }
 
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, Class<B> type2 ) {
+    public static <A, B> Query2Def<A, B> query( String name, Class<A> type1, Class<B> type2 ) {
         return new Query2DefImpl<>( VIEW_BUILDER, name, type1, type2 );
     }
 
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
+    public static <A, B> Query2Def<A, B> query( String pkg, String name, Class<A> type1, Class<B> type2 ) {
         return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2 );
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
-        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, type2, type3 );
+    public static <A, B, C> Query3Def<A, B, C> query( String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
+        return new Query3DefImpl<>( VIEW_BUILDER, name, type1, type2, type3 );
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
+    public static <A, B, C> Query3Def<A, B, C> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3 ) {
         return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3 );
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
-        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, type2, type3, type4 );
+    public static <A, B, C, D> Query4Def<A, B, C, D> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4 ) {
+        return new Query4DefImpl<>( VIEW_BUILDER, name, type1, type2, type3, type4 );
     }
 
-    public static <A,B,C, D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4) {
+    public static <A, B, C, D> Query4Def<A, B, C, D> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4 ) {
         return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
     }
 
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
-        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name);
+        return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name );
     }
 
-    public static <A,B> Query2Def<A,B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2 ,arg2name);
+    public static <A, B> Query2Def<A, B> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        return new Query2DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2, arg2name );
     }
 
-    public static <A,B> Query2Def<A,B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
-        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name);
+    public static <A, B> Query2Def<A, B> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name ) {
+        return new Query2DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name );
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    public static <A, B, C> Query3Def<A, B, C> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        return new Query3DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name );
     }
 
-    public static <A,B,C> Query3Def<A,B,C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
-        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name);
+    public static <A, B, C> Query3Def<A, B, C> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name ) {
+        return new Query3DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name );
     }
 
-    public static <A,B,C,D> Query4Def<A,B,C,D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<>(VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    public static <A, B, C, D> Query4Def<A, B, C, D> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name ) {
+        return new Query4DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
     }
 
-    public static <A,B,C,D> Query4Def<A,B,C,D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name) {
-        return new Query4DefImpl<>(VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
-    }}
+    public static <A, B, C, D> Query4Def<A, B, C, D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name ) {
+        return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    }
+
+    // -- async --
+
+    public static <T> PatternDSL.ExchangeDef<T> send( Exchange<T> exchange ) {
+        return new ExchangeDefImpl<>( exchange );
+    }
+
+    public interface ExchangeDef<T> extends ViewItem<T> {
+        ExchangeDef<T> message( Function0<T> supplier );
+    }
+
+    public static class ExchangeDefImpl<T> implements ExchangeDef<T> {
+
+        private final Exchange<T> exchange;
+
+        public ExchangeDefImpl( Exchange<T> exchange ) {
+            this.exchange = exchange;
+        }
+
+        @Override
+        public ExchangeDef<T> message( Function0<T> supplier ) {
+            exchange.setMessageSupplier( supplier );
+            return this;
+        }
+
+        @Override
+        public Exchange<T> getFirstVariable() {
+            return exchange;
+        }
+
+        @Override
+        public Variable<?>[] getVariables() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static <T> PatternDSL.PatternDef<T> receive(Exchange<T> exchange) {
+        return pattern(exchange);
+    }
+}

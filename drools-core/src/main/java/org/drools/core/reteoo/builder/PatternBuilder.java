@@ -30,6 +30,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -139,7 +140,9 @@ public class PatternBuilder
 
         // last thing to do is increment the offset, since if the pattern has a source,
         // offset must be overriden
-        context.incrementCurrentPatternOffset();
+        if ( !(pattern.getSource() instanceof AsyncSend) ) {
+            context.incrementCurrentPatternOffset();
+        }
     }
 
     private void buildBehaviors(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {

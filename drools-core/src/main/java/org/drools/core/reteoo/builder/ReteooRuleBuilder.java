@@ -32,6 +32,8 @@ import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.AsyncReceive;
+import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EntryPointId;
@@ -85,6 +87,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new ConditionalBranchBuilder() );
         this.utils.addBuilder( XpathConstraint.class,
                                new ReactiveFromBuilder() );
+        this.utils.addBuilder( AsyncSend.class,
+                               new AsyncSendBuilder() );
+        this.utils.addBuilder( AsyncReceive.class,
+                               new AsyncReceiveBuilder() );
     }
 
     /**

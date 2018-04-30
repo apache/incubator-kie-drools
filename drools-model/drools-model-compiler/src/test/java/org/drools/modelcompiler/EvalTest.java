@@ -369,7 +369,6 @@ public class EvalTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testEvalWithGlobal() {
         final String drl1 =
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -391,7 +390,6 @@ public class EvalTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(results.iterator().next().getValue().toString(), "match");
-
     }
 
     @Test
