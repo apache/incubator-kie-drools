@@ -343,15 +343,6 @@ public class DMNCompilerImpl
             if ( kr.getRequiredKnowledge() != null ) {
                 String id = getId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
-                if (!node.getModelNamespace().equals(bkmn.getModelNamespace())) {
-                    BusinessKnowledgeModelNodeImpl b = (BusinessKnowledgeModelNodeImpl) bkmn;
-                    DMNExpressionEvaluator originalEvaluator = b.getEvaluator();
-                    DMNWalksIntoScopeEvaluator newEvaluator = new DMNWalksIntoScopeEvaluator(originalEvaluator, model.getImportAliasFor(b.getModelNamespace(), b.getModelName()).get());
-                    BusinessKnowledgeModelNodeImpl overriden = new BusinessKnowledgeModelNodeImpl(bkmn.getBusinessKnowledModel(), bkmn.getResultType());
-                    overriden.setDependencies(b.getDependencies());
-                    overriden.setEvaluator(newEvaluator);
-                    bkmn = overriden;
-                }
                 if ( bkmn != null ) {
                     node.addDependency( bkmn.getName(), bkmn );
                 } else {
