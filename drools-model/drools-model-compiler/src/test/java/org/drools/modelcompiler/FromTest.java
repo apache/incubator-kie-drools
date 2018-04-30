@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -126,11 +127,12 @@ public class FromTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
-    public static Integer getLength(String ignoredParameter, String s) {
-        return s.length();
+    public static Integer getLength(String ignoredParameter, String s, Integer offset) {
+        return s.length() + offset;
     }
 
     @Test
+    @Ignore
     public void testFromExternalFunction() {
         final String str =
                 "import " + FromTest.class.getCanonicalName() + ";\n" +
@@ -138,7 +140,8 @@ public class FromTest extends BaseModelTest {
                         "\n" +
                         "rule R when\n" +
                         "  $s : String()\n" +
-                        "  $i : Integer( this > 10 ) from FromTest.getLength(\"ignoredArgument\", $s)\n" +
+                        "  $n : Integer()\n" +
+                        "  $i : Integer( this >= 10 ) from FromTest.getLength(\"ignoredArgument\", $s, $n)\n" +
                         "then\n" +
                         "  list.add( \"received long message: \" + $s);\n" +
                         "end\n";
@@ -148,10 +151,11 @@ public class FromTest extends BaseModelTest {
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
-        ksession.insert("Hello World!");
+        ksession.insert("Hello!");
+        ksession.insert(4);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello World!");
+        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello!");
     }
 
 }
