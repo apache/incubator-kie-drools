@@ -75,7 +75,12 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                  + "   result : format currency( 76499.3456 )\n"
                  + "}.result",
                  "$76,499.35", null
-                }
+                },
+                {"{ myimport : { f1 : function() \"Hi\", x1 : function(name) f1() + \" \" + name }, r1 : myimport.x1(\"John\") }.r1", "Hi John", null },
+                {"{ myimport : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , x1 : function(name) f2() + name }, r1 : myimport.x1(\"John\") }.r1", "Hi John", null },
+                {"{ m : { n : { o : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
+                {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
+                {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r2 : m.n.f1() }.r2", "Hi", null }
         };
         return Arrays.asList( cases );
     }
