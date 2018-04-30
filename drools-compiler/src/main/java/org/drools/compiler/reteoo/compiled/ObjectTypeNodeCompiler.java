@@ -156,11 +156,11 @@ public class ObjectTypeNodeCompiler {
             for (Object hashedValue : declaration.getHashedValues()) {
                 Object value = hashedValue;
 
-                if(value.equals(NULL_ALPHA_DECLARATION)) {
+                if(value == null) {
                     // generate the map.put(hashedValue, nodeId) call
                     String nodeId = declaration.getNodeId(hashedValue);
 
-                    builder.append(mapVariableName).append(".put(").append("NULL_ALPHA_DECLARATION").append(", ").append(nodeId).append(");");
+                    builder.append(mapVariableName).append(".put(null,").append(nodeId).append(");");
                     builder.append(NEWLINE);
                 } else {
 

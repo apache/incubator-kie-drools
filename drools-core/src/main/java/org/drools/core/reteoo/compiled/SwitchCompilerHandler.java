@@ -60,7 +60,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
             builder.append(" = (Integer)").append(getVariableName(""))
                     .append(".get(")
                     .append("readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME).append(").toString()")
+                    .append(LOCAL_FACT_VAR_NAME).append(")")
                     .append(");").append(NEWLINE);
 
             // ensure that the value is present in the node map

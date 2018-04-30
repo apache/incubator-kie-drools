@@ -60,11 +60,7 @@ public class HashedAlphasDeclaration {
     }
 
     void add(Object hashedValue, String nodeId) {
-        if (hashedValue != null) {
-            hashedValuesToNodeIds.put(hashedValue, nodeId);
-        } else {
-            hashedValuesToNodeIds.put(NULL_ALPHA_DECLARATION, nodeId);
-        }
+        hashedValuesToNodeIds.put(hashedValue, nodeId);
     }
 
     public Collection<Object> getHashedValues() {
