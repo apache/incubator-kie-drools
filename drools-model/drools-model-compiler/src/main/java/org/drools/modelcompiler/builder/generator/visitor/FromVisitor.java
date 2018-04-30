@@ -5,7 +5,9 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -32,14 +34,40 @@ public class FromVisitor {
     public Optional<Expression> visit(PatternSourceDescr sourceDescr) {
         if (sourceDescr instanceof FromDescr) {
             final String expression = ((FromDescr) sourceDescr).getDataSource().toString();
-            Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
-            final String bindingId = optContainsBinding.orElse(expression);
 
-            Expression fromCall = ruleContext.hasDeclaration( bindingId ) || packageModel.hasDeclaration( bindingId ) ?
-                    createFromCall( expression, optContainsBinding, bindingId ) :
-                    createUnitDataCall( optContainsBinding, bindingId );
+            final DrlxExpression drlxExpression = DrlxParseUtil.parseExpression(expression);
+            final Expression parsedExpression = drlxExpression.getExpr();
 
-            return Optional.of(fromCall);
+            if (parsedExpression instanceof FieldAccessExpr) {
+
+                Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
+                final String bindingId = optContainsBinding.orElse(expression);
+
+                Expression fromCall;
+                if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+                    fromCall = createFromCall(expression, optContainsBinding, bindingId);
+                } else {
+                    fromCall = createUnitDataCall(optContainsBinding, bindingId);
+                }
+
+                return Optional.of(fromCall);
+            }
+
+            if (parsedExpression instanceof MethodCallExpr) {
+                MethodCallExpr methodCallExpr = (MethodCallExpr) parsedExpression;
+
+                for(Expression argument : methodCallExpr.getArguments()) {
+                    final String argumentName = argument.toString();
+                    if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+                        Expression fromCall = createFromCall(expression, Optional.of(argumentName), argumentName);
+                        return Optional.of(fromCall);
+                    }
+                }
+
+                return Optional.empty();
+            }
+
+            return Optional.empty();
         } else {
             return Optional.empty();
         }
