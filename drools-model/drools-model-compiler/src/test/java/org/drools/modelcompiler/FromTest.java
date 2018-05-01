@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -125,4 +126,60 @@ public class FromTest extends BaseModelTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
     }
+
+    public static Integer getLength(String ignoredParameter, String s, Integer offset) {
+        return s.length() + offset;
+    }
+
+    @Test
+    public void testFromExternalFunction() {
+        final String str =
+                "import " + FromTest.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $s : String()\n" +
+                        "  $i : Integer( this > 10 ) from FromTest.getLength(\"ignoredArgument\", $s, 0)\n" +
+                        "then\n" +
+                        "  list.add( \"received long message: \" + $s);\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("Hello World!");
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello World!");
+    }
+
+    @Test
+    @Ignore("from clause supports binding of only one declaration")
+    public void testFromExternalFunctionMultipleBindingArguments() {
+        final String str =
+                "import " + FromTest.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  $s : String()\n" +
+                        "  $n : Integer()\n" +
+                        "  $i : Integer( this >= 10 ) from FromTest.getLength(\"ignoredArgument\", $s, $n)\n" +
+                        "then\n" +
+                        "  list.add( \"received long message: \" + $s);\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("Hello!");
+        ksession.insert(4);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello!");
+    }
+
 }

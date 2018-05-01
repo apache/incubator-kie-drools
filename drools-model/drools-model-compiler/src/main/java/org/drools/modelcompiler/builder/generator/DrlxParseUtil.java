@@ -26,6 +26,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -459,6 +460,22 @@ public class DrlxParseUtil {
         }
         return of(expression.substring(0, dot));
     }
+
+    public static Optional<Expression> findViaScopeWithPredicate(Expression expr, Predicate<Expression> predicate) {
+
+        final Boolean result = predicate.test(expr);
+
+        if(result) {
+            return Optional.of(expr);
+        } else if (expr instanceof NodeWithTraversableScope) {
+            final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
+
+            return exprWithScope.traverseScope().map((Expression expr1) -> findViaScopeWithPredicate(expr1, predicate)).orElse(of(expr));
+        }
+
+        return Optional.empty();
+    }
+
 
     public static DrlxExpression parseExpression(String expression) {
         return DrlxParser.parseExpression(DrlxParser.buildDrlxParserWithArguments(OperatorsHolder.operators), expression);
