@@ -118,7 +118,8 @@ public class JtaTransactionManager
                 return tm;
             } catch ( NamingException ex ) {
                 logger.debug( "No JTA TransactionManager found at fallback JNDI location [{}]",
-                              jndiName );
+                              jndiName,
+                              ex);
             }
         }
 
@@ -137,7 +138,7 @@ public class JtaTransactionManager
             try {
                 return InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
             } catch (Exception e1) {
-                logger.debug("Unable to find transaction: {}. Might be running in CMT environment" + ex.getMessage());
+                logger.debug("Unable to find transaction: {}. Might be running in CMT environment" + e1.getMessage(), e1);
                 return null;
             }
 
@@ -176,7 +177,7 @@ public class JtaTransactionManager
             } catch (Exception e1) {
                 logger.debug( "No JTA TransactionSynchronizationRegistry found at default JNDI location [{}]",
                         customJndiLocation,
-                        ex );
+                        e1 );
             }
         }
         // Check whether the UserTransaction or TransactionManager implements it...
