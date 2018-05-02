@@ -1022,7 +1022,7 @@ public class ParallelEvaluationTest {
         return fhs;
     }
 
-    private void runTasksInParallel(List<Callable<Void>> tasks) throws InterruptedException, TimeoutException, ExecutionException {
+    private void runTasksInParallel(List<Callable<Void>> tasks) throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(tasks.size());
         try {
             List<Future<Void>> futures = executorService.invokeAll(tasks);

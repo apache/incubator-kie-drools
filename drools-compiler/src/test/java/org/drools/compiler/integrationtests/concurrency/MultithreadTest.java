@@ -21,14 +21,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
@@ -83,7 +81,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "   list.add( $c ); \n" +
                 "end \n";
 
-        final List<Exception> errors = new ArrayList<Exception>();
+        final List<Exception> errors = new ArrayList<>();
 
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
@@ -93,79 +91,80 @@ public class MultithreadTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        final Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
-            public Thread newThread(final Runnable r) {
-                final Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-
-        final int RUN_TIME = 5000; // runs for 10 seconds
         final int THREAD_NR = 2;
-
-        final CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        ecs.submit(() -> {
-            try {
-                ksession.fireUntilHalt();
-                return true;
-            } catch (final Exception e) {
-                errors.add(e);
-                e.printStackTrace();
-                return false;
-            }
+        final ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
+            final Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
         });
 
-        boolean success = false;
         try {
-            for (int i = 0; i < THREAD_NR; i++) {
-                ecs.submit(() -> {
-                    try {
-                        final String s = Thread.currentThread().getName();
-                        final long endTS = System.currentTimeMillis() + RUN_TIME;
-                        int j = 0;
-                        long lastTimeInserted = -1;
-                        while (System.currentTimeMillis() < endTS) {
-                            final long currentTimeInMillis = System.currentTimeMillis();
-                            if (currentTimeInMillis > lastTimeInserted) {
-                                lastTimeInserted = currentTimeInMillis;
-                                ep.insert(new StockTick(j++, s, 0.0, 0));
+            final CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+            ecs.submit(() -> {
+                try {
+                    ksession.fireUntilHalt();
+                    return true;
+                } catch (final Exception e) {
+                    errors.add(e);
+                    e.printStackTrace();
+                    return false;
+                }
+            });
+
+            final int RUN_TIME = 5000; // runs for 10 seconds
+            boolean success = false;
+            try {
+                for (int i = 0; i < THREAD_NR; i++) {
+                    ecs.submit(() -> {
+                        try {
+                            final String s = Thread.currentThread().getName();
+                            final long endTS = System.currentTimeMillis() + RUN_TIME;
+                            int j = 0;
+                            long lastTimeInserted = -1;
+                            while (System.currentTimeMillis() < endTS) {
+                                final long currentTimeInMillis = System.currentTimeMillis();
+                                if (currentTimeInMillis > lastTimeInserted) {
+                                    lastTimeInserted = currentTimeInMillis;
+                                    ep.insert(new StockTick(j++, s, 0.0, 0));
+                                }
                             }
+                            return true;
+                        } catch (final Exception e) {
+                            errors.add(e);
+                            e.printStackTrace();
+                            return false;
                         }
-                        return true;
+                    });
+                }
+
+                success = true;
+                for (int i = 0; i < THREAD_NR; i++) {
+                    try {
+                        success = ecs.take().get() && success;
                     } catch (final Exception e) {
                         errors.add(e);
-                        e.printStackTrace();
-                        return false;
                     }
-                });
-            }
+                }
+            } finally {
+                ksession.halt();
 
-            success = true;
-            for (int i = 0; i < THREAD_NR; i++) {
                 try {
                     success = ecs.take().get() && success;
                 } catch (final Exception e) {
                     errors.add(e);
                 }
+
+                for (final Exception e : errors) {
+                    e.printStackTrace();
+                }
+
+                Assertions.assertThat(errors).isEmpty();
+                Assertions.assertThat(success).isTrue();
+
+                ksession.dispose();
             }
         } finally {
-            ksession.halt();
-
-            try {
-                success = ecs.take().get() && success;
-            } catch (final Exception e) {
-                errors.add(e);
-            }
-
-            for (final Exception e : errors) {
-                e.printStackTrace();
-            }
-
-            Assertions.assertThat(errors).isEmpty();
-            Assertions.assertThat(success).isTrue();
-
-            ksession.dispose();
+            executor.shutdownNow();
         }
     }
 
@@ -436,20 +435,17 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         final KieSession ksession = kbase.newKieSession();
 
-        final Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
-            public Thread newThread(final Runnable r) {
-                final Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
+        final int THREAD_NR = 5;
+        final ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
+            final Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
         });
 
-        final int THREAD_NR = 5;
-
-        final CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (int i = 0; i < THREAD_NR; i++) {
-            ecs.submit(new Callable<Boolean>() {
-                public Boolean call() throws Exception {
+        try {
+            final CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+            for (int i = 0; i < THREAD_NR; i++) {
+                ecs.submit(() -> {
                     boolean succ = false;
                     try {
                         final QueryResults res = ksession.getQueryResults("foo", Variable.v);
@@ -459,21 +455,23 @@ public class MultithreadTest extends CommonTestMethodBase {
                         e.printStackTrace();
                         return succ;
                     }
-                }
-            });
-        }
-
-        boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
-            try {
-                success = ecs.take().get() && success;
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
+                });
             }
-        }
 
-        Assertions.assertThat(success).isTrue();
-        ksession.dispose();
+            boolean success = true;
+            for (int i = 0; i < THREAD_NR; i++) {
+                try {
+                    success = ecs.take().get() && success;
+                } catch (final Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            Assertions.assertThat(success).isTrue();
+            ksession.dispose();
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     @Test(timeout = 20000)
@@ -499,15 +497,12 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
 
             final CyclicBarrier barrier = new CyclicBarrier(2);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ksession.fireAllRules();
-                    try {
-                        barrier.await();
-                    } catch (final Exception e) {
-                        throw new RuntimeException(e);
-                    }
+            new Thread(() -> {
+                ksession.fireAllRules();
+                try {
+                    barrier.await();
+                } catch (final Exception e) {
+                    throw new RuntimeException(e);
                 }
             }).start();
 

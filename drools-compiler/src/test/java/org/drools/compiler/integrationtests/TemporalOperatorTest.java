@@ -70,18 +70,21 @@ public class TemporalOperatorTest {
         KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
+        try {
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );
 
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list", list );
+            TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
+            TimestampedObject t2 = new TimestampedObject( "t2", LocalDateTime.now().plusHours( 1 ) );
 
-        TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
-        TimestampedObject t2 = new TimestampedObject( "t2", LocalDateTime.now().plusHours( 1 ) );
+            ksession.insert( t1 );
+            ksession.insert( t2 );
+            ksession.fireAllRules();
 
-        ksession.insert( t1 );
-        ksession.insert( t2 );
-        ksession.fireAllRules();
-
-        assertEquals(t2.getName(), list.get(0));
+            assertEquals(t2.getName(), list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     public static class TimestampedObject {
@@ -139,15 +142,18 @@ public class TemporalOperatorTest {
         KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
+        try {
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );
 
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list", list );
+            TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
 
-        TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
+            ksession.insert( t1 );
+            ksession.fireAllRules();
 
-        ksession.insert( t1 );
-        ksession.fireAllRules();
-
-        assertEquals(t1.getName(), list.get(0));
+            assertEquals(t1.getName(), list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 }
