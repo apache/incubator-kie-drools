@@ -163,7 +163,7 @@ public class ObjectTypeNodeCompiler {
                 } else {
 
                     // need to quote value if it is a string
-                    if (declaration.getValueType() == ValueType.STRING_TYPE) {
+                    if (value.getClass().equals(String.class)) {
                         value = "\"" + value + "\"";
                     }
 
