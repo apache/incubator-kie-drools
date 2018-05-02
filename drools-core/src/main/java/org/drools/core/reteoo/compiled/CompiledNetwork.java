@@ -32,8 +32,6 @@ public abstract class CompiledNetwork implements ObjectSink {
 
     protected ObjectTypeNode objectTypeNode;
 
-    public static final HashedAlphasDeclaration.NullAlphaDeclaration NULL_ALPHA_DECLARATION = new HashedAlphasDeclaration.NullAlphaDeclaration();
-
     /**
      * Returns the unique id that represents the node in the Rete network
      *

@@ -44,8 +44,6 @@ import org.drools.core.util.IoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.reteoo.compiled.CompiledNetwork.NULL_ALPHA_DECLARATION;
-
 /**
  * todo: document
  */
@@ -160,7 +158,7 @@ public class ObjectTypeNodeCompiler {
                     // generate the map.put(hashedValue, nodeId) call
                     String nodeId = declaration.getNodeId(hashedValue);
 
-                    builder.append(mapVariableName).append(".put(NULL_ALPHA_DECLARATION,").append(nodeId).append(");");
+                    builder.append(mapVariableName).append(".put(null,").append(nodeId).append(");");
                     builder.append(NEWLINE);
                 } else {
 

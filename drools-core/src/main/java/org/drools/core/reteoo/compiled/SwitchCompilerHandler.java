@@ -43,12 +43,11 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
             builder.append(fieldType.getCanonicalName())
                     .append(" ")
                     .append(switchVar);
-            builder.append(" = ").append("(").append(fieldType.getCanonicalName()).append(")")
+            builder.append(" = ")
+                    .append("(" + fieldType.getCanonicalName() + ")")
                     .append("readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME).append(")")
-                    .append(" == null ? NULL_ALPHA_DECLARATION : readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME).append("));")
-                    .append(NEWLINE);
+                    .append(LOCAL_FACT_VAR_NAME)
+                    .append(");").append(NEWLINE);
 
             builder.append("if(true) {").append(NEWLINE);
             builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
@@ -62,9 +61,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
                     .append(".get(")
                     .append("readAccessor.getValue(")
                     .append(LOCAL_FACT_VAR_NAME).append(")")
-                    .append(" == null ? NULL_ALPHA_DECLARATION : readAccessor.getValue(")
-                    .append(LOCAL_FACT_VAR_NAME).append("));")
-                    .append(NEWLINE);
+                    .append(");").append(NEWLINE);
 
             // ensure that the value is present in the node map
             builder.append("if(").append(localVariableName).append(" != null) {").append(NEWLINE);
@@ -77,9 +74,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
         if(canInlineValue()) {
 
             final Object quotedHashedValue;
-            if(hashedValue == null) {
-                quotedHashedValue = "NULL_ALPHA_DECLARATION";
-            } else if (hashedValue instanceof String) {
+            if (hashedValue instanceof String) {
                 quotedHashedValue = String.format("\"%s\"", hashedValue);
             } else {
                 quotedHashedValue = hashedValue;
@@ -94,6 +89,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     }
 
     protected boolean canInlineValue() {
-        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+//        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+        return false;
     }
 }
