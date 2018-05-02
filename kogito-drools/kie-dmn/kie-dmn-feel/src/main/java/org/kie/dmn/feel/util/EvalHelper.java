@@ -23,12 +23,15 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
@@ -256,9 +259,16 @@ public class EvalHelper {
                     result = ((Temporal) current).get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                case "timezone":
                     result = Duration.ofSeconds(((Temporal) current).get(ChronoField.OFFSET_SECONDS));
                     break;
+                case "timezone":
+                    ZoneId zoneId = ((Temporal) current).query(TemporalQueries.zoneId());
+                    if (zoneId != null) {
+                        result = TimeZone.getTimeZone(zoneId).getDisplayName();
+                        break;
+                    } else {
+                        return PropertyValueResult.notDefined();
+                    }
                 case "weekday":
                     result = ((Temporal) current).get(ChronoField.DAY_OF_WEEK);
                     break;

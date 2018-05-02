@@ -575,7 +575,7 @@ public class DMNRuntimeTest {
         assertThat( ctx.get("cHour"), is( BigDecimal.valueOf( 0 ) ) );
         assertThat( ctx.get("cMinute"), is( BigDecimal.valueOf( 0 ) ) );
         assertThat( ctx.get("cSecond"), is( BigDecimal.valueOf( 1 ) ) );
-        assertThat( ctx.get("cTimezone"), is( Duration.parse( "PT-1H" ) ) );
+        assertThat( ctx.get("cTimezone"), is( "GMT-01:00" ) );
         assertThat( ctx.get("years"), is( BigDecimal.valueOf( 1 ) ) );
         assertThat( ctx.get("seconds"), is( BigDecimal.valueOf( 14 ) ) );
 

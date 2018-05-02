@@ -274,7 +274,7 @@
     </literalExpression>
   </decision>
   <decision id="_81f97dd0-29ea-4bab-9540-b70a2fdf8ff3" name="cTimezone">
-    <variable name="cTimezone" typeRef="feel:days and time duration"/>
+    <variable name="cTimezone" typeRef="feel:string"/>
     <informationRequirement>
       <requiredDecision href="#_7df22028-4b5b-4594-89c7-a80b8aec526f"/>
     </informationRequirement>
