@@ -193,7 +193,11 @@ abstract public class BaseClassFieldReader
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt( index );
         out.writeObject( valueType );
-        out.writeUTF( fieldType.getName() );
+        if (fieldType == null) {
+            out.writeUTF( "" );
+        } else {
+            out.writeUTF( fieldType.getName() );
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -202,12 +206,14 @@ abstract public class BaseClassFieldReader
         valueType = (ValueType) in.readObject();
         String clsName = in.readUTF();
 
-        try {
-            fieldType = in instanceof DroolsObjectInput ?
-                        ClassUtils.getClassFromName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
-                        ClassUtils.getClassFromName( clsName );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
+        if (!clsName.isEmpty()) {
+            try {
+                fieldType = in instanceof DroolsObjectInput ?
+                            ClassUtils.getClassFromName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
+                            ClassUtils.getClassFromName( clsName );
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
         }
     }
 }
