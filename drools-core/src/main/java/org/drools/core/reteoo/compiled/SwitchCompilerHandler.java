@@ -49,7 +49,11 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
                     .append(LOCAL_FACT_VAR_NAME)
                     .append(");").append(NEWLINE);
 
-            builder.append("if(true) {").append(NEWLINE);
+            if(fieldType.isPrimitive()) {
+                builder.append("if(true) {").append(NEWLINE);
+            } else {
+                builder.append("if(switchVar != null) {").append(NEWLINE);
+            }
             builder.append("switch(").append(switchVar).append(")").append("{").append(NEWLINE);
         } else {
 
@@ -89,7 +93,20 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     }
 
     protected boolean canInlineValue() {
-//        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
-        return false;
+        return Stream.of(String.class, Integer.class, int.class).anyMatch(c -> c.isAssignableFrom(fieldType));
+    }
+
+    @Override
+    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
+        if(canInlineValue()) {
+            builder.append("else { ");
+        }
+    }
+
+    @Override
+    public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
+        if(canInlineValue()) {
+            builder.append("}").append(NEWLINE);
+        }
     }
 }

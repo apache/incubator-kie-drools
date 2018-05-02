@@ -130,4 +130,9 @@ public class ModifyHandler extends SwitchCompilerHandler {
         // close the assertObject method
         builder.append("}").append(NEWLINE);
     }
+
+    @Override
+    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
+        super.nullCaseAlphaNodeStart(hashedAlpha);
+    }
 }

@@ -93,4 +93,8 @@ public interface NetworkHandler {
     void endHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue);
 
     void endObjectTypeNode(ObjectTypeNode objectTypeNode);
+
+    void nullCaseAlphaNodeStart(AlphaNode hashedAlpha);
+
+    void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha);
 }

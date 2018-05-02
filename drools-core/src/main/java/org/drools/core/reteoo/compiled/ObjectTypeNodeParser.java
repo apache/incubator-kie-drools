@@ -119,20 +119,30 @@ public class ObjectTypeNodeParser {
             handler.startHashedAlphaNodes(hashedFieldReader);
 
             Iterator iter = hashedAlphaNodes.iterator();
+            AlphaNode optionalNullAlphaNodeCase = null;
             for (ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) iter.next(); entry != null; entry = (ObjectHashMap.ObjectEntry) iter.next()) {
                 CompositeObjectSinkAdapter.HashKey hashKey = (CompositeObjectSinkAdapter.HashKey) entry.getKey();
                 AlphaNode alphaNode = (AlphaNode) entry.getValue();
 
                 final Object objectValue = hashKey.getObjectValue();
-                handler.startHashedAlphaNode(alphaNode, objectValue);
-                // traverse the propagator for each alpha
-                traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
-
-                handler.endHashedAlphaNode(alphaNode, hashKey.getObjectValue());
+                if(objectValue != null) {
+                    handler.startHashedAlphaNode(alphaNode, objectValue);
+                    // traverse the propagator for each alpha
+                    traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
+                    handler.endHashedAlphaNode(alphaNode, hashKey.getObjectValue());
+                } else {
+                    optionalNullAlphaNodeCase = alphaNode;
+                }
             }
 
             // end of the hashed alphas
             handler.endHashedAlphaNodes(hashedFieldReader);
+
+            if(optionalNullAlphaNodeCase != null) {
+                handler.nullCaseAlphaNodeStart(optionalNullAlphaNodeCase);
+                traversePropagator(optionalNullAlphaNodeCase.getObjectSinkPropagator(), handler);
+                handler.nullCaseAlphaNodeEnd(optionalNullAlphaNodeCase);
+            }
         }
         return hashedFieldReader;
     }

@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo.compiled;
 
-import java.util.stream.Stream;
-
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -123,5 +121,10 @@ public class AssertHandler extends SwitchCompilerHandler {
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
         // close the assertObject method
         builder.append("}").append(NEWLINE);
+    }
+
+    @Override
+    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
+        super.nullCaseAlphaNodeStart(hashedAlpha);
     }
 }

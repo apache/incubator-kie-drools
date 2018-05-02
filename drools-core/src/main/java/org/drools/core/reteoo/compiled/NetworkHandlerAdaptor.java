@@ -82,4 +82,13 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
 
     }
+
+    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
+
+    }
+
+    @Override
+    public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
+
+    }
 }
