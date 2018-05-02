@@ -166,4 +166,14 @@ public class EvaluationContextImpl implements EvaluationContext {
         return performRuntimeTypeCheck;
     }
 
+    @Override
+    public void setRootObject(Object v) {
+        peek().setRootObject(v);
+    }
+
+    @Override
+    public Object getRootObject() {
+        return peek().getRootObject();
+    }
+
 }

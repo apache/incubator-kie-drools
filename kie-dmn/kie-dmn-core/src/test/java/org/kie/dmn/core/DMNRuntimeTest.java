@@ -16,26 +16,6 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -79,6 +59,26 @@ import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNRuntimeTest {
 
@@ -1698,5 +1698,69 @@ public class DMNRuntimeTest {
         DMNContext resultContext = dmnResult.getContext();
         assertThat(((BigDecimal) resultContext.get("an odd decision")).intValue(), is(47));
     }
+    
+    public static class DROOLS2286 {
+        private String name;
+        private String surname;
+
+        DROOLS2286(String name, String surname){
+            this.name = name;
+            this.surname = surname;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public String getSurname() {
+            return surname;
+        }
+        
+    }
+    
+    @Test
+    public void testDROOLS2286() {
+        // DROOLS-2286
+        DROOLS2286 johnCena = new DROOLS2286("John", "Cena");
+        DROOLS2286 leslieBrown = new DROOLS2286("Leslie", "Brown");
+        DROOLS2286 johnWick = new DROOLS2286("John", "Wick");
+
+        List<DROOLS2286> personList = new ArrayList<>();
+        personList.add(johnCena);
+        personList.add(leslieBrown);
+        personList.add(johnWick);
+        DMNContext context = DMNFactory.newContext();
+        context.set("PersonList", personList);
+
+        assertDROOLS2286(context);
+    }
+
+    @Test
+    public void testDROOLS2286bis() {
+        // DROOLS-2286 (map case)
+        Map<String, Object> johnCena = prototype(entry("name", "John"), entry("surname", "Cena"));
+        Map<String, Object> leslieBrown = prototype(entry("name", "Leslie"), entry("surname", "Brown"));
+        Map<String, Object> johnWick = prototype(entry("name", "John"), entry("surname", "Wick"));
+
+        List<Map<String, Object>> personList = new ArrayList<>();
+        personList.add(johnCena);
+        personList.add(leslieBrown);
+        personList.add(johnWick);
+        DMNContext context = DMNFactory.newContext();
+        context.set("PersonList", personList);
+
+        assertDROOLS2286(context);
+    }
+
+    private void assertDROOLS2286(DMNContext context) {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("FilterJohns.dmn", this.getClass());
+        DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d", "FilterJohns");
+
+        DMNResult result = runtime.evaluateAll(model, context);
+        List<?> resultObject = (ArrayList<?>) result.getDecisionResultByName("PickAllJohns").getResult();
+
+        assertEquals(2, resultObject.size());
+    }
+
 }
 
