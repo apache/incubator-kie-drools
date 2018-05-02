@@ -207,7 +207,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
-    private final Map<String, List<PackageDescr>> packages = new HashMap<String, List<PackageDescr>>();
+    private final Map<String, List<PackageDescr>> packages = new ConcurrentHashMap<>();
 
     private final Stack<List<Resource>> buildResources = new Stack<List<Resource>>();
 
