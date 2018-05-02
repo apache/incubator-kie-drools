@@ -1167,7 +1167,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         //Gather all imports for all PackageDescrs for the current package and replicate into
         //all PackageDescrs for the current package, thus maintaining a complete list of
         //ImportDescrs for all PackageDescrs for the current package.
-        List<PackageDescr> packageDescrsForPackage = packages.computeIfAbsent(packageDescr.getName(), k -> new ArrayList<PackageDescr>());
+        List<PackageDescr> packageDescrsForPackage = packages.get(packageDescr.getName());
+        if (packageDescrsForPackage == null) {
+            packageDescrsForPackage = new ArrayList<>();
+            packages.put(packageDescr.getName(), packageDescrsForPackage);
+        }
         packageDescrsForPackage.add(packageDescr);
         Set<ImportDescr> imports = new HashSet<ImportDescr>();
         for (PackageDescr pd : packageDescrsForPackage) {
