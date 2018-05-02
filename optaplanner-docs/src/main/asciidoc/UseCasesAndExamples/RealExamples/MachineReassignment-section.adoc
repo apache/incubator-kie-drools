@@ -1,5 +1,6 @@
 [[machineReassignment]]
 = Machine Reassignment (Google ROADEF 2012)
+:imagesdir: ../..
 
 
 [[machineReassignmentProblemDescription]]

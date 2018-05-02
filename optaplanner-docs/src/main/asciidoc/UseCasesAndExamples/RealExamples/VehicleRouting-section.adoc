@@ -1,5 +1,6 @@
 [[vehicleRouting]]
 = Vehicle Routing
+:imagesdir: ../..
 
 
 [[vehicleRoutingProblemDescription]]

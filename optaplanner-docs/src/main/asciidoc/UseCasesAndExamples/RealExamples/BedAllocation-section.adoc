@@ -1,5 +1,6 @@
 [[bedAllocation]]
 = Hospital Bed Planning (PAS - Patient Admission Scheduling)
+:imagesdir: ../..
 
 
 [[bedAllocationProblemDescription]]

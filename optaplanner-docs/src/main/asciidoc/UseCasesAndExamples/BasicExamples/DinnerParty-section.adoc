@@ -1,5 +1,6 @@
 [[dinnerParty]]
 = Dinner Party
+:imagesdir: ../..
 
 
 [[dinnerPartyProblemDescription]]

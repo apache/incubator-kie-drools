@@ -1,5 +1,6 @@
 [[travelingTournament]]
 = Traveling Tournament Problem (TTP)
+:imagesdir: ../..
 
 
 [[travelingTournamentProblemDescription]]

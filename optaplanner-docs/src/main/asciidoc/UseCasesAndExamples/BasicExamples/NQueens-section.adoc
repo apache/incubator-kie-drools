@@ -1,5 +1,6 @@
 [[nQueens]]
 = N Queens
+:imagesdir: ../..
 
 
 [[nQueensProblemDescription]]

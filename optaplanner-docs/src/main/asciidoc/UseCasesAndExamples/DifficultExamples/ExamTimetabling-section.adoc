@@ -1,5 +1,6 @@
 [[examination]]
 = Exam Timetabling (ITC 2007 track 1 - Examination)
+:imagesdir: ../..
 
 
 [[examinationProblemDescription]]

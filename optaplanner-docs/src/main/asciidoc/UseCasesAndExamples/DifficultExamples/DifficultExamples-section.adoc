@@ -1,5 +1,6 @@
 [[difficultExamples]]
 = Advanced Examples
+:imagesdir: ../..
 
 include::ExamTimetabling-section.adoc[leveloffset=+1]
 include::EmployeeRostering-section.adoc[leveloffset=+1]

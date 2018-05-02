@@ -1,5 +1,6 @@
 [[tennis]]
 = Tennis Club Scheduling
+:imagesdir: ../..
 
 
 [[tennisProblemDescription]]

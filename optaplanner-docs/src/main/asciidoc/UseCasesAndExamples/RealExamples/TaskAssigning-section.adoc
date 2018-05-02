@@ -1,5 +1,6 @@
 [[taskAssigning]]
 = Task assigning
+:imagesdir: ../..
 
 
 [[taskAssigningProblemDescription]]

@@ -1,5 +1,6 @@
 [[cheapTimeScheduling]]
 = Cheap Time Scheduling
+:imagesdir: ../..
 
 
 [[cheapTimeSchedulingProblemDescription]]

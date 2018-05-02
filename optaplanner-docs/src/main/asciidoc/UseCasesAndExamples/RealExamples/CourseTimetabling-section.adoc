@@ -1,5 +1,6 @@
 [[curriculumCourse]]
 = Course Timetabling (ITC 2007 Track 3 - Curriculum Course Scheduling)
+:imagesdir: ../..
 
 
 [[curriculumCourseProblemDescription]]

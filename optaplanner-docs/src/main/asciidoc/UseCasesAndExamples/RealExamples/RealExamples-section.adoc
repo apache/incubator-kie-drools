@@ -1,5 +1,6 @@
 [[realExamples]]
 = Real Examples
+:imagesdir: ../..
 
 
 include::CourseTimetabling-section.adoc[leveloffset=+1]

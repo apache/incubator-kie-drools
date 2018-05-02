@@ -1,5 +1,6 @@
 [[projectJobScheduling]]
 = Project Job Scheduling
+:imagesdir: ../..
 
 
 [[projectJobSchedulingProblemDescription]]

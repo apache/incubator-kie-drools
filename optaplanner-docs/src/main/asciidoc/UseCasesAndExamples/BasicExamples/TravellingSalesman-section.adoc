@@ -1,5 +1,6 @@
 [[tsp]]
 = Traveling Salesman (TSP - Traveling Salesman Problem)
+:imagesdir: ../..
 
 
 [[tspProblemDescription]]

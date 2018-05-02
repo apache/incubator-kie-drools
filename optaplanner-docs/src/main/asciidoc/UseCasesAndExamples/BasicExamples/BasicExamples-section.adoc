@@ -1,5 +1,6 @@
 [[basicExamples]]
 = Basic Examples
+:imagesdir: ../..
 
 
 include::NQueens-section.adoc[leveloffset=+1]

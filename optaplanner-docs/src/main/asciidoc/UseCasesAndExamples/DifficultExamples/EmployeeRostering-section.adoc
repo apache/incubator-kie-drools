@@ -1,5 +1,6 @@
 [[employeeRostering]]
 = Employee Rostering (INRC 2010 - Nurse Rostering)
+:imagesdir: ../..
 
 
 [[employeeRosteringProblemDescription]]
