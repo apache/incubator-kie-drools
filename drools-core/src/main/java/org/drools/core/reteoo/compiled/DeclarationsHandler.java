@@ -22,6 +22,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 
@@ -109,6 +110,11 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     @Override
     public void startBetaNode(BetaNode betaNode) {
         builder.append(getVariableDeclaration(betaNode)).append(NEWLINE);
+    }
+
+    @Override
+    public void startWindowNode(WindowNode windowNode) {
+        builder.append(getVariableDeclaration(windowNode)).append(NEWLINE);
     }
 
     @Override

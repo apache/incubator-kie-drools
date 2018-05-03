@@ -20,6 +20,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
 /**
@@ -76,6 +77,20 @@ public class ModifyHandler extends SwitchCompilerHandler {
                 append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    }
+
+    @Override
+    public void startWindowNode(WindowNode windowNode) {
+        builder.append(getVariableName(windowNode)).append(".modifyObject(").
+                append(FACT_HANDLE_PARAM_NAME).append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
+                append(PROP_CONTEXT_PARAM_NAME).append(",").
+                append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    }
+
+    @Override
+    public void endWindowNode(WindowNode windowNode) {
+
     }
 
     @Override

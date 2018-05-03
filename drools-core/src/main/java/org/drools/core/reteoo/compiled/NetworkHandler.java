@@ -21,6 +21,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
 /**
@@ -66,9 +67,13 @@ public interface NetworkHandler {
 
     void endBetaNode(BetaNode betaNode);
 
+    void startWindowNode(WindowNode windowNode);
+
+    void endWindowNode(WindowNode windowNode);
+
     void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode);
 
-    void endLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode);
+    void endWindowNode(LeftInputAdapterNode leftInputAdapterNode);
 
     /**
      * Receive notification of the a group of hashed {@link org.kie.reteoo.AlphaNode}s.
@@ -97,4 +102,6 @@ public interface NetworkHandler {
     void nullCaseAlphaNodeStart(AlphaNode hashedAlpha);
 
     void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha);
+
+
 }

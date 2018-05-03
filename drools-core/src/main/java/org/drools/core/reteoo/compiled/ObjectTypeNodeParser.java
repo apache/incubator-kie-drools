@@ -167,7 +167,13 @@ public class ObjectTypeNodeParser {
 
             handler.startLeftInputAdapterNode(leftInputAdapterNode);
             // todo traverse lia
-            handler.endLeftInputAdapterNode(leftInputAdapterNode);
+            handler.endWindowNode(leftInputAdapterNode);
+        } else if (sink.getType() == NodeTypeEnums.WindowNode) {
+            WindowNode windowNode = (WindowNode) sink;
+
+            handler.startWindowNode(windowNode);
+            // todo traverse lia
+            handler.endWindowNode(windowNode);
         }
     }
 

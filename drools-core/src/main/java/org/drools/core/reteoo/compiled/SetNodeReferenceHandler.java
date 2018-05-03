@@ -79,6 +79,12 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
     @Override
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(SET_NETWORK_NODE_REFERENCE_SIGNATURE).append(NEWLINE);
+
+        builder.append("System.out.println(\"node = \" + node);").append(NEWLINE);
+        builder.append("System.out.println(\"node.getId() = \" + node.getId());").append(NEWLINE);
+
+        builder.append("        new Exception().printStackTrace();\n");
+
         // we are switch based on the parameter's node ID
         builder.append("switch (").append(PARAM_NAME).append(".getId()) {").append(NEWLINE);
     }
@@ -113,6 +119,18 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
         builder.append("case ").append(betaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(betaNode, PARAM_NAME)).append(NEWLINE);
+        builder.append("break;").append(NEWLINE);
+    }
+
+    @Override
+    public void startWindowNode(WindowNode windowNode) {
+        // case statement for the window looks like the following
+        // case 65:
+        //      notNode65 = (NodeNode) node;
+        //      break;
+
+        builder.append("case ").append(windowNode.getId()).append(": ").append(NEWLINE);
+        builder.append(getVariableAssignmentStatement(windowNode, PARAM_NAME)).append(NEWLINE);
         builder.append("break;").append(NEWLINE);
     }
 

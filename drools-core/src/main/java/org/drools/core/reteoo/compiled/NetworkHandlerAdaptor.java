@@ -21,6 +21,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
 /**
@@ -55,11 +56,19 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
 
     }
 
+    public void startWindowNode(WindowNode windowNode) {
+
+    }
+
+    public void endWindowNode(WindowNode windowNode) {
+
+    }
+
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
 
     }
 
-    public void endLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
+    public void endWindowNode(LeftInputAdapterNode leftInputAdapterNode) {
 
     }
 

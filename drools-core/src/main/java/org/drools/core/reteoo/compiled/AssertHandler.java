@@ -20,6 +20,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
 /**
@@ -66,6 +67,18 @@ public class AssertHandler extends SwitchCompilerHandler {
     @Override
     public void startBetaNode(BetaNode betaNode) {
         builder.append(getVariableName(betaNode)).append(".assertObject(").
+                append(FACT_HANDLE_PARAM_NAME).append(",").
+                append(PROP_CONTEXT_PARAM_NAME).append(",").
+                append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    }
+
+
+    @Override
+    public void startWindowNode(WindowNode windowNode) {
+        if(windowNode.getId() == 6) {
+            builder.append("System.out.println(\"windowNode6 = \" + windowNode6);\n");
+        }
+        builder.append(getVariableName(windowNode)).append(".assertObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
