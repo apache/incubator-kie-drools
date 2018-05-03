@@ -76,7 +76,7 @@ public class ObjectTypeNodeCompiler {
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
         this.className = classObjectType.getClassName().replace("$", ".");
-        generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network";
+        generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network" + objectTypeNode.getId();
     }
 
     public static class SourceGenerated {
