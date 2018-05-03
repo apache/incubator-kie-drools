@@ -650,7 +650,7 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testPropertyReactiveOnAlphaNodeFollowedByAccumulate() {
         // DROOLS-16
         String str =
-                "package org.drools.pmml.pmml_4_1.test;\n" +
+                "package org.kie.pmml.pmml_4_1.test;\n" +
                 "\n" +
                 "declare Charge\n" +
                 "    context     : String\n" +

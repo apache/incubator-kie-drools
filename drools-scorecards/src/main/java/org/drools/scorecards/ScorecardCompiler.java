@@ -18,7 +18,7 @@ package org.drools.scorecards;
 
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.core.util.IoUtils;
-import org.drools.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
 import org.drools.scorecards.parser.xls.XLSScorecardParser;

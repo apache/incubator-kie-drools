@@ -18,8 +18,8 @@ package org.drools.scorecards.pmml;
 
 import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.core.util.StringUtils;
-import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
-import org.drools.pmml.pmml_4_2.extensions.PMMLIOAdapterMode;
+import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+import org.kie.pmml.pmml_4_2.extensions.PMMLIOAdapterMode;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 
@@ -60,6 +60,7 @@ public class ScorecardPMMLGenerator {
 
         //now create the PMML document
         PMML pmml = new PMML();
+        pmml.setVersion("4.2.1");
         Header header = new Header();
         Timestamp timestamp = new Timestamp();
         timestamp.getContent().add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.ENGLISH).format(new Date()));

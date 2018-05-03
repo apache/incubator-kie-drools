@@ -20,7 +20,7 @@ import org.dmg.pmml.pmml_4_2.descr.Characteristic;
 import org.dmg.pmml.pmml_4_2.descr.Characteristics;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.drools.pmml.pmml_4_2.PMML4Helper;
+import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;

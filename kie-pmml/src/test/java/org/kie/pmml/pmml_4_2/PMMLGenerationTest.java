@@ -17,9 +17,9 @@
 package org.kie.pmml.pmml_4_2;
 
 
-import org.kie.dmg.pmml.pmml_4_2.descr.NeuralLayer;
-import org.kie.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
-import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.NeuralLayer;
+import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

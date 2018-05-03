@@ -19,20 +19,36 @@ package org.drools.scorecards;
 
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -56,10 +72,8 @@ public class ScorecardProviderTest {
         assertNotNull(is);
 
         ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
-        drl = scoreCardProvider.loadFromInputStream(is, scconf);
-        assertNotNull(drl);
-        assertTrue(drl.length() > 0);
-        //System.out.println(drl);
+        KieBase kbase = scoreCardProvider.getKieBaseFromInputStream(is, scconf);
+        assertNotNull(kbase);
     }
 
     @Test
@@ -69,42 +83,72 @@ public class ScorecardProviderTest {
 
         ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
         scconf.setWorksheetName( "scorecards" );
-        drl = scoreCardProvider.loadFromInputStream(is, scconf);
-        assertNotNull(drl);
-        assertTrue(drl.length() > 0);
+        KieBase kbase = scoreCardProvider.getKieBaseFromInputStream(is, scconf);
+        assertNotNull(kbase);
     }
 
     @Test
     public void testKnowledgeBaseWithExection() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    	InputStream is = ScorecardProviderTest.class.getResourceAsStream("/scoremodel_c.xls");
         ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
         scconf.setWorksheetName( "scorecards" );
-        kbuilder.add( ResourceFactory.newUrlResource(ScorecardProviderTest.class.getResource("/scoremodel_c.xls")),
-            ResourceType.SCARD,
-            scconf );
-        assertFalse( kbuilder.hasErrors() );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        
+        KieBase kbase = scoreCardProvider.getKieBaseFromInputStream(is, scconf);
         assertNotNull(kbase);
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+        assertNotNull(executor);
+        
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");
+        DataSource<PMML4Result> resultData = executor.newDataSource("results");
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+        
+        PMMLRequestData request = new PMMLRequestData("123","SampleScore");
+        request.addRequestParam("age", 33.0);
+        request.addRequestParam("occupation","PROGRAMMER");
+        request.addRequestParam("residenceState", "KN");
+        request.addRequestParam("validLicense", true);
+        data.insert(request);
+        
+        PMML4Result resultHolder = new PMML4Result("123");
+        resultData.insert(resultHolder);
+        
+        List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
+        Class<? extends RuleUnit> ruleUnitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
+    	int executions = executor.run(ruleUnitClass);
+    	assertTrue(executions > 0);
+    	
+    	System.out.println(resultHolder);
+    	Double calculatedScore = resultHolder.getResultValue("Scorecard_calculatedScore", "value", Double.class).orElse(null);
+    	assertEquals(56.0,calculatedScore,1e-6);
+        
+//        kbuilder.add( ResourceFactory.newUrlResource(ScorecardProviderTest.class.getResource("/scoremodel_c.xls")),
+//            ResourceType.SCARD,
+//            scconf );
+//        assertFalse( kbuilder.hasErrors() );
+//        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        assertNotNull(kbase);
+//        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         //NEW WORKING MEMORY
-        KieSession session = kbase.newKieSession();
-        FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        assertNotNull(scorecardType);
-
-        Object scorecard =  scorecardType.newInstance();
-        assertNotNull(scorecard);
-
-        scorecardType.set(scorecard, "age", 10);
-        session.insert( scorecard );
-        session.fireAllRules();
-        session.dispose();
+//        KieSession session = kbase.newKieSession();
+//        FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
+//        assertNotNull(scorecardType);
+//
+//        Object scorecard =  scorecardType.newInstance();
+//        assertNotNull(scorecard);
+//
+//        scorecardType.set(scorecard, "age", 10);
+//        session.insert( scorecard );
+//        session.fireAllRules();
+//        session.dispose();
         //occupation = 5, age = 25, validLicence -1
-        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
+//        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
 
     }
 
     @Test
+    @Ignore
     public void testDrlGenerationWithExternalTypes() throws Exception {
 
         InputStream is = ScorecardProviderTest.class.getResourceAsStream("/scoremodel_externalmodel.xls");
@@ -120,4 +164,38 @@ public class ScorecardProviderTest {
         assertTrue(drl.contains("org.drools.scorecards.example.Applicant"));
 
     }
+    
+    protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+    	RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
+    	Map<String,InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+    	RuleImpl ruleImpl = null;
+    	for (String pkgName: possiblePackages) {
+    		if (pkgs.containsKey(pkgName)) {
+    			InternalKnowledgePackage pkg = pkgs.get(pkgName);
+    			ruleImpl = pkg.getRule(startingRule);
+    			if (ruleImpl != null) {
+    				RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+    				if (descr != null) {
+    					return descr.getRuleUnitClass();
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
+    
+    protected List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
+    	List<String> packageNames = new ArrayList<>();
+    	String javaModelId = modelId.replaceAll("\\s","");
+    	if (knownPackageNames != null && knownPackageNames.length > 0) {
+    		for (String knownPkgName: knownPackageNames) {
+    			packageNames.add(knownPkgName + "." + javaModelId);
+    		}
+    	}
+		String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
+		packageNames.add(basePkgName);
+    	return packageNames;
+    }
+
+    
 }

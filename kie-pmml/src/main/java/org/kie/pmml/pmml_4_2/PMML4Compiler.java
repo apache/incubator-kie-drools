@@ -40,16 +40,16 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.ClusteringModel;
-import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
-import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
-import org.kie.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
-import org.kie.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
-import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
-import org.kie.dmg.pmml.pmml_4_2.descr.RegressionModel;
-import org.kie.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.kie.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
-import org.kie.dmg.pmml.pmml_4_2.descr.TreeModel;
+import org.dmg.pmml.pmml_4_2.descr.ClusteringModel;
+import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.NaiveBayesModel;
+import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
+import org.dmg.pmml.pmml_4_2.descr.TreeModel;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLResource;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
 public class PMML4Compiler implements PMMLCompiler {
 
 
-    public static final String PMML_NAMESPACE = "org.kie.dmg.pmml.pmml_4_2";
+    public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_2";
     public static final String PMML_DROOLS = "org.kie.pmml.pmml_4_2";
     public static final String PMML = PMML_NAMESPACE + ".descr";
     public static final String SCHEMA_PATH = "xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd";
