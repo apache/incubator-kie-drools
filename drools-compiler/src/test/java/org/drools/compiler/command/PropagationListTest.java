@@ -15,19 +15,18 @@
 
 package org.drools.compiler.command;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public class PropagationListTest {
 
@@ -36,71 +35,76 @@ public class PropagationListTest {
         final int OBJECT_NR = 1000000;
         final int THREAD_NR = 8;
 
-        Executor executor = Executors.newFixedThreadPool(THREAD_NR, new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
+        final ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
+            final Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
         });
+        try {
+            final long[] results = new long[10];
 
-        long[] results = new long[10];
+            for (int counter = 0; counter < results.length;) {
 
-        for (int counter = 0; counter < results.length;) {
+                final Checker checker = new Checker(THREAD_NR);
+                final PropagationList propagationList = new SynchronizedPropagationList(null);
+                final CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
 
-            final Checker checker = new Checker(THREAD_NR);
-            final PropagationList propagationList = new SynchronizedPropagationList(null);
-            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+                final long start = System.nanoTime();
 
-            long start = System.nanoTime();
+                for (int i = 0; i < THREAD_NR; i++) {
+                    ecs.submit(getTask(OBJECT_NR, checker, propagationList, i));
+                }
 
-            for (int i = 0; i < THREAD_NR; i++) {
-                ecs.submit(getTask(OBJECT_NR, checker, propagationList, i));
-            }
-
-            try {
-                Thread.sleep(1L);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            for (int i = 0; i < THREAD_NR * 20; i++) {
-                //System.out.println("FLUSHING!");
-                propagationList.flush();
                 try {
                     Thread.sleep(1L);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-            }
 
-            boolean success = true;
-            for (int i = 0; i < THREAD_NR; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                for (int i = 0; i < THREAD_NR * 20; i++) {
+                    //System.out.println("FLUSHING!");
+                    propagationList.flush();
+                    try {
+                        Thread.sleep(1L);
+                    } catch (final InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+
+                boolean success = true;
+                for (int i = 0; i < THREAD_NR; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (final Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                propagationList.flush();
+
+                results[counter++] = System.nanoTime() - start;
+
+                System.out.println("Threads DONE!");
             }
 
-            propagationList.flush();
-
-            results[counter++] = System.nanoTime() - start;
-
-            System.out.println("Threads DONE!");
+            analyzeResults(results);
+        } finally {
+            executor.shutdownNow();
         }
-
-        analyzeResults(results);
     }
 
-    private void analyzeResults(long[] results) {
+    private void analyzeResults(final long[] results) {
         long min = results[0];
         long max = results[0];
         long total = results[0];
-        for (int i = 0; i < results.length; i++) {
-            if (results[i] < min) min = results[i];
-            if (results[i] > max) max = results[i];
-            total += results[i];
+        for (final long result : results) {
+            if (result < min) {
+                min = result;
+            }
+            if (result > max) {
+                max = result;
+            }
+            total += result;
         }
         System.out.println("min = " + min);
         System.out.println("max = " + max);
@@ -124,14 +128,14 @@ public class PropagationListTest {
         final int i;
         final int j;
 
-        public TestEntry(Checker checker, int i, int j) {
+        public TestEntry(final Checker checker, final int i, final int j) {
             this.checker = checker;
             this.i = i;
             this.j = j;
         }
 
         @Override
-        public void execute(InternalWorkingMemory wm) {
+        public void execute(final InternalWorkingMemory wm) {
             checker.check(this);
         }
 
@@ -144,11 +148,11 @@ public class PropagationListTest {
     public static class Checker {
         private final int[] counters;
 
-        public Checker(int nr) {
+        public Checker(final int nr) {
             counters = new int[nr];
         }
 
-        public void check(TestEntry entry) {
+        public void check(final TestEntry entry) {
             if (counters[entry.i] == entry.j) {
                 if (entry.j % 10000 == 0) {
                     //System.out.println("[" + entry.i + ", " + entry.j / 10000 + "]");

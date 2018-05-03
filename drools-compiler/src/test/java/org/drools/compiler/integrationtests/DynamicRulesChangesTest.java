@@ -19,6 +19,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.command.Command;
@@ -43,14 +44,20 @@ import static org.junit.Assert.assertEquals;
 public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     private static final int PARALLEL_THREADS = 1;
-    private static final ExecutorService executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
 
     private static InternalKnowledgeBase kbase;
+    private ExecutorService executor;
 
     @Before
     public void setUp() throws Exception {
+        executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         addRule("raiseAlarm");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        executor.shutdownNow();
     }
 
     @Test(timeout=10000)

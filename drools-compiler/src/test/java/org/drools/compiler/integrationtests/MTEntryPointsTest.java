@@ -115,25 +115,23 @@ public class MTEntryPointsTest {
     public void testOneEntryPoint() throws Exception {
         final EntryPoint firstThreadEntryPoint = kieSession.getEntryPoint("FirstStream");
 
-        int numInsertersInEachEntryPoint = 10;
-        int numThreadPoolCapacity = numInsertersInEachEntryPoint;
-
-        ExecutorService executorService = Executors.newFixedThreadPool(numThreadPoolCapacity);
-        List<Future<?>> futures = new ArrayList<Future<?>>();
-
-        for (int i = 0; i < numInsertersInEachEntryPoint; i++) {
-            // future for exception watching
-            Future<?> futureForFirstThread = executorService.submit(
-                    new TestInserter(kieSession, firstThreadEntryPoint));
-            futures.add(futureForFirstThread);
-        }
-
+        final int numInsertersInEachEntryPoint = 10;
+        final ExecutorService executorService = Executors.newFixedThreadPool(numInsertersInEachEntryPoint);
         try {
-            for (Future<?> f : futures) {
+            final List<Future<?>> futures = new ArrayList<>();
+
+            for (int i = 0; i < numInsertersInEachEntryPoint; i++) {
+                // future for exception watching
+                final Future<?> futureForFirstThread = executorService.submit(
+                        new TestInserter(kieSession, firstThreadEntryPoint));
+                futures.add(futureForFirstThread);
+            }
+
+            for (final Future<?> f : futures) {
                 f.get(30, TimeUnit.SECONDS);
             }
-        } catch (ExecutionException ex) {
-            throw ex;
+        } finally {
+            executorService.shutdownNow();
         }
     }
 
@@ -147,30 +145,30 @@ public class MTEntryPointsTest {
         final EntryPoint firstThreadEntryPoint = kieSession.getEntryPoint("FirstStream");
         final EntryPoint secondThreadEntryPoint = kieSession.getEntryPoint("SecondStream");
 
-        int numInsertersInEachEntryPoint = 10;
-        int numThreadPoolCapacity = numInsertersInEachEntryPoint * 2;
+        final int numInsertersInEachEntryPoint = 10;
+        final int numThreadPoolCapacity = numInsertersInEachEntryPoint * 2;
 
-        ExecutorService executorService = Executors.newFixedThreadPool(numThreadPoolCapacity);
-        List<Future<?>> futures = new ArrayList<Future<?>>();
-
-        for (int i = 0; i < numInsertersInEachEntryPoint; i++) {
-            // working only with first stream, future for exception watching
-            Future<?> futureForFirstThread = executorService.submit(new TestInserter(kieSession,
-                                                                                     firstThreadEntryPoint));
-            futures.add(futureForFirstThread);
-
-            // working only with second stream, future for exception watching
-            Future<?> futureForSecondThread = executorService.submit(new TestInserter(kieSession,
-                                                                                      secondThreadEntryPoint));
-            futures.add(futureForSecondThread);
-        }
-
+        final ExecutorService executorService = Executors.newFixedThreadPool(numThreadPoolCapacity);
         try {
-            for (Future<?> f : futures) {
+            final List<Future<?>> futures = new ArrayList<>();
+
+            for (int i = 0; i < numInsertersInEachEntryPoint; i++) {
+                // working only with first stream, future for exception watching
+                final Future<?> futureForFirstThread = executorService.submit(new TestInserter(kieSession,
+                                                                                         firstThreadEntryPoint));
+                futures.add(futureForFirstThread);
+
+                // working only with second stream, future for exception watching
+                final Future<?> futureForSecondThread = executorService.submit(new TestInserter(kieSession,
+                                                                                          secondThreadEntryPoint));
+                futures.add(futureForSecondThread);
+            }
+
+            for (final Future<?> f : futures) {
                 f.get(30, TimeUnit.SECONDS);
             }
-        } catch (ExecutionException ex) {
-            throw ex;
+        } finally {
+            executorService.shutdownNow();
         }
     }
 

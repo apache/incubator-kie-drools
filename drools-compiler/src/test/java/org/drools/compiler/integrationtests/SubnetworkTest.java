@@ -51,16 +51,19 @@ public class SubnetworkTest extends CommonTestMethodBase {
         final KieSession kSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM )
                                              .newKieSession();
+        try {
+            final FactHandle fhA = kSession.insert( new A() );
+            kSession.insert(new C());
+            kSession.fireAllRules();
 
-        final FactHandle fhA = kSession.insert( new A() );
-        kSession.insert(new C());
-        kSession.fireAllRules();
+            kSession.delete( fhA );
 
-        kSession.delete( fhA );
-
-        kSession.insert(new A());
-        kSession.insert(new B());
-        kSession.fireAllRules();
+            kSession.insert(new A());
+            kSession.insert(new B());
+            kSession.fireAllRules();
+        } finally {
+            kSession.dispose();
+        }
     }
 
     @Role(Role.Type.EVENT)
@@ -102,11 +105,14 @@ public class SubnetworkTest extends CommonTestMethodBase {
 
         final KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
+        try {
+            kieSession.insert( new AtomicInteger( 0 ) );
+            kieSession.insert( "test" );
 
-        kieSession.insert( new AtomicInteger( 0 ) );
-        kieSession.insert( "test" );
-
-        kieSession.fireAllRules();
+            kieSession.fireAllRules();
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test(timeout = 10000L)
@@ -140,23 +146,27 @@ public class SubnetworkTest extends CommonTestMethodBase {
 
         final KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
+        try {
+            final List<Number> list = new ArrayList<Number>();
+            kieSession.setGlobal( "list", list );
 
-        final List<Number> list = new ArrayList<Number>();
-        kieSession.setGlobal( "list", list );
+            kieSession.insert( new AtomicInteger( 0 ) );
+            kieSession.insert( "test" );
 
-        kieSession.insert( new AtomicInteger( 0 ) );
-        kieSession.insert( "test" );
+            kieSession.fireAllRules();
 
-        kieSession.fireAllRules();
-
-        assertEquals(1, list.size());
-        assertEquals(4, list.get(0).intValue());
+            assertEquals(1, list.size());
+            assertEquals(4, list.get(0).intValue());
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
     public void testSubNetworks() throws Exception {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_SubNetworks.drl"));
         final KieSession session = createKnowledgeSession(kbase);
+        session.dispose();
     }
 
     @Test
@@ -194,26 +204,29 @@ public class SubnetworkTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper()
                 .addContent( drl1, ResourceType.DRL )
                 .build().newKieSession();
+        try {
+            List<String> list = new ArrayList<>();
+            kieSession.setGlobal( "list", list );
 
-        List<String> list = new ArrayList<>();
-        kieSession.setGlobal( "list", list );
+            kieSession.insert( new X(1) );
+            kieSession.insert( new Y(1) );
 
-        kieSession.insert( new X(1) );
-        kieSession.insert( new Y(1) );
+            // DROOLS-2258
+            kieSession.insert( new X(3) );
+            kieSession.insert( new Y(3) );
 
-        // DROOLS-2258
-        kieSession.insert( new X(3) );
-        kieSession.insert( new Y(3) );
+            final Agenda agenda = kieSession.getAgenda();
+            agenda.getAgendaGroup("G2").setFocus();
+            agenda.getAgendaGroup("G1").setFocus();
 
-        final Agenda agenda = kieSession.getAgenda();
-        agenda.getAgendaGroup("G2").setFocus();
-        agenda.getAgendaGroup("G1").setFocus();
+            kieSession.fireAllRules();
 
-        kieSession.fireAllRules();
-
-        assertEquals( 2, list.size() );
-        assertEquals( "R2", list.get( 0) );
-        assertEquals( "R1", list.get( 1) );
+            assertEquals( 2, list.size() );
+            assertEquals( "R2", list.get( 0) );
+            assertEquals( "R1", list.get( 1) );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     public static class X {

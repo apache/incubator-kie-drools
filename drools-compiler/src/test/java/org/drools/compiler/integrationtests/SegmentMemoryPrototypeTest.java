@@ -91,7 +91,7 @@ public class SegmentMemoryPrototypeTest {
             "end";
 
     @Test
-    public void testSegmentMemoryPrototype() throws Exception {
+    public void testSegmentMemoryPrototype() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
                       ResourceType.DRL );
@@ -100,15 +100,23 @@ public class SegmentMemoryPrototypeTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
-        checkKieSession(ksession);
+        try {
+            checkKieSession(ksession);
+        } finally {
+            ksession.dispose();
+        }
 
         // Create a 2nd KieSession (that will use segment memory prototype) and check that it works as the former one
         KieSession ksession2 = kbase.newKieSession();
-        checkKieSession(ksession2);
+        try {
+            checkKieSession(ksession2);
+        } finally {
+            ksession2.dispose();
+        }
     }
 
     @Test
-    public void testSessionCache() throws Exception {
+    public void testSessionCache() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
                       ResourceType.DRL );
@@ -117,11 +125,17 @@ public class SegmentMemoryPrototypeTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kbase.newKieSession();
-        checkKieSession(ksession);
-
-        ksession.dispose();
-        ksession.reset();
-        checkKieSession(ksession);
+        try {
+            checkKieSession(ksession);
+        } finally {
+            ksession.dispose();
+            try {
+                ksession.reset();
+                checkKieSession(ksession);
+            } finally {
+                ksession.dispose();
+            }
+        }
     }
 
     private void checkKieSession(KieSession ksession) {
@@ -149,7 +163,7 @@ public class SegmentMemoryPrototypeTest {
     }
 
     @Test
-    public void testEnsureRiaSegmentCreationUsingPrototypes() throws Exception {
+    public void testEnsureRiaSegmentCreationUsingPrototypes() {
         // DROOLS-1739
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -175,13 +189,20 @@ public class SegmentMemoryPrototypeTest {
         conf.setOption( ForceEagerActivationOption.YES );
 
         KieSession ksession = kbase.newKieSession( conf, null );
-        ksession.insert( asList(new Person() ) );
-        ksession.insert("test");
-        assertEquals( 1, ksession.fireAllRules() );
-
-        ksession = kbase.newKieSession( conf, null );
-        ksession.insert( asList(new Person() ) );
-        ksession.insert("test");
-        assertEquals( 1, ksession.fireAllRules() );
+        try {
+            ksession.insert( asList(new Person() ) );
+            ksession.insert("test");
+            assertEquals( 1, ksession.fireAllRules() );
+        } finally {
+            ksession.dispose();
+            try {
+                ksession = kbase.newKieSession( conf, null );
+                ksession.insert( asList(new Person() ) );
+                ksession.insert("test");
+                assertEquals( 1, ksession.fireAllRules() );
+            } finally {
+                ksession.dispose();
+            }
+        }
     }
 }

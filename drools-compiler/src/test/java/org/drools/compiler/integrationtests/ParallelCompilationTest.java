@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
@@ -38,10 +40,19 @@ import org.kie.api.io.ResourceType;
 
 public class ParallelCompilationTest {
     private static final int PARALLEL_THREADS = 5;
-    private static final ExecutorService executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
-
     private static final String DRL_FILE = "parallel_compilation.drl";
-    private List<User> users;
+
+    private ExecutorService executor;
+
+    @Before
+    public void setUp() throws Exception {
+        executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        executor.shutdownNow();
+    }
 
     @Test(timeout=10000)
     public void testConcurrentRuleAdditions() throws Exception {

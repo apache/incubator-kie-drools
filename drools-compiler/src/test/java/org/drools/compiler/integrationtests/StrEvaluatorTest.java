@@ -40,121 +40,136 @@ import static org.junit.Assert.assertTrue;
 public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
-    public void testStrStartsWith() throws Exception {
+    public void testStrStartsWith() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue("R1:messageBody");
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue("R1:messageBody");
+            ksession.insert(m);
+            ksession.fireAllRules();
+            assertTrue(list.size() == 4);
 
-        ksession.insert(m);
-        ksession.fireAllRules();
-        assertTrue(list.size() == 4);
-
-        assertTrue( ((String) list.get(0)).equals("Message starts with R1") );
-        assertTrue( ((String) list.get(1)).equals("Message length is not 17") );
-        assertTrue( ((String) list.get(2)).equals("Message does not start with R2") );
-        assertTrue( ((String) list.get(3)).equals("Message does not end with R1") );
-
+            assertTrue( list.get(0).equals("Message starts with R1") );
+            assertTrue( list.get(1).equals("Message length is not 17") );
+            assertTrue( list.get(2).equals("Message does not start with R2") );
+            assertTrue( list.get(3).equals("Message does not end with R1") );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStrEndsWith() throws Exception {
+    public void testStrEndsWith() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue("messageBody:R2");
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue("messageBody:R2");
+            ksession.insert(m);
+            ksession.fireAllRules();
+            assertTrue(list.size() == 4);
 
-        ksession.insert(m);
-        ksession.fireAllRules();
-        assertTrue(list.size() == 4);
-
-        assertTrue( ((String) list.get(0)).equals("Message ends with R2") );
-        assertTrue( ((String) list.get(1)).equals("Message length is not 17") );
-        assertTrue( ((String) list.get(2)).equals("Message does not start with R2") );
-        assertTrue( ((String) list.get(3)).equals("Message does not end with R1") );
-
+            assertTrue( list.get(0).equals("Message ends with R2") );
+            assertTrue( list.get(1).equals("Message length is not 17") );
+            assertTrue( list.get(2).equals("Message does not start with R2") );
+            assertTrue( list.get(3).equals("Message does not end with R1") );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStrLengthEquals() throws Exception {
+    public void testStrLengthEquals() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue( "R1:messageBody:R2" );
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue( "R1:messageBody:R2" );
-
-        ksession.insert( m );
-        ksession.fireAllRules();
-        assertEquals( 6, list.size() );
-        assertTrue(list.contains( "Message length is 17" ));
-
+            ksession.insert( m );
+            ksession.fireAllRules();
+            assertEquals( 6, list.size() );
+            assertTrue(list.contains( "Message length is 17" ));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStrNotStartsWith() throws Exception {
+    public void testStrNotStartsWith() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue("messageBody");
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue("messageBody");
-
-        ksession.insert(m);
-        ksession.fireAllRules();
-        assertTrue( list.size() == 3 );
-        assertTrue( ((String) list.get(1)).equals( "Message does not start with R2" ) );
+            ksession.insert(m);
+            ksession.fireAllRules();
+            assertTrue( list.size() == 3 );
+            assertTrue( list.get(1).equals("Message does not start with R2" ) );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStrNotEndsWith() throws Exception {
+    public void testStrNotEndsWith() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue("messageBody");
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue("messageBody");
-
-        ksession.insert(m);
-        ksession.fireAllRules();
-        assertTrue( list.size() == 3 );
-        assertTrue( ( (String) list.get( 0 ) ).equals( "Message length is not 17" ) );
-        assertTrue( ((String) list.get(1)).equals("Message does not start with R2") );
-        assertTrue(((String) list.get(2)).equals("Message does not end with R1"));
+            ksession.insert(m);
+            ksession.fireAllRules();
+            assertTrue( list.size() == 3 );
+            assertTrue( list.get( 0 ).equals("Message length is not 17" ) );
+            assertTrue( list.get(1).equals("Message does not start with R2") );
+            assertTrue(list.get(2).equals("Message does not end with R1"));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStrLengthNoEquals() throws Exception {
+    public void testStrLengthNoEquals() {
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            RoutingMessage m = new RoutingMessage();
+            m.setRoutingValue("messageBody");
 
-        RoutingMessage m = new RoutingMessage();
-        m.setRoutingValue("messageBody");
+            ksession.insert(m);
+            ksession.fireAllRules();
+            assertTrue(list.size() == 3);
 
-        ksession.insert(m);
-        ksession.fireAllRules();
-        assertTrue(list.size() == 3);
-
-        assertTrue( ((String) list.get(0)).equals("Message length is not 17") );
-        assertTrue( ((String) list.get(1)).equals("Message does not start with R2") );
-        assertTrue( ((String) list.get(2)).equals("Message does not end with R1") );
+            assertTrue( list.get(0).equals("Message length is not 17") );
+            assertTrue( list.get(1).equals("Message does not start with R2") );
+            assertTrue( list.get(2).equals("Message does not end with R1") );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -223,7 +238,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         }
     }
 
-    private KieBase readKnowledgeBase() throws Exception {
+    private KieBase readKnowledgeBase() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("strevaluator_test.drl")),
                 ResourceType.DRL );

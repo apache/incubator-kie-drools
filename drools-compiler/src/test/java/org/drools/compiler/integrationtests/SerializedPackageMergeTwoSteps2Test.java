@@ -88,15 +88,17 @@ public class SerializedPackageMergeTwoSteps2Test {
         kbase2.addPackages(deserializedPackages);
 
         KieSession ksession = kbase2.newKieSession();
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list", list );
-        ksession.insert(new org.drools.compiler.Person("John"));
-        ksession.fireAllRules();
+        try {
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );
+            ksession.insert(new org.drools.compiler.Person("John"));
+            ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-
-        ksession.dispose();              
-    }   
+            assertEquals(2, list.size());
+        } finally {
+            ksession.dispose();
+        }
+    }
     
   	private Collection<KiePackage>  _deserializeFromBytes(byte [] byteCode){
 		Collection<KiePackage> ret = null;

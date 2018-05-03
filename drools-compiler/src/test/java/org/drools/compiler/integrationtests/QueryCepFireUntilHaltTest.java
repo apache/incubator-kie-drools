@@ -95,7 +95,7 @@ public class QueryCepFireUntilHaltTest {
 
     private void stopEngine() {
         ksession.halt();
-        executorService.shutdown();
+        executorService.shutdownNow();
     }
 
     @Test(timeout = 10000L)

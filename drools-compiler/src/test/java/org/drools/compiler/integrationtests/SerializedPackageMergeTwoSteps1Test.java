@@ -33,7 +33,7 @@ public class SerializedPackageMergeTwoSteps1Test {
 			System.getProperty( "java.io.tmpdir" ) + File.separator + "SerializedPackageMergeTwoSteps_2.bin" };
 
 	@Test
-	public void testBuildAndSerializePackagesInTwoSteps1() throws IOException, ClassNotFoundException    {        
+	public void testBuildAndSerializePackagesInTwoSteps1() {
 		String str1 =
 				"package com.sample.packageA\n" +
 						"import org.drools.compiler.Person\n" +
