@@ -109,4 +109,10 @@ public class FunctionInvocationNode
     public Type getResultType() {
         return name.getResultType();
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { name, params };
+    }
+
 }

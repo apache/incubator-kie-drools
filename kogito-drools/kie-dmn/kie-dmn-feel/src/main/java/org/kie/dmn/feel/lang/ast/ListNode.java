@@ -58,4 +58,10 @@ public class ListNode
     public Type getResultType() {
         return BuiltInType.LIST;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return elements.toArray( new ASTNode[elements.size()] );
+    }
+
 }

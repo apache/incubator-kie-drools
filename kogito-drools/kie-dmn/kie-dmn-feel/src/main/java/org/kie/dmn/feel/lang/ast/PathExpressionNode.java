@@ -124,4 +124,10 @@ public class PathExpressionNode
         }
         return BuiltInType.UNKNOWN;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { expression, name };
+    }
+
 }

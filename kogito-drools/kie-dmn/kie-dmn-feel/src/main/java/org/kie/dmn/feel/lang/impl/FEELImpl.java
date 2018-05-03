@@ -34,11 +34,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.DashNode;
-import org.kie.dmn.feel.lang.ast.ListNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -208,9 +204,11 @@ public class FEELImpl
                 } else if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
                     tests.add( o );
                 } else if (o instanceof RangeNode || o instanceof ListNode) {
-                    tests.add( new UnaryTestNode( "in", o ) );
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.IN, o) );
+                } else if ( isExtendedUnaryTest( o ) ) {
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.TEST, o ) );
                 } else {
-                    tests.add( new UnaryTestNode( "=", o ) );
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.EQ, o ) );
                 }
             }
             listNode.setElements( tests );
@@ -221,6 +219,19 @@ public class FEELImpl
             return uts;
         }
         return Collections.emptyList();
+    }
+
+    private boolean isExtendedUnaryTest(ASTNode o) {
+        if( o instanceof NameRefNode && "?".equals(((NameRefNode)o).getText()) ) {
+            return true;
+        } else {
+            for( ASTNode bn : o.getChildrenNode() ) {
+                if( isExtendedUnaryTest( bn ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

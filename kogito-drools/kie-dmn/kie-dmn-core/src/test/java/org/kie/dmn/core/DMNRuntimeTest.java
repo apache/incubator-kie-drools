@@ -1698,7 +1698,7 @@ public class DMNRuntimeTest {
         DMNContext resultContext = dmnResult.getContext();
         assertThat(((BigDecimal) resultContext.get("an odd decision")).intValue(), is(47));
     }
-    
+
     public static class DROOLS2286 {
         private String name;
         private String surname;
@@ -1707,17 +1707,17 @@ public class DMNRuntimeTest {
             this.name = name;
             this.surname = surname;
         }
-        
+
         public String getName() {
             return name;
         }
-        
+
         public String getSurname() {
             return surname;
         }
-        
+
     }
-    
+
     @Test
     public void testDROOLS2286() {
         // DROOLS-2286
@@ -1911,5 +1911,18 @@ public class DMNRuntimeTest {
                                                               prototype(entry("name", null), entry("age", null)),
                                                               prototype(entry("name", "Matteo"), entry("age", null)))));
     }
+
+    @Test
+    public void testDecisionTablesQuestionMarkVariable() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "qmark.dmn", this.getClass() );
+        DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );
+        assertThat( model, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
+        DMNContext context = DMNFactory.newContext();
+        DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
+        assertFalse(result.hasErrors());
+        assertEquals("OK", result.getResult());
+    }
+
 }
 

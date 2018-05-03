@@ -67,4 +67,13 @@ public class IterationContextNode
     public Object evaluateRangeEnd(EvaluationContext ctx) {
         return rangeEndExpr != null ? rangeEndExpr.evaluate(ctx) : null;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        if( rangeEndExpr != null ) {
+            return new ASTNode[] { name, expression, rangeEndExpr };
+        }
+        return new ASTNode[] { name, expression };
+    }
+
 }

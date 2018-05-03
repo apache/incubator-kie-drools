@@ -76,4 +76,10 @@ public class SignedUnaryNode
     public Type getResultType() {
         return expression.getResultType();
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { expression };
+    }
+
 }

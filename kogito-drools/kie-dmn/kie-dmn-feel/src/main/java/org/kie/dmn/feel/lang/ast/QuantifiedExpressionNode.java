@@ -185,4 +185,13 @@ public class QuantifiedExpressionNode
             return name;
         }
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        ASTNode[] children = new ASTNode[ iterationContexts.size() + 1 ];
+        System.arraycopy( iterationContexts, 0, children, 0, iterationContexts.size() );
+        children[ children.length-1 ] = expression;
+        return children;
+    }
+
 }

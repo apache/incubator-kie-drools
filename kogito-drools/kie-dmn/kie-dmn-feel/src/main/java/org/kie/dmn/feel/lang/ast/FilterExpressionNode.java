@@ -120,4 +120,10 @@ public class FilterExpressionNode
             ctx.exitFrame();
         }
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { expression, filter };
+    }
+
 }
