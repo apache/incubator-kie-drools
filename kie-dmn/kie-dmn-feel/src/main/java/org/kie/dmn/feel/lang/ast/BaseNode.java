@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -30,6 +32,7 @@ import org.kie.dmn.feel.util.Msg;
 
 public class BaseNode
         implements ASTNode {
+    protected final ASTNode[] EMPTY_CHILDREN = new ASTNode[0];
     private int startChar;
     private int endChar;
     private int startLine;
@@ -136,6 +139,11 @@ public class BaseNode
     public Object evaluate(EvaluationContext ctx) {
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.BASE_NODE_EVALUATE_CALLED) ) );
         return null;
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return EMPTY_CHILDREN;
     }
 
 }

@@ -95,4 +95,10 @@ public class BetweenNode
     public Type getResultType() {
         return BuiltInType.BOOLEAN;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { value, start, end };
+    }
+
 }

@@ -60,4 +60,10 @@ public class InstanceOfNode
     public Type getResultType() {
         return BuiltInType.BOOLEAN;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { expression };
+    }
+
 }

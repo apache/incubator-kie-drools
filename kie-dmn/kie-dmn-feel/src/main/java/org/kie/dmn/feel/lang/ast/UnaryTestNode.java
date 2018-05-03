@@ -43,7 +43,8 @@ public class UnaryTestNode
         NE( "!=" ),
         EQ( "=" ),
         NOT( "not" ),
-        IN( "in" );
+        IN( "in" ),
+        TEST( "test");
 
         public final String symbol;
 
@@ -65,6 +66,13 @@ public class UnaryTestNode
         super();
         setText( op+" "+value.getText() );
         this.operator = UnaryOperator.determineOperator( op );
+        this.value = value;
+    }
+
+    public UnaryTestNode( UnaryOperator op, BaseNode value ) {
+        super();
+        setText( op.symbol+" "+value.getText() );
+        this.operator = op;
         this.value = value;
     }
 
@@ -109,6 +117,8 @@ public class UnaryTestNode
                 return new UnaryTestImpl( createInUnaryTest() , value.getText() );
             case NOT:
                 return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
+            case TEST:
+                return new UnaryTestImpl( createBooleanUnaryTest(), value.getText() );
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;
@@ -212,4 +222,22 @@ public class UnaryTestNode
             return true;
         };
     }
+
+    private UnaryTest createBooleanUnaryTest( ) {
+        return (context, left) -> {
+            Object right = value.evaluate( context );
+            if( right instanceof Boolean ) {
+                return (Boolean) right;
+            } else {
+                context.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, left.toString(), value.toString() ) ) );
+                return Boolean.FALSE;
+            }
+        };
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { value };
+    }
+
 }

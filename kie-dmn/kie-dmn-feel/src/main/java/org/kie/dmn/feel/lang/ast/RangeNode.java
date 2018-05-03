@@ -154,4 +154,10 @@ public class RangeNode
     public Type getResultType() {
         return BuiltInType.RANGE;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { start, end };
+    }
+
 }

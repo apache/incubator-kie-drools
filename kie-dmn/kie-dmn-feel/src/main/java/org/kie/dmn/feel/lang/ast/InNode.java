@@ -101,4 +101,10 @@ public class InNode
     public Type getResultType() {
         return BuiltInType.BOOLEAN;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { value, exprs };
+    }
+
 }

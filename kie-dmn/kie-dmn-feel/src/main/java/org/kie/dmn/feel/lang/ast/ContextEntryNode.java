@@ -20,6 +20,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ContextEntryNode
         extends BaseNode {
 
@@ -64,5 +67,10 @@ public class ContextEntryNode
     @Override
     public Type getResultType() {
         return value.getResultType();
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { name, value };
     }
 }

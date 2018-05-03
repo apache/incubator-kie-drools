@@ -20,6 +20,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NamedParameterNode
         extends BaseNode {
 
@@ -53,5 +56,10 @@ public class NamedParameterNode
         String n = name.evaluate( ctx );
         Object val = expression.evaluate( ctx );
         return new NamedParameter( n, val );
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { name, expression };
     }
 }

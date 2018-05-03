@@ -20,6 +20,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
+import java.util.List;
+
 /**
  * A super interface for all AST nodes
  */
@@ -41,4 +43,6 @@ public interface ASTNode {
     Type getResultType();
 
     Object evaluate(EvaluationContext ctx);
+
+    ASTNode[] getChildrenNode();
 }
