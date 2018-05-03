@@ -1912,6 +1912,7 @@ public class DMNRuntimeTest {
                                                               prototype(entry("name", "Matteo"), entry("age", null)))));
     }
 
+    @Test
     public void testDecisionTablesQuestionMarkVariable() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "qmark.dmn", this.getClass() );
         DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );

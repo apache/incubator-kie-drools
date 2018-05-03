@@ -204,11 +204,11 @@ public class FEELImpl
                 } else if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
                     tests.add( o );
                 } else if (o instanceof RangeNode || o instanceof ListNode) {
-                    tests.add(new UnaryTestNode("in", o));
-                } else if (o instanceof InfixOpNode) {
-                    tests.add(new UnaryTestNode("", o));
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.IN, o) );
+                } else if ( isExtendedUnaryTest( o ) ) {
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.TEST, o ) );
                 } else {
-                    tests.add( new UnaryTestNode( "=", o ) );
+                    tests.add( new UnaryTestNode( UnaryTestNode.UnaryOperator.EQ, o ) );
                 }
             }
             listNode.setElements( tests );
@@ -219,6 +219,19 @@ public class FEELImpl
             return uts;
         }
         return Collections.emptyList();
+    }
+
+    private boolean isExtendedUnaryTest(ASTNode o) {
+        if( o instanceof NameRefNode && "?".equals(((NameRefNode)o).getText()) ) {
+            return true;
+        } else {
+            for( ASTNode bn : o.getChildrenNode() ) {
+                if( isExtendedUnaryTest( bn ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

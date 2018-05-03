@@ -86,4 +86,10 @@ public class ContextNode
         return parsedResultType;
     }
 
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return entries.toArray( new ASTNode[entries.size()] );
+    }
+
+
 }

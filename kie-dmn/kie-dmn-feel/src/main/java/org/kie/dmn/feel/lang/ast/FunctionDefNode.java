@@ -196,4 +196,13 @@ public class FunctionDefNode
         // TODO when built-in type can be parametrized as FUNCTION<type>
         return BuiltInType.FUNCTION;
     }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        ASTNode[] children = new ASTNode[ formalParameters.size() + 1 ];
+        System.arraycopy( formalParameters, 0, children, 0, formalParameters.size() );
+        children[ children.length-1 ] = body;
+        return children;
+    }
+
 }

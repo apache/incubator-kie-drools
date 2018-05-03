@@ -378,4 +378,9 @@ public class InfixOpNode
         return l || r;
     }
 
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { left, right };
+    }
+
 }
