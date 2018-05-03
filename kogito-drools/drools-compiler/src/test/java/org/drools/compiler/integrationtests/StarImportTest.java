@@ -50,9 +50,7 @@ public class StarImportTest extends CommonTestMethodBase {
 
     @After
     public void cleanup() {
-        if (this.ksession != null) {
-            this.ksession.dispose();
-        }
+        this.ksession.dispose();
     }
 
     /**

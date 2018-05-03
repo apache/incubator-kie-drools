@@ -36,7 +36,7 @@ public abstract class AbstractConcurrentInsertionsTest {
 
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
 
-        final ExecutorService executor = Executors.newCachedThreadPool(r -> {
+        final ExecutorService executor = Executors.newFixedThreadPool(threadCount, r -> {
             final Thread t = new Thread(r);
             t.setDaemon(true);
             return t;

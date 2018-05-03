@@ -100,7 +100,7 @@ public class CompositeAgendaTest {
         kieSession.setGlobal("firings", firingCounter);
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
-        executor.submit(() -> kieSession.fireUntilHalt());
+        executor.submit((Runnable) kieSession::fireUntilHalt);
         try {
             final EventInsertThread eventInsertThread = new EventInsertThread(kieSession);
             executor.submit(eventInsertThread);

@@ -15,6 +15,18 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.drools.core.common.InternalWorkingMemory;
@@ -27,6 +39,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,20 +47,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -57,19 +56,6 @@ import static org.junit.Assert.fail;
 
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
-
-    private Executor executor;
-
-    @Before
-    public void setUp() {
-        executor = Executors.newCachedThreadPool(new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-    }
 
     @Test
     public void testMultipleConcurrentEPs() {
@@ -100,20 +86,28 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
         boolean success = true;
         if (PARALLEL) {
+            final ExecutorService executor = Executors.newFixedThreadPool(EP_NR, r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            });
 
-            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-            for (int i = 0; i < EP_NR; i++) {
-                ecs.submit(new EPManipulator(ksession, i));
-            }
-
-            for (int i = 0; i < EP_NR; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            try {
+                CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+                for (int i = 0; i < EP_NR; i++) {
+                    ecs.submit(new EPManipulator(ksession, i));
                 }
-            }
 
+                for (int i = 0; i < EP_NR; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } finally {
+                executor.shutdownNow();
+            }
         } else {
 
             for (int i = 0; i < EP_NR; i++) {
@@ -195,30 +189,40 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = kbase.newKieSession();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         boolean success = true;
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (int i = 0; i < 3; i++) {
-            ecs.submit(new EPManipulator2(ksession, i));
-        }
+        final ExecutorService executor = Executors.newFixedThreadPool(3, r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        });
 
-        for (int i = 0; i < 3; i++) {
-            try {
-                success = ecs.take().get() && success;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        try {
+            CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+            for (int i = 0; i < 3; i++) {
+                ecs.submit(new EPManipulator2(ksession, i));
             }
-        }
 
-        assertTrue(success);
+            for (int i = 0; i < 3; i++) {
+                try {
+                    success = ecs.take().get() && success;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
-        ksession.fireAllRules();
-        System.out.println(results);
-        assertEquals(3, results.size());
-        for (String s : results) {
-            assertEquals("2", s);
+            assertTrue(success);
+
+            ksession.fireAllRules();
+            System.out.println(results);
+            assertEquals(3, results.size());
+            for (String s : results) {
+                assertEquals("2", s);
+            }
+        } finally {
+            executor.shutdownNow();
         }
     }
 
@@ -311,7 +315,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
     public void testMultipleConcurrentEPs3() {
         final KieSession ksession = getKieSessionWith3Segments();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         EPManipulator3[] epManipulators = new EPManipulator3[9];
@@ -321,41 +325,51 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
         for (int deleteIndex = 0; deleteIndex < 11; deleteIndex++) {
             boolean success = true;
-            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-            for (int i = 0; i < 9; i++) {
-                ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
-            }
+            final ExecutorService executor = Executors.newFixedThreadPool(9, r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            });
 
-            for (int i = 1; i < 10; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            assertTrue(success);
-
-            new Thread(ksession::fireUntilHalt).start ();
             try {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+                for (int i = 0; i < 9; i++) {
+                    ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
                 }
-            } finally {
-                ksession.halt();
 
-                if (deleteIndex % 10 == 0) {
-                    assertEquals(3, results.size());
-                    assertTrue(results.containsAll(asList("R1", "R2", "R3")));
-                } else {
-                    if (!results.isEmpty()) {
-                        fail("Results should be empty with deleteIndex = " + deleteIndex + "; got " + results.size() + " items");
+                for (int i = 1; i < 10; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
 
-                results.clear();
+                assertTrue(success);
+
+                new Thread(ksession::fireUntilHalt).start ();
+                try {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                } finally {
+                    ksession.halt();
+
+                    if (deleteIndex % 10 == 0) {
+                        assertEquals(3, results.size());
+                        assertTrue(results.containsAll(asList("R1", "R2", "R3")));
+                    } else {
+                        if (!results.isEmpty()) {
+                            fail("Results should be empty with deleteIndex = " + deleteIndex + "; got " + results.size() + " items");
+                        }
+                    }
+
+                    results.clear();
+                }
+            } finally {
+                executor.shutdownNow();
             }
         }
 
@@ -424,7 +438,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
     public void testMultipleConcurrentEPs4() {
         final KieSession ksession = getKieSessionWith3Segments();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         EPManipulator4[] epManipulators = new EPManipulator4[9];
@@ -437,20 +451,30 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         try {
             for (int deleteIndex = 0; deleteIndex < 11; deleteIndex++) {
                 boolean success = true;
-                CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-                for (int i = 0; i < 9; i++) {
-                    ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
-                }
+                final ExecutorService executor = Executors.newFixedThreadPool(9, r -> {
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    return t;
+                });
 
-                for (int i = 0; i < 9; i++) {
-                    try {
-                        success = ecs.take().get() && success;
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                try {
+                    CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+                    for (int i = 0; i < 9; i++) {
+                        ecs.submit(epManipulators[i].setDeleteIndex(deleteIndex % 10));
                     }
-                }
 
-                assertTrue(success);
+                    for (int i = 0; i < 9; i++) {
+                        try {
+                            success = ecs.take().get() && success;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    assertTrue(success);
+                } finally {
+                    executor.shutdownNow();
+                }
             }
         } finally {
             ksession.halt();

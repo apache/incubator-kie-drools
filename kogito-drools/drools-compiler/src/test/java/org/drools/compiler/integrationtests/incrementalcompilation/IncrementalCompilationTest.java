@@ -1894,13 +1894,16 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // DROOLS-923
         int parallelThreads = 10;
         ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
-
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (Callable<Boolean> s : Deployer.getDeployer( parallelThreads )) {
-            ecs.submit(s);
-        }
-        for (int i = 0; i < parallelThreads; ++i) {
-            assertTrue( ecs.take().get() );
+        try {
+            CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+            for (Callable<Boolean> s : Deployer.getDeployer( parallelThreads )) {
+                ecs.submit(s);
+            }
+            for (int i = 0; i < parallelThreads; ++i) {
+                assertTrue( ecs.take().get() );
+            }
+        } finally {
+            executor.shutdownNow();
         }
     }
 

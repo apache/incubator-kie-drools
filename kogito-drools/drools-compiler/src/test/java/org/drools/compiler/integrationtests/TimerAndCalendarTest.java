@@ -70,61 +70,67 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     public void testDuration() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Duration.drl");
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal( "list",
+                                list );
 
-        final List list = new ArrayList();
-        ksession.setGlobal( "list",
-                                 list );
+            final Cheese brie = new Cheese( "brie",
+                                            12 );
+            final FactHandle brieHandle = ksession.insert(brie );
 
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
+            // now check for update
+            assertEquals( 0,
+                          list.size() );
 
-        // now check for update
-        assertEquals( 0,
-                      list.size() );
-
-        // sleep for 500ms
-        Thread.sleep( 500 );
+            // sleep for 500ms
+            Thread.sleep( 500 );
 
 
-        ksession.fireAllRules();
-        // now check for update
-        assertEquals( 1,
-                      list.size() );
+            ksession.fireAllRules();
+            // now check for update
+            assertEquals( 1,
+                          list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
     public void testDurationWithNoLoop() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Duration_with_NoLoop.drl");
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal( "list",
+                                list );
 
-        final List list = new ArrayList();
-        ksession.setGlobal( "list",
-                                 list );
+            final Cheese brie = new Cheese( "brie",
+                                            12 );
+            final FactHandle brieHandle = ksession.insert(brie );
 
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
+            // now check for update
+            assertEquals( 0,
+                          list.size() );
 
-        // now check for update
-        assertEquals( 0,
-                      list.size() );
+            // sleep for 300ms
+            Thread.sleep( 300 );
 
-        // sleep for 300ms
-        Thread.sleep( 300 );
-
-        ksession.fireAllRules();
-        // now check for update
-        assertEquals( 1,
-                      list.size() );
+            ksession.fireAllRules();
+            // now check for update
+            assertEquals( 1,
+                          list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
+    public void testDurationMemoryLeakonRepeatedUpdate() {
         String str = "";
         str += "package org.drools.compiler.test\n";
         str += "import org.drools.compiler.Alarm\n";
@@ -144,57 +150,63 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        try {
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list",
-                            list );
-        ksession.insert( new Alarm() );
+            List list = new ArrayList();
+            ksession.setGlobal( "list",
+                                list );
+            ksession.insert( new Alarm() );
 
-        ksession.fireAllRules();
-
-        for ( int i = 0; i < 6; i++ ) {
-            timeService.advanceTime( 55, TimeUnit.SECONDS );
             ksession.fireAllRules();
-        }
 
-        assertEquals(5,
-                     list.size() );
+            for ( int i = 0; i < 6; i++ ) {
+                timeService.advanceTime( 55, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+            }
+
+            assertEquals(5,
+                         list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
     public void testFireRuleAfterDuration() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_FireRuleAfterDuration.drl");
         KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal( "list",
+                                list );
 
-        final List list = new ArrayList();
-        ksession.setGlobal( "list",
-                                 list );
+            final Cheese brie = new Cheese( "brie",
+                                            12 );
+            final FactHandle brieHandle = ksession.insert(brie );
 
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
+            // now check for update
+            assertEquals( 0,
+                          list.size() );
 
-        // now check for update
-        assertEquals( 0,
-                      list.size() );
+            // sleep for 300ms
+            Thread.sleep( 300 );
 
-        // sleep for 300ms
-        Thread.sleep( 300 );
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
-
-        // now check for update
-        assertEquals( 2,
-                      list.size() );
-
+            // now check for update
+            assertEquals( 2,
+                          list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
-    public void testNoProtocolIntervalTimer() throws Exception {
+    public void testNoProtocolIntervalTimer() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
@@ -210,39 +222,42 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
-        
-        ksession.setGlobal( "list", list );
-        
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        
-        timeService.advanceTime( 15, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-        timeService.advanceTime( 3, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-        timeService.advanceTime( 2, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+            ksession.setGlobal( "list", list );
+
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 15, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 3, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 2, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
-    public void testIntervalTimer() throws Exception {
+    public void testIntervalTimer() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
@@ -258,40 +273,43 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
+        try {
+            List list = new ArrayList();
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
-        
-        ksession.setGlobal("list", list);
-        
-        ksession.fireAllRules();
-        assertEquals(0, list.size());
-        
-        timeService.advanceTime(20, TimeUnit.SECONDS);
-        ksession.fireAllRules();
-        assertEquals(0, list.size());
-        
-        timeService.advanceTime(15, TimeUnit.SECONDS);
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
-        
-        timeService.advanceTime(3, TimeUnit.SECONDS);
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
-        
-        timeService.advanceTime(2, TimeUnit.SECONDS);
-        ksession.fireAllRules();
-        assertEquals(2, list.size());
-        
-        timeService.advanceTime(10, TimeUnit.SECONDS);
-        ksession.fireAllRules();
-        assertEquals(3, list.size());
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
+
+            ksession.setGlobal("list", list);
+
+            ksession.fireAllRules();
+            assertEquals(0, list.size());
+
+            timeService.advanceTime(20, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(0, list.size());
+
+            timeService.advanceTime(15, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+
+            timeService.advanceTime(3, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+
+            timeService.advanceTime(2, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(2, list.size());
+
+            timeService.advanceTime(10, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(3, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithoutFire() throws Exception {
+    public void testIntervalTimerWithoutFire() {
         String str =
                 "package org.simple \n" +
                 "global java.util.List list \n" +
@@ -308,29 +326,32 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
 
-        List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+            ksession.setGlobal( "list", list );
 
-        ksession.setGlobal( "list", list );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 35, TimeUnit.SECONDS );
+            assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 35, TimeUnit.SECONDS );
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals( 2, list.size() );
-
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals( 3, list.size() );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testExprIntervalTimerRaceCondition() throws Exception {
+    public void testExprIntervalTimerRaceCondition() {
         String str = "";
         str += "package org.simple \n";
         str += "global java.util.List list \n";
@@ -347,51 +368,54 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
 
-        List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+            ksession.setGlobal( "list", list );
+            FactHandle fh = ksession.insert(10000l );
 
-        ksession.setGlobal( "list", list );
-        FactHandle fh = (FactHandle) ksession.insert( 10000l );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
 
 
-        timeService.advanceTime( 17, TimeUnit.SECONDS );
-        ksession.update( fh, 5000l );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            timeService.advanceTime( 17, TimeUnit.SECONDS );
+            ksession.update( fh, 5000l );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testUnknownProtocol() throws Exception {
+    public void testUnknownProtocol() {
         wrongTimerExpression("xyz:30");
     }
 
     @Test(timeout=10000)
-    public void testMissingColon() throws Exception {
+    public void testMissingColon() {
         wrongTimerExpression("int 30");
     }
 
     @Test(timeout=10000)
-    public void testMalformedExpression() throws Exception {
+    public void testMalformedExpression() {
         wrongTimerExpression("30s s30");
     }
 
     @Test(timeout=10000)
-    public void testMalformedIntExpression() throws Exception {
+    public void testMalformedIntExpression() {
         wrongTimerExpression("int 30s");
     }
 
     @Test(timeout=10000)
-    public void testMalformedCronExpression() throws Exception {
+    public void testMalformedCronExpression() {
         wrongTimerExpression("cron: 0/30 * * * * *");
     }
 
@@ -428,34 +452,37 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        
-        ksession.setGlobal( "list", list );
-  
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-                
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-                 
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+            Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+
+            ksession.setGlobal( "list", list );
+
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 30, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 30, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -472,57 +499,51 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "end  \n";
 
 
-        Calendar calFalse = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return false;
-            }
-        };
-        
-        Calendar calTrue = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return true;
-            }
-        };
+        Calendar calFalse = timestamp -> false;
+        Calendar calTrue = timestamp -> true;
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        
-        ksession.getCalendars().set( "cal1", calTrue );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        ksession.setGlobal( "list", list );
-        ksession.insert( "o1" );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-                
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.insert( "o2" );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        ksession.getCalendars().set( "cal1", calFalse );
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.insert( "o3" );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        ksession.getCalendars().set( "cal1", calTrue );
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        ksession.insert( "o4" );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+            Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+
+            ksession.getCalendars().set( "cal1", calTrue );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+            ksession.setGlobal( "list", list );
+            ksession.insert( "o1" );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.insert( "o2" );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            ksession.getCalendars().set( "cal1", calFalse );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.insert( "o3" );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            ksession.getCalendars().set( "cal1", calTrue );
+            timeService.advanceTime( 30, TimeUnit.SECONDS );
+            ksession.insert( "o4" );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testUndefinedCalendar() throws Exception {
+    public void testUndefinedCalendar() {
         String str = "";
         str += "rule xxx \n";
         str += "  calendars \"cal1\"\n";
@@ -532,11 +553,14 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase);
-
         try {
-            ksession.fireAllRules();
-            fail("should throw UndefinedCalendarExcption");
-        } catch (UndefinedCalendarExcption e) { }
+            try {
+                ksession.fireAllRules();
+                fail("should throw UndefinedCalendarExcption");
+            } catch (UndefinedCalendarExcption e) { }
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
@@ -557,51 +581,46 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            Calendar calFalse = timestamp -> false;
 
-        Calendar calFalse = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return false;
-            }
-        };
-        
-        Calendar calTrue = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return true;
-            }
-        };
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        
-        ksession.getCalendars().set( "cal1", calTrue );
-        ksession.getCalendars().set( "cal2", calTrue );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        ksession.setGlobal( "list", list );
-        ksession.insert( "o1" );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            Calendar calTrue = timestamp -> true;
 
-        ksession.getCalendars().set( "cal2", calFalse );
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.insert( "o2" );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-                
-        ksession.getCalendars().set( "cal1", calFalse );
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.insert( "o3" );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-        ksession.getCalendars().set( "cal1", calTrue );
-        ksession.getCalendars().set( "cal2", calTrue );
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        ksession.insert( "o4" );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+            Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+
+            ksession.getCalendars().set( "cal1", calTrue );
+            ksession.getCalendars().set( "cal2", calTrue );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+            ksession.setGlobal( "list", list );
+            ksession.insert( "o1" );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            ksession.getCalendars().set( "cal2", calFalse );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.insert( "o2" );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            ksession.getCalendars().set( "cal1", calFalse );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.insert( "o3" );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            ksession.getCalendars().set( "cal1", calTrue );
+            ksession.getCalendars().set( "cal2", calTrue );
+            timeService.advanceTime( 30, TimeUnit.SECONDS );
+            ksession.insert( "o4" );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -622,72 +641,67 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        
-        final Date date1 = new Date( date.getTime() +  (15 * 1000) );
-        final Date date2 = new Date( date1.getTime() + (60 * 1000) );
-        final Date date3 = new Date( date2.getTime() + (60 * 1000) );
-        final Date date4 = new Date( date3.getTime() + (60 * 1000) );
-        
-        Calendar cal1 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+            Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+
+            final Date date1 = new Date( date.getTime() +  (15 * 1000) );
+            final Date date2 = new Date( date1.getTime() + (60 * 1000) );
+            final Date date3 = new Date( date2.getTime() + (60 * 1000) );
+            final Date date4 = new Date( date3.getTime() + (60 * 1000) );
+
+            Calendar cal1 = timestamp -> {
                 if ( timestamp == date1.getTime() ) {
                     return true;
-                } else if ( timestamp == date4.getTime() ) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
-        
-        Calendar cal2 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-               if ( timestamp == date2.getTime() ) {
+                } else return timestamp != date4.getTime();
+            };
+
+            Calendar cal2 = timestamp -> {
+                if ( timestamp == date2.getTime() ) {
                     return false;
                 }  else if ( timestamp == date3.getTime() ) {
                     return true;
                 } else {
                     return true;
                 }
-            }
-        };
-        
-        ksession.getCalendars().set( "cal1", cal1 );
-        ksession.getCalendars().set( "cal2", cal2 );
-        
-        ksession.setGlobal( "list", list );
-                         
-        ksession.fireAllRules();
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-                      
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-             
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            };
 
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 4, list.size() );
+            ksession.getCalendars().set( "cal1", cal1 );
+            ksession.getCalendars().set( "cal2", cal2 );
+
+            ksession.setGlobal( "list", list );
+
+            ksession.fireAllRules();
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 4, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -708,72 +722,67 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        
-        final Date date1 = new Date( date.getTime() +  (15 * 1000) );
-        final Date date2 = new Date( date1.getTime() + (60 * 1000) );
-        final Date date3 = new Date( date2.getTime() + (60 * 1000) );
-        final Date date4 = new Date( date3.getTime() + (60 * 1000) );
-        
-        Calendar cal1 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
+            Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+
+            final Date date1 = new Date( date.getTime() +  (15 * 1000) );
+            final Date date2 = new Date( date1.getTime() + (60 * 1000) );
+            final Date date3 = new Date( date2.getTime() + (60 * 1000) );
+            final Date date4 = new Date( date3.getTime() + (60 * 1000) );
+
+            Calendar cal1 = timestamp -> {
                 if ( timestamp == date1.getTime() ) {
                     return true;
-                } else if ( timestamp == date4.getTime() ) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
-        
-        Calendar cal2 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-               if ( timestamp == date2.getTime() ) {
+                } else return timestamp != date4.getTime();
+            };
+
+            Calendar cal2 = timestamp -> {
+                if ( timestamp == date2.getTime() ) {
                     return false;
                 }  else if ( timestamp == date3.getTime() ) {
                     return true;
                 } else {
                     return true;
                 }
-            }
-        };
-        
-        ksession.getCalendars().set( "cal1", cal1 );
-        ksession.getCalendars().set( "cal2", cal2 );
-        
-        ksession.setGlobal( "list", list );
-                         
-        ksession.fireAllRules();
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-                      
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-             
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            };
 
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 4, list.size() );
+            ksession.getCalendars().set( "cal1", cal1 );
+            ksession.getCalendars().set( "cal2", cal2 );
+
+            ksession.setGlobal( "list", list );
+
+            ksession.fireAllRules();
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 4, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -794,45 +803,44 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
-        Date date = df.parse( "1-JAN-2010" );
-        
-        Calendar cal1 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return true;
-            }
-        };
-        
-        long oneDay = 60 * 60 * 24;
-        ksession.getCalendars().set( "cal1", cal1 );
-        ksession.setGlobal( "list", list );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-                      
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );  // day 3
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-             
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
+            Date date = df.parse( "1-JAN-2010" );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+            Calendar cal1 = timestamp -> true;
+
+            long oneDay = 60 * 60 * 24;
+            ksession.getCalendars().set( "cal1", cal1 );
+            ksession.setGlobal( "list", list );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );  // day 3
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -853,45 +861,44 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        List list = new ArrayList();
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
-        Date date = df.parse( "1-JAN-2010" );
-        
-        Calendar cal1 = new Calendar() {
-            public boolean isTimeIncluded(long timestamp) {
-                return true;
-            }
-        };
-        
-        long oneDay = 60 * 60 * 24;
-        ksession.getCalendars().set( "cal1", cal1 );
-        ksession.setGlobal( "list", list );
-        
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-                      
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-             
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        try {
+            List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
+            Date date = df.parse( "1-JAN-2010" );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+            Calendar cal1 = timestamp -> true;
+
+            long oneDay = 60 * 60 * 24;
+            ksession.getCalendars().set( "cal1", cal1 );
+            ksession.setGlobal( "list", list );
+
+            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
     
     @Test(timeout=10000)
@@ -917,45 +924,44 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
             KieBase kbase = loadKnowledgeBaseFromString(str );
             KieSession ksession = createKnowledgeSession(kbase, conf);
-            
-            List list = new ArrayList();
-            PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-            DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
-            Date date = df.parse( "1-JAN-2010" );
-            
-            Calendar cal1 = new Calendar() {
-                public boolean isTimeIncluded(long timestamp) {
-                    return true;
-                }
-            };
-            
-            long oneDay = 60 * 60 * 24;
-            ksession.getCalendars().set( "cal1", cal1 );
-            ksession.setGlobal( "list", list );
-            
-            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-            ksession.fireAllRules();
-            assertEquals( 0, list.size() );
-            
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 0, list.size() );
-                          
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
-            ksession.fireAllRules();
-            assertEquals( 1, list.size() );
-                 
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 2, list.size() );
-            
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
-            ksession.fireAllRules();
-            assertEquals( 3, list.size() );
-    
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 3, list.size() );
+            try {
+                List list = new ArrayList();
+                PseudoClockScheduler timeService = ksession.getSessionClock();
+                DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
+                Date date = df.parse( "1-JAN-2010" );
+
+                Calendar cal1 = timestamp -> true;
+
+                long oneDay = 60 * 60 * 24;
+                ksession.getCalendars().set( "cal1", cal1 );
+                ksession.setGlobal( "list", list );
+
+                timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+                ksession.fireAllRules();
+                assertEquals( 0, list.size() );
+
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 0, list.size() );
+
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+                ksession.fireAllRules();
+                assertEquals( 1, list.size() );
+
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
+
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+                ksession.fireAllRules();
+                assertEquals( 3, list.size() );
+
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 3, list.size() );
+            } finally {
+                ksession.dispose();
+            }
         } finally {
             Locale.setDefault( defaultLoc );
         }
@@ -985,45 +991,44 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
             KieBase kbase = loadKnowledgeBaseFromString(str );
             KieSession ksession = createKnowledgeSession(kbase, conf);
+            try {
+                List list = new ArrayList();
+                PseudoClockScheduler timeService = ksession.getSessionClock();
+                DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
+                Date date = df.parse( "1-JAN-2010" );
 
-            List list = new ArrayList();
-            PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-            DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
-            Date date = df.parse( "1-JAN-2010" );
+                Calendar cal1 = timestamp -> true;
 
-            Calendar cal1 = new Calendar() {
-                public boolean isTimeIncluded(long timestamp) {
-                    return true;
-                }
-            };
+                long oneDay = 60 * 60 * 24;
+                ksession.getCalendars().set( "cal1", cal1 );
+                ksession.setGlobal( "list", list );
 
-            long oneDay = 60 * 60 * 24;
-            ksession.getCalendars().set( "cal1", cal1 );
-            ksession.setGlobal( "list", list );
+                timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+                ksession.fireAllRules();
+                assertEquals( 0, list.size() );
 
-            timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-            ksession.fireAllRules();
-            assertEquals( 0, list.size() );
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 0, list.size() );
 
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 0, list.size() );
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+                ksession.fireAllRules();
+                assertEquals( 1, list.size() );
 
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
-            ksession.fireAllRules();
-            assertEquals( 1, list.size() );
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
 
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 2, list.size() );
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+                ksession.fireAllRules();
+                assertEquals( 3, list.size() );
 
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
-            ksession.fireAllRules();
-            assertEquals( 3, list.size() );
-
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-            ksession.fireAllRules();
-            assertEquals( 4, list.size() );
+                timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+                ksession.fireAllRules();
+                assertEquals( 4, list.size() );
+            } finally {
+                ksession.dispose();
+            }
         } finally {
             Locale.setDefault( defaultLoc );
         }
@@ -1033,25 +1038,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     public void testTimerWithNot() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
         KieSession ksession = createKnowledgeSession(kbase);
-
-        ksession.fireAllRules();
-        Thread.sleep( 200 );
-        ksession.fireAllRules();
-        Thread.sleep( 200 );
-        ksession.fireAllRules();
-        // now check that rule "wrap A" fired once, creating one B
-        assertEquals( 2, ksession.getFactCount() );
+        try {
+            ksession.fireAllRules();
+            Thread.sleep( 200 );
+            ksession.fireAllRules();
+            Thread.sleep( 200 );
+            ksession.fireAllRules();
+            // now check that rule "wrap A" fired once, creating one B
+            assertEquals( 2, ksession.getFactCount() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
     public void testHaltWithTimer() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Halt_With_Timer.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
-
         new Thread(ksession::fireUntilHalt).start();
         try {
             Thread.sleep( 1000 );
-            FactHandle handle = (FactHandle) ksession.insert( "halt" );
+            FactHandle handle = ksession.insert("halt" );
             Thread.sleep( 2000 );
 
             // now check that rule "halt" fired once, creating one Integer
@@ -1064,30 +1071,29 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
 
     @Test(timeout=10000)
-    public void testTimerRemoval() {
+    public void testTimerRemoval() throws InterruptedException {
+        String str = "package org.drools.compiler.test\n" +
+                "import " + TimeUnit.class.getName() + "\n" +
+                "global java.util.List list \n" +
+                "global " + CountDownLatch.class.getName() + " latch\n" +
+                "rule TimerRule \n" +
+                "   timer (int:100 50) \n" +
+                "when \n" +
+                "then \n" +
+                "        //forces it to pause until main thread is ready\n" +
+                "        latch.await(10, TimeUnit.MINUTES); \n" +
+                "        list.add(list.size()); \n" +
+                " end";
+
+        KieBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase);
         try {
-            String str = "package org.drools.compiler.test\n" +
-                    "import " + TimeUnit.class.getName() + "\n" +
-            		"global java.util.List list \n" +
-            		"global " + CountDownLatch.class.getName() + " latch\n" + 
-                    "rule TimerRule \n" + 
-                    "   timer (int:100 50) \n" +
-                    "when \n" + 
-                    "then \n" +
-                    "        //forces it to pause until main thread is ready\n" +
-                    "        latch.await(10, TimeUnit.MINUTES); \n" +
-                    "        list.add(list.size()); \n" +  
-                    " end";
-
-            KieBase kbase = loadKnowledgeBaseFromString(str );
-            KieSession ksession = createKnowledgeSession(kbase);
-
             CountDownLatch latch = new CountDownLatch(1);
             List list = Collections.synchronizedList( new ArrayList() );
             ksession.setGlobal( "list", list );
-            ksession.setGlobal( "latch", latch );            
-            
-            ksession.fireAllRules();           
+            ksession.setGlobal( "latch", latch );
+
+            ksession.fireAllRules();
             Thread.sleep(500); // this makes sure it actually enters a rule
             kbase.removeRule("org.drools.compiler.test", "TimerRule");
             ksession.fireAllRules();
@@ -1098,14 +1104,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             Thread.sleep(500); // now wait to see if any more fire, they shouldn't
             ksession.fireAllRules();
             assertEquals( 0, list.size() );
+        } finally {
             ksession.dispose();
-        } catch (InterruptedException e) {
-            throw new RuntimeException( e );
         }
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithLongExpressions() throws Exception {
+    public void testIntervalTimerWithLongExpressions() {
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1135,60 +1140,63 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
 
-        List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.setStartupTime( DateUtils.parseDate("3-JAN-2010").getTime() );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.setStartupTime( DateUtils.parseDate("3-JAN-2010").getTime() );
+            ksession.setGlobal( "list", list );
 
-        ksession.setGlobal( "list", list );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 15, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 15, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 3, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 3, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 2, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 2, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+            timeService.advanceTime( 10, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithStringExpressions() throws Exception {
+    public void testIntervalTimerWithStringExpressions() {
         checkIntervalTimerWithStringExpressions(false, "3-JAN-2010");
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithAllExpressions() throws Exception {
+    public void testIntervalTimerWithAllExpressions() {
         checkIntervalTimerWithStringExpressions(true, "3-JAN-2010");
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithStringExpressionsAfterStart() throws Exception {
+    public void testIntervalTimerWithStringExpressionsAfterStart() {
         checkIntervalTimerWithStringExpressions(false, "3-FEB-2010");
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerWithAllExpressionsAfterStart() throws Exception {
+    public void testIntervalTimerWithAllExpressionsAfterStart() {
         checkIntervalTimerWithStringExpressions(true, "3-FEB-2010");
     }
 
-    private void checkIntervalTimerWithStringExpressions(boolean useExprForStart, String startTime) throws Exception {
+    private void checkIntervalTimerWithStringExpressions(boolean useExprForStart, String startTime) {
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1218,64 +1226,67 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
 
-        List list = new ArrayList();
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.setStartupTime( DateUtils.parseDate(startTime).getTime() );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.setStartupTime( DateUtils.parseDate(startTime).getTime() );
+            ksession.setGlobal( "list", list );
 
-        ksession.setGlobal( "list", list );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+            timeService.advanceTime( 40, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 40, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
 
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+            // simulate a pause in the use of the engine by advancing the system clock
+            timeService.setStartupTime(DateUtils.parseDate("3-MAR-2010").getTime());
+            list.clear();
 
-        // simulate a pause in the use of the engine by advancing the system clock
-        timeService.setStartupTime(DateUtils.parseDate("3-MAR-2010").getTime());
-        list.clear();
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() ); // fires once to recover from missing activation
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() ); // fires once to recover from missing activation
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            timeService.advanceTime( 20, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+            timeService.advanceTime( 40, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
 
-        timeService.advanceTime( 40, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-
-        timeService.advanceTime( 60, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 4, list.size() );
+            timeService.advanceTime( 60, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 4, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testIntervalTimerExpressionWithOr() throws Exception {
+    public void testIntervalTimerExpressionWithOr() {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -1296,60 +1307,63 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(text);
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
-        
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );        
-        ksession.insert ( new Foo(null, null) );
-        ksession.insert ( new Pet(null) );
-        
-        FactA fact1 = new FactA();
-        fact1.setField1( "f1" );
-        fact1.setField2( 250 );
-        
-        FactA fact3 = new FactA();
-        fact3.setField1( "f2" );
-        fact3.setField2( 1000 );
-        
-        ksession.insert( fact1 );
-        ksession.insert( fact3 );
-        
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        try {
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( fact1, list.get( 0 ) );
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
+            ksession.insert ( new Foo(null, null) );
+            ksession.insert ( new Pet(null) );
 
-        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertEquals( fact1, list.get( 1 ) );
+            FactA fact1 = new FactA();
+            fact1.setField1( "f1" );
+            fact1.setField2( 250 );
 
-        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() ); // did not change, repeat-limit kicked in
+            FactA fact3 = new FactA();
+            fact3.setField1( "f2" );
+            fact3.setField2( 1000 );
 
-        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        assertEquals( fact3, list.get( 2 ) );
+            ksession.insert( fact1 );
+            ksession.insert( fact3 );
 
-        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 4, list.size() );
-        assertEquals( fact3, list.get( 3 ) );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 4, list.size() ); // did not change, repeat-limit kicked in
+            timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+            assertEquals( fact1, list.get( 0 ) );
+
+            timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+            assertEquals( fact1, list.get( 1 ) );
+
+            timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() ); // did not change, repeat-limit kicked in
+
+            timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+            assertEquals( fact3, list.get( 2 ) );
+
+            timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 4, list.size() );
+            assertEquals( fact3, list.get( 3 ) );
+
+            timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 4, list.size() ); // did not change, repeat-limit kicked in
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test(timeout=10000)
-    public void testExprTimeRescheduled() throws Exception {
+    public void testExprTimeRescheduled() {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -1365,69 +1379,70 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(text);
         KieSession ksession = createKnowledgeSession(kbase, conf);
-        
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
-        
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        FactA fact1 = new FactA();
-        fact1.setField1( "f1" );
-        fact1.setField2( 500 );
-        fact1.setField4( 1000 );
-        FactHandle fh = (FactHandle) ksession.insert (fact1 );        
-                
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        try {
+            PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
-        timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( fact1, list.get( 0 ) );
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertEquals( fact1, list.get( 1 ) );
+            FactA fact1 = new FactA();
+            fact1.setField1( "f1" );
+            fact1.setField2( 500 );
+            fact1.setField4( 1000 );
+            FactHandle fh = ksession.insert (fact1 );
 
-        timeService.advanceTime( 400, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        assertEquals( fact1, list.get( 2 ) );
-        list.clear();
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
 
-        // the activation state of the rule is not changed so the timer isn't reset
-        // since the timer alredy fired it will only use only the period that now will be set to 2000
-        fact1.setField2( 300 );
-        fact1.setField4( 2000 );
-        ksession.update(  fh, fact1 );
-        ksession.fireAllRules();
+            timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+            assertEquals( fact1, list.get( 0 ) );
 
-        // 100 has passed of the 1000, from the previous schedule
-        // so that should be deducted from the 2000 period above, meaning
-        //  we only need to increment another 1950
-        timeService.advanceTime( 1950, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( fact1, list.get( 0 ) );
-        list.clear();
+            timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+            assertEquals( fact1, list.get( 1 ) );
 
-        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            timeService.advanceTime( 400, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+            assertEquals( fact1, list.get( 2 ) );
+            list.clear();
 
-        timeService.advanceTime( 700, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+            // the activation state of the rule is not changed so the timer isn't reset
+            // since the timer alredy fired it will only use only the period that now will be set to 2000
+            fact1.setField2( 300 );
+            fact1.setField4( 2000 );
+            ksession.update(  fh, fact1 );
+            ksession.fireAllRules();
 
-        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
-        ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        
-    }    
-    
-    
+            // 100 has passed of the 1000, from the previous schedule
+            // so that should be deducted from the 2000 period above, meaning
+            //  we only need to increment another 1950
+            timeService.advanceTime( 1950, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+            assertEquals( fact1, list.get( 0 ) );
+            list.clear();
+
+            timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 700, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+
+            timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+            assertEquals( 1, list.size() );
+        } finally {
+            ksession.dispose();
+        }
+    }
+
     @Test(timeout=10000) @Ignore
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
         String drl = "package org.kie.test;" +
@@ -1468,28 +1483,28 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(drl);
         final KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+            new Thread(() -> ksession.fireUntilHalt()).start();
+            Thread.sleep( 250 );
 
-        new Thread( new Runnable(){
-            public void run(){ ksession.fireUntilHalt(); }
-        } ).start();
-        Thread.sleep( 250 );
+            assertEquals( asList( 0, 0, 0 ), list );
 
-        assertEquals( asList( 0, 0, 0 ), list );
+            ksession.insert( "halt" );
+            ksession.insert( "trigger" );
+            Thread.sleep( 300 );
+            assertEquals( asList( 0, 0, 0 ), list );
 
-        ksession.insert( "halt" );
-        ksession.insert( "trigger" );
-        Thread.sleep( 300 );
-        assertEquals( asList( 0, 0, 0 ), list );
+            new Thread(() -> ksession.fireUntilHalt()).start();
+            Thread.sleep( 200 );
 
-        new Thread( new Runnable(){
-            public void run(){ ksession.fireUntilHalt(); }
-        } ).start();
-        Thread.sleep( 200 );
-
-        assertEquals( asList( 0, 0, 0, 5, 0, -5, 0, 0 ), list );
+            assertEquals( asList( 0, 0, 0, 5, 0, -5, 0, 0 ), list );
+        } finally {
+            ksession.halt();
+            ksession.dispose();
+        }
     }
 
 
@@ -1549,11 +1564,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             }
         } finally {
             ksession.halt();
+            ksession.dispose();
         }
     }
 
     @Test
-    public void testExpiredPropagations() throws InterruptedException {
+    public void testExpiredPropagations() {
         // DROOLS-244
         String drl = "package org.drools.test;\n" +
                      "\n" +
@@ -1598,54 +1614,53 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         KieSession ksession = kbase.newKieSession( conf, null );
-        ArrayList list = new ArrayList( );
-        ksession.setGlobal( "list", list );
+        try {
+            ArrayList list = new ArrayList( );
+            ksession.setGlobal( "list", list );
 
-        SessionPseudoClock clock = ( SessionPseudoClock ) ksession.getSessionClock();
+            SessionPseudoClock clock = ksession.getSessionClock();
 
-        clock.advanceTime( 1100, TimeUnit.MILLISECONDS );
+            clock.advanceTime( 1100, TimeUnit.MILLISECONDS );
 
-        StockTick tick = new StockTick( 0, "AAA", 1.0, 0 );
-        StockTick tock = new StockTick( 1, "BBB", 1.0, 2500 );
-        StockTick tack = new StockTick( 1, "CCC", 1.0, 2700 );
+            StockTick tick = new StockTick( 0, "AAA", 1.0, 0 );
+            StockTick tock = new StockTick( 1, "BBB", 1.0, 2500 );
+            StockTick tack = new StockTick( 1, "CCC", 1.0, 2700 );
 
-        EntryPoint epa = ksession.getEntryPoint("AAA");
-        EntryPoint epb = ksession.getEntryPoint("BBB");
+            EntryPoint epa = ksession.getEntryPoint("AAA");
+            EntryPoint epb = ksession.getEntryPoint("BBB");
 
-        epa.insert( tick );
-        epb.insert( tock );
-        ksession.insert( tack );
+            epa.insert( tick );
+            epb.insert( tock );
+            ksession.insert( tack );
 
-        FactHandle handle = ksession.insert("go1");
-        ksession.fireAllRules();
-        System.out.println( "***** " + list + " *****");
-        assertEquals( asList( 0L, 1L, 1L ), list );
-        list.clear();
-        ksession.retract( handle );
+            FactHandle handle = ksession.insert("go1");
+            ksession.fireAllRules();
+            assertEquals( asList( 0L, 1L, 1L ), list );
+            list.clear();
+            ksession.delete( handle );
 
-        clock.advanceTime( 2550, TimeUnit.MILLISECONDS );
+            clock.advanceTime( 2550, TimeUnit.MILLISECONDS );
 
-        handle = ksession.insert( "go2" );
-        ksession.fireAllRules();
-        System.out.println( "***** " + list + " *****");
-        assertEquals( asList( 0L, 0L, 1L ), list );
-        list.clear();
-        ksession.retract( handle );
+            handle = ksession.insert( "go2" );
+            ksession.fireAllRules();
+            assertEquals( asList( 0L, 0L, 1L ), list );
+            list.clear();
+            ksession.delete( handle );
 
-        clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
 
-        handle = ksession.insert( "go3" );
-        ksession.fireAllRules();
-        System.out.println( "***** " + list + " *****");
-        assertEquals( asList( 0L, 0L, 0L ), list );
-        list.clear();
-        ksession.retract( handle );
-
-        ksession.dispose();
+            handle = ksession.insert( "go3" );
+            ksession.fireAllRules();
+            assertEquals( asList( 0L, 0L, 0L ), list );
+            list.clear();
+            ksession.delete( handle );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testCronFire() throws InterruptedException {
+    public void testCronFire() {
         // BZ-1059372
         String drl = "package test.drools\n" +
                      "rule TestRule " +
@@ -1658,14 +1673,17 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(drl);
         KieSession ksession = kbase.newKieSession();
+        try {
+            int repetitions = 10000;
+            for (int j = 0; j < repetitions; j++ ) {
+                ksession.insert( j );
+            }
 
-        int repetitions = 10000;
-        for (int j = 0; j < repetitions; j++ ) {
-            ksession.insert( j );
+            ksession.insert( "go" );
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
         }
-
-        ksession.insert( "go" );
-        ksession.fireAllRules();
     }
 
     @Test(timeout = 10000) @Ignore("the listener callback holds some locks so blocking in it is not safe")
@@ -1687,97 +1705,98 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
-
-        final CyclicBarrier barrier = new CyclicBarrier(2);
-        final AtomicBoolean aBool = new AtomicBoolean(true);
-        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
-                try {
-                    if (aBool.get()) {
-                        barrier.await();
-                        aBool.set(false);
+        try {
+            final CyclicBarrier barrier = new CyclicBarrier(2);
+            final AtomicBoolean aBool = new AtomicBoolean(true);
+            AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
+                public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
+                    try {
+                        if (aBool.get()) {
+                            barrier.await();
+                            aBool.set(false);
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
-            }
-        };
-        ksession.addEventListener(agendaEventListener);
+            };
+            ksession.addEventListener(agendaEventListener);
 
-        List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        // Using the Pseudo Clock.
-        SessionClock clock = ksession.getSessionClock();
-        SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
+            // Using the Pseudo Clock.
+            SessionClock clock = ksession.getSessionClock();
+            SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
 
-        // Insert the event.
-        String eventOne = "one";
-        ksession.insert(eventOne);
+            // Insert the event.
+            String eventOne = "one";
+            ksession.insert(eventOne);
 
-        // Advance the time .... so the timer will fire.
-        pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
+            // Advance the time .... so the timer will fire.
+            pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
 
-        // Rule doesn't fire in PHREAK. This is because you need to call 'fireAllRules' after you've inserted the fact, otherwise the timer
-        // job is not created.
+            // Rule doesn't fire in PHREAK. This is because you need to call 'fireAllRules' after you've inserted the fact, otherwise the timer
+            // job is not created.
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        // Rule still doesn't fire, because the DefaultTimerJob is created now, and now we need to advance the timer again.
+            // Rule still doesn't fire, because the DefaultTimerJob is created now, and now we need to advance the timer again.
 
-        pseudoClock.advanceTime(30000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
-        aBool.set(true);
+            pseudoClock.advanceTime(30000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
+            aBool.set(true);
 
-        pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
-        aBool.set(true);
+            pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
+            aBool.set(true);
 
-        String eventTwo = "two";
-        ksession.insert(eventTwo);
-        ksession.fireAllRules();
+            String eventTwo = "two";
+            ksession.insert(eventTwo);
+            ksession.fireAllRules();
 
-        // 60
-        pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
-        aBool.set(true);
+            // 60
+            pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
+            aBool.set(true);
 
-        // 70
-        pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
-        aBool.set(true);
+            // 70
+            pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
+            aBool.set(true);
 
-        //From here, the second rule should fire.
-        //phaser.register();
-        pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
-        aBool.set(true);
+            //From here, the second rule should fire.
+            //phaser.register();
+            pseudoClock.advanceTime(10000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
+            aBool.set(true);
 
-        // Now 2 rules have fired, and those will now fire every 10 seconds.
-        pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
-        barrier.await();
-        barrier.reset();
+            // Now 2 rules have fired, and those will now fire every 10 seconds.
+            pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
+            barrier.await();
+            barrier.reset();
 
-        pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
-        aBool.set(true);
-        barrier.await();
-        barrier.reset();
+            pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
+            aBool.set(true);
+            barrier.await();
+            barrier.reset();
 
-        pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
-        aBool.set(true);
-        barrier.await();
-        barrier.reset();
-
-        ksession.destroy();
+            pseudoClock.advanceTime(20000, TimeUnit.MILLISECONDS);
+            aBool.set(true);
+            barrier.await();
+            barrier.reset();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testSharedTimers() throws Exception {
+    public void testSharedTimers() {
         // DROOLS-451
         String str = "package org.simple \n" +
                      "global java.util.List list \n" +
@@ -1804,19 +1823,22 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal("list", list);
 
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+            SessionClock clock = ksession.getSessionClock();
+            SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
 
-        SessionClock clock = ksession.getSessionClock();
-        SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
-
-        ksession.insert(1);
-        ksession.fireAllRules();
-        pseudoClock.advanceTime( 35, TimeUnit.SECONDS );
-        ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList( "1", "2" ) ) );
+            ksession.insert(1);
+            ksession.fireAllRules();
+            pseudoClock.advanceTime( 35, TimeUnit.SECONDS );
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+            assertTrue( list.containsAll( asList( "1", "2" ) ) );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -1840,15 +1862,18 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         conf.setOption(TimedRuleExecutionOption.YES);
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        try {
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        Thread.sleep( 900 );
-        assertEquals( 0, list.size() );
-        Thread.sleep( 500 );
-        assertEquals( 1, list.size() );
+            ksession.fireAllRules();
+            assertEquals( 0, list.size() );
+            Thread.sleep( 900 );
+            assertEquals( 0, list.size() );
+            Thread.sleep( 500 );
+            assertEquals( 1, list.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 }

@@ -127,17 +127,20 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
         KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM )
                                              .newKieSession();
-
-        ksession.insert(new MyMessage("ATrigger" ) );
-        assertEquals( 1, ksession.fireAllRules() );
-        waitBusy(2L);
-        assertEquals( 0, ksession.fireAllRules() );
-        waitBusy(30L);
-        // Expire action is put into propagation queue by timer job, so there
-        // can be a race condition where it puts it there right after previous fireAllRules
-        // flushes the queue. So there needs to be another flush -> another fireAllRules
-        // to flush the queue.
-        assertEquals( 0, ksession.fireAllRules() );
-        assertEquals( 0, ksession.getObjects().size() );
+        try {
+            ksession.insert(new MyMessage("ATrigger" ) );
+            assertEquals( 1, ksession.fireAllRules() );
+            waitBusy(2L);
+            assertEquals( 0, ksession.fireAllRules() );
+            waitBusy(30L);
+            // Expire action is put into propagation queue by timer job, so there
+            // can be a race condition where it puts it there right after previous fireAllRules
+            // flushes the queue. So there needs to be another flush -> another fireAllRules
+            // to flush the queue.
+            assertEquals( 0, ksession.fireAllRules() );
+            assertEquals( 0, ksession.getObjects().size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 }

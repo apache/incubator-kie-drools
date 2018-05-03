@@ -73,17 +73,20 @@ public class CalendarTest {
         KieBase kbase = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
 
         KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        try {
+            ArrayList<String> list = new ArrayList<>();
 
-        ArrayList<String> list = new ArrayList<String>();
+            ksession.getCalendars().set("weekend", WEEKEND);
+            ksession.getCalendars().set("weekday", WEEKDAY);
+            ksession.setGlobal("list", list);
 
-        ksession.getCalendars().set("weekend", WEEKEND);
-        ksession.getCalendars().set("weekday", WEEKDAY);
-        ksession.setGlobal("list", list);
+            ksession.fireAllRules();
+            ksession.dispose();
 
-        ksession.fireAllRules();
-        ksession.dispose();
-
-        assertEquals(1, list.size());
+            assertEquals(1, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     private static final org.kie.api.time.Calendar WEEKEND = new org.kie.api.time.Calendar() {

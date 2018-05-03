@@ -30,17 +30,20 @@ public class TreeTest extends CommonTestMethodBase {
     public void testUnbalancedTrees() throws Exception {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_UnbalancedTrees.drl"));
         final KieSession wm = createKnowledgeSession(kbase);
+        try {
+            wm.insert(new Cheese("a", 10));
+            wm.insert(new Cheese("b", 10));
+            wm.insert(new Cheese("c", 10));
+            wm.insert(new Cheese("d", 10));
+            final Cheese e = new Cheese("e", 10);
 
-        wm.insert(new Cheese("a", 10));
-        wm.insert(new Cheese("b", 10));
-        wm.insert(new Cheese("c", 10));
-        wm.insert(new Cheese("d", 10));
-        final Cheese e = new Cheese("e", 10);
+            wm.insert(e);
+            wm.fireAllRules();
 
-        wm.insert(e);
-        wm.fireAllRules();
-
-        assertEquals("Rule should have fired twice, seting the price to 30", 30, e.getPrice());
+            assertEquals("Rule should have fired twice, seting the price to 30", 30, e.getPrice());
+        } finally {
+            wm.dispose();
+        }
     }
 
 }

@@ -126,10 +126,12 @@ public class SharingTest extends CommonTestMethodBase {
                 .addContent( drl1, ResourceType.DRL )
                 .addContent(drl2, ResourceType.DRL)
                 .build().newKieSession();
-
-        kieSession.insert(new Misc2Test.TestObject( 1) );
-
-        assertEquals(2, kieSession.fireAllRules() );
+        try {
+            kieSession.insert(new Misc2Test.TestObject( 1) );
+            assertEquals(2, kieSession.fireAllRules() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
@@ -158,10 +160,12 @@ public class SharingTest extends CommonTestMethodBase {
                 .addContent(drl1, ResourceType.DRL)
                 .addContent(drl2, ResourceType.DRL)
                 .build().newKieSession();
-
-        kieSession.insert(new Misc2Test.TestObject( 1) );
-
-        assertEquals(2, kieSession.fireAllRules() );
+        try {
+            kieSession.insert(new Misc2Test.TestObject( 1) );
+            assertEquals(2, kieSession.fireAllRules() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
@@ -191,11 +195,14 @@ public class SharingTest extends CommonTestMethodBase {
                 .addContent(drl1, ResourceType.DRL)
                 .addContent(drl2, ResourceType.DRL)
                 .build().newKieSession();
+        try {
+            final FactWithList factWithList = new FactWithList("test");
+            kieSession.insert(factWithList);
 
-        final FactWithList factWithList = new FactWithList("test");
-        kieSession.insert(factWithList);
-
-        assertEquals(2, kieSession.fireAllRules() );
+            assertEquals(2, kieSession.fireAllRules() );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     @Test
@@ -236,22 +243,25 @@ public class SharingTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper()
                 .addContent(drl1, ResourceType.DRL)
                 .build().newKieSession();
+        try {
+            List<String> list = new ArrayList<>();
+            kieSession.setGlobal( "list", list );
 
-        List<String> list = new ArrayList<>();
-        kieSession.setGlobal( "list", list );
+            kieSession.insert( new A(1) );
+            kieSession.insert( new B(1) );
 
-        kieSession.insert( new A(1) );
-        kieSession.insert( new B(1) );
+            final Agenda agenda = kieSession.getAgenda();
+            agenda.getAgendaGroup("G2").setFocus();
+            agenda.getAgendaGroup("G1").setFocus();
 
-        final Agenda agenda = kieSession.getAgenda();
-        agenda.getAgendaGroup("G2").setFocus();
-        agenda.getAgendaGroup("G1").setFocus();
+            kieSession.fireAllRules();
 
-        kieSession.fireAllRules();
-
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "R1" ) );
-        assertTrue( list.contains( "R2" ) );
+            assertEquals( 2, list.size() );
+            assertTrue( list.contains( "R1" ) );
+            assertTrue( list.contains( "R2" ) );
+        } finally {
+            kieSession.dispose();
+        }
     }
 
     public static class A {

@@ -238,7 +238,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
         assertNotNull( ksession );
 
-        List<String> context = new ArrayList<String>();
+        List<String> context = new ArrayList<>();
         ksession.setGlobal( "context", context );
 
         FactHandle b = ksession.insert( new Message( "b" ) );
@@ -414,7 +414,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         final KieSession ksession = kbase.newKieSession();
 
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
@@ -598,7 +598,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 5 );
@@ -630,7 +630,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 3 );
@@ -987,7 +987,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        Map<Parameter, Double> values = new EnumMap<Parameter, Double>( Parameter.class );
+        Map<Parameter, Double> values = new EnumMap<>(Parameter.class);
         values.put( Parameter.PARAM_A, 4.0 );
         DataSample data = new DataSample();
         data.setValues( values );
@@ -1048,7 +1048,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @PropertyReactive
     public static class DataSample {
-        private Map<Parameter, Double> values = new EnumMap<Parameter, Double>( Parameter.class );
+        private Map<Parameter, Double> values = new EnumMap<>(Parameter.class);
 
         public Map<Parameter, Double> getValues() {
             return values;
@@ -1665,7 +1665,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         list.add( 1 );
@@ -1736,7 +1736,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         ksession.setGlobal( "l", l );
 
         ksession.fireAllRules();
@@ -1998,7 +1998,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         Person p1 = new Person( "AAA", 31 );
@@ -2515,7 +2515,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Conversation> conversations = new ArrayList<Conversation>();
+        List<Conversation> conversations = new ArrayList<>();
         ksession.setGlobal( "list", conversations );
 
         Conversation c0 = new Conversation( 0, "Fusco", 2 );
@@ -2569,7 +2569,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequence() {
-        List<String> firedRules = new ArrayList<String>();
+        List<String> firedRules = new ArrayList<>();
         String str =
                 "import " + Foo.class.getCanonicalName() + "\n" +
                 "import " + Foo2.class.getCanonicalName() + "\n" +
@@ -2600,7 +2600,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequenceWithNot() {
-        List<String> firedRules = new ArrayList<String>();
+        List<String> firedRules = new ArrayList<>();
         String str =
                 "import " + Foo.class.getCanonicalName() + "\n" +
                 "import " + Foo2.class.getCanonicalName() + "\n" +
@@ -2781,7 +2781,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         StatelessKieSession ksession = kbase.newStatelessKieSession();
 
-        final List<String> firings = new ArrayList<String>();
+        final List<String> firings = new ArrayList<>();
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
             public void matchCreated( org.kie.api.event.rule.MatchCreatedEvent event ) {
@@ -2832,7 +2832,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testKsessionSerializationWithInsertLogical() {
-        List<String> firedRules = new ArrayList<String>();
+        List<String> firedRules = new ArrayList<>();
         String str =
                 "import java.util.Date;\n" +
                 "import org.drools.compiler.integrationtests.Misc2Test.Promotion;\n" +
@@ -2979,7 +2979,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put( "x", "Test" );
         ksession.insert( map );
 
@@ -3006,7 +3006,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put( "x", "Test" );
         ksession.insert( map );
 
@@ -3051,7 +3051,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
         KieSession ksession = kbase.newKieSession();
 
-        ArrayList<String> ruleList = new ArrayList<String>();
+        ArrayList<String> ruleList = new ArrayList<>();
         ksession.setGlobal( "ruleList", ruleList );
 
         ksession.insert( "fireRules" );
@@ -3253,7 +3253,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kb = loadKnowledgeBaseFromString( drl );
         KieSession ks = kb.newKieSession();
 
-        Map<String, String> context = new HashMap<String, String>();
+        Map<String, String> context = new HashMap<>();
         context.put( "key", "value" );
         ks.setGlobal( "context", context );
 
@@ -4200,7 +4200,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
 
         KieSession ksession = kbase.newKieSession();
-        List<Long> list = new ArrayList<Long>();
+        List<Long> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -5160,9 +5160,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<String> allList = new ArrayList<String>();
+        List<String> allList = new ArrayList<>();
         ksession.setGlobal( "allList", allList );
-        List<String> anyList = new ArrayList<String>();
+        List<String> anyList = new ArrayList<>();
         ksession.setGlobal( "anyList", anyList );
 
         ksession.insert( new Strings( "1", "2", "3" ) );
@@ -5236,7 +5236,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "1234" );
@@ -5302,7 +5302,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.setGlobal( "evaller", new Evaller() );
 
@@ -5333,7 +5333,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -5357,7 +5357,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.setGlobal( "evaller", new Evaller() );
 
@@ -5384,7 +5384,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new Evaller() );
@@ -5409,7 +5409,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "abcde" );
@@ -5438,7 +5438,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "abcde" );
@@ -5471,7 +5471,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString( str );
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.setGlobal( "tat", new Date( 2000 ) );
 
@@ -5700,7 +5700,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ks.newKieBuilder( kfs ).buildAll();
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 0 );
@@ -5899,7 +5899,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ArrayList<Trailer> trailerList = new ArrayList<Trailer>();
+        ArrayList<Trailer> trailerList = new ArrayList<>();
         ksession.setGlobal( "trailerList", trailerList );
 
         Trailer trailer1 = new Trailer( Trailer.TypeStatus.WAITING );
@@ -6436,7 +6436,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -6492,7 +6492,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -6528,7 +6528,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession kieSession = helper.build().newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
 
         kieSession.insert( 10 );
@@ -6601,7 +6601,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession session = helper.build().newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         session.setGlobal( "list", list );
 
         for ( Rule r : session.getKieBase().getKiePackage( "org.drools.test" ).getRules() ) {
@@ -6723,7 +6723,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession kieSession = helper.build().newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
 
         FactHandle handle = kieSession.insert( 42 );
@@ -6792,7 +6792,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession kieSession = helper.build().newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
 
         FactHandle iFH = kieSession.insert( 42 );
@@ -6861,7 +6861,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession kieSession = helper.build().newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
 
         kieSession.insert( 3 );
@@ -6962,7 +6962,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Class> list = new ArrayList<Class>();
+        List<Class> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -7322,7 +7322,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 18 );
@@ -7349,7 +7349,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 1 );
@@ -7458,7 +7458,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new $X.$Y( 42 ) );
@@ -7534,17 +7534,17 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Object> globalList = new ArrayList<Object>();
+        List<Object> globalList = new ArrayList<>();
         ksession.setGlobal( "list", globalList );
 
         NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
         simpleTestObject.setSomething( "simpleTestObject" );
 
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         map.put( "someOtherValue", "someOtherValue" );
         map.put( simpleTestObject, "someValue" );
 
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         ksession.insert( map );
         ksession.insert( simpleTestObject );
 
@@ -7590,14 +7590,14 @@ public class Misc2Test extends CommonTestMethodBase {
         final Integer monitor = 42;
         int factsNr = 5;
 
-        List<String> list = new NotifyingList<String>( factsNr, new Runnable() {
+        List<String> list = new NotifyingList<>(factsNr, new Runnable() {
             @Override
             public void run() {
                 synchronized (monitor) {
                     monitor.notifyAll();
                 }
             }
-        } );
+        });
 
         ksession.setGlobal( "list", list );
 
@@ -7681,7 +7681,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new A1() );
@@ -7760,7 +7760,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "mario.fusco@test.org" );
@@ -7834,7 +7834,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "a" );
@@ -7861,7 +7861,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "a" );
@@ -7924,7 +7924,7 @@ public class Misc2Test extends CommonTestMethodBase {
     @Test
     public void testFunctionInvokingFunction() throws Exception {
         // DROOLS-926
-        String drl =
+        final String drl =
                 "function boolean isOdd(int i) {\n" +
                 "    return i % 2 == 1;\n" +
                 "}\n" +
@@ -7943,33 +7943,37 @@ public class Misc2Test extends CommonTestMethodBase {
 
         final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
 
-        int parallelThreads = 10;
-        ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
+        final int parallelThreads = 10;
+        final ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
+        try {
+            final Collection<Callable<Boolean>> solvers = new ArrayList<>();
+            for ( int i = 0; i < parallelThreads; ++i ) {
+                solvers.add(() -> {
+                    final KieSession ksession = kbase.newKieSession();
+                    try {
+                        final List<Integer> list = new ArrayList<>();
+                        ksession.setGlobal( "list", list );
 
-        Collection<Callable<Boolean>> solvers = new ArrayList<Callable<Boolean>>();
-        for ( int i = 0; i < parallelThreads; ++i ) {
-            solvers.add( new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    KieSession ksession = kbase.newKieSession();
-                    List<Integer> list = new ArrayList<Integer>();
-                    ksession.setGlobal( "list", list );
-
-                    for ( int i = 0; i < 100; i++ ) {
-                        ksession.insert( i );
+                        for ( int i1 = 0; i1 < 100; i1++ ) {
+                            ksession.insert(i1);
+                        }
+                        ksession.fireAllRules();
+                        return list.size() == 50;
+                    } finally {
+                        ksession.dispose();
                     }
-                    ksession.fireAllRules();
-                    return list.size() == 50;
-                }
-            } );
-        }
+                });
+            }
 
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>( executor );
-        for ( Callable<Boolean> s : solvers ) {
-            ecs.submit( s );
-        }
-        for ( int i = 0; i < parallelThreads; ++i ) {
-            assertTrue( ecs.take().get() );
+            final CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
+            for ( final Callable<Boolean> s : solvers ) {
+                ecs.submit( s );
+            }
+            for ( int i = 0; i < parallelThreads; ++i ) {
+                assertTrue( ecs.take().get() );
+            }
+        } finally {
+            executor.shutdownNow();
         }
     }
 
@@ -8006,7 +8010,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     public static class Container {
-        private Map<String, Object> objects = new HashMap<String, Object>();
+        private Map<String, Object> objects = new HashMap<>();
 
         public Map<String, Object> getObjects() {
             return objects;
@@ -8078,7 +8082,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
         assertEquals( 4, list.size() );
@@ -8102,7 +8106,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new StringWrapper("aaa") );
@@ -8154,7 +8158,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new Person("Bob") );
@@ -8563,7 +8567,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         KieSession kSession = kcontainer.newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
@@ -8911,7 +8915,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieSession kSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         kSession.setGlobal( "list", list );
 
         kSession.insert(new TestObject(null));
@@ -8945,7 +8949,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new Cheese( "gauda", 42 ) );
@@ -9021,7 +9025,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new ElementOperation( new MyElement() ) );
@@ -9082,13 +9086,13 @@ public class Misc2Test extends CommonTestMethodBase {
         Collection<KiePackage> knowledgePackages2 = kbuilder2.getKnowledgePackages();
 
         InternalKnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KiePackage> combinedPackages1 = new ArrayList<KiePackage>();
+        Collection<KiePackage> combinedPackages1 = new ArrayList<>();
         combinedPackages1.addAll(knowledgePackages1);
         combinedPackages1.addAll(knowledgePackages2);
         kbase1.addPackages(combinedPackages1); // Add once to make inUse=true
 
         InternalKnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KiePackage> combinedPackages2 = new ArrayList<KiePackage>();
+        Collection<KiePackage> combinedPackages2 = new ArrayList<>();
         combinedPackages2.addAll(knowledgePackages1);
         combinedPackages2.addAll(knowledgePackages2);
         kbase2.addPackages(combinedPackages2); // this will cause package deepClone

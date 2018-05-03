@@ -48,7 +48,7 @@ import static org.junit.Assert.assertEquals;
 public class StrictAnnotationTest extends CommonTestMethodBase {
 
     @Test
-    public void testUnknownAnnotation() throws Exception {
+    public void testUnknownAnnotation() {
         String str =
                 "package org.simple \n" +
                 "@Xyz rule yyy \n" +
@@ -69,7 +69,7 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testImportedAnnotation() throws Exception {
+    public void testImportedAnnotation() {
         String str =
                 "package org.simple \n" +
                 "import " + Xyz.class.getCanonicalName() + " \n" +
@@ -91,7 +91,7 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testEagerEvaluation() throws Exception {
+    public void testEagerEvaluation() {
         String str =
                 "package org.simple \n" +
                 "@Propagation(EAGER) rule xxx \n" +
@@ -117,22 +117,25 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 .addContent(str, ResourceType.DRL)
                 .build()
                 .newKieSession(conf, null);
+        try {
+            final List list = new ArrayList();
 
-        final List list = new ArrayList();
+            AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
+                public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+                    list.add("activated");
+                }
+            };
+            ksession.addEventListener(agendaEventListener);
 
-        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
-                list.add("activated");
-            }
-        };
-        ksession.addEventListener(agendaEventListener);
-
-        ksession.insert("test");
-        assertEquals(2, list.size());
+            ksession.insert("test");
+            assertEquals(2, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testWatch() throws Exception {
+    public void testWatch() {
         String str =
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
@@ -149,15 +152,18 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 .addContent(str, ResourceType.DRL)
                 .build()
                 .newKieSession();
-
-        MyClass myClass = new MyClass("test", 1);
-        ksession.insert(myClass);
-        ksession.fireAllRules();
-        assertEquals(2, myClass.getValue());
+        try {
+            MyClass myClass = new MyClass("test", 1);
+            ksession.insert(myClass);
+            ksession.fireAllRules();
+            assertEquals(2, myClass.getValue());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testStirctWatchWithoutQuotes() throws Exception {
+    public void testStirctWatchWithoutQuotes() {
         String str =
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
@@ -206,13 +212,17 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
 
         List<String> names = new ArrayList<String>();
         KieSession ksession = kieBase.newKieSession();
-        ksession.setGlobal("names", names);
+        try {
+            ksession.setGlobal("names", names);
 
-        ksession.insert(instance);
-        ksession.fireAllRules();
+            ksession.insert(instance);
+            ksession.fireAllRules();
 
-        assertEquals(1, names.size());
-        assertEquals("Mark", names.get(0));
+            assertEquals(1, names.size());
+            assertEquals("Mark", names.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -230,16 +240,19 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 .addContent(str, ResourceType.DRL)
                 .build()
                 .newKieSession();
+        try {
+            Message msg = new Message();
+            msg.setStartTime( new Timestamp( 10000 ) );
+            msg.setDuration( 1000l );
 
-        Message msg = new Message();
-        msg.setStartTime( new Timestamp( 10000 ) );
-        msg.setDuration( 1000l );
-
-        EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
-        assertEquals( 10000,
-                      efh.getStartTimestamp() );
-        assertEquals( 1000,
-                      efh.getDuration() );
+            EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
+            assertEquals( 10000,
+                          efh.getStartTimestamp() );
+            assertEquals( 1000,
+                          efh.getDuration() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @PropertyReactive

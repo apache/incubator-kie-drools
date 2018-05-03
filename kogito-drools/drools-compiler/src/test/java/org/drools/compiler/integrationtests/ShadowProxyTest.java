@@ -35,50 +35,59 @@ public class ShadowProxyTest extends CommonTestMethodBase {
     public void testShadowProxyInHierarchies() throws Exception {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ShadowProxyInHierarchies.drl"));
         final KieSession ksession = createKnowledgeSession(kbase);
-
-        ksession.insert(new Child("gp"));
-        ksession.fireAllRules();
+        try {
+            ksession.insert(new Child("gp"));
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testShadowProxyOnCollections() throws Exception {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ShadowProxyOnCollections.drl"));
         final KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+            final Cheesery cheesery = new Cheesery();
+            ksession.insert(cheesery);
 
-        final Cheesery cheesery = new Cheesery();
-        ksession.insert(cheesery);
-
-        ksession.fireAllRules();
-        assertEquals(1, results.size());
-        assertEquals(1, cheesery.getCheeses().size());
-        assertEquals(results.get(0), cheesery.getCheeses().get(0));
+            ksession.fireAllRules();
+            assertEquals(1, results.size());
+            assertEquals(1, cheesery.getCheeses().size());
+            assertEquals(results.get(0), cheesery.getCheeses().get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testShadowProxyOnCollections2() throws Exception {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ShadowProxyOnCollections2.drl"));
         final KieSession ksession = createKnowledgeSession(kbase);
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+            final List list = new ArrayList();
+            list.add("example1");
+            list.add("example2");
 
-        final List list = new ArrayList();
-        list.add("example1");
-        list.add("example2");
+            final MockPersistentSet mockPersistentSet = new MockPersistentSet(false);
+            mockPersistentSet.addAll(list);
+            final ObjectWithSet objectWithSet = new ObjectWithSet();
+            objectWithSet.setSet(mockPersistentSet);
 
-        final MockPersistentSet mockPersistentSet = new MockPersistentSet(false);
-        mockPersistentSet.addAll(list);
-        final ObjectWithSet objectWithSet = new ObjectWithSet();
-        objectWithSet.setSet(mockPersistentSet);
+            ksession.insert(objectWithSet);
 
-        ksession.insert(objectWithSet);
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
-
-        assertEquals(1, results.size());
-        assertEquals("show", objectWithSet.getMessage());
+            assertEquals(1, results.size());
+            assertEquals("show", objectWithSet.getMessage());
+        } finally {
+            ksession.dispose();
+        }
     }
 }

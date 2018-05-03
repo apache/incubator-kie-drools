@@ -38,34 +38,38 @@ public class ClassLoaderTest {
         ((ProjectClassLoader) projectClassLoader).setInternalClassLoader((ProjectClassLoader.InternalTypesClassLoader) internalTypesClassLoader);
 
         final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        final List<Future> futures = new ArrayList<>();
+        try {
+            final List<Future> futures = new ArrayList<>();
 
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            if (i % 2 == 0) {
-                futures.add(executorService.submit(() -> {
-                    try {
-                        Class.forName("nonexistant", true, projectClassLoader);
-                    } catch (ClassNotFoundException e) {
-                        //
-                    }
-                }));
-            } else {
-                futures.add(executorService.submit(() -> {
-                    try {
-                        Class.forName("nonexistant", true, internalTypesClassLoader);
-                    } catch (ClassNotFoundException e) {
-                        //
-                    }
-                }));
+            for (int i = 0; i < THREAD_COUNT; i++) {
+                if (i % 2 == 0) {
+                    futures.add(executorService.submit(() -> {
+                        try {
+                            Class.forName("nonexistant", true, projectClassLoader);
+                        } catch (ClassNotFoundException e) {
+                            //
+                        }
+                    }));
+                } else {
+                    futures.add(executorService.submit(() -> {
+                        try {
+                            Class.forName("nonexistant", true, internalTypesClassLoader);
+                        } catch (ClassNotFoundException e) {
+                            //
+                        }
+                    }));
+                }
             }
-        }
 
-        for (int i = 1; i <= THREAD_COUNT; i++) {
-            try {
-                futures.get(i - 1).get();
-            } catch (final InterruptedException | ExecutionException e) {
-                // Nothing
+            for (int i = 1; i <= THREAD_COUNT; i++) {
+                try {
+                    futures.get(i - 1).get();
+                } catch (final InterruptedException | ExecutionException e) {
+                    // Nothing
+                }
             }
+        } finally {
+            executorService.shutdownNow();
         }
     }
 

@@ -4940,16 +4940,18 @@ public class TraitTest extends CommonTestMethodBase {
         int MAX_WAIT_SECONDS = 60;
 
         final ExecutorService executorService = Executors.newFixedThreadPool( MAX_THREADS );
-        for (int threadIndex = 0; threadIndex < MAX_THREADS; threadIndex++) {
-            executorService.execute(new TraitRulesThread(threadIndex, MAX_REPETITIONS, kbase.newKieSession()));
+        try {
+            for (int threadIndex = 0; threadIndex < MAX_THREADS; threadIndex++) {
+                executorService.execute(new TraitRulesThread(threadIndex, MAX_REPETITIONS, kbase.newKieSession()));
+            }
+        } finally {
+            executorService.shutdown();
+            executorService.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            final List<Runnable> queuedTasks = executorService.shutdownNow();
+
+            assertEquals(0, queuedTasks.size());
+            assertEquals(true, executorService.isTerminated());
         }
-
-        executorService.shutdown();
-        executorService.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-        final List<Runnable> queuedTasks = executorService.shutdownNow();
-
-        assertEquals(0, queuedTasks.size());
-        assertEquals(true, executorService.isTerminated());
     }
 
 

@@ -170,12 +170,11 @@ public class KieModuleRepoTest {
                         storeOperationBarrier, threadsFinishedBarrier));
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
-        firstThread.setName("normal");
-        executor.submit(firstThread);
-        secondThread.setName("newFeature");
-        executor.submit(secondThread);
-
         try {
+            firstThread.setName("normal");
+            executor.submit(firstThread);
+            secondThread.setName("newFeature");
+            executor.submit(secondThread);
             waitFor(threadsFinishedBarrier);
         } finally {
             executor.shutdownNow();
@@ -241,11 +240,11 @@ public class KieModuleRepoTest {
         };
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
-        // 2. remove and redploy
-        executor.submit(removeRunnable);
-        executor.submit(redeployRunnable);
 
         try {
+            // 2. remove and redploy
+            executor.submit(removeRunnable);
+            executor.submit(redeployRunnable);
             waitFor(threadsFinishedBarrier);
         } finally {
             executor.shutdownNow();
@@ -456,16 +455,16 @@ public class KieModuleRepoTest {
         };
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
-        // 2. remove and redploy
-        final Thread deployThread = new Thread(deployRunnable);
-        deployThread.setName("one");
-        executor.submit(deployThread);
-
-        final Thread secondDeployThread = new Thread(deployRunnable);
-        secondDeployThread.setName("two");
-        executor.submit(secondDeployThread);
-
         try {
+            // 2. remove and redploy
+            final Thread deployThread = new Thread(deployRunnable);
+            deployThread.setName("one");
+            executor.submit(deployThread);
+
+            final Thread secondDeployThread = new Thread(deployRunnable);
+            secondDeployThread.setName("two");
+            executor.submit(secondDeployThread);
+
             waitFor(threadsFinishedBarrier);
         } finally {
             executor.shutdownNow();

@@ -118,14 +118,8 @@ public class CepFireUntilHaltTimerTest {
     }
 
     private void performTest() throws Exception {
-        ExecutorService thread = Executors.newSingleThreadExecutor();
-        final Future fireUntilHaltResult = thread.submit(new Runnable() {
-            @Override
-            public void run() {
-                ksession.fireUntilHalt();
-            }
-        });
-
+        final ExecutorService thread = Executors.newSingleThreadExecutor();
+        final Future fireUntilHaltResult = thread.submit(() -> ksession.fireUntilHalt());
         try {
 
             final int ITEMS = 10;
@@ -154,7 +148,7 @@ public class CepFireUntilHaltTimerTest {
             // wait for the engine to finish and throw exception if any was thrown
             // in engine's thread
             fireUntilHaltResult.get(60000, TimeUnit.SECONDS);
-            thread.shutdown();
+            thread.shutdownNow();
         }
     }
 

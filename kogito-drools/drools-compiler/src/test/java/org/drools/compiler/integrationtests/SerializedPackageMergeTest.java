@@ -175,15 +175,17 @@ public class SerializedPackageMergeTest {
         knowledgeBase2.addPackages(deserializedPackages);
 
         KieSession ksession = knowledgeBase2.newKieSession();
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list", list );
-        ksession.insert(new org.drools.compiler.Person("John"));
-        ksession.insert(new org.drools.compiler.Person("Paul"));
-        ksession.fireAllRules();
+        try {
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );
+            ksession.insert(new org.drools.compiler.Person("John"));
+            ksession.insert(new org.drools.compiler.Person("Paul"));
+            ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-
-        ksession.dispose();
+            assertEquals(2, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -216,10 +218,13 @@ public class SerializedPackageMergeTest {
         KieBase kbase = builder2.newKieBase();
 
         KieSession ksession = kbase.newKieSession();
-        ksession.insert(new org.drools.compiler.Person("aaa"));
-        ksession.insert(new org.drools.compiler.Cheese("aaa"));
-        ksession.fireAllRules();
-        ksession.dispose();
+        try {
+            ksession.insert(new org.drools.compiler.Person("aaa"));
+            ksession.insert(new org.drools.compiler.Cheese("aaa"));
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -251,11 +256,13 @@ public class SerializedPackageMergeTest {
         KieBase kbase = builder2.newKieBase();
 
         KieSession ksession = kbase.newKieSession();
-        ksession.setGlobal("myUtil", new org.drools.compiler.MyUtil());
-        ksession.insert(new org.drools.compiler.Person("John"));
-        int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
-
-        ksession.dispose();
+        try {
+            ksession.setGlobal("myUtil", new org.drools.compiler.MyUtil());
+            ksession.insert(new org.drools.compiler.Person("John"));
+            int fired = ksession.fireAllRules();
+            assertEquals(1, fired);
+        } finally {
+            ksession.dispose();
+        }
     }
 }

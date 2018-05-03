@@ -19,6 +19,7 @@ package org.drools.compiler.oopath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.assertj.core.api.Assertions;
@@ -59,27 +60,29 @@ public class OOPathBindTest {
                 .newKieSession();
 
         Future fireUntilHaltFuture = null;
-        if (fireUntilHalt) {
-            fireUntilHaltFuture = startFireUntilHaltThread(ksession);
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            if (fireUntilHalt) {
+                fireUntilHaltFuture = executorService.submit((Runnable) ksession::fireUntilHalt);
+            }
+
+            final List<Integer> list = new ArrayList<>();
+            ksession.setGlobal( "list", list );
+
+            final Man bob = new Man( "Bob", 40 );
+
+            ksession.insert(bob);
+            if (fireUntilHalt) {
+                waitForResultAndStopFireUntilHalt(list, ksession, fireUntilHaltFuture);
+            } else {
+                ksession.fireAllRules();
+                Assertions.assertThat(list).hasSize(1);
+            }
+            Assertions.assertThat(list).contains(40);
+        } finally {
+            executorService.shutdownNow();
+            ksession.dispose();
         }
-
-        final List<Integer> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
-
-        final Man bob = new Man( "Bob", 40 );
-
-        ksession.insert(bob);
-        if (fireUntilHalt) {
-            waitForResultAndStopFireUntilHalt(list, ksession, fireUntilHaltFuture);
-        } else {
-            ksession.fireAllRules();
-            Assertions.assertThat(list).hasSize(1);
-        }
-        Assertions.assertThat(list).contains(40);
-    }
-
-    private Future startFireUntilHaltThread(final KieSession kieSession) {
-        return Executors.newSingleThreadExecutor().submit((Runnable) kieSession::fireUntilHalt);
     }
 
     private void waitForResultAndStopFireUntilHalt(final List<Integer> resultList, final KieSession kieSession,
