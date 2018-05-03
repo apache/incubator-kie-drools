@@ -16,9 +16,14 @@
 
 package org.drools.modelcompiler;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -1336,5 +1341,111 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(((Number)results.iterator().next().getValue()).intValue(), 44);
+    }
+
+    @Test
+    public void testBigDecimalBigIntegerCoercion() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigInteger.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"1\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"rule2\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"2\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"rule3\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"3\" ) )\n" +
+                "then\n" +
+                "end\n";
+
+
+        KieSession ksession1 = getKieSession(str);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ) );
+        ksession1.insert( p1 );
+        assertEquals( 1, ksession1.fireAllRules() );
+
+    }
+
+    @Test
+    public void testSingleQuoteString() {
+        String str =
+                "rule R1 when\n" +
+                "  String( this == 'x' )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  String( this == 'xx' )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "x" );
+        ksession.insert( "xx" );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testIntToLongComparison() {
+        String str =
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $l : Long( this > $i )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 1 );
+        ksession.insert( 2L );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+
+    @Test
+    public void testUseGlobalInLHS() {
+        // DROOLS-1025
+        final String drl1 =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                        "rule R1 when\n" +
+                        "	 exists Integer() from globalInt.get()\n" +
+                        "then\n" +
+                        "  insert(new Result(\"match\"));\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.setGlobal("globalInt", new AtomicInteger(0));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "match");
+    }
+
+    @Test
+    public void testMapAccess() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "	 Map(this['type'] == 'Goods' )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("type", "Goods");
+
+        ksession.insert( map );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

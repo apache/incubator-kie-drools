@@ -132,6 +132,12 @@ public class RuleContext {
         return getDeclarationById(id).isPresent();
     }
 
+    public void addGlobalDeclarations(Map<String, Class<?>> globals) {
+        for(Map.Entry<String, Class<?>> ks : globals.entrySet()) {
+            addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue()));
+        }
+    }
+
     public Collection<String> getAvailableBindings() {
         return declarations.stream().map( DeclarationSpec::getBindingId ).collect( toList() );
     }

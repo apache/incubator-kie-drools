@@ -105,6 +105,8 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     void removeGlobal(String identifier);
 
+    void removeTypeDeclaration(String type);
+
     boolean removeObjectsGeneratedFromResource(Resource resource);
 
     List<TypeDeclaration> removeTypesGeneratedFromResource(Resource resource);

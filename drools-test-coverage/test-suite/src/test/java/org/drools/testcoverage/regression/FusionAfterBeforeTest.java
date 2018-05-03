@@ -62,15 +62,15 @@ public class FusionAfterBeforeTest {
 
     @Parameters
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations();
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test
     public void testAfterBeforeOperators() {
         final Resource drlResource =
                 KieServices.Factory.get().getResources().newClassPathResource("fusionAfterBeforeTest.drl", getClass());
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drlResource);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
+                                                                                 kieBaseTestConfiguration, drlResource);
 
         final KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption(ClockTypeOption.get("pseudo"));

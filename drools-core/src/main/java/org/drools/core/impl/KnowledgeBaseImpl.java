@@ -707,7 +707,7 @@ public class KnowledgeBaseImpl
      * @param newPkgs The package to add.
      */
     @Override
-    public void addPackages( Collection<KiePackage> newPkgs ) {
+    public void addPackages( Collection<? extends KiePackage> newPkgs ) {
         final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<>();
         for (KiePackage newPkg : newPkgs) {
             clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));

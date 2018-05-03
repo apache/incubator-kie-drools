@@ -175,7 +175,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                     registerInputsFromViewItem( existential.getExpression(), conditionMap, scopedInputs, patterVariable );
                 }
                 Condition condition = new PatternImpl( patterVariable, SingleConstraint.TRUE, ctx.bindings.get(patterVariable) );
-                conditions.add( new ExistentialPatternImpl( viewItem2Condition( existential.getExpression(), condition, new BuildContext( ctx, new LinkedHashMap<>() ) ), existential.getType() ) );
+                conditions.add( new ExistentialPatternImpl( viewItem2Condition( existential.getExpression(), condition, ctx ), existential.getType() ) );
                 continue;
             }
 

@@ -58,6 +58,6 @@ public class DeclarationImpl<T> extends VariableImpl<T> implements Declaration<T
         if ( !(var instanceof DeclarationImpl) ) return false;
         DeclarationImpl decl = (DeclarationImpl) var;
         if ( source != null ? !source.equals( decl.source ) : decl.source != null ) return false;
-        return window != null ? window.equals( decl.window ) : decl.window == null;
+        return ModelComponent.areEqualInModel(window, decl.window );
     }
 }
