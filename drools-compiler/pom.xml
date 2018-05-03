@@ -16,7 +16,7 @@
 
   <properties>
     <java.module.name>org.drools.compiler</java.module.name>
-    <excludedGroups>org.drools.compiler.TurtleTestCategory</excludedGroups>
+    <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
@@ -132,6 +132,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -249,13 +254,6 @@
           <name>enableTestStatusListener</name>
         </property>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-test-util</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
       <build>
         <plugins>
           <plugin>
