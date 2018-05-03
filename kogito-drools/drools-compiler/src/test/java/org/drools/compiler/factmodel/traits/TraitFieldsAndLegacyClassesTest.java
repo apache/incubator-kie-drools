@@ -15,9 +15,13 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
-import org.drools.compiler.TurtleTestCategory;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
@@ -31,13 +35,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

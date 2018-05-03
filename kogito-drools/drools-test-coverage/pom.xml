@@ -20,6 +20,7 @@
   <modules>
     <module>standalone</module>
     <module>test-suite</module>
+    <module>test-compiler-integration</module>
   </modules>
 
 </project>
