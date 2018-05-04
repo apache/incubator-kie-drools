@@ -10,6 +10,8 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.utils.ChainedProperties;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+
 public class AccumulateUtil {
 
     public static String getFunctionName(Supplier<Class<?>> exprClassSupplier, String functionName) {
@@ -28,6 +30,16 @@ public class AccumulateUtil {
             final Class<?> exprClass = exprClassSupplier.get();
             if (exprClass == BigDecimal.class) {
                 functionName = "averageBD";
+            }
+        } else if (functionName.equals("max")) {
+            final Class<?> exprClass = convertFromPrimitiveType( exprClassSupplier.get() );
+            if (Number.class.isAssignableFrom( exprClass )) {
+                functionName = "maxN";
+            }
+        } else if (functionName.equals("min")) {
+            final Class<?> exprClass = convertFromPrimitiveType( exprClassSupplier.get() );
+            if (Number.class.isAssignableFrom( exprClass )) {
+                functionName = "minN";
             }
         }
         return functionName;

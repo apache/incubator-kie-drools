@@ -41,4 +41,18 @@ public class EvaluationUtil {
         }
         throw new RuntimeException( "unknown operator: " + op );
     }
+
+    public static boolean compareNumbers(Number n1, Number n2, String op) {
+        if (n1 == null || n2 == null) {
+            return false;
+        }
+        int result = Double.compare( n1.doubleValue(), n2.doubleValue() );
+        switch (op) {
+            case "<" : return result < 0;
+            case "<=" : return result <= 0;
+            case ">" : return result > 0;
+            case ">=" : return result >= 0;
+        }
+        throw new RuntimeException( "unknown operator: " + op );
+    }
 }
