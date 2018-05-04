@@ -102,7 +102,7 @@ public final class KieUtil {
 
     public static KieBuilder getKieBuilderFromKieFileSystem(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                             final KieFileSystem fileSystem, final boolean failIfBuildError) {
-        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError);
+        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError, false);
     }
 
     public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -114,7 +114,7 @@ public final class KieUtil {
     public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                         final boolean failIfBuildError, final Resource... resources) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
-                                                        KieServices.Factory.get().newKieFileSystem(), failIfBuildError, resources);
+                                                        KieServices.Factory.get().newKieFileSystem(), failIfBuildError, true, resources);
     }
 
     public static KieModuleModel getDefaultKieModuleModel(final KieServices ks) {
@@ -125,7 +125,7 @@ public final class KieUtil {
     }
 
     private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                                                       final KieFileSystem kfs, final boolean failIfBuildError, final Resource... resources) {
+                                                                       final KieFileSystem kfs, final boolean failIfBuildError, final Boolean writeKieModule, final Resource... resources) {
         for (final Resource res : resources) {
             kfs.write(res);
         }
