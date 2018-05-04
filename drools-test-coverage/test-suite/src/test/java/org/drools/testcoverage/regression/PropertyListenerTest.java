@@ -63,8 +63,8 @@ public class PropertyListenerTest {
     public void runTest() {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource drlResource = kieServices.getResources().newClassPathResource("propertyListenerTest.drl", getClass());
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drlResource);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
+                                                                                 kieBaseTestConfiguration, drlResource);
 
         final KieSession session = kieBase.newKieSession();
 

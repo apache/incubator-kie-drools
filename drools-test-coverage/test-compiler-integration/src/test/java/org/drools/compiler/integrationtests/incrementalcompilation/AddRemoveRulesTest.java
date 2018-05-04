@@ -17,8 +17,8 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,87 +54,9 @@ import static org.junit.Assert.fail;
 
 public class AddRemoveRulesTest {
 
-    public String ruleNormal1 = "rule 'rn1' "+
-            "when "+
-            "$c : Counter(id==1)"+
-            "then "+
-            "System.out.println('RN1 fired!!!'); \n"+
-            " end ";
+    private final InternalKnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
 
-    public String ruleNormal2 = "rule 'rn2' "+
-            "when "+
-            "$c : Counter(id==1)"+
-            "then "+
-            "System.out.println('RN2 fired!!!'); \n"+
-            " end ";
-
-    public String ruleNormal3 = "rule 'rn3' "+
-            "when "+
-            "$c : Counter(id==1)"+
-            "then "+
-            "System.out.println('RN3 + fired!!!'); \n"+
-            " end ";
-
-
-    String rule = "rule 'test' "+
-            "when "+
-            "$c : Counter(id==1)"+
-            "eval(Integer.parseInt(\"5\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"10\")>5) "+
-            "then "+
-            "System.out.println('TEST 1 fired!!!');"+
-            "end ";
-
-    public String rule2 = "rule 'test2' "+
-            "when "+
-            "$c : Counter(id==2)"+
-            "eval(Integer.parseInt(\"10\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"20\")>10) "+
-            "then "+
-            "System.out.println('TEST 2 fired!!!'); \n"+
-            " end ";
-
-    public String rule3 = "rule 'test3' "+
-            "when "+
-            "$c : Counter(id==3)"+
-            "eval(Integer.parseInt(\"15\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"30\")>20) "+
-            "then "+
-            "System.out.println('TEST 2 fired!!!'); \n"+
-            " end ";
-
-    public String rule4 = "rule 'test4' "+
-            "when "+
-            "$c : Counter(id==4)"+
-            "eval(Integer.parseInt(\"20\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"40\")>30) "+
-            "then "+
-            "System.out.println('TEST 2 fired!!!'); \n"+
-            " end ";
-
-    public String rule5 = "rule 'test5' "+
-            "when "+
-            "$c : Counter(id==5)"+
-            "eval(Integer.parseInt(\"25\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"50\")>40) "+
-            "then "+
-            "System.out.println('TEST 2 fired!!!'); \n"+
-            " end ";
-
-    public String rule6 = "rule 'test6' "+
-            "when "+
-            "$c : Counter(id==6)"+
-            "eval(Integer.parseInt(\"30\")==$c.getId()) \n"+
-            "eval(Integer.parseInt(\"60\")>50) "+
-            "then "+
-            "System.out.println('TEST 2 fired!!!'); \n"+
-            " end ";
-
-
-
-    private InternalKnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
-
-    public String getPrefix() {
+    private String getPrefix() {
         return "package " + TestUtil.RULES_PACKAGE_NAME + " \n"+
                 "import java.util.Map;\n"+
                 "import java.util.HashMap;\n"+
@@ -148,7 +70,7 @@ public class AddRemoveRulesTest {
                 "end\n\n";
     }
 
-    private boolean loadRule(final String rule)  {
+    private void loadRule(final String rule)  {
         String prefix = getPrefix();
         prefix += rule;
 
@@ -156,18 +78,14 @@ public class AddRemoveRulesTest {
         builder.add( ResourceFactory.newReaderResource( new StringReader( prefix ) ), ResourceType.DRL);
         final Collection<KiePackage> pkgs = this.buildKnowledge(builder);
         this.addKnowledgeToBase(pkgs);
-
-        return true;
     }
 
-    public boolean addRuleToEngine(final String rule)  {
+    private void addRuleToEngine(final String rule)  {
         this.loadRule(rule);
-        return true;
     }
 
-    public boolean deleteRule(final String name) {
+    private void deleteRule(final String name) {
         this.base.removeRule(TestUtil.RULES_PACKAGE_NAME, name);
-        return true;
     }
 
     private Collection<KiePackage> buildKnowledge(final KnowledgeBuilder builder)  {
@@ -182,36 +100,104 @@ public class AddRemoveRulesTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         final KieSession knowledgeSession = base.newKieSession();
         knowledgeSession.fireAllRules();
 
+        final String ruleNormal1 = "rule 'rn1' " +
+                "when " +
+                "$c : Counter(id==1)" +
+                "then " +
+                "System.out.println('RN1 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(ruleNormal1);
+
+        final String ruleNormal2 = "rule 'rn2' " +
+                "when " +
+                "$c : Counter(id==1)" +
+                "then " +
+                "System.out.println('RN2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(ruleNormal2);
+
+        final String ruleNormal3 = "rule 'rn3' " +
+                "when " +
+                "$c : Counter(id==1)" +
+                "then " +
+                "System.out.println('RN3 + fired!!!'); \n" +
+                " end ";
         addRuleToEngine(ruleNormal3);
 
+        final String rule = "rule 'test' " +
+                "when " +
+                "$c : Counter(id==1)" +
+                "eval(Integer.parseInt(\"5\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"10\")>5) " +
+                "then " +
+                "System.out.println('TEST 1 fired!!!');" +
+                "end ";
         addRuleToEngine(rule);
+
+        final String rule2 = "rule 'test2' " +
+                "when " +
+                "$c : Counter(id==2)" +
+                "eval(Integer.parseInt(\"10\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"20\")>10) " +
+                "then " +
+                "System.out.println('TEST 2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(rule2);
+
+        final String rule3 = "rule 'test3' " +
+                "when " +
+                "$c : Counter(id==3)" +
+                "eval(Integer.parseInt(\"15\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"30\")>20) " +
+                "then " +
+                "System.out.println('TEST 2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(rule3);
+
+        final String rule4 = "rule 'test4' " +
+                "when " +
+                "$c : Counter(id==4)" +
+                "eval(Integer.parseInt(\"20\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"40\")>30) " +
+                "then " +
+                "System.out.println('TEST 2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(rule4);
+
+        final String rule5 = "rule 'test5' " +
+                "when " +
+                "$c : Counter(id==5)" +
+                "eval(Integer.parseInt(\"25\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"50\")>40) " +
+                "then " +
+                "System.out.println('TEST 2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(rule5);
+
+        final String rule6 = "rule 'test6' " +
+                "when " +
+                "$c : Counter(id==6)" +
+                "eval(Integer.parseInt(\"30\")==$c.getId()) \n" +
+                "eval(Integer.parseInt(\"60\")>50) " +
+                "then " +
+                "System.out.println('TEST 2 fired!!!'); \n" +
+                " end ";
         addRuleToEngine(rule6);
 
-        assertTrue(TestUtil.getRulesCount(base) == 9);
+        assertEquals(9, TestUtil.getRulesCount(base));
 
-        System.out.println("Primary remove");
         deleteRule("test6");
-
-        assertTrue(TestUtil.getRulesCount(base) == 8);
+        assertEquals(8, TestUtil.getRulesCount(base));
 
         addRuleToEngine(rule6);
+        assertEquals(9, TestUtil.getRulesCount(base));
 
-        assertTrue(TestUtil.getRulesCount(base) == 9);
-
-        System.out.println("Secondary remove");
         deleteRule("test6");
-
-        assertTrue(TestUtil.getRulesCount(base) == 8);
+        assertEquals(8, TestUtil.getRulesCount(base));
     }
 
     @Test
@@ -287,7 +273,7 @@ public class AddRemoveRulesTest {
 
         // Create kSession and initialize it
         final KieSession kSession = kbase.newKieSession();
-        final FactHandle fh = kSession.insert(new Float( 0.0f ) );
+        final FactHandle fh = kSession.insert(0.0f);
         kSession.fireAllRules();
 
         ((InternalKnowledgeBase)kSession.getKieBase()).addPackages( kbuilder.getKnowledgePackages() );
@@ -339,16 +325,6 @@ public class AddRemoveRulesTest {
         kSession.getKieBase().removeRule( "org.drools.test", "Two" );
         kSession.fireAllRules();
     }
-
-    private String simpleRuleInTestPackage = "package org.drools.test; \n" +
-            "global java.util.List list; \n" +
-            "rule \"Later\" " +
-            "when " +
-            "   $s : String( ) " +
-            "then " +
-            "   System.out.println( \"ok\" ); " +
-            "   list.add( \"ok\" ); \n" +
-            "end ";
 
     @Test
     public void testAddRemoveWithReloadInSamePackage_4Rules() {
@@ -500,13 +476,22 @@ public class AddRemoveRulesTest {
     }
 
     private void testAddRemoveWithReloadInSamePackage(final String drl) {
+        final String simpleRuleInTestPackage = "package org.drools.test; \n" +
+                "global java.util.List list; \n" +
+                "rule \"Later\" " +
+                "when " +
+                "   $s : String( ) " +
+                "then " +
+                "   System.out.println( \"ok\" ); " +
+                "   list.add( \"ok\" ); \n" +
+                "end ";
         final KieSession knowledgeSession = TestUtil.buildSessionInSteps(drl, simpleRuleInTestPackage);
         final List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.insert("go");
         knowledgeSession.fireAllRules();
-        assertEquals(Arrays.asList("ok"), list);
+        assertEquals(Collections.singletonList("ok"), list);
     }
 
     @Test
@@ -550,7 +535,7 @@ public class AddRemoveRulesTest {
         final KieSession session = TestUtil.buildSessionInSteps( rule1, rule2 );
         session.getKieBase().removeKiePackage(packageName);
         session.fireAllRules();
-        final Map<String, Object> fact = new HashMap<String, Object>();
+        final Map<String, Object> fact = new HashMap<>();
         fact.put("name", "Michael");
         session.insert(fact);
         session.fireAllRules();
@@ -579,7 +564,7 @@ public class AddRemoveRulesTest {
 
         final KieSession session = TestUtil.buildSessionInSteps(true, rule1, rule2);
         session.fireAllRules();
-        final Map<String, Object> fact = new HashMap<String, Object>();
+        final Map<String, Object> fact = new HashMap<>();
         fact.put("name", "Michael");
         fact.put("test", 1);
         session.insert(fact);
@@ -642,7 +627,7 @@ public class AddRemoveRulesTest {
                 "System.out.println('test  rule 2'); \n"+
                 "end";
 
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("type", "Goods");
         map.put("kind", "Stuff");
         map.put("x", "y");
@@ -716,7 +701,7 @@ public class AddRemoveRulesTest {
                 " System.out.println('test in rule2'); \n"+
                 "end";
 
-        final Map<String, Object> fact = new HashMap<String, Object>();
+        final Map<String, Object> fact = new HashMap<>();
         fact.put("type", "Cinema");
 
         final StatelessKieSession session = base.newStatelessKieSession();
@@ -737,7 +722,6 @@ public class AddRemoveRulesTest {
         final String packageName = "pk1";
         final String packageName2 = "pk2";
         final String rule1Name = "rule1";
-        final String rule2Name = rule1Name;
 
         final String rule1 = "package " + packageName + ";" +
                 "rule " + rule1Name + " \n" +
@@ -748,7 +732,7 @@ public class AddRemoveRulesTest {
                 "end";
 
         final String rule2 = "package " + packageName2 + ";" +
-                "rule " + rule2Name + " \n" +
+                "rule " + rule1Name + " \n" +
                 "when \n" +
                 " Long( ) \n" +
                 "then \n" +
@@ -758,7 +742,7 @@ public class AddRemoveRulesTest {
         final KieSession session = TestUtil.buildSessionInSteps( rule1, rule2 );
         session.getKieBase().removeKiePackage(packageName);
         session.getKieBase().removeKiePackage(packageName2);
-        session.insert(new String());
+        session.insert("");
         session.fireAllRules();
     }
 
@@ -1081,7 +1065,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2, rule3);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, 1, 2, "1");
@@ -1138,7 +1122,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, 1, 1, "1");
@@ -1203,7 +1187,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2, rule3);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1, 2, "1");
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -1218,7 +1202,7 @@ public class AddRemoveRulesTest {
         }
     }
 
-    String[] getRules1Pattern() {
+    private String[] getRules1Pattern() {
         final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
                              "rule " + TestUtil.RULE1_NAME + " \n" +
@@ -1240,7 +1224,7 @@ public class AddRemoveRulesTest {
         return new String[] { rule1, rule2 };
     }
 
-    String[] getRules2Pattern() {
+    private String[] getRules2Pattern() {
         final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
                              "rule " + TestUtil.RULE1_NAME + " \n" +
@@ -1270,7 +1254,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1292,7 +1276,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1314,7 +1298,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1339,7 +1323,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1359,7 +1343,7 @@ public class AddRemoveRulesTest {
     }
 
 
-    String[] getRules3Pattern() {
+    private String[] getRules3Pattern() {
         final String rule1 = "package " + TestUtil.RULES_PACKAGE_NAME + ";" +
                              "global java.util.List list\n" +
                              "rule " + TestUtil.RULE1_NAME + " \n" +
@@ -1402,7 +1386,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1429,7 +1413,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1456,7 +1440,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
@@ -1486,7 +1470,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3, 4, 5);
             kieSession.fireAllRules();
@@ -1498,7 +1482,6 @@ public class AddRemoveRulesTest {
             final Map<String, Rule>        rulesMap = rulestoMap(kieSession.getKieBase());
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            final InternalFactHandle  fh2 = (InternalFactHandle) kieSession.getFactHandle(4);
             final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
             final LeftTuple lt1 = fh1.getFirstLeftTuple();
 
@@ -1562,7 +1545,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rules[0], rules[1]);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3, 4, 5);
             kieSession.fireAllRules();
@@ -1574,7 +1557,6 @@ public class AddRemoveRulesTest {
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            final InternalFactHandle  fh2 = (InternalFactHandle) kieSession.getFactHandle(4);
             final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
             final LeftTuple lt1 = fh1.getFirstLeftTuple();
 
@@ -1633,9 +1615,8 @@ public class AddRemoveRulesTest {
     }
 
     private void testRemoveWithSplitStartBasicTestSet(final String rule1, final String rule2,
-            final String rule1Name, final String rule2Name) {
-
-        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
+                                                      final String rule1Name, final String rule2Name) {
+        final Map<String, Object> additionalGlobals = new HashMap<>();
         additionalGlobals.put("globalInt", new AtomicInteger(0));
 
         AddRemoveTestCases.runAllTestCases(rule1, rule2, rule1Name, rule2Name, additionalGlobals,1, 2, "1");
@@ -1668,7 +1649,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1, 2, 3);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -1709,7 +1690,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -1749,7 +1730,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
@@ -1787,7 +1768,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -1827,7 +1808,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
@@ -1863,7 +1844,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -1900,7 +1881,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -1936,7 +1917,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -1974,7 +1955,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
@@ -2047,7 +2028,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME,  TestUtil.RULE1_NAME);
@@ -2119,7 +2100,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.addRules(kieSession, rule2);
@@ -2155,7 +2136,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -2193,7 +2174,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -2304,7 +2285,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -2345,7 +2326,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -2386,7 +2367,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
@@ -2435,7 +2416,7 @@ public class AddRemoveRulesTest {
 
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
@@ -2482,7 +2463,7 @@ public class AddRemoveRulesTest {
         kieSession.insert(3);
         kieSession.insert("1");
 
-        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
         kieSession.insert(mapFact);
 
@@ -2530,7 +2511,7 @@ public class AddRemoveRulesTest {
         kieSession.insert(3);
         kieSession.insert("1");
 
-        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
         kieSession.insert(mapFact);
         kieSession.fireAllRules();
@@ -2573,7 +2554,7 @@ public class AddRemoveRulesTest {
         kieSession.insert(3);
         kieSession.insert("1");
 
-        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
         kieSession.insert(mapFact);
 

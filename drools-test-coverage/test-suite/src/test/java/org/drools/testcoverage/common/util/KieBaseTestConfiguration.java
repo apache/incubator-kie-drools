@@ -46,7 +46,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -76,7 +76,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -106,7 +106,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -136,7 +136,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -166,7 +166,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -196,7 +196,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -226,7 +226,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -256,7 +256,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -286,7 +286,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
             kieBaseModel.setDefault(true);
@@ -316,7 +316,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -346,7 +346,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -376,7 +376,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
-            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel();
+            final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
@@ -390,5 +390,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
             return kieBaseConfiguration;
         }
-    }
+    };
+
+    private static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
 }

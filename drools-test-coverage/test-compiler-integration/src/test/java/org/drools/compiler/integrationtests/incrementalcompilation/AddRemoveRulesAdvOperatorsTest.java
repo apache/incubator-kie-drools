@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.TurtleTestCategory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.runtime.KieSession;
+import org.kie.test.testcategory.TurtleTestCategory;
 
 /**
  * Tests adding and removing rules with advanced operators.
@@ -624,12 +624,12 @@ public class AddRemoveRulesAdvOperatorsTest {
                 " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                 "end";
 
-        Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, mapFact, 1, "1");
@@ -695,12 +695,12 @@ public class AddRemoveRulesAdvOperatorsTest {
                 " list.add('" + TestUtil.RULE3_NAME + "'); \n" +
                 "end";
 
-        Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
 
         final KieSession kieSession = TestUtil.createSession(rule1);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, mapFact, 1, "1");
@@ -724,15 +724,15 @@ public class AddRemoveRulesAdvOperatorsTest {
     }
 
     private Object[] getFactsContains() {
-        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
 
         return new Object[]{mapFact, 1, 2, "1"};
     }
 
     private Map<String, Object> getGlobalsMemberOf(final String memberString) {
-        final Map<String, Object> globals = new HashMap<String, Object>(1);
-        final List<String> memberList = new ArrayList<String>(1);
+        final Map<String, Object> globals = new HashMap<>(1);
+        final List<String> memberList = new ArrayList<>(1);
         memberList.add(memberString);
         globals.put("memberList", memberList);
         return globals;
