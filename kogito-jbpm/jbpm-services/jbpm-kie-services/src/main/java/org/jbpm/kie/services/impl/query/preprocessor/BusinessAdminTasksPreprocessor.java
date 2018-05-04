@@ -16,19 +16,21 @@
 
 package org.jbpm.kie.services.impl.query.preprocessor;
 
-import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONAL_ENTITY;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONAL_ENTITY;
 
 public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
 
@@ -39,30 +41,40 @@ public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
     public static final String ADMIN_GROUP = System.getProperty("org.jbpm.ht.admin.group",
                                                                 "Administrators");
 
-    private IdentityProvider identityProvider;    
+    private IdentityProvider identityProvider;
 
-    public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
+    private UserGroupCallback userGroupCallback;
+
+    public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider,
+                                          UserGroupCallback userGroupCallback,
+                                          DataSetMetadata metadata) {
         super(metadata);
         this.identityProvider = identityProvider;
+        this.userGroupCallback = userGroupCallback;
     }
-
 
     @SuppressWarnings("rawtypes")
     @Override
     public void preprocess(DataSetLookup lookup) {
-        if (identityProvider == null) {
+        if (identityProvider == null || userGroupCallback == null) {
             return;
         }
 
-        if (ADMIN_USER.equals(identityProvider.getName()) ||
-                identityProvider.getRoles().stream().filter(s -> s.equals(ADMIN_GROUP)).findFirst().isPresent()) {
+        if (ADMIN_USER.equals(identityProvider.getName())) {
             return;
         }
 
-        final List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
+        final List<String> groups = Optional.ofNullable(userGroupCallback.getGroupsForUser(identityProvider.getName())).orElse(new ArrayList<>());
+        if (groups.stream().filter(s -> s.equals(ADMIN_GROUP)).findFirst().isPresent()) {
+            return;
+        }
+
+        final List<Comparable> orgEntities = new ArrayList<>(groups);
         orgEntities.add(identityProvider.getName());
-        final ColumnFilter columnFilter = equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities);
-        LOGGER.debug("Adding column filter: {}", columnFilter);
+        final ColumnFilter columnFilter = equalsTo(COLUMN_ORGANIZATIONAL_ENTITY,
+                                                   orgEntities);
+        LOGGER.debug("Adding column filter: {}",
+                     columnFilter);
 
         if (lookup.getFirstFilterOp() != null) {
             lookup.getFirstFilterOp().addFilterColumn(columnFilter);
@@ -71,8 +83,7 @@ public class BusinessAdminTasksPreprocessor extends UserTasksPreprocessor {
             filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
-        
+
         super.preprocess(lookup);
     }
-
 }

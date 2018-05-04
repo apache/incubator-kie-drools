@@ -16,6 +16,7 @@
 
 package org.jbpm.kie.services.test;
 
+import static java.util.Collections.emptyList;
 import static org.jbpm.services.api.query.QueryResultMapper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,13 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -483,12 +478,16 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
         assertNotNull(processInstanceId);
         identityProvider.setName("notvalid");
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(identityProvider.getName(), emptyList());
 
         List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
         assertEquals(0, taskInstanceLogs.size());
 
         identityProvider.setName("salaboy");
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(identityProvider.getName(), emptyList());
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
@@ -536,14 +535,16 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertNotNull(processInstanceId);
 
         identityProvider.setName(potentialOwner);
-        identityProvider.setRoles(roles);
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(potentialOwner, roles);
 
         List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
 
         identityProvider.setName(excludedOwner);
-        identityProvider.setRoles(roles);
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(excludedOwner, roles);
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
@@ -596,6 +597,8 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(0, taskInstanceLogs.size());
 
         identityProvider.setName("Administrator");
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(identityProvider.getName(), emptyList());
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
@@ -603,6 +606,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 
         identityProvider.setName("salaboy");
         identityProvider.setRoles(Arrays.asList("Administrators"));
+        userGroupCallback.setUserGroups("salaboy", Arrays.asList("Administrators"));
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
@@ -1010,7 +1014,8 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         // let's grant managers role so process can be started
         List<String> roles = new ArrayList<String>();
         roles.add("managers");
-        identityProvider.setRoles(roles);
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(identityProvider.getName(), roles);
 
         query = new SqlQueryDefinition("getMyTaskInstances", dataSourceJNDIname, Target.FILTERED_PO_TASK);
         query.setExpression(PO_TASK_QUERY);
@@ -1036,6 +1041,8 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertNotNull(processInstanceId);
 
         identityProvider.setName("salaboy");
+        identityProvider.setRoles(roles);
+        userGroupCallback.setUserGroups(identityProvider.getName(), roles);
 
         List<UserTaskInstanceDesc> taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
@@ -1048,8 +1055,9 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         // let's now change the roles so user should not see instances
         roles.clear();
         roles.add("employees");
-        identityProvider.setRoles(roles);
         identityProvider.setName("anotherUser");
+        identityProvider.setRoles(emptyList());
+        userGroupCallback.setUserGroups(identityProvider.getName(), roles);
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
@@ -1069,6 +1077,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         List<String> roles = new ArrayList<String>();
         roles.add("managers");
         identityProvider.setRoles(roles);
+        userGroupCallback.setUserGroups(identityProvider.getName(), roles);
 
         query = new SqlQueryDefinition("getTaskInstancesAdmin", dataSourceJNDIname, Target.FILTERED_BA_TASK);
         query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
@@ -1102,6 +1111,8 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(0, taskInstanceLogs.size());
 
         identityProvider.setName("Administrator");
+        identityProvider.setRoles(roles);
+        userGroupCallback.setUserGroups(identityProvider.getName(), emptyList());
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext(), QueryParam.groupBy(COLUMN_TASKID));
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
@@ -1226,7 +1237,6 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 
     }
 
-    
     @Test
     public void testGetProcessInstancesGroupWithoutInterval() {
 
@@ -1266,7 +1276,6 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processService.abortProcessInstance(processInstanceId2);
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
-
     }
     
     protected void setFieldValue(Object instance, String fieldName, Object value) {

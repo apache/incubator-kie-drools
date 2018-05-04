@@ -34,7 +34,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.task.TaskLifeCycleEventListener;
-import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
@@ -83,7 +82,8 @@ public class CDITestHelperNoTaskService {
     }
 
     @Produces
-    public UserGroupCallback getUserGroupCallback() {
+    @ApplicationScoped
+    public TestUserGroupCallbackImpl getUserGroupCallback() {
         return new TestUserGroupCallbackImpl();
     }
 

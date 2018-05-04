@@ -40,6 +40,7 @@ import org.jbpm.kie.services.impl.UserTaskServiceImpl;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.test.TestIdentityProvider;
+import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
@@ -50,7 +51,6 @@ import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.api.query.QueryService;
-import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -95,6 +95,7 @@ public abstract class AbstractKieServicesBaseTest {
 	protected QueryService queryService;
 
 	protected TestIdentityProvider identityProvider;
+    protected TestUserGroupCallbackImpl userGroupCallback;
 
     protected FormManagerService formManagerService;
 
@@ -123,6 +124,7 @@ public abstract class AbstractKieServicesBaseTest {
 		buildDatasource();
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
 		identityProvider = new TestIdentityProvider();
+        userGroupCallback = new TestUserGroupCallbackImpl();
         formManagerService = new FormManagerServiceImpl();
 
 		// build definition service
@@ -130,6 +132,7 @@ public abstract class AbstractKieServicesBaseTest {
 
 		queryService = new QueryServiceImpl();
 		((QueryServiceImpl)queryService).setIdentityProvider(identityProvider);
+        ((QueryServiceImpl)queryService).setUserGroupCallback(userGroupCallback);
 		((QueryServiceImpl)queryService).setCommandService(new TransactionalCommandService(emf));
 		((QueryServiceImpl)queryService).init();
 
@@ -349,6 +352,10 @@ public abstract class AbstractKieServicesBaseTest {
 
     public void setIdentityProvider(TestIdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
+    }
+
+    public void setUserGroupCallback(TestUserGroupCallbackImpl userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
     }
 
     protected static void waitForTheOtherThreads(CyclicBarrier barrier) {

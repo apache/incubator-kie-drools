@@ -24,6 +24,7 @@ import org.dashbuilder.dataset.DataSetMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -37,6 +38,9 @@ public class PotOwnerTasksPreprocessorTest {
 
     @Mock
     IdentityProvider identityProvider;
+
+    @Mock
+    UserGroupCallback userGroupCallback;
     
     @Mock
     DataSetMetadata metaData;
@@ -57,7 +61,8 @@ public class PotOwnerTasksPreprocessorTest {
         String role2 = "role2";
         String userId = "userId";
 
-        when(identityProvider.getRoles()).thenReturn(Arrays.asList(role1, role2));
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Arrays.asList(role1,
+                                                                                  role2));
         when(identityProvider.getName()).thenReturn(userId);
 
         potOwnerTasksPreprocessor.preprocess(dataSetLookup);
@@ -70,13 +75,26 @@ public class PotOwnerTasksPreprocessorTest {
     public void testSetUserWithoutRoles() {
         String userId = "userId";
 
-        when(identityProvider.getRoles()).thenReturn(Collections.emptyList());
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Collections.emptyList());
         when(identityProvider.getName()).thenReturn(userId);
 
         potOwnerTasksPreprocessor.preprocess(dataSetLookup);
 
         assertEquals("((ENTITY_ID is_null  OR ENTITY_ID != " + userId + ") AND ((ID = " + userId + " AND (ACTUALOWNER =  OR ACTUALOWNER is_null )) OR ACTUALOWNER = " + userId + "))",
                 dataSetLookup.getFirstFilterOp().getColumnFilterList().get(0).toString());
+    }
+
+    @Test
+    public void testNullGroups() {
+        String userId = "userId";
+
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(null);
+        when(identityProvider.getName()).thenReturn(userId);
+
+        potOwnerTasksPreprocessor.preprocess(dataSetLookup);
+
+        assertEquals("((ENTITY_ID is_null  OR ENTITY_ID != " + userId + ") AND ((ID = " + userId + " AND (ACTUALOWNER =  OR ACTUALOWNER is_null )) OR ACTUALOWNER = " + userId + "))",
+                     dataSetLookup.getFirstFilterOp().getColumnFilterList().get(0).toString());
     }
 
 }

@@ -26,9 +26,9 @@ import static java.util.Arrays.asList;
 
 public class TestUserGroupCallbackImpl implements UserGroupCallback {
 
-    private static Map<String, List<String>> userGroupMap;
+    private Map<String, List<String>> userGroupMap;
 
-    static {
+    public TestUserGroupCallbackImpl() {
         userGroupMap = new HashMap<>();
         userGroupMap.put("maciej", asList("admins"));
         userGroupMap.put("tihomir", asList("supplier"));
@@ -38,6 +38,10 @@ public class TestUserGroupCallbackImpl implements UserGroupCallback {
         userGroupMap.put("katy", asList("HR","IT","Accounting", "admins"));
         userGroupMap.put("john", asList("HR","Accounting"));
         userGroupMap.put("mary", asList("HR"));
+    }
+
+    public void setUserGroups(String user, List<String> groups){
+        userGroupMap.put(user, groups);
     }
 
     @Override

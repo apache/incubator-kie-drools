@@ -34,6 +34,7 @@ import org.jbpm.services.cdi.Deactivate;
 import org.jbpm.services.cdi.Deploy;
 import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.cdi.BootOnLoad;
 
@@ -44,10 +45,15 @@ public class QueryServiceCDIImpl extends QueryServiceImpl {
     
     @Inject
     private Instance<DataSetDefRegistry> dataSetDefRegistryInstance;
+
     @Inject
     private Instance<DataSetManager> dataSetManagerInstance;    
+
     @Inject
     private Instance<DataSetProviderRegistry> providerRegistryInstance;
+
+    @Inject
+    private Instance<UserGroupCallback> userGroupCallbackInstance;
 
     @Inject
     @Override
@@ -67,6 +73,12 @@ public class QueryServiceCDIImpl extends QueryServiceImpl {
         super.setDeploymentRolesManager(deploymentRolesManager);
     }
 
+    @Inject
+    @Override
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        super.setUserGroupCallback(userGroupCallback);
+    }
+
     @PostConstruct
     @Override
     public void init() {
@@ -78,6 +90,9 @@ public class QueryServiceCDIImpl extends QueryServiceImpl {
         }
         if (!providerRegistryInstance.isUnsatisfied()) {
             setProviderRegistry(providerRegistryInstance.get());
+        }
+        if (!userGroupCallbackInstance.isUnsatisfied()) {
+            setUserGroupCallback(userGroupCallbackInstance.get());
         }
         super.init();
     }

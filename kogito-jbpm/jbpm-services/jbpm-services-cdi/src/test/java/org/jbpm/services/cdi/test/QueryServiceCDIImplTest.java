@@ -16,8 +16,6 @@
 
 package org.jbpm.services.cdi.test;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -28,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.test.QueryServiceImplTest;
 import org.jbpm.kie.services.test.TestIdentityProvider;
+import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
@@ -40,6 +39,8 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Collections.emptyList;
 
 @RunWith(Arquillian.class)
 public class QueryServiceCDIImplTest extends QueryServiceImplTest {
@@ -170,11 +171,16 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
         super.setQueryService(queryService);
     }
     
-    
-    @Inject   
+    @Inject
     @Override
     public void setIdentityProvider(TestIdentityProvider identityProvider) {
         super.setIdentityProvider(identityProvider);
+    }
+
+    @Inject
+    @Override
+    public void setUserGroupCallback(TestUserGroupCallbackImpl userGroupCallback) {
+        super.setUserGroupCallback(userGroupCallback);
     }
 
     @After
@@ -188,7 +194,8 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskVariableImpl te"));
         logger.debug("Deleted " + deleted);
         
-        identityProvider.setRoles(new ArrayList<String>());
+        identityProvider.setRoles(emptyList());
         identityProvider.setName("testUser");
+        userGroupCallback.setUserGroups("testUser", emptyList());
     }
 }

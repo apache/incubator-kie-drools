@@ -37,6 +37,7 @@ import org.jbpm.services.ejb.api.query.QueryServiceEJBRemote;
 import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
 import org.jbpm.services.ejb.impl.tx.TransactionalCommandServiceEJBImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 
 
@@ -49,6 +50,9 @@ public class QueryServiceEJBImpl extends QueryServiceImpl implements QueryServic
     @Inject
     private Instance<IdentityProvider> identityProvider;
 
+    @Inject
+    private Instance<UserGroupCallback> userGroupCallback;
+
     @Resource
     private EJBContext context;
     // inject resources
@@ -60,34 +64,33 @@ public class QueryServiceEJBImpl extends QueryServiceImpl implements QueryServic
         } else {
             setIdentityProvider(identityProvider.get());
         }
+        if (!userGroupCallback.isUnsatisfied()) {
+            setUserGroupCallback(userGroupCallback.get());
+        }
         super.init();
     }
 
     @EJB(beanInterface=TransactionalCommandServiceEJBImpl.class)
     @Override
     public void setCommandService(TransactionalCommandService commandService) {
-        
         super.setCommandService(commandService);
     }
 
     @Lock(LockType.WRITE)
     @Override
     public void registerQuery(QueryDefinition queryDefinition) throws QueryAlreadyRegisteredException {
-        
         super.registerQuery(queryDefinition);
     }
 
     @Lock(LockType.WRITE)
     @Override
     public void replaceQuery(QueryDefinition queryDefinition) {
-        
         super.replaceQuery(queryDefinition);
     }
 
     @Lock(LockType.WRITE)
     @Override
     public void unregisterQuery(String uniqueQueryName) throws QueryNotFoundException {
-        
         super.unregisterQuery(uniqueQueryName);
     }
 

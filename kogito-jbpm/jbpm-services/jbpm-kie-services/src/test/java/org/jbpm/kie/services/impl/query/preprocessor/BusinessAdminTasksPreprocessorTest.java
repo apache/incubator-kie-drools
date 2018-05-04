@@ -23,6 +23,7 @@ import org.dashbuilder.dataset.DataSetMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -35,6 +36,9 @@ public class BusinessAdminTasksPreprocessorTest {
 
     @Mock
     IdentityProvider identityProvider;
+
+    @Mock
+    UserGroupCallback userGroupCallback;
 
     @Mock
     DataSetMetadata metaData;
@@ -50,6 +54,7 @@ public class BusinessAdminTasksPreprocessorTest {
         System.setProperty("org.jbpm.ht.admin.user",
                            "admin");
         preprocessor = new BusinessAdminTasksPreprocessor(identityProvider,
+                                                          userGroupCallback,
                                                           metaData);
     }
 
@@ -60,8 +65,8 @@ public class BusinessAdminTasksPreprocessorTest {
         String role2 = "role2";
         String userId = "userId";
 
-        when(identityProvider.getRoles()).thenReturn(Arrays.asList(role1,
-                                                                   role2));
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Arrays.asList(role1,
+                                                                                  role2));
         when(identityProvider.getName()).thenReturn(userId);
 
         preprocessor.preprocess(dataSetLookup);
@@ -77,8 +82,8 @@ public class BusinessAdminTasksPreprocessorTest {
         String role2 = "role2";
         String userId = "admin";
 
-        when(identityProvider.getRoles()).thenReturn(Arrays.asList(role1,
-                                                                   role2));
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Arrays.asList(role1,
+                                                                                  role2));
         when(identityProvider.getName()).thenReturn(userId);
 
         preprocessor.preprocess(dataSetLookup);
@@ -94,8 +99,8 @@ public class BusinessAdminTasksPreprocessorTest {
         String role2 = "role2";
         String userId = "userId";
 
-        when(identityProvider.getRoles()).thenReturn(Arrays.asList(role1,
-                                                                   role2));
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Arrays.asList(role1,
+                                                                                  role2));
         when(identityProvider.getName()).thenReturn(userId);
 
         preprocessor.preprocess(dataSetLookup);
@@ -109,7 +114,21 @@ public class BusinessAdminTasksPreprocessorTest {
         dataSetLookup = new DataSetLookup();
         String userId = "userId";
 
-        when(identityProvider.getRoles()).thenReturn(Collections.emptyList());
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(Collections.emptyList());
+        when(identityProvider.getName()).thenReturn(userId);
+
+        preprocessor.preprocess(dataSetLookup);
+
+        assertEquals("ID = userId",
+                     dataSetLookup.getFirstFilterOp().getColumnFilterList().get(0).toString());
+    }
+
+    @Test
+    public void testNullGroups() {
+        dataSetLookup = new DataSetLookup();
+        String userId = "userId";
+
+        when(userGroupCallback.getGroupsForUser(userId)).thenReturn(null);
         when(identityProvider.getName()).thenReturn(userId);
 
         preprocessor.preprocess(dataSetLookup);

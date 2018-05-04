@@ -27,11 +27,13 @@ import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONA
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,22 +41,28 @@ import org.slf4j.LoggerFactory;
 public class PotOwnerTasksPreprocessor extends UserTasksPreprocessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PotOwnerTasksPreprocessor.class);
-    
+
     private IdentityProvider identityProvider;
-    
-    public PotOwnerTasksPreprocessor(IdentityProvider identityProvider, DataSetMetadata metadata) {
+
+    private UserGroupCallback userGroupCallback;
+
+    public PotOwnerTasksPreprocessor(IdentityProvider identityProvider,
+                                     UserGroupCallback userGroupCallback,
+                                     DataSetMetadata metadata) {
         super(metadata);
-        this.identityProvider = identityProvider;        
+        this.identityProvider = identityProvider;
+        this.userGroupCallback = userGroupCallback;
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public void preprocess(DataSetLookup lookup) {
-        if (identityProvider == null) {
+        if (identityProvider == null || userGroupCallback == null) {
             return;
         }
 
-        final List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
+        final List<String> groupsForUser = Optional.ofNullable(userGroupCallback.getGroupsForUser(identityProvider.getName())).orElse(new ArrayList<>());
+        final List<Comparable> orgEntities = new ArrayList<>(groupsForUser);
         orgEntities.add(identityProvider.getName());
 
         final ColumnFilter myGroupFilter = AND(
@@ -74,8 +82,8 @@ public class PotOwnerTasksPreprocessor extends UserTasksPreprocessor {
             filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
-        
-        super.preprocess(lookup);       
+
+        super.preprocess(lookup);
     }
 
 }
