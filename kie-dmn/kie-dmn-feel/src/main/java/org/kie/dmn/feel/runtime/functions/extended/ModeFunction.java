@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.signavio.feel.runtime.functions;
+package org.kie.dmn.feel.runtime.functions.extended;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class ModeFunction
         extends BaseFEELFunction {
@@ -40,22 +45,27 @@ public class ModeFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         if (list.isEmpty()) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be empty"));
+            return FEELFnResult.ofResult( Collections.emptyList() );
         }
 
-        Map<?, Long> collect = list.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        Map<BigDecimal, Long> collect = list.stream().map(EvalHelper::getBigDecimalOrNull).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         long maxFreq = collect.values().stream().mapToLong(Long::longValue).max().orElse(-1);
 
-        List<?> mostFrequents = collect.entrySet().stream()
-                .filter(kv -> kv.getValue() == maxFreq)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+        List<BigDecimal> mostFrequents = collect.entrySet().stream()
+                                       .filter(kv -> kv.getValue() == maxFreq)
+                                       .map(Map.Entry::getKey)
+                                       .collect(Collectors.toList());
 
-        if (mostFrequents.size() == 1) {
-            return FEELFnResult.ofResult(mostFrequents.get(0));
-        } else {
-            return FEELFnResult.ofResult(mostFrequents.stream().sorted().collect(Collectors.toList()));
+        return FEELFnResult.ofResult(mostFrequents.stream().sorted().collect(Collectors.toList()));
+    }
+
+    public FEELFnResult<Object> invoke(@ParameterName("n") Object[] list) {
+        if ( list == null ) {
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "n", "the single value list cannot be null" ) );
         }
+
+        return invoke( Arrays.asList( list ) );
     }
 }
