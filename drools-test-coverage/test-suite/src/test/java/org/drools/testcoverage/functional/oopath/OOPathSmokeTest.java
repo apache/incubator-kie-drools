@@ -22,6 +22,7 @@ import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class OOPathSmokeTest {
     @Test
     public void testBuildTwoKieBases() {
         final Resource drlResource = KIE_SERVICES.getResources().newUrlResource(this.getClass().getResource("oopath.drl"));
-        KieBaseUtil.getKieModuleAndBuildInstallModule(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
+        KieUtil.getKieModuleFromResources(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
 
         // creating two KieContainers and KieBases may trigger deep cloning
         for (int i = 0; i < 2; i++) {

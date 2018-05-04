@@ -8,19 +8,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.TurtleTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.test.testcategory.TurtleTestCategory;
 
 @Category(TurtleTestCategory.class)
 @RunWith(Parameterized.class)
 public class AddRemoveRulesAddDeleteFactsTest {
 
-    private StringPermutation rulesPermutation;
+    private final StringPermutation rulesPermutation;
 
     public AddRemoveRulesAddDeleteFactsTest(final StringPermutation rulesPermutation) {
         this.rulesPermutation = rulesPermutation;
@@ -28,15 +28,15 @@ public class AddRemoveRulesAddDeleteFactsTest {
 
     @Parameterized.Parameters
     public static Collection<StringPermutation[]> getRulesPermutations() {
-        final Collection<StringPermutation[]> rulesPermutations = new HashSet<StringPermutation[]>();
+        final Collection<StringPermutation[]> rulesPermutations = new HashSet<>();
 
-        final Set<StringPermutation> parametersPermutations = new HashSet<StringPermutation>();
+        final Set<StringPermutation> parametersPermutations = new HashSet<>();
         getStringPermutations(
                 new String[]{TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME},
                 new String[]{},
                 parametersPermutations);
 
-        for (StringPermutation permutation : parametersPermutations) {
+        for (final StringPermutation permutation : parametersPermutations) {
             rulesPermutations.add(new StringPermutation[]{permutation});
         }
 
@@ -47,7 +47,7 @@ public class AddRemoveRulesAddDeleteFactsTest {
     public void testAddRemoveRulesAddRemoveFacts() {
         final KieSession kieSession = TestUtil.createSession(getRules());
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             final List<FactHandle> insertedFacts = TestUtil.insertFacts(kieSession, getFacts());
             kieSession.fireAllRules();

@@ -17,9 +17,7 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -109,30 +107,32 @@ public final class TestUtil {
         }
     }
 
-    public static KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String drl) {
+    public static KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String... drls) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
         }
-
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        for (final String drl : drls) {
+            kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        }
         if (kbuilder.hasErrors()) {
             throw new RuntimeException("Knowledge contains errors: " + kbuilder.getErrors().toString());
         }
         return kbuilder;
     }
 
-    private static void insertGlobals(final KieSession session, final Map<String, Object> globals) {
-        for (final Map.Entry<String, Object> globalEntry : globals.entrySet()) {
-            session.setGlobal(globalEntry.getKey(), globalEntry.getValue());
-        }
+    public static KieBase createKieBaseFromString(final String... drls) {
+        final KnowledgeBuilder builder = createKnowledgeBuilder(null, drls);
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(builder.getKnowledgePackages());
+        return kbase;
     }
 
     public static int getRulesCount(final KieBase kBase) {
         int result = 0;
-        for (KiePackage kiePackage : kBase.getKiePackages()) {
+        for (final KiePackage kiePackage : kBase.getKiePackages()) {
             result += kiePackage.getRules().size();
         }
         return result;
@@ -140,5 +140,9 @@ public final class TestUtil {
 
     public static Object[] getDefaultFacts() {
         return new Object[]{1, 2, "1"};
+    }
+
+    private TestUtil() {
+        // Creating instances is not allowed for util classes.
     }
 }

@@ -20,20 +20,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.integrationtests.SerializationHelper;
+
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.model.Person;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public class AddRuleTest extends CommonTestMethodBase {
+public class AddRuleTest {
 
     @Test
     public void testMemoriesCCEWhenAddRemoveAddRule() {
@@ -60,10 +58,10 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.newKieSession();
-        kbase.addPackages(loadKnowledgePackagesFromString(rule1));
-        kbase.addPackages(loadKnowledgePackagesFromString(rule2));
+        kbase.addPackages(TestUtil.createKnowledgeBuilder(null, rule1).getKnowledgePackages());
+        kbase.addPackages(TestUtil.createKnowledgeBuilder(null, rule2).getKnowledgePackages());
     }
 
     @Test
@@ -72,7 +70,7 @@ public class AddRuleTest extends CommonTestMethodBase {
         final String str1 = "global java.util.List names;\n" +
                 "global java.util.List list;\n";
 
-        final String str2 = "import org.drools.compiler.*;\n" +
+        final String str2 = "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List names;\n" +
                 "global java.util.List list;\n" +
                 "rule R1 when\n" +
@@ -82,14 +80,14 @@ public class AddRuleTest extends CommonTestMethodBase {
                 " list.add( $p );\n" +
                 "end";
 
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBaseFromString(str1);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) TestUtil.createKieBaseFromString(str1);
         final KieSession ksession = kbase.newKieSession();
 
-        final List<String> names = new ArrayList<String>();
+        final List<String> names = new ArrayList<>();
         names.add("Mark");
         ksession.setGlobal("names", names);
 
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         final Person p = new Person("Mark");
@@ -97,7 +95,7 @@ public class AddRuleTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        kbase.addPackages(loadKnowledgePackagesFromString(str2));
+        kbase.addPackages(TestUtil.createKnowledgeBuilder(null, str2).getKnowledgePackages());
 
         ksession.fireAllRules();
 
@@ -107,7 +105,7 @@ public class AddRuleTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testDynamicallyAddInitialFactRule() throws Exception {
+    public void testDynamicallyAddInitialFactRule() {
         String rule = "package org.drools.compiler.test\n" +
                 "global java.util.List list\n" +
                 "rule xxx when\n" +
@@ -115,8 +113,8 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "   list.add(i);\n" +
                 "end";
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) TestUtil.createKieBaseFromString(rule);
+        final KieSession session = kbase.newKieSession();
 
         final List list = new ArrayList();
         session.setGlobal("list", list);
@@ -132,7 +130,7 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "   list.add(\"x\");\n" +
                 "end";
-        final Collection<KiePackage> kpkgs = loadKnowledgePackagesFromString(rule);
+        final Collection<KiePackage> kpkgs = TestUtil.createKnowledgeBuilder(null, rule).getKnowledgePackages();
         kbase.addPackages(kpkgs);
 
         session.fireAllRules();
