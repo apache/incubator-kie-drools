@@ -80,11 +80,6 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(SET_NETWORK_NODE_REFERENCE_SIGNATURE).append(NEWLINE);
 
-        builder.append("System.out.println(\"node = \" + node);").append(NEWLINE);
-        builder.append("System.out.println(\"node.getId() = \" + node.getId());").append(NEWLINE);
-
-        builder.append("        new Exception().printStackTrace();\n");
-
         // we are switch based on the parameter's node ID
         builder.append("switch (").append(PARAM_NAME).append(".getId()) {").append(NEWLINE);
     }

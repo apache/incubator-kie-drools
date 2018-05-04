@@ -75,9 +75,6 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startWindowNode(WindowNode windowNode) {
-        if(windowNode.getId() == 6) {
-            builder.append("System.out.println(\"windowNode6 = \" + windowNode6);\n");
-        }
         builder.append(getVariableName(windowNode)).append(".assertObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
