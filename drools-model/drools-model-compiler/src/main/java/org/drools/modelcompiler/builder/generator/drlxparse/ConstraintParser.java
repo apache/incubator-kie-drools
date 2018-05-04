@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -348,6 +349,8 @@ public class ConstraintParser {
             MethodCallExpr compareMethod = null;
             if ( left.getType() == String.class && right.getType() == String.class ) {
                 compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareStringsAsNumbers" );
+            } else if ( isNumericType( left.getType() ) || isNumericType( right.getType() ) ) {
+                compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareNumbers" );
             } else if ( Comparable.class.isAssignableFrom( left.getType() ) && Comparable.class.isAssignableFrom( right.getType() ) ) {
                 compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compare" );
             }
@@ -365,6 +368,10 @@ public class ConstraintParser {
         }
 
         return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+    }
+
+    private static boolean isNumericType(Class<?> type) {
+        return Number.class.isAssignableFrom( type ) && type != BigInteger.class && type != BigDecimal.class;
     }
 
     private static boolean isAnyOperandBigDecimal(TypedExpression left, TypedExpression right) {

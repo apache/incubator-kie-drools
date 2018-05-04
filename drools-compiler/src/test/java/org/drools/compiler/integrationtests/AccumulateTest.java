@@ -3711,4 +3711,62 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals(1, list.size() );
         assertEquals(86, (int) list.get(0) );
     }
+
+    @Test
+    public void testNumericMax() throws Exception {
+        // DROOLS-2519
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule AccumulateAdults when\n" +
+                "   accumulate( $p: Person( $age : age ) , \n" +
+                "               $max : max( $age ) )\n" +
+                "then\n" +
+                "   list.add($max.intValue()); \n" +
+                "end\n";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( new Person( "Mario", 42 ) );
+        kieSession.insert( new Person( "Marilena", 44 ) );
+        kieSession.insert( new Person( "Sofia", 4 ) );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals(44, (int) list.get(0) );
+    }
+
+    @Test
+    public void testComparableMax() throws Exception {
+        // DROOLS-2519
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule AccumulateAdults when\n" +
+                "   accumulate( $p: Person( $name : name ) , \n" +
+                "               $max : max( $name ) )\n" +
+                "then\n" +
+                "   list.add($max); \n" +
+                "end\n";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( new Person( "Mario", 42 ) );
+        kieSession.insert( new Person( "Marilena", 44 ) );
+        kieSession.insert( new Person( "Sofia", 4 ) );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals("Sofia", list.get(0) );
+    }
+
+
 }
