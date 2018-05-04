@@ -32,7 +32,7 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
     STATEFUL_REALTIME (true) {
         @Override
         public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel("");
+            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
             kieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
             kieSessionModel.setClockType(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
             kieSessionModel.setDefault(true);
@@ -50,7 +50,7 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
     STATEFUL_PSEUDO (true) {
         @Override
         public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel("");
+            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
             kieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
             kieSessionModel.setClockType(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.toString()));
             kieSessionModel.setDefault(true);
@@ -68,7 +68,7 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
     STATELESS_REALTIME (false) {
         @Override
         public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel("");
+            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
             kieSessionModel.setType(KieSessionModel.KieSessionType.STATELESS);
             kieSessionModel.setClockType(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
             kieSessionModel.setDefault(true);
@@ -92,4 +92,6 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
     KieSessionTestConfiguration(final boolean stateful) {
         this.stateful = stateful;
     }
+    
+    private static final String KIE_SESSION_MODEL_NAME = "KieSessionModelName";
 }

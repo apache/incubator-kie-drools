@@ -57,7 +57,7 @@ public final class AddRemoveTestCases {
                                                         final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -84,7 +84,7 @@ public final class AddRemoveTestCases {
                                                         final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -115,7 +115,7 @@ public final class AddRemoveTestCases {
                                                         final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -146,7 +146,7 @@ public final class AddRemoveTestCases {
                                                                    final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -168,7 +168,7 @@ public final class AddRemoveTestCases {
                                                                    final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -194,7 +194,7 @@ public final class AddRemoveTestCases {
                                                                    final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -220,7 +220,7 @@ public final class AddRemoveTestCases {
                                                                  final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -247,7 +247,7 @@ public final class AddRemoveTestCases {
                                                                  final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -277,7 +277,7 @@ public final class AddRemoveTestCases {
                                                                  final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -307,7 +307,7 @@ public final class AddRemoveTestCases {
                                                                      final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -336,7 +336,7 @@ public final class AddRemoveTestCases {
                                                                      final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -380,7 +380,7 @@ public final class AddRemoveTestCases {
                                                                      final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -417,7 +417,7 @@ public final class AddRemoveTestCases {
                                              final Object... facts) {
         final KieSession kieSession = TestUtil.createSession(rule1, rule2);
         try {
-            final List resultsList = new ArrayList();
+            final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
             if (additionalGlobals != null && !additionalGlobals.isEmpty()) {
                 additionalGlobals.forEach(kieSession::setGlobal);
@@ -435,7 +435,7 @@ public final class AddRemoveTestCases {
         }
     }
 
-    public static Object[] getDefaultFacts() {
-        return new Object[]{1, 2, "1"};
+    private AddRemoveTestCases() {
+        // Creating instances is not allowed for util classes.
     }
 }

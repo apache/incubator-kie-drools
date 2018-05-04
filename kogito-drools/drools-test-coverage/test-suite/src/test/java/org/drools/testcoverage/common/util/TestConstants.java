@@ -26,7 +26,9 @@ public final class TestConstants {
     public static final String PACKAGE_REGRESSION = PACKAGE_TESTCOVERAGE + ".regression";
     public static final String PACKAGE_FUNCTIONAL = PACKAGE_TESTCOVERAGE + ".functional";
 
-    public static final String DRL_TEST_TARGET_PATH = "src/main/resources/rule.drl";
+    public static final String TEST_RESOURCES_FOLDER = "src/main/resources/";
+    public static final String DRL_TEST_TARGET_PATH = TEST_RESOURCES_FOLDER + "rule.drl";
+
 
     private TestConstants() {
         // Creating instances of util classes should not be possible.

@@ -20,11 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.TurtleTestCategory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.MavenUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.After;
@@ -37,6 +36,7 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.KieMavenRepository;
+import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class KieScannerMemoryTest {
         final KieServices kieServices = KieServices.Factory.get();
 
         final KieMavenRepository repository = KieMavenRepository.getKieMavenRepository();
-        final KieModule kieModule = KieBaseUtil.getKieModuleAndBuildInstallModuleFromDrl(
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls(
                 TestConstants.PACKAGE_FUNCTIONAL,
                 KieBaseTestConfiguration.CLOUD_IDENTITY,
                 "rule R when then end");

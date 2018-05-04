@@ -19,7 +19,9 @@ package org.drools.testcoverage.common.util;
 import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
@@ -51,20 +53,20 @@ public final class KieUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(KieUtil.class);
 
     public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final String groupId, final KieModuleModel kieModuleModel, final Resource... resources) {
+                                                             final String groupId, final KieModuleModel kieModuleModel, final Resource... resources) {
         final ReleaseId releaseId = generateReleaseId(groupId);
         return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, kieModuleModel, resources);
     }
 
     public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final ReleaseId releaseId, final KieModuleModel kieModuleModel, final Resource... resources) {
+                                                             final ReleaseId releaseId, final KieModuleModel kieModuleModel, final Resource... resources) {
         final KieServices kieServices = KieServices.Factory.get();
         final KieFileSystem fileSystem = getKieFileSystemWithKieModule(kieModuleModel, releaseId, resources);
         final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fileSystem, true);
         KieModule kieModule = builder.getKieModule();
         if (kieBaseTestConfiguration.useCanonicalModel()) {
-            final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar" );
-            kieModule = new CanonicalKieModule(releaseId, kieModuleModel, kjarFile );
+            final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar");
+            kieModule = new CanonicalKieModule(releaseId, kieModuleModel, kjarFile);
         }
         kieServices.getRepository().addKieModule(kieModule);
 
@@ -80,7 +82,7 @@ public final class KieUtil {
                                                               final ReleaseId releaseId, final Resource... resources) {
         final KieFileSystem fileSystem = KieServices.Factory.get().newKieFileSystem();
         fileSystem.generateAndWritePomXML(releaseId);
-        for (Resource resource : resources) {
+        for (final Resource resource : resources) {
             fileSystem.write(resource);
         }
         fileSystem.writeKModuleXML(kieModuleModel.toXML());
@@ -88,17 +90,17 @@ public final class KieUtil {
     }
 
     public static KieBuilder getKieBuilderFromKieFileSystem(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final KieFileSystem fileSystem, final boolean failIfBuildError) {
+                                                            final KieFileSystem fileSystem, final boolean failIfBuildError) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError);
     }
 
     public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final boolean failIfBuildError, final Resource... resources) {
+                                                        final boolean failIfBuildError, final Resource... resources) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
-                KieServices.Factory.get().newKieFileSystem(), failIfBuildError, resources);
+                                                        KieServices.Factory.get().newKieFileSystem(), failIfBuildError, resources);
     }
 
-    public static KieModuleModel getDefaultKieModuleModel(KieServices ks) {
+    public static KieModuleModel getDefaultKieModuleModel(final KieServices ks) {
         final KieModuleModel kproj = KieServices.get().newKieModuleModel();
         final KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kbase").setDefault(true);
         final KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("ksession").setDefault(true);
@@ -106,18 +108,24 @@ public final class KieUtil {
     }
 
     private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final KieFileSystem kfs, final boolean failIfBuildError, final Resource... resources) {
-        for (Resource res : resources) {
+                                                                       final KieFileSystem kfs, final boolean failIfBuildError, final Resource... resources) {
+        for (final Resource res : resources) {
             kfs.write(res);
         }
 
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
 
         final Class<? extends KieBuilder.ProjectType> projectClass;
         switch (kieBaseTestConfiguration.runType()) {
-            case STANDARD_FROM_DRL: projectClass = DrlProject.class; break;
-            case FLOW_DSL: projectClass = ExecutableModelFlowProject.class; break;
-            case PATTERN_DSL: projectClass = ExecutableModelProject.class; break;
+            case STANDARD_FROM_DRL:
+                projectClass = DrlProject.class;
+                break;
+            case FLOW_DSL:
+                projectClass = ExecutableModelFlowProject.class;
+                break;
+            case PATTERN_DSL:
+                projectClass = ExecutableModelProject.class;
+                break;
             default:
                 throw new RuntimeException("Unknown type: " + kieBaseTestConfiguration.runType());
         }
@@ -153,9 +161,9 @@ public final class KieUtil {
     }
 
     public static KieBuilder getKieBuilderFromClasspathResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
-            final Class classLoaderFromClass, final boolean failIfBuildError, final String... resources) {
+                                                                 final Class classLoaderFromClass, final boolean failIfBuildError, final String... resources) {
         final List<Resource> result = new ArrayList<>();
-        for (String resource : resources) {
+        for (final String resource : resources) {
             result.add(KieServices.Factory.get().getResources().newClassPathResource(resource, classLoaderFromClass));
         }
 
@@ -163,25 +171,84 @@ public final class KieUtil {
     }
 
     public static Resource[] createResources(final String drlFile, final Class<?> clazz) {
-        return new Resource[] { getResources().newClassPathResource(drlFile, clazz)};
+        return new Resource[]{getResources().newClassPathResource(drlFile, clazz)};
     }
 
     public static Resource[] createResources(final String drl) {
         final Resource drlResource = getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return new Resource[] { drlResource };
+        return new Resource[]{drlResource};
     }
 
-    public static final KieCommands getCommands() {
+    public static KieModule getKieModuleFromDrls(final String moduleGroupId,
+                                                 final KieBaseTestConfiguration kieBaseTestConfiguration, final String... drls) {
+        return getKieModuleFromDrls(generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drls);
+    }
+
+    public static KieModule getKieModuleFromDrls(final ReleaseId releaseId,
+                                                 final KieBaseTestConfiguration kieBaseTestConfiguration, final String... drls) {
+        return getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME,
+                                    new HashMap<>(), drls);
+    }
+
+    public static KieModule getKieModuleFromDrls(final ReleaseId releaseId,
+                                                 final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                 final KieSessionTestConfiguration kieSessionTestConfiguration,
+                                                 final Map<String, String> kieModuleConfigurationProperties,
+                                                 final String... drls) {
+        final List<Resource> resources = new ArrayList<>();
+        for (int i = 0; i < drls.length; i++) {
+            // This null check can be used to skip unwanted filenames.
+            if (drls[i] != null) {
+                final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drls[i]));
+                drlResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rules" + (i + 1) + ".drl");
+                resources.add(drlResource);
+            }
+        }
+        return getKieModuleFromResources(releaseId, kieBaseTestConfiguration, kieSessionTestConfiguration,
+                                         kieModuleConfigurationProperties, resources.toArray(new Resource[]{}));
+    }
+
+    public static KieModule getKieModuleFromResources(final String moduleGroupId,
+                                                      final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
+        return getKieModuleFromResources(generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources);
+    }
+
+    public static KieModule getKieModuleFromResources(final ReleaseId releaseId,
+                                                      final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
+        return getKieModuleFromResources(releaseId, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME,
+                                         new HashMap<>(), resources);
+    }
+
+    public static KieModule getKieModuleFromResources(final ReleaseId releaseId,
+                                                      final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                      final KieSessionTestConfiguration kieSessionTestConfiguration,
+                                                      final Map<String, String> kieModuleConfigurationProperties,
+                                                      final Resource... resources) {
+        final KieModuleModel module = createKieModuleModel();
+        kieModuleConfigurationProperties.forEach(module::setConfigurationProperty);
+        final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
+        kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
+        return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, module, resources);
+    }
+
+    public static KieCommands getCommands() {
         return getServices().getCommands();
     }
 
-    public static final KieResources getResources() {
+    public static KieResources getResources() {
         return getServices().getResources();
     }
 
-    public static final KieServices getServices() {
+    public static KieServices getServices() {
         return KieServices.Factory.get();
+    }
+
+    public static Resource getResource(final String content, final String path) {
+        final KieServices kieServices = KieServices.get();
+        final Resource resource = kieServices.getResources().newReaderResource(new StringReader(content));
+        resource.setSourcePath(path);
+        return resource;
     }
 
     private KieUtil() {

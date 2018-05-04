@@ -26,7 +26,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
@@ -35,7 +34,8 @@ import org.kie.api.runtime.KieContainer;
  */
 public final class KieBaseUtil {
 
-    public static KieBase getDefaultKieBaseFromKieBuilder(KieBaseTestConfiguration kieBaseTestConfiguration, KieBuilder kbuilder) {
+    public static KieBase getDefaultKieBaseFromKieBuilder(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                          final KieBuilder kbuilder) {
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             generateKieModuleForCanonicalModel( kbuilder );
         }
@@ -66,12 +66,12 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
     }
 
-    private static void generateKieModuleForCanonicalModel( KieBuilder kieBuilder ) {
-        KieServices ks = KieServices.get();
-        ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
-        File kjarFile = FileUtil.bytesToTempKJARFile( releaseId, kieModule.getBytes(), ".jar" );
-        KieModule zipKieModule = new CanonicalKieModule( releaseId, KieUtil.getDefaultKieModuleModel( ks ), kjarFile );
+    private static void generateKieModuleForCanonicalModel(final KieBuilder kieBuilder ) {
+        final KieServices ks = KieServices.get();
+        final ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
+        final InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
+        final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, kieModule.getBytes(), ".jar" );
+        final KieModule zipKieModule = new CanonicalKieModule(releaseId, KieUtil.getDefaultKieModuleModel(ks ), kjarFile );
         ks.getRepository().addKieModule( zipKieModule );
     }
 
@@ -97,46 +97,22 @@ public final class KieBaseUtil {
         }
     }
 
-    public static KieBase getKieBaseAndBuildInstallModule(final String moduleGroupId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
-        return getKieBaseAndBuildInstallModule(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources);
+    public static KieBase getKieBaseFromKieModuleFromResources(final String moduleGroupId,
+                                                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
+        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources);
     }
 
-    public static KieBase getKieBaseAndBuildInstallModule(final ReleaseId releaseId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
-        KieModule kieModule = getKieModuleAndBuildInstallModule(releaseId, kieBaseTestConfiguration, resources);
+    public static KieBase getKieBaseFromKieModuleFromResources(final ReleaseId releaseId,
+                                                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
+        final KieModule kieModule = KieUtil.getKieModuleFromResources(releaseId, kieBaseTestConfiguration, resources);
         return getDefaultKieBaseFromReleaseId(kieModule.getReleaseId());
     }
 
-    public static KieBase getKieBaseAndBuildInstallModuleFromDrl(final String moduleGroupId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
+    public static KieBase getKieBaseFromKieModuleFromDrl(final String moduleGroupId,
+                                                         final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return getKieBaseAndBuildInstallModule(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drlResource);
-    }
-
-    public static KieModule getKieModuleAndBuildInstallModuleFromDrl(final String moduleGroupId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
-        return getKieModuleAndBuildInstallModuleFromDrl(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drl);
-    }
-
-    public static KieModule getKieModuleAndBuildInstallModuleFromDrl(final ReleaseId releaseId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return getKieModuleAndBuildInstallModule(releaseId, kieBaseTestConfiguration, drlResource);
-    }
-
-    public static KieModule getKieModuleAndBuildInstallModule(final String moduleGroupId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
-        return getKieModuleAndBuildInstallModule(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources);
-    }
-
-    public static KieModule getKieModuleAndBuildInstallModule(final ReleaseId releaseId,
-                               final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
-        final KieModuleModel module = KieUtil.createKieModuleModel();
-        kieBaseTestConfiguration.getKieBaseModel(module);
-        return KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, module, resources);
+        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drlResource);
     }
 
     private KieBaseUtil() {

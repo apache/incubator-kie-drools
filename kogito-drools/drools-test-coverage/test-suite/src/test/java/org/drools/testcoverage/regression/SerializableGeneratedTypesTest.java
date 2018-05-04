@@ -54,8 +54,8 @@ public class SerializableGeneratedTypesTest {
     public void testSerializability() throws Exception {
         final Resource drlResource =
                 KieServices.Factory.get().getResources().newClassPathResource("serializableGeneratedTypesTest.drl", getClass());
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drlResource);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
+                                                                                 kieBaseTestConfiguration, drlResource);
         final KieSession session = kieBase.newKieSession();
 
         final FactType testEventType = session.getKieBase().getFactType(TestConstants.PACKAGE_REGRESSION, "TestEvent");

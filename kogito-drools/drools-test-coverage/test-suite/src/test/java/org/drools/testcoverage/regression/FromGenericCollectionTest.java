@@ -65,8 +65,8 @@ public class FromGenericCollectionTest {
                 + "        insert(new Boolean(true));\n"
                 + " end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
+                                                                           kieBaseTestConfiguration, drl);
         final KieSession ksession = kieBase.newKieSession();
         try {
             final Map<String, List<String>> crazyMap = new HashMap<String, List<String>>();

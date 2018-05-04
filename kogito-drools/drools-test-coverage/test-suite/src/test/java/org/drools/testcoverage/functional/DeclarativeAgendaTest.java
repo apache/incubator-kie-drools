@@ -22,7 +22,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.OrderListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -268,8 +268,8 @@ public class DeclarativeAgendaTest {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource(drlFile, getClass());
 
-        final KieModule kieModule = KieBaseUtil.getKieModuleAndBuildInstallModule(TestConstants.PACKAGE_FUNCTIONAL,
-                KieBaseTestConfiguration.CLOUD_IDENTITY, resource);
+        final KieModule kieModule = KieUtil.getKieModuleFromResources(TestConstants.PACKAGE_FUNCTIONAL,
+                                                                      KieBaseTestConfiguration.CLOUD_IDENTITY, resource);
 
         final KieBaseConfiguration kbconf = kieServices.newKieBaseConfiguration();
         kbconf.setOption(DeclarativeAgendaOption.ENABLED);

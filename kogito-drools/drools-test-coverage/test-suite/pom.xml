@@ -17,7 +17,7 @@
 
   <properties>
     <java.module.name>org.drools.testcoverage.testsuite</java.module.name>
-    <excludedGroups>org.drools.compiler.TurtleTestCategory</excludedGroups>
+    <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
   </properties>
 
   <dependencies>
@@ -83,6 +83,11 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
 

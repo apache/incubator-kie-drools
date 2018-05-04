@@ -77,6 +77,28 @@ public final class TestParametersUtil {
     }
 
     /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     */
+    public static Collection<Object[]> getKieBaseCloudConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
+
+        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
+        }
+
+        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
+        }
+
+        return parameters;
+    }
+
+    /**
      * Prepares collection of KieSessionTestConfiguration.
      * @return Collection of KieSessionTestConfiguration for parameterized tests.
      */

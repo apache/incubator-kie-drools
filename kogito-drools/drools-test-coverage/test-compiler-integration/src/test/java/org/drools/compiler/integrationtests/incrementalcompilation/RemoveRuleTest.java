@@ -19,13 +19,16 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.testcoverage.common.model.Address;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
@@ -36,10 +39,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class RemoveRuleTest extends CommonTestMethodBase {
+public class RemoveRuleTest {
 
     @Test
-    public void testRemoveBigRule() throws Exception {
+    public void testRemoveBigRule() {
         // JBRULES-3496
         final String str =
                 "package org.drools.compiler.test\n" +
@@ -119,16 +122,15 @@ public class RemoveRuleTest extends CommonTestMethodBase {
                         "then\n" +
                         "end\n";
 
-        final Collection<KiePackage> kpgs = loadKnowledgePackagesFromString( str );
-
+        final Collection<KiePackage> kpgs = TestUtil.createKnowledgeBuilder(null, str).getKnowledgePackages();
         assertEquals(1, kpgs.size());
 
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kpgs );
 
         kbase.removeKiePackage( kpgs.iterator().next().getName() );
 
-        final EntryPointNode epn = ( (InternalKnowledgeBase) kbase ).getRete().getEntryPointNodes().values().iterator().next();
+        final EntryPointNode epn = kbase.getRete().getEntryPointNodes().values().iterator().next();
         for (final ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
             final ObjectSink[] sinks = otn.getObjectSinkPropagator().getSinks();
             if (sinks.length > 0) {
@@ -138,11 +140,12 @@ public class RemoveRuleTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testRemoveRuleWithFromNode() throws Exception {
+    public void testRemoveRuleWithFromNode() {
         // JBRULES-3631
         final String str =
                 "package org.drools.compiler;\n" +
-                        "import org.drools.compiler.*;\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Address.class.getCanonicalName() + ";\n" +
                         "rule R1 when\n" +
                         "   not( Person( name == \"Mark\" ));\n" +
                         "then\n" +
@@ -153,7 +156,7 @@ public class RemoveRuleTest extends CommonTestMethodBase {
                         "then\n" +
                         "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = TestUtil.createKieBaseFromString(str);
         assertEquals(2, kbase.getKiePackage("org.drools.compiler").getRules().size());
         kbase.removeRule( "org.drools.compiler", "R2" );
 
@@ -164,6 +167,8 @@ public class RemoveRuleTest extends CommonTestMethodBase {
     public void testRuleRemovalWithJoinedRootPattern() {
         String str = "";
         str += "package org.drools.compiler \n";
+        str += "import " + Person.class.getCanonicalName() + ";\n";
+        str += "import " + Cheese.class.getCanonicalName() + ";\n";
         str += "rule rule1 \n";
         str += "when \n";
         str += "  String() \n";
@@ -177,8 +182,8 @@ public class RemoveRuleTest extends CommonTestMethodBase {
         str += "then \n";
         str += "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = TestUtil.createKieBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
         LeftTuple leftTuple = handle.getFirstLeftTuple();

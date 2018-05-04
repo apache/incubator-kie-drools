@@ -66,8 +66,8 @@ public class EscapesInMetadataTest {
                 + "     System.out.println(\"Hello world!\");\n"
                 + " end";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, rule);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
+                                                                           kieBaseTestConfiguration, rule);
         final Map<String, Object> metadata = kieBase.getRule(TestConstants.PACKAGE_REGRESSION, RULE_NAME).getMetaData();
         LOGGER.debug(rule);
 

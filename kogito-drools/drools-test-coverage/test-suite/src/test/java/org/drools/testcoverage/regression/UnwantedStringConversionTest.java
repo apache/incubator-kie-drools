@@ -54,8 +54,8 @@ public class UnwantedStringConversionTest {
     public void testStringToDecimalConversion() {
         final Resource drlResource =
                 KieServices.Factory.get().getResources().newClassPathResource("unwantedStringConversionTest.drl", getClass());
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drlResource);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
+                                                                                 kieBaseTestConfiguration, drlResource);
 
         final KieSession ksession = kieBase.newKieSession();
         final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();

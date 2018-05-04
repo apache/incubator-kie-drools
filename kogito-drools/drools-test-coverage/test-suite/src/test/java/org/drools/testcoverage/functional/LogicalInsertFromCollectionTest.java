@@ -135,7 +135,7 @@ public class LogicalInsertFromCollectionTest {
     private KieBase getKieBaseForTest() {
         final Resource drlResource =
                 KieServices.Factory.get().getResources().newClassPathResource("logicalInsertFromCollectionTest.drl", getClass());
-        return KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, drlResource);
+        return KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,
+                                                                kieBaseTestConfiguration, drlResource);
     }
 }

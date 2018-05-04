@@ -70,13 +70,6 @@ public final class KieSessionUtil {
         }
     }
 
-    public static Session getKieSessionAndBuildInstallModuleFromDrl(final String moduleGroupId, final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                                                    final KieSessionTestConfiguration kieSessionTestConfiguration, final String drl) {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return getKieSessionFromKieBaseModel(moduleGroupId, kieBaseTestConfiguration, kieSessionTestConfiguration, drlResource);
-    }
-
     private KieSessionUtil() {
         // Creating instances of util classes should not be possible.
     }

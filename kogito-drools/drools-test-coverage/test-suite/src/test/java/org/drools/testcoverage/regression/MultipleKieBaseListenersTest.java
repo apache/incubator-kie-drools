@@ -47,8 +47,8 @@ public class MultipleKieBaseListenersTest {
 
     @Test
     public void testKnowledgeBaseEventSupportLeak() throws Exception {
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, "");
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
+                                                                           kieBaseTestConfiguration, "");
 
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
 

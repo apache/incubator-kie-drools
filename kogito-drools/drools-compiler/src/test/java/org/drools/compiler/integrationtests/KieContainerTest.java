@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.impl.InternalKieContainer;
@@ -41,12 +42,11 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJar;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.*;
 
-public class KieContainerTest {
+public class KieContainerTest extends CommonTestMethodBase {
 
     @Test
     public void testMainKieModule() {

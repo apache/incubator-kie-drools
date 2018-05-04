@@ -18,7 +18,7 @@ public class ConstraintsPair {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -26,7 +26,7 @@ public class ConstraintsPair {
             return false;
         }
 
-        ConstraintsPair that = (ConstraintsPair) o;
+        final ConstraintsPair that = (ConstraintsPair) o;
 
         return (constraints1.equals(that.constraints1) && constraints2.equals(that.constraints2))
                 || (constraints1.equals(that.constraints2) && constraints2.equals(that.constraints1));
