@@ -126,5 +126,9 @@ public abstract class CompiledNetwork implements ObjectSink {
         public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
             setNetworkNodeReference(hashedAlpha);
         }
+
+        public void startWindowNode(WindowNode windowNode) {
+            setNetworkNodeReference(windowNode);
+        }
     }
 }
