@@ -209,7 +209,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore
     public void testLastPredictionMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_LAST_CHILD_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
@@ -269,7 +268,6 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
     }
 
     @Test
-    @Ignore
     public void testWeightedConfidenceMissingValueStrategy() {
         KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(TREE_WEIGHTED_CONFIDENCE_MISSING_STRATEGY);
         PMMLExecutor executor = new PMMLExecutor(kieBase);
