@@ -426,7 +426,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 throw new IllegalArgumentException("If kieContainer or ksessionName (" + ksessionName
                         + ") is not null, then the scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.");
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.\n"
+                        + "Maybe this is running in a kjar in kie-server, in which case the DRL's are located"
+                        + " by the META-INF/kmodule.xml, so only ksessionName is allowed.");
             }
             if (kieBase != null) {
                 throw new IllegalArgumentException("If kieContainer or ksessionName (" + ksessionName
