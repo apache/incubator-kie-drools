@@ -102,7 +102,11 @@ public class IncrementalCompilationTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations();
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
+        return parameters;
+//        return TestParametersUtil.getKieBaseCloudConfigurations();
     }
 
     @Test

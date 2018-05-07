@@ -45,7 +45,7 @@ public class AddRemoveRulesAddDeleteFactsTest {
 
     @Test
     public void testAddRemoveRulesAddRemoveFacts() {
-        final KieSession kieSession = TestUtil.createSession(getRules());
+        final KieSession kieSession = TestUtil.buildSessionInSteps(getRules());
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);

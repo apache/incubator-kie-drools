@@ -21,32 +21,43 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.runtime.KieSession;
 
 public final class AddRemoveTestCases {
-    
+
     public static void runAllTestCases(final String rule1,
                                        final String rule2,
                                        final String rule1Name,
                                        final String rule2Name,
                                        final Map<String, Object> additionalGlobals,
                                        final Object... facts) {
+        runAllTestCases(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void runAllTestCases(final InternalKnowledgeBase originalKnowledgeBase,
+                                       final String rule1,
+                                       final String rule2,
+                                       final String rule1Name,
+                                       final String rule2Name,
+                                       final Map<String, Object> additionalGlobals,
+                                       final Object... facts) {
         
-        insertFactsFireRulesRemoveRules1(rule1, rule2, rule1Name, rule2Name, additionalGlobals,facts);
-        insertFactsFireRulesRemoveRules2(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        insertFactsFireRulesRemoveRules3(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals,facts);
+        insertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
 
-        fireRulesInsertFactsFireRulesRemoveRules1(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        fireRulesInsertFactsFireRulesRemoveRules2(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        fireRulesInsertFactsFireRulesRemoveRules3(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        fireRulesInsertFactsFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        fireRulesInsertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        fireRulesInsertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
 
-        insertFactsRemoveRulesFireRulesRemoveRules1(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        insertFactsRemoveRulesFireRulesRemoveRules2(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        insertFactsRemoveRulesFireRulesRemoveRules3(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsRemoveRulesFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsRemoveRulesFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsRemoveRulesFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
 
-        insertFactsFireRulesRemoveRulesReinsertRules1(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        insertFactsFireRulesRemoveRulesReinsertRules2(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-        insertFactsFireRulesRemoveRulesReinsertRules3(rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRulesReinsertRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRulesReinsertRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRulesReinsertRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
     }
 
     public static void insertFactsFireRulesRemoveRules1(final String rule1,
@@ -55,7 +66,17 @@ public final class AddRemoveTestCases {
                                                         final String rule2Name,
                                                         final Map<String, Object> additionalGlobals,
                                                         final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRules1(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRules1(final InternalKnowledgeBase originalKnowledgeBase,
+                                                        final String rule1,
+                                                        final String rule2,
+                                                        final String rule1Name,
+                                                        final String rule2Name,
+                                                        final Map<String, Object> additionalGlobals,
+                                                        final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -82,7 +103,17 @@ public final class AddRemoveTestCases {
                                                         final String rule2Name,
                                                         final Map<String, Object> additionalGlobals,
                                                         final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRules2(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRules2(final InternalKnowledgeBase originalKnowledgeBase,
+                                                        final String rule1,
+                                                        final String rule2,
+                                                        final String rule1Name,
+                                                        final String rule2Name,
+                                                        final Map<String, Object> additionalGlobals,
+                                                        final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -113,7 +144,17 @@ public final class AddRemoveTestCases {
                                                         final String rule2Name,
                                                         final Map<String, Object> additionalGlobals,
                                                         final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRules3(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRules3(final InternalKnowledgeBase originalKnowledgeBase,
+                                                        final String rule1,
+                                                        final String rule2,
+                                                        final String rule1Name,
+                                                        final String rule2Name,
+                                                        final Map<String, Object> additionalGlobals,
+                                                        final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -144,7 +185,17 @@ public final class AddRemoveTestCases {
                                                                    final String rule2Name,
                                                                    final Map<String, Object> additionalGlobals,
                                                                    final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsRemoveRulesFireRulesRemoveRules1(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsRemoveRulesFireRulesRemoveRules1(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                   final String rule1,
+                                                                   final String rule2,
+                                                                   final String rule1Name,
+                                                                   final String rule2Name,
+                                                                   final Map<String, Object> additionalGlobals,
+                                                                   final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -166,7 +217,17 @@ public final class AddRemoveTestCases {
                                                                    final String rule2Name,
                                                                    final Map<String, Object> additionalGlobals,
                                                                    final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsRemoveRulesFireRulesRemoveRules2(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsRemoveRulesFireRulesRemoveRules2(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                   final String rule1,
+                                                                   final String rule2,
+                                                                   final String rule1Name,
+                                                                   final String rule2Name,
+                                                                   final Map<String, Object> additionalGlobals,
+                                                                   final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -192,7 +253,17 @@ public final class AddRemoveTestCases {
                                                                    final String rule2Name,
                                                                    final Map<String, Object> additionalGlobals,
                                                                    final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsRemoveRulesFireRulesRemoveRules3(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsRemoveRulesFireRulesRemoveRules3(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                   final String rule1,
+                                                                   final String rule2,
+                                                                   final String rule1Name,
+                                                                   final String rule2Name,
+                                                                   final Map<String, Object> additionalGlobals,
+                                                                   final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -218,7 +289,17 @@ public final class AddRemoveTestCases {
                                                                  final String rule2Name,
                                                                  final Map<String, Object> additionalGlobals,
                                                                  final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        fireRulesInsertFactsFireRulesRemoveRules1(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void fireRulesInsertFactsFireRulesRemoveRules1(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                 final String rule1,
+                                                                 final String rule2,
+                                                                 final String rule1Name,
+                                                                 final String rule2Name,
+                                                                 final Map<String, Object> additionalGlobals,
+                                                                 final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -245,7 +326,17 @@ public final class AddRemoveTestCases {
                                                                  final String rule2Name,
                                                                  final Map<String, Object> additionalGlobals,
                                                                  final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        fireRulesInsertFactsFireRulesRemoveRules2(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void fireRulesInsertFactsFireRulesRemoveRules2(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                 final String rule1,
+                                                                 final String rule2,
+                                                                 final String rule1Name,
+                                                                 final String rule2Name,
+                                                                 final Map<String, Object> additionalGlobals,
+                                                                 final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -275,7 +366,17 @@ public final class AddRemoveTestCases {
                                                                  final String rule2Name,
                                                                  final Map<String, Object> additionalGlobals,
                                                                  final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        fireRulesInsertFactsFireRulesRemoveRules3(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void fireRulesInsertFactsFireRulesRemoveRules3(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                 final String rule1,
+                                                                 final String rule2,
+                                                                 final String rule1Name,
+                                                                 final String rule2Name,
+                                                                 final Map<String, Object> additionalGlobals,
+                                                                 final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -305,7 +406,17 @@ public final class AddRemoveTestCases {
                                                                      final String rule2Name,
                                                                      final Map<String, Object> additionalGlobals,
                                                                      final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRulesReinsertRules1(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRulesReinsertRules1(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                     final String rule1,
+                                                                     final String rule2,
+                                                                     final String rule1Name,
+                                                                     final String rule2Name,
+                                                                     final Map<String, Object> additionalGlobals,
+                                                                     final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -334,7 +445,17 @@ public final class AddRemoveTestCases {
                                                                      final String rule2Name,
                                                                      final Map<String, Object> additionalGlobals,
                                                                      final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRulesReinsertRules2(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRulesReinsertRules2(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                     final String rule1,
+                                                                     final String rule2,
+                                                                     final String rule1Name,
+                                                                     final String rule2Name,
+                                                                     final Map<String, Object> additionalGlobals,
+                                                                     final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -378,7 +499,17 @@ public final class AddRemoveTestCases {
                                                                      final String rule2Name,
                                                                      final Map<String, Object> additionalGlobals,
                                                                      final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsFireRulesRemoveRulesReinsertRules3(null, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+    }
+
+    public static void insertFactsFireRulesRemoveRulesReinsertRules3(final InternalKnowledgeBase originalKnowledgeBase,
+                                                                     final String rule1,
+                                                                     final String rule2,
+                                                                     final String rule1Name,
+                                                                     final String rule2Name,
+                                                                     final Map<String, Object> additionalGlobals,
+                                                                     final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -415,7 +546,15 @@ public final class AddRemoveTestCases {
                                              final String rule2,
                                              final Map<String, Object> additionalGlobals,
                                              final Object... facts) {
-        final KieSession kieSession = TestUtil.createSession(rule1, rule2);
+        insertFactsRemoveFire(null, rule1, rule2, additionalGlobals, facts);
+    }
+
+    public static void insertFactsRemoveFire(final InternalKnowledgeBase originalKnowledgeBase,
+                                             final String rule1,
+                                             final String rule2,
+                                             final Map<String, Object> additionalGlobals,
+                                             final Object... facts) {
+        final KieSession kieSession = TestUtil.buildSessionInSteps(originalKnowledgeBase, rule1, rule2);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);

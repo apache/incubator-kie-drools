@@ -392,5 +392,5 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
     };
 
-    private static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
+    public static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
 }

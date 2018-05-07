@@ -16,9 +16,11 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -29,17 +31,42 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class RemoveRuleTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RemoveRuleTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
+        return parameters;
+//        return TestParametersUtil.getKieBaseCloudConfigurations();
+    }
 
     @Test
     public void testRemoveBigRule() {
@@ -122,7 +149,11 @@ public class RemoveRuleTest {
                         "then\n" +
                         "end\n";
 
-        final Collection<KiePackage> kpgs = TestUtil.createKnowledgeBuilder(null, str).getKnowledgePackages();
+        final ReleaseId releaseId = KieServices.get().newReleaseId("org.kie", "test-remove-big-rule", "1.0");
+        final InternalKieModule kieModule = (InternalKieModule) KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str);
+        final KnowledgeBuilder knowledgeBuilder = kieModule.getKnowledgeBuilderForKieBase(KieBaseTestConfiguration.KIE_BASE_MODEL_NAME);
+        assertNotNull(knowledgeBuilder);
+        final Collection<KiePackage> kpgs = knowledgeBuilder.getKnowledgePackages();
         assertEquals(1, kpgs.size());
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -156,7 +187,11 @@ public class RemoveRuleTest {
                         "then\n" +
                         "end\n";
 
-        final KieBase kbase = TestUtil.createKieBaseFromString(str);
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-remove-rule-with-from-node", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str);
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        final KieBase kbase = kieContainer.getKieBase();
         assertEquals(2, kbase.getKiePackage("org.drools.compiler").getRules().size());
         kbase.removeRule( "org.drools.compiler", "R2" );
 
@@ -182,7 +217,12 @@ public class RemoveRuleTest {
         str += "then \n";
         str += "end  \n";
 
-        final KieBase kbase = TestUtil.createKieBaseFromString(str);
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-remove-rule-with-joined-root-pattern", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str);
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        final KieBase kbase = kieContainer.getKieBase();
         final KieSession ksession = kbase.newKieSession();
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
