@@ -96,10 +96,12 @@ public class ObjectTypeNodeParser {
             traverseSinkLisk(composite.getHashableSinks(), handler);
             traverseSinkLisk(composite.getOthers(), handler);
             indexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
+        } else if (propagator instanceof CompositePartitionAwareObjectSinkAdapter) {
+            CompositePartitionAwareObjectSinkAdapter composite = (CompositePartitionAwareObjectSinkAdapter) propagator;
+            traverseSinkLisk(composite.getSinks(), handler);
         }
         return indexableConstraint;
     }
-
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
