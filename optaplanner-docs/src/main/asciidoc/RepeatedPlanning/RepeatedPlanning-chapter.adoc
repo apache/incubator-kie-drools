@@ -164,8 +164,8 @@ Upcoming time periods after the published time periods that can change freely.
 They contain movable planning entities, except for any that are immovable for other reasons
 (such as being <<pinDownPlanningEntities,pinned by a user>>).
 +
-** The first part of the _draft_ will be published, so these planning entities can change one last time.
-The publishing frequency, for example once per week, determines the number of time periods that changes from _draft_ to _published_.
+** The first part of the draft, called _the final draft_, will be published, so these planning entities can change one last time.
+The publishing frequency, for example once per week, determines the number of time periods that change from _draft_ to _published_.
 ** The latter time periods of the _draft_ are likely change again in later planning efforts,
 especially if some of the problem facts change by then (for example nurse Ann doesn't want to work on one of those days).
 +
