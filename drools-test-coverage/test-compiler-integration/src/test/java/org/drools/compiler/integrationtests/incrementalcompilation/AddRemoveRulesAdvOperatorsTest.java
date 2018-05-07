@@ -627,7 +627,7 @@ public class AddRemoveRulesAdvOperatorsTest {
         final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
 
-        final KieSession kieSession = TestUtil.createSession(rule1);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule1);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);
@@ -698,7 +698,7 @@ public class AddRemoveRulesAdvOperatorsTest {
         final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
 
-        final KieSession kieSession = TestUtil.createSession(rule1);
+        final KieSession kieSession = TestUtil.buildSessionInSteps(rule1);
         try {
             final List<String> resultsList = new ArrayList<>();
             kieSession.setGlobal("list", resultsList);

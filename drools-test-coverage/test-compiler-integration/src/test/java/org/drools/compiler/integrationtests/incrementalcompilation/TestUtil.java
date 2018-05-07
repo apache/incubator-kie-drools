@@ -37,10 +37,6 @@ public final class TestUtil {
     public static final String RULE2_NAME = "R2";
     public static final String RULE3_NAME = "R3";
 
-    public static KieSession createSession(final String... drls) {
-        return buildSessionInSteps(drls);
-    }
-
     public static void addRules(final KieSession session, final String... drls) {
         addRules(session, false, drls);
     }
@@ -82,13 +78,27 @@ public final class TestUtil {
         return buildSessionInSteps(false, drls);
     }
 
-    public static KieSession buildSessionInSteps(final boolean reuseKieBaseWhenAddingRules, final String... drls) {
+    public static KieSession buildSessionInSteps(final InternalKnowledgeBase originalKnowledgeBase, final String... drls) {
+        return buildSessionInSteps(originalKnowledgeBase, false, drls);
+    }
+
+    public static KieSession buildSessionInSteps(final InternalKnowledgeBase originalKnowledgeBase,
+                                                 final boolean reuseKieBaseWhenAddingRules, final String... drls) {
         if (drls == null || drls.length == 0) {
-            return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
+            if (originalKnowledgeBase == null) {
+                return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
+            } else {
+                return originalKnowledgeBase.newKieSession();
+            }
         } else {
             String drl = drls[0];
             final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-            final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            final InternalKnowledgeBase kbase;
+            if (originalKnowledgeBase == null) {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            } else {
+                kbase = originalKnowledgeBase;
+            }
             kbase.addPackages(kbuilder.getKnowledgePackages());
 
             final KieSession kSession = kbase.newKieSession();
@@ -107,6 +117,10 @@ public final class TestUtil {
         }
     }
 
+    public static KieSession buildSessionInSteps(final boolean reuseKieBaseWhenAddingRules, final String... drls) {
+        return buildSessionInSteps(null, reuseKieBaseWhenAddingRules, drls);
+    }
+
     public static KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String... drls) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
@@ -121,13 +135,6 @@ public final class TestUtil {
             throw new RuntimeException("Knowledge contains errors: " + kbuilder.getErrors().toString());
         }
         return kbuilder;
-    }
-
-    public static KieBase createKieBaseFromString(final String... drls) {
-        final KnowledgeBuilder builder = createKnowledgeBuilder(null, drls);
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(builder.getKnowledgePackages());
-        return kbase;
     }
 
     public static int getRulesCount(final KieBase kBase) {
