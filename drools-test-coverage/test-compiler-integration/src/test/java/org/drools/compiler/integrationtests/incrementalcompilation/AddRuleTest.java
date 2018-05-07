@@ -17,6 +17,7 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -24,14 +25,38 @@ import java.util.List;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+@RunWith(Parameterized.class)
 public class AddRuleTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public AddRuleTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
+        return parameters;
+//        return TestParametersUtil.getKieBaseCloudConfigurations();
+    }
 
     @Test
     public void testMemoriesCCEWhenAddRemoveAddRule() {
@@ -58,7 +83,12 @@ public class AddRuleTest {
                 "then\n" +
                 "end";
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-memories-cce-when-add-remove-rule", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration);
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) kieContainer.getKieBase();
+
         kbase.newKieSession();
         kbase.addPackages(TestUtil.createKnowledgeBuilder(null, rule1).getKnowledgePackages());
         kbase.addPackages(TestUtil.createKnowledgeBuilder(null, rule2).getKnowledgePackages());
@@ -80,7 +110,12 @@ public class AddRuleTest {
                 " list.add( $p );\n" +
                 "end";
 
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) TestUtil.createKieBaseFromString(str1);
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-add-rule-with-from", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str1);
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) kieContainer.getKieBase();
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> names = new ArrayList<>();
@@ -113,7 +148,13 @@ public class AddRuleTest {
                 "then\n" +
                 "   list.add(i);\n" +
                 "end";
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) TestUtil.createKieBaseFromString(rule);
+
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-add-dynamically-init-fact-rule", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, rule);
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) kieContainer.getKieBase();
         final KieSession session = kbase.newKieSession();
 
         final List list = new ArrayList();
