@@ -18,6 +18,8 @@ package org.jbpm.casemgmt.impl;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,12 +37,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
+import org.jbpm.casemgmt.api.CaseDefinitionNotFoundException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
@@ -3159,5 +3163,77 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
                 caseService.cancelCase(caseId);
             }
         }
+    }
+
+    @Test
+    public void testAddAndRemoveMultipleDataFromCaseFile(){
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        Assertions.assertThat(caseId).isNotNull().isEqualTo(FIRST_CASE_ID);
+        try {
+            data = new HashMap<>();
+            data.put("person", "john");
+            data.put("car", "my first car");
+
+            caseService.addDataToCaseFile(caseId, data);
+
+            Collection<CaseFileItem> caseInstanceDataItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            Map<String, String> caseFileVariables = caseInstanceDataItems.stream().collect(Collectors.toMap(CaseFileItem::getName, CaseFileItem::getValue));
+
+            Assertions.assertThat(caseFileVariables).containsOnly(entry("person", "john"), entry("car", "my first car"), entry("name", "my first case"));
+
+            data = new HashMap<>();
+            data.put("name", "my updated case");
+            data.put("car", "my second car");
+
+            caseService.addDataToCaseFile(caseId, data);
+
+            caseInstanceDataItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            caseFileVariables = caseInstanceDataItems.stream().collect(Collectors.toMap(CaseFileItem::getName, CaseFileItem::getValue));
+
+            Assertions.assertThat(caseFileVariables).containsOnly(entry("person", "john"), entry("car", "my second car"), entry("name", "my updated case"));
+
+            caseService.removeDataFromCaseFile(caseId, "nonexisting");
+
+            caseInstanceDataItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            Assertions.assertThat(caseInstanceDataItems).hasSize(3);
+
+            caseService.removeDataFromCaseFile(caseId, Arrays.asList("name", "car", "nonexisting"));
+
+            caseInstanceDataItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            caseFileVariables = caseInstanceDataItems.stream().collect(Collectors.toMap(CaseFileItem::getName, CaseFileItem::getValue));
+
+            Assertions.assertThat(caseFileVariables).containsOnly(entry("person", "john"));
+
+            caseService.removeDataFromCaseFile(caseId, "person");
+            caseInstanceDataItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            Assertions.assertThat(caseInstanceDataItems).isEmpty();
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+
+    }
+
+    @Test
+    public void testCreateCaseFileInstanceForNotExistingCase() {
+        assertThatExceptionOfType(CaseDefinitionNotFoundException.class)
+                .isThrownBy(() -> caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), "nonexisting", Collections.emptyMap()));
+
+        assertThatExceptionOfType(CaseDefinitionNotFoundException.class)
+                .isThrownBy(() -> caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), "nonexisting", Collections.emptyMap(), Collections.emptyMap()));
+    }
+
+    @Test
+    public void testGetCaseFileInstanceForNotExistingCase() {
+        assertThatExceptionOfType(CaseNotFoundException.class)
+                .isThrownBy(() -> caseService.getCaseFileInstance("nonexisting"));
     }
 }
