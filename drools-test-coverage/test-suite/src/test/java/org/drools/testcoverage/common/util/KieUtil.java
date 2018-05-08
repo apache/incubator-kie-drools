@@ -75,10 +75,8 @@ public final class KieUtil {
         final KieServices kieServices = KieServices.Factory.get();
         final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kieFileSystem, true);
         KieModule kieModule = builder.getKieModule();
-        if (kieBaseTestConfiguration.useCanonicalModel()) {
-            final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar");
-            kieModule = new CanonicalKieModule(releaseId, kieModuleModel, kjarFile);
-        }
+
+
         kieServices.getRepository().addKieModule(kieModule);
 
         return kieModule;
