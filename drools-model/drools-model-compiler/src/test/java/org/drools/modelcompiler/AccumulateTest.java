@@ -690,10 +690,20 @@ public class AccumulateTest extends BaseModelTest {
                         "                                                                reverse( set.remove($id); ),\n" +
                         "                                                                result( set.size()) )\n" +
                         "then\n" +
+                        "   insert($eventCodeDistinctMois);\n" +
                         "end";
         KieSession ksession = getKieSession( drl1 );
 
         ksession.insert("1");
+        ksession.insert("3");
+        ksession.insert("3");
+        ksession.insert("5");
+        ksession.insert("7");
         ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+
+        assertThat(results, hasItem(4));
+
     }
 }
