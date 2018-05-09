@@ -350,16 +350,14 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
     public void testGetProcessInstancesCustomWithVars() {
 
         query = new SqlQueryDefinition("jbpmProcessSearchWithVars", dataSourceJNDIname);
-        query.setExpression("select p. PROCESSINSTANCEID, p.PROCESSID,  p.PROCESSNAME, p.PROCESSVERSION, " +
-                            "p.STATUS,  p.EXTERNALID, pr.STARTDATE,   p.USER_IDENTITY, p.PROCESSINSTANCEDESCRIPTION, " +
+        query.setExpression("select p.PROCESSINSTANCEID, p.PROCESSID, p.PROCESSNAME, p.PROCESSVERSION, " +
+                            "p.STATUS, p.EXTERNALID, pr.STARTDATE, p.USER_IDENTITY, p.PROCESSINSTANCEDESCRIPTION, " +
                             "p.CORRELATIONKEY, p.PARENTPROCESSINSTANCEID, pr.LASTMODIFICATIONDATE, var.variableId, " +
-                            "var.value " +
-                            "from PROCESSINSTANCELOG p " +
-                            "inner join PROCESSINSTANCEINFO pr on p.PROCESSINSTANCEID = pr.INSTANCEID " +
-                            "inner join (select v.processInstanceId, v.variableId, v.value from VariableInstanceLog v " +
-                            "where v.id = (select MAX(vil.id) from VariableInstanceLog vil where v.variableId = vil.variableId and v.processInstanceId = vil.processInstanceId)) " +
+                            "var.value from PROCESSINSTANCELOG p inner join PROCESSINSTANCEINFO pr on " +
+                            "p.PROCESSINSTANCEID = pr.INSTANCEID inner join (select v.processInstanceId, v.variableId, " +
+                            "v.value from VariableInstanceLog v where v.id = (select MAX(vil.id) from VariableInstanceLog " +
+                            "vil where v.variableId = vil.variableId and v.processInstanceId = vil.processInstanceId)) " +
                             "var on  p.PROCESSINSTANCEID = var.PROCESSINSTANCEID");
-
         queryService.registerQuery(query);
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -372,6 +370,9 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         List<ProcessInstanceCustomDesc> processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext());
         assertNotNull(processInstanceLogs);
         assertEquals(1, processInstanceLogs.size());
+        
+        ProcessInstanceWithVarsDesc instance = processInstanceLogs.get(0);
+        assertEquals(3, instance.getVariables().size());
 
         processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_VAR_NAME, "approval_document"));
         assertNotNull(processInstanceLogs);
@@ -385,6 +386,27 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processInstanceId = null;
 
     }    
+    
+    @Test
+    public void testGetProcessInstancesCustomWithoutVars() {
+
+        query = new SqlQueryDefinition("jbpmProcessSearchWithoutVars", dataSourceJNDIname);
+        query.setExpression("select p.PROCESSINSTANCEID, p.PROCESSID, p.PROCESSNAME, p.PROCESSVERSION, " +
+                            "p.STATUS, p.EXTERNALID, pr.STARTDATE, p.USER_IDENTITY, p.PROCESSINSTANCEDESCRIPTION, " +
+                            "p.CORRELATIONKEY, p.PARENTPROCESSINSTANCEID, pr.LASTMODIFICATIONDATE " +
+                            "from PROCESSINSTANCELOG p inner join PROCESSINSTANCEINFO pr on p.PROCESSINSTANCEID = pr.INSTANCEID");
+        queryService.registerQuery(query);
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        List<ProcessInstanceCustomDesc> processInstanceLogs = queryService.query(query.getName(), ProcessInstanceCustomQueryMapper.get(), new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+    }   
 
     @Test
     public void testGetTaskInstances() {

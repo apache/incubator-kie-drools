@@ -59,7 +59,9 @@ public class ProcessInstanceCustomQueryMapper  extends AbstractQueryMapper<Proce
                     String varName = getColumnStringValue(dataSetResult, COLUMN_VAR_NAME, i);
                     String varValue = getColumnStringValue(dataSetResult, COLUMN_VAR_VALUE, i);
                     
-                    ((org.jbpm.kie.services.impl.model.ProcessInstanceCustomDesc)pi).addVariable(varName, varValue);
+                    if (varName != null) {
+                        ((org.jbpm.kie.services.impl.model.ProcessInstanceCustomDesc) pi).addVariable(varName, varValue);
+                    }
                 }
             }
             tmp = null;
