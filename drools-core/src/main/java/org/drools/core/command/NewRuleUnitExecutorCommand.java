@@ -16,33 +16,35 @@
 
 package org.drools.core.command;
 
+import java.io.Serializable;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.Context;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 
-public class NewKieSessionCommand
-    implements
-    ExecutableCommand<KieSession> {
+public class NewRuleUnitExecutorCommand
+        implements
+        ExecutableCommand<RuleUnitExecutor> {
 
-    private static final long serialVersionUID = 8748826714594402049L;
+    private static final long serialVersionUID = 8955950765481938826L;
     private String sessionId;
     private ReleaseId releaseId;
 
-    public NewKieSessionCommand(String sessionId) {
+    public NewRuleUnitExecutorCommand(String sessionId) {
         this.sessionId = sessionId;
     }
 
-    public NewKieSessionCommand(ReleaseId releaseId, String sessionId) {
+    public NewRuleUnitExecutorCommand(ReleaseId releaseId, String sessionId) {
         this.sessionId = sessionId;
         this.releaseId = releaseId;
     }
 
-    @Override
-    public KieSession execute(Context context) {
+    public RuleUnitExecutor execute(Context context) {
         KieContainer kieContainer;
 
         if ( releaseId != null ) {
@@ -56,18 +58,21 @@ public class NewKieSessionCommand
             }
         }
 
-        KieSession ksession  = sessionId != null ? kieContainer.newKieSession(sessionId) : kieContainer.newKieSession();
+        RuleUnitExecutor ruleUnitExecutor = sessionId != null ? kieContainer.newRuleUnitExecutor(sessionId) : kieContainer.newRuleUnitExecutor();
 
-        ((RegistryContext)context).register( KieSession.class, ksession );
+        ((RegistryContext)context).register( RuleUnitExecutor.class, ruleUnitExecutor);
 
-        return ksession;
+        // TODO is it correct to put internal RuleUnit kieSession in the Registry?
+        ((RegistryContext)context).register(KieSession.class, ruleUnitExecutor.getKieSession());
+
+        return ruleUnitExecutor;
     }
 
     @Override
     public String toString() {
-        return "NewKieSessionCommand{" +
-               "sessionId='" + sessionId + '\'' +
-               ", releaseId=" + releaseId +
-               '}';
+        return "NewRuleUnitExecutorCommand{" +
+                "sessionId='" + sessionId + '\'' +
+                ", releaseId=" + releaseId +
+                '}';
     }
 }
