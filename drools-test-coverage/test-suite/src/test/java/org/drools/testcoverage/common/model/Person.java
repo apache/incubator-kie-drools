@@ -17,6 +17,8 @@
 package org.drools.testcoverage.common.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Person implements Serializable {
 
@@ -27,6 +29,7 @@ public class Person implements Serializable {
     private int age;
     private String likes;
     private Address address;
+    private List<Address> addresses = new ArrayList<>();
 
     public Person() {
     }
@@ -85,6 +88,14 @@ public class Person implements Serializable {
 
     public String getLikes() {
         return likes;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     @Override

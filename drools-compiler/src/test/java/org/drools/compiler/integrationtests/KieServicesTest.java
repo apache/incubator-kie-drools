@@ -1,8 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJar;
 import static org.junit.Assert.*;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.junit.After;
@@ -12,7 +12,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 
-public class KieServicesTest {
+public class KieServicesTest extends CommonTestMethodBase {
 	
 	private KieServices ks;
 

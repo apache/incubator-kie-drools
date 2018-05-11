@@ -17,9 +17,7 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -38,10 +36,6 @@ public final class TestUtil {
     public static final String RULE1_NAME = "R1";
     public static final String RULE2_NAME = "R2";
     public static final String RULE3_NAME = "R3";
-
-    public static KieSession createSession(final String... drls) {
-        return buildSessionInSteps(drls);
-    }
 
     public static void addRules(final KieSession session, final String... drls) {
         addRules(session, false, drls);
@@ -84,13 +78,27 @@ public final class TestUtil {
         return buildSessionInSteps(false, drls);
     }
 
-    public static KieSession buildSessionInSteps(final boolean reuseKieBaseWhenAddingRules, final String... drls) {
+    public static KieSession buildSessionInSteps(final InternalKnowledgeBase originalKnowledgeBase, final String... drls) {
+        return buildSessionInSteps(originalKnowledgeBase, false, drls);
+    }
+
+    public static KieSession buildSessionInSteps(final InternalKnowledgeBase originalKnowledgeBase,
+                                                 final boolean reuseKieBaseWhenAddingRules, final String... drls) {
         if (drls == null || drls.length == 0) {
-            return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
+            if (originalKnowledgeBase == null) {
+                return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
+            } else {
+                return originalKnowledgeBase.newKieSession();
+            }
         } else {
             String drl = drls[0];
             final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-            final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            final InternalKnowledgeBase kbase;
+            if (originalKnowledgeBase == null) {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            } else {
+                kbase = originalKnowledgeBase;
+            }
             kbase.addPackages(kbuilder.getKnowledgePackages());
 
             final KieSession kSession = kbase.newKieSession();
@@ -109,30 +117,29 @@ public final class TestUtil {
         }
     }
 
-    public static KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String drl) {
+    public static KieSession buildSessionInSteps(final boolean reuseKieBaseWhenAddingRules, final String... drls) {
+        return buildSessionInSteps(null, reuseKieBaseWhenAddingRules, drls);
+    }
+
+    public static KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String... drls) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
         }
-
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        for (final String drl : drls) {
+            kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        }
         if (kbuilder.hasErrors()) {
             throw new RuntimeException("Knowledge contains errors: " + kbuilder.getErrors().toString());
         }
         return kbuilder;
     }
 
-    private static void insertGlobals(final KieSession session, final Map<String, Object> globals) {
-        for (final Map.Entry<String, Object> globalEntry : globals.entrySet()) {
-            session.setGlobal(globalEntry.getKey(), globalEntry.getValue());
-        }
-    }
-
     public static int getRulesCount(final KieBase kBase) {
         int result = 0;
-        for (KiePackage kiePackage : kBase.getKiePackages()) {
+        for (final KiePackage kiePackage : kBase.getKiePackages()) {
             result += kiePackage.getRules().size();
         }
         return result;
@@ -140,5 +147,9 @@ public final class TestUtil {
 
     public static Object[] getDefaultFacts() {
         return new Object[]{1, 2, "1"};
+    }
+
+    private TestUtil() {
+        // Creating instances is not allowed for util classes.
     }
 }

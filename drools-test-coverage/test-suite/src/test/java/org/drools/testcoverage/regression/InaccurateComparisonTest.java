@@ -58,8 +58,8 @@ public class InaccurateComparisonTest {
                 " then \n" +
                 " end";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
-                kieBaseTestConfiguration, rule);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
+                                                                           kieBaseTestConfiguration, rule);
         KieSession ksession = kieBase.newKieSession();
 
         ksession.insert(new Message("90201304122000000000000015"));

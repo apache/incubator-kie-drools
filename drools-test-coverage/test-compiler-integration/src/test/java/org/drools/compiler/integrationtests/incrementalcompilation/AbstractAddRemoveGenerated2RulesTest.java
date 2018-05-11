@@ -8,16 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.TurtleTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.test.testcategory.TurtleTestCategory;
 
 @Category(TurtleTestCategory.class)
 public abstract class AbstractAddRemoveGenerated2RulesTest {
-
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String rule1;
     private final String rule2;
@@ -46,18 +42,19 @@ public abstract class AbstractAddRemoveGenerated2RulesTest {
     // This takes only three different constraints - this is intentional, because it is needed to
     // keep the number of combinations at reasonable number.
     public static Collection<ConstraintsPair[]> generateRulesConstraintsCombinations(final String constraint1,
-            final String constraint2, final String constraint3) {
-        final Set<ConstraintsPair> constraintsPairs = new HashSet<ConstraintsPair>();
-        final List<ConstraintsPair[]> result = new ArrayList<ConstraintsPair[]>();
+                                                                                     final String constraint2,
+                                                                                     final String constraint3) {
+        final Set<ConstraintsPair> constraintsPairs = new HashSet<>();
+        final List<ConstraintsPair[]> result = new ArrayList<>();
 
-        final List<String> constraintsList = new ArrayList<String>();
+        final List<String> constraintsList = new ArrayList<>();
         constraintsList.add(constraint1);
         constraintsList.add(constraint2);
         constraintsList.add(constraint3);
         final List<String> constraintsCombinations = getConstraintsCombinations(constraintsList);
 
-        for (String constraintsRule1 : constraintsCombinations) {
-            for (String constraintsRule2 : constraintsCombinations) {
+        for (final String constraintsRule1 : constraintsCombinations) {
+            for (final String constraintsRule2 : constraintsCombinations) {
                 final ConstraintsPair constraintsPair = new ConstraintsPair(constraintsRule1, constraintsRule2);
                 if (constraintsPairs.add(constraintsPair)) {
                     result.add(new ConstraintsPair[]{constraintsPair});
@@ -68,10 +65,10 @@ public abstract class AbstractAddRemoveGenerated2RulesTest {
     }
 
     private static List<String> getConstraintsCombinations(final List<String> constraintsList) {
-        final List<String> ruleConstraintsCombinations = new ArrayList<String>();
-        for (String constraint : constraintsList) {
-            for (String constraint2 : constraintsList) {
-                for (String constraint3 : constraintsList) {
+        final List<String> ruleConstraintsCombinations = new ArrayList<>();
+        for (final String constraint : constraintsList) {
+            for (final String constraint2 : constraintsList) {
+                for (final String constraint3 : constraintsList) {
                     ruleConstraintsCombinations.add(constraint.replace("${variableNamePlaceholder}", "$i")
                             + constraint2.replace("${variableNamePlaceholder}", "$j")
                             + constraint3.replace("${variableNamePlaceholder}", "$k"));
@@ -140,7 +137,7 @@ public abstract class AbstractAddRemoveGenerated2RulesTest {
     }
 
     private Object[] getFacts() {
-        final Map<Object, String> mapFact = new HashMap<Object, String>(1);
+        final Map<Object, String> mapFact = new HashMap<>(1);
         mapFact.put(new Object(), "1");
         return new Object[] {1, 2, 3, "1", mapFact};
     }
