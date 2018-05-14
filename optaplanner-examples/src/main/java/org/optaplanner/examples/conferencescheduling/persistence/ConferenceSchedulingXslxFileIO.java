@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,48 +32,28 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.examples.common.persistence.AbstractXslxSolutionFileIO;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -83,34 +62,11 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
 
-public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<ConferenceSolution> {
-
-    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
-    protected static final Pattern VALID_NAME_PATTERN = VALID_TAG_PATTERN;
-    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
-
-    protected static final DateTimeFormatter DAY_FORMATTER
-            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
-    protected static final DateTimeFormatter TIME_FORMATTER
-            = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
-
-    protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
-
-    protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
-    protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
-    protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
-    protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
-
-    @Override
-    public String getInputFileExtension() {
-        return "xlsx";
-    }
+public class ConferenceSchedulingXslxFileIO extends AbstractXslxSolutionFileIO<ConferenceSolution> {
 
     @Override
     public ConferenceSolution read(File inputSolutionFile) {
@@ -123,25 +79,17 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
     }
 
-    private static class ConferenceSchedulingXslxReader {
+    private static class ConferenceSchedulingXslxReader extends AbstractXslxReader<ConferenceSolution> {
 
-        protected final XSSFWorkbook workbook;
-
-        protected ConferenceSolution solution;
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
 
-        protected XSSFSheet currentSheet;
-        protected Iterator<Row> currentRowIterator;
-        protected XSSFRow currentRow;
-        protected int currentRowNumber;
-        protected int currentColumnNumber;
-
         public ConferenceSchedulingXslxReader(XSSFWorkbook workbook) {
-            this.workbook = workbook;
+            super(workbook);
         }
 
+        @Override
         public ConferenceSolution read() {
             solution = new ConferenceSolution();
             totalTalkTypeMap = new HashMap<>();
@@ -232,33 +180,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             readConstraintLine(TALK_PROHIBITED_ROOM_TAG, null,
                     "Hard penalty per prohibited tag in a talk's room");
             solution.setParametrization(parametrization);
-        }
-
-        private void readConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
-            nextRow();
-            readHeaderCell(name);
-            XSSFCell weightCell = nextCell();
-            if (consumer != null) {
-                if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
-                    throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
-                }
-                double value = weightCell.getNumericCellValue();
-                if (((double) ((int) value)) != value) {
-                    throw new IllegalArgumentException(currentPosition() + ": The value (" + value
-                            + ") for constraint (" + name + ") must be an integer.");
-                }
-                consumer.accept((int) value);
-            } else {
-                if (weightCell.getCellTypeEnum() == CellType.NUMERIC
-                        || !weightCell.getStringCellValue().equals("n/a")) {
-                    throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be an n/a.");
-                }
-            }
-            readHeaderCell(constraintdescription);
         }
 
         private void readTimeslotList() {
@@ -680,141 +601,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             }
         }
 
-        protected String currentPosition() {
-            return "Sheet (" + currentSheet.getSheetName() + ") cell ("
-                    + (currentRowNumber + 1) + CellReference.convertNumToColString(currentColumnNumber) + ")";
-        }
-
-        protected void nextSheet(String sheetName) {
-            currentSheet = workbook.getSheet(sheetName);
-            if (currentSheet == null) {
-                throw new IllegalStateException("The workbook does not contain a sheet with name ("
-                        + sheetName + ").");
-            }
-            currentRowIterator = currentSheet.rowIterator();
-            if (currentRowIterator == null) {
-                throw new IllegalStateException(currentPosition() + ": The sheet has no rows.");
-            }
-            currentRowNumber = -1;
-        }
-
-        protected boolean nextRow() {
-            return nextRow(true);
-        }
-
-        protected boolean nextRow(boolean skipEmptyRows) {
-            currentRowNumber++;
-            currentColumnNumber = -1;
-            if (!currentRowIterator.hasNext()) {
-                currentRow = null;
-                return false;
-            }
-            currentRow = (XSSFRow) currentRowIterator.next();
-            while (skipEmptyRows && currentRowIsEmpty()) {
-                if (!currentRowIterator.hasNext()) {
-                    currentRow = null;
-                    return false;
-                }
-                currentRow = (XSSFRow) currentRowIterator.next();
-            }
-            if (currentRow.getRowNum() != currentRowNumber) {
-                if (currentRow.getRowNum() == currentRowNumber + 1) {
-                    currentRowNumber++;
-                } else {
-                    throw new IllegalStateException(currentPosition() + ": The next row (" + currentRow.getRowNum()
-                            + ") has a gap of more than 1 empty line with the previous.");
-                }
-            }
-            return true;
-        }
-
-        protected boolean currentRowIsEmpty() {
-            if (currentRow.getPhysicalNumberOfCells() == 0) {
-                return true;
-            }
-            for (Cell cell : currentRow) {
-                if (cell.getCellTypeEnum() == CellType.STRING) {
-                    if (!cell.getStringCellValue().isEmpty()) {
-                        return false;
-                    }
-                } else if (cell.getCellTypeEnum() != CellType.BLANK) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        protected void readHeaderCell(String value) {
-            XSSFCell cell = currentRow == null ? null : nextStringCell();
-            if (cell == null || !cell.getStringCellValue().equals(value)) {
-                throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
-                        + value + ").");
-            }
-        }
-
-        protected XSSFCell nextStringCell() {
-            XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
-                throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getNumericCellValue() + ") has a numeric type but should be a string.");
-            }
-            return cell;
-        }
-
-        protected XSSFCell nextNumericCell() {
-            XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.STRING) {
-                throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getStringCellValue() + ") has a string type but should be numeric.");
-            }
-            return cell;
-        }
-
-        protected XSSFCell nextBooleanCell() {
-            XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.STRING) {
-                throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getStringCellValue() + ") has a string type but should be boolean.");
-            }
-            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
-                throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getNumericCellValue() + ") has a numeric type but should be a boolean.");
-            }
-            return cell;
-        }
-
-        protected XSSFCell nextCell() {
-            currentColumnNumber++;
-            XSSFCell cell = currentRow.getCell(currentColumnNumber);
-            // TODO HACK to workaround the fact that LibreOffice and Excel automatically remove empty trailing cells
-            if (cell == null) {
-                // Return dummy cell
-                return currentRow.createCell(currentColumnNumber);
-            }
-            return cell;
-        }
-
-        protected XSSFColor extractColor(XSSFCell cell, XSSFColor... acceptableColors) {
-            XSSFCellStyle cellStyle = cell.getCellStyle();
-            FillPatternType fillPattern = cellStyle.getFillPatternEnum();
-            if (fillPattern == null || fillPattern == FillPatternType.NO_FILL) {
-                return null;
-            }
-            if (fillPattern != FillPatternType.SOLID_FOREGROUND) {
-                throw new IllegalStateException(currentPosition() + ": The fill pattern (" + fillPattern
-                        + ") should be either " + FillPatternType.NO_FILL
-                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
-            }
-            XSSFColor color = cellStyle.getFillForegroundColorColor();
-            for (XSSFColor acceptableColor : acceptableColors) {
-                if (acceptableColor.equals(color)) {
-                    return acceptableColor;
-                }
-            }
-            throw new IllegalStateException(currentPosition() + ": The fill color (" + color
-                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
-        }
-
     }
 
 
@@ -829,48 +615,15 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
         }
     }
 
-    private static class ConferenceSchedulingXlsxWriter {
-
-        protected final ConferenceSolution solution;
-        protected final List<ConstraintMatchTotal> constraintMatchTotalList;
-        protected final Map<Object, Indictment> indictmentMap;
-
-        protected XSSFWorkbook workbook;
-        protected CreationHelper creationHelper;
-
-        protected XSSFCellStyle headerStyle;
-        protected XSSFCellStyle defaultStyle;
-        protected XSSFCellStyle unavailableStyle;
-        protected XSSFCellStyle pinnedStyle;
-        protected XSSFCellStyle hardPenaltyStyle;
-        protected XSSFCellStyle softPenaltyStyle;
-        protected XSSFCellStyle wrappedStyle;
-
-        protected XSSFSheet currentSheet;
-        protected Drawing currentDrawing;
-        protected XSSFRow currentRow;
-        protected int currentRowNumber;
-        protected int currentColumnNumber;
-        protected int headerCellCount;
+    private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
 
         public ConferenceSchedulingXlsxWriter(ConferenceSolution solution) {
-            this.solution = solution;
-            ScoreDirectorFactory<ConferenceSolution> scoreDirectorFactory
-                    = SolverFactory.<ConferenceSolution>createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG)
-                    .buildSolver().getScoreDirectorFactory();
-            try (ScoreDirector<ConferenceSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-                scoreDirector.setWorkingSolution(solution);
-                scoreDirector.calculateScore();
-                constraintMatchTotalList = new ArrayList<>(scoreDirector.getConstraintMatchTotals());
-                constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScore));
-                indictmentMap = scoreDirector.getIndictmentMap();
-            }
+            super(solution, ConferenceSchedulingApp.SOLVER_CONFIG);
         }
 
+        @Override
         public Workbook write() {
-            workbook = new XSSFWorkbook();
-            creationHelper = workbook.getCreationHelper();
-            createStyles();
+            writeSetup();
             writeConfiguration();
             writeTimeslotList();
             writeRoomList();
@@ -887,30 +640,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeLanguagesView();
             writeScoreView();
             return workbook;
-        }
-
-        public void createStyles() {
-            headerStyle = createStyle(null);
-            Font font = workbook.createFont();
-            font.setBold(true);
-            headerStyle.setFont(font);
-            defaultStyle = createStyle(null);
-            unavailableStyle = createStyle(UNAVAILABLE_COLOR);
-            pinnedStyle = createStyle(PINNED_COLOR);
-            hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
-            softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
-            wrappedStyle = createStyle(null);
-        }
-
-        private XSSFCellStyle createStyle(XSSFColor color) {
-            XSSFCellStyle style = workbook.createCellStyle();
-            if (color != null) {
-                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                style.setFillForegroundColor(color);
-            }
-            style.setWrapText(true);
-            style.setVerticalAlignment(VerticalAlignment.CENTER);
-            return style;
         }
 
         private void writeConfiguration() {
@@ -985,18 +714,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             writeConstraintLine(TALK_PROHIBITED_ROOM_TAG, null,
                     "Hard penalty per prohibited tag in a talk's room");
             autoSizeColumnsWithHeader();
-        }
-
-        private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintdescription) {
-            nextRow();
-            nextHeaderCell(name);
-            XSSFCell weightCell = nextCell();
-            if (supplier != null) {
-                weightCell.setCellValue(supplier.get());
-            } else {
-                weightCell.setCellValue("n/a");
-            }
-            nextHeaderCell(constraintdescription);
         }
 
         private void writeTimeslotList() {
@@ -1455,8 +1172,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
 
         private void writeScoreView() {
             nextSheet("Score view", 1, 1, true);
-            nextRow();
-            nextCell();
             nextHeaderCell("Score");
             nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
             nextRow();
@@ -1510,28 +1225,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
                 nextHeaderCell(TIME_FORMATTER.format(timeslot.getStartDateTime())
                         + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
             }
-        }
-
-        protected void nextSheet(String sheetName, int colSplit, int rowSplit, boolean view) {
-            currentSheet = workbook.createSheet(sheetName);
-            currentDrawing = currentSheet.createDrawingPatriarch();
-            currentSheet.createFreezePane(colSplit, rowSplit);
-            currentRowNumber = -1;
-            headerCellCount = 0;
-            if (view) {
-                currentSheet.setTabColor(VIEW_TAB_COLOR);
-            }
-        }
-
-        protected void nextRow() {
-            currentRowNumber++;
-            currentRow = currentSheet.createRow(currentRowNumber);
-            currentColumnNumber = -1;
-        }
-
-        protected void nextHeaderCell(String value) {
-            nextCell(headerStyle).setCellValue(value);
-            headerCellCount++;
         }
 
         protected void nextTalkListCell(List<Talk> talkList, String[] filteredConstraintNames) {
@@ -1624,23 +1317,6 @@ public class ConferenceSchedulingXslxFileIO implements SolutionFileIO<Conference
             }
             cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
             currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), talkList.size() * currentSheet.getDefaultRowHeightInPoints()));
-        }
-
-        protected XSSFCell nextCell() {
-            return nextCell(defaultStyle);
-        }
-
-        protected XSSFCell nextCell(XSSFCellStyle cellStyle) {
-            currentColumnNumber++;
-            XSSFCell cell = currentRow.createCell(currentColumnNumber);
-            cell.setCellStyle(cellStyle);
-            return cell;
-        }
-
-        protected void autoSizeColumnsWithHeader() {
-            for (int i = 0; i < headerCellCount; i++) {
-                currentSheet.autoSizeColumn(i);
-            }
         }
 
     }

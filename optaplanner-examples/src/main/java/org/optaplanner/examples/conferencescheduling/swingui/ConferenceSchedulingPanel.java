@@ -53,7 +53,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     }
 
     @Override
-    public void resetPanel(ConferenceSolution meetingSchedule) {
+    public void resetPanel(ConferenceSolution solution) {
     }
 
 }

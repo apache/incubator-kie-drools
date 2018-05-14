@@ -30,7 +30,7 @@ import java.util.Set;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.StringDataGenerator;
+import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
@@ -159,8 +159,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         createTaskList(solution, taskListSize);
         solution.setFrozenCutoff(0);
 
-        BigInteger a = AbstractSolutionImporter.InputBuilder.factorial(taskListSize + employeeListSize - 1);
-        BigInteger b = AbstractSolutionImporter.InputBuilder.factorial(employeeListSize - 1);
+        BigInteger a = AbstractSolutionImporter.factorial(taskListSize + employeeListSize - 1);
+        BigInteger b = AbstractSolutionImporter.factorial(employeeListSize - 1);
         BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
         logger.info("TaskAssigningSolution {} has {} tasks, {} skills, {} employees, {} task types and {} customers with a search space of {}.",
                 fileName,

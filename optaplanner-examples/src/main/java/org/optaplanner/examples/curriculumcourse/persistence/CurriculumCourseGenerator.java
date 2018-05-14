@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.persistence.StringDataGenerator;
+import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;

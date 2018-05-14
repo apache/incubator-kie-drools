@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.persistence;
 
 import org.junit.Test;
+import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
 
 import static org.junit.Assert.*;
 

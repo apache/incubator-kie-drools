@@ -19,13 +19,10 @@ package org.optaplanner.examples.common.persistence;
 import java.io.File;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Arrays;
 
 import com.google.common.math.BigIntegerMath;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -49,18 +46,18 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
 
     public static abstract class InputBuilder extends LoggingMain {
 
-        public static BigInteger factorial(int base) {
-            if (base > 100000) {
-                // Calculation takes too long
-                return null;
-            }
-            BigInteger value = BigInteger.ONE;
-            for (int i = 1; i <= base; i++) {
-                value = value.multiply(BigInteger.valueOf(i));
-            }
-            return value;
-        }
+    }
 
+    public static BigInteger factorial(int base) {
+        if (base > 100000) {
+            // Calculation takes too long
+            return null;
+        }
+        BigInteger value = BigInteger.ONE;
+        for (int i = 1; i <= base; i++) {
+            value = value.multiply(BigInteger.valueOf(i));
+        }
+        return value;
     }
 
     public static String getFlooredPossibleSolutionSize(BigInteger possibleSolutionSize) {

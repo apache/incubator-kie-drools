@@ -26,10 +26,10 @@ public class AbstractSolutionImporterTest {
 
     @Test
     public void factorial() {
-        assertEquals(BigInteger.valueOf(1), AbstractSolutionImporter.InputBuilder.factorial(1));
-        assertEquals(BigInteger.valueOf(2), AbstractSolutionImporter.InputBuilder.factorial(2));
-        assertEquals(BigInteger.valueOf(6), AbstractSolutionImporter.InputBuilder.factorial(3));
-        assertEquals(BigInteger.valueOf(24), AbstractSolutionImporter.InputBuilder.factorial(4));
+        assertEquals(BigInteger.valueOf(1), AbstractSolutionImporter.factorial(1));
+        assertEquals(BigInteger.valueOf(2), AbstractSolutionImporter.factorial(2));
+        assertEquals(BigInteger.valueOf(6), AbstractSolutionImporter.factorial(3));
+        assertEquals(BigInteger.valueOf(24), AbstractSolutionImporter.factorial(4));
     }
 
 }

@@ -19,7 +19,7 @@ package org.optaplanner.examples.tsp.domain.location;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
 @XStreamAlias("TspLocation")
 @XStreamInclude({
@@ -70,7 +70,7 @@ public abstract class Location extends AbstractPersistable {
     // ************************************************************************
 
     /**
-     * The distance's unit of measurement depends on the {@link VehicleRoutingSolution}'s {@link DistanceType}.
+     * The distance's unit of measurement depends on the {@link TspSolution}'s {@link DistanceType}.
      * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
