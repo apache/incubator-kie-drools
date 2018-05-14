@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -591,6 +591,12 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
         
     }
 
+    public String getUpdateFieldLog(String fieldName, String previousValue, String value){
+        return "Updated "+ fieldName
+                + " {From: '"+ (previousValue!=null ? previousValue :  "" )
+                + "' to: '"+ (value!=null ? value :  "" ) + "'}" ;
+    }
+
     @Override
     public void afterTaskUpdatedEvent(TaskEvent event) {
         String userId = event.getTaskContext().getUserId();
@@ -605,26 +611,23 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
                 return;
             }
 
-            
             if((ti.getDescription() != null && !ti.getDescription().equals(auditTaskImpl.getDescription()))
                     || (ti.getDescription() == null && auditTaskImpl.getDescription() != null)){
-                String message ="Updated Description {From: "+auditTaskImpl.getDescription()+
-                                                                    ", to: "+ti.getDescription()+"}";
+                String message = getUpdateFieldLog("Description", auditTaskImpl.getDescription(), ti.getDescription());
+
                 persistenceContext.persist(new TaskEventImpl(ti.getId(),
                             org.kie.internal.task.api.model.TaskEvent.TaskEventType.UPDATED,
                             ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
             }
             if( (ti.getName() != null && !ti.getName().equals(auditTaskImpl.getName()))
                     || (ti.getName() == null && auditTaskImpl.getName() != null)){
-                String message ="Updated Name {From: "+auditTaskImpl.getName()+
-                                                                    ", to: "+ti.getName()+"}";
+                String message = getUpdateFieldLog("Name", auditTaskImpl.getName(), ti.getName());
                 persistenceContext.persist(new TaskEventImpl(ti.getId(),
                             org.kie.internal.task.api.model.TaskEvent.TaskEventType.UPDATED,
                             ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
             }
             if( auditTaskImpl.getPriority() != ti.getPriority()){
-                String message ="Updated Priority {From: "+auditTaskImpl.getPriority()+
-                                                                    ", to: "+ti.getPriority()+"}";
+                String message = getUpdateFieldLog("Priority", String.valueOf(auditTaskImpl.getPriority()), String.valueOf(ti.getPriority()));
                 persistenceContext.persist(new TaskEventImpl(ti.getId(),
                             org.kie.internal.task.api.model.TaskEvent.TaskEventType.UPDATED,
                             ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
@@ -634,8 +637,11 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
                     && auditTaskImpl.getDueDate().getTime() != ti.getTaskData().getExpirationTime().getTime()) 
                     || (auditTaskImpl.getDueDate() == null && ti.getTaskData().getExpirationTime() != null)
                     || (auditTaskImpl.getDueDate() != null && ti.getTaskData().getExpirationTime() == null)){
-                String message ="Updated DueDate {From: "+auditTaskImpl.getDueDate()+
-                                                                    ", to: "+ti.getTaskData().getExpirationTime()+"}";
+                String fromDate = (auditTaskImpl.getDueDate() != null ? new Date(auditTaskImpl.getDueDate().getTime()).toString(): null);
+                String toDate = (ti.getTaskData().getExpirationTime()!= null ? ti.getTaskData().getExpirationTime().toString() : "" );
+                String message = getUpdateFieldLog( "DueDate",
+                                                    fromDate,
+                                                    toDate );
                 persistenceContext.persist(new TaskEventImpl(ti.getId(),
                             org.kie.internal.task.api.model.TaskEvent.TaskEventType.UPDATED,
                             ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
