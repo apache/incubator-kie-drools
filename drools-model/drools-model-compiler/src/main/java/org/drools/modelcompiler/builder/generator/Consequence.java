@@ -13,6 +13,7 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -50,6 +51,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 public class Consequence {
 
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType(BitMask.class.getCanonicalName());
+    private static final ClassOrInterfaceType RULE_CONTEXT_TYPE = JavaParser.parseClassOrInterfaceType(org.kie.api.runtime.rule.RuleContext.class.getCanonicalName());
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
@@ -85,7 +87,7 @@ public class Consequence {
             ruleConsequence.findAll(Expression.class)
                     .stream()
                     .filter(s -> isNameExprWithName(s, "kcontext"))
-                    .forEach(n -> n.replace(new NameExpr("drools")));
+                    .forEach(n -> n.replace(new CastExpr( RULE_CONTEXT_TYPE, new NameExpr("drools") )));
         }
 
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
