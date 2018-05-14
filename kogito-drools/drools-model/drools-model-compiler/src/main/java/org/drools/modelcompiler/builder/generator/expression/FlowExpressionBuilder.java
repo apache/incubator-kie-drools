@@ -81,11 +81,9 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         } else {
             bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getExprBinding())) );
         }
+        final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
-        final Expression constraintExpression = drlxParseResult.getExpr() instanceof EnclosedExpr ?
-                buildConstraintExpression(drlxParseResult, (( EnclosedExpr ) drlxParseResult.getExpr()).getInner()) :
-                buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), DrlxParseUtil.findLeftLeafOfMethodCall(drlxParseResult.getLeft().getExpression()));
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
@@ -109,13 +107,6 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         return exprDSL;
     }
 
-    private Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
-        return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarations(), expr );
-    }
-
-    private Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
-    }
 
     private MethodCallExpr buildIndexedBy(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
         if ( !hasIndex( drlxParseResult ) ) {
