@@ -41,7 +41,6 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
@@ -1171,75 +1170,6 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession(str);
-    }
-
-
-    @Test
-    public void testDroolsContext() {
-        String str =
-                "global java.util.List list\n" +
-                "global java.util.List list2\n" +
-                "\n" +
-                "rule R when\n" +
-                "then\n" +
-                " list.add(list2.add(kcontext));\n" +
-                "end";
-
-        KieSession ksession = getKieSession(str);
-
-        List<Object> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        List<Object> list2 = new ArrayList<>();
-        ksession.setGlobal("list2", list2);
-
-        ksession.fireAllRules();
-
-        assertEquals( 1, list.size() );
-    }
-
-    @Test
-    public void testDroolsContextInString() {
-        String str =
-                "global java.util.List list\n" +
-                        "global java.util.List list2\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "then\n" +
-                        " list.add(list2.add(\"something\" + kcontext));\n" +
-                        "end";
-
-        KieSession ksession = getKieSession(str);
-
-        List<Object> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        List<Object> list2 = new ArrayList<>();
-        ksession.setGlobal("list2", list2);
-
-        ksession.fireAllRules();
-
-        assertEquals( 1, list.size() );
-    }
-
-    @Test
-    public void testDroolsContextWithoutReplacingStrings() {
-        String str =
-                "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "then\n" +
-                        " list.add(\"this kcontext shoudln't be replaced\");\n" +
-                        "end";
-
-        KieSession ksession = getKieSession(str);
-
-        List<Object> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-        ksession.fireAllRules();
-
-        assertEquals( 1, list.size() );
-        assertEquals("this kcontext shoudln't be replaced", list.iterator().next());
     }
 
     @Test
