@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ParallelEvaluationTest {
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void test() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -90,7 +90,7 @@ public class ParallelEvaluationTest {
         assertEquals(10, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testWithInsertions() {
         StringBuilder sb = new StringBuilder( 4000 );
         sb.append( "global java.util.List list;\n" );
@@ -119,7 +119,7 @@ public class ParallelEvaluationTest {
         assertEquals(ruleNr, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testWithDeletes() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -149,7 +149,7 @@ public class ParallelEvaluationTest {
         assertEquals(20, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testWithAsyncInsertions() {
         StringBuilder sb = new StringBuilder( 4000 );
         sb.append( "global java.util.List list;\n" );
@@ -203,7 +203,7 @@ public class ParallelEvaluationTest {
                 "end\n";
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testFireUntilHalt() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -246,7 +246,7 @@ public class ParallelEvaluationTest {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testFireUntilHalt2() {
         int rulesNr = 4;
         int factsNr = 1;
@@ -349,7 +349,7 @@ public class ParallelEvaluationTest {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testFireUntilHaltWithAsyncInsert() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -394,7 +394,7 @@ public class ParallelEvaluationTest {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testDisableParallelismOnSinglePartition() {
         String drl =
                 "rule R1 when\n" +
@@ -420,7 +420,7 @@ public class ParallelEvaluationTest {
         assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testEventsExpiration() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -463,7 +463,7 @@ public class ParallelEvaluationTest {
         assertEquals( 0L, ksession.getFactCount() );
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testImmediateEventsExpiration() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -539,7 +539,7 @@ public class ParallelEvaluationTest {
                 "end\n";
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testFireUntilHaltWithExpiration() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -692,7 +692,7 @@ public class ParallelEvaluationTest {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testWithUpdates() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -729,7 +729,7 @@ public class ParallelEvaluationTest {
         assertEquals(10, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testDisableParallelismWithAgendaGroups() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -763,7 +763,7 @@ public class ParallelEvaluationTest {
         assertEquals(10, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testDisableParallelismWithSalience() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -793,7 +793,7 @@ public class ParallelEvaluationTest {
         assertEquals( list, Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0) );
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testMultipleParallelKieSessionsWithInsertions() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
@@ -836,7 +836,7 @@ public class ParallelEvaluationTest {
         };
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testMultipleParallelKieSessionsWithUpdates() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
@@ -888,7 +888,7 @@ public class ParallelEvaluationTest {
         };
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testMultipleParallelKieSessionsWithDeletes() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
@@ -933,7 +933,7 @@ public class ParallelEvaluationTest {
         };
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testMultipleParallelKieSessionsFireUntilHalt() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
@@ -994,7 +994,7 @@ public class ParallelEvaluationTest {
         };
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 40000L)
     public void testMultipleParallelKieSessionsFireUntilHaltWithAsyncInsert() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
