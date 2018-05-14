@@ -16,21 +16,23 @@
 
 package org.drools.model.impl;
 
-import org.drools.model.AnnotationValue;
-import org.drools.model.TypeMetaData;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypeMetaDataImpl implements TypeMetaData {
+import org.drools.model.AnnotationValue;
+import org.drools.model.TypeMetaData;
 
+public class TypeMetaDataImpl implements TypeMetaData, ModelComponent {
+
+    private final Class<?> type;
     private final String pkg;
     private final String name;
     private final Map<String, AnnotationValue[]> annotations = new HashMap<>();
 
-    public TypeMetaDataImpl( String pkg, String name ) {
-        this.pkg = pkg;
-        this.name = name;
+    public TypeMetaDataImpl( Class<?> type ) {
+        this.type = type;
+        this.pkg = type.getPackage().getName();
+        this.name = type.getSimpleName();
     }
 
     @Override
@@ -51,5 +53,17 @@ public class TypeMetaDataImpl implements TypeMetaData {
     public TypeMetaDataImpl addAnnotation( String name, AnnotationValue... values) {
         annotations.put(name, values);
         return this;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        TypeMetaDataImpl other = ( TypeMetaDataImpl ) o;
+
+        if ( !pkg.equals( other.pkg ) ) return false;
+        if ( !name.equals( other.name ) ) return false;
+        return true;
     }
 }

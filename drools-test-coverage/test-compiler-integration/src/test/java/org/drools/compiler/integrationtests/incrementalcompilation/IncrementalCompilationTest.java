@@ -82,6 +82,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -105,8 +106,8 @@ public class IncrementalCompilationTest {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
-        return parameters;
-//        return TestParametersUtil.getKieBaseCloudConfigurations();
+//        return parameters;
+        return TestParametersUtil.getKieBaseCloudConfigurations();
     }
 
     @Test

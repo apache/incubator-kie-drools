@@ -62,6 +62,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
             newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
             CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
 
+            ctx.kBase.processAllTypesDeclaration( newPkgs.getKiePackages() );
+
             rulesToBeRemoved = new ArrayList<>();
             rulesToBeAdded = new ArrayList<>();
 
@@ -72,13 +74,25 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
                 InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
 
+                if (kpkg != null) {
+                    for (Rule newRule : kpkg.getRules()) {
+                        RuleImpl rule = oldKpkg.getRule( newRule.getName() );
+                        if ( rule != null ) {
+                            rule.setLoadOrder( (( RuleImpl ) newRule).getLoadOrder() );
+                        }
+                    }
+                }
+
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.REMOVED) {
                         if (change.getType() == ResourceChange.Type.GLOBAL) {
+                            oldKpkg.removeGlobal( changedItemName );
                             ctx.kBase.removeGlobal( changedItemName );
                         } else {
-                            rulesToBeRemoved.add( oldKpkg.getRule( changedItemName ) );
+                            RuleImpl removedRule = oldKpkg.getRule( changedItemName );
+                            rulesToBeRemoved.add( removedRule );
+                            oldKpkg.removeRule( removedRule );
                         }
                     }
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
@@ -89,7 +103,9 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 throw new RuntimeException( e );
                             }
                         } else {
-                            rulesToBeAdded.add( kpkg.getRule( changedItemName ) );
+                            RuleImpl addedRule = kpkg.getRule( changedItemName );
+                            rulesToBeAdded.add( addedRule );
+                            oldKpkg.addRule( addedRule );
                         }
                     }
                 }

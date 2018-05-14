@@ -365,6 +365,7 @@ public class CanonicalKieModule implements InternalKieModule {
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getRules(), newModel.getRules() );
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getQueries(), newModel.getQueries() );
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.GLOBAL, oldModel.getGlobals(), newModel.getGlobals() );
+        addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.DECLARATION, oldModel.getTypeMetaDatas(), newModel.getTypeMetaDatas() );
         return changeSet;
     }
 
@@ -406,6 +407,7 @@ public class CanonicalKieModule implements InternalKieModule {
                 if ( newRulesIterator.hasNext() ) {
                     currentNew = newRulesIterator.next();
                 } else {
+                    changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, currentOld.getName() ) );
                     break;
                 }
             } else if ( compare < 0 ) {
@@ -413,6 +415,7 @@ public class CanonicalKieModule implements InternalKieModule {
                 if ( oldRulesIterator.hasNext() ) {
                     currentOld = oldRulesIterator.next();
                 } else {
+                    changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, currentNew.getName() ) );
                     break;
                 }
             } else {
@@ -420,6 +423,7 @@ public class CanonicalKieModule implements InternalKieModule {
                 if ( newRulesIterator.hasNext() ) {
                     currentNew = newRulesIterator.next();
                 } else {
+                    changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, currentOld.getName() ) );
                     break;
                 }
             }
