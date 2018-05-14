@@ -677,4 +677,33 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertThat(results, hasItem("Milan"));
     }
+
+    @Test
+    public void testAccumulateWithThis() {
+        final String drl1 =
+                "import java.util.*;\n" +
+                        "rule B\n" +
+                        "when\n" +
+                        "    $eventCodeDistinctMois : Integer( intValue>0 ) from accumulate ( String( $id : this ),\n" +
+                        "                                                                init( Set set = new HashSet(); ),\n" +
+                        "                                                                action( set.add($id); ),\n" +
+                        "                                                                reverse( set.remove($id); ),\n" +
+                        "                                                                result( set.size()) )\n" +
+                        "then\n" +
+                        "   insert($eventCodeDistinctMois);\n" +
+                        "end";
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert("1");
+        ksession.insert("3");
+        ksession.insert("3");
+        ksession.insert("5");
+        ksession.insert("7");
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+
+        assertThat(results, hasItem(4));
+
+    }
 }

@@ -18,15 +18,19 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.util.Collection;
 
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -63,6 +67,30 @@ public abstract class AbstractExpressionBuilder {
     public abstract Expression buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult);
 
     public abstract MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult );
+
+    protected Expression getConstraintExpression(DrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.getExpr() instanceof EnclosedExpr) {
+            return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
+        } else {
+            final TypedExpression left = drlxParseResult.getLeft();
+            // Can we unify it? Sometimes expression is in the left sometimes in expression
+            final Expression e;
+            if(left != null) {
+                e = DrlxParseUtil.findLeftLeafOfMethodCall(left.getExpression());
+            } else {
+                e = drlxParseResult.getExpr();
+            }
+            return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
+        }
+    }
+
+    protected Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
+        return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarations(), expr );
+    }
+
+    protected Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
+        return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
+    }
 
     boolean hasIndex( DrlxParseSuccess drlxParseResult ) {
         TypedExpression left = drlxParseResult.getLeft();
