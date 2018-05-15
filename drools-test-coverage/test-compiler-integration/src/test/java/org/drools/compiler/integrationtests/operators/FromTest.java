@@ -16,8 +16,7 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,51 +25,61 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.compiler.Address;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Cheesery;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.DomainObjectHolder;
-import org.drools.compiler.FromTestClass;
-import org.drools.compiler.Order;
-import org.drools.compiler.OrderItem;
-import org.drools.compiler.Person;
-import org.drools.compiler.Pet;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
+import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteDumper;
+import org.drools.testcoverage.common.model.Address;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Cheesery;
+import org.drools.testcoverage.common.model.DomainObject;
+import org.drools.testcoverage.common.model.DomainObjectHolder;
+import org.drools.testcoverage.common.model.Order;
+import org.drools.testcoverage.common.model.OrderItem;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Pet;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Results;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class FromTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class FromTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FromTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     public static class ListsContainer {
         public List<String> getList1() {
@@ -87,7 +96,7 @@ public class FromTest extends CommonTestMethodBase {
     @Test
     public void testFromSharing() {
         // Keeping original test as non-property reactive by default, just allowed.
-        String drl =
+        final String drl =
                 "import " + ListsContainer.class.getCanonicalName() + "\n" +
                         "global java.util.List output1;\n" +
                         "global java.util.List output2;\n" +
@@ -110,45 +119,58 @@ public class FromTest extends CommonTestMethodBase {
                         "    output2.add($s);\n" +
                         "end\n";
 
-        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
 
-        ReteDumper.dumpRete(kbase);
+        final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "from-test", "1");
+        final Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
 
-        List<String> output1 = new ArrayList<String>();
-        ksession.setGlobal( "output1", output1 );
-        List<String> output2 = new ArrayList<String>();
-        ksession.setGlobal( "output2", output2 );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls(releaseId1,
+                                                                 kieBaseTestConfiguration,
+                                                                 KieSessionTestConfiguration.STATEFUL_REALTIME,
+                                                                 kieModuleConfigurationProperties,
+                                                                 drl);
+        final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
+        final KieBase kbase = kieContainer.getKieBase();
 
-        FactHandle fh = ksession.insert( new ListsContainer() );
-        ksession.fireAllRules();
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<String> output1 = new ArrayList<>();
+            ksession.setGlobal( "output1", output1 );
+            final List<String> output2 = new ArrayList<>();
+            ksession.setGlobal( "output2", output2 );
 
-        assertEquals("bb", output1.get( 0 ));
-        assertEquals("22", output2.get( 0 ));
-        assertEquals("22", output2.get( 1 ));
+            ksession.insert(new ListsContainer() );
+            ksession.fireAllRules();
 
-        EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
-        ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( ListsContainer.class ) );
+            assertEquals("bb", output1.get( 0 ));
+            assertEquals("22", output2.get( 0 ));
+            assertEquals("22", output2.get( 1 ));
 
-        // There is only 1 LIA
-        assertEquals( 1, otn.getObjectSinkPropagator().size() );
-        LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
+            final EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
+            final ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(ListsContainer.class ) );
 
-        // There are only 2 FromNodes since R2 and R3 are sharing the second From
-        LeftTupleSink[] sinks = lian.getSinkPropagator().getSinks();
-        assertEquals( 2, sinks.length );
+            // There is only 1 LIA
+            assertEquals( 1, otn.getObjectSinkPropagator().size() );
+            final LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
 
-        // The first from has R1 has sink
-        assertEquals( 1, sinks[0].getSinkPropagator().size() );
+            // There are only 2 FromNodes since R2 and R3 are sharing the second From
+            final LeftTupleSink[] sinks = lian.getSinkPropagator().getSinks();
+            assertEquals( 2, sinks.length );
 
-        // The second from has both R2 and R3 as sinks
-        assertEquals( 2, sinks[1].getSinkPropagator().size() );
+            // The first from has R1 has sink
+            assertEquals( 1, sinks[0].getSinkPropagator().size() );
+
+            // The second from has both R2 and R3 as sinks
+            assertEquals( 2, sinks[1].getSinkPropagator().size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testFromSharingWithPropertyReactive() {
         // As above but with property reactive as default
-        String drl =
+        final String drl =
                 "import " + ListsContainer.class.getCanonicalName() + "\n" +
                         "global java.util.List output1;\n" +
                         "global java.util.List output2;\n" +
@@ -171,51 +193,56 @@ public class FromTest extends CommonTestMethodBase {
                         "    output2.add($s);\n" +
                         "end\n";
         // property reactive as default:
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<String> output1 = new ArrayList<>();
+            ksession.setGlobal( "output1", output1 );
+            final List<String> output2 = new ArrayList<>();
+            ksession.setGlobal( "output2", output2 );
 
-        ReteDumper.dumpRete(kbase);
+            ksession.insert(new ListsContainer() );
+            ksession.fireAllRules();
 
-        List<String> output1 = new ArrayList<String>();
-        ksession.setGlobal( "output1", output1 );
-        List<String> output2 = new ArrayList<String>();
-        ksession.setGlobal( "output2", output2 );
+            assertEquals("bb", output1.get( 0 ));
+            assertEquals("22", output2.get( 0 ));
+            assertEquals("22", output2.get( 1 ));
 
-        FactHandle fh = ksession.insert( new ListsContainer() );
-        ksession.fireAllRules();
+            final EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
+            final ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(ListsContainer.class ) );
 
-        assertEquals("bb", output1.get( 0 ));
-        assertEquals("22", output2.get( 0 ));
-        assertEquals("22", output2.get( 1 ));
+            // There are 2 LIAs, one for the list1 and the other for the list2
+            assertEquals( 2, otn.getObjectSinkPropagator().size() );
+            final LeftInputAdapterNode lia0 = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
 
-        EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
-        ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( ListsContainer.class ) );
+            // There are only 2 FromNodes since R2 and R3 are sharing the second From
 
-        // There are 2 LIAs, one for the list1 and the other for the list2
-        assertEquals( 2, otn.getObjectSinkPropagator().size() );
-        LeftInputAdapterNode lia0 = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
+            // The first FROM node has R1 has sink
+            final LeftTupleSink[] sinks0 = lia0.getSinkPropagator().getSinks();
+            assertEquals( 1, sinks0.length );
+            assertEquals( 1, sinks0[0].getSinkPropagator().size() );
 
-        // There are only 2 FromNodes since R2 and R3 are sharing the second From
-
-        // The first FROM node has R1 has sink
-        LeftTupleSink[] sinks0 = lia0.getSinkPropagator().getSinks();
-        assertEquals( 1, sinks0.length );
-        assertEquals( 1, sinks0[0].getSinkPropagator().size() );
-
-        // The second FROM node has both R2 and R3 as sinks
-        LeftInputAdapterNode lia1 = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[1];
-        LeftTupleSink[] sinks1 = lia1.getSinkPropagator().getSinks();
-        assertEquals( 1, sinks1.length );
-        assertEquals( 2, sinks1[0].getSinkPropagator().size() );
+            // The second FROM node has both R2 and R3 as sinks
+            final LeftInputAdapterNode lia1 = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[1];
+            final LeftTupleSink[] sinks1 = lia1.getSinkPropagator().getSinks();
+            assertEquals( 1, sinks1.length );
+            assertEquals( 2, sinks1[0].getSinkPropagator().size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testFromSharingWithAccumulate() {
-        String drl =
-                "package org.drools.compiler\n" +
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
                         "\n" +
                         "import java.util.List;\n" +
                         "import java.util.ArrayList;\n" +
+                        "import " + Cheesery.class.getCanonicalName() + " ;\n" +
+                        "import " + Cheese.class.getCanonicalName() + " ;\n" +
                         "\n" +
                         "global java.util.List output1;\n" +
                         "global java.util.List output2;\n" +
@@ -241,42 +268,47 @@ public class FromTest extends CommonTestMethodBase {
                         "        output2.add( $list );\n" +
                         "end\n";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<?> output1 = new ArrayList<>();
+            ksession.setGlobal( "output1", output1 );
+            final List<?> output2 = new ArrayList<>();
+            ksession.setGlobal( "output2", output2 );
 
-        List<?> output1 = new ArrayList<Object>();
-        ksession.setGlobal( "output1", output1 );
-        List<?> output2 = new ArrayList<Object>();
-        ksession.setGlobal( "output2", output2 );
+            final Cheesery cheesery = new Cheesery();
+            cheesery.addCheese( new Cheese( "stilton", 8 ) );
+            cheesery.addCheese( new Cheese("provolone", 8 ) );
 
-        Cheesery cheesery = new Cheesery();
-        cheesery.addCheese( new Cheese( "stilton", 8 ) );
-        cheesery.addCheese( new Cheese( "provolone", 8 ) );
+            final FactHandle cheeseryHandle = ksession.insert(cheesery );
 
-        FactHandle cheeseryHandle = ksession.insert( cheesery );
+            ksession.fireAllRules();
+            assertEquals( 1, output1.size() );
+            assertEquals( 2, ( (List) output1.get( 0 ) ).size() );
+            assertEquals( 1, output2.size() );
+            assertEquals( 2, ( (List) output2.get( 0 ) ).size() );
 
-        ksession.fireAllRules();
-        assertEquals( 1, output1.size() );
-        assertEquals( 2, ( (List) output1.get( 0 ) ).size() );
-        assertEquals( 1, output2.size() );
-        assertEquals( 2, ( (List) output2.get( 0 ) ).size() );
+            output1.clear();
+            output2.clear();
 
-        output1.clear();
-        output2.clear();
+            ksession.update( cheeseryHandle, cheesery );
+            ksession.fireAllRules();
 
-        ksession.update( cheeseryHandle, cheesery );
-        ksession.fireAllRules();
-
-        assertEquals( 1, output1.size() );
-        assertEquals( 2, ( (List) output1.get( 0 ) ).size() );
-        assertEquals( 1, output2.size() );
-        assertEquals( 2, ( (List) output2.get( 0 ) ).size() );
+            assertEquals( 1, output1.size() );
+            assertEquals( 2, ( (List) output1.get( 0 ) ).size() );
+            assertEquals( 1, output2.size() );
+            assertEquals( 2, ( (List) output2.get( 0 ) ).size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testFromWithSingleValue() {
         // DROOLS-1243
-        String drl =
+        final String drl =
                 "import " + ListsContainer.class.getCanonicalName() + "\n" +
                         "global java.util.List out;\n" +
                         "rule R1 when\n" +
@@ -286,23 +318,28 @@ public class FromTest extends CommonTestMethodBase {
                         "    out.add($s);\n" +
                         "end\n";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<Integer> out = new ArrayList<>();
+            ksession.setGlobal( "out", out );
 
-        List<Integer> out = new ArrayList<Integer>();
-        ksession.setGlobal( "out", out );
+            ksession.insert( new ListsContainer() );
+            ksession.fireAllRules();
 
-        ksession.insert( new ListsContainer() );
-        ksession.fireAllRules();
-
-        assertEquals( 1, out.size() );
-        assertEquals( 1, (int)out.get(0) );
+            assertEquals( 1, out.size() );
+            assertEquals( 1, (int)out.get(0) );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testFromWithSingleValueAndIncompatibleType() {
         // DROOLS-1243
-        String drl =
+        final String drl =
                 "import " + ListsContainer.class.getCanonicalName() + "\n" +
                         "global java.util.List out;\n" +
                         "rule R1 when\n" +
@@ -312,15 +349,17 @@ public class FromTest extends CommonTestMethodBase {
                         "    out.add($s);\n" +
                         "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertFalse( results.getMessages().isEmpty() );
+        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
+        resource.setSourcePath("testdrl.drl");
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
+                                                                         false,
+                                                                         resource);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     public static class Container2 {
-        private Number wrapped;
-        public Container2(Number wrapped) {
+        private final Number wrapped;
+        public Container2(final Number wrapped) {
             this.wrapped = wrapped;
         }
         public Number getSingleValue() {
@@ -329,7 +368,7 @@ public class FromTest extends CommonTestMethodBase {
     }
     @Test
     public void testFromWithInterfaceAndAbstractClass() {
-        String drl =
+        final String drl =
                 "import " + Container2.class.getCanonicalName() + "\n" +
                         "import " + Comparable.class.getCanonicalName() + "\n" +
                         "global java.util.List out;\n" +
@@ -340,45 +379,49 @@ public class FromTest extends CommonTestMethodBase {
                         "    out.add($s);\n" +
                         "end\n";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<Integer> out = new ArrayList<>();
+            ksession.setGlobal( "out", out );
 
-        List<Integer> out = new ArrayList<Integer>();
-        ksession.setGlobal( "out", out );
+            ksession.insert( new Container2(1) );
+            ksession.fireAllRules();
 
-        ksession.insert( new Container2( new Integer(1) ) );
-        ksession.fireAllRules();
+            assertEquals( 1, out.size() );
+            assertEquals( 1, (int)out.get(0) );
 
-        assertEquals( 1, out.size() );
-        assertEquals( 1, (int)out.get(0) );
+            out.clear();
 
+            ksession.insert( new Container2( new AtomicInteger(1) ) );
+            ksession.fireAllRules();
 
-        out.clear();
-
-        ksession.insert( new Container2( new AtomicInteger(1) ) );
-        ksession.fireAllRules();
-
-        assertEquals( 0, out.size() );
+            assertEquals( 0, out.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     public static class Container2b {
-        private AtomicInteger wrapped;
-        public Container2b(AtomicInteger wrapped) {
+        private final AtomicInteger wrapped;
+        public Container2b(final AtomicInteger wrapped) {
             this.wrapped = wrapped;
         }
         public AtomicInteger getSingleValue() {
             return this.wrapped;
         }
     }
-    public static interface CustomIntegerMarker {}
+    public interface CustomIntegerMarker {}
     public static class CustomInteger extends AtomicInteger implements CustomIntegerMarker {
-        public CustomInteger(int initialValue) {
+        public CustomInteger(final int initialValue) {
             super(initialValue);
         }
     }
     @Test
     public void testFromWithInterfaceAndConcreteClass() {
-        String drl =
+        final String drl =
                 "import " + Container2b.class.getCanonicalName() + "\n" +
                         "import " + CustomIntegerMarker.class.getCanonicalName() + "\n" +
                         "global java.util.List out;\n" +
@@ -389,30 +432,34 @@ public class FromTest extends CommonTestMethodBase {
                         "    out.add($s);\n" +
                         "end\n";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<AtomicInteger> out = new ArrayList<>();
+            ksession.setGlobal( "out", out );
 
-        List<AtomicInteger> out = new ArrayList<>();
-        ksession.setGlobal( "out", out );
+            ksession.insert( new Container2b( new CustomInteger(1) ) );
+            ksession.fireAllRules();
 
-        ksession.insert( new Container2b( new CustomInteger(1) ) );
-        ksession.fireAllRules();
+            assertEquals( 1, out.size() );
+            assertEquals( 1, out.get(0).get() );
 
-        assertEquals( 1, out.size() );
-        assertEquals( 1, ((CustomInteger)out.get(0)).get() );
+            out.clear();
 
+            ksession.insert( new Container2b( new AtomicInteger(1) ) );
+            ksession.fireAllRules();
 
-        out.clear();
-
-        ksession.insert( new Container2b( new AtomicInteger(1) ) );
-        ksession.fireAllRules();
-
-        assertEquals( 0, out.size() );
+            assertEquals( 0, out.size() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     public static class Container3 {
-        private Integer wrapped;
-        public Container3(Integer wrapped) {
+        private final Integer wrapped;
+        public Container3(final Integer wrapped) {
             this.wrapped = wrapped;
         }
         public Integer getSingleValue() {
@@ -422,7 +469,7 @@ public class FromTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithInterfaceAndFinalClass() {
-        String drl =
+        final String drl =
                 "import " + Container3.class.getCanonicalName() + "\n" +
                         "import " + CustomIntegerMarker.class.getCanonicalName() + "\n" +
                         "global java.util.List out;\n" +
@@ -433,276 +480,412 @@ public class FromTest extends CommonTestMethodBase {
                         "    out.add($s);\n" +
                         "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-
-        // Integer is final class, so there cannot be ever the case of pattern matching in the `from` on a non-extended interface to ever match.
-        assertFalse( results.getMessages().isEmpty() );
+        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
+        resource.setSourcePath("testdrl.drl");
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
+                                                                         false,
+                                                                         resource);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
-    public void testBasicFrom() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_From.drl");
-        kbase = SerializationHelper.serializeObject(kbase);
+    public void testBasicFrom() {
 
-        KieSession ksession = createKnowledgeSession(kbase);
-        final List list1 = new ArrayList();
-        ksession.setGlobal("list1", list1);
-        final List list2 = new ArrayList();
-        ksession.setGlobal("list2", list2);
-        final List list3 = new ArrayList();
-        ksession.setGlobal("list3", list3);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "global List list1;\n" +
+                "global List list2;\n" +
+                "global List list3;\n" +
+                "global Cheesery cheesery;\n" +
+                "\n" +
+                "rule \"test from using a global\"\n" +
+                "    when\n" +
+                "        $cheese : Cheese() from cheesery.getCheeses()\n" +
+                "    then\n" +
+                "        list1.add( $cheese );\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"test from using a declaration\"\n" +
+                "    when\n" +
+                "        $ch : Cheesery()\n" +
+                "        $cheese : Cheese() from $ch.getCheeses()\n" +
+                "    then\n" +
+                "        list2.add( $cheese );\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"test from with filter\"\n" +
+                "    when\n" +
+                "        $cheese : Cheese(type == \"stilton\" ) from cheesery.getCheeses()\n" +
+                "    then\n" +
+                "        list3.add( $cheese );\n" +
+                "end";
 
-        final Cheesery cheesery = new Cheesery();
-        final Cheese stilton = new Cheese("stilton", 12);
-        final Cheese cheddar = new Cheese("cheddar", 15);
-        cheesery.addCheese(stilton);
-        cheesery.addCheese(cheddar);
-        ksession.setGlobal("cheesery", cheesery);
-        ksession.insert(cheesery);
-
-        final Person p = new Person("stilton");
-        ksession.insert(p);
-
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        // from using a global
-        assertEquals(2, ((List) ksession.getGlobal("list1")).size());
-        assertEquals(cheddar, ((List) ksession.getGlobal("list1")).get(0));
-        assertEquals(stilton, ((List) ksession.getGlobal("list1")).get(1));
-
-        // from using a declaration
-        assertEquals(2, ((List) ksession.getGlobal("list2")).size());
-        assertEquals(cheddar, ((List) ksession.getGlobal("list2")).get(0));
-        assertEquals(stilton, ((List) ksession.getGlobal("list2")).get(1));
-
-        // from using a declaration
-        assertEquals(1, ((List) ksession.getGlobal("list3")).size());
-        assertEquals(stilton, ((List) ksession.getGlobal("list3")).get(0));
-    }
-
-    @Test
-    public void testFromWithParams() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_FromWithParams.drl");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list1 = new ArrayList();
+            ksession.setGlobal("list1", list1);
+            final List list2 = new ArrayList();
+            ksession.setGlobal("list2", list2);
+            final List list3 = new ArrayList();
+            ksession.setGlobal("list3", list3);
 
-        final List list = new ArrayList();
-        final Object globalObject = new Object();
-        ksession.setGlobal("list", list);
-        ksession.setGlobal("testObject", new FromTestClass());
-        ksession.setGlobal("globalObject", globalObject);
+            final Cheesery cheesery = new Cheesery();
+            final Cheese stilton = new Cheese("stilton", 12);
+            final Cheese cheddar = new Cheese("cheddar", 15);
+            cheesery.addCheese(stilton);
+            cheesery.addCheese(cheddar);
+            ksession.setGlobal("cheesery", cheesery);
+            ksession.insert(cheesery);
 
-        final Person bob = new Person("bob");
-        ksession.insert(bob);
+            final Person p = new Person("stilton");
+            ksession.insert(p);
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        assertEquals(6, ((List) ksession.getGlobal("list")).size());
+            // from using a global
+            assertEquals(2, ((List) ksession.getGlobal("list1")).size());
+            assertEquals(cheddar, ((List) ksession.getGlobal("list1")).get(0));
+            assertEquals(stilton, ((List) ksession.getGlobal("list1")).get(1));
 
-        final List array = (List) ((List) ksession.getGlobal("list")).get(0);
-        assertEquals(3, array.size());
-        final Person p = (Person) array.get(0);
-        assertEquals(p, bob);
+            // from using a declaration
+            assertEquals(2, ((List) ksession.getGlobal("list2")).size());
+            assertEquals(cheddar, ((List) ksession.getGlobal("list2")).get(0));
+            assertEquals(stilton, ((List) ksession.getGlobal("list2")).get(1));
 
-        assertEquals(42, array.get(1));
+            // from using a declaration
+            assertEquals(1, ((List) ksession.getGlobal("list3")).size());
+            assertEquals(stilton, ((List) ksession.getGlobal("list3")).get(0));
+        } finally {
+            ksession.dispose();
+        }
+    }
 
-        final List nested = (List) array.get(2);
-        assertEquals("x", nested.get(0));
-        assertEquals("y", nested.get(1));
+    public static class ToListFunction {
 
-        final Map map = (Map) ((List) ksession.getGlobal("list")).get(1);
-        assertEquals(2, map.keySet().size());
-
-        assertTrue(map.keySet().contains(bob));
-        assertEquals(globalObject, map.get(bob));
-
-        assertTrue(map.keySet().contains("key1"));
-        final Map nestedMap = (Map) map.get("key1");
-        assertEquals(1, nestedMap.keySet().size());
-        assertTrue(nestedMap.keySet().contains("key2"));
-        assertEquals("value2", nestedMap.get("key2"));
-
-        assertEquals(42, ((List) ksession.getGlobal("list")).get(2));
-        assertEquals("literal", ((List) ksession.getGlobal("list")).get(3));
-        assertEquals(bob, ((List) ksession.getGlobal("list")).get(4));
-        assertEquals(globalObject, ((List) ksession.getGlobal("list")).get(5));
+        public List toList(final Object object1,
+                           final Object object2,
+                           final String object3,
+                           final int integer,
+                           final Map map,
+                           final List inputList) {
+            final List<Object> list = new ArrayList<>();
+            list.add(object1);
+            list.add(object2);
+            list.add(object3);
+            list.add(integer);
+            list.add(map);
+            list.add(inputList);
+            return list;
+        }
     }
 
     @Test
-    public void testFromWithNewConstructor() throws Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        final PackageDescr descr = parser.parse(new InputStreamReader(getClass().getResourceAsStream("test_FromWithNewConstructor.drl")));
+    public void testFromWithParams() {
 
-        final Collection<KiePackage> pkgs = loadKnowledgePackages(descr);
-        SerializationHelper.serializeObject(pkgs);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                " \n" +
+                "import " + ToListFunction.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global ToListFunction testObject;\n" +
+                "global java.util.List list;\n" +
+                "global java.lang.Object globalObject;\n" +
+                "\n" +
+                "rule \"test from\"\n" +
+                "    when\n" +
+                "        $person : Person()\n" +
+                "        $object : Object() from testObject.toList(globalObject, $person, \"literal\", 42, [ $person : globalObject, \"key1\" : [ \"key2\" : \"value2\"]], [$person, 42, [\"x\", \"y\"]])\n" +
+                "    then\n" +
+                "        list.add( $object );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            final Object globalObject = new Object();
+            ksession.setGlobal("list", list);
+            ksession.setGlobal("testObject", new ToListFunction());
+            ksession.setGlobal("globalObject", globalObject);
+
+            final Person bob = new Person("bob");
+            ksession.insert(bob);
+
+            ksession.fireAllRules();
+
+            assertEquals(6, ((List) ksession.getGlobal("list")).size());
+
+            final List array = (List) ((List) ksession.getGlobal("list")).get(0);
+            assertEquals(3, array.size());
+            final Person p = (Person) array.get(0);
+            assertEquals(p, bob);
+
+            assertEquals(42, array.get(1));
+
+            final List nested = (List) array.get(2);
+            assertEquals("x", nested.get(0));
+            assertEquals("y", nested.get(1));
+
+            final Map map = (Map) ((List) ksession.getGlobal("list")).get(1);
+            assertEquals(2, map.keySet().size());
+
+            assertTrue(map.keySet().contains(bob));
+            assertEquals(globalObject, map.get(bob));
+
+            assertTrue(map.keySet().contains("key1"));
+            final Map nestedMap = (Map) map.get("key1");
+            assertEquals(1, nestedMap.keySet().size());
+            assertTrue(nestedMap.keySet().contains("key2"));
+            assertEquals("value2", nestedMap.get("key2"));
+
+            assertEquals(42, ((List) ksession.getGlobal("list")).get(2));
+            assertEquals("literal", ((List) ksession.getGlobal("list")).get(3));
+            assertEquals(bob, ((List) ksession.getGlobal("list")).get(4));
+            assertEquals(globalObject, ((List) ksession.getGlobal("list")).get(5));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class Results {
+        public int getResultsCount() {
+            return 1;
+        }
+    }
+
+    public static class Storage {
+        public Results search(Query query) {
+            return new Results();
+        }
+    }
+
+    public static class Query {
+        public Query(String pattern, String column) {
+
+        }
+    }
+
+    @Test
+    public void testFromWithNewConstructor() {
+
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "\n" +
+                "import " + Query.class.getCanonicalName() + ";\n" +
+                "import " + Storage.class.getCanonicalName() + ";\n" +
+                "import " + Results.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"Verify_1\"\n" +
+                "    when\n" +
+                "        content : Storage()\n" +
+                "        results : Results( ) from content.search(new Query(\"test\",\"field\"))\n" +
+                "    then\n" +
+                "        System.out.println( results );\n" +
+                "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("from-test", kieBaseTestConfiguration, drl);
+        final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
+        final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
+        kieBaseConfiguration.setProperty(LanguageLevelOption.PROPERTY_NAME, "DRL5");
+        kieContainer.newKieBase(kieBaseConfiguration);
     }
 
     /**
      * JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
      */
     @Test
-    public void testFromDeclarationWithWorkingMemoryLogger() throws Exception {
-        String rule = "package org.drools.compiler.test;\n";
-        rule += "import org.drools.compiler.Cheesery\n";
-        rule += "import org.drools.compiler.Cheese\n";
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "when\n";
-        rule += "    $cheesery : Cheesery()\n";
-        rule += "    Cheese( $type : type) from $cheesery.cheeses\n";
-        rule += "then\n";
-        rule += "    list.add( $type );\n";
-        rule += "end";
+    public void testFromDeclarationWithWorkingMemoryLogger() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+            "import " + Cheesery.class.getCanonicalName() + ";\n" +
+            "import " + Cheese.class.getCanonicalName() + ";\n" +
+            "global java.util.List list\n" +
+            "rule \"Test Rule\"\n" +
+            "when\n" +
+            "    $cheesery : Cheesery()\n" +
+            "    Cheese( $type : type) from $cheesery.cheeses\n" +
+            "then\n" +
+            "    list.add( $type );\n" +
+            "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+            final Cheesery cheesery = new Cheesery();
+            cheesery.addCheese(new Cheese("stilton", 22));
 
-        final Cheesery cheesery = new Cheesery();
-        cheesery.addCheese(new Cheese("stilton", 22));
+            session.insert(cheesery);
 
-        session.insert(cheesery);
+            session.fireAllRules();
 
-        session.fireAllRules();
-
-        assertEquals(1, ((List) session.getGlobal("list")).size());
-        assertEquals("stilton", ((List) session.getGlobal("list")).get(0));
+            assertEquals(1, ((List) session.getGlobal("list")).size());
+            assertEquals("stilton", ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testFromArrayIteration() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_FromArrayIteration.drl"));
-        final KieSession session = createKnowledgeSession(kbase);
+    public void testFromArrayIteration() {
 
-        final List list = new ArrayList();
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + DomainObject.class.getCanonicalName() + ";\n" +
+                "import " + DomainObjectHolder.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule \"Test Rule\"\n" +
+                "when\n" +
+                "    $holder : DomainObjectHolder()\n" +
+                "    $object : DomainObject( $message : message) from $holder.objects;\n" +
+                "then\n" +
+                "    list.add( $message );\n" +
+                "end";
 
-        session.setGlobal("list", list);
-        session.insert(new DomainObjectHolder());
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
+            session.insert(new DomainObjectHolder());
 
-        session.fireAllRules();
+            session.fireAllRules();
 
-        assertEquals(3, list.size());
+            assertEquals(3, list.size());
 
-        assertEquals("Message3", list.get(0));
-        assertEquals("Message2", list.get(1));
-        assertEquals("Message1", list.get(2));
+            assertEquals("Message3", list.get(0));
+            assertEquals("Message2", list.get(1));
+            assertEquals("Message1", list.get(2));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
     public void testFromExprFollowedByNot() {
-        String rule = "";
-        rule += "package org.drools.compiler;\n";
-        rule += "global java.util.List list;\n";
-        rule += "rule \"Rule 1\"\n";
-        rule += "    when\n";
-        rule += "        p : Person ($var: pet )\n";
-        rule += "        Pet () from $var\n";
-        rule += "        not Pet ()\n";
-        rule += "    then\n";
-        rule += "       list.add( p );\n";
-        rule += "end\n";
+        final String drl =
+                    "package org.drools.compiler.integrationtests.operators;\n" +
+                    "import " + Person.class.getCanonicalName() + ";\n" +
+                    "import " + Pet.class.getCanonicalName() + ";\n" +
+                    "global java.util.List list;\n" +
+                    "rule \"Rule 1\"\n" +
+                    "    when\n" +
+                    "        p : Person ($var: pet )\n" +
+                    "        Pet () from $var\n" +
+                    "        not Pet ()\n" +
+                    "    then\n" +
+                    "       list.add( p );\n" +
+                    "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            final Person p = new Person();
+            p.setPet(new Pet(Pet.PetType.PARROT));
+            ksession.insert(p);
+            ksession.fireAllRules();
 
-        final Person p = new Person();
-        p.setPet(new Pet());
-        ksession.insert(p);
-        ksession.fireAllRules();
-
-        assertEquals(1, list.size());
-        assertSame(p, list.get(0));
+            assertEquals(1, list.size());
+            assertSame(p, list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testFromNestedAccessors() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_FromNestedAccessors.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testFromNestedAccessors() {
 
-        final List list = new ArrayList();
-        ksession.setGlobal("results", list);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Order.class.getCanonicalName() + ";\n" +
+                "import " + OrderItem.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"test from nested accessors\"\n" +
+                "when\n" +
+                "    $oi : OrderItem( seq == 1 )\n" +
+                "    $os : Order.OrderStatus() from $oi.order.status\n" +
+                "then\n" +
+                "    results.add( $os );\n" +
+                "end";
 
-        final Order order1 = new Order(11, "Bob");
-        final OrderItem item11 = new OrderItem(order1, 1);
-        final OrderItem item12 = new OrderItem(order1, 2);
-        order1.addItem(item11);
-        order1.addItem(item12);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("results", list);
 
-        ksession.insert(order1);
-        ksession.insert(item11);
-        ksession.insert(item12);
+            final Order order1 = new Order(11, "Bob");
+            final OrderItem item11 = new OrderItem(order1, 1);
+            final OrderItem item12 = new OrderItem(order1, 2);
+            order1.addItem(item11);
+            order1.addItem(item12);
 
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertSame(order1.getStatus(), list.get(0));
+            ksession.insert(order1);
+            ksession.insert(item11);
+            ksession.insert(item12);
+
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+            assertSame(order1.getStatus(), list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testFromNodeWithMultipleBetas() throws Exception {
-        final String str = "import org.drools.compiler.*;\n" +
+    public void testFromNodeWithMultipleBetas() {
+        final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
                 "   $p : Person( $name : name, $addresses : addresses )\n" +
                 "   $c : Cheese( $type: type == $name )\n" +
-                "   $a : Address( street == $type, suburb == $name ) from $addresses\n" +
+                "   $a : Address( street == $type, city == $name ) from $addresses\n" +
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person p = new Person("x");
+            p.addAddress(new Address("x", 1, "x"));
+            p.addAddress(new Address("y", 2, "y"));
+            ksession.insert(p);
 
-        final Person p = new Person("x");
-        p.addAddress(new Address("x", "x", "x"));
-        p.addAddress(new Address("y", "y", "y"));
-        ksession.insert(p);
-
-        ksession.insert(new Cheese("x"));
-        ksession.fireAllRules();
-        ksession.dispose();
-    }
-
-    @Test
-    public void testFromWithStrictModeOff() {
-        // JBRULES-3533
-        final String str =
-                "import java.util.Map;\n" +
-                        "dialect \"mvel\"\n" +
-                        "rule \"LowerCaseFrom\"\n" +
-                        "when\n" +
-                        "   Map($valOne : this['keyOne'] !=null)\n" +
-                        "   $lowerValue : String() from $valOne.toLowerCase()\n" +
-                        "then\n" +
-                        "   System.out.println( $valOne.toLowerCase() );\n" +
-                        "end\n";
-
-        final KnowledgeBuilderConfigurationImpl pkgBuilderCfg = new KnowledgeBuilderConfigurationImpl();
-        final MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
-        mvelConf.setStrict( false );
-        mvelConf.setLangLevel( 5 );
-
-        final KieBase kbase = loadKnowledgeBaseFromString( pkgBuilderCfg, str );
-        final KieSession ksession = kbase.newKieSession();
-
-        final Map<String, String> testMap = new HashMap<String, String>();
-        testMap.put( "keyOne", "valone" );
-        testMap.put( "valTwo", "valTwo" );
-        ksession.insert( testMap );
-        assertEquals( 1, ksession.fireAllRules() );
-        ksession.dispose();
+            ksession.insert(new Cheese("x"));
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testFromWithStrictModeOn() {
         // JBRULES-3533
-        final String str =
+        final String drl =
                 "import java.util.Map;\n" +
                         "dialect \"mvel\"\n" +
                         "rule \"LowerCaseFrom\"\n" +
@@ -713,23 +896,26 @@ public class FromTest extends CommonTestMethodBase {
                         "   System.out.println( $valOne.toLowerCase() );\n" +
                         "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
+        resource.setSourcePath("testdrl.drl");
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
+                                                                         false,
+                                                                         resource);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
-    public void testJavaImplicitWithFrom() throws IOException, ClassNotFoundException {
+    public void testJavaImplicitWithFrom() {
         testDialectWithFrom("java");
     }
 
     @Test
-    public void testMVELImplicitWithFrom() throws IOException, ClassNotFoundException {
+    public void testMVELImplicitWithFrom() {
         testDialectWithFrom("mvel");
     }
 
-    private void testDialectWithFrom(final String dialect) throws IOException, ClassNotFoundException {
-        final String str = "" +
+    private void testDialectWithFrom(final String dialect) {
+        final String drl = "" +
                 "package org.drools.compiler.test \n" +
                 "import java.util.List \n" +
                 "global java.util.List list \n" +
@@ -741,68 +927,104 @@ public class FromTest extends CommonTestMethodBase {
                 "    list2.add('r1'); \n" +
                 "end \n";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+            ksession.setGlobal("list2", list);
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-        ksession.setGlobal("list2", list);
-
-        ksession.fireAllRules();
-        assertEquals("r1", list.get(0));
+            ksession.fireAllRules();
+            assertEquals("r1", list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testMultipleFroms() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_multipleFroms.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testMultipleFroms() {
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import java.util.ArrayList;\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global Cheesery cheesery;\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule MyRule\n" +
+                "    dialect \"java\"\n" +
+                "when\n" +
+                "    $i : ArrayList() from collect(Cheese() from cheesery.getCheeses())\n" +
+                "    $k : ArrayList() from collect(Cheese() from cheesery.getCheeses())\n" +
+                "then\n" +
+                "    results.add( $i );\n" +
+                "    results.add( $k );\n" +
+                "end";
 
-        final Cheesery cheesery = new Cheesery();
-        cheesery.addCheese(new Cheese("stilton", 15));
-        cheesery.addCheese(new Cheese("brie", 10));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        ksession.setGlobal("cheesery", cheesery);
+            final Cheesery cheesery = new Cheesery();
+            cheesery.addCheese(new Cheese("stilton", 15));
+            cheesery.addCheese(new Cheese("brie", 10));
 
-        ksession.fireAllRules();
+            ksession.setGlobal("cheesery", cheesery);
 
-        assertEquals(2, results.size());
-        assertEquals(2, ((List) results.get(0)).size());
-        assertEquals(2, ((List) results.get(1)).size());
+            ksession.fireAllRules();
+
+            assertEquals(2, results.size());
+            assertEquals(2, ((List) results.get(0)).size());
+            assertEquals(2, ((List) results.get(1)).size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testNetworkBuildErrorAcrossEntryPointsAndFroms() throws Exception {
-        String rule1 = "package org.drools.compiler\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "         Cheese() from entry-point \"testep\"\n";
-        rule1 += "    $p : Person() from list\n";
-        rule1 += "then \n";
-        rule1 += "  list.add( \"rule1\" ) ;\n";
-        rule1 += "  insert( $p );\n";
-        rule1 += "end\n";
-        rule1 += "rule rule2\n";
-        rule1 += "when\n";
-        rule1 += "  $p : Person() \n";
-        rule1 += "then \n";
-        rule1 += "  list.add( \"rule2\" ) ;\n";
-        rule1 += "end\n";
+    public void testNetworkBuildErrorAcrossEntryPointsAndFroms() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule rule1\n" +
+                "when\n" +
+                "         Cheese() from entry-point \"testep\"\n" +
+                "    $p : Person() from list\n" +
+                "then \n" +
+                "  list.add( \"rule1\" ) ;\n" +
+                "  insert( $p );\n" +
+                "end\n" +
+                "rule rule2\n" +
+                "when\n" +
+                "  $p : Person() \n" +
+                "then \n" +
+                "  list.add( \"rule2\" ) ;\n" +
+                "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule1);
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final EntryPoint ep = ksession.getEntryPoint("testep");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final EntryPoint ep = ksession.getEntryPoint("testep");
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        list.add(new Person("darth"));
-        ep.insert(new Cheese("cheddar"));
+            list.add(new Person("darth"));
+            ep.insert(new Cheese("cheddar"));
 
-        ksession.fireAllRules();
-        assertEquals(3, list.size());
+            ksession.fireAllRules();
+            assertEquals(3, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 }

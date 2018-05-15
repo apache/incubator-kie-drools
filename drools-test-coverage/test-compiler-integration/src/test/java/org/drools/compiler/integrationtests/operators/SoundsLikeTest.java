@@ -16,23 +16,41 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class SoundsLikeTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class SoundsLikeTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SoundsLikeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testSoundsLike() {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler\n" +
+        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+                            "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule SoundsLike\n" +
                                "when\n" +
                                "    Person( name soundslike \"Bob\" )\n" +
@@ -47,7 +65,8 @@ public class SoundsLikeTest extends CommonTestMethodBase {
     public void testSoundsLikeNegativeCase() {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler\n" +
+        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+                               "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule SoundsLike\n" +
                                "when\n" +
                                "    Person( name soundslike \"Bob\" )\n" +
@@ -61,7 +80,8 @@ public class SoundsLikeTest extends CommonTestMethodBase {
     public void testNotSoundsLike() {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler\n" +
+        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+                               "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule NotSoundsLike\n" +
                                "when\n" +
                                "    Person( name not soundslike \"Bob\" )\n" +
@@ -75,7 +95,8 @@ public class SoundsLikeTest extends CommonTestMethodBase {
     public void testNotSoundsLikeNegativeCase() {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler\n" +
+        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+                               "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule NotSoundsLike\n" +
                                "when\n" +
                                "    Person( name not soundslike \"Bob\" )\n" +
@@ -88,13 +109,18 @@ public class SoundsLikeTest extends CommonTestMethodBase {
     private void testFiredRules(final String rule,
                                 final int firedRulesCount,
                                 final String... persons) {
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sounds-like-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         rule);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            Stream.of(persons).forEach(person -> ksession.insert(new Person(person)));
 
-        Stream.of(persons).forEach(person -> ksession.insert(new Person(person)));
-
-        final int rules = ksession.fireAllRules();
-        assertEquals(firedRulesCount,
-                     rules);
+            final int rules = ksession.fireAllRules();
+            assertEquals(firedRulesCount,
+                         rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 }

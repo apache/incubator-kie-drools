@@ -17,81 +17,133 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Cheesery;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.Pet;
-import org.drools.compiler.integrationtests.SerializationHelper;
+
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Cheesery;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Pet;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class MemberOfTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MemberOfTest {
 
-    @Test
-    public void testMemberOfAndNotMemberOf() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_memberOf.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+    public MemberOfTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final Cheese stilton = new Cheese("stilton", 12);
-        final Cheese muzzarela = new Cheese("muzzarela", 10);
-        final Cheese brie = new Cheese("brie", 15);
-        ksession.insert(stilton);
-        ksession.insert(muzzarela);
-
-        final Cheesery cheesery = new Cheesery();
-        cheesery.getCheeses().add(stilton.getType());
-        cheesery.getCheeses().add(brie.getType());
-        ksession.insert(cheesery);
-
-        ksession.fireAllRules();
-
-        assertEquals(2, list.size());
-
-        assertEquals(stilton, list.get(0));
-        assertEquals(muzzarela, list.get(1));
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testMemberOfWithOr() throws Exception {
+    public void testMemberOfAndNotMemberOf() {
 
-        String rule = "";
-        rule += "package org.drools.compiler;\n";
-        rule += "import java.util.ArrayList;\n";
-        rule += "import org.drools.compiler.Person;\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "when\n";
-        rule += "    $list: ArrayList()                                   \n";
-        rule += "    ArrayList()                                          \n";
-        rule += "            from collect(                                \n";
-        rule += "                  Person(                                \n";
-        rule += "                      (                                  \n";
-        rule += "                          pet memberOf $list             \n";
-        rule += "                      ) || (                             \n";
-        rule += "                          pet == null                    \n";
-        rule += "                      )                                  \n";
-        rule += "                  )                                      \n";
-        rule += "            )\n";
-        rule += "then\n";
-        rule += "  System.out.println(\"hello person\");\n";
-        rule += "end";
+        final String drl = "package org.drools.compiler.test;\n" +
+                "\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Stilton is memberOf Cheesery\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "        Cheesery( $cheeses : cheeses )\n" +
+                "        cheese : Cheese( type memberOf $cheeses )\n" +
+                "    then\n" +
+                "        list.add( cheese );\n" +
+                "end   \n" +
+                "\n" +
+                "rule \"Muzzarela is not memberOf Cheesery\"\n" +
+                "    when\n" +
+                "        Cheesery( $cheeses : cheeses )\n" +
+                "        cheese : Cheese( type not memberOf $cheeses )\n" +
+                "    then\n" +
+                "        list.add( cheese );\n" +
+                "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("member-of-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final Person toni = new Person("Toni", 12);
-        toni.setPet(new Pet("Mittens"));
+            final Cheese stilton = new Cheese("stilton", 12);
+            final Cheese muzzarela = new Cheese("muzzarela", 10);
+            final Cheese brie = new Cheese("brie", 15);
+            ksession.insert(stilton);
+            ksession.insert(muzzarela);
 
-        session.insert(new ArrayList());
-        session.insert(toni);
+            final Cheesery cheesery = new Cheesery();
+            cheesery.getCheeses().add(stilton);
+            cheesery.getCheeses().add(brie);
+            ksession.insert(cheesery);
 
-        session.fireAllRules();
+            ksession.fireAllRules();
+
+            assertEquals(2, list.size());
+
+            assertEquals(stilton, list.get(0));
+            assertEquals(muzzarela, list.get(1));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testMemberOfWithOr() {
+
+        final String drl =
+            "package org.drools.compiler.integrationtests.operators;\n" +
+            "import java.util.ArrayList;\n" +
+            "import " + Person.class.getCanonicalName() + ";\n" +
+            "rule \"Test Rule\"\n" +
+            "when\n" +
+            "    $list: ArrayList()                                   \n" +
+            "    ArrayList()                                          \n" +
+            "            from collect(                                \n" +
+            "                  Person(                                \n" +
+            "                      (                                  \n" +
+            "                          pet memberOf $list             \n" +
+            "                      ) || (                             \n" +
+            "                          pet == null                    \n" +
+            "                      )                                  \n" +
+            "                  )                                      \n" +
+            "            )\n" +
+            "then\n" +
+            "  System.out.println(\"hello person\");\n" +
+            "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("member-of-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final Person toni = new Person("Toni", 12);
+            toni.setPet(new Pet(Pet.PetType.CAT));
+
+            session.insert(new ArrayList());
+            session.insert(toni);
+
+            session.fireAllRules();
+        } finally {
+            session.dispose();
+        }
     }
 }
