@@ -18,6 +18,9 @@
 
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <!-- Use older version because of Resteasy bug in WebLogic
+           https://issues.jboss.org/browse/RESTEASY-1748 -->
+    <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
   </properties>
 
   <modules>
