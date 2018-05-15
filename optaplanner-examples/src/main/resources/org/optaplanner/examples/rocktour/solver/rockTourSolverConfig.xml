@@ -19,6 +19,7 @@
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.rocktour.domain.RockTourSolution</solutionClass>
   <entityClass>org.optaplanner.examples.rocktour.domain.RockShow</entityClass>
+  <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
 
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourScoreRules.drl</scoreDrl>

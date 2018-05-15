@@ -24,7 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
@@ -35,6 +35,7 @@ public class RockTourSolution extends AbstractPersistable {
     @ProblemFactProperty
     private RockTourParametrization parametrization;
 
+    @ProblemFactProperty
     private RockBus bus;
 
     @PlanningEntityCollectionProperty
@@ -42,7 +43,7 @@ public class RockTourSolution extends AbstractPersistable {
     private List<RockShow> showList;
 
     @PlanningScore
-    private HardSoftScore score = null;
+    private HardSoftLongScore score = null;
 
     public RockTourSolution() {
     }
@@ -92,11 +93,11 @@ public class RockTourSolution extends AbstractPersistable {
         this.showList = showList;
     }
 
-    public HardSoftScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 

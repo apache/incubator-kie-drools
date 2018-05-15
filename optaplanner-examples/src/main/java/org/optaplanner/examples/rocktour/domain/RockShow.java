@@ -20,9 +20,13 @@ import java.time.LocalDate;
 import java.util.NavigableSet;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.rocktour.domain.solver.RockShowDateUpdatingVariableListener;
 
 @PlanningEntity
 public class RockShow extends AbstractPersistable implements RockStandstill {
@@ -37,6 +41,16 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     @PlanningVariable(valueRangeProviderRefs = {"busRange", "showRange"}, graphType = PlanningVariableGraphType.CHAINED)
     private RockStandstill previousStandstill;
 
+    private RockShow nextShow;
+
+    @AnchorShadowVariable(sourceVariableName = "previousStandstill")
+    private RockBus bus;
+
+    @CustomShadowVariable(variableListenerClass = RockShowDateUpdatingVariableListener.class,
+            sources = {@PlanningVariableReference(variableName = "previousStandstill"),
+            @PlanningVariableReference(variableName = "bus")})
+    private LocalDate date;
+
     public RockShow() {
     }
 
@@ -46,8 +60,21 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     }
 
     @Override
+    public LocalDate getDepartureDate() {
+        return date;
+    }
+
+    @Override
     public RockLocation getArrivalLocation() {
         return location;
+    }
+
+    public long getDistanceFromPreviousStandstill() {
+        return previousStandstill.getDepartureLocation().getDrivingTimeTo(location);
+    }
+
+    public long getDistanceToBusArrivalLocation() {
+        return location.getDrivingTimeTo(bus.getArrivalLocation());
     }
 
     @Override
@@ -106,4 +133,31 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     public void setPreviousStandstill(RockStandstill previousStandstill) {
         this.previousStandstill = previousStandstill;
     }
+
+    @Override
+    public RockShow getNextShow() {
+        return nextShow;
+    }
+
+    @Override
+    public void setNextShow(RockShow nextShow) {
+        this.nextShow = nextShow;
+    }
+
+    public RockBus getBus() {
+        return bus;
+    }
+
+    public void setBus(RockBus bus) {
+        this.bus = bus;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
 }

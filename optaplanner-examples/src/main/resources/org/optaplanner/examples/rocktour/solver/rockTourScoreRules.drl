@@ -17,18 +17,40 @@
 package org.optaplanner.examples.rocktour.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockShow;
+import org.optaplanner.examples.rocktour.domain.RockStandstill;
 import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
 
-global HardSoftScoreHolder scoreHolder;
+global HardSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
+rule "Required show"
+    when
+        RockShow(required == true, date == null)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+rule "Distance from previous standstill"
+    when
+        RockShow(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
+end
+
+rule "Distance to bus arrival location"
+    when
+        RockShow(nextShow == null, bus != null, $distanceToBusArrivalLocation : distanceToBusArrivalLocation)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToBusArrivalLocation);
+end

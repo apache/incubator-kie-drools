@@ -23,10 +23,10 @@ import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import javax.swing.JPanel;
 
@@ -42,7 +42,8 @@ public class RockTourWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
     private static final int LOCATION_NAME_TEXT_SIZE = 8;
-    private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
+    protected static final DateTimeFormatter DAY_FORMATTER
+            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
 
     private final RockTourPanel rockTourPanel;
 
@@ -79,15 +80,20 @@ public class RockTourWorldPanel extends JPanel {
 
         Graphics2D g = createCanvas(width, height);
         g.setFont(g.getFont().deriveFont((float) LOCATION_NAME_TEXT_SIZE));
-        g.setColor(TangoColorFactory.PLUM_2);
         List<RockShow> showList = solution.getShowList();
+        int maxAvailableDateSetSize = showList.stream().mapToInt(show -> show.getAvailableDateSet().size()).max().orElse(-1);
         for (RockShow show : showList) {
             RockLocation location = show.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
+            double percentage = (double) show.getAvailableDateSet().size() / maxAvailableDateSetSize;
+            g.setColor(TangoColorFactory.buildPercentageColor(TangoColorFactory.PLUM_3, TangoColorFactory.PLUM_1, percentage));
             g.fillRect(x - 1, y - 1, 3, 3);
             if (location.getCityName() != null && showList.size() <= 500) {
                 g.drawString(StringUtils.abbreviate(location.getCityName(), 20), x + 3, y - 3);
+            }
+            if (show.getDate() != null) {
+                g.drawString(DAY_FORMATTER.format(show.getDate()), x + 3, y - 3 + LOCATION_NAME_TEXT_SIZE * 3 /2);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
@@ -120,13 +126,14 @@ public class RockTourWorldPanel extends JPanel {
                 }
             }
         }
+        g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 15 - TEXT_SIZE, 5, 5);
+        g.fillRect(5, (int) height - 17 - TEXT_SIZE, 5, 5);
         g.drawString("Bus start", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.PLUM_2);
-        g.fillRect(6, (int) height - 9, 3, 3);
-        g.drawString("Show", 15, (int) height - 5);
+        g.fillRect(6, (int) height - 11, 3, 3);
+        g.drawString("Show (darker means less available)", 15, (int) height - 5);
         repaint();
     }
 

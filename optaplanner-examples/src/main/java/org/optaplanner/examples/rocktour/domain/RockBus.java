@@ -27,12 +27,19 @@ public class RockBus extends AbstractPersistable implements RockStandstill {
     private RockLocation endLocation;
     private LocalDate endDate;
 
+    private RockShow nextShow;
+
     public RockBus() {
     }
 
     @Override
     public RockLocation getDepartureLocation() {
         return startLocation;
+    }
+
+    @Override
+    public LocalDate getDepartureDate() {
+        return startDate;
     }
 
     @Override
@@ -75,4 +82,15 @@ public class RockBus extends AbstractPersistable implements RockStandstill {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
+    @Override
+    public RockShow getNextShow() {
+        return nextShow;
+    }
+
+    @Override
+    public void setNextShow(RockShow nextShow) {
+        this.nextShow = nextShow;
+    }
+
 }
