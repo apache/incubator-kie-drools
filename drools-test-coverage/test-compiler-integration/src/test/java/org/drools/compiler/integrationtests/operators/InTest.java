@@ -16,19 +16,38 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class InTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class InTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public InTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testInOperator() {
-        final String str = "package org.drools.compiler\n" +
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"test in\"\n" +
                 "when\n" +
                 "    Person( $name : name in (\"bob\", \"mark\") )\n" +
@@ -42,13 +61,18 @@ public class InTest extends CommonTestMethodBase {
                 "    boolean test = $name != null;" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("in-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person person = new Person("bob");
+            ksession.insert(person);
 
-        final Person person = new Person("bob");
-        ksession.insert(person);
-
-        final int rules = ksession.fireAllRules();
-        assertEquals(2, rules);
+            final int rules = ksession.fireAllRules();
+            assertEquals(2, rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 }

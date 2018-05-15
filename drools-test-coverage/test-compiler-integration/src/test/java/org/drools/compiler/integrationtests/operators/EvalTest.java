@@ -19,104 +19,192 @@ package org.drools.compiler.integrationtests.operators;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.FactA;
-import org.drools.compiler.FactB;
-import org.drools.compiler.FactC;
-import org.drools.compiler.Person;
-import org.drools.compiler.PersonInterface;
-import org.drools.compiler.TestParam;
-import org.drools.compiler.integrationtests.SerializationHelper;
+
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.FactA;
+import org.drools.testcoverage.common.model.FactB;
+import org.drools.testcoverage.common.model.FactC;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class EvalTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class EvalTest {
 
-    @Test
-    public void testEval() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("eval_rule_test.drl");
-        KieSession ksession = kbase.newKieSession();
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        ksession.setGlobal("five", 5);
+    public EvalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final Cheese stilton = new Cheese("stilton", 5);
-        ksession.insert(stilton);
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        assertEquals(stilton, ((List) ksession.getGlobal("list")).get(0));
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testEvalNoPatterns() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NoPatterns.drl"));
+    public void testEvalDefaultCompiler() {
+        testEval(false);
+    }
+
+    @Test
+    public void testEvalJaninoCompiler() {
+        testEval(true);
+    }
+
+    private void testEval(final boolean useJaninoCompiler) {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "global java.lang.Integer five;\n" +
+                "rule \"eval rule test\"\n" +
+                "    when\n" +
+                "        $cheese : Cheese( $type:type == \"stilton\" )\n" +
+                "        eval( $cheese.getPrice() == five.intValue() )\n" +
+                "    then\n" +
+                "        list.add( $cheese );\n" +
+                "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("eval-test", kieBaseTestConfiguration, drl);
+        final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
+        final KieBase kbase;
+        if (useJaninoCompiler) {
+            final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
+            kieBaseConfiguration.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO");
+            kbase = kieContainer.newKieBase(kieBaseConfiguration);
+        } else {
+            kbase = kieContainer.getKieBase();
+        }
         final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.setGlobal("five", 5);
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        ksession.fireAllRules();
+            final Cheese stilton = new Cheese("stilton", 5);
+            ksession.insert(stilton);
+            ksession.fireAllRules();
 
-        assertTrue(list.contains("fired1"));
-        assertTrue(list.contains("fired3"));
+            assertEquals(stilton, ((List) ksession.getGlobal("list")).get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testJaninoEval() throws Exception {
-        final KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbconf.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO");
-        KieBase kbase = loadKnowledgeBase(kbconf, "eval_rule_test.drl");
+    public void testEvalNoPatterns() {
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "global java.util.List list\n" +
+                "rule \"no patterns1\"\n" +
+                "    when\n" +
+                "        eval(true);\n" +
+                "    then\n" +
+                "        list.add(\"fired1\");\n" +
+                "end    \n" +
+                "rule \"no patterns2\"\n" +
+                "    when\n" +
+                "        eval(false);\n" +
+                "    then\n" +
+                "        list.add(\"fired2\");\n" +
+                "end \n" +
+                "rule \"no patterns3\"\n" +
+                "    when\n" +
+                "        eval(true);\n" +
+                "        eval(1==1);\n" +
+                "    then\n" +
+                "        list.add(\"fired3\");\n" +
+                "end  \n" +
+                "rule \"no patterns4\"\n" +
+                "    when\n" +
+                "        eval(false);\n" +
+                "        eval(true);\n" +
+                "        eval(1==1);\n" +
+                "    then\n" +
+                "        list.add(\"fired4\");\n" +
+                "end";
 
-        kbase = SerializationHelper.serializeObject(kbase);
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        ksession.setGlobal("five", 5);
+            ksession.fireAllRules();
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final Cheese stilton = new Cheese("stilton", 5);
-        ksession.insert(stilton);
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        assertEquals(stilton, ((List) ksession.getGlobal("list")).get(0));
+            assertTrue(list.contains("fired1"));
+            assertTrue(list.contains("fired3"));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testEvalMore() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("eval_rule_test_more.drl");
-        KieSession session = kbase.newKieSession();
+    public void testEvalMore() {
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule \"another test\"\n" +
+                "    when\n" +
+                "        p : Person()\n" +
+                "        eval(p.getName().equals(\"foo\") && p.getName().startsWith(\"f\"))\n" +
+                "    then\n" +
+                "        list.add( p );\n" +
+                "end  \n" +
+                "rule \"yet more\"\n" +
+                "    when\n" +
+                "        p : Person()\n" +
+                "        eval(p.getName().equals(\"foo\") && p.getName().startsWith(\"f\"))\n" +
+                "        eval(p.getName().equals(\"foo\") && p.getName().startsWith(\"q\"))        \n" +
+                "    then\n" +
+                "        list.add( p );\n" +
+                "end ";
 
-        final Person foo = new Person("foo");
-        session.insert(foo);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        session.fireAllRules();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        assertEquals(foo, ((List) session.getGlobal("list")).get(0));
+            final Person foo = new Person("foo");
+            session.insert(foo);
+            session.fireAllRules();
+
+            assertEquals(foo, ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testEvalCE() throws Exception {
-        final String text = "package org.drools.compiler\n" +
+    public void testEvalCE() {
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"inline eval\"\n" +
                 "when\n" +
                 "    $str : String()\n" +
@@ -125,38 +213,63 @@ public class EvalTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(text);
-        final KieSession ksession = createKnowledgeSession(kbase);
-
-        ksession.insert("b");
-
-        ksession.insert(new Person("mark", 50));
-        int rules = ksession.fireAllRules();
-        assertEquals(0, rules);
-
-        ksession.insert(new Person("bob", 18));
-        rules = ksession.fireAllRules();
-        assertEquals(1, rules);
-    }
-
-    @Test
-    public void testEvalException() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_EvalException.drl"));
-        final KieSession ksession = kbase.newKieSession();
-
-        final Cheese brie = new Cheese("brie", 12);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
         try {
-            ksession.insert(brie);
-            ksession.fireAllRules();
-            fail("Should throw an Exception from the Eval");
-        } catch (final Exception e) {
-            assertEquals("this should throw an exception", e.getCause().getMessage());
+            session.insert("b");
+
+            session.insert(new Person("mark", 50));
+            int rules = session.fireAllRules();
+            assertEquals(0, rules);
+
+            session.insert(new Person("bob", 18));
+            rules = session.fireAllRules();
+            assertEquals(1, rules);
+        } finally {
+            session.dispose();
         }
     }
 
     @Test
-    public void testEvalInline() throws Exception {
-        final String text = "package org.drools.compiler\n" +
+    public void testEvalException() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "function boolean throwException(Object object) {\n" +
+                "    throw new Exception( \"this should throw an exception\" );\n" +
+                "}\n" +
+                "\n" +
+                "rule \"Throw Eval Exception\"\n" +
+                "    when\n" +
+                "        cheese : Cheese( )\n" +
+                "         eval( throwException( cheese ) )\n" +
+                "    then\n" +
+                "\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Cheese brie = new Cheese("brie", 12);
+            try {
+                ksession.insert(brie);
+                ksession.fireAllRules();
+                fail("Should throw an Exception from the Eval");
+            } catch (final Exception e) {
+                assertEquals("this should throw an exception", e.getCause().getMessage());
+            }
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testEvalInline() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"inline eval\"\n" +
                 "when\n" +
                 "    $str : String()\n" +
@@ -164,210 +277,365 @@ public class EvalTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(text);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.insert("b");
 
-        ksession.insert("b");
+            ksession.insert(new Person("mark", 50));
+            int rules = ksession.fireAllRules();
+            assertEquals(0, rules);
 
-        ksession.insert(new Person("mark", 50));
-        int rules = ksession.fireAllRules();
-        assertEquals(0, rules);
-
-        ksession.insert(new Person("bob", 18));
-        rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+            ksession.insert(new Person("bob", 18));
+            rules = ksession.fireAllRules();
+            assertEquals(1, rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testEvalWithLineBreaks() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_EvalWithLineBreaks.drl");
-        final KieSession session = createKnowledgeSession(kbase);
+    public void testEvalWithLineBreaks() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "\n" +
+                "global java.util.List results\n" +
+                "\n" +
+                "function boolean test( Object o1, Object o2 ) {\n" +
+                "    return o1.equals(o2);\n" +
+                "}\n" +
+                "\n" +
+                "rule \"TestRule\"\n" +
+                "when\n" +
+                "    $i : Integer( eval( test( $i,\n" +
+                "                              $i ) ) )\n" +
+                "then\n" +
+                "    results.add( $i );\n" +
+                "end";
 
-        final List<Person> results = new ArrayList<Person>();
-        session.setGlobal("results", results);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List<Person> results = new ArrayList<>();
+            session.setGlobal("results", results);
 
-        session.insert(10);
-        session.fireAllRules();
+            session.insert(10);
+            session.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertEquals(10, results.get(0));
+            assertEquals(1, results.size());
+            assertEquals(10, results.get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testEvalWithBigDecimal() throws Exception {
-        String str = "";
-        str += "package org.drools.compiler \n";
-        str += "import java.math.BigDecimal; \n";
-        str += "global java.util.List list \n";
-        str += "rule rule1 \n";
-        str += "    dialect \"java\" \n";
-        str += "when \n";
-        str += "    $bd : BigDecimal() \n";
-        str += "    eval( $bd.compareTo( BigDecimal.ZERO ) > 0 ) \n";
-        str += "then \n";
-        str += "    list.add( $bd ); \n";
-        str += "end \n";
+    public void testEvalWithBigDecimal() {
+        final String drl = 
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                "import java.math.BigDecimal; \n" +
+                "global java.util.List list \n" +
+                "rule rule1 \n" +
+                "    dialect \"java\" \n" +
+                "when \n" +
+                "    $bd : BigDecimal() \n" +
+                "    eval( $bd.compareTo( BigDecimal.ZERO ) > 0 ) \n" +
+                "then \n" +
+                "    list.add( $bd ); \n" +
+                "end \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-        ksession.insert(new BigDecimal(1.5));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+            ksession.insert(new BigDecimal(1.5));
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(new BigDecimal(1.5), list.get(0));
+            assertEquals(1, list.size());
+            assertEquals(new BigDecimal(1.5), list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testFieldBiningsAndEvalSharing() throws Exception {
-        final String drl = "test_FieldBindingsAndEvalSharing.drl";
+    public void testFieldBiningsAndEvalSharing() {
+        final String drl = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "// this is to test eval condition node sharing working properly\n" +
+                "rule rule1\n" +
+                "    when\n" +
+                "        Person(val: name)\n" +
+                "        eval(val == null)\n" +
+                "    then\n" +
+                "        list.add(\"rule1 fired\");\n" +
+                "end    \n" +
+                "\n" +
+                "\n" +
+                "rule rule2\n" +
+                "    when\n" +
+                "        Person(val: likes)\n" +
+                "        eval(val == null) // note its the same guts, but different binding\n" +
+                "    then\n" +
+                "        list.add(\"rule2 fired\");\n" +
+                "end ";
         evalSharingTest(drl);
     }
 
     @Test
-    public void testFieldBiningsAndPredicateSharing() throws Exception {
-        final String drl = "test_FieldBindingsAndPredicateSharing.drl";
+    public void testFieldBiningsAndPredicateSharing() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "//this is to test eval condition node sharing working properly\n" +
+                "rule rule1\n" +
+                "    when\n" +
+                "        Person(val: name, eval(val == null))\n" +
+                "    then\n" +
+                "        list.add(\"rule1 fired\");\n" +
+                "end    \n" +
+                "\n" +
+                "\n" +
+                "rule rule2\n" +
+                "    when\n" +
+                "        Person(val: likes, eval(val == null))\n" +
+                "    then\n" +
+                "        list.add(\"rule2 fired\");\n" +
+                "end";
         evalSharingTest(drl);
     }
 
-    private void evalSharingTest(final String drl) throws Exception {
-        final KieBase kbase = loadKnowledgeBase(drl);
-        KieSession ksession = createKnowledgeSession(kbase);
+    private void evalSharingTest(final String drl) {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            final Person tp1 = new Person();
+            tp1.setName(null);
+            tp1.setLikes("boo");
+            ksession.insert(tp1);
 
-        final TestParam tp1 = new TestParam();
-        tp1.setValue2("boo");
-        ksession.insert(tp1);
+            ksession.fireAllRules();
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        assertEquals(1, ((List) ksession.getGlobal("list")).size());
+            assertEquals(1, ((List) ksession.getGlobal("list")).size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testCastingInsideEvals() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_castsInsideEval.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testCastingInsideEvals() {
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "\n" +
+                "global java.lang.Integer value;\n" +
+                "\n" +
+                "function boolean isEqual( Integer v1, Integer v2 ) {\n" +
+                "    return v1.equals( v2 );\n" +
+                "}\n" +
+                "\n" +
+                "rule \"test casts\"\n" +
+                "when\n" +
+                "    eval( isEqual((Integer) value, (Integer)value ) )\n" +
+                "then\n" +
+                "    // rule fired\n" +
+                "end";
 
-        ksession.setGlobal("value", 20);
-
-        ksession.fireAllRules();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.setGlobal("value", 20);
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testAlphaEvalWithOrCE() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_AlphaEvalWithOrCE.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testAlphaEvalWithOrCE() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + FactA.class.getCanonicalName() + ";\n" +
+                "import " + FactB.class.getCanonicalName() + ";\n" +
+                "import " + FactC.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule \"test eval with OR\"\n" +
+                "when\n" +
+                "    FactA( eval( \"something\".equals( field1 ) ) )\n" +
+                "    FactB() or FactC()\n" +
+                "then\n" +
+                "    results.add( \"Should not have fired\" );\n" +
+                "end";
 
-        final List list = new ArrayList();
-        ksession.setGlobal("results", list);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("results", list);
 
-        final FactA a = new FactA();
-        a.setField1("a value");
+            final FactA a = new FactA();
+            a.setField1("a value");
 
-        ksession.insert(a);
-        ksession.insert(new FactB());
-        ksession.insert(new FactC());
+            ksession.insert(a);
+            ksession.insert(new FactB());
+            ksession.insert(new FactC());
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        assertEquals("should not have fired", 0, list.size());
+            assertEquals("should not have fired", 0, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testModifyWithLiaToEval() {
-        String str = "";
-        str += "package org.simple \n";
-        str += "import " + Person.class.getCanonicalName() + "\n";
-        str += "global java.util.List list \n";
-        str += "rule xxx \n";
-        str += "when \n";
-        str += "    $p : Person() \n";
-        str += "    eval( $p.getAge() > 30 ) \n";
-        str += "then \n";
-        str += "  list.add($p); \n";
-        str += "end  \n";
+        final String drl =
+            "package org.drools.compiler.integrationtests.operators;\n" +
+            "import " + Person.class.getCanonicalName() + "\n" +
+            "global java.util.List list \n" +
+            "rule xxx \n" +
+            "when \n" +
+            "    $p : Person() \n" +
+            "    eval( $p.getAge() > 30 ) \n" +
+            "then \n" +
+            "  list.add($p); \n" +
+            "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final Person p1 = new Person("darth", 25);
-        final FactHandle fh = ksession.insert(p1);
-        ksession.fireAllRules();
-        assertEquals(0, list.size());
-
-        p1.setAge(35);
-        ksession.update(fh, p1);
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
-
-        ksession.dispose();
-    }
-
-    @Test
-    public void testBigDecimalWithFromAndEval() throws Exception {
-        String rule = "package org.drools.compiler.test;\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "when\n";
-        rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
-        rule += "    eval( $dec.compareTo(java.math.BigDecimal.ONE) > 0 )\n";
-        rule += "then\n";
-        rule += "    System.out.println(\"OK!\");\n";
-        rule += "end";
-
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
-
-        session.fireAllRules();
-    }
-
-    @Test
-    public void testPredicate() throws Exception {
-        KieBase kbase = loadKnowledgeBase("predicate_rule_test.drl");
-        kbase = SerializationHelper.serializeObject(kbase);
-        KieSession ksession = kbase.newKieSession();
-
-        ksession.setGlobal("two", 2);
-
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final PersonInterface peter = new Person("peter", null, 12);
-        ksession.insert(peter);
-        final PersonInterface jane = new Person("jane", null, 10);
-        ksession.insert(jane);
-
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
-        assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
-    }
-
-    @Test
-    public void testPredicateException() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_PredicateException.drl"));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession ksession = kbase.newKieSession();
-
-        final Cheese brie = new Cheese("brie", 12);
         try {
-            ksession.insert(brie);
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            final Person p1 = new Person("darth", 25);
+            final FactHandle fh = ksession.insert(p1);
             ksession.fireAllRules();
-            fail("Should throw an Exception from the Predicate");
-        } catch (final Exception e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof InvocationTargetException) {
-                cause = ((InvocationTargetException) cause).getTargetException();
+            assertEquals(0, list.size());
+
+            p1.setAge(35);
+            ksession.update(fh, p1);
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBigDecimalWithFromAndEval() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+            "rule \"Test Rule\"\n" +
+            "when\n" +
+            "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n" +
+            "    eval( $dec.compareTo(java.math.BigDecimal.ONE) > 0 )\n" +
+            "then\n" +
+            "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            session.fireAllRules();
+        } finally {
+            session.dispose();
+        }
+    }
+
+    @Test
+    public void testPredicate() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "global java.lang.Integer two;\n" +
+                "\n" +
+                "rule \"predicate rule test\"\n" +
+                "    when\n" +
+                "        $person1 : Person( $age1 : age )\n" +
+                "        // We have no autoboxing of primtives, so have to do by hand\n" +
+                "        person2 : Person( $age2:age, eval( $age2 == ( $age1 + two.intValue() ) ) )\n" +
+                "    then\n" +
+                "        list.add( $person1 );\n" +
+                "        list.add( person2 );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.setGlobal("two", 2);
+
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            final Person peter = new Person("peter", null, 12);
+            ksession.insert(peter);
+            final Person jane = new Person("jane", null, 10);
+            ksession.insert(jane);
+            ksession.fireAllRules();
+
+            assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
+            assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testPredicateException() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "function boolean throwException(Object object) {\n" +
+                "    throw new RuntimeException( \"this should throw an exception\" );\n" +
+                "}\n" +
+                "\n" +
+                "rule \"Throw Predicate Exception\"\n" +
+                "    when\n" +
+                "        Cheese( type1:type, eval( throwException( type1 ) ) )\n" +
+                "    then\n" +
+                "\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Cheese brie = new Cheese("brie", 12);
+            try {
+                ksession.insert(brie);
+                ksession.fireAllRules();
+                fail("Should throw an Exception from the Predicate");
+            } catch (final Exception e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof InvocationTargetException) {
+                    cause = ((InvocationTargetException) cause).getTargetException();
+                }
+                assertTrue(cause.getMessage().contains("this should throw an exception"));
             }
-            assertTrue(cause.getMessage().contains("this should throw an exception"));
+        } finally {
+            ksession.dispose();
         }
     }
 }
