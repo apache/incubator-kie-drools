@@ -94,7 +94,7 @@ public class TotalCompletionTimeLoadCalculator extends AbstractLoadCalculator {
 		} else {
 			Double loadForUser = new Double(0.0);
 			for (TaskInfo ti: userTasks) {
-				loadForUser += getTaskDuration(ti,context);
+				loadForUser += getTaskDuration(ti,context) * ti.getCount();
 			}
 			load.setCalculatedLoad(loadForUser);
 		}

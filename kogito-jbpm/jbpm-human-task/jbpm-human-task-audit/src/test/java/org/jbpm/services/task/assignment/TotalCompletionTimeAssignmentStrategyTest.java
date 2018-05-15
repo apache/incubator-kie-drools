@@ -15,12 +15,6 @@
  */
 package org.jbpm.services.task.assignment;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.assertj.core.util.Arrays;
@@ -29,28 +23,16 @@ import org.jbpm.services.task.assignment.impl.strategy.LoadBalanceAssignmentStra
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.services.task.utils.TaskFluent;
-import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmentTest {
-    private PoolingDataSource pds;
-    private EntityManagerFactory emf;
-    private Long taskIds[];
+public class TotalCompletionTimeAssignmentStrategyTest extends AbstractTotalCompletionTimeTest {
+
     private static final Logger logger = LoggerFactory.getLogger(TotalCompletionTimeAssignmentStrategyTest.class);
-    private static final String DARTH_VADER = "Darth Vader";
-    private static final String BOBBA_FET = "Bobba Fet";
-    private static final String LUKE_CAGE = "Luke Cage";
-    private static final String TONY_STARK = "Tony Stark";
-    private static final String DEPLOYMENT_ID = "org.jbpm:jbpm-human-task:7.1.0";
-    private static final String PROCESS_ID = "testing tasks";
-    private static final Map<String,Object> data = new HashMap<>();
-    
 
     /**
      * Creates tasks and completes them so that there is
@@ -63,7 +45,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
     				.addPotentialUser(BOBBA_FET)
     				.addPotentialUser(DARTH_VADER)
     				.addPotentialUser(LUKE_CAGE)
-    				.setAdminUser("Administrator")
+    				.setAdminUser(ADMIN)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID);
     		long taskId = createTaskWithoutAssert(task1);
@@ -81,7 +63,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
     				.addPotentialUser(BOBBA_FET)
     				.addPotentialUser(DARTH_VADER)
     				.addPotentialUser(LUKE_CAGE)
-    				.setAdminUser("Administrator")
+    				.setAdminUser(ADMIN)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID);
     		long taskId = createTaskWithoutAssert(task2);
@@ -142,7 +124,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(LUKE_CAGE)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task1,expectedOwners[x%3]);
 		}
 		
@@ -158,7 +140,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 				.addPotentialUser(LUKE_CAGE)
 				.setDeploymentID(DEPLOYMENT_ID)
 				.setProcessId(PROCESS_ID)
-				.setAdminUser("Administrator");
+				.setAdminUser(ADMIN);
 		createAndAssertTask(task2,DARTH_VADER);
 
 		logger.info("testMultipleUser completed");
@@ -179,7 +161,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(LUKE_CAGE)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task1,expectedOwners[x]);
 		}
 		
@@ -197,7 +179,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(LUKE_CAGE)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task2,expectedOwners[x-3]);
 		}
 
@@ -215,7 +197,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(LUKE_CAGE)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task1,expectedOwners[x]);
 		}
 		
@@ -231,7 +213,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 				.addPotentialUser(LUKE_CAGE)
 				.setDeploymentID(DEPLOYMENT_ID)
 				.setProcessId(PROCESS_ID)
-				.setAdminUser("Administrator");
+				.setAdminUser(ADMIN);
 		createAndAssertTask(task2,DARTH_VADER);
 		
 		// Add Tony Stark to the list of potential
@@ -244,7 +226,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 				.addPotentialUser(TONY_STARK)
 				.setDeploymentID(DEPLOYMENT_ID)
 				.setProcessId(PROCESS_ID)
-				.setAdminUser("Administrator");
+				.setAdminUser(ADMIN);
 		createAndAssertTask(task3,TONY_STARK);
 
 		logger.info("testMultipleUserWithAdd completed");
@@ -264,7 +246,7 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(TONY_STARK)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task1,expectedOwners[x]);
 		}
 		
@@ -281,42 +263,11 @@ public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmen
 					.addPotentialUser(TONY_STARK)
     				.setDeploymentID(DEPLOYMENT_ID)
     				.setProcessId(PROCESS_ID)
-					.setAdminUser("Administrator");
+					.setAdminUser(ADMIN);
 			taskIds[x] = createAndAssertTask(task2,expectedOwners[x-4]);
 		}
 		
 		logger.info("testMultipleUsersWithRemove completed");
 	}
-	
-	private long createTaskWithoutAssert(TaskFluent tf) {
-		Task task = tf.getTask();
-		taskService.addTask(task, data);
-		return task.getId();
-	}
-	
-	private long createAndAssertTask(TaskFluent tf, String expectedOwner) {
-		Task task = tf.getTask();
-		taskService.addTask(task, data);
-		long taskId = task.getId();
-		assertEquals("Owner mismatch",expectedOwner,taskService.getTaskById(taskId).getTaskData().getActualOwner().getId());
-		return taskId;
-	}
-	
-	private void completeTask(long taskId, long delay) {
-		Task task = taskService.getTaskById(taskId);
-		String owner = task.getTaskData().getActualOwner().getId();
-		logger.debug("Starting task {} with user {}",taskId,owner);
-		taskService.start(taskId, owner);
-		if (delay > 0) {
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				// swallowing this exception
-			}
-		}
-		taskService.complete(taskId, owner, data);
-	}
-	
-	
 
 }
