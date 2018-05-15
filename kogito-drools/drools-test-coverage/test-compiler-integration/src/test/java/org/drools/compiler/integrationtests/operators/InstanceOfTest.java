@@ -16,35 +16,58 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.LongAddress;
-import org.drools.compiler.Person;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.model.LongAddress;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class InstanceOfTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class InstanceOfTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public InstanceOfTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testInstanceof() throws Exception {
+    public void testInstanceof() {
         // JBRULES-3591
-        final String str = "import org.drools.compiler.*;\n" +
+        final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + LongAddress.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
                 "   Person( address instanceof LongAddress )\n" +
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("instance-of-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person mark = new Person("mark");
+            mark.setAddress(new LongAddress("uk"));
+            ksession.insert(mark);
 
-        final Person mark = new Person("mark");
-        mark.setAddress(new LongAddress("uk"));
-        ksession.insert(mark);
-
-        assertEquals(1, ksession.fireAllRules());
-        ksession.dispose();
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
     }
 
 }

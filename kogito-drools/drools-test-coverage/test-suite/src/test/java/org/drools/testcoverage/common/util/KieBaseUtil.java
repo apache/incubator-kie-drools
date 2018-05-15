@@ -42,11 +42,11 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromKieModule(kbuilder.getKieModule());
     }
 
-    public static KieBase getDefaultKieBaseFromKieModule(final KieModule kmodule) {
+    private static KieBase getDefaultKieBaseFromKieModule(final KieModule kmodule) {
         return getDefaultKieBaseFromReleaseId(kmodule.getReleaseId());
     }
 
-    public static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
+    private static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
         return getKieBaseFromReleaseIdByName(id, null);
     }
 
@@ -88,7 +88,7 @@ public final class KieBaseUtil {
         }
     }
 
-    public static KieBase getKieBaseFromReleaseIdByName(final ReleaseId id, final String name) {
+    private static KieBase getKieBaseFromReleaseIdByName(final ReleaseId id, final String name) {
         final KieContainer container = KieServices.Factory.get().newKieContainer(id);
         if (name == null) {
             return container.getKieBase();

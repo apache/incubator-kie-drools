@@ -17,72 +17,144 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Cheesery;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Order;
-import org.drools.compiler.OrderItem;
-import org.drools.compiler.Primitives;
-import org.drools.compiler.integrationtests.SerializationHelper;
+
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Cheesery;
+import org.drools.testcoverage.common.model.Order;
+import org.drools.testcoverage.common.model.OrderItem;
+import org.drools.testcoverage.common.model.Primitives;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class ContainsTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ContainsTest {
 
-    @Test
-    public void testContainsCheese() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ContainsCheese.drl"));
-        final KieSession ksession = kbase.newKieSession();
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+    public ContainsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final Cheese stilton = new Cheese("stilton", 12);
-        ksession.insert(stilton);
-        final Cheese brie = new Cheese("brie", 10);
-        ksession.insert(brie);
-
-        final Cheesery cheesery = new Cheesery();
-        cheesery.getCheeses().add(stilton);
-        ksession.insert(cheesery);
-
-        ksession.fireAllRules();
-
-        assertEquals(2, list.size());
-
-        assertEquals(stilton, list.get(0));
-        assertEquals(brie, list.get(1));
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testContainsInArray() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_contains_in_array.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testContainsCheese() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Cheesery contains stilton\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "        stilton : Cheese( type == \"stilton\" )\n" +
+                "        Cheesery( cheeses contains stilton )\n" +
+                "    then\n" +
+                "        list.add( stilton );\n" +
+                "end   \n" +
+                "\n" +
+                "rule \"Cheesery does not contain brie\"\n" +
+                "    when\n" +
+                "        brie : Cheese( type == \"brie\" )\n" +
+                "        Cheesery( cheeses not contains brie )\n" +
+                "    then\n" +
+                "        list.add( brie );\n" +
+                "end ";
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("contains-test",
+                                                                           kieBaseTestConfiguration,
+                                                                           drl);
+        final KieSession ksession = kieBase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final Primitives p = new Primitives();
-        p.setStringArray(new String[]{"test1", "test3"});
-        ksession.insert(p);
+            final Cheese stilton = new Cheese("stilton", 12);
+            ksession.insert(stilton);
+            final Cheese brie = new Cheese("brie", 10);
+            ksession.insert(brie);
 
-        ksession.fireAllRules();
+            final Cheesery cheesery = new Cheesery();
+            cheesery.getCheeses().add(stilton);
+            ksession.insert(cheesery);
 
-        assertEquals(2, list.size());
+            ksession.fireAllRules();
 
-        assertEquals("ok1", list.get(0));
-        assertEquals("ok2", list.get(1));
+            assertEquals(2, list.size());
+
+            assertEquals(stilton, list.get(0));
+            assertEquals(brie, list.get(1));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testContainsInArray() {
+
+         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                 "import " + Primitives.class.getCanonicalName() + " ;\n" +
+                 "global java.util.List list;\n" +
+                 "\n" +
+                 "rule \"contains in elements\"\n" +
+                 "    salience 10\n" +
+                 "    when\n" +
+                 "        Primitives( stringArray contains \"test1\" )\n" +
+                 "    then\n" +
+                 "        list.add( \"ok1\" );\n" +
+                 "end\n" +
+                 "\n" +
+                 "rule \"excludes in elements\"\n" +
+                 "    when\n" +
+                 "        Primitives( stringArray excludes \"test2\" )\n" +
+                 "    then\n" +
+                 "        list.add( \"ok2\" );\n" +
+                 "end";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("contains-test",
+                                                                           kieBaseTestConfiguration,
+                                                                           drl);
+        final KieSession ksession = kieBase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            final Primitives p = new Primitives();
+            p.setStringArray(new String[]{"test1", "test3"});
+            ksession.insert(p);
+
+            ksession.fireAllRules();
+
+            assertEquals(2, list.size());
+
+            assertEquals("ok1", list.get(0));
+            assertEquals("ok2", list.get(1));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testNotContainsOperator() {
         // JBRULES-2404: "not contains" operator doesn't work on nested fields
-
-        final String str = "package org.drools.compiler\n" +
+        final String str = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + Order.class.getCanonicalName() + " ;\n" +
+                "import " + OrderItem.class.getCanonicalName() + " ;\n" +
                 "rule NotContains\n" +
                 "when\n" +
                 "    $oi : OrderItem( )\n" +
@@ -90,26 +162,31 @@ public class ContainsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("contains-test",
+                                                                           kieBaseTestConfiguration,
+                                                                           str);
+        final KieSession ksession = kieBase.newKieSession();
+        try {
+            final Order order1 = new Order(1, "XYZ");
+            final Order order2 = new Order(2, "ABC");
+            final OrderItem item11 = new OrderItem(order1, 1);
+            order1.addItem(item11);
+            final OrderItem item21 = new OrderItem(order2, 1);
+            order2.addItem(item21);
 
-        final Order order1 = new Order(1, "XYZ");
-        final Order order2 = new Order(2, "ABC");
-        final OrderItem item11 = new OrderItem(order1, 1);
-        order1.addItem(item11);
-        final OrderItem item21 = new OrderItem(order2, 1);
-        order2.addItem(item21);
+            ksession.insert(order1);
+            ksession.insert(item11);
 
-        ksession.insert(order1);
-        ksession.insert(item11);
+            // should not fire, as item11 is contained in order1.items
+            int rules = ksession.fireAllRules();
+            assertEquals(0, rules);
 
-        // should not fire, as item11 is contained in order1.items
-        int rules = ksession.fireAllRules();
-        assertEquals(0, rules);
-
-        // should fire as item21 is not contained in order1.items
-        ksession.insert(item21);
-        rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+            // should fire as item21 is not contained in order1.items
+            ksession.insert(item21);
+            rules = ksession.fireAllRules();
+            assertEquals(1, rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 }

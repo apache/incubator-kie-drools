@@ -64,7 +64,7 @@ public class OOPathCepTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations();
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @After

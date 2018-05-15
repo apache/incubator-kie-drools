@@ -17,86 +17,170 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.PersonWithEquals;
-import org.drools.compiler.Primitives;
-import org.drools.compiler.integrationtests.SerializationHelper;
+
+import org.drools.testcoverage.common.model.PersonWithSpecificEquals;
+import org.drools.testcoverage.common.model.Primitives;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class EqualsTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class EqualsTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public EqualsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testEqualitySupport() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_equalitySupport.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testEqualitySupport() {
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + PersonWithSpecificEquals.class.getCanonicalName() + " ;\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule \"test equality support\"\n" +
+                "    salience 10\n" +
+                "when\n" +
+                "    $p : PersonWithSpecificEquals( name == \"bob\" )\n" +
+                "then\n" +
+                "    $p.setName( \"mark\" );\n" +
+                "    results.add( $p.getName() );\n" +
+                "    update( $p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test 2\"\n" +
+                "when\n" +
+                "    $p : PersonWithSpecificEquals( name == \"bob\" )\n" +
+                "then\n" +
+                "    results.add( \"This rule should NEVER fire\" );\n" +
+                "end\n";
 
-        PersonWithEquals person = new PersonWithEquals("bob", 30);
-        ksession.insert(person);
-        ksession.fireAllRules();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("equals-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        assertEquals(1, results.size());
-        assertEquals("mark", results.get(0));
+            final PersonWithSpecificEquals person = new PersonWithSpecificEquals("bob", 30);
+            ksession.insert(person);
+            ksession.fireAllRules();
 
+            assertEquals(1, results.size());
+            assertEquals("mark", results.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testNotEqualsOperator() {
         // JBRULES-3003: restriction evaluation returns 'false' for "trueField != falseField"
 
-        final String str = "package org.drools.compiler\n" +
+        final String str = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + Primitives.class.getCanonicalName() + " ;\n" +
                 "rule NotEquals\n" +
                 "when\n" +
                 "    Primitives( booleanPrimitive != booleanWrapper )\n" +
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("equals-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         str);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Primitives p = new Primitives();
+            p.setBooleanPrimitive(true);
+            p.setBooleanWrapper(Boolean.FALSE);
 
-        final Primitives p = new Primitives();
-        p.setBooleanPrimitive(true);
-        p.setBooleanWrapper(Boolean.FALSE);
+            ksession.insert(p);
 
-        ksession.insert(p);
+            final int rules = ksession.fireAllRules();
+            ksession.dispose();
 
-        final int rules = ksession.fireAllRules();
-        ksession.dispose();
-
-        assertEquals(1, rules);
+            assertEquals(1, rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testCharComparisons() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_charComparisons.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testCharComparisons() {
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+        final String drl = "package org.drools.compiler.integrationtests.operators\n" +
+                "import " + Primitives.class.getCanonicalName() + " ;\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule \"test chars 1\"\n" +
+                "    salience 100\n" +
+                "when\n" +
+                "    Primitives( charPrimitive == 'a' ) \n" +
+                "then\n" +
+                "    results.add( \"1\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test chars 2\"\n" +
+                "    salience 90\n" +
+                "when\n" +
+                "    Primitives( $c1: charPrimitive == 'a' ) \n" +
+                "    Primitives( charPrimitive != $c1 )\n" +
+                "then\n" +
+                "    results.add( \"2\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test chars 3\"\n" +
+                "    salience 80\n" +
+                "when\n" +
+                "    Primitives( $c1: stringAttribute == 'a' ) \n" +
+                "    Primitives( charPrimitive == $c1 )\n" +
+                "then\n" +
+                "    results.add( \"3\" );\n" +
+                "end";
 
-        Primitives p1 = new Primitives();
-        p1.setCharPrimitive('a');
-        p1.setStringAttribute("b");
-        Primitives p2 = new Primitives();
-        p2.setCharPrimitive('b');
-        p2.setStringAttribute("a");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("equals-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        ksession.insert(p1);
-        ksession.insert(p2);
+            final Primitives p1 = new Primitives();
+            p1.setCharPrimitive('a');
+            p1.setStringAttribute("b");
+            final Primitives p2 = new Primitives();
+            p2.setCharPrimitive('b');
+            p2.setStringAttribute("a");
 
-        ksession.fireAllRules();
+            ksession.insert(p1);
+            ksession.insert(p2);
 
-        assertEquals(3, results.size());
-        assertEquals("1", results.get(0));
-        assertEquals("2", results.get(1));
-        assertEquals("3", results.get(2));
+            ksession.fireAllRules();
 
+            assertEquals(3, results.size());
+            assertEquals("1", results.get(0));
+            assertEquals("2", results.get(1));
+            assertEquals("3", results.get(2));
+        } finally {
+            ksession.dispose();
+        }
     }
 }

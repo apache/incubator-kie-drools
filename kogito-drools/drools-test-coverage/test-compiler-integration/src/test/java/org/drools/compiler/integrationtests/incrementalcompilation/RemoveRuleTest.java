@@ -61,11 +61,7 @@ public class RemoveRuleTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        final Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
-        return parameters;
-//        return TestParametersUtil.getKieBaseCloudConfigurations();
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test

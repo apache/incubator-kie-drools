@@ -30,6 +30,9 @@ public class Person implements Serializable {
     private String likes;
     private Address address;
     private List<Address> addresses = new ArrayList<>();
+    private Pet pet;
+    private boolean alive;
+    private boolean happy;
 
     public Person() {
     }
@@ -90,12 +93,40 @@ public class Person implements Serializable {
         return likes;
     }
 
+    public void addAddress(final Address address) {
+        addresses.add(address);
+    }
+
     public List<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(final List<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(final Pet pet) {
+        this.pet = pet;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(final boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isHappy() {
+        return happy;
+    }
+
+    public void setHappy(final boolean happy) {
+        this.happy = happy;
     }
 
     @Override
@@ -113,7 +144,7 @@ public class Person implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -128,12 +159,9 @@ public class Person implements Serializable {
             return false;
         }
         if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
+            return other.name == null;
+        } else {
+            return name.equals(other.name);
         }
-        return true;
     }
 }

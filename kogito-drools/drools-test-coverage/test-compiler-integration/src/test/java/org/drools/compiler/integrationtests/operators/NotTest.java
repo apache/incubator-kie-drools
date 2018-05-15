@@ -17,17 +17,35 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.integrationtests.facts.AFact;
+
+import org.drools.testcoverage.common.model.AFact;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 
-public class NotTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class NotTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public NotTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testLastMemoryEntryNotBug() {
@@ -35,47 +53,50 @@ public class NotTest extends CommonTestMethodBase {
         // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
         // And it gets no opportunity to rematch with itself
 
-        String str = "";
-        str += "package org.simple \n";
-        str += "import " + AFact.class.getCanonicalName() + "\n";
-        str += "global java.util.List list \n";
-        str += "rule x1 \n";
-        str += "when \n";
-        str += "    $s : String( this == 'x1' ) \n";
-        str += "    not AFact( this != null ) \n";
-        str += "then \n";
-        str += "  list.add(\"fired x1\"); \n";
-        str += "end  \n";
-        str += "rule x2 \n";
-        str += "when \n";
-        str += "    $s : String( this == 'x2' ) \n";
-        str += "    not AFact( field1 == $s, this != null ) \n"; // this ensures an index bucket
-        str += "then \n";
-        str += "  list.add(\"fired x2\"); \n";
-        str += "end  \n";
+        final String drl =
+            "package org.drools.compiler.integrationtests.operators \n" +
+            "import " + AFact.class.getCanonicalName() + "\n" +
+            "global java.util.List list \n" +
+            "rule x1 \n" +
+            "when \n" +
+            "    $s : String( this == 'x1' ) \n" +
+            "    not AFact( this != null ) \n" +
+            "then \n" +
+            "  list.add(\"fired x1\"); \n" +
+            "end  \n" +
+            "rule x2 \n" +
+            "when \n" +
+            "    $s : String( this == 'x2' ) \n" +
+            "    not AFact( field1 == $s, this != null ) \n" + // this ensures an index bucket
+            "then \n" +
+            "  list.add(\"fired x2\"); \n" +
+            "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("not-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+            ksession.insert("x1");
+            ksession.insert("x2");
+            final AFact a1 = new AFact("x1", null);
+            final AFact a2 = new AFact("x2", null);
 
-        ksession.insert("x1");
-        ksession.insert("x2");
-        final AFact a1 = new AFact("x1", null);
-        final AFact a2 = new AFact("x2", null);
+            final FactHandle fa1 = ksession.insert(a1);
+            final FactHandle fa2 = ksession.insert(a2);
 
-        final FactHandle fa1 = ksession.insert(a1);
-        final FactHandle fa2 = ksession.insert(a2);
+            // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
+            ksession.update(fa1, a1);
+            ksession.update(fa2, a2);
+            ksession.fireAllRules();
 
-        // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
-        ksession.update(fa1, a1);
-        ksession.update(fa2, a2);
-        ksession.fireAllRules();
-
-        assertEquals(0, list.size());
-
-        ksession.dispose();
+            assertEquals(0, list.size());
+        } finally {
+            ksession.dispose();
+        }
     }
 
 }

@@ -22,6 +22,10 @@ public class Cheese implements Serializable {
 
     private static final long serialVersionUID = -6959012349000689087L;
 
+    public static final String STILTON = "stilton";
+
+    public static final int BASE_PRICE = 10;
+
     private String type;
     private int price;
 

@@ -16,41 +16,88 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class FormulaTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class FormulaTest {
 
-    @Test
-    public void testConstants() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_formulaConstantsConstraint.drl");
-        KieSession ksession = kbase.newKieSession();
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        final Person person = new Person();
-        person.setAge(5);
+    public FormulaTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        ksession.insert(person);
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        assertEquals(1, ksession.fireAllRules());
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testBoundField() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_formulaBoundFieldConstraint.drl");
-        KieSession ksession = kbase.newKieSession();
+    public void testConstants() {
 
-        final Person person = new Person();
-        person.setAge(10);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"test formula constraint constants\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    $person : Person( age == ( 2 + 3 ) )\n" +
+                "then\n" +
+                "    $person.setLikes( \"toys\" );\n" +
+                "end";
 
-        ksession.insert(person);
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        assertEquals(1, ksession.fireAllRules());
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("formula-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person person = new Person();
+            person.setAge(5);
+
+            ksession.insert(person);
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBoundField() {
+
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"test formula constraint constants\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    $person : Person( $age : age < ( (2 * 4) + 10 ) )\n" +
+                "then\n" +
+                "    $person.setLikes( \"likes cheese this old: \" + $age );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("formula-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person person = new Person();
+            person.setAge(10);
+
+            ksession.insert(person);
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
     }
 
 }

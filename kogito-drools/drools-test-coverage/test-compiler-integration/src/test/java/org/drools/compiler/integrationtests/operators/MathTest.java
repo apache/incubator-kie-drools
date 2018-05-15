@@ -16,92 +16,188 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Guess;
-import org.drools.compiler.Person;
-import org.drools.compiler.PersonInterface;
-import org.drools.compiler.RandomNumber;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import java.util.Random;
+
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 
-public class MathTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MathTest {
 
-    @Test
-    public void testAddition() throws Exception {
-        KieBase kbase = loadKnowledgeBase("returnvalue_rule_test.drl");
-        kbase = SerializationHelper.serializeObject(kbase);
-        KieSession ksession = kbase.newKieSession();
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        ksession.setGlobal("two", 2);
+    public MathTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final PersonInterface peter = new Person("peter", null, 12);
-        ksession.insert(peter);
-        final PersonInterface jane = new Person("jane", null, 10);
-        ksession.insert(jane);
-
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-        ksession.fireAllRules();
-
-        assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
-        assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testNumberComparisons() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NumberComparisons.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testAddition() {
 
-        final List list = new ArrayList();
-        ksession.setGlobal("results", list);
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "global java.lang.Integer two;\n" +
+                "\n" +
+                "rule \"returnvalue rule test\"\n" +
+                "    when\n" +
+                "        $person1: Person( $age1 : age )\n" +
+                "        // We have no autoboxing of primtives, so have to do by hand\n" +
+                "        person2: Person( age == ( $age1 + two.intValue() ) )\n" +
+                "    then\n" +
+                "        list.add( $person1 );\n" +
+                "        list.add( person2 );\n" +
+                "end";
 
-        // asserting the sensor object
-        final RandomNumber rn = new RandomNumber();
-        rn.setValue(10);
-        ksession.insert(rn);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("math-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.setGlobal("two", 2);
 
-        final Guess guess = new Guess();
-        guess.setValue(5);
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final FactHandle handle = ksession.insert(guess);
+            final Person peter = new Person("peter", null, 12);
+            ksession.insert(peter);
+            final Person jane = new Person("jane", null, 10);
+            ksession.insert(jane);
+            ksession.fireAllRules();
 
-        ksession.fireAllRules();
+            assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
+            assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+        } finally {
+            ksession.dispose();
+        }
+    }
 
-        // HIGHER
-        assertEquals(1, list.size());
-        assertEquals("HIGHER", list.get(0));
+    public static class RandomNumber {
+        private int randomNumber;
 
-        guess.setValue(15);
-        ksession.update(handle, guess);
+        public void begin() {
+            this.randomNumber = new Random().nextInt(100 );
+        }
+        public void setValue(final int value) {
+            this.randomNumber = value;
+        }
+        public int getValue() {
+            return this.randomNumber;
+        }
+    }
 
-        ksession.fireAllRules();
+    public class Guess implements Serializable {
+        private Integer value;
 
-        // LOWER
-        assertEquals(2, list.size());
-        assertEquals("LOWER", list.get(1));
+        public void setValue(final Integer guess) {
+            this.value = guess;
+        }
+        public Integer getValue() {
+            return this.value;
+        }
 
-        guess.setValue(10);
-        ksession.update(handle, guess);
+    }
 
-        ksession.fireAllRules();
+    @Test
+    public void testNumberComparisons() {
+        final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
+                "import " + RandomNumber.class.getCanonicalName() + ";\n" +
+                "import " + Guess.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule High\n" +
+                "   when \n" +
+                "      RandomNumber(randomValue:value)\n" +
+                "      // literal constraint\n" +
+                "      Guess(guess: value > 10)\n" +
+                "   then \n" +
+                "      results.add(\"LOWER\");\n" +
+                "end\n" +
+                "\n" +
+                "rule Low\n" +
+                "   when \n" +
+                "      RandomNumber(randomValue:value)\n" +
+                "      // return value constraint\n" +
+                "      Guess(guess: value < ( 10 ) )\n" +
+                "   then \n" +
+                "      results.add(\"HIGHER\");\n" +
+                "end\n" +
+                "\n" +
+                "rule Win\n" +
+                "   when \n" +
+                "      RandomNumber(randomValue:value)\n" +
+                "      // variable constraint\n" +
+                "      Guess(value==randomValue)\n" +
+                "   then \n" +
+                "      results.add(\"CORRECT\");\n" +
+                "end";
 
-        // CORRECT
-        assertEquals(3, list.size());
-        assertEquals("CORRECT", list.get(2));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("math-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("results", list);
+
+            // asserting the sensor object
+            final RandomNumber rn = new RandomNumber();
+            rn.setValue(10);
+            ksession.insert(rn);
+
+            final Guess guess = new Guess();
+            guess.setValue(5);
+
+            final FactHandle handle = ksession.insert(guess);
+
+            ksession.fireAllRules();
+
+            // HIGHER
+            assertEquals(1, list.size());
+            assertEquals("HIGHER", list.get(0));
+
+            guess.setValue(15);
+            ksession.update(handle, guess);
+
+            ksession.fireAllRules();
+
+            // LOWER
+            assertEquals(2, list.size());
+            assertEquals("LOWER", list.get(1));
+
+            guess.setValue(10);
+            ksession.update(handle, guess);
+
+            ksession.fireAllRules();
+
+            // CORRECT
+            assertEquals(3, list.size());
+            assertEquals("CORRECT", list.get(2));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testShiftOperator()  {
-        final String rule = "dialect \"mvel\"\n" +
+        final String drl = "dialect \"mvel\"\n" +
                 "rule kickOff\n" +
                 "when\n" +
                 "then\n" +
@@ -152,9 +248,15 @@ public class MathTest extends CommonTestMethodBase {
                 "   System.out.println( \"test4 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("math-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
         final KieSession ksession = kbase.newKieSession();
-        final int rules = ksession.fireAllRules();
-        assertEquals(13, rules);
+        try {
+            final int rules = ksession.fireAllRules();
+            assertEquals(13, rules);
+        } finally {
+            ksession.dispose();
+        }
     }
 }

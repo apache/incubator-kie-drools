@@ -58,18 +58,19 @@ public final class TestParametersUtil {
     /**
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
      */
-    public static Collection<Object[]> getKieBaseStreamConfigurations() {
+    public static Collection<Object[]> getKieBaseStreamConfigurations(final boolean testAlsoExecutableModel) {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
-        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+        if ( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
         }
 
-        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+        if( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN});
         }
@@ -79,18 +80,19 @@ public final class TestParametersUtil {
     /**
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
      */
-    public static Collection<Object[]> getKieBaseCloudConfigurations() {
+    public static Collection<Object[]> getKieBaseCloudConfigurations(final boolean testAlsoExecutableModel) {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
 
-        if ( TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
+        if ( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
         }
 
-        if( TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
+        if( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
         }
