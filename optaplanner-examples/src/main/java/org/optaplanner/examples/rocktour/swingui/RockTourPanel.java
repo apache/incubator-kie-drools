@@ -57,7 +57,7 @@ public class RockTourPanel extends SolutionPanel<RockTourSolution> {
         });
         buttonPanel.add(button);
         buttonPanel.add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
-        add(button, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.NORTH);
         rockTourWorldPanel = new RockTourWorldPanel(this);
         add(rockTourWorldPanel, BorderLayout.CENTER);
     }

@@ -16,12 +16,16 @@
 
 package org.optaplanner.examples.rocktour.domain;
 
+import java.time.LocalDate;
+
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class RockBus extends AbstractPersistable implements RockStandstill {
 
     private RockLocation startLocation;
+    private LocalDate startDate;
     private RockLocation endLocation;
+    private LocalDate endDate;
 
     public RockBus() {
     }
@@ -48,6 +52,14 @@ public class RockBus extends AbstractPersistable implements RockStandstill {
         this.startLocation = startLocation;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
     public RockLocation getEndLocation() {
         return endLocation;
     }
@@ -56,4 +68,11 @@ public class RockBus extends AbstractPersistable implements RockStandstill {
         this.endLocation = endLocation;
     }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 }

@@ -18,9 +18,14 @@ package org.optaplanner.examples.rocktour.persistence;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Random;
+import java.util.TreeSet;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
@@ -45,6 +50,9 @@ public class RockTourGenerator extends LoggingMain {
     protected final SolutionFileIO<RockTourSolution> solutionFileIO;
     protected final File outputDir;
     protected Random random;
+
+    protected static final LocalDate START_DATE = LocalDate.of(2018, 2, 1);
+    protected static final LocalDate END_DATE = LocalDate.of(2018, 12, 1);
 
     public RockTourGenerator() {
         solutionFileIO = new RockTourXslxFileIO();
@@ -78,6 +86,12 @@ public class RockTourGenerator extends LoggingMain {
     }
 
     private void createShowList(RockTourSolution solution, LocationDataGenerator.LocationData[] locationDataArray) {
+        List<LocalDate> globalAvailableDayList = new ArrayList<>();
+        for (LocalDate date = START_DATE; date.compareTo(END_DATE) < 0; date = date.plusDays(1)) {
+            if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                globalAvailableDayList.add(date);
+            }
+        }
         List<RockShow> showList = new ArrayList<>(locationDataArray.length);
         long showId = 0L;
         for (int i = 0; i < locationDataArray.length; i++) {
@@ -87,7 +101,9 @@ public class RockTourGenerator extends LoggingMain {
                 RockBus bus = new RockBus();
                 bus.setId((long) i);
                 bus.setStartLocation(location);
+                bus.setStartDate(START_DATE);
                 bus.setEndLocation(location);
+                bus.setEndDate(END_DATE);
                 solution.setBus(bus);
             } else {
                 RockShow show = new RockShow();
@@ -96,6 +112,17 @@ public class RockTourGenerator extends LoggingMain {
                 show.setLocation(location);
                 show.setRevenueOpportunity((random.nextInt(30) + 1) * 100_000);
                 show.setRequired(i <= 3);
+                NavigableSet<LocalDate> availableDaySet;
+                if (i <= 8) {
+                    availableDaySet = new TreeSet<>();
+                    availableDaySet.add(globalAvailableDayList.get(random.nextInt(globalAvailableDayList.size())));
+                } else {
+                    int fromIndex = globalAvailableDayList.size() * 4 / 5;
+                    Collections.shuffle(globalAvailableDayList, random);
+                    availableDaySet = new TreeSet<>(globalAvailableDayList.subList(
+                            0, fromIndex + random.nextInt(globalAvailableDayList.size() - fromIndex)));
+                }
+                show.setAvailableDateSet(availableDaySet);
                 showList.add(show);
             }
         }

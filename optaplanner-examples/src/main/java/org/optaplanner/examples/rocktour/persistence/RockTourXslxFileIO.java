@@ -22,10 +22,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableSet;
+import java.util.Objects;
+import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.examples.common.persistence.AbstractXslxSolutionFileIO;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
@@ -60,6 +68,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
         public RockTourSolution read() {
             solution = new RockTourSolution();
             readConfiguration();
+            readBus();
             readShowList();
             return solution;
         }
@@ -73,33 +82,6 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 throw new IllegalStateException(currentPosition() + ": The tour name (" + solution.getTourName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
-            readHeaderCell("");
-            readHeaderCell("");
-            readHeaderCell("City name");
-            readHeaderCell("Latitude");
-            readHeaderCell("Longitude");
-            RockBus bus = new RockBus();
-            bus.setId(0L);
-            nextRow();
-            readHeaderCell("");
-            readHeaderCell("");
-            readHeaderCell("");
-            readHeaderCell("Bus start");
-            String startCityName = nextStringCell().getStringCellValue();
-            double startLatitude = nextNumericCell().getNumericCellValue();
-            double startLongitude = nextNumericCell().getNumericCellValue();
-            bus.setStartLocation(new RockLocation(startCityName, startLatitude, startLongitude));
-            nextRow();
-            readHeaderCell("");
-            readHeaderCell("");
-            readHeaderCell("");
-            readHeaderCell("Bus end");
-            String endCityName = nextStringCell().getStringCellValue();
-            double endLatitude = nextNumericCell().getNumericCellValue();
-            double endLongitude = nextNumericCell().getNumericCellValue();
-            bus.setEndLocation(new RockLocation(endCityName, endLatitude, endLongitude));
-            solution.setBus(bus);
-
             nextRow(true);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
@@ -111,8 +93,59 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             solution.setParametrization(parametrization);
         }
 
+        private void readBus() {
+            nextSheet("Bus");
+            RockBus bus = new RockBus();
+            bus.setId(0L);
+            nextRow();
+            readHeaderCell("");
+            readHeaderCell("City name");
+            readHeaderCell("Latitude");
+            readHeaderCell("Longitude");
+            readHeaderCell("Date");
+            nextRow();
+            readHeaderCell("Bus start");
+            String startCityName = nextStringCell().getStringCellValue();
+            double startLatitude = nextNumericCell().getNumericCellValue();
+            double startLongitude = nextNumericCell().getNumericCellValue();
+            bus.setStartLocation(new RockLocation(startCityName, startLatitude, startLongitude));
+            bus.setStartDate(LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER));
+            nextRow();
+            readHeaderCell("Bus end");
+            String endCityName = nextStringCell().getStringCellValue();
+            double endLatitude = nextNumericCell().getNumericCellValue();
+            double endLongitude = nextNumericCell().getNumericCellValue();
+            bus.setEndLocation(new RockLocation(endCityName, endLatitude, endLongitude));
+            bus.setEndDate(LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER));
+            solution.setBus(bus);
+        }
+
         private void readShowList() {
             nextSheet("Shows");
+            LocalDate startDate = solution.getBus().getStartDate();
+            LocalDate endDate = solution.getBus().getEndDate();
+            nextRow(false);
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("Availability");
+            nextRow(false);
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            readHeaderCell("");
+            for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                if (date.equals(startDate) || date.getDayOfMonth() == 1) {
+                    readHeaderCell(MONTH_FORMATTER.format(date));
+                } else {
+                    readHeaderCell("");
+                }
+            }
             nextRow(false);
             readHeaderCell("Venue name");
             readHeaderCell("City name");
@@ -120,6 +153,9 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             readHeaderCell("Longitude");
             readHeaderCell("Revenue opportunity");
             readHeaderCell("Required");
+            for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                readHeaderCell(Integer.toString(date.getDayOfMonth()));
+            }
             List<RockShow> showList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
@@ -137,6 +173,18 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 }
                 show.setRevenueOpportunity((int) revenueOpportunityDouble);
                 show.setRequired(nextBooleanCell().getBooleanCellValue());
+                NavigableSet<LocalDate> availableDateSet = new TreeSet<>();
+                for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                    XSSFCell cell = nextStringCell();
+                    if (!Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
+                        availableDateSet.add(date);
+                    }
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
+                                + ") should be empty.");
+                    }
+                }
+                show.setAvailableDateSet(availableDateSet);
                 id++;
                 showList.add(show);
             }
@@ -167,37 +215,16 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
         public Workbook write() {
             writeSetup();
             writeConfiguration();
+            writeBus();
             writeShowList();
             return workbook;
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 5, false);
+            nextSheet("Configuration", 1, 3, false);
             nextRow();
             nextHeaderCell("Tour name");
             nextCell().setCellValue(solution.getTourName());
-            nextHeaderCell("");
-            nextHeaderCell("");
-            nextHeaderCell("City name");
-            nextHeaderCell("Latitude");
-            nextHeaderCell("Longitude");
-            RockBus bus = solution.getBus();
-            nextRow();
-            nextHeaderCell("");
-            nextHeaderCell("");
-            nextHeaderCell("");
-            nextHeaderCell("Bus start");
-            nextCell().setCellValue(bus.getStartLocation().getCityName());
-            nextCell().setCellValue(bus.getStartLocation().getLatitude());
-            nextCell().setCellValue(bus.getStartLocation().getLongitude());
-            nextRow();
-            nextHeaderCell("");
-            nextHeaderCell("");
-            nextHeaderCell("");
-            nextHeaderCell("Bus end");
-            nextCell().setCellValue(bus.getEndLocation().getCityName());
-            nextCell().setCellValue(bus.getEndLocation().getLatitude());
-            nextCell().setCellValue(bus.getEndLocation().getLongitude());
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");
@@ -211,8 +238,64 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             autoSizeColumnsWithHeader();
         }
 
+        private void writeBus() {
+            nextSheet("Bus", 1, 0, false);
+            nextRow();
+            nextHeaderCell("");
+            nextHeaderCell("City name");
+            nextHeaderCell("Latitude");
+            nextHeaderCell("Longitude");
+            nextHeaderCell("Date");
+            RockBus bus = solution.getBus();
+            nextRow();
+            nextHeaderCell("Bus start");
+            nextCell().setCellValue(bus.getStartLocation().getCityName());
+            nextCell().setCellValue(bus.getStartLocation().getLatitude());
+            nextCell().setCellValue(bus.getStartLocation().getLongitude());
+            nextCell().setCellValue(DAY_FORMATTER.format(bus.getStartDate()));
+            nextRow();
+            nextHeaderCell("Bus end");
+            nextCell().setCellValue(bus.getEndLocation().getCityName());
+            nextCell().setCellValue(bus.getEndLocation().getLatitude());
+            nextCell().setCellValue(bus.getEndLocation().getLongitude());
+            nextCell().setCellValue(DAY_FORMATTER.format(bus.getEndDate()));
+            autoSizeColumnsWithHeader();
+        }
+
         private void writeShowList() {
-            nextSheet("Shows", 1, 1, false);
+            nextSheet("Shows", 1, 3, false);
+            LocalDate startDate = solution.getBus().getStartDate();
+            LocalDate endDate = solution.getBus().getEndDate();
+            nextRow();
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("Availability");
+            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
+                    currentColumnNumber, currentColumnNumber + (int) ChronoUnit.DAYS.between(startDate, endDate) - 1));
+            nextRow();
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            nextHeaderCell("");
+            for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                if (date.equals(startDate) || date.getDayOfMonth() == 1) {
+                    nextHeaderCell(MONTH_FORMATTER.format(date));
+                    LocalDate startNextMonthDate = date.with(TemporalAdjusters.firstDayOfNextMonth());
+                    if (endDate.compareTo(startNextMonthDate) < 0) {
+                        startNextMonthDate = endDate;
+                    }
+                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
+                            currentColumnNumber, currentColumnNumber + (int) ChronoUnit.DAYS.between(date, startNextMonthDate) - 1));
+                } else {
+                    nextCell();
+                }
+            }
             nextRow();
             nextHeaderCell("Venue name");
             nextHeaderCell("City name");
@@ -220,6 +303,9 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             nextHeaderCell("Longitude");
             nextHeaderCell("Revenue opportunity");
             nextHeaderCell("Required");
+            for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                nextHeaderCell(Integer.toString(date.getDayOfMonth()));
+            }
             for (RockShow show : solution.getShowList()) {
                 nextRow();
                 nextCell().setCellValue(show.getVenueName());
@@ -228,6 +314,13 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 nextCell().setCellValue(show.getLocation().getLongitude());
                 nextCell().setCellValue(show.getRevenueOpportunity());
                 nextCell().setCellValue(show.isRequired());
+                for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                    if (show.getAvailableDateSet().contains(date)) {
+                        nextCell();
+                    } else {
+                        nextCell(unavailableStyle);
+                    }
+                }
             }
             autoSizeColumnsWithHeader();
         }

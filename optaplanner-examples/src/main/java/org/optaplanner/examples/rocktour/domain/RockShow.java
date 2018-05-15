@@ -32,7 +32,7 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     private int revenueOpportunity;
     private boolean required;
 
-    private NavigableSet<LocalDate> availableSetDate;
+    private NavigableSet<LocalDate> availableDateSet;
 
     @PlanningVariable(valueRangeProviderRefs = {"busRange", "showRange"}, graphType = PlanningVariableGraphType.CHAINED)
     private RockStandstill previousStandstill;
@@ -91,12 +91,12 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
         this.required = required;
     }
 
-    public NavigableSet<LocalDate> getAvailableSetDate() {
-        return availableSetDate;
+    public NavigableSet<LocalDate> getAvailableDateSet() {
+        return availableDateSet;
     }
 
-    public void setAvailableSetDate(NavigableSet<LocalDate> availableSetDate) {
-        this.availableSetDate = availableSetDate;
+    public void setAvailableDateSet(NavigableSet<LocalDate> availableDateSet) {
+        this.availableDateSet = availableDateSet;
     }
 
     public RockStandstill getPreviousStandstill() {

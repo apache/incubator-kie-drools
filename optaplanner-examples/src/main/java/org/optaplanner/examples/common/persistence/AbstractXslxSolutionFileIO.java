@@ -60,6 +60,8 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
 
     protected static final DateTimeFormatter DAY_FORMATTER
             = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final DateTimeFormatter MONTH_FORMATTER
+            = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
     protected static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
