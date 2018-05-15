@@ -34,6 +34,13 @@ rule "Required show"
     when
         RockShow(required == true, date == null)
     then
+        scoreHolder.addHardConstraintMatch(kcontext, -1000);
+end
+
+rule "Arrive before bus end date"
+    when
+        RockShow(bus != null, date == null)
+    then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
@@ -53,4 +60,11 @@ rule "Distance to bus arrival location"
         RockShow(nextShow == null, bus != null, $distanceToBusArrivalLocation : distanceToBusArrivalLocation)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToBusArrivalLocation);
+end
+
+rule "Visit all venues sooner than later"
+    when
+        RockShow(date != null, $daysAfterBusDeparture : daysAfterBusDeparture)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $daysAfterBusDeparture);
 end

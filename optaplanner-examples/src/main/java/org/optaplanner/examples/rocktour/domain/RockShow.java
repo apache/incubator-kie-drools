@@ -28,6 +28,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.rocktour.domain.solver.RockShowDateUpdatingVariableListener;
 
+import static java.time.temporal.ChronoUnit.*;
+
 @PlanningEntity
 public class RockShow extends AbstractPersistable implements RockStandstill {
 
@@ -75,6 +77,10 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     public long getDistanceToBusArrivalLocation() {
         return location.getDrivingTimeTo(bus.getArrivalLocation());
+    }
+
+    public long getDaysAfterBusDeparture() {
+        return DAYS.between(bus.getDepartureDate(), date);
     }
 
     @Override

@@ -77,6 +77,9 @@ public class RockShowDateUpdatingVariableListener implements VariableListener<Ro
         }
         LocalDate arrivalDate = previousDepartureDate.plusDays(1);
         arrivalDate = show.getAvailableDateSet().ceiling(arrivalDate);
+        if (arrivalDate != null && arrivalDate.compareTo(show.getBus().getEndDate()) >= 0) {
+            return null;
+        }
         return arrivalDate;
     }
 

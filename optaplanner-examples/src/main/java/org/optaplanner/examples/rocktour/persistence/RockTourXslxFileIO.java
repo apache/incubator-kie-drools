@@ -43,6 +43,7 @@ import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
+import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.rocktour.domain.RockTourParametrization.*;
 
 public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolution> {
@@ -217,6 +218,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             writeConfiguration();
             writeBus();
             writeShowList();
+            writeStopsView();
             return workbook;
         }
 
@@ -322,6 +324,30 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     }
                 }
             }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeStopsView() {
+            nextSheet("Stops", 1, 1, true);
+            nextRow();
+            nextHeaderCell("Date");
+            nextHeaderCell("Venue names");
+            nextHeaderCell("City names");
+            LocalDate startDate = solution.getBus().getStartDate();
+            LocalDate endDate = solution.getBus().getEndDate();
+            for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                nextRow();
+                nextHeaderCell(DAY_FORMATTER.format(date));
+                final LocalDate finalDate = date;
+                List<RockShow> dateShowList = solution.getShowList().stream().filter(show -> finalDate.equals(show.getDate())).collect(toList());
+                nextCell().setCellValue(dateShowList.stream().map(RockShow::getVenueName).collect(joining(", ")));
+                nextCell().setCellValue(dateShowList.stream().map(show -> show.getLocation().getCityName()).collect(joining(", ")));
+            }
+            nextRow();
+            nextHeaderCell("Unassigned");
+            List<RockShow> unassignedShowList = solution.getShowList().stream().filter(show -> show.getDate() == null).collect(toList());
+            nextCell().setCellValue(unassignedShowList.stream().map(RockShow::getVenueName).collect(joining(", ")));
+            nextCell().setCellValue(unassignedShowList.stream().map(show -> show.getLocation().getCityName()).collect(joining(", ")));
             autoSizeColumnsWithHeader();
         }
 
