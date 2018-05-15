@@ -1341,7 +1341,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testBigDecimal() {
+    public void testBigDecimalBigIntegerCoercion() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + BigInteger.class.getCanonicalName() + ";\n" +
                 "rule \"rule1\"\n" +
