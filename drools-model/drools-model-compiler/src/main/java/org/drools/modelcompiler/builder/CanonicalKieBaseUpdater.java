@@ -17,13 +17,18 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -52,6 +57,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         List<RuleImpl> rulesToBeRemoved;
         List<RuleImpl> rulesToBeAdded;
 
+        Map<String, AtomicInteger> globalsCounter = new HashMap<>();
+
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
             for (Class<?> cls : ctx.modifiedClasses ) {
@@ -75,8 +82,16 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getResourceName() )) {
                     continue;
                 }
-                InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
+
                 InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
+                InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
+                if (oldKpkg == null) {
+                    try {
+                        oldKpkg = (InternalKnowledgePackage) ctx.kBase.addPackage( new KnowledgePackageImpl( changeSet.getResourceName() ) ).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException( e );
+                    }
+                }
 
                 if (kpkg != null) {
                     for (Rule newRule : kpkg.getRules()) {
@@ -93,7 +108,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                         switch (change.getType()) {
                             case GLOBAL:
                                 oldKpkg.removeGlobal( changedItemName );
-                                ctx.kBase.removeGlobal( changedItemName );
+                                AtomicInteger globalCounter = globalsCounter.get(changedItemName);
+                                if (globalCounter == null || globalCounter.decrementAndGet() <= 0) {
+                                    ctx.kBase.removeGlobal( changedItemName );
+                                }
                                 break;
                             case RULE:
                                 RuleImpl removedRule = oldKpkg.getRule( changedItemName );
@@ -109,7 +127,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                         switch (change.getType()) {
                             case GLOBAL:
                                 try {
-                                    ctx.kBase.addGlobal( changedItemName, kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) ) );
+                                    globalsCounter.computeIfAbsent( changedItemName, name -> ctx.kBase.getGlobals().get(name) == null ? new AtomicInteger( 1 ) : new AtomicInteger( 0 ) ).incrementAndGet();
+                                    Class<?> globalClass = kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) );
+                                    oldKpkg.addGlobal( changedItemName, globalClass );
+                                    ctx.kBase.addGlobal( changedItemName, globalClass );
                                 } catch (ClassNotFoundException e) {
                                     throw new RuntimeException( e );
                                 }
