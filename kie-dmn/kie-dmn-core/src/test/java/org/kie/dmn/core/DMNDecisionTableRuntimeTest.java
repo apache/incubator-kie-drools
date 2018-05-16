@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -52,7 +53,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -470,6 +470,7 @@ public class DMNDecisionTableRuntimeTest {
                                                DMNDecisionResult.DecisionEvaluationStatus.FAILED);
     }
 
+    @Ignore("This should be unignored after DROOLS-2543 is fixed")
     @Test
     public void testDecisionTablesQuestionMarkMultivalue() {
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalue.dmn",
@@ -498,6 +499,7 @@ public class DMNDecisionTableRuntimeTest {
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
+    @Ignore("This should be unignored after DROOLS-2544 is fixed")
     @Test
     public void testDecisionTablesQuestionMarkWithQuantifiedExpression() {
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithQuantifiedExpr.dmn",
