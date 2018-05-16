@@ -72,7 +72,8 @@ public class VarianceAccumulateFunction extends AbstractAccumulateFunction<Varia
         double x = ((Number) value).doubleValue();
 
         double higherDelta = x - data.mean;
-        data.mean = data.mean * data.count / (data.count - 1.0) - x / (data.count -1.0);
+        //without this if statement mean becomes NaN, and never escapes from there
+        data.mean = data.count == 1 ? 0:data.mean * data.count / (data.count - 1.0) - x / (data.count -1.0);
         double lowerDelta = x - data.mean;
         data.count--;
         data.squaredSum -= lowerDelta * higherDelta;
