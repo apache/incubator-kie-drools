@@ -199,6 +199,10 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                                 + ") should be empty.");
                     }
                 }
+                if (availableDateSet.isEmpty()) {
+                    throw new IllegalStateException(currentPosition() + ": The show (" + show.getVenueName()
+                            + ")'s has no available date: all dates are unavailable.");
+                }
                 show.setAvailableDateSet(availableDateSet);
                 id++;
                 showList.add(show);
