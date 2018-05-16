@@ -35,6 +35,7 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     private String venueName;
     private RockLocation location;
+    private int durationInHalfDay;
     private int revenueOpportunity;
     private boolean required;
 
@@ -106,6 +107,14 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     public void setLocation(RockLocation location) {
         this.location = location;
+    }
+
+    public int getDurationInHalfDay() {
+        return durationInHalfDay;
+    }
+
+    public void setDurationInHalfDay(int durationInHalfDay) {
+        this.durationInHalfDay = durationInHalfDay;
     }
 
     public int getRevenueOpportunity() {

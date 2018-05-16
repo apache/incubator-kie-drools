@@ -152,6 +152,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             readHeaderCell("City name");
             readHeaderCell("Latitude");
             readHeaderCell("Longitude");
+            readHeaderCell("Duration (in days)");
             readHeaderCell("Revenue opportunity");
             readHeaderCell("Required");
             for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
@@ -167,6 +168,17 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 double latitude = nextNumericCell().getNumericCellValue();
                 double longitude = nextNumericCell().getNumericCellValue();
                 show.setLocation(new RockLocation(cityName, latitude, longitude));
+                double duration = nextNumericCell().getNumericCellValue();
+                int durationInHalfDay = (int) (duration * 2.0);
+                if (((double) durationInHalfDay) != duration * 2.0) {
+                    throw new IllegalStateException(currentPosition() + ": The duration (" + duration
+                            + ") should be a multiple of 0.5.");
+                }
+                if (durationInHalfDay < 1) {
+                    throw new IllegalStateException(currentPosition() + ": The duration (" + duration
+                            + ") should be at least 0.5.");
+                }
+                show.setDurationInHalfDay(durationInHalfDay);
                 double revenueOpportunityDouble = nextNumericCell().getNumericCellValue();
                 if (revenueOpportunityDouble != (double) (int) revenueOpportunityDouble) {
                     throw new IllegalStateException(currentPosition() + ": The show (" + show.getVenueName()
@@ -303,6 +315,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             nextHeaderCell("City name");
             nextHeaderCell("Latitude");
             nextHeaderCell("Longitude");
+            nextHeaderCell("Duration (in days)");
             nextHeaderCell("Revenue opportunity");
             nextHeaderCell("Required");
             for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
@@ -314,6 +327,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 nextCell().setCellValue(show.getLocation().getCityName());
                 nextCell().setCellValue(show.getLocation().getLatitude());
                 nextCell().setCellValue(show.getLocation().getLongitude());
+                nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
                 nextCell().setCellValue(show.getRevenueOpportunity());
                 nextCell().setCellValue(show.isRequired());
                 for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {

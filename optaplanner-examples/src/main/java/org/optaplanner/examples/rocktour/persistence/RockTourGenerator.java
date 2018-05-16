@@ -39,8 +39,9 @@ import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-public class RockTourGenerator extends LoggingMain {
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.*;
 
+public class RockTourGenerator extends LoggingMain {
 
     public static void main(String[] args) {
         RockTourGenerator generator = new RockTourGenerator();
@@ -110,12 +111,13 @@ public class RockTourGenerator extends LoggingMain {
                 show.setId(showId++);
                 show.setVenueName(locationData.getName());
                 show.setLocation(location);
+                show.setDurationInHalfDay(generateRandomIntFromThresholds(random, 0.0, 0.5, 0.9, 0.9));
                 show.setRevenueOpportunity((random.nextInt(30) + 1) * 100_000);
                 show.setRequired(i <= 3);
                 NavigableSet<LocalDate> availableDaySet;
                 if (i <= 8) {
                     availableDaySet = new TreeSet<>();
-                    availableDaySet.add(globalAvailableDayList.get(random.nextInt(globalAvailableDayList.size())));
+                    availableDaySet.add(extractRandomElement(random, globalAvailableDayList));
                 } else {
                     int fromIndex = globalAvailableDayList.size() * 4 / 5;
                     Collections.shuffle(globalAvailableDayList, random);

@@ -95,4 +95,6 @@ public class LocationDataGenerator {
         }
     }
 
+    private LocationDataGenerator() {
+    }
 }
