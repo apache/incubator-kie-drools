@@ -180,11 +180,13 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         if (event.getNodeInstance() != null) {
             // since node instance is set this is SLA violation for node instance
             long nodeInstanceId = event.getNodeInstance().getId();
+            long processInstanceId = event.getProcessInstance().getId();
             NodeInstanceLog log = (NodeInstanceLog) ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().get("NodeInstanceLog");
             if (log == null) {
                 List<NodeInstanceLog> result = em.createQuery(
-                        "from NodeInstanceLog as log where log.nodeInstanceId = :niId and log.type = 0")
-                        .setParameter("niId", Long.toString(nodeInstanceId)).getResultList();
+                        "from NodeInstanceLog as log where log.nodeInstanceId = :niId and log.processInstanceId = :piId and log.type = 0")
+                        .setParameter("niId", Long.toString(nodeInstanceId))
+                        .setParameter("piId", processInstanceId).getResultList();
                 if (result != null && !result.isEmpty()) {
                     log = result.get(result.size() - 1);
                 }
