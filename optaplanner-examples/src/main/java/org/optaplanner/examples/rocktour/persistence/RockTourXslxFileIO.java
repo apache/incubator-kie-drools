@@ -132,8 +132,10 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
+            readHeaderCell("");
             readHeaderCell("Availability");
             nextRow(false);
+            readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
@@ -287,10 +289,12 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
+            nextHeaderCell("");
             nextHeaderCell("Availability");
             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
                     currentColumnNumber, currentColumnNumber + (int) ChronoUnit.DAYS.between(startDate, endDate) - 1));
             nextRow();
+            nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
