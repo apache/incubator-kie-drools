@@ -47,7 +47,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,8 +105,8 @@ public class IncrementalCompilationTest {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
-//        return parameters;
-        return TestParametersUtil.getKieBaseCloudConfigurations();
+        return parameters;
+//        return TestParametersUtil.getKieBaseCloudConfigurations();
     }
 
     @Test
