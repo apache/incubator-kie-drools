@@ -20,6 +20,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -140,8 +141,9 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public Map<String, Object> getAllValues() {
         Map<String, Object> values = new HashMap<>(  );
-        for (ExecutionFrame frame : stack) {
-            values.putAll( frame.getAllValues() );
+        Iterator<ExecutionFrame> it = stack.descendingIterator();
+        while ( it.hasNext() ) {
+            values.putAll( it.next().getAllValues() );
         }
         return values;
     }

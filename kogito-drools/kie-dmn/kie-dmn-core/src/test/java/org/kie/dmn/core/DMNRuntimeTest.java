@@ -1924,5 +1924,20 @@ public class DMNRuntimeTest {
         assertEquals("OK", result.getResult());
     }
 
+    @Test
+    public void testProductFunction() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
+        DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );
+        assertThat( model, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
+        DMNContext context = DMNFactory.newContext();
+        context.set("product", new HashMap<String, Object>(){{
+            put("name", "Product1");
+            put("type", 1);
+        }});
+        DMNDecisionResult result = runtime.evaluateAll(model, context).getDecisionResultByName("TestDecision");
+        assertFalse(result.hasErrors());
+        assertEquals("This is product 1", result.getResult());
+    }
 }
 
