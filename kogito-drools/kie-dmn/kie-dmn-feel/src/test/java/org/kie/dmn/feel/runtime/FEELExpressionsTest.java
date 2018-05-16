@@ -74,10 +74,16 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE , null},
                 {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE , null},
 
+                // Unary tests with ? character
+                {"{ ? foo : 5, result : ? foo < 10 }.result", Boolean.TRUE , null},
+                {"{ ? foo : 5, ? bar : 10, result : ? foo < ? bar}.result", Boolean.TRUE , null},
+                {"{ ?foo : 5, result : ?foo < 10 }.result", Boolean.TRUE , null},
+                {"{ foo ? : 5, result : foo ? < 10 }.result", Boolean.TRUE , null},
+                {"{ foo?bar : 5, result : foo?bar < 10 }.result", Boolean.TRUE , null},
+
                 // unary tests with context evaluation, i.e., the test is defined before the variable "x"
                 {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
                 {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null},
-
                 {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", null, FEELEvent.Severity.ERROR},
                 
                 {"2 in 2", Boolean.TRUE , null},

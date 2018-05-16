@@ -27,10 +27,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -47,6 +49,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -430,5 +434,125 @@ public class DMNDecisionTableRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("a decision"), is(Arrays.asList("abc", "a")));
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkVariableCorrectEvaluation() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmark.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkAsString() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkAsString.dmn",
+                                               "NOT OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkAsString2.dmn",
+                                               "NOT OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkAsString3.dmn",
+                                               "NOT OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkVariableVsQuestionMarkString() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkVsQmarkString.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkOnly() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkonly.dmn",
+                                               null,
+                                               DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+    }
+
+    @Ignore("This should be unignored after DROOLS-2543 is fixed")
+    @Test
+    public void testDecisionTablesQuestionMarkMultivalue() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalue.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkMultivalueWithBrackets() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalueWithBrackets.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithNot() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithNot.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithContext() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithContext.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Ignore("This should be unignored after DROOLS-2544 is fixed")
+    @Test
+    public void testDecisionTablesQuestionMarkWithQuantifiedExpression() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithQuantifiedExpr.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkInstanceOf() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInstanceOf.dmn",
+                                               "NOT OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkInWithUnaryTests() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInWithUnaryTest.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithRange() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithRange.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithAnd() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithAnd.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkInNonBooleanFunction() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInNonBooleanFunction.dmn",
+                                               null,
+                                               DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+    }
+
+    private void testDecisionTablesQuestionMarkVariable(final String dmnResourcePath, final String expectedResult,
+                                                        final DMNDecisionResult.DecisionEvaluationStatus expectedStatus) {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( dmnResourcePath, this.getClass() );
+        DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );
+        assertThat( model, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
+        DMNContext context = DMNFactory.newContext();
+        DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
+
+        assertEquals(expectedStatus, result.getEvaluationStatus());
+        assertFalse(result.hasErrors());
+        assertEquals(expectedResult, result.getResult());
     }
 }

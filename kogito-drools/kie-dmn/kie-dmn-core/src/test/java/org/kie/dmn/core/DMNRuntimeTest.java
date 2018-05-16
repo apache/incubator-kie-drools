@@ -1913,18 +1913,6 @@ public class DMNRuntimeTest {
     }
 
     @Test
-    public void testDecisionTablesQuestionMarkVariable() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "qmark.dmn", this.getClass() );
-        DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );
-        assertThat( model, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
-        DMNContext context = DMNFactory.newContext();
-        DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
-        assertFalse(result.hasErrors());
-        assertEquals("OK", result.getResult());
-    }
-
-    @Test
     public void testProductFunction() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
         DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );
