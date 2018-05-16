@@ -291,7 +291,7 @@ public class KiePackagesBuilder {
         for (int i = 0; i < args.length; i++) {
             int index = i;
             LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
-            declarations[i] = new Declaration( args[i].getName(), accessor, pattern, true );
+            declarations[i] = new Declaration( args[i].getName(), accessor, pattern, false );
             pattern.addDeclaration( declarations[i] );
             ctx.addQueryDeclaration( args[i], declarations[i] );
         }

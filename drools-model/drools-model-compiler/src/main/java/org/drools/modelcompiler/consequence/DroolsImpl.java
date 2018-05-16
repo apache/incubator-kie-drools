@@ -109,6 +109,10 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         knowledgeHelper.update( fhLookup.get(object), adaptBitMask(modifiedProperties), modifiedClass);
     }
 
+    public void update(FactHandle handle, Object newObject) {
+        knowledgeHelper.update( handle, newObject );
+    }
+
     @Override
     public void delete(Object object) {
         workingMemory.delete( fhLookup.get(object) );

@@ -312,7 +312,7 @@ public class CanonicalKieModule implements InternalKieModule {
         for (Map.Entry<String, Model> entry : oldModels.entrySet()) {
             Model newModel = newModels.get( entry.getKey() );
             if ( newModel == null ) {
-                result.removeFile( entry.getKey() );
+                result.registerChanges( entry.getKey(), buildRemoveAllChangeSet( entry.getValue() ) );
                 continue;
             }
 
@@ -324,6 +324,23 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         return result;
+    }
+
+    private ResourceChangeSet buildRemoveAllChangeSet( Model oldModel ) {
+        ResourceChangeSet changeSet = new ResourceChangeSet( oldModel.getName(), ChangeType.UPDATED );
+        for (NamedModelItem item : oldModel.getRules()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.RULE, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getQueries()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.RULE, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getGlobals()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.GLOBAL, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getTypeMetaDatas()) {
+            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, ResourceChange.Type.DECLARATION, item.getName() ) );
+        }
+        return changeSet;
     }
 
     private void findChanges(KieJarChangeSet result, InternalKieModule newKieModule) {
