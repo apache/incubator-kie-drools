@@ -16,7 +16,6 @@
 
 package org.drools.core.fluent.impl;
 
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,54 +27,13 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.builder.DataSourceFluent;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.RuleUnitExecutorFluent;
-import org.kie.api.runtime.builder.WorkItemManagerFluent;
 import org.kie.api.runtime.rule.RuleUnit;
 
-public class RuleUnitExecutorFluentImpl extends BaseBatchFluent<RuleUnitExecutorFluent, ExecutableBuilder> implements RuleUnitExecutorFluent {
+public class RuleUnitExecutorFluentImpl extends BaseBatchWithProcessFluent<RuleUnitExecutorFluent, ExecutableBuilder> implements RuleUnitExecutorFluent {
 
 
     public RuleUnitExecutorFluentImpl(ExecutableImpl fluentCtx) {
         super(fluentCtx);
-    }
-
-    @Override
-    public RuleUnitExecutorFluent startProcess(String processId) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent startProcess(String processId, Map<String, Object> parameters) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent createProcessInstance(String processId, Map<String, Object> parameters) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent startProcessInstance(long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent signalEvent(String type, Object event) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent signalEvent(String type, Object event, long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public RuleUnitExecutorFluent abortProcessInstance(long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public WorkItemManagerFluent<WorkItemManagerFluent, RuleUnitExecutorFluent, ExecutableBuilder> getWorkItemManager() {
-        return null;
     }
 
     @Override
@@ -88,6 +46,7 @@ public class RuleUnitExecutorFluentImpl extends BaseBatchFluent<RuleUnitExecutor
         fluentCtx.addCommand(new GetGlobalCommand(identifier));
         return this;
     }
+
     @Override
     public RuleUnitExecutorFluent bindVariableByExpression(String name, Function<Context, Object> expression) {
         fluentCtx.addCommand(new BindVariableToUnitCommand(name, expression));

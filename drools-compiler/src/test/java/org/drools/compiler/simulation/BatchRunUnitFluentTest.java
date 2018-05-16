@@ -114,6 +114,33 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testUnitNoBinding() {
+        ExecutableBuilder f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .getKieContainer(releaseIdUnit)
+
+                .newRuleUnitExecutor()
+
+                .createDataSource(Person.class)
+                .insert(new Person("Mario", 10))
+                .insert(new Person("Daniele", 30))
+                .insert(new Person("Mark", 40))
+                .buildDataSource()
+
+                .run(RuleUnitTest.AdultUnit.class)
+                .out("firedRules")
+                .dispose();
+
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
+
+        assertEquals(0, requestContext.getOutputs().get("firedRules"));
+
+    }
+
+
+
+    @Test
     public void testUnitLambdaInitializer() {
         ExecutableBuilder f = ExecutableBuilder.create();
 
