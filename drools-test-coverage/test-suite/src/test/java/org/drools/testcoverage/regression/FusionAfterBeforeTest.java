@@ -62,7 +62,7 @@ public class FusionAfterBeforeTest {
 
     @Parameters
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations();
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test

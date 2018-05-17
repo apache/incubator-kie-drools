@@ -58,7 +58,7 @@ public class ConstraintEvaluator {
         Declaration patternDeclaration = null;
         List<Declaration> requiredDeclarationsList = new ArrayList<>();
         for ( int i = 0; i < declarations.length; i++ ) {
-            if ( pattern.getDeclaration().getIdentifier().equals( declarations[i].getIdentifier() ) ) {
+            if ( pattern.getDeclaration() != null && pattern.getDeclaration().getIdentifier().equals( declarations[i].getIdentifier() ) ) {
                 patternDeclaration = declarations[i];
             } else {
                 requiredDeclarationsList.add(declarations[i]);

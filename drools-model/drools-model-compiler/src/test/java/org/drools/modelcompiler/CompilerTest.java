@@ -1370,5 +1370,38 @@ public class CompilerTest extends BaseModelTest {
 
     }
 
+    @Test
+    public void testSingleQuoteString() {
+        String str =
+                "rule R1 when\n" +
+                "  String( this == 'x' )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  String( this == 'xx' )\n" +
+                "then\n" +
+                "end";
 
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "x" );
+        ksession.insert( "xx" );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testIntToLongComparison() {
+        String str =
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $l : Long( this > $i )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 1 );
+        ksession.insert( 2L );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

@@ -21,8 +21,9 @@ import java.util.List;
 
 import org.drools.model.Condition;
 import org.drools.model.Variable;
+import org.drools.model.impl.ModelComponent;
 
-public class ExistentialPatternImpl implements Condition {
+public class ExistentialPatternImpl implements Condition, ModelComponent {
 
     private final Condition condition;
     private final Type type;
@@ -63,5 +64,15 @@ public class ExistentialPatternImpl implements Condition {
         int result = condition != null ? condition.hashCode() : 0;
         result = 31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof ExistentialPatternImpl) ) return false;
+
+        ExistentialPatternImpl that = ( ExistentialPatternImpl ) o;
+
+        return type == that.type && ModelComponent.areEqualInModel( condition, that.condition );
     }
 }

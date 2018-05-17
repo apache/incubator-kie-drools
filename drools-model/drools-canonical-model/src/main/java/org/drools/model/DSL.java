@@ -93,8 +93,8 @@ public class DSL {
 
     // -- TypeMetaData --
 
-    public static TypeMetaDataImpl typeMetaData( String pkg, String name) {
-        return new TypeMetaDataImpl(pkg, name);
+    public static TypeMetaDataImpl typeMetaData( Class<?> type ) {
+        return new TypeMetaDataImpl(type);
     }
 
     public static AnnotationValue annotationValue(String key, String value) {
