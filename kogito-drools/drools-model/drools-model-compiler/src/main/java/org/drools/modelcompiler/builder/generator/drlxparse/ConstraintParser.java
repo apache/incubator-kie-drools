@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
@@ -52,6 +53,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceTypeType;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
@@ -383,7 +385,7 @@ public class ConstraintParser {
         return left.getType() == BigDecimal.class || right.getType() == BigDecimal.class;
     }
 
-    public static Expression compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+    private static Expression compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         left.setExpression( convertExpressionToBigDecimal(left) );
         right.setExpression( convertExpressionToBigDecimal(right) );
         final MethodCallExpr methodCallExpr = new MethodCallExpr(left.getExpression(), "compareTo");
@@ -393,7 +395,11 @@ public class ConstraintParser {
 
     private static Expression convertExpressionToBigDecimal(TypedExpression left) {
         final Expression ret;
-        if(left.getType() != BigDecimal.class) {
+        if(left.getType() == BigInteger.class) {
+            ret = new ObjectCreationExpr(null, toClassOrInterfaceTypeType(BigDecimal.class),
+                                                            NodeList.nodeList(left.getExpression()));
+        }
+        else if(left.getType() != BigDecimal.class) {
             ret = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
                     .addArgument(left.getExpression());
         } else {

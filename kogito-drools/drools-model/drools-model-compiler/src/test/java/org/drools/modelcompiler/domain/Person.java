@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.domain;
 
+import java.math.BigDecimal;
+
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.kie.api.definition.type.Position;
 
@@ -15,6 +17,8 @@ public class Person extends AbstractReactiveObject {
     private int id = 0;
     private String likes;
     private Boolean employed;
+
+    private BigDecimal money;
 
     public Person() { }
 
@@ -92,6 +96,14 @@ public class Person extends AbstractReactiveObject {
     @Override
     public String toString() {
         return name;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 
     @Override

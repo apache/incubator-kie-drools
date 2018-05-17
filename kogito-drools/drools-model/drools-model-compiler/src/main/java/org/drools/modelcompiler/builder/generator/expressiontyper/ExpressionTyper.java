@@ -26,6 +26,7 @@ import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
@@ -208,6 +209,13 @@ public class ExpressionTyper {
                                        new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left ), left.getType())
                                                .setStatic(opSpec.isStatic())
                                                .setLeft(left));
+        } else if (drlxExpr instanceof ObjectCreationExpr) {
+            final ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr)drlxExpr;
+
+            final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), objectCreationExpr.getType());
+            TypedExpression typedExpression = new TypedExpression(objectCreationExpr, castClass);
+
+            return Optional.of(typedExpression);
         }
 
         throw new UnsupportedOperationException();
