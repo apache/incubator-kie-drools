@@ -16,19 +16,17 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.time.Period;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
-
-import java.time.Period;
+import org.kie.dmn.feel.util.TypeUtil;
 
 public class RangeNode
         extends BaseNode {
@@ -123,9 +121,11 @@ public class RangeNode
 
     public static class ComparablePeriod implements Comparable<Period> {
         private final int left;
+        private final String toStringRep;
 
         public ComparablePeriod(Period value) {
             this.left = value.getYears() * 12 + value.getMonths();
+            this.toStringRep = TypeUtil.formatPeriod(value, true);
         }
 
         @Override
@@ -148,6 +148,12 @@ public class RangeNode
         public int hashCode() {
             return left;
         }
+
+        @Override
+        public String toString() {
+            return toStringRep;
+        }
+
     }
 
     @Override
