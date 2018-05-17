@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
+import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
@@ -27,7 +29,9 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -90,6 +94,18 @@ public class KieBaseUpdater implements Runnable {
         for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
         }
+
+        final InternalKnowledgeBase kBase = ((KnowledgeBuilderImpl) kbuilder).getKnowledgeBase();
+
+        kBase.getRete().getEntryPointNodes().values().stream()
+                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                .forEach(otn -> {
+                    final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
+                    clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
+                    final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
+                    otn.setCompiledNetwork(compile);
+                });
     }
 
     protected void clearInstancesOfModifiedClass( Class<?> cls ) {

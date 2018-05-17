@@ -396,13 +396,19 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
+        generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
+
+        return kBase;
+    }
+
+    public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
         final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
-        Boolean isAlphaNetworkEnabled;
-        if(configurationProperty != null) {
-            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
-        } else {
-            isAlphaNetworkEnabled = false;
-        }
+        Boolean isAlphaNetworkEnabled = true;
+//        if(configurationProperty != null) {
+//            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+//        } else {
+//            isAlphaNetworkEnabled = false;
+//        }
         if(isAlphaNetworkEnabled) {
         KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
         kBase.getRete().getEntryPointNodes().values().stream()
@@ -410,8 +416,6 @@ public class KieContainerImpl
                 .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                 .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn)));
         }
-
-        return kBase;
     }
 
     private KieBaseModelImpl getKieBaseModelImpl(String kBaseName) {
