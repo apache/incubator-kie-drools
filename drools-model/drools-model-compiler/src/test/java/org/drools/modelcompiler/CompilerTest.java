@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1336,6 +1338,36 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(((Number)results.iterator().next().getValue()).intValue(), 44);
+    }
+
+    @Test
+    public void testBigDecimalBigIntegerCoercion() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigInteger.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"1\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"rule2\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"2\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"rule3\"\n" +
+                "when\n" +
+                "    Person( money == new BigInteger( \"3\" ) )\n" +
+                "then\n" +
+                "end\n";
+
+
+        KieSession ksession1 = getKieSession(str);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ) );
+        ksession1.insert( p1 );
+        assertEquals( 1, ksession1.fireAllRules() );
+
     }
 
     @Test
