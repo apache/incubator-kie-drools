@@ -512,8 +512,7 @@ public class KnowledgePackageImpl
 
     public void removeRule(RuleImpl rule) {
         this.rules.remove(rule.getName());
-        this.dialectRuntimeRegistry.removeRule(this,
-                                               rule);
+        this.dialectRuntimeRegistry.removeRule(this, rule);
     }
 
     /**

@@ -17,6 +17,7 @@ import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -287,7 +288,7 @@ public class ConstraintParser {
         }
 
         if (left.getType() == ClassUtil.NullType.class || right.getType() == ClassUtil.NullType.class ||
-            left.getType() == BigDecimal.class || right.getType() == BigDecimal.class ||
+            left.getType() == BigDecimal.class || Number.class.isAssignableFrom( right.getType() ) ||
             left.getType() == String.class || right.getType() == String.class) {
             return;
         }
@@ -318,7 +319,11 @@ public class ConstraintParser {
         }
 
         if (shouldCoerceBToString(left, right)) {
-            right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
+            if (rightExpression instanceof CharLiteralExpr) {
+                right.setExpression( new StringLiteralExpr( (( CharLiteralExpr ) rightExpression).getValue() ) );
+            } else {
+                right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
+            }
         }
 
         if ((shouldCoerceBToString(right, left))) {

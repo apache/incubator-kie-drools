@@ -251,6 +251,9 @@ public class Consequence {
                 if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
                     methodCallExpr.setScope(asKnoledgeHelperExpression);
                 } else if (methodCallExpr.getNameAsString().equals("update")) {
+                    if (methodCallExpr.toString().contains( "FactHandle" )) {
+                        methodCallExpr.setScope( new NameExpr( "((org.drools.modelcompiler.consequence.DroolsImpl) drools)" ) );
+                    }
                     updateExprs.add(methodCallExpr);
                 } else if (methodCallExpr.getNameAsString().equals("retract")) {
                     methodCallExpr.setName(new SimpleName("delete"));

@@ -19,10 +19,11 @@ package org.drools.model.patterns;
 import org.drools.model.Condition;
 import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
+import org.drools.model.impl.ModelComponent;
 
 import static org.drools.model.Condition.Type.EVAL;
 
-public class EvalImpl implements Condition {
+public class EvalImpl implements Condition, ModelComponent {
 
     private final SingleConstraint expr;
 
@@ -46,5 +47,15 @@ public class EvalImpl implements Condition {
     @Override
     public Variable<?>[] getBoundVariables() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( !(o instanceof ExistentialPatternImpl) ) return false;
+
+        EvalImpl that = ( EvalImpl ) o;
+
+        return ModelComponent.areEqualInModel( expr, that.expr );
     }
 }
