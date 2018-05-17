@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -35,6 +36,9 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -44,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -1403,5 +1408,28 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( 1 );
         ksession.insert( 2L );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+
+    @Test
+    public void testUseGlobalInLHS() {
+        // DROOLS-1025
+        final String drl1 =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                        "rule R1 when\n" +
+                        "	 exists Integer() from globalInt.get()\n" +
+                        "then\n" +
+                        "  insert(new Result(\"match\"));\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.setGlobal("globalInt", new AtomicInteger(0));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "match");
     }
 }

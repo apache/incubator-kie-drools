@@ -137,6 +137,7 @@ public class ModelGenerator {
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, boolean isPattern) {
         RuleContext context = new RuleContext(kbuilder, packageModel, ruleDescr,  typeResolver, isPattern);
+        context.addGlobalDeclarations(packageModel.getGlobals());
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
