@@ -1410,25 +1410,26 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
     }
 
+
     @Test
-    public void testRuleRemovalWithSubnetworkAndOR() {
+    public void testUseGlobalInLHS() {
         // DROOLS-1025
         final String drl1 =
-                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                         "rule R1 when\n" +
-                        "    $s : String()\n" +
-                        "	 (or exists Integer(this == 1)\n" +
-                        "	     exists Integer(this == 2) )\n" +
                         "	 exists Integer() from globalInt.get()\n" +
                         "then\n" +
+                        "  insert(new Result(\"match\"));\n" +
                         "end\n";
 
         KieSession ksession = getKieSession( drl1 );
 
         ksession.setGlobal("globalInt", new AtomicInteger(0));
-        ksession.insert(1);
-        ksession.insert("1");
 
         ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "match");
     }
 }
