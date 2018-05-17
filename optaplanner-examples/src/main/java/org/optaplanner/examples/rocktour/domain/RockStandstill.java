@@ -34,6 +34,8 @@ public interface RockStandstill {
      */
     LocalDate getDepartureDate();
 
+    RockTimeOfDay getDepartureTimeOfDay();
+
     /**
      * @return never null;
      */
@@ -51,5 +53,4 @@ public interface RockStandstill {
     RockShow getNextShow();
 
     void setNextShow(RockShow nextShow);
-
 }

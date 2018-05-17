@@ -31,6 +31,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class RockTourSolution extends AbstractPersistable {
 
     private String tourName;
+    private long maximumEarlyLateBreakDrivingSeconds = 1L * 60L * 60L;
+    private long maximumNightDrivingSeconds = 8L * 60L * 60L;
 
     @ProblemFactProperty
     private RockTourParametrization parametrization;
@@ -67,6 +69,22 @@ public class RockTourSolution extends AbstractPersistable {
 
     public void setTourName(String tourName) {
         this.tourName = tourName;
+    }
+
+    public long getMaximumEarlyLateBreakDrivingSeconds() {
+        return maximumEarlyLateBreakDrivingSeconds;
+    }
+
+    public void setMaximumEarlyLateBreakDrivingSeconds(long maximumEarlyLateBreakDrivingSeconds) {
+        this.maximumEarlyLateBreakDrivingSeconds = maximumEarlyLateBreakDrivingSeconds;
+    }
+
+    public long getMaximumNightDrivingSeconds() {
+        return maximumNightDrivingSeconds;
+    }
+
+    public void setMaximumNightDrivingSeconds(long maximumNightDrivingSeconds) {
+        this.maximumNightDrivingSeconds = maximumNightDrivingSeconds;
     }
 
     public RockTourParametrization getParametrization() {

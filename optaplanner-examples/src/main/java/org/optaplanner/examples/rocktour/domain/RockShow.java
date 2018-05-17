@@ -54,6 +54,9 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
             @PlanningVariableReference(variableName = "bus")})
     private LocalDate date;
 
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    private RockTimeOfDay timeOfDay;
+
     public RockShow() {
     }
 
@@ -64,7 +67,15 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     @Override
     public LocalDate getDepartureDate() {
-        return date;
+        if (date == null) {
+            return null;
+        }
+        return date.plusDays((durationInHalfDay - 1) / 2);
+    }
+
+    @Override
+    public RockTimeOfDay getDepartureTimeOfDay() {
+        return durationInHalfDay % 2 == 0 ? RockTimeOfDay.LATE : timeOfDay;
     }
 
     @Override
@@ -173,6 +184,14 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public RockTimeOfDay getTimeOfDay() {
+        return timeOfDay;
+    }
+
+    public void setTimeOfDay(RockTimeOfDay timeOfDay) {
+        this.timeOfDay = timeOfDay;
     }
 
 }

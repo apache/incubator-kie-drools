@@ -19,10 +19,13 @@ package org.optaplanner.examples.rocktour.domain.solver;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockStandstill;
+import org.optaplanner.examples.rocktour.domain.RockTimeOfDay;
+import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 public class RockShowDateUpdatingVariableListener implements VariableListener<RockShow> {
 
@@ -57,30 +60,59 @@ public class RockShowDateUpdatingVariableListener implements VariableListener<Ro
     }
 
     protected void updateDate(ScoreDirector scoreDirector, RockShow sourceShow) {
+        RockTourSolution solution = (RockTourSolution) scoreDirector.getWorkingSolution();
+
         RockStandstill previousStandstill = sourceShow.getPreviousStandstill();
-        LocalDate arrivalDate = calculateArrivalDate(sourceShow,
-                previousStandstill == null ? null : previousStandstill.getDepartureDate());
+        Pair<LocalDate, RockTimeOfDay> arrival = calculateArrival(solution, sourceShow, previousStandstill);
         RockShow shadowShow = sourceShow;
-        while (shadowShow != null && !Objects.equals(shadowShow.getDate(), arrivalDate)) {
+        while (shadowShow != null
+                && !(Objects.equals(shadowShow.getDate(), arrival.getLeft())
+                    && Objects.equals(shadowShow.getTimeOfDay(), arrival.getRight()))) {
             scoreDirector.beforeVariableChanged(shadowShow, "date");
-            shadowShow.setDate(arrivalDate);
+            shadowShow.setDate(arrival.getLeft());
             scoreDirector.afterVariableChanged(shadowShow, "date");
-            LocalDate previousDepartureDate = shadowShow.getDepartureDate();
+            scoreDirector.beforeVariableChanged(shadowShow, "timeOfDay");
+            shadowShow.setTimeOfDay(arrival.getRight());
+            scoreDirector.afterVariableChanged(shadowShow, "timeOfDay");
+            RockShow previousShow = shadowShow;
             shadowShow = shadowShow.getNextShow();
-            arrivalDate = calculateArrivalDate(shadowShow, previousDepartureDate);
+            arrival = calculateArrival(solution, shadowShow, previousShow);
         }
     }
 
-    private LocalDate calculateArrivalDate(RockShow show, LocalDate previousDepartureDate) {
-        if (show == null || previousDepartureDate == null) {
-            return null;
+    private Pair<LocalDate, RockTimeOfDay> calculateArrival(RockTourSolution solution, RockShow show, RockStandstill previousStandstill) {
+        if (show == null || previousStandstill == null || previousStandstill.getDepartureDate() == null) {
+            return Pair.of(null, null);
         }
-        LocalDate arrivalDate = previousDepartureDate.plusDays(1);
-        arrivalDate = show.getAvailableDateSet().ceiling(arrivalDate);
-        if (arrivalDate != null && arrivalDate.compareTo(show.getBus().getEndDate()) >= 0) {
-            return null;
+        long maximumEarlyLateBreakDrivingSeconds = solution.getMaximumEarlyLateBreakDrivingSeconds();
+        long maximumNightDrivingSeconds = solution.getMaximumNightDrivingSeconds();
+
+        long drivingSeconds = show.getDistanceFromPreviousStandstill();
+        RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
+        LocalDate date = previousStandstill.getDepartureDate();
+        while (drivingSeconds >= 0) {
+            if (timeOfDay == RockTimeOfDay.EARLY) {
+                drivingSeconds -= maximumEarlyLateBreakDrivingSeconds;
+                timeOfDay = RockTimeOfDay.LATE;
+            } else {
+                drivingSeconds -= maximumNightDrivingSeconds;
+                date = date.plusDays(1);
+                timeOfDay = RockTimeOfDay.EARLY;
+            }
         }
-        return arrivalDate;
+        if (show.getDurationInHalfDay() % 2 == 0 && timeOfDay != RockTimeOfDay.EARLY) {
+            // Don't split up full days
+            date = date.plusDays(1);
+            timeOfDay = RockTimeOfDay.EARLY;
+        }
+        LocalDate arrivalDate = show.getAvailableDateSet().ceiling(date);
+        if (!date.equals(arrivalDate)) {
+            timeOfDay = RockTimeOfDay.EARLY;
+        }
+        if (arrivalDate == null || arrivalDate.compareTo(show.getBus().getEndDate()) >= 0) {
+            return Pair.of(null, null);
+        }
+        return Pair.of(arrivalDate, timeOfDay);
     }
 
 }
