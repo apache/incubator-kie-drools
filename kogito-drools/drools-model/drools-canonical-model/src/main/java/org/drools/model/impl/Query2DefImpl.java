@@ -25,7 +25,7 @@ import org.drools.model.view.QueryCallViewItemImpl;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B> {
+public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>, ModelComponent {
     private final Variable<A> arg1;
     private final Variable<B> arg2;
 
@@ -65,5 +65,15 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
 
     public Variable<B> getArg2() {
         return arg2;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent other ) {
+        if ( this == other ) return true;
+        if ( !(other instanceof Query1DefImpl) ) return false;
+
+        Query2DefImpl that = ( Query2DefImpl ) other;
+
+        return ModelComponent.areEqualInModel( arg1, that.arg1 ) && ModelComponent.areEqualInModel( arg2, that.arg2 );
     }
 }

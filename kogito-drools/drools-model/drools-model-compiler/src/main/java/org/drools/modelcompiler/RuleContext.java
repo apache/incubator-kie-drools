@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
@@ -30,7 +31,6 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.model.Global;
 import org.drools.model.Variable;
-import org.kie.api.definition.KiePackage;
 
 public class RuleContext {
 
@@ -55,7 +55,7 @@ public class RuleContext {
     /**
      * All KiePackage known to the KiePackagesBuilder
      */
-    public Collection<KiePackage> getKnowledgePackages() {
+    public Collection<InternalKnowledgePackage> getKnowledgePackages() {
         return builder.getKiePackages();
     }
 

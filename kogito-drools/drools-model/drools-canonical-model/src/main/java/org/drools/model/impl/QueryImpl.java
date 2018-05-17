@@ -21,7 +21,7 @@ import org.drools.model.QueryDef;
 import org.drools.model.Variable;
 import org.drools.model.View;
 
-public class QueryImpl implements Query {
+public class QueryImpl implements Query, ModelComponent {
 
     private final QueryDef queryDef;
     private final View view;
@@ -49,5 +49,15 @@ public class QueryImpl implements Query {
     @Override
     public Variable<?>[] getArguments() {
         return queryDef.getArguments();
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        QueryImpl query = ( QueryImpl ) o;
+
+        return ModelComponent.areEqualInModel( view, query.view ) && ModelComponent.areEqualInModel( queryDef, query.queryDef );
     }
 }

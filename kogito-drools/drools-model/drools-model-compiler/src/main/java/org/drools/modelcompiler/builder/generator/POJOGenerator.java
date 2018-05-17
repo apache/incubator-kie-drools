@@ -112,8 +112,7 @@ public class POJOGenerator {
 
     private static MethodCallExpr registerTypeMetaData( String pkg, String name ) {
         MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
-        typeMetaDataCall.addArgument( new StringLiteralExpr(pkg) );
-        typeMetaDataCall.addArgument( new StringLiteralExpr(name) );
+        typeMetaDataCall.addArgument( pkg + "." + name + ".class" );
         return typeMetaDataCall;
     }
 

@@ -36,6 +36,7 @@ import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplateObjectType;
@@ -110,7 +111,6 @@ import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
@@ -135,7 +135,7 @@ public class KiePackagesBuilder {
 
     private final RuleBaseConfiguration configuration;
 
-    private final Map<String, KiePackage> packages = new HashMap<>();
+    private final Map<String, InternalKnowledgePackage> packages = new HashMap<>();
 
     private final Map<String, ObjectType> objectTypeCache = new HashMap<>();
 
@@ -291,7 +291,7 @@ public class KiePackagesBuilder {
         for (int i = 0; i < args.length; i++) {
             int index = i;
             LambdaReadAccessor accessor = new LambdaReadAccessor(index, args[index].getType(), obj -> ( (DroolsQuery) obj ).getElements()[index] );
-            declarations[i] = new Declaration( args[i].getName(), accessor, pattern, true );
+            declarations[i] = new Declaration( args[i].getName(), accessor, pattern, false );
             pattern.addDeclaration( declarations[i] );
             ctx.addQueryDeclaration( args[i], declarations[i] );
         }
@@ -762,7 +762,7 @@ public class KiePackagesBuilder {
         }
     }
 
-    Collection<KiePackage> getKiePackages() {
+    Collection<InternalKnowledgePackage> getKiePackages() {
         return packages.values();
     }
 

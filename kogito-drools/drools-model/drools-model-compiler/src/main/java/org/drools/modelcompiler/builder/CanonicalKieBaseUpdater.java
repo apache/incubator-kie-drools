@@ -17,14 +17,20 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalKiePackages;
 import org.kie.api.builder.model.KieBaseModel;
@@ -45,13 +51,21 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
+        newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
+        CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
+
         List<RuleImpl> rulesToBeRemoved;
         List<RuleImpl> rulesToBeAdded;
+
+        Map<String, AtomicInteger> globalsCounter = new HashMap<>();
 
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
             for (Class<?> cls : ctx.modifiedClasses ) {
                 clearInstancesOfModifiedClass( cls );
+                InternalKnowledgePackage kpkg = ctx.kBase.getPackage( cls.getPackage().getName() );
+                kpkg.removeTypeDeclaration( cls.getSimpleName() );
+                kpkg.addTypeDeclaration( (( InternalKnowledgePackage ) newPkgs.getKiePackage( cls.getPackage().getName() )).getTypeDeclaration( cls.getSimpleName() ) );
             }
 
             rulesToBeRemoved = getAllRulesInKieBase( oldKM, ctx.currentKieBaseModel );
@@ -59,8 +73,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
         } else {
 
-            newKM.setModuleClassLoader( (( CanonicalKieModule ) ctx.currentKM).getModuleClassLoader() );
-            CanonicalKiePackages newPkgs = newKM.getKiePackages( ctx.newKieBaseModel );
+            ctx.kBase.processAllTypesDeclaration( newPkgs.getKiePackages() );
 
             rulesToBeRemoved = new ArrayList<>();
             rulesToBeAdded = new ArrayList<>();
@@ -69,27 +82,68 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getResourceName() )) {
                     continue;
                 }
-                InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
+
                 InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
+                InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
+                if (oldKpkg == null) {
+                    try {
+                        oldKpkg = (InternalKnowledgePackage) ctx.kBase.addPackage( new KnowledgePackageImpl( changeSet.getResourceName() ) ).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException( e );
+                    }
+                }
+
+                if (kpkg != null) {
+                    for (Rule newRule : kpkg.getRules()) {
+                        RuleImpl rule = oldKpkg.getRule( newRule.getName() );
+                        if ( rule != null ) {
+                            rule.setLoadOrder( (( RuleImpl ) newRule).getLoadOrder() );
+                        }
+                    }
+                }
 
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.REMOVED) {
-                        if (change.getType() == ResourceChange.Type.GLOBAL) {
-                            ctx.kBase.removeGlobal( changedItemName );
-                        } else {
-                            rulesToBeRemoved.add( oldKpkg.getRule( changedItemName ) );
+                        switch (change.getType()) {
+                            case GLOBAL:
+                                oldKpkg.removeGlobal( changedItemName );
+                                AtomicInteger globalCounter = globalsCounter.get(changedItemName);
+                                if (globalCounter == null || globalCounter.decrementAndGet() <= 0) {
+                                    ctx.kBase.removeGlobal( changedItemName );
+                                }
+                                break;
+                            case RULE:
+                                RuleImpl removedRule = oldKpkg.getRule( changedItemName );
+                                rulesToBeRemoved.add( removedRule );
+                                oldKpkg.removeRule( removedRule );
+                                break;
+                            case DECLARATION:
+                                oldKpkg.removeTypeDeclaration( changedItemName );
+                                break;
                         }
                     }
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
-                        if (change.getType() == ResourceChange.Type.GLOBAL) {
-                            try {
-                                ctx.kBase.addGlobal( changedItemName, kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) ) );
-                            } catch (ClassNotFoundException e) {
-                                throw new RuntimeException( e );
-                            }
-                        } else {
-                            rulesToBeAdded.add( kpkg.getRule( changedItemName ) );
+                        switch (change.getType()) {
+                            case GLOBAL:
+                                try {
+                                    globalsCounter.computeIfAbsent( changedItemName, name -> ctx.kBase.getGlobals().get(name) == null ? new AtomicInteger( 1 ) : new AtomicInteger( 0 ) ).incrementAndGet();
+                                    Class<?> globalClass = kpkg.getTypeResolver().resolveType( kpkg.getGlobals().get(changedItemName) );
+                                    oldKpkg.addGlobal( changedItemName, globalClass );
+                                    ctx.kBase.addGlobal( changedItemName, globalClass );
+                                } catch (ClassNotFoundException e) {
+                                    throw new RuntimeException( e );
+                                }
+                                break;
+                            case RULE:
+                                RuleImpl addedRule = kpkg.getRule( changedItemName );
+                                rulesToBeAdded.add( addedRule );
+                                oldKpkg.addRule( addedRule );
+                                break;
+                            case DECLARATION:
+                                TypeDeclaration addedType = kpkg.getTypeDeclaration( changedItemName );
+                                oldKpkg.addTypeDeclaration( addedType );
+                                break;
                         }
                     }
                 }

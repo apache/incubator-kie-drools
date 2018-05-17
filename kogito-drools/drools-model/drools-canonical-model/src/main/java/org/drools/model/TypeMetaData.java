@@ -18,8 +18,6 @@ package org.drools.model;
 
 import java.util.Map;
 
-public interface TypeMetaData {
-    String getPackage();
-    String getName();
+public interface TypeMetaData extends NamedModelItem  {
     Map<String, AnnotationValue[]> getAnnotations();
 }

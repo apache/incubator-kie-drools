@@ -84,12 +84,12 @@ public class DialectRuntimeRegistry
         return this.dialects.get( dialect );
     }
 
-    public DialectRuntimeData removeRule(KnowledgePackageImpl pkg,
+    public void removeRule(KnowledgePackageImpl pkg,
                                          RuleImpl rule) {
         DialectRuntimeData dialect = this.dialects.get( rule.getDialect() );
-        dialect.removeRule( pkg,
-                            rule );
-        return dialect;
+        if (dialect != null) {
+            dialect.removeRule( pkg, rule );
+        }
     }
 
     public DialectRuntimeData removeFunction(KnowledgePackageImpl pkg,

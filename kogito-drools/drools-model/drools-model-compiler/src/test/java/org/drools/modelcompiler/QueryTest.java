@@ -703,4 +703,42 @@ public class QueryTest extends BaseModelTest {
         assertEquals( 1, names.size() );
         assertTrue( names.contains( "darth" ) );
     }
+
+    @Test
+    public void testQueryWithUpdateOnFactHandle() throws Exception {
+        String str =
+                "global java.util.List list; " +
+                "query foo( Integer $i ) " +
+                "   $i := Integer( this < 10 ) " +
+                "end\n" +
+                "\n" +
+                "rule r2 when " +
+                "   foo( $i; ) " +
+                "   Integer( this == 20 ) " +
+                "then " +
+                "   System.out.println(\"20 \" + $i);" +
+                "   list.add( 20 + $i );\n" +
+                "end\n" +
+                "rule r3 when " +
+                "   $i : Integer( this == 1 ) " +
+                "then " +
+                "   System.out.println($i);" +
+                "   update( kcontext.getKieRuntime().getFactHandle( $i ), $i + 1 );" +
+                "end\n" +
+                "\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.insert(20);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( 21, (int)list.get(0) );
+        assertEquals( 22, (int)list.get(1) );
+    }
 }

@@ -100,7 +100,7 @@ public interface InternalKnowledgeBase extends KieBase {
 
     InternalKnowledgePackage getPackage(String name);
     Future<KiePackage> addPackage( KiePackage pkg );
-    void addPackages( Collection<KiePackage> newPkgs );
+    void addPackages( Collection<? extends KiePackage> newPkgs );
     Map<String, InternalKnowledgePackage> getPackagesMap();
     
     ClassFieldAccessorCache getClassFieldAccessorCache();

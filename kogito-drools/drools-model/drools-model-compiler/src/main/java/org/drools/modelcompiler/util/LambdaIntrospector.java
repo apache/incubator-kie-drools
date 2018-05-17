@@ -32,6 +32,8 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
+import static org.mvel2.asm.Opcodes.*;
+
 public class LambdaIntrospector implements LambdaPrinter {
 
     private static final int CACHE_SIZE = 32;
@@ -147,6 +149,57 @@ public class LambdaIntrospector implements LambdaPrinter {
         }
 
         @Override
+        public void visitInsn(int opcode) {
+            switch (opcode) {
+                case ACONST_NULL:
+                    sb.append("const null\n");
+                    break;
+                case ICONST_M1:
+                    sb.append("const M1\n");
+                    break;
+                case ICONST_0:
+                    sb.append("const 0\n");
+                    break;
+                case ICONST_1:
+                    sb.append("const 1\n");
+                    break;
+                case ICONST_2:
+                    sb.append("const 2\n");
+                    break;
+                case ICONST_3:
+                    sb.append("const 3\n");
+                    break;
+                case ICONST_4:
+                    sb.append("const 4\n");
+                    break;
+                case ICONST_5:
+                    sb.append("const 5\n");
+                    break;
+                case LCONST_0:
+                    sb.append("const 0L\n");
+                    break;
+                case LCONST_1:
+                    sb.append("const 1L\n");
+                    break;
+                case FCONST_0:
+                    sb.append("const 0F\n");
+                    break;
+                case FCONST_1:
+                    sb.append("const 2F\n");
+                    break;
+                case FCONST_2:
+                    sb.append("const 2F\n");
+                    break;
+                case DCONST_0:
+                    sb.append("const 0D\n");
+                    break;
+                case DCONST_1:
+                    sb.append("const 1D\n");
+                    break;
+            }
+        }
+
+        @Override
         public void visitLdcInsn(Object cst) {
             sb.append("const ").append(cst).append("\n");
         }
@@ -191,7 +244,7 @@ public class LambdaIntrospector implements LambdaPrinter {
     private static String decodeASMcode(int opcode) {
         switch (opcode) {
             case Opcodes.NOP: return "NOP";
-            case Opcodes.ACONST_NULL: return "ACONST_NULL";
+            case ACONST_NULL: return "ACONST_NULL";
             case Opcodes.ICONST_M1: return "ICONST_M1";
             case Opcodes.ICONST_0: return "ICONST_0";
             case Opcodes.ICONST_1: return "ICONST_1";
