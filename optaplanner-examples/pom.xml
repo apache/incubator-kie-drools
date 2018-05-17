@@ -176,6 +176,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>javax.json</groupId>-->
+      <!--<artifactId>javax.json-api</artifactId>-->
+    <!--</dependency>-->
   </dependencies>
 
 </project>

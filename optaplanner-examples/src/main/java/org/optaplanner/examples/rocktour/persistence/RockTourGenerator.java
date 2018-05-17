@@ -22,7 +22,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Random;
 import java.util.TreeSet;
@@ -95,9 +97,11 @@ public class RockTourGenerator extends LoggingMain {
         }
         List<RockShow> showList = new ArrayList<>(locationDataArray.length);
         long showId = 0L;
+        List<RockLocation> locationList = new ArrayList<>(locationDataArray.length);
         for (int i = 0; i < locationDataArray.length; i++) {
             LocationDataGenerator.LocationData locationData = locationDataArray[i];
             RockLocation location = new RockLocation(locationData.getName(), locationData.getLatitude(), locationData.getLongitude());
+            locationList.add(location);
             if (i == 0) {
                 RockBus bus = new RockBus();
                 bus.setId((long) i);
@@ -127,6 +131,16 @@ public class RockTourGenerator extends LoggingMain {
                 show.setAvailableDateSet(availableDaySet);
                 showList.add(show);
             }
+        }
+        for (int i = 0; i < locationList.size(); i++) {
+            RockLocation fromLocation = locationList.get(i);
+            Map<RockLocation, Long> drivingSecondsMap = new LinkedHashMap<>(locationList.size());
+            for (int j = 0; j < locationList.size(); j++) {
+                RockLocation toLocation = locationList.get(j);
+                long divingSeconds = fromLocation == toLocation ? 0L : random.nextInt(1000); // TODO not random
+                drivingSecondsMap.put(toLocation, divingSeconds);
+            }
+            fromLocation.setDrivingSecondsMap(drivingSecondsMap);
         }
         solution.setShowList(showList);
     }

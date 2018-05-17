@@ -126,6 +126,10 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
                     + (currentRowNumber + 1) + CellReference.convertNumToColString(currentColumnNumber) + ")";
         }
 
+        protected boolean hasSheet(String sheetName) {
+            return workbook.getSheet(sheetName) != null;
+        }
+
         protected void nextSheet(String sheetName) {
             currentSheet = workbook.getSheet(sheetName);
             if (currentSheet == null) {

@@ -26,11 +26,16 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -71,6 +76,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             readConfiguration();
             readBus();
             readShowList();
+            readDrivingTime();
             return solution;
         }
 
@@ -210,6 +216,70 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             solution.setShowList(showList);
         }
 
+        private void readDrivingTime() {
+            Map<Pair<Double, Double>, List<RockLocation>> latLongToLocationMap = Stream.concat(
+                    Stream.of(solution.getBus().getStartLocation(), solution.getBus().getEndLocation()),
+                    solution.getShowList().stream().map(RockShow::getLocation))
+                    .distinct()
+                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude).thenComparing(RockLocation::getCityName))
+                    .collect(groupingBy(location -> Pair.of(location.getLatitude(), location.getLongitude()),
+                            LinkedHashMap::new, toList()));
+            if (!hasSheet("Driving time")) {
+                latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
+                    for (RockLocation fromLocation : fromLocationList) {
+                        fromLocation.setDrivingSecondsMap(new LinkedHashMap<>(fromLocationList.size()));
+                    }
+                    latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
+                        long drivingTime = 0L;
+                        for (RockLocation fromLocation : fromLocationList) {
+                            for (RockLocation toLocation : toLocationList) {
+                                // TODO use haversine air distance and convert to average seconds for truck
+                                drivingTime = fromLocation.getAirDistanceTo(toLocation);
+                                fromLocation.getDrivingSecondsMap().put(toLocation, drivingTime);
+                            }
+                        }
+                    });
+                });
+                return;
+            }
+            nextSheet("Driving time");
+            nextRow();
+            readHeaderCell("Driving time in seconds. Delete this sheet to generate it from air distances.");
+            nextRow();
+            readHeaderCell("Latitude");
+            readHeaderCell("");
+            for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
+                readHeaderCell(Double.toString(latLong.getLeft()));
+            }
+            nextRow();
+            readHeaderCell("");
+            readHeaderCell("Longitude");
+            for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
+                readHeaderCell(Double.toString(latLong.getRight()));
+            }
+            latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
+                nextRow();
+                readHeaderCell(Double.toString(fromLatLong.getLeft()));
+                readHeaderCell(Double.toString(fromLatLong.getRight()));
+                for (RockLocation fromLocation : fromLocationList) {
+                    fromLocation.setDrivingSecondsMap(new LinkedHashMap<>(fromLocationList.size()));
+                }
+                latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
+                    double drivingTimeDouble = nextNumericCell().getNumericCellValue();
+                    long drivingTime = (long) drivingTimeDouble;
+                    if (drivingTimeDouble != (double) drivingTime) {
+                        throw new IllegalStateException(currentPosition() + ": The driving time (" + drivingTimeDouble
+                                + ") should be an integer number.");
+                    }
+                    for (RockLocation fromLocation : fromLocationList) {
+                        for (RockLocation toLocation : toLocationList) {
+                            fromLocation.getDrivingSecondsMap().put(toLocation, drivingTime);
+                        }
+                    }
+                });
+            });
+        }
+
     }
 
 
@@ -236,6 +306,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             writeConfiguration();
             writeBus();
             writeShowList();
+            writeDrivingTime();
             writeStopsView();
             return workbook;
         }
@@ -346,6 +417,53 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     }
                 }
             }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeDrivingTime() {
+            nextSheet("Driving time", 2, 3, false);
+            nextRow();
+            nextHeaderCell("Driving time in seconds. Delete this sheet to generate it from air distances.");
+            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
+                    currentColumnNumber, currentColumnNumber + 10));
+            Map<Pair<Double, Double>, List<RockLocation>> latLongToLocationMap = Stream.concat(
+                    Stream.of(solution.getBus().getStartLocation(), solution.getBus().getEndLocation()),
+                    solution.getShowList().stream().map(RockShow::getLocation))
+                    .distinct()
+                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude).thenComparing(RockLocation::getCityName))
+                    .collect(groupingBy(location -> Pair.of(location.getLatitude(), location.getLongitude()),
+                            LinkedHashMap::new, toList()));
+            nextRow();
+            nextHeaderCell("Latitude");
+            nextHeaderCell("");
+            for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
+                nextHeaderCell(Double.toString(latLong.getLeft()));
+            }
+            nextRow();
+            nextHeaderCell("");
+            nextHeaderCell("Longitude");
+            for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
+                nextHeaderCell(Double.toString(latLong.getRight()));
+            }
+            latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
+                nextRow();
+                nextHeaderCell(Double.toString(fromLatLong.getLeft()));
+                nextHeaderCell(Double.toString(fromLatLong.getRight()));
+                latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
+                    long drivingTime = fromLocationList.get(0).getDrivingTimeTo(toLocationList.get(0));
+                    for (RockLocation fromLocation : fromLocationList) {
+                        for (RockLocation toLocation : toLocationList) {
+                            if (fromLocation.getDrivingTimeTo(toLocation) != drivingTime) {
+                                throw new IllegalStateException("The driving time (" + drivingTime
+                                        + ") from (" + fromLocationList.get(0) + ") to (" + toLocationList.get(0)
+                                        + ") is not the driving time (" + fromLocation.getDrivingTimeTo(toLocation)
+                                        +  ") from (" + fromLocation + ") to (" + toLocation + ").");
+                            }
+                        }
+                    }
+                    nextCell().setCellValue(drivingTime);
+                });
+            });
             autoSizeColumnsWithHeader();
         }
 

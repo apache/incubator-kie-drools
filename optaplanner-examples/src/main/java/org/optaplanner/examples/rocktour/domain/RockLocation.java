@@ -16,11 +16,16 @@
 
 package org.optaplanner.examples.rocktour.domain;
 
+import java.util.Map;
+
 public class RockLocation {
 
     protected String cityName;
     protected double latitude;
     protected double longitude;
+
+    // Prefer Map over array or List because shows might be added and removed in real-time planning.
+    protected Map<RockLocation, Long> drivingSecondsMap;
 
     public RockLocation() {
     }
@@ -36,18 +41,20 @@ public class RockLocation {
      * @return a positive number, in seconds
      */
     public long getDrivingTimeTo(RockLocation location) {
-        // TODO replace stub method by actual measurements
-        double distance = getAirDistanceDoubleTo(location);
-        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
-        return (long) (distance * 1000.0 + 0.5);
+        if (this == location) {
+            return 0L;
+        }
+        return drivingSecondsMap.get(location);
     }
 
-    public double getAirDistanceDoubleTo(RockLocation location) {
+    public long getAirDistanceTo(RockLocation location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;
         double longitudeDifference = location.longitude - longitude;
-        return Math.sqrt(
+        double distance = Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        return (long) (distance * 1000.0 + 0.5);
     }
 
     @Override
@@ -81,6 +88,14 @@ public class RockLocation {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Map<RockLocation, Long> getDrivingSecondsMap() {
+        return drivingSecondsMap;
+    }
+
+    public void setDrivingSecondsMap(Map<RockLocation, Long> drivingSecondsMap) {
+        this.drivingSecondsMap = drivingSecondsMap;
     }
 
 }
