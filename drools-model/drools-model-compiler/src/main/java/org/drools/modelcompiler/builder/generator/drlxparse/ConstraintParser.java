@@ -50,7 +50,8 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.canCoerceLiteralNumberExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralNumberExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -133,7 +134,7 @@ public class ConstraintParser {
             TypedExpression right = optRight.get();
 
             Expression combo;
-            if ( left.isPrimitive() ) {
+            if ( left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) ) {
                 if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom( right.getType() ) &&
                         !Boolean.class.isAssignableFrom( right.getType() ) && !String.class.isAssignableFrom( right.getType() )) {
                     return new DrlxParseFail( new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()) );
@@ -141,7 +142,7 @@ public class ConstraintParser {
                 if (right.getExpression() instanceof StringLiteralExpr) {
                     right.setExpression( new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) );
                 } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
-                    right.setExpression( coerceLiteralExprToType( (LiteralStringValueExpr) right.getExpression(), left.getType() ) );
+                    right.setExpression(coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType() ) );
                 }
                 combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             } else {
@@ -320,22 +321,29 @@ public class ConstraintParser {
             }
         }
 
-        if (shouldCoerceBToString(left, right)) {
-            if (rightExpression instanceof CharLiteralExpr) {
-                right.setExpression( new StringLiteralExpr( (( CharLiteralExpr ) rightExpression).getValue() ) );
-            } else {
-                right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
-            }
-        }
-
-        if (left.getType() == String.class && right.getType() == Object.class) {
-            right.setExpression( new MethodCallExpr(rightExpression, "toString" ) );
-        }
+        coerceToString(left, right);
+        coerceToString(right, left);
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
         methodCallExpr.addArgument(left.getExpression());
         methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static void coerceToString(TypedExpression left, TypedExpression right) {
+        final Expression rightExpression = right.getExpression();
+        if (shouldCoerceBToString(left, right)) {
+            if (rightExpression instanceof CharLiteralExpr) {
+                right.setExpression( new StringLiteralExpr((( CharLiteralExpr ) rightExpression).getValue() ) );
+            } else if (right.isPrimitive() ){
+                right.setExpression( new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList( rightExpression )) );
+            } else if(right.getType() == Object.class) {
+                right.setExpression( new MethodCallExpr(rightExpression, "toString" ) );
+            } else {
+                right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
+            }
+            right.setType(String.class);
+        }
     }
 
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
