@@ -47,7 +47,7 @@ public class ContainsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
