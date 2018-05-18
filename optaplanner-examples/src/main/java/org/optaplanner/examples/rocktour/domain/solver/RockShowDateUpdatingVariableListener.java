@@ -87,7 +87,7 @@ public class RockShowDateUpdatingVariableListener implements VariableListener<Ro
         long maximumEarlyLateBreakDrivingSeconds = solution.getMaximumEarlyLateBreakDrivingSeconds();
         long maximumNightDrivingSeconds = solution.getMaximumNightDrivingSeconds();
 
-        long drivingSeconds = show.getDistanceFromPreviousStandstill();
+        long drivingSeconds = show.getDrivingTimeFromPreviousStandstill();
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
         LocalDate date = previousStandstill.getDepartureDate();
         while (drivingSeconds >= 0) {

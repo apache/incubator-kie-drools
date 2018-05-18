@@ -197,6 +197,14 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
             }
         }
 
+        protected void readHeaderCell(double value) {
+            XSSFCell cell = currentRow == null ? null : nextNumericCell();
+            if (cell == null || cell.getNumericCellValue() != value) {
+                throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
+                        + value + ").");
+            }
+        }
+
         protected XSSFCell nextStringCell() {
             XSSFCell cell = nextCell();
             if (cell.getCellTypeEnum() == CellType.NUMERIC) {
@@ -362,6 +370,11 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
         }
 
         protected void nextHeaderCell(String value) {
+            nextCell(headerStyle).setCellValue(value);
+            headerCellCount++;
+        }
+
+        protected void nextHeaderCell(double value) {
             nextCell(headerStyle).setCellValue(value);
             headerCellCount++;
         }

@@ -22,10 +22,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -249,18 +251,18 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             readHeaderCell("Latitude");
             readHeaderCell("");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                readHeaderCell(Double.toString(latLong.getLeft()));
+                readHeaderCell(latLong.getLeft());
             }
             nextRow();
             readHeaderCell("");
             readHeaderCell("Longitude");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                readHeaderCell(Double.toString(latLong.getRight()));
+                readHeaderCell(latLong.getRight());
             }
             latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
                 nextRow();
-                readHeaderCell(Double.toString(fromLatLong.getLeft()));
-                readHeaderCell(Double.toString(fromLatLong.getRight()));
+                readHeaderCell(fromLatLong.getLeft());
+                readHeaderCell(fromLatLong.getRight());
                 for (RockLocation fromLocation : fromLocationList) {
                     fromLocation.setDrivingSecondsMap(new LinkedHashMap<>(fromLocationList.size()));
                 }
@@ -437,18 +439,18 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             nextHeaderCell("Latitude");
             nextHeaderCell("");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                nextHeaderCell(Double.toString(latLong.getLeft()));
+                nextHeaderCell(latLong.getLeft());
             }
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("Longitude");
             for (Pair<Double, Double> latLong : latLongToLocationMap.keySet()) {
-                nextHeaderCell(Double.toString(latLong.getRight()));
+                nextHeaderCell(latLong.getRight());
             }
             latLongToLocationMap.forEach((fromLatLong, fromLocationList) -> {
                 nextRow();
-                nextHeaderCell(Double.toString(fromLatLong.getLeft()));
-                nextHeaderCell(Double.toString(fromLatLong.getRight()));
+                nextHeaderCell(fromLatLong.getLeft());
+                nextHeaderCell(fromLatLong.getRight());
                 latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
                     long drivingTime = fromLocationList.get(0).getDrivingTimeTo(toLocationList.get(0));
                     for (RockLocation fromLocation : fromLocationList) {
@@ -468,26 +470,68 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
         }
 
         private void writeStopsView() {
-            nextSheet("Stops", 1, 1, true);
+            nextSheet("Stops", 2, 1, true);
             nextRow();
             nextHeaderCell("Date");
-            nextHeaderCell("Venue names");
-            nextHeaderCell("City names");
+            nextHeaderCell("Venue name");
+            nextHeaderCell("City name");
+            nextHeaderCell("Driving time");
+            nextHeaderCell("Latitude");
+            nextHeaderCell("Longitude");
+            nextHeaderCell("Duration (in days)");
+            nextHeaderCell("Revenue opportunity");
+            nextHeaderCell("Required");
+            nextHeaderCell("Available dates size");
             LocalDate startDate = solution.getBus().getStartDate();
             LocalDate endDate = solution.getBus().getEndDate();
+            Map<LocalDate, List<RockShow>> dateToShowListMap = solution.getShowList().stream()
+                    .filter(show -> show.getDate() != null)
+                    .collect(groupingBy(RockShow::getDate));
             for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
+                List<RockShow> showList = dateToShowListMap.computeIfAbsent(date, k -> Collections.emptyList());
+                showList.sort(Comparator.comparing(RockShow::getTimeOfDay).thenComparing(RockShow::getVenueName));
                 nextRow();
-                nextHeaderCell(DAY_FORMATTER.format(date));
-                final LocalDate finalDate = date;
-                List<RockShow> dateShowList = solution.getShowList().stream().filter(show -> finalDate.equals(show.getDate())).collect(toList());
-                nextCell().setCellValue(dateShowList.stream().map(RockShow::getVenueName).collect(joining(", ")));
-                nextCell().setCellValue(dateShowList.stream().map(show -> show.getLocation().getCityName()).collect(joining(", ")));
+                if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                    nextCell(unavailableStyle).setCellValue(DAY_FORMATTER.format(date));
+                } else {
+                    nextHeaderCell(DAY_FORMATTER.format(date));
+                }
+                boolean first = true;
+                for (RockShow show : showList) {
+                    if (!first) {
+                        nextRow();
+                        nextCell();
+                    }
+                    nextCell().setCellValue(show.getVenueName());
+                    nextCell().setCellValue(show.getLocation().getCityName());
+                    long drivingTime = show.getDrivingTimeFromPreviousStandstill();
+                    nextCell().setCellValue((drivingTime / 3600L) + " hours " + (drivingTime % 3600 / 60) + " minutes");
+                    nextCell().setCellValue(show.getLocation().getLatitude());
+                    nextCell().setCellValue(show.getLocation().getLongitude());
+                    nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
+                    nextCell().setCellValue(show.getRevenueOpportunity());
+                    nextCell().setCellValue(show.isRequired());
+                    nextCell().setCellValue(show.getAvailableDateSet().size());
+                    first = false;
+                }
             }
             nextRow();
-            nextHeaderCell("Unassigned");
-            List<RockShow> unassignedShowList = solution.getShowList().stream().filter(show -> show.getDate() == null).collect(toList());
-            nextCell().setCellValue(unassignedShowList.stream().map(RockShow::getVenueName).collect(joining(", ")));
-            nextCell().setCellValue(unassignedShowList.stream().map(show -> show.getLocation().getCityName()).collect(joining(", ")));
+            for (RockShow show : solution.getShowList().stream()
+                    .filter(show -> show.getDate() == null)
+                    .sorted(Comparator.comparing(RockShow::getVenueName))
+                    .collect(toList())) {
+                nextRow();
+                nextHeaderCell("Unassigned");
+                nextCell().setCellValue(show.getVenueName());
+                nextCell().setCellValue(show.getLocation().getCityName());
+                nextCell().setCellValue("0");
+                nextCell().setCellValue(show.getLocation().getLatitude());
+                nextCell().setCellValue(show.getLocation().getLongitude());
+                nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
+                nextCell().setCellValue(show.getRevenueOpportunity());
+                nextCell().setCellValue(show.isRequired());
+                nextCell().setCellValue(show.getAvailableDateSet().size());
+            }
             autoSizeColumnsWithHeader();
         }
 

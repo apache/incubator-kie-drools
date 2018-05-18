@@ -50,14 +50,14 @@ end
 
 rule "Distance from previous standstill"
     when
-        RockShow(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
+        RockShow(previousStandstill != null, $distanceFromPreviousStandstill : drivingTimeFromPreviousStandstill)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
 end
 
 rule "Distance to bus arrival location"
     when
-        RockShow(nextShow == null, bus != null, $distanceToBusArrivalLocation : distanceToBusArrivalLocation)
+        RockShow(nextShow == null, bus != null, $distanceToBusArrivalLocation : drivingTimeToBusArrivalLocation)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToBusArrivalLocation);
 end

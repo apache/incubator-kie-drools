@@ -83,11 +83,11 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
         return location;
     }
 
-    public long getDistanceFromPreviousStandstill() {
+    public long getDrivingTimeFromPreviousStandstill() {
         return previousStandstill.getDepartureLocation().getDrivingTimeTo(location);
     }
 
-    public long getDistanceToBusArrivalLocation() {
+    public long getDrivingTimeToBusArrivalLocation() {
         return location.getDrivingTimeTo(bus.getArrivalLocation());
     }
 
