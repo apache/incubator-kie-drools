@@ -94,7 +94,7 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
 
         public abstract Solution_ read();
 
-        protected void readConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
+        protected void readIntConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
             nextRow();
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -110,6 +110,33 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
                             + ") for constraint (" + name + ") must be an integer.");
                 }
                 consumer.accept((int) value);
+            } else {
+                if (weightCell.getCellTypeEnum() == CellType.NUMERIC
+                        || !weightCell.getStringCellValue().equals("n/a")) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value ("
+                            + weightCell.getStringCellValue()
+                            + ") for constraint (" + name + ") must be an n/a.");
+                }
+            }
+            readHeaderCell(constraintdescription);
+        }
+
+        protected void readLongConstraintLine(String name, Consumer<Long> consumer, String constraintdescription) {
+            nextRow();
+            readHeaderCell(name);
+            XSSFCell weightCell = nextCell();
+            if (consumer != null) {
+                if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value ("
+                            + weightCell.getStringCellValue()
+                            + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
+                }
+                double value = weightCell.getNumericCellValue();
+                if (((double) ((long) value)) != value) {
+                    throw new IllegalArgumentException(currentPosition() + ": The value (" + value
+                            + ") for constraint (" + name + ") must be a (long) integer.");
+                }
+                consumer.accept((long) value);
             } else {
                 if (weightCell.getCellTypeEnum() == CellType.NUMERIC
                         || !weightCell.getStringCellValue().equals("n/a")) {
@@ -340,7 +367,7 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
             return style;
         }
 
-        protected void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintdescription) {
+        protected void writeIntConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {
             nextRow();
             nextHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -349,7 +376,19 @@ public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionF
             } else {
                 weightCell.setCellValue("n/a");
             }
-            nextHeaderCell(constraintdescription);
+            nextHeaderCell(constraintDescription);
+        }
+
+        protected void writeLongConstraintLine(String name, Supplier<Long> supplier, String constraintDescription) {
+            nextRow();
+            nextHeaderCell(name);
+            XSSFCell weightCell = nextCell();
+            if (supplier != null) {
+                weightCell.setCellValue(supplier.get());
+            } else {
+                weightCell.setCellValue("n/a");
+            }
+            nextHeaderCell(constraintDescription);
         }
 
         protected void nextSheet(String sheetName, int colSplit, int rowSplit, boolean view) {

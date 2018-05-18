@@ -20,9 +20,21 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class RockTourParametrization extends AbstractPersistable {
 
-    public static final String REVENUE_OPPORTUNITY = "Revenue opportunity";
+    public static final String EARLY_LATE_BREAK_DRIVING_SECONDS = "Early late break driving seconds budget";
+    public static final String NIGHT_DRIVING_SECONDS = "Night driving seconds budget";
 
-    private int revenueOpportunity = 1;
+    public static final String MISSED_SHOW_PENALTY = "Minimize missed shows";
+    public static final String REVENUE_OPPORTUNITY = "Maximize revenue opportunity";
+    public static final String DRIVING_TIME_COST_PER_SECOND = "Minimize driving time cost";
+    public static final String DELAY_COST_PER_DAY = "Visit sooner than later";
+
+    private long earlyLateBreakDrivingSecondsBudget = 1L * 60L * 60L;
+    private long nightDrivingSecondsBudget = 8L * 60L * 60L;
+
+    private long missedShowPenalty = 0;
+    private long revenueOpportunity = 1;
+    private long drivingTimeCostPerSecond = 1;
+    private long delayCostPerDay = 10 * 60;
 
     public RockTourParametrization() {
     }
@@ -35,12 +47,52 @@ public class RockTourParametrization extends AbstractPersistable {
     // Simple getters and setters
     // ************************************************************************
 
-    public int getRevenueOpportunity() {
+    public long getMissedShowPenalty() {
+        return missedShowPenalty;
+    }
+
+    public void setMissedShowPenalty(long missedShowPenalty) {
+        this.missedShowPenalty = missedShowPenalty;
+    }
+
+    public long getEarlyLateBreakDrivingSecondsBudget() {
+        return earlyLateBreakDrivingSecondsBudget;
+    }
+
+    public void setEarlyLateBreakDrivingSecondsBudget(long earlyLateBreakDrivingSecondsBudget) {
+        this.earlyLateBreakDrivingSecondsBudget = earlyLateBreakDrivingSecondsBudget;
+    }
+
+    public long getNightDrivingSecondsBudget() {
+        return nightDrivingSecondsBudget;
+    }
+
+    public void setNightDrivingSecondsBudget(long nightDrivingSecondsBudget) {
+        this.nightDrivingSecondsBudget = nightDrivingSecondsBudget;
+    }
+
+    public long getRevenueOpportunity() {
         return revenueOpportunity;
     }
 
-    public void setRevenueOpportunity(int revenueOpportunity) {
+    public void setRevenueOpportunity(long revenueOpportunity) {
         this.revenueOpportunity = revenueOpportunity;
+    }
+
+    public long getDrivingTimeCostPerSecond() {
+        return drivingTimeCostPerSecond;
+    }
+
+    public void setDrivingTimeCostPerSecond(long drivingTimeCostPerSecond) {
+        this.drivingTimeCostPerSecond = drivingTimeCostPerSecond;
+    }
+
+    public long getDelayCostPerDay() {
+        return delayCostPerDay;
+    }
+
+    public void setDelayCostPerDay(long delayCostPerDay) {
+        this.delayCostPerDay = delayCostPerDay;
     }
 
 }

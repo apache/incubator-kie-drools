@@ -24,15 +24,13 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
 public class RockTourSolution extends AbstractPersistable {
 
     private String tourName;
-    private long maximumEarlyLateBreakDrivingSeconds = 1L * 60L * 60L;
-    private long maximumNightDrivingSeconds = 8L * 60L * 60L;
 
     @ProblemFactProperty
     private RockTourParametrization parametrization;
@@ -45,7 +43,7 @@ public class RockTourSolution extends AbstractPersistable {
     private List<RockShow> showList;
 
     @PlanningScore
-    private HardSoftLongScore score = null;
+    private HardMediumSoftLongScore score = null;
 
     public RockTourSolution() {
     }
@@ -69,22 +67,6 @@ public class RockTourSolution extends AbstractPersistable {
 
     public void setTourName(String tourName) {
         this.tourName = tourName;
-    }
-
-    public long getMaximumEarlyLateBreakDrivingSeconds() {
-        return maximumEarlyLateBreakDrivingSeconds;
-    }
-
-    public void setMaximumEarlyLateBreakDrivingSeconds(long maximumEarlyLateBreakDrivingSeconds) {
-        this.maximumEarlyLateBreakDrivingSeconds = maximumEarlyLateBreakDrivingSeconds;
-    }
-
-    public long getMaximumNightDrivingSeconds() {
-        return maximumNightDrivingSeconds;
-    }
-
-    public void setMaximumNightDrivingSeconds(long maximumNightDrivingSeconds) {
-        this.maximumNightDrivingSeconds = maximumNightDrivingSeconds;
     }
 
     public RockTourParametrization getParametrization() {
@@ -111,11 +93,11 @@ public class RockTourSolution extends AbstractPersistable {
         this.showList = showList;
     }
 
-    public HardSoftLongScore getScore() {
+    public HardMediumSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftLongScore score) {
+    public void setScore(HardMediumSoftLongScore score) {
         this.score = score;
     }
 

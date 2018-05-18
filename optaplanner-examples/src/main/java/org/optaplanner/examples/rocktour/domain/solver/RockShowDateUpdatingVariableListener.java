@@ -84,18 +84,18 @@ public class RockShowDateUpdatingVariableListener implements VariableListener<Ro
         if (show == null || previousStandstill == null || previousStandstill.getDepartureDate() == null) {
             return Pair.of(null, null);
         }
-        long maximumEarlyLateBreakDrivingSeconds = solution.getMaximumEarlyLateBreakDrivingSeconds();
-        long maximumNightDrivingSeconds = solution.getMaximumNightDrivingSeconds();
+        long earlyLateBreakDrivingSecondsBudget = solution.getParametrization().getEarlyLateBreakDrivingSecondsBudget();
+        long nightDrivingSecondsBudget = solution.getParametrization().getNightDrivingSecondsBudget();
 
         long drivingSeconds = show.getDrivingTimeFromPreviousStandstill();
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
         LocalDate date = previousStandstill.getDepartureDate();
         while (drivingSeconds >= 0) {
             if (timeOfDay == RockTimeOfDay.EARLY) {
-                drivingSeconds -= maximumEarlyLateBreakDrivingSeconds;
+                drivingSeconds -= earlyLateBreakDrivingSecondsBudget;
                 timeOfDay = RockTimeOfDay.LATE;
             } else {
-                drivingSeconds -= maximumNightDrivingSeconds;
+                drivingSeconds -= nightDrivingSecondsBudget;
                 date = date.plusDays(1);
                 timeOfDay = RockTimeOfDay.EARLY;
             }

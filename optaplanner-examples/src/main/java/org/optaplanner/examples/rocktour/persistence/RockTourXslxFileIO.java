@@ -91,14 +91,24 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 throw new IllegalStateException(currentPosition() + ": The tour name (" + solution.getTourName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
+            RockTourParametrization parametrization = new RockTourParametrization();
+            readLongConstraintLine(EARLY_LATE_BREAK_DRIVING_SECONDS, parametrization::setEarlyLateBreakDrivingSecondsBudget,
+                    "Maximum driving time in seconds between 2 shows on the same day.");
+            readLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::setNightDrivingSecondsBudget,
+                    "Maximum driving time in seconds per night between 2 shows.");
             nextRow(true);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
             readHeaderCell("Description");
-            RockTourParametrization parametrization = new RockTourParametrization();
             parametrization.setId(0L);
-            readConstraintLine(REVENUE_OPPORTUNITY, parametrization::setRevenueOpportunity,
-                    "Soft reward per revenue opportunity");
+            readLongConstraintLine(MISSED_SHOW_PENALTY, parametrization::setMissedShowPenalty,
+                    "Set this to 1 to prioritize visiting all shows (over the other constraints).");
+            readLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::setRevenueOpportunity,
+                    "Reward per revenue opportunity.");
+            readLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::setRevenueOpportunity,
+                    "Driving time cost per second.");
+            readLongConstraintLine(DELAY_COST_PER_DAY, parametrization::setRevenueOpportunity,
+                    "Cost per day for each day that a visit is later in the schedule.");
             solution.setParametrization(parametrization);
         }
 
@@ -314,20 +324,28 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 3, false);
+            nextSheet("Configuration", 1, 5, false);
             nextRow();
             nextHeaderCell("Tour name");
             nextCell().setCellValue(solution.getTourName());
+            RockTourParametrization parametrization = solution.getParametrization();
+            writeLongConstraintLine(EARLY_LATE_BREAK_DRIVING_SECONDS, parametrization::getEarlyLateBreakDrivingSecondsBudget,
+                    "Maximum driving time in seconds between 2 shows on the same day.");
+            writeLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::getNightDrivingSecondsBudget,
+                    "Maximum driving time in seconds per night between 2 shows.");
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");
             nextHeaderCell("Weight");
             nextHeaderCell("Description");
-            RockTourParametrization parametrization = solution.getParametrization();
-
-            writeConstraintLine(REVENUE_OPPORTUNITY, parametrization::getRevenueOpportunity,
-                    "Soft reward per revenue opportunity");
-            nextRow();
+            writeLongConstraintLine(MISSED_SHOW_PENALTY, parametrization::getMissedShowPenalty,
+                    "Set this to 1 to prioritize visiting all shows (over the other constraints).");
+            writeLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::getRevenueOpportunity,
+                    "Reward per revenue opportunity.");
+            writeLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::getRevenueOpportunity,
+                    "Driving time cost per second.");
+            writeLongConstraintLine(DELAY_COST_PER_DAY, parametrization::getRevenueOpportunity,
+                    "Cost per day for each day that a visit is later in the schedule.");
             autoSizeColumnsWithHeader();
         }
 
