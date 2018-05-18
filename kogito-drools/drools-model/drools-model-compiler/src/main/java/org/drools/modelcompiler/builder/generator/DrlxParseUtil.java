@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -201,7 +202,12 @@ public class DrlxParseUtil {
         throw new RuntimeException("Unknown expression type: " + expr);
     }
 
-    public static Expression coerceLiteralExprToType( LiteralStringValueExpr expr, Class<?> type ) {
+    public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
+        final List<? extends Class<?>> classes = Arrays.asList(int.class, long.class, double.class);
+        return classes.contains(type);
+    }
+
+    public static Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type ) {
         if (type == int.class) {
             return new IntegerLiteralExpr( expr.getValue() );
         }
