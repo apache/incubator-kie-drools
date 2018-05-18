@@ -453,8 +453,12 @@ public class DrlxParseUtil {
         return JavaParser.parseType(declClass.getCanonicalName());
     }
 
-    public static ClassOrInterfaceType toClassOrInterfaceTypeType(Class<?> declClass) {
-        return JavaParser.parseClassOrInterfaceType(declClass.getCanonicalName());
+    public static ClassOrInterfaceType toClassOrInterfaceType( Class<?> declClass ) {
+        return toClassOrInterfaceType(declClass.getCanonicalName());
+    }
+
+    public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
+        return JavaParser.parseClassOrInterfaceType(className);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {

@@ -27,6 +27,7 @@ import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -63,9 +64,14 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
             // remove all ObjectTypeNodes for the modified classes
             for (Class<?> cls : ctx.modifiedClasses ) {
                 clearInstancesOfModifiedClass( cls );
-                InternalKnowledgePackage kpkg = ctx.kBase.getPackage( cls.getPackage().getName() );
-                kpkg.removeTypeDeclaration( cls.getSimpleName() );
-                kpkg.addTypeDeclaration( (( InternalKnowledgePackage ) newPkgs.getKiePackage( cls.getPackage().getName() )).getTypeDeclaration( cls.getSimpleName() ) );
+            }
+
+            for (InternalKnowledgePackage kpkg : ctx.kBase.getPackagesMap().values()) {
+                List<TypeDeclaration> types = new ArrayList<>( kpkg.getTypeDeclarations().values() );
+                for (TypeDeclaration type : types) {
+                    kpkg.removeTypeDeclaration( type.getTypeName() );
+                    kpkg.addTypeDeclaration( (( InternalKnowledgePackage ) newPkgs.getKiePackage( kpkg.getName() )).getTypeDeclaration( type.getTypeName() ) );
+                }
             }
 
             rulesToBeRemoved = getAllRulesInKieBase( oldKM, ctx.currentKieBaseModel );
@@ -152,6 +158,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );
+
+        for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
+            wm.notifyWaitOnRest();
+        }
     }
 
     private List<RuleImpl> getAllRulesInKieBase( CanonicalKieModule kieModule, KieBaseModelImpl model ) {

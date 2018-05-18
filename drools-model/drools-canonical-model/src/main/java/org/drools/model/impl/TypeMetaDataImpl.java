@@ -50,6 +50,11 @@ public class TypeMetaDataImpl implements TypeMetaData, ModelComponent {
     }
 
     @Override
+    public Class<?> getType() {
+        return type;
+    }
+
+    @Override
     public Map<String, AnnotationValue[]> getAnnotations() {
         return annotations;
     }

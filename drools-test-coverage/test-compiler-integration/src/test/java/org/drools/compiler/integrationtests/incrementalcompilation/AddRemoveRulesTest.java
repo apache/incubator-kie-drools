@@ -71,7 +71,7 @@ public class AddRemoveRulesTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     private InternalKnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();

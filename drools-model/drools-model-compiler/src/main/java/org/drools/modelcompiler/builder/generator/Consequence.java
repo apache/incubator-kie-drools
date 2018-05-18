@@ -15,6 +15,7 @@ import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -26,7 +27,6 @@ import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.EmptyStmt;
 import org.drools.javaparser.ast.stmt.Statement;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -43,15 +43,13 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllCh
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTESCRIPT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 
 public class Consequence {
-
-    private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType(BitMask.class.getCanonicalName());
-    private static final ClassOrInterfaceType RULE_CONTEXT_TYPE = JavaParser.parseClassOrInterfaceType(org.kie.api.runtime.rule.RuleContext.class.getCanonicalName());
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
@@ -87,7 +85,7 @@ public class Consequence {
             ruleConsequence.findAll(Expression.class)
                     .stream()
                     .filter(s -> isNameExprWithName(s, "kcontext"))
-                    .forEach(n -> n.replace(new CastExpr( RULE_CONTEXT_TYPE, new NameExpr("drools") )));
+                    .forEach(n -> n.replace(new CastExpr( toClassOrInterfaceType(org.kie.api.runtime.rule.RuleContext.class), new NameExpr("drools") )));
         }
 
         Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
@@ -193,16 +191,13 @@ public class Consequence {
         sb.append(consequence.substring(lastCopiedEnd, modifyPos));
         lastCopiedEnd = modifyPos + 1;
 
-        for (; modifyPos >= 0; modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify", modifyPos + 6)) {
+        for (; modifyPos >= 0; modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify", modifyPos+6)) {
             int declStart = consequence.indexOf('(', modifyPos + 6);
-            int declEnd = consequence.indexOf(')', declStart + 1);
+            int declEnd = declStart > 0 && consequence.indexOf(')', declStart + 1) >= 0 ? StringUtils.findEndOfMethodArgsIndex(consequence, declStart) : -1;
             if (declEnd < 0) {
                 continue;
             }
             String decl = consequence.substring(declStart + 1, declEnd).trim();
-            if (!context.getDeclarationById(decl).isPresent()) {
-                continue;
-            }
             int blockStart = consequence.indexOf('{', declEnd + 1);
             int blockEnd = consequence.indexOf('}', blockStart + 1);
             if (blockEnd < 0) {
@@ -213,12 +208,15 @@ public class Consequence {
                 sb.append(consequence.substring(lastCopiedEnd, modifyPos));
             }
 
-            NameExpr declAsNameExpr = new NameExpr(decl);
+            Expression declAsExpr = JavaParser.parseExpression( decl );
+            if (decl.indexOf( '(' ) >= 0) {
+                declAsExpr = new EnclosedExpr( declAsExpr );
+            }
             String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
             BlockStmt modifyBlock = JavaParser.parseBlock("{" + originalBlock + ";}");
             List<MethodCallExpr> originalMethodCalls = modifyBlock.findAll(MethodCallExpr.class);
             for (MethodCallExpr mc : originalMethodCalls) {
-                Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsNameExpr, mc);
+                Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
                 modifyBlock.replace(mc, mcWithScope);
             }
             for (Statement n : modifyBlock.getStatements()) {
@@ -229,6 +227,7 @@ public class Consequence {
 
             sb.append("update(").append(decl).append(");\n");
             lastCopiedEnd = blockEnd + 1;
+            modifyPos = lastCopiedEnd - 6;
         }
 
         if (lastCopiedEnd < consequence.length()) {
@@ -273,13 +272,13 @@ public class Consequence {
                 MethodCallExpr bitMaskCreation;
                 if (modifiedProps != null) {
                     bitMaskCreation = new MethodCallExpr( new NameExpr( BitMask.class.getCanonicalName() ), "getPatternMask" );
-                    bitMaskCreation.addArgument( new ClassExpr( JavaParser.parseClassOrInterfaceType( updatedClass.getCanonicalName() ) ) );
+                    bitMaskCreation.addArgument( new ClassExpr( toClassOrInterfaceType( updatedClass ) ) );
                     modifiedProps.forEach( s -> bitMaskCreation.addArgument( new StringLiteralExpr( s ) ) );
                 } else {
                     bitMaskCreation = new MethodCallExpr( new NameExpr( AllSetButLastBitMask.class.getCanonicalName() ), "get" );
                 }
 
-                VariableDeclarationExpr bitMaskVar = new VariableDeclarationExpr(BITMASK_TYPE, "mask_" + updatedVar, Modifier.FINAL);
+                VariableDeclarationExpr bitMaskVar = new VariableDeclarationExpr(toClassOrInterfaceType(BitMask.class), "mask_" + updatedVar, Modifier.FINAL);
                 AssignExpr bitMaskAssign = new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
                 ruleBlock.addStatement(bitMaskAssign);
 

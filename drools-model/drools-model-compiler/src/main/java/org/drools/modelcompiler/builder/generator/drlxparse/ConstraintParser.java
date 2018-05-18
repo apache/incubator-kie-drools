@@ -53,7 +53,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceTypeType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
@@ -328,10 +328,6 @@ public class ConstraintParser {
             }
         }
 
-        if ((shouldCoerceBToString(right, left))) {
-            left.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
-        }
-
         if (left.getType() == String.class && right.getType() == Object.class) {
             right.setExpression( new MethodCallExpr(rightExpression, "toString" ) );
         }
@@ -396,7 +392,7 @@ public class ConstraintParser {
     private static Expression convertExpressionToBigDecimal(TypedExpression left) {
         final Expression ret;
         if(left.getType() == BigInteger.class) {
-            ret = new ObjectCreationExpr(null, toClassOrInterfaceTypeType(BigDecimal.class),
+            ret = new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
                                                             NodeList.nodeList(left.getExpression()));
         }
         else if(left.getType() != BigDecimal.class) {

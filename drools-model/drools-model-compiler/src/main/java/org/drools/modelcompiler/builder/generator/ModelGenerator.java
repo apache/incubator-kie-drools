@@ -39,7 +39,6 @@ import org.drools.core.rule.Behavior;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.MVELSafeHelper;
-import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
@@ -64,15 +63,23 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.*;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ATTRIBUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.DECLARATION_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.METADATA_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.RULE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
-
-    private static final ClassOrInterfaceType RULE_TYPE = JavaParser.parseClassOrInterfaceType( Rule.class.getCanonicalName() );
 
     private static final Map<String, Expression> attributesMap = new HashMap<>();
 
@@ -145,11 +152,11 @@ public class ModelGenerator {
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
-        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), RULE_TYPE, ruleMethodName);
+        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), toClassOrInterfaceType( Rule.class ), ruleMethodName);
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
-        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(RULE_TYPE, "rule");
+        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(toClassOrInterfaceType( Rule.class ), "rule");
 
         MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
         if (!ruleDescr.getNamespace().isEmpty()) {
@@ -339,7 +346,7 @@ public class ModelGenerator {
     private static void addUnitData(String unitVar, Class<?> type, BlockStmt ruleBlock) {
         Type declType = classToReferenceType( type );
 
-        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(UnitData.class.getCanonicalName());
+        ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(unitVar), Modifier.FINAL);
 
@@ -367,7 +374,7 @@ public class ModelGenerator {
         }
         Type declType = classToReferenceType( decl.getDeclarationClass() );
 
-        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
+        ClassOrInterfaceType varType = toClassOrInterfaceType(Variable.class);
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
 

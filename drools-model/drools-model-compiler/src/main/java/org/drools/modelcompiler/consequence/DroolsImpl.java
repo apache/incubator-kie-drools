@@ -100,13 +100,18 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
                 calculatePositiveMask(modifiedClass, asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
                 org.drools.core.util.bitmask.AllSetBitMask.get();
 
-        knowledgeHelper.update( fhLookup.get(object), mask, modifiedClass);
+        knowledgeHelper.update( getFactHandleForObject( object ), mask, modifiedClass);
+    }
+
+    private InternalFactHandle getFactHandleForObject( Object object ) {
+        InternalFactHandle fh = fhLookup.get(object);
+        return fh != null ? fh : (InternalFactHandle) workingMemory.getFactHandle( object );
     }
 
     @Override
     public void update(Object object, BitMask modifiedProperties ) {
         Class<?> modifiedClass = modifiedProperties.getPatternClass();
-        knowledgeHelper.update( fhLookup.get(object), adaptBitMask(modifiedProperties), modifiedClass);
+        knowledgeHelper.update( getFactHandleForObject( object ), adaptBitMask(modifiedProperties), modifiedClass);
     }
 
     public void update(FactHandle handle, Object newObject) {
@@ -115,7 +120,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void delete(Object object) {
-        workingMemory.delete( fhLookup.get(object) );
+        workingMemory.delete( getFactHandleForObject( object ) );
     }
 
     void registerFactHandle(InternalFactHandle fh) {
