@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class IncludesPredicate extends AbstractTemporalPredicate {
+public class IncludesPredicate extends AbstractTemporalPredicate<IncludesPredicate> {
 
     private final long startMinDev, startMaxDev;
     private final long endMinDev, endMaxDev;
@@ -59,5 +59,11 @@ public class IncludesPredicate extends AbstractTemporalPredicate {
         long distStart = start2 - start1;
         long distEnd = end1 - end2;
         return negated ^ (distStart >= this.startMinDev && distStart <= this.startMaxDev && distEnd >= this.endMinDev && distEnd <= this.endMaxDev);
+    }
+
+    @Override
+    protected boolean isTemporalPredicateEqualTo( IncludesPredicate other ) {
+        return startMinDev == other.startMinDev && startMaxDev == other.startMaxDev &&
+                endMinDev == other.endMinDev && endMaxDev == other.endMaxDev;
     }
 }

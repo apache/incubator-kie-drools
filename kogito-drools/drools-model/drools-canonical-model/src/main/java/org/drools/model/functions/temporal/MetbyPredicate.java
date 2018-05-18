@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class MetbyPredicate extends AbstractTemporalPredicate {
+public class MetbyPredicate extends AbstractTemporalPredicate<MetbyPredicate> {
 
     private final long finalRange;
 
@@ -50,5 +50,10 @@ public class MetbyPredicate extends AbstractTemporalPredicate {
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long dist = Math.abs( start1 - end2 );
         return negated ^ ( dist <= this.finalRange );
+    }
+
+    @Override
+    protected boolean isTemporalPredicateEqualTo( MetbyPredicate other ) {
+        return finalRange == other.finalRange;
     }
 }

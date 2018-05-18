@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class AfterPredicate extends AbstractTemporalPredicate {
+public class AfterPredicate extends AbstractTemporalPredicate<AfterPredicate> {
 
     private final long initRange;
     private final long finalRange;
 
     public AfterPredicate() {
-        this( 0, Long.MAX_VALUE );
+        this( 1, Long.MAX_VALUE );
     }
 
     public AfterPredicate(long dev, TimeUnit devUnit) {
@@ -73,5 +73,10 @@ public class AfterPredicate extends AbstractTemporalPredicate {
             }
         }
         return new Interval( init, end );
+    }
+
+    @Override
+    protected boolean isTemporalPredicateEqualTo( AfterPredicate other ) {
+        return initRange == other.initRange && finalRange == other.finalRange;
     }
 }

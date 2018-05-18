@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class OverlapsPredicate extends AbstractTemporalPredicate {
+public class OverlapsPredicate extends AbstractTemporalPredicate<OverlapsPredicate> {
 
     private final long minDev;
     private final long maxDev;
@@ -56,5 +56,10 @@ public class OverlapsPredicate extends AbstractTemporalPredicate {
     public boolean evaluate(long start1, long duration1, long end1, long start2, long duration2, long end2) {
         long dist = end1 - start2;
         return negated ^ ( start1 < start2 && end1 < end2 && dist >= this.minDev && dist <= this.maxDev );
+    }
+
+    @Override
+    protected boolean isTemporalPredicateEqualTo( OverlapsPredicate other ) {
+        return minDev == other.minDev && maxDev == other.maxDev;
     }
 }

@@ -16,7 +16,9 @@
 
 package org.drools.model.functions.temporal;
 
-public abstract class AbstractTemporalPredicate implements TemporalPredicate {
+import org.drools.model.impl.ModelComponent;
+
+public abstract class AbstractTemporalPredicate<T extends AbstractTemporalPredicate> implements TemporalPredicate, ModelComponent {
 
     protected boolean negated = false;
 
@@ -29,4 +31,21 @@ public abstract class AbstractTemporalPredicate implements TemporalPredicate {
     public boolean isNegated() {
         return negated;
     }
+
+    @Override
+    public boolean isEqualTo( ModelComponent other ) {
+        if (!(other instanceof AbstractTemporalPredicate)) {
+            return false;
+        }
+
+        AbstractTemporalPredicate tempPred = (( AbstractTemporalPredicate ) other);
+
+        if (negated != tempPred.negated || getClass() != tempPred.getClass()) {
+            return false;
+        }
+
+        return isTemporalPredicateEqualTo( (T) tempPred );
+    }
+
+    protected abstract boolean isTemporalPredicateEqualTo(T other);
 }
