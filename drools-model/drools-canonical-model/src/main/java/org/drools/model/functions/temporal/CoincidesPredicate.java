@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class CoincidesPredicate extends AbstractTemporalPredicate {
+public class CoincidesPredicate extends AbstractTemporalPredicate<CoincidesPredicate> {
 
     private final long startDevLong;
     private final long endDevLong;
@@ -53,5 +53,10 @@ public class CoincidesPredicate extends AbstractTemporalPredicate {
         long distStart = Math.abs( start2 - start1 );
         long distEnd = Math.abs( end2 - end1 );
         return negated ^ (distStart <= this.startDevLong && distEnd <= this.endDevLong);
+    }
+
+    @Override
+    protected boolean isTemporalPredicateEqualTo( CoincidesPredicate other ) {
+        return startDevLong == other.startDevLong && endDevLong == other.endDevLong;
     }
 }
