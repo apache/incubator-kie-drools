@@ -16,14 +16,11 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
@@ -40,10 +37,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,7 +56,7 @@ public class RemoveRuleTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -145,17 +140,18 @@ public class RemoveRuleTest {
                         "then\n" +
                         "end\n";
 
-        final ReleaseId releaseId = KieServices.get().newReleaseId("org.kie", "test-remove-big-rule", "1.0");
-        final InternalKieModule kieModule = (InternalKieModule) KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, str);
-        final KnowledgeBuilder knowledgeBuilder = kieModule.getKnowledgeBuilderForKieBase(KieBaseTestConfiguration.KIE_BASE_MODEL_NAME);
-        assertNotNull(knowledgeBuilder);
-        final Collection<KiePackage> kpgs = knowledgeBuilder.getKnowledgePackages();
-        assertEquals(1, kpgs.size());
+        final KieServices ks = KieServices.Factory.get();
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kpgs );
+        final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "test-remove-big-rule", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, str);
 
-        kbase.removeKiePackage( kpgs.iterator().next().getName() );
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) kc.getKieBase();
+
+        final ReleaseId releaseId2 = KieServices.get().newReleaseId("org.kie", "test-remove-big-rule", "1.1");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration);
+
+        kc.updateToVersion(releaseId2);
 
         final EntryPointNode epn = kbase.getRete().getEntryPointNodes().values().iterator().next();
         for (final ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {

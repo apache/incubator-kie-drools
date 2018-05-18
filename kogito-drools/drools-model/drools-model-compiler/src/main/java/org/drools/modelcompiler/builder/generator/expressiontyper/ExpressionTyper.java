@@ -3,10 +3,10 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.drools.core.util.ClassUtils;
-import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
@@ -14,6 +14,7 @@ import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.ArrayInitializerExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
@@ -59,6 +60,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLitera
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
 
 public class ExpressionTyper {
@@ -216,6 +218,15 @@ public class ExpressionTyper {
             TypedExpression typedExpression = new TypedExpression(objectCreationExpr, castClass);
 
             return Optional.of(typedExpression);
+
+        } else if (drlxExpr instanceof ArrayAccessExpr) {
+            final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
+            if (Map.class.isAssignableFrom( typeCursor )) {
+                MethodCallExpr mapAccessExpr = new MethodCallExpr( arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName(), "get" );
+                mapAccessExpr.addArgument( arrayAccessExpr.getIndex() );
+                TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Object.class);
+                return Optional.of(typedExpression);
+            }
         }
 
         throw new UnsupportedOperationException();
@@ -535,7 +546,7 @@ public class ExpressionTyper {
     }
 
     private Expression addCastToExpression(Class<?> typeCursor, Expression previous, boolean isInLineCast) {
-        ReferenceType castType = JavaParser.parseClassOrInterfaceType(typeCursor.getName());
+        ReferenceType castType = toClassOrInterfaceType(typeCursor.getName());
         return addCastToExpression( castType, previous, isInLineCast );
     }
 

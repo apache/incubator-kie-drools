@@ -49,6 +49,7 @@ import static java.text.MessageFormat.format;
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ANNOTATION_VALUE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_META_DATA_CALL;
@@ -77,7 +78,7 @@ public class POJOGenerator {
                 processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr, packageDescr));
-                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName(), typeDescr.getTypeName() ) );
+                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
             }
         }
     }
@@ -94,7 +95,7 @@ public class POJOGenerator {
     }
 
     private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
-        MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getPackage().getName(), type.getSimpleName() );
+        MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getCanonicalName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
@@ -110,9 +111,9 @@ public class POJOGenerator {
         packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
-    private static MethodCallExpr registerTypeMetaData( String pkg, String name ) {
+    private static MethodCallExpr registerTypeMetaData( String className ) {
         MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
-        typeMetaDataCall.addArgument( pkg + "." + name + ".class" );
+        typeMetaDataCall.addArgument( className + ".class" );
         return typeMetaDataCall;
     }
 
@@ -269,7 +270,7 @@ public class POJOGenerator {
         statement.findAll(ClassOrInterfaceType.class)
                 .stream()
                 .filter(n1 -> n1.getName().toString().equals("__className"))
-                .forEach(n -> n.replace(JavaParser.parseClassOrInterfaceType(className)));
+                .forEach(n -> n.replace(toClassOrInterfaceType(className)));
         return statement;
     }
 

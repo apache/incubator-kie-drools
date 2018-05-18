@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
@@ -46,5 +47,20 @@ public class MvelReadAccessor extends BaseObjectClassFieldReader implements Inte
     @Override
     public Object getValue( InternalWorkingMemory workingMemory, Object object ) {
         return MVEL.executeExpression(expression, object);
+    }
+
+    @Override
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        final Object value = getValue( workingMemory, object );
+
+        if( value instanceof Character ) {
+            return ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).longValue();
+        } else if ( value instanceof Date ) {
+            return (( Date ) value).getTime();
+        }
+
+        throw new RuntimeException( "Conversion to long not supported from " +  getExtractToClass().getName() );
     }
 }

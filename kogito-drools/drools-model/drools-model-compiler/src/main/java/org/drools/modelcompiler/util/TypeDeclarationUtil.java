@@ -40,59 +40,55 @@ import static org.drools.core.util.ClassUtils.getter2property;
 public class TypeDeclarationUtil {
 
     public static TypeDeclaration createTypeDeclaration( KnowledgePackageImpl pkg, TypeMetaData metaType ) {
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( metaType.getPackage() + "." + metaType.getName() );
+        Class<?> typeClass = metaType.getType();
 
-            TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
-            typeDeclaration.setTypeClassDef( new ClassDefinitionForModel( typeClass ) );
+        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
+        typeDeclaration.setTypeClassDef( new ClassDefinitionForModel( typeClass ) );
 
-            for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
-                switch (ann.getKey()) {
-                    case "role":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
-                                typeDeclaration.setRole( Role.Type.EVENT );
-                            }
+        for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
+            switch (ann.getKey()) {
+                case "role":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
+                            typeDeclaration.setRole( Role.Type.EVENT );
                         }
-                        break;
-                    case "duration":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
-                            }
+                    }
+                    break;
+                case "duration":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
                         }
-                        break;
-                    case "timestamp":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
-                            }
+                    }
+                    break;
+                case "timestamp":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
                         }
-                        break;
-                    case "expires":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
-                                typeDeclaration.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
-                            } else if (annVal.getKey().equals( "policy" )) {
-                                typeDeclaration.setExpirationType( Enum.valueOf( Expires.Policy.class, annVal.getValue().toString() ) );
-                            }
+                    }
+                    break;
+                case "expires":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
+                            typeDeclaration.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
+                        } else if (annVal.getKey().equals( "policy" )) {
+                            typeDeclaration.setExpirationType( Enum.valueOf( Expires.Policy.class, annVal.getValue().toString() ) );
                         }
-                        break;
-                    case "propertyReactive":
-                        typeDeclaration.setPropertyReactive( true );
-                        break;
-                    case "classReactive":
-                        typeDeclaration.setPropertyReactive( false );
-                        break;
-                    default:
-                        throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
-                }
+                    }
+                    break;
+                case "propertyReactive":
+                    typeDeclaration.setPropertyReactive( true );
+                    break;
+                case "classReactive":
+                    typeDeclaration.setPropertyReactive( false );
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
             }
-            return typeDeclaration;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
         }
+        return typeDeclaration;
     }
 
     public static TypeDeclaration createTypeDeclaration(Class<?> cls) {

@@ -43,7 +43,6 @@ public class JavaParserCompiler {
 
     private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-
     private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = JavaDialectConfiguration.CompilerType.NATIVE;
 
     private static final JavaCompiler JAVA_COMPILER = createCompiler();

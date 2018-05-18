@@ -29,16 +29,16 @@ public class ModelWriter {
             String folderName = pkgName.replace( '.', '/' );
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
-                final String source = JavaParserCompiler.toPojoSource(pkgModel.getName(), pkgModel.getImports(), generatedPojo);
-                pkgModel.logRule(source);
+                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), pkgModel.getImports(), generatedPojo );
+                pkgModel.logRule( source );
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );
                 sourceFiles.add( pojoSourceName );
             }
 
             for (GeneratedClassWithPackage generatedPojo : pkgModel.getGeneratedAccumulateClasses()) {
-                final String source = JavaParserCompiler.toPojoSource(pkgModel.getName(), generatedPojo.getImports(), generatedPojo.getGeneratedClass());
-                pkgModel.logRule(source);
+                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), generatedPojo.getImports(), generatedPojo.getGeneratedClass() );
+                pkgModel.logRule( source );
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getGeneratedClass().getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );
                 sourceFiles.add( pojoSourceName );
@@ -48,21 +48,21 @@ public class ModelWriter {
             // main rules file:
             String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
-            String rulesSource = prettyPrinter.print(rulesSourceResult.getMainRuleClass());
-            pkgModel.logRule(rulesSource);
+            String rulesSource = prettyPrinter.print( rulesSourceResult.getMainRuleClass() );
+            pkgModel.logRule( rulesSource );
             byte[] rulesBytes = rulesSource.getBytes();
             srcMfs.write( rulesSourceName, rulesBytes );
             modelFiles.add( pkgName + "." + rulesFileName );
             sourceFiles.add( rulesSourceName );
             // manage additional classes, please notice to not add to modelFiles.
             for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
-                String addFileName = cu.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+                String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
                 String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
-                String addSource = prettyPrinter.print(cu);
-                pkgModel.logRule(addSource);
+                String addSource = prettyPrinter.print( cu );
+                pkgModel.logRule( addSource );
                 byte[] addBytes = addSource.getBytes();
-                srcMfs.write(addSourceName, addBytes);
-                sourceFiles.add(addSourceName);
+                srcMfs.write( addSourceName, addBytes );
+                sourceFiles.add( addSourceName );
             }
         }
 

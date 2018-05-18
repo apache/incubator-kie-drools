@@ -16,9 +16,10 @@
 
 package org.drools.modelcompiler.util;
 
-import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.Type;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class JavaParserUtil {
 
@@ -53,6 +54,6 @@ public class JavaParserUtil {
                 return PrimitiveType.byteType();
             }
         }
-        return JavaParser.parseClassOrInterfaceType(cls.getCanonicalName());
+        return toClassOrInterfaceType(cls);
     }
 }
