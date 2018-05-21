@@ -16,8 +16,6 @@
 
 package org.drools.compiler.simulation;
 
-import java.util.List;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.RuleUnitTest;
@@ -30,7 +28,6 @@ import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 
-import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.junit.Assert.assertEquals;
 
 public class BatchRunUnitFluentTest extends CommonTestMethodBase {
@@ -64,9 +61,9 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-                .getKieContainer(releaseIdUnit)             // do we want to postpone KieBase binding?
+                .getKieContainer(releaseIdUnit)
 
-                .newRuleUnitExecutor()                  // RuleUnitExecutorFluent
+                .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
                     .addBinding("persons")
@@ -76,7 +73,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .buildDataSource()
 
                 .run(RuleUnitTest.AdultUnit.class)
-                .out("firedRules")          // it uses globals from RuleUnit's internal KieSession
+                .out("firedRules")
                 .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
@@ -89,9 +86,9 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-                .getKieContainer(releaseIdUnit)             // do we want to postpone KieBase binding?
+                .getKieContainer(releaseIdUnit)
 
-                .newRuleUnitExecutor()                  // RuleUnitExecutorFluent
+                .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
                     .addBinding("persons").addBinding("people")
@@ -100,11 +97,10 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                     .insert(new Person("Mark", 90))
                 .buildDataSource()
 
-
                 .run(RuleUnitTest.AdultUnit.class)
                 .out("firedRules1")
                 .run(AdultUnitDifferentDataSourceName.class)
-                .out("firedRules2")          // it uses globals from RuleUnit's internal KieSession
+                .out("firedRules2")
                 .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
@@ -123,22 +119,20 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
-                .insert(new Person("Mario", 10))
-                .insert(new Person("Daniele", 30))
-                .insert(new Person("Mark", 40))
+                    .insert(new Person("Mario", 10))
+                    .insert(new Person("Daniele", 30))
+                    .insert(new Person("Mark", 40))
                 .buildDataSource()
 
                 .run(RuleUnitTest.AdultUnit.class)
-                .out("firedRules")
+                .out("firedRulesNoBinding")
                 .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertEquals(0, requestContext.getOutputs().get("firedRules"));
+        assertEquals(0, requestContext.getOutputs().get("firedRulesNoBinding"));
 
     }
-
-
 
     @Test
     public void testUnitLambdaInitializer() {
@@ -150,13 +144,13 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 new Person("Mark", 90));
 
         f.newApplicationContext("app1")
-                .getKieContainer(releaseIdUnit)             // do we want to postpone KieBase binding?
+                .getKieContainer(releaseIdUnit)
 
-                .newRuleUnitExecutor()                  // RuleUnitExecutorFluent
+                .newRuleUnitExecutor()
                 .bindVariable("people", people)
 
                 .run((() -> new AdultUnitDifferentDataSourceName(people)))
-                .out("firedRules")          // it uses globals from RuleUnit's internal KieSession
+                .out("firedRules")
                 .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
@@ -174,7 +168,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 new Person("Mark", 90));
 
         f.newApplicationContext("app1")
-                .getKieContainer(releaseIdUnit)             // do we want to postpone KieBase binding?
+                .getKieContainer(releaseIdUnit)
 
                 .newRuleUnitExecutor()
                 .run((() -> new AdultUnitDifferentDataSourceName(people)))
@@ -182,7 +176,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .set("test")
                 .bindVariableByExpression("lazyVariable" , context -> context.get("test"))
                 .get("lazyVariable")
-                .out("firedRules")          // it uses globals from RuleUnit's internal KieSession
+                .out("firedRules")
                 .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
@@ -191,10 +185,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
     }
 
     public static class AdultUnitDifferentDataSourceName implements RuleUnit {
-        private int adultAge = 0;
         private DataSource<Person> people;
-        private List<String> log;
-        private List<String> results;
 
         public AdultUnitDifferentDataSourceName( ) { }
 
@@ -204,41 +195,6 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
 
         public DataSource<Person> getPeople() {
             return people;
-        }
-
-        public int getAdultAge() {
-            return adultAge;
-        }
-
-        public List<String> getResults() {
-            return results;
-        }
-
-        @Override
-        public void onStart() {
-            if (log != null) {
-                log.add( getUnitName(this) + " started." );
-            } else {
-                System.out.println( getUnitName(this) + " started." );
-            }
-        }
-
-        @Override
-        public void onEnd() {
-            if (log != null) {
-                log.add( getUnitName(this) + " ended." );
-            } else {
-                System.out.println( getUnitName(this) + " ended." );
-            }
-        }
-
-        @Override
-        public void onYield( RuleUnit other ) {
-            if (log != null) {
-                log.add( getUnitName(this) + " yielded to " + getUnitName(other) );
-            } else {
-                System.out.println( getUnitName(this) + " yielded to " + getUnitName(other) );
-            }
         }
     }
 
