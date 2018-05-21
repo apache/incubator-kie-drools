@@ -16,8 +16,6 @@
 
 package org.drools.core.command;
 
-import java.io.Serializable;
-
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
@@ -62,7 +60,7 @@ public class NewRuleUnitExecutorCommand
 
         ((RegistryContext)context).register( RuleUnitExecutor.class, ruleUnitExecutor);
 
-        // TODO is it correct to put internal RuleUnit kieSession in the Registry?
+        // Add KieSession from RuleUnit to support already existing Command
         ((RegistryContext)context).register(KieSession.class, ruleUnitExecutor.getKieSession());
 
         return ruleUnitExecutor;
