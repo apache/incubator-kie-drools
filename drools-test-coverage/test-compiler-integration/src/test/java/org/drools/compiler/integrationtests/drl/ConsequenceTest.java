@@ -16,171 +16,239 @@
 
 package org.drools.compiler.integrationtests.drl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Pet;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.Pet;
-import org.drools.compiler.integrationtests.SerializationHelper;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
+@RunWith(Parameterized.class)
+public class ConsequenceTest {
 
-public class ConsequenceTest extends CommonTestMethodBase {
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ConsequenceTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testConsequenceException() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_ConsequenceException.drl");
+    public void testConsequenceException() {
+
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "rule \"Throw Consequence Exception\"\n" +
+                "    when\n" +
+                "        cheese : Cheese( )\n" +
+                "    then\n" +
+                "        throw new Exception( \"this should throw an exception\" );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("consequence-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
-
-        final Cheese brie = new Cheese("brie", 12);
-        ksession.insert(brie);
-
         try {
-            ksession.fireAllRules();
-            fail("Should throw an Exception from the Consequence");
-        } catch (final org.kie.api.runtime.rule.ConsequenceException e) {
-            assertEquals("Throw Consequence Exception",
-                    e.getMatch().getRule().getName());
-            assertEquals("this should throw an exception",
-                    e.getCause().getMessage());
+            final Cheese brie = new Cheese("brie", 12);
+            ksession.insert(brie);
+
+            try {
+                ksession.fireAllRules();
+                fail("Should throw an Exception from the Consequence");
+            } catch (final org.kie.api.runtime.rule.ConsequenceException e) {
+                assertEquals("Throw Consequence Exception",
+                             e.getMatch().getRule().getName());
+                assertEquals("this should throw an exception",
+                             e.getCause().getMessage());
+            }
+        } finally {
+            ksession.dispose();
         }
     }
 
     @Test
-    public void testConsequenceBuilderException() throws Exception {
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.add(ResourceFactory.newClassPathResource("test_ConsequenceBuilderException.drl", getClass()),
-                ResourceType.DRL);
+    public void testConsequenceBuilderException() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "global java.util.List results;\n" +
+                "rule \"error compiling consequence\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        // this must generate a compile error, but not NPE\n" +
+                "        results.add(message without quotes);\n" +
+                "end\n" +
+                "rule \"another test\"\n" +
+                "    salience 10\n" +
+                "\n" +
+                "   when\n" +
+                "    eval( true ) \n" +
+                "then\n" +
+                "    System.out.println(1);\n" +
+                "end";
 
-        assertTrue(builder.hasErrors());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
-    public void testMetaConsequence() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_MetaConsequence.drl"));
-        KieSession session = createKnowledgeSession(kbase);
-        List results = new ArrayList();
-        session.setGlobal("results", results);
+    public void testMetaConsequence() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "global java.util.List results;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"Test Consequence\"\n" +
+                "    @foo(bar)\n" +
+                "    @foo2(bar2)\n" +
+                "    @ruleID(1234)\n" +
+                "    @parentRuleID(1234)\n" +
+                "    @dateActive(12/1/08)\n" +
+                "    @price(123.00)\n" +
+                "    @errorMSG(Stop)\n" +
+                "    @userMSG(\"Please Stop\")\n" +
+                "  when\n" +
+                "    Person(name == \"Michael\")\n" +
+                "  then\n" +
+                "    results.add( drools.getRule().getMetaData().get(\"foo\"));\n" +
+                "    results.add( drools.getRule().getMetaData().get(\"foo2\"));\n" +
+                "end";
 
-        session.insert(new Person("Michael"));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("consequence-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            List results = new ArrayList();
+            session.setGlobal("results", results);
 
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session,
-                true);
-        results = (List) session.getGlobal("results");
+            session.insert(new Person("Michael"));
+            results = (List) session.getGlobal("results");
 
-        session.fireAllRules();
-        assertEquals(2, results.size());
-        assertEquals("bar", results.get(0));
-        assertEquals("bar2", results.get(1));
+            session.fireAllRules();
+            assertEquals(2, results.size());
+            assertEquals("bar", results.get(0));
+            assertEquals("bar2", results.get(1));
+        } finally {
+            session.dispose();
+        }
     }
 
     // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
     @Test
-    public void testMVELConsequenceUsingFactConstructors() throws Exception {
-        String drl = "";
-        drl += "package test\n";
-        drl += "import org.drools.compiler.Person\n";
-        drl += "global "+KieSession.class.getCanonicalName()+" ksession\n";
-        drl += "rule test dialect 'mvel'\n";
-        drl += "when\n";
-        drl += "    $person:Person( name == 'mark' )\n";
-        drl += "then\n";
-        drl += "    // below constructor for Person does not exist\n";
-        drl += "    Person p = new Person( 'bob', 30, 555 )\n";
-        drl += "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n";
-        drl += "end\n";
+    public void testMVELConsequenceUsingFactConstructors() {
+        final String drl =
+                "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global " + KieSession.class.getCanonicalName() + " ksession\n" +
+                "rule test dialect 'mvel'\n" +
+                "when\n" +
+                "    $person:Person( name == 'mark' )\n" +
+                "then\n" +
+                "    // below constructor for Person does not exist\n" +
+                "    Person p = new Person( 'bob', 30, 555 )\n" +
+                "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n" +
+                "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newReaderResource(new StringReader(drl)), ResourceType.DRL);
-        assertTrue(kbuilder.hasErrors());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
-    public void testMVELConsequenceWithMapsAndArrays() throws Exception {
-        String rule = "package org.drools.compiler.test;\n";
-        rule += "import java.util.ArrayList\n";
-        rule += "import java.util.HashMap\n";
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "    dialect \"mvel\"";
-        rule += "when\n";
-        rule += "then\n";
-        rule += "    m = new HashMap();\n";
-        rule += "    l = new ArrayList();\n";
-        rule += "    l.add(\"first\");\n";
-        rule += "    m.put(\"content\", l);\n";
-        rule += "    System.out.println(((ArrayList)m[\"content\"])[0]);\n";
-        rule += "    list.add(((ArrayList)m[\"content\"])[0]);\n";
-        rule += "end";
+    public void testMVELConsequenceWithMapsAndArrays() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+            "import java.util.ArrayList\n" +
+            "import java.util.HashMap\n" +
+            "global java.util.List list\n" +
+            "rule \"Test Rule\"\n" +
+            "    dialect \"mvel\"" +
+            "when\n" +
+            "then\n" +
+            "    m = new HashMap();\n" +
+            "    l = new ArrayList();\n" +
+            "    l.add(\"first\");\n" +
+            "    m.put(\"content\", l);\n" +
+            "    System.out.println(((ArrayList)m[\"content\"])[0]);\n" +
+            "    list.add(((ArrayList)m[\"content\"])[0]);\n" +
+            "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        KieSession session = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("consequence-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
+            session.fireAllRules();
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        session.fireAllRules();
-
-        assertEquals(1, ((List) session.getGlobal("list")).size());
-        assertEquals("first", ((List) session.getGlobal("list")).get(0));
+            assertEquals(1, ((List) session.getGlobal("list")).size());
+            assertEquals("first", ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testMVELConsequenceWithoutSemiColon1() throws Exception {
-        String drl = "";
-        drl += "package test\n";
-        drl += "import org.drools.compiler.Person\n";
-        drl += "import org.drools.compiler.Pet\n";
-        drl += "rule test dialect 'mvel'\n";
-        drl += "when\n";
-        drl += "    $person:Person()\n";
-        drl += "    $pet:Pet()\n";
-        drl += "then\n";
-        drl += "    delete($person) // some comment\n";
-        drl += "    delete($pet) // another comment\n";
-        drl += "end\n";
+    public void testMVELConsequenceWithoutSemiColon1() {
+        final String drl =
+            "package prg.drools.compiler.integrationtests.drl;\n" +
+            "import " + Person.class.getCanonicalName() + ";\n" +
+            "import " + Pet.class.getCanonicalName() + ";\n" +
+            "rule test dialect 'mvel'\n" +
+            "when\n" +
+            "    $person:Person()\n" +
+            "    $pet:Pet()\n" +
+            "then\n" +
+            "    delete($person) // some comment\n" +
+            "    delete($pet) // another comment\n" +
+            "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(drl);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("consequence-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            // create working memory mock listener
+            final RuleRuntimeEventListener wml = Mockito.mock(RuleRuntimeEventListener.class);
 
-        final KieSession ksession = createKnowledgeSession(kbase);
+            ksession.addEventListener(wml);
 
-        // create working memory mock listener
-        final RuleRuntimeEventListener wml = Mockito.mock(RuleRuntimeEventListener.class);
+            final FactHandle personFH = ksession.insert(new Person("Toni"));
+            final FactHandle petFH = ksession.insert(new Pet("Toni"));
 
-        ksession.addEventListener(wml);
+            final int fired = ksession.fireAllRules();
+            assertEquals(1,
+                         fired);
 
-        final FactHandle personFH = ksession.insert(new Person("Toni"));
-        final FactHandle petFH = ksession.insert(new Pet("Toni"));
-
-        final int fired = ksession.fireAllRules();
-        assertEquals(1,
-                fired);
-
-        // capture the arguments and check that the retracts happened
-        final ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass(ObjectDeletedEvent.class);
-        verify(wml, times(2)).objectDeleted(retracts.capture());
-        final List<ObjectDeletedEvent> values = retracts.getAllValues();
-        assertThat(values.get(0).getFactHandle(), is(personFH));
-        assertThat(values.get(1).getFactHandle(), is(petFH));
+            // capture the arguments and check that the retracts happened
+            final ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass(ObjectDeletedEvent.class);
+            verify(wml, times(2)).objectDeleted(retracts.capture());
+            final List<ObjectDeletedEvent> values = retracts.getAllValues();
+            assertThat(values.get(0).getFactHandle(), is(personFH));
+            assertThat(values.get(1).getFactHandle(), is(petFH));
+        } finally {
+            ksession.dispose();
+        }
     }
 }

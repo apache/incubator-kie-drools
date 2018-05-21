@@ -16,31 +16,38 @@
 
 package org.drools.compiler.integrationtests.drl;
 
-import org.drools.compiler.CommonTestMethodBase;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.fail;
+@RunWith(Parameterized.class)
+public class VariableTest {
 
-public class VariableTest extends CommonTestMethodBase {
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public VariableTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testVariableDeclaration() throws Exception {
-        final String str = "rule KickOff\n" +
+    public void testVariableDeclaration() {
+        final String drl = "rule KickOff\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "then\n" +
                 "int i;\n" +
                 "end";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
+        KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, drl);
     }
 }

@@ -19,113 +19,238 @@ package org.drools.compiler.integrationtests.drl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.PersonInterface;
-import org.drools.compiler.Primitives;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Cheesery;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Primitives;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class LiteralTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class LiteralTest {
 
-    @Test
-    public void testLiteral() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("literal_rule_test.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+    public LiteralTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final Cheese stilton = new Cheese("stilton", 5);
-        session.insert(stilton);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-
-        session.fireAllRules();
-
-        assertEquals("stilton", ((List) session.getGlobal("list")).get(0));
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testLiteralWithEscapes() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_literal_with_escapes.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    public void testLiteral() {
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "global Cheesery cheesery;\n" +
+                "\n" +
+                "rule \"literal test rule\"\n" +
+                "    when\n" +
+                "        Cheese( $x: type, type == \"stilton\" )\n" +
+                "    then\n" +
+                "        list.add( $x );\n" +
+                "end";
 
-        final String expected = "s\tti\"lto\nn";
-        final Cheese stilton = new Cheese(expected, 5);
-        session.insert(stilton);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("literal-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        final int fired = session.fireAllRules();
-        assertEquals(1, fired);
+            final Cheese stilton = new Cheese("stilton", 5);
+            session.insert(stilton);
+            session.fireAllRules();
 
-        assertEquals(expected, ((List) session.getGlobal("list")).get(0));
+            assertEquals("stilton", ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testLiteralWithBoolean() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("literal_with_boolean.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    public void testLiteralWithEscapes() {
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"literal test rule\"\n" +
+                "    when\n" +
+                "        Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" )\n" +
+                "    then\n" +
+                "        list.add( $x );\n" +
+                "end";
 
-        final PersonInterface bill = new Person("bill", null, 12);
-        bill.setAlive(true);
-        session.insert(bill);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("literal-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        session.fireAllRules();
+            final String expected = "s\tti\"lto\nn";
+            final Cheese stilton = new Cheese(expected, 5);
+            session.insert(stilton);
+            final int fired = session.fireAllRules();
+            assertEquals(1, fired);
 
-        assertEquals(bill, ((List) session.getGlobal("list")).get(0));
+            assertEquals(expected, ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
+    }
+
+    @Test
+    public void testLiteralWithBoolean() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Literal with boolean\"\n" +
+                "\n" +
+                "    when\n" +
+                "        // conditions\n" +
+                "        alivePerson : Person(alive ==  true)\n" +
+                "    then\n" +
+                "        list.add( alivePerson );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("literal-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
+
+            final Person bill = new Person("bill", null, 12);
+            bill.setAlive(true);
+            session.insert(bill);
+            session.fireAllRules();
+
+            assertEquals(bill, ((List) session.getGlobal("list")).get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
     public void testBigLiterals() {
-        final String str = "package org.drools.compiler\n" +
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Primitives.class.getCanonicalName() + ";\n" +
                 "rule X\n" +
                 "when\n" +
                 "    Primitives( bigInteger == 10I, bigInteger < (50I), bigDecimal == 10B, bigDecimal < (50B) )\n" +
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("literal-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final Primitives p = new Primitives();
+            p.setBigDecimal(BigDecimal.valueOf(10));
+            p.setBigInteger(BigInteger.valueOf(10));
+            session.insert(p);
 
-        final Primitives p = new Primitives();
-        p.setBigDecimal(BigDecimal.valueOf(10));
-        p.setBigInteger(BigInteger.valueOf(10));
-        ksession.insert(p);
-
-        final int rulesFired = ksession.fireAllRules();
-        assertEquals(1, rulesFired);
+            final int rulesFired = session.fireAllRules();
+            assertEquals(1, rulesFired);
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testBigDecimalIntegerLiteral() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("big_decimal_and_literal.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    public void testBigDecimalIntegerLiteral() {
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+        final String drl = "package org.drools.compiler.integrationtests.drl\n" +
+                "\n" +
+                "import " + Primitives.class.getCanonicalName() + ";\n" +
+                "import java.math.BigDecimal;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"BigDec\"\n" +
+                "\n" +
+                "    when\n" +
+                "        p: Primitives(bigDecimal < 100.01)\n" +
+                "    then\n" +
+                "        System.err.println(\"rule1\");\n" +
+                "        list.add( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BigInt\"\n" +
+                "    when\n" +
+                "        p: Primitives(bigInteger < 100.1)\n" +
+                "    then\n" +
+                "    System.err.println(\"rule2\");\n" +
+                "        list.add( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BigDec2\"\n" +
+                "\n" +
+                "    when\n" +
+                "        p: Primitives(bigDecimal == 42)\n" +
+                "    then\n" +
+                "    System.err.println(\"rule3\");\n" +
+                "        list.add( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BigInt2\"\n" +
+                "    when\n" +
+                "        p: Primitives(bigInteger == 42)\n" +
+                "    then\n" +
+                "    System.err.println(\"rule4\");\n" +
+                "        list.add( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BigDec3\"\n" +
+                "\n" +
+                "    when\n" +
+                "        p: Primitives(bigDecimal != 100)\n" +
+                "    then\n" +
+                "    System.err.println(\"rule5\");\n" +
+                "        list.add( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BigInt3\"\n" +
+                "    when\n" +
+                "        p: Primitives(bigInteger != 100)\n" +
+                "    then\n" +
+                "    System.err.println(\"rule6\");\n" +
+                "        list.add( p );\n" +
+                "end";
 
-        final PersonInterface bill = new Person("bill", null, 12);
-        bill.setBigDecimal(new BigDecimal("42"));
-        bill.setBigInteger(new BigInteger("42"));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("literal-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        session.insert(bill);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        session.fireAllRules();
+            final Primitives bill = new Primitives();
+            bill.setBigDecimal(new BigDecimal("42"));
+            bill.setBigInteger(new BigInteger("42"));
 
-        assertEquals(6, ((List) session.getGlobal("list")).size());
+            session.insert(bill);
+            session.fireAllRules();
+
+            assertEquals(6, ((List) session.getGlobal("list")).size());
+        } finally {
+            session.dispose();
+        }
     }
 }

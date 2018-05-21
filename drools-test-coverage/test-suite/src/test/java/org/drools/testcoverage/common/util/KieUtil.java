@@ -94,6 +94,12 @@ public final class KieUtil {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError);
     }
 
+    public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                   final boolean failIfBuildError, final String... drls) {
+        final List<Resource> resources = getResourcesFromDrls(drls);
+        return getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources.toArray(new Resource[]{}));
+    }
+
     public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                         final boolean failIfBuildError, final Resource... resources) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
@@ -196,15 +202,7 @@ public final class KieUtil {
                                                  final KieSessionTestConfiguration kieSessionTestConfiguration,
                                                  final Map<String, String> kieModuleConfigurationProperties,
                                                  final String... drls) {
-        final List<Resource> resources = new ArrayList<>();
-        for (int i = 0; i < drls.length; i++) {
-            // This null check can be used to skip unwanted filenames.
-            if (drls[i] != null) {
-                final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drls[i]));
-                drlResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rules" + (i + 1) + ".drl");
-                resources.add(drlResource);
-            }
-        }
+        final List<Resource> resources = getResourcesFromDrls(drls);
         return getKieModuleFromResources(releaseId, kieBaseTestConfiguration, kieSessionTestConfiguration,
                                          kieModuleConfigurationProperties, resources.toArray(new Resource[]{}));
     }
@@ -230,6 +228,19 @@ public final class KieUtil {
         final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
         return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, module, resources);
+    }
+
+    public static List<Resource> getResourcesFromDrls(final String... drls) {
+        final List<Resource> resources = new ArrayList<>();
+        for (int i = 0; i < drls.length; i++) {
+            // This null check can be used to skip unwanted filenames.
+            if (drls[i] != null) {
+                final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drls[i]));
+                drlResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rules" + (i + 1) + ".drl");
+                resources.add(drlResource);
+            }
+        }
+        return resources;
     }
 
     public static KieCommands getCommands() {

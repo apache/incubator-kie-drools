@@ -16,6 +16,28 @@
 
 package org.drools.compiler.integrationtests.drl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.mockito.ArgumentCaptor;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -23,112 +45,118 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.integrationtests.SerializationHelper;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.mockito.ArgumentCaptor;
+@RunWith(Parameterized.class)
+public class BindTest {
 
-public class BindTest extends CommonTestMethodBase {
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    @Test
-    public void testFactBindings() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_FactBindings.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public BindTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
-        final RuleRuntimeEventListener wmel = mock(RuleRuntimeEventListener.class);
-        ksession.addEventListener(wmel);
-
-        final Person bigCheese = new Person("big cheese");
-        final Cheese cheddar = new Cheese("cheddar", 15);
-        bigCheese.setCheese(cheddar);
-
-        final FactHandle bigCheeseHandle = ksession.insert(bigCheese);
-        final FactHandle cheddarHandle = ksession.insert(cheddar);
-        ksession.fireAllRules();
-
-        final ArgumentCaptor<ObjectUpdatedEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.ObjectUpdatedEvent.class);
-        verify(wmel, times(2)).objectUpdated(arg.capture());
-
-        org.kie.api.event.rule.ObjectUpdatedEvent event = arg.getAllValues().get(0);
-        assertSame(cheddarHandle, event.getFactHandle());
-        assertSame(cheddar, event.getOldObject());
-        assertSame(cheddar, event.getObject());
-
-        event = arg.getAllValues().get(1);
-        assertSame(bigCheeseHandle, event.getFactHandle());
-        assertSame(bigCheese, event.getOldObject());
-        assertSame(bigCheese, event.getObject());
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testBindingToMissingField() throws Exception {
-        // JBRULES-3047
-        String rule1 = "package org.drools.compiler\n";
-        rule1 += "rule rule1\n";
-        rule1 += "when\n";
-        rule1 += "    Integer( $i : noSuchField ) \n";
-        rule1 += "    eval( $i > 0 )\n";
-        rule1 += "then \n";
-        rule1 += "end\n";
+    public void testFactBindings() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                " \n" +
+                "rule \"simple rule\"\n" +
+                "    no-loop true\n" +
+                "    when\n" +
+                "        $person : Person( name == \"big cheese\", $cheese : cheese )\n" +
+                "    then\n" +
+                "        update( $cheese );\n" +
+                "        update( $person );\n" +
+                "end";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("bind-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final RuleRuntimeEventListener wmel = mock(RuleRuntimeEventListener.class);
+            ksession.addEventListener(wmel);
 
-        if (!kbuilder.hasErrors()) {
-            fail("this should have errors");
+            final Person bigCheese = new Person("big cheese");
+            final Cheese cheddar = new Cheese("cheddar", 15);
+            bigCheese.setCheese(cheddar);
+
+            final FactHandle bigCheeseHandle = ksession.insert(bigCheese);
+            final FactHandle cheddarHandle = ksession.insert(cheddar);
+            ksession.fireAllRules();
+
+            final ArgumentCaptor<ObjectUpdatedEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.ObjectUpdatedEvent.class);
+            verify(wmel, times(2)).objectUpdated(arg.capture());
+
+            org.kie.api.event.rule.ObjectUpdatedEvent event = arg.getAllValues().get(0);
+            assertSame(cheddarHandle, event.getFactHandle());
+            assertSame(cheddar, event.getOldObject());
+            assertSame(cheddar, event.getObject());
+
+            event = arg.getAllValues().get(1);
+            assertSame(bigCheeseHandle, event.getFactHandle());
+            assertSame(bigCheese, event.getOldObject());
+            assertSame(bigCheese, event.getObject());
+        } finally {
+            ksession.dispose();
         }
+    }
+
+    @Test
+    public void testBindingToMissingField() {
+        // JBRULES-3047
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+            "rule rule1\n" +
+            "when\n" +
+            "    Integer( $i : noSuchField ) \n" +
+            "    eval( $i > 0 )\n" +
+            "then \n" +
+            "end\n";
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
     public void testFieldBindingOnWrongFieldName() {
         //JBRULES-2527
 
-        String str = "";
-        str += "package org.drools.compiler\n";
-        str += "import org.drools.compiler.Person\n";
-        str += "global java.util.List mlist\n";
-        str += "rule rule1 \n";
-        str += "when\n";
-        str += "   Person( $f : invalidFieldName, eval( $f != null ) )\n";
-        str += "then\n";
-        str += "end\n";
+        String drl =
+            "package org.drools.compiler.integrationtests.drl;\n" +
+            "import " + Person.class.getCanonicalName() + ";\n" +
+            "global java.util.List mlist\n" +
+            "rule rule1 \n" +
+            "when\n" +
+            "   Person( $f : invalidFieldName, eval( $f != null ) )\n" +
+            "then\n" +
+            "end\n";
 
-        testBingWrongFieldName(str);
+        testBingWrongFieldName(drl);
 
-        str = "";
-        str += "package org.drools.compiler\n";
-        str += "import org.drools.compiler.Person\n";
-        str += "global java.util.List mlist\n";
-        str += "rule rule1 \n";
-        str += "when\n";
-        str += "   Person( $f : invalidFieldName, name == ( $f ) )\n";
-        str += "then\n";
-        str += "end\n";
+        drl =
+            "package org.drools.compiler.integrationtests.drl;\n" +
+            "import " + Person.class.getCanonicalName() + ";\n" +
+            "global java.util.List mlist\n" +
+            "rule rule1 \n" +
+            "when\n" +
+            "   Person( $f : invalidFieldName, name == ( $f ) )\n" +
+            "then\n" +
+            "end\n";
 
-        testBingWrongFieldName(str);
+        testBingWrongFieldName(drl);
     }
 
     private void testBingWrongFieldName(final String drl) {
         try {
-            final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-
-            if (!kbuilder.hasErrors()) {
-                fail("KnowledgeBuilder should have errors");
-            }
+            final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                        false,
+                                                                        drl);
+            Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
         } catch (final Exception e) {
             e.printStackTrace();
             fail("Exception should not be thrown ");
@@ -136,38 +164,70 @@ public class BindTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testBindingsOnConnectiveExpressions() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_bindings.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testBindingsOnConnectiveExpressions() {
 
-        final List results = new ArrayList();
-        ksession.setGlobal("results", results);
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"bindings\"\n" +
+                "when\n" +
+                "    Cheese( $p : price, $t : type, type == \"stilton\" || price == 10 )\n" +
+                "then\n" +
+                "    results.add( $t );\n" +
+                "    results.add( new Integer( $p ) );\n" +
+                "end";
 
-        ksession.insert(new Cheese("stilton", 15));
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("bind-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
 
-        ksession.fireAllRules();
+            ksession.insert(new Cheese("stilton", 15));
 
-        assertEquals(2, results.size());
-        assertEquals("stilton", results.get(0));
-        assertEquals(15, results.get(1));
+            ksession.fireAllRules();
+
+            assertEquals(2, results.size());
+            assertEquals("stilton", results.get(0));
+            assertEquals(15, results.get(1));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testAutomaticBindings() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_AutoBindings.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+    public void testAutomaticBindings() {
 
-        final List list = new ArrayList();
-        ksession.setGlobal("results", list);
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"test auto bindings 1\"\n" +
+                "when\n" +
+                "    $p : Person();\n" +
+                "    $c : Cheese( type == $p.likes, price == $c.price  )\n" +
+                "then\n" +
+                "    results.add( $p );\n" +
+                "end";
 
-        final Person bob = new Person("bob", "stilton");
-        final Cheese stilton = new Cheese("stilton", 12);
-        ksession.insert(bob);
-        ksession.insert(stilton);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("bind-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("results", list);
 
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
+            final Person bob = new Person("bob");
+            bob.setLikes("stilton");
+            final Cheese stilton = new Cheese("stilton", 12);
+            ksession.insert(bob);
+            ksession.insert(stilton);
 
-        assertEquals(bob, list.get(0));
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+
+            assertEquals(bob, list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 }
