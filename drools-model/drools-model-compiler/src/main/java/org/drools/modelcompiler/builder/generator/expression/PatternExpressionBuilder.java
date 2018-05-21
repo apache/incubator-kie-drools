@@ -11,7 +11,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -21,11 +20,11 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.util.ClassUtil;
 
 import static java.util.Optional.of;
 
@@ -70,7 +69,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
-        if (!drlxParseResult.getReactOnProperties().isEmpty()) {
+        if (!drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)
@@ -111,6 +110,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         Class<?> indexType = Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
+                .map(ClassUtil::toRawClass)
                 .findFirst().get();
 
         ClassExpr indexedBy_indexedClass = new ClassExpr(JavaParser.parseType(indexType.getCanonicalName()));
@@ -127,28 +127,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         indexedByDSL.addArgument(indexedBy_leftOperandExtractor);
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
+        java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations )) {
-            indexedByDSL.addArgument(right.getExpression());
+            indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, left.getType()));
         } else if (usedDeclarations.size() == 1) {
-            LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-            indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
-            indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
-            indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
         }
         return Optional.of(indexedByDSL);
-    }
-
-    public Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
-        if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
-            return expr;
-        }
-        LambdaExpr lambdaExpr = new LambdaExpr();
-        lambdaExpr.setEnclosingParameters(true);
-        if (!skipFirstParamAsThis) {
-            lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
-        }
-        usedDeclarations.stream().map(s -> new Parameter(new UnknownType(), s)).forEach(lambdaExpr::addParameter);
-        lambdaExpr.setBody(new ExpressionStmt(expr));
-        return lambdaExpr;
     }
 }

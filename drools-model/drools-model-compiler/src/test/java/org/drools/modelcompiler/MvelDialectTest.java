@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +24,10 @@ import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MvelDialectTest extends BaseModelTest {
 
@@ -247,5 +247,81 @@ public class MvelDialectTest extends BaseModelTest {
 
         List<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testMvelFunctionWithClassArg() {
+        final String drl =
+                "package org.drools.compiler.integrationtests.drl; \n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "dialect \"mvel\"\n" +
+                "global java.lang.StringBuilder value;\n" +
+                "function String getFieldValue(Person bean) {" +
+                "   return bean.getName();" +
+                "}" +
+                "\n" +
+                "rule R1 \n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new Person( \"mario\" ) ); \n" +
+                "end \n" +
+                "\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "   $bean : Person( ) \n" +
+                "then \n" +
+                "   value.append( getFieldValue($bean) ); \n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        try {
+            final StringBuilder sb = new StringBuilder();
+            ksession.setGlobal( "value", sb );
+            ksession.fireAllRules();
+
+            assertEquals( "mario", sb.toString() );
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testMvelFunctionWithDeclaredTypeArg() {
+        final String drl =
+                "package org.drools.compiler.integrationtests.drl; \n" +
+                "dialect \"mvel\"\n" +
+                "global java.lang.StringBuilder value;\n" +
+                "function String getFieldValue(Bean bean) {" +
+                "   return bean.getField();" +
+                "}" +
+                "declare Bean \n" +
+                "   field : String \n" +
+                "end \n" +
+                "\n" +
+                "rule R1 \n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new Bean( \"mario\" ) ); \n" +
+                "end \n" +
+                "\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "   $bean : Bean( ) \n" +
+                "then \n" +
+                "   value.append( getFieldValue($bean) ); \n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        try {
+            final StringBuilder sb = new StringBuilder();
+            ksession.setGlobal( "value", sb );
+            ksession.fireAllRules();
+
+            assertEquals( "mario", sb.toString() );
+        } finally {
+            ksession.dispose();
+        }
     }
 }

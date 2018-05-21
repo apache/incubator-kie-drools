@@ -8,10 +8,10 @@ import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
 
 public class PatternVisitor {
@@ -48,8 +48,15 @@ public class PatternVisitor {
             }
         }
 
+        Class<?> patternType = null;
+        try {
+            patternType = context.getTypeResolver().resolveType(className);
+        } catch (ClassNotFoundException e) {
+            context.addCompilationError( new InvalidExpressionErrorResult( "Unable to find class: " + className ) );
+            return () -> { };
+        }
+
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
-        final Class<?> patternType = getClassFromContext(context.getTypeResolver(), className);
         if (context.isPatternDSL()) {
             return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
         } else {

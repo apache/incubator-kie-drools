@@ -1,14 +1,16 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -18,13 +20,19 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class RuleContext {
@@ -45,12 +53,16 @@ public class RuleContext {
     private Map<String, String> namedConsequences = new HashMap<>();
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
-    private Optional<String> queryName = Optional.empty();
+    private Optional<String> queryName = empty();
 
     private RuleUnitDescr ruleUnitDescr;
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
 
+    /* These are used to check if some binding used in an OR expression is used in every branch */
+    private Boolean isNestedInsideOr = false;
+    private Bag<String> bindingOr = new Bag<>();
+    private Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public enum RuleDialect {
@@ -262,6 +274,48 @@ public class RuleContext {
 
     public TypeResolver getTypeResolver() {
         return typeResolver;
+    }
+
+    public boolean isPropertyReactive( Class<?> patternClass) {
+        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
+        return propertySpecificOption.isPropSpecific( patternClass.getAnnotation( PropertyReactive.class ) != null,
+                                                      patternClass.getAnnotation( ClassReactive.class ) != null );
+    }
+
+    public Optional<Class<?>> getFunctionType(String name) {
+        Method m = packageModel.getStaticMethod(name);
+        if (m != null) {
+            return of(m.getReturnType());
+        }
+
+        return packageModel.getFunctions().stream()
+                .filter( method -> method.getNameAsString().equals( name ) )
+                .findFirst()
+                .flatMap( method -> resolveType( method.getType().asString() ) );
+    }
+
+    public Optional<Class<?>> resolveType(String name) {
+        try {
+            return of( typeResolver.resolveType( name ) );
+        } catch(ClassNotFoundException e) {
+            return empty();
+        }
+    }
+  
+    public Boolean isNestedInsideOr() {
+        return isNestedInsideOr;
+    }
+
+    public void setNestedInsideOr(Boolean nestedInsideOr) {
+        isNestedInsideOr = nestedInsideOr;
+    }
+
+    public Bag<String> getBindingOr() {
+        return bindingOr;
+    }
+
+    public Set<String> getUnusableOrBinding() {
+        return unusableOrBinding;
     }
 }
 

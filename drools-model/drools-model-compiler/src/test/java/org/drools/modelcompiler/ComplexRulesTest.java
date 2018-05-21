@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.ChildFactComplex;
@@ -494,6 +495,21 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    public void testCompareDateWithString() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "\n" +
+                "    ChildFactWithObject( date < \"10-Jul-1974\" )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
     public void test2UpperCaseProp() {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
@@ -517,5 +533,32 @@ public class ComplexRulesTest extends BaseModelTest {
         public void doSomethingRisky(Object arg) throws Exception {
 
         }
+    }
+
+    public static class ListContainer {
+        public List<String> getList() {
+            return Arrays.asList("ciao");
+        }
+    }
+
+    @Test
+    public void testNameClashBetweenAttributeAndGlobal() {
+        String str =
+                "import " + ListContainer.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $l : ListContainer( list contains \"ciao\" )\n" +
+                "then\n" +
+                "    list.add($l);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new ListContainer() );
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
     }
 }

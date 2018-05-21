@@ -29,7 +29,7 @@ public class ModelWriter {
             String folderName = pkgName.replace( '.', '/' );
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
-                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), pkgModel.getImports(), generatedPojo );
+                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), pkgModel.getImports(), pkgModel.getStaticImports(), generatedPojo );
                 pkgModel.logRule( source );
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );
@@ -37,7 +37,7 @@ public class ModelWriter {
             }
 
             for (GeneratedClassWithPackage generatedPojo : pkgModel.getGeneratedAccumulateClasses()) {
-                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), generatedPojo.getImports(), generatedPojo.getGeneratedClass() );
+                final String source = JavaParserCompiler.toPojoSource( pkgModel.getName(), generatedPojo.getImports(), pkgModel.getStaticImports(), generatedPojo.getGeneratedClass() );
                 pkgModel.logRule( source );
                 String pojoSourceName = "src/main/java/" + folderName + "/" + generatedPojo.getGeneratedClass().getName() + ".java";
                 srcMfs.write( pojoSourceName, source.getBytes() );

@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,13 +41,17 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
@@ -84,6 +90,7 @@ import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
@@ -124,7 +131,11 @@ public class DrlxParseUtil {
         return Operator.valueOf(operator.name());
     }
 
-    public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz, Expression scope) {
+    public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope) {
+        if (type == null) {
+            return null;
+        }
+        Class<?> clazz = toRawClass( type );
         Method accessor = ClassUtils.getAccessor(clazz, name);
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
@@ -140,24 +151,25 @@ public class DrlxParseUtil {
                 if ( Modifier.isStatic( field.getModifiers() ) ) {
                     scope = new NameExpr(clazz.getCanonicalName());
                 } else {
-                    throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
+                    throw new IllegalArgumentException( "Unknown field " + name + " on " + type );
                 }
             }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
         } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
+            // There's no field with the given name, return null and manage the problem on the caller
         }
+        return null;
     }
 
-    public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
                 .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
                 .toArray(Class[]::new);
-        return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
+        return findMethod(toRawClass( clazz ), methodCallExpr.getNameAsString(), argsType).getGenericReturnType();
     }
 
-    public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
         if (expr instanceof LiteralExpr) {
             return getLiteralExpressionType( ( LiteralExpr ) expr );
         }
@@ -180,7 +192,7 @@ public class DrlxParseUtil {
 
         if (expr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
-            Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
+            java.lang.reflect.Type scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
             return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
         }
 
@@ -241,6 +253,12 @@ public class DrlxParseUtil {
         }
         if (expr instanceof StringLiteralExpr) {
             return String.class;
+        }
+        if (expr instanceof BigDecimalLiteralExpr) {
+            return BigDecimal.class;
+        }
+        if (expr instanceof BigIntegerLiteralExpr) {
+            return BigInteger.class;
         }
         throw new RuntimeException("Unknown literal: " + expr);
     }
@@ -343,7 +361,7 @@ public class DrlxParseUtil {
         return key.substring( "var_".length() );
     }
 
-    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
+    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) throws ParseProblemException {
         return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
@@ -371,7 +389,7 @@ public class DrlxParseUtil {
 
         createExpressionCall(expr, callStackLeftToRight);
 
-        Class<?> previousClass = clazz;
+        java.lang.reflect.Type previousClass = clazz;
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
@@ -394,12 +412,16 @@ public class DrlxParseUtil {
                     }
                 } else {
                     TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
-                    Class<?> returnType = te.getType();
+                    if (te == null) {
+                        context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
+                        return null;
+                    }
+                    java.lang.reflect.Type returnType = te.getType();
                     previousScope = te.getExpression();
                     previousClass = returnType;
                 }
             } else if (e.expression instanceof MethodCallExpr) {
-                Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
+                java.lang.reflect.Type returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
                 previousScope = cloned;
                 previousClass = returnType;
@@ -490,7 +512,6 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
-
     public static DrlxExpression parseExpression(String expression) {
         return DrlxParser.parseExpression(DrlxParser.buildDrlxParserWithArguments(OperatorsHolder.operators), expression);
     }
@@ -500,13 +521,11 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
-        Class<?> patternType;
         try {
-            patternType = typeResolver.resolveType(className);
+            return typeResolver.resolveType(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException( e );
         }
-        return patternType;
     }
 
     public static boolean isPrimitiveExpression(Expression expr) {
@@ -627,5 +646,15 @@ public class DrlxParseUtil {
             accumulator.add(child);
             findAllChildrenRecursiveRec(accumulator, child);
         }
+    }
+
+    public static Expression toNewBigIntegerExpr(Expression initExpression) {
+        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class),
+                                      NodeList.nodeList(initExpression));
+    }
+
+    public static Expression toNewBigDecimalExpr(Expression initExpression) {
+        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
+                                      NodeList.nodeList(initExpression));
     }
 }

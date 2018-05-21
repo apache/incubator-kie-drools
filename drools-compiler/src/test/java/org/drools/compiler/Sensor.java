@@ -31,30 +31,16 @@ public class Sensor implements Serializable {
         this.pressure = press;
     }
 
-    /**
-     * @return the pressure
-     */
     public int getPressure() {
         return this.pressure;
     }
-
-    /**
-     * @param pressure the pressure to set
-     */
     public void setPressure(final int pressure) {
         this.pressure = pressure;
     }
 
-    /**
-     * @return the temperature
-     */
     public int getTemperature() {
         return this.temperature;
     }
-
-    /**
-     * @param temperature the temperature to set
-     */
     public void setTemperature(final int temperature) {
         this.temperature = temperature;
     }

@@ -35,6 +35,7 @@ import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -128,17 +129,18 @@ public abstract class AccumulateVisitor {
             newBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<AccumulateVisitorPatternDSL.NewBinding>>() {
                 @Override
                 public Optional<AccumulateVisitorPatternDSL.NewBinding> onSuccess(DrlxParseSuccess drlxParseResult) {
-                    final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, drlxParseResult.getExprType());
+                    Class<?> exprRawClass = drlxParseResult.getExprRawClass();
+                    final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
 
                     final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
                     drlxParseResult.setExprBinding(bindExpressionVariable);
 
-                    context.addDeclarationReplacing(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
+                    context.addDeclarationReplacing(new DeclarationSpec(drlxParseResult.getPatternBinding(), exprRawClass));
 
                     functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                     final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr());
-                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
+                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, exprRawClass));
                     functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
                     return Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.empty(), newBindingFromBinary));
                 }
@@ -155,7 +157,7 @@ public abstract class AccumulateVisitor {
             final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
             final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
-            final Class<?> methodCallExprType = typedExpression.getType();
+            final Class<?> methodCallExprType = typedExpression.getRawClass();
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
 
@@ -192,7 +194,8 @@ public abstract class AccumulateVisitor {
             }
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else {
-            throw new UnsupportedOperationException("Unsupported expression " + expr);
+            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + expression));
+            return Optional.empty();
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");

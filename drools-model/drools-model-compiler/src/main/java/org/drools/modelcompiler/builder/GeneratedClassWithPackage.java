@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -8,16 +7,14 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 public class GeneratedClassWithPackage {
     private final ClassOrInterfaceDeclaration generatedClass;
     private final String packageName;
-    private final Collection<String> imports = new ArrayList<>();
+    private final Collection<String> imports;
+    private final Collection<String> staticImports;
 
-    public GeneratedClassWithPackage(ClassOrInterfaceDeclaration generatedClass, String packageName) {
+    public GeneratedClassWithPackage(ClassOrInterfaceDeclaration generatedClass, String packageName, Collection<String> imports, Collection<String> staticImports) {
         this.generatedClass = generatedClass;
         this.packageName = packageName;
-    }
-
-    public GeneratedClassWithPackage(ClassOrInterfaceDeclaration generatedClass, String packageName, Collection<String> imports) {
-        this(generatedClass, packageName);
-        this.imports.addAll(imports);
+        this.imports = imports;
+        this.staticImports = staticImports;
     }
 
     public ClassOrInterfaceDeclaration getGeneratedClass() {
@@ -28,12 +25,12 @@ public class GeneratedClassWithPackage {
         return packageName;
     }
 
-    public void addImport(String importClass) {
-        imports.add(importClass);
-    }
-
     public Collection<String> getImports() {
         return imports;
+    }
+
+    public Collection<String> getStaticImports() {
+        return staticImports;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package org.drools.model.consequences;
 
-import static org.drools.model.functions.FunctionUtils.toFunctionN;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +25,8 @@ import org.drools.model.functions.Function5;
 import org.drools.model.functions.Function6;
 import org.drools.model.functions.FunctionN;
 import org.drools.model.functions.ScriptBlock;
+
+import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
 public class ConsequenceBuilder {
 
@@ -106,11 +106,11 @@ public class ConsequenceBuilder {
             this.block = block.asBlockN();
         }
 
-        public _0(String language, String script) {
+        public _0(String language, Class<?> ruleClass, String script) {
             super();
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
         }
 
         public <R> _0 insert(final Function0<R> f) {
@@ -135,10 +135,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _1<A> executeScript(String language, String script) {
+        public _1<A> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -164,10 +164,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _2<A, B> executeScript(String language, String script) {
+        public _2<A, B> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -193,10 +193,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _3<A, B, C> executeScript(String language, String script) {
+        public _3<A, B, C> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -222,10 +222,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _4<A, B, C, D> executeScript(String language, String script) {
+        public _4<A, B, C, D> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -251,10 +251,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _5<A, B, C, D, E> executeScript(String language, String script) {
+        public _5<A, B, C, D, E> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -280,10 +280,10 @@ public class ConsequenceBuilder {
             return this;
         }
 
-        public _6<A, B, C, D, E, F> executeScript(String language, String script) {
+        public _6<A, B, C, D, E, F> executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 
@@ -299,10 +299,10 @@ public class ConsequenceBuilder {
             super(declarations);
         }
 
-        public _N executeScript(String language, String script) {
+        public _N executeScript(String language, Class<?> ruleClass, String script) {
             this.usingDrools = true;
             this.language = language;
-            this.block = new ScriptBlock(script);
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
 

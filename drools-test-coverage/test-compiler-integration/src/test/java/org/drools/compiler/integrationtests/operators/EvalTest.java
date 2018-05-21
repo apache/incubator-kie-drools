@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.FactA;
 import org.drools.testcoverage.common.model.FactB;
@@ -58,7 +59,7 @@ public class EvalTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -259,7 +260,7 @@ public class EvalTest {
                 ksession.fireAllRules();
                 fail("Should throw an Exception from the Eval");
             } catch (final Exception e) {
-                assertEquals("this should throw an exception", e.getCause().getMessage());
+                assertTrue(e.getCause().getMessage().contains( "this should throw an exception" ));
             }
         } finally {
             ksession.dispose();
@@ -420,6 +421,7 @@ public class EvalTest {
                                                                          kieBaseTestConfiguration,
                                                                          drl);
         final KieSession ksession = kbase.newKieSession();
+        ReteDumper.dumpRete( ksession );
         try {
             final List list = new ArrayList();
             ksession.setGlobal("list", list);

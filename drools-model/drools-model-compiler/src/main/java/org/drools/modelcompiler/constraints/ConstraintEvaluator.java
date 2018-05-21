@@ -94,7 +94,7 @@ public class ConstraintEvaluator {
         if (declaration == patternDeclaration) {
             return handle.getObject();
         } else {
-            Object object = tuple != null ? tuple.getObject(declaration.getPattern().getOffset()) : handle.getObject();
+            Object object = tuple != null && declaration.getPattern().getOffset() < tuple.size() ? tuple.getObject(declaration.getPattern().getOffset()) : handle.getObject();
             return declaration.getValue(workingMemory, object);
         }
     }
@@ -142,7 +142,15 @@ public class ConstraintEvaluator {
     public boolean equals(Object other) {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
-        return getId().equals(((ConstraintEvaluator) other).getId());
+        ConstraintEvaluator otherEval = (ConstraintEvaluator) other;
+        if (!getId().equals(otherEval.getId())) return false;
+        if (declarations.length != otherEval.declarations.length) return false;
+        for (int i = 0; i < declarations.length; i++) {
+            if (!declarations[i].getExtractor().equals( otherEval.declarations[i].getExtractor() )) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

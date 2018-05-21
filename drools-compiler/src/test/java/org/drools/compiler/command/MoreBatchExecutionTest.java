@@ -44,7 +44,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
     private KieSession ksession = null;
     
     @After
-    public void disposeKSession() throws Exception {
+    public void disposeKSession() {
         if( ksession != null ) { 
             ksession.dispose();
             ksession = null;
@@ -52,7 +52,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testFireAllRules() throws Exception {
+    public void testFireAllRules() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/drl/test_ImportFunctions.drl"), ResourceType.DRL);
         if (kbuilder.hasErrors()) {
@@ -87,7 +87,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testQuery() throws Exception {
+    public void testQuery() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/simple_query_test.drl"), ResourceType.DRL);
         if (kbuilder.hasErrors()) {

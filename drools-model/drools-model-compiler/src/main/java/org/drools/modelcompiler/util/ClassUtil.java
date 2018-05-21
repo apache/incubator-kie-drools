@@ -17,6 +17,8 @@
 package org.drools.modelcompiler.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +37,7 @@ public class ClassUtil {
         try {
             return clazz.getMethod(methodName, argsType);
         } catch (NoSuchMethodException e) {
-            Method m = getBestCandidate(clazz, argsType, methodName);
-            if (m != null) {
-                return m;
-            }
-            throw new UnsupportedOperationException("Method " + methodName + " on class " + clazz.getName() + " is missing");
+            return getBestCandidate(clazz, argsType, methodName);
         }
     }
 
@@ -347,5 +345,18 @@ public class ClassUtil {
         if (c == byte.class) return Byte.class;
         if (c == char.class) return Character.class;
         return Boolean.class;
+    }
+
+    public static Class<?> toRawClass(Type type) {
+        if (type == null) {
+            return null;
+        }
+        if (type instanceof Class<?>) {
+            return ( Class ) type;
+        }
+        if (type instanceof ParameterizedType ) {
+            return toRawClass( (( ParameterizedType ) type).getRawType() );
+        }
+        throw new UnsupportedOperationException( "Unknown type " + type );
     }
 }

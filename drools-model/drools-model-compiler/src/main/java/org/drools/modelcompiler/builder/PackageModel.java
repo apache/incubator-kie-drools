@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,6 +75,8 @@ public class PackageModel {
 
     private static final Logger logger          = LoggerFactory.getLogger(PackageModel.class);
 
+    public static final String DATE_TIME_FORMATTER_FIELD = "DATE_TIME_FORMATTER";
+    public static final String STRING_TO_DATE_METHOD = "string_2_date";
 
     private static final String RULES_FILE_NAME = "Rules";
 
@@ -87,6 +90,8 @@ public class PackageModel {
     private final String rulesFileName;
     
     private Set<String> imports = new HashSet<>();
+    private Set<String> staticImports = new HashSet<>();
+    private Map<String, Method> staticMethods;
 
     private Map<String, Class<?>> globals = new HashMap<>();
 
@@ -150,6 +155,55 @@ public class PackageModel {
         return this.imports;
     }
 
+    public void addStaticImports(Collection<String> imports) {
+        this.staticImports.addAll(imports);
+    }
+
+    public Collection<String> getStaticImports() {
+        return this.staticImports;
+    }
+
+    public Method getStaticMethod(String methodName) {
+        return getStaticMethods().get(methodName);
+    }
+
+    private Map<String, Method> getStaticMethods() {
+        if (staticMethods == null) {
+            staticMethods = new HashMap<>();
+            for (String i : staticImports) {
+                if (i.endsWith( ".*" )) {
+                    String className = i.substring( 0, i.length()-2 );
+                    try {
+                        Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
+                        for (Method m : importedClass.getMethods()) {
+                            if (java.lang.reflect.Modifier.isStatic(m.getModifiers())) {
+                                staticMethods.put(m.getName(), m);
+                            }
+                        }
+                    } catch (ClassNotFoundException e1) {
+                        throw new UnsupportedOperationException("Class not found", e1);
+                    }
+                } else {
+                    int splitPoint = i.lastIndexOf( '.' );
+                    String className = i.substring( 0, splitPoint );
+                    String methodName = i.substring( splitPoint+1 );
+                    try {
+                        Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
+                        for (Method m : importedClass.getMethods()) {
+                            if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getName().equals( methodName )) {
+                                staticMethods.put(methodName, m);
+                                break;
+                            }
+                        }
+                    } catch (ClassNotFoundException e1) {
+                        throw new UnsupportedOperationException("Class not found", e1);
+                    }
+                }
+            }
+        }
+        return staticMethods;
+    }
+
     public void addGlobals(Map<String, String> values) {
         Map<String, Class<?>> transformed;
         transformed = values
@@ -157,7 +211,7 @@ public class PackageModel {
                 .stream()
                 .collect(Collectors.toMap( Entry::getKey, e -> {
                     try {
-                        return Class.forName(e.getValue());
+                        return Class.forName(e.getValue(), true, configuration.getClassLoader());
                     } catch (ClassNotFoundException e1) {
                         throw new UnsupportedOperationException("Class not found", e1);
                     }
@@ -287,20 +341,27 @@ public class PackageModel {
         rulesClass.addImplementedType(Model.class);
 
         BodyDeclaration<?> dateFormatter = JavaParser.parseBodyDeclaration(
-                "public final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
+                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
         rulesClass.addMember(dateFormatter);
 
-        BodyDeclaration<?> getNameMethod = JavaParser.parseBodyDeclaration(
+        BodyDeclaration<?> string2dateMethodMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "        public String getName() {\n" +
                 "        return \"" + name + "\";\n" +
+                "    }\n"
+                );
+        rulesClass.addMember(string2dateMethodMethod);
+
+        BodyDeclaration<?> getNameMethod = JavaParser.parseBodyDeclaration(
+                "    public static Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
+                "        return GregorianCalendar.from(LocalDate.parse(s, DATE_TIME_FORMATTER).atStartOfDay(ZoneId.systemDefault())).getTime();\n" +
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
 
         BodyDeclaration<?> getRulesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Rule> getRules() {\n" +
+                "    public List<org.drools.model.Rule> getRules() {\n" +
                 "        return rules;\n" +
                 "    }\n"
                 );
@@ -315,21 +376,21 @@ public class PackageModel {
 
         BodyDeclaration<?> getGlobalsMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Global> getGlobals() {\n" +
+                "    public List<org.drools.model.Global> getGlobals() {\n" +
                 "        return globals;\n" +
                 "    }\n");
         rulesClass.addMember(getGlobalsMethod);
 
         BodyDeclaration<?> getQueriesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Query> getQueries() {\n" +
+                "    public List<org.drools.model.Query> getQueries() {\n" +
                 "        return queries;\n" +
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
         BodyDeclaration<?> getTypeMetaDataMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<TypeMetaData> getTypeMetaDatas() {\n" +
+                "    public List<org.drools.model.TypeMetaData> getTypeMetaDatas() {\n" +
                 "        return typeMetaDatas;\n" +
                 "    }\n");
         rulesClass.addMember(getTypeMetaDataMethod);
@@ -363,18 +424,18 @@ public class PackageModel {
         rulesListInitializer.setBody(rulesListInitializerBody);
 
         queryMethods.values().forEach(rulesClass::addMember);
-        buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "Query", "queries", false );
-        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "WindowReference", "windowReferences", false );
-        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "Global", "globals", true );
+        buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Query", "queries", false );
+        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.WindowReference", "windowReferences", false );
+        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
-            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = new ArrayList<>();");
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = new ArrayList<>();");
             rulesClass.addMember(typeMetaDatasList);
             for (Expression expr : typeMetaDataExpressions) {
                 addInitStatement( rulesListInitializerBody, expr, "typeMetaDatas" );
             }
         } else {
-            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = Collections.emptyList();");
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = Collections.emptyList();");
             rulesClass.addMember(typeMetaDatasList);
         }
 
@@ -399,7 +460,7 @@ public class PackageModel {
                 results.with(cuRulesMethod);
                 cuRulesMethod.setPackageDeclaration(name);
                 manageImportForCompilationUnit(cuRulesMethod);
-                cuRulesMethod.addImport(JavaParser.parseImport("import static " + name + "." + rulesFileName + ".*;"));
+                cuRulesMethod.addImport(name + "." + rulesFileName, true, true);
                 String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
                 return cuRulesMethod.addClass(currentRulesMethodClassName);
             });
@@ -416,8 +477,8 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
-                JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>(" + ruleCount + ");") :
-                JavaParser.parseBodyDeclaration("List<Rule> rules = rulesList;");
+                JavaParser.parseBodyDeclaration("List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
+                JavaParser.parseBodyDeclaration("List<org.drools.model.Rule> rules = rulesList;");
         rulesClass.addMember(rulesList);
 
         if (!rulesListInitializer.getBody().getStatements().isEmpty()) {
@@ -457,9 +518,9 @@ public class PackageModel {
         CompilationUnit cu = new CompilationUnit();
         results.with(cu);
         cu.setPackageDeclaration(name);
-        cu.addImport(JavaParser.parseImport("import " + Arrays.class.getCanonicalName() + ";"));
-        cu.addImport(JavaParser.parseImport("import " + List.class.getCanonicalName() + ";"));
-        cu.addImport(JavaParser.parseImport("import " + Rule.class.getCanonicalName() + ";"));
+        cu.addImport(Arrays.class.getCanonicalName());
+        cu.addImport(List.class.getCanonicalName());
+        cu.addImport(Rule.class.getCanonicalName());
         String currentRulesMethodClassName = rulesFileName + "Rules" + index;
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
         return buildRulesField( rulesClass );
@@ -475,25 +536,28 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        cu.addImport(JavaParser.parseImport("import java.util.*;"                          ));
-        cu.addImport(JavaParser.parseImport("import org.drools.model.*;"                   ));
+        cu.addImport("java.util.*");
+        cu.addImport("org.drools.model.*");
         if(isPattern) {
-            cu.addImport(JavaParser.parseImport("import org.drools.modelcompiler.dsl.pattern.D;"));
+            cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
         } else {
-            cu.addImport(JavaParser.parseImport("import org.drools.modelcompiler.dsl.flow.D;"));
+            cu.addImport("org.drools.modelcompiler.dsl.flow.D");
         }
-        cu.addImport(JavaParser.parseImport("import org.drools.model.Index.ConstraintType;"));
-        cu.addImport(JavaParser.parseImport("import java.time.*;"));
-        cu.addImport(JavaParser.parseImport("import java.time.format.*;"));
-        cu.addImport(JavaParser.parseImport("import java.text.*;"));
-        cu.addImport(JavaParser.parseImport("import org.drools.core.util.*;"));
+        cu.addImport("org.drools.model.Index.ConstraintType");
+        cu.addImport("java.time.*");
+        cu.addImport("java.time.format.*");
+        cu.addImport("java.text.*");
+        cu.addImport("org.drools.core.util.*");
 
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
                 continue; // skip same-package star import.
             }
-            cu.addImport(JavaParser.parseImport("import "+i+";"));
+            cu.addImport(i);
+        }
+        for (String i : staticImports) {
+            cu.addImport( i, true, false );
         }
     }
 

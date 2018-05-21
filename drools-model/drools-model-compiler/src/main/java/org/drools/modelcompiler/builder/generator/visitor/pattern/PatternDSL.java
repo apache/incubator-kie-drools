@@ -13,6 +13,7 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
@@ -27,7 +28,7 @@ import org.kie.api.definition.type.Position;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
-abstract class PatternDSL implements DSLNode {
+public abstract class PatternDSL implements DSLNode {
 
     protected final RuleContext context;
     protected final PackageModel packageModel;
@@ -43,6 +44,12 @@ abstract class PatternDSL implements DSLNode {
         this.constraintDescrs = constraintDescrs;
         this.allConstraintsPositional = allConstraintsPositional;
         this.patternType = patternType;
+    }
+
+    public void initPattern() {
+        generatePatternIdentifierIfMissing();
+        final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
+        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
     }
 
     protected static String getConstraintExpression(Class<?> patternType, BaseDescr constraint, boolean isPositional) {
@@ -79,7 +86,13 @@ abstract class PatternDSL implements DSLNode {
 
     protected Optional<Expression> buildFromDeclaration(PatternDescr pattern) {
         Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
-        Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel)::visit);
+        Class<?> patternType;
+        try {
+            patternType = context.getTypeResolver().resolveType( pattern.getObjectType() );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
+        Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel, patternType)::visit);
         Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
         return declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
     }
@@ -163,13 +176,22 @@ abstract class PatternDSL implements DSLNode {
                             new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
                             createSimpleConstraint( drlxParseResult, pattern );
                         constraint.buildPattern();
+                        registerUsedBindingInOr(drlxParseResult.getExprBinding());
                     }
 
                     @Override
                     public void onFail( DrlxParseFail failure ) {
-                        context.addCompilationError( failure.getError() );
+                        if (failure.getError() != null) {
+                            context.addCompilationError( failure.getError() );
+                        }
                     }
                 } );
+    }
+
+    private void registerUsedBindingInOr(String exprBinding) {
+        if(context.isNestedInsideOr()) {
+            context.getBindingOr().add(exprBinding);
+        }
     }
 
     protected abstract DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern );

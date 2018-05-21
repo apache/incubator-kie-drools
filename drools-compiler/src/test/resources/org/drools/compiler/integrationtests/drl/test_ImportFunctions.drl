@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -32,7 +32,7 @@ rule "test rule1"
         Cheese()
     then
         list.add( getString1( "rule1" ) );
-end    
+end
 
 rule "test rule2"
     salience 20
@@ -40,7 +40,7 @@ rule "test rule2"
         Cheese( type == ( getString2("stilton") ) );
     then
         list.add( getString3( "rule", new Integer( 2 ) ) );
-end    
+end
 
 rule "test rule3"
     salience 10
@@ -49,7 +49,7 @@ rule "test rule3"
         eval( $type.equals( getString1( "stilton" ) ) );
     then
         list.add( getString2( "rule3" ) );
-end    
+end
 
 rule "test rule4"
     salience 0
@@ -57,4 +57,4 @@ rule "test rule4"
         Cheese();
     then
         list.add( getString4( "rule4" ) );
-end    
+end

@@ -16,12 +16,11 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,6 +43,7 @@ import org.drools.model.functions.ScriptBlock;
 import org.drools.modelcompiler.RuleContext;
 import org.kie.api.definition.KiePackage;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
@@ -53,9 +53,13 @@ public class MVELConsequence implements Consequence {
     private final org.drools.model.Consequence consequence;
     private final RuleContext context;
 
+    private MVELCompilationUnit cu;
+    private ExecutableStatement compiledExpression;
+
     public MVELConsequence( org.drools.model.Consequence consequence, RuleContext context ) {
         this.consequence = consequence;
         this.context = context;
+        init();
     }
 
     @Override
@@ -65,24 +69,38 @@ public class MVELConsequence implements Consequence {
 
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
-        // same as lambda consequence... 
+        Map<String, Object> mvelContext = new HashMap<>();
+        mvelContext.put("this", knowledgeHelper);
+        mvelContext.put("drools", knowledgeHelper);
+        mvelContext.put("kcontext", knowledgeHelper);
+        mvelContext.put("rule", knowledgeHelper.getRule());
+
         Tuple tuple = knowledgeHelper.getTuple();
         Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
 
-        Variable[] vars = consequence.getVariables();
-        Map<Variable, Object> facts = new LinkedHashMap<>(); // ...but the facts are association of Variable and its value, preserving order.
-
         int declrCounter = 0;
-        for (Variable var : vars) {
+        for (Variable var : consequence.getVariables()) {
             if ( var.isFact() ) {
                 Declaration declaration = declarations[declrCounter++];
                 InternalFactHandle fh = tuple.get( declaration );
-                facts.put(var, declaration.getValue((InternalWorkingMemory) workingMemory, fh.getObject()));
+                mvelContext.put(var.getName(), declaration.getValue((InternalWorkingMemory) workingMemory, fh.getObject()));
             } else {
-                facts.put(var, workingMemory.getGlobal(var.getName()));
+                mvelContext.put(var.getName(), workingMemory.getGlobal(var.getName()));
             }
         }
-        
+
+        CachingMapVariableResolverFactory cachingFactory = new CachingMapVariableResolverFactory(mvelContext);
+
+        VariableResolverFactory factory = cu.getFactory( knowledgeHelper,  ((AgendaItem )knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
+                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+
+        cachingFactory.setNextFactory(factory);
+
+        MVEL.executeExpression(compiledExpression, knowledgeHelper, cachingFactory);
+    }
+
+    private void init() {
+        Variable[] vars = consequence.getVariables();
         ScriptBlock scriptBlock = null;
         try {
             scriptBlock = (ScriptBlock) consequence.getBlock();
@@ -95,9 +113,9 @@ public class MVELConsequence implements Consequence {
         String expression = MVELConsequenceBuilder.processMacros(originalRHS);
         String[] globalIdentifiers = new String[] {};
         String[] default_inputIdentifiers = new String[]{"this", "drools", "kcontext", "rule"};
-        String[] inputIdentifiers = Stream.concat(Arrays.asList(default_inputIdentifiers).stream(), facts.entrySet().stream().map(kv -> kv.getKey().getName())).collect(Collectors.toList()).toArray(new String[]{});
+        String[] inputIdentifiers = Stream.concat(Arrays.asList(default_inputIdentifiers).stream(), Stream.of(vars).map(Variable::getName)).collect(Collectors.toList()).toArray(new String[]{});
         String[] default_inputTypes = new String[]{"org.drools.core.spi.KnowledgeHelper", "org.drools.core.spi.KnowledgeHelper", "org.drools.core.spi.KnowledgeHelper", "org.kie.api.definition.rule.Rule"};
-        String[] inputTypes = Stream.concat(Arrays.asList(default_inputTypes).stream(), facts.entrySet().stream().map(kv -> kv.getKey().getType().getName())).collect(Collectors.toList()).toArray(new String[]{});
+        String[] inputTypes = Stream.concat(Arrays.asList(default_inputTypes).stream(), Stream.of(vars).map(var -> var.getType().getName())).collect(Collectors.toList()).toArray(new String[]{});
         // ^^ please notice about inputTypes, it is to use the Class.getName(), because is later used by the Classloader internally in MVEL to load the class,
         //    do NOT replace with getCanonicalName() otherwise inner classes will not be loaded correctly.
         int languageLevel = 4;
@@ -108,18 +126,18 @@ public class MVELConsequence implements Consequence {
         Declaration[] localDeclarations = new Declaration[] {};
         String[] otherIdentifiers = new String[] {};
 
-        MVELCompilationUnit cu = new MVELCompilationUnit(name,
-                                                         expression,
-                                                         globalIdentifiers,
-                                                         operators,
-                                                         previousDeclarations,
-                                                         localDeclarations,
-                                                         otherIdentifiers,
-                                                         inputIdentifiers,
-                                                         inputTypes,
-                                                         languageLevel,
-                                                         strictMode,
-                                                         readLocalsFromTuple );
+        cu = new MVELCompilationUnit(name,
+                expression,
+                globalIdentifiers,
+                operators,
+                previousDeclarations,
+                localDeclarations,
+                otherIdentifiers,
+                inputIdentifiers,
+                inputTypes,
+                languageLevel,
+                strictMode,
+                readLocalsFromTuple );
 
         // TODO unfortunately the MVELDialectRuntimeData would be the one of compile time
         // the one from runtime is not helpful, in fact the dialect registry for runtime is empty:
@@ -137,28 +155,19 @@ public class MVELConsequence implements Consequence {
             }
         }
 
-        Serializable cuResult = cu.getCompiledExpression(runtimeData); // sometimes here it was passed as a 2nd argument a String?? similar to `rule R in file file.drl`
-        ExecutableStatement compiledExpression = (ExecutableStatement) cuResult;
+        ParserConfiguration parserConfiguration = runtimeData.getParserConfiguration();
+        parserConfiguration.setClassLoader( context.getClassLoader() );
 
-        // TODO the part above up to the ExecutableStatement compiledExpression should be cached.
-
-        Map<String, Object> mvelContext = new HashMap<>();
-        mvelContext.put("this", knowledgeHelper);
-        mvelContext.put("drools", knowledgeHelper);
-        mvelContext.put("kcontext", knowledgeHelper);
-        mvelContext.put("rule", knowledgeHelper.getRule());
-        for (Entry<Variable, Object> kv : facts.entrySet()) {
-            mvelContext.put(kv.getKey().getName(), kv.getValue());
+        Class<?> ruleClass = scriptBlock.getRuleClass();
+        if (ruleClass != null) {
+            for (Method m : ruleClass.getDeclaredMethods()) {
+                if ( Modifier.isStatic( m.getModifiers() ) ) {
+                    runtimeData.getParserConfiguration().addImport( m.getName(), m );
+                }
+            }
         }
 
-        CachingMapVariableResolverFactory cachingFactory = new CachingMapVariableResolverFactory(mvelContext);
-
-        VariableResolverFactory factory = cu.getFactory( knowledgeHelper,  ((AgendaItem )knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
-                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
-
-        cachingFactory.setNextFactory(factory);
-
-        MVEL.executeExpression(compiledExpression, knowledgeHelper, cachingFactory);
+        compiledExpression = (ExecutableStatement) cu.getCompiledExpression(runtimeData);
     }
 
 }

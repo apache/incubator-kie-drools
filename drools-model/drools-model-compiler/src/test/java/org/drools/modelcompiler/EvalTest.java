@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -341,5 +342,57 @@ public class EvalTest extends BaseModelTest {
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         assertEquals(1, results.size());
+    }
+
+    @Test
+    @Ignore
+    public void testEvalWithGlobal() {
+        final String drl1 =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global java.lang.Integer globalInt\n" +
+                        "rule R1 when\n" +
+                        "	 Integer(this == eval(globalInt))\n" +
+                        "then\n" +
+                        "  insert(new Result(\"match\"));\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.setGlobal("globalInt", 1);
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "match");
+
+    }
+
+    @Test
+    @Ignore("this runs in pattern but not in flow")
+    public void testEvalWithGlobal2() {
+        final String drl1 =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                        "global java.lang.Integer globalInt\n" +
+                        "rule R1 when\n" +
+                        "	 eval(globalInt == globalInt)\n" +
+                        "then\n" +
+                        "  insert(new Result(\"match\"));\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.setGlobal("globalInt", 1);
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "match");
+
     }
 }

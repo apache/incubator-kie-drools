@@ -33,6 +33,9 @@ public class Person implements Serializable {
     private Pet pet;
     private boolean alive;
     private boolean happy;
+    private Cheese cheese;
+
+    private Object object;
 
     public Person() {
     }
@@ -127,6 +130,22 @@ public class Person implements Serializable {
 
     public void setHappy(final boolean happy) {
         this.happy = happy;
+    }
+
+    public Cheese getCheese() {
+        return cheese;
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(final Object object) {
+        this.object = object;
+    }
+
+    public void setCheese(final Cheese cheese) {
+        this.cheese = cheese;
     }
 
     @Override
