@@ -1,6 +1,8 @@
 package org.drools.modelcompiler.domain;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.kie.api.definition.type.Position;
@@ -19,6 +21,8 @@ public class Person extends AbstractReactiveObject {
     private Boolean employed;
 
     private BigDecimal money;
+
+    private Map<Integer, Integer> items = new HashMap<>();
 
     public Person() { }
 
@@ -104,6 +108,14 @@ public class Person extends AbstractReactiveObject {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    public void setItems(Map<Integer, Integer> items) {
+        this.items = items;
+    }
+
+    public Map<Integer, Integer> getItems() {
+        return items;
     }
 
     @Override

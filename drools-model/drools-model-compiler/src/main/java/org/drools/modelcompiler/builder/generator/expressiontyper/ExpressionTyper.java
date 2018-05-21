@@ -144,36 +144,7 @@ public class ExpressionTyper {
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
         } else if (drlxExpr instanceof NameExpr) {
-            String name = drlxExpr.toString();
-            Optional<DeclarationSpec> decl = ruleContext.getDeclarationById(name);
-            if (decl.isPresent()) {
-                // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
-                context.addUsedDeclarations(name);
-                return of(new TypedExpression(drlxExpr, decl.get().getDeclarationClass()));
-            } if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
-                // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
-                context.addUsedDeclarations(name);
-                return of(new TypedExpression(drlxExpr));
-            } else if(packageModel.getGlobals().containsKey(name)){
-                Expression plusThis = new NameExpr(name);
-                context.addUsedDeclarations(name);
-                return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
-            } else {
-                TypedExpression expression;
-                try {
-                    expression = nameExprToMethodCallExpr(name, typeCursor, null);
-                } catch (IllegalArgumentException e) {
-                    if (isPositional || ruleContext.getQueryName().isPresent()) {
-                        String unificationVariable = ruleContext.getOrCreateUnificationId(name);
-                        expression = new TypedExpression(unificationVariable, typeCursor, name);
-                        return of(expression);
-                    }
-                    return Optional.empty();
-                }
-                context.addReactOnProperties(name);
-                Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
-                return of(new TypedExpression(plusThis, expression.getType(), name));
-            }
+            return nameExpr(drlxExpr, typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
@@ -183,7 +154,7 @@ public class ExpressionTyper {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
             OperatorSpec opSpec = getOperatorSpec(drlxExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
 
-            return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left ), left.getType())
+            return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left, this), left.getType())
                     .setStatic(opSpec.isStatic())
                     .setLeft(left) );
 
@@ -208,7 +179,7 @@ public class ExpressionTyper {
                     );
 
             return optLeft.map(left ->
-                                       new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left ), left.getType())
+                                       new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left, this), left.getType())
                                                .setStatic(opSpec.isStatic())
                                                .setLeft(left));
         } else if (drlxExpr instanceof ObjectCreationExpr) {
@@ -222,14 +193,55 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
             if (Map.class.isAssignableFrom( typeCursor )) {
-                MethodCallExpr mapAccessExpr = new MethodCallExpr( arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName(), "get" );
-                mapAccessExpr.addArgument( arrayAccessExpr.getIndex() );
-                TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Object.class);
-                return Optional.of(typedExpression);
+                return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
+            } else {
+                final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
+                return nameExpr.flatMap( te -> createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
             }
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private Optional<TypedExpression> createMapAccessExpression(Expression index, Expression scope) {
+        MethodCallExpr mapAccessExpr = new MethodCallExpr(scope, "get" );
+        mapAccessExpr.addArgument(index);
+        TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Object.class);
+        return Optional.of(typedExpression);
+    }
+
+    private Optional<TypedExpression> nameExpr(Expression drlxExpr, Class<?> typeCursor) {
+        String name = drlxExpr.toString();
+        Optional<DeclarationSpec> decl = ruleContext.getDeclarationById(name);
+        if (decl.isPresent()) {
+            // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
+            context.addUsedDeclarations(name);
+            return of(new TypedExpression(drlxExpr, decl.get().getDeclarationClass()));
+        }
+        if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
+            // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
+            context.addUsedDeclarations(name);
+            return of(new TypedExpression(drlxExpr));
+        } else if(packageModel.getGlobals().containsKey(name)){
+            Expression plusThis = new NameExpr(name);
+            context.addUsedDeclarations(name);
+            return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
+        } else {
+            TypedExpression expression;
+            try {
+                expression = nameExprToMethodCallExpr(name, typeCursor, null);
+            } catch (IllegalArgumentException e) {
+                if (isPositional || ruleContext.getQueryName().isPresent()) {
+                    String unificationVariable = ruleContext.getOrCreateUnificationId(name);
+                    expression = new TypedExpression(unificationVariable, typeCursor, name);
+                    return of(expression);
+                }
+                return Optional.empty();
+            }
+            context.addReactOnProperties(name);
+            Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
+            return of(new TypedExpression(plusThis, expression.getType(), name));
+        }
     }
 
     private OperatorSpec getOperatorSpec( Expression drlxExpr, NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
