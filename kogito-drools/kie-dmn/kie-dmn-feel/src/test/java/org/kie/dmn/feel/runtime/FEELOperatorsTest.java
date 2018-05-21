@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
@@ -59,6 +60,9 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "10 in ]5..10[", Boolean.FALSE , null},
                 { "10 in (5..10]", Boolean.TRUE , null},
                 { "\"b\" in (\"a\"..\"z\"]", Boolean.TRUE , null},
+                {" duration(\"P1Y2M\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", Boolean.TRUE, null},
+                {" duration(\"P1Y4M\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", Boolean.FALSE, null},
+                {" duration(\"PT24H\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", null, FEELEvent.Severity.ERROR},
 
                 // instance of
                 {"10 instance of number", Boolean.TRUE , null},

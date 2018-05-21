@@ -87,7 +87,7 @@ public class InNode
                 return ((Range) expr).includes( value );
             } catch ( Exception e ) {
                 ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
-                throw e;
+                return null;
             }
         } else if ( value != null ) {
             return value.equals( expr );
