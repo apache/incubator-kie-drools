@@ -1448,4 +1448,81 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( map );
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testMapAccessProperty() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "   Person( items[1] == 2000 )" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 2000);
+        map.put(2, 2000);
+
+        final Person luca = new Person("Luca");
+        luca.setItems(map);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testMapAccessPropertyWithCast() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "   Person( items[(Integer) 1] == 2000 )" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 2000);
+        map.put(2, 2000);
+
+        final Person luca = new Person("Luca");
+        luca.setItems(map);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testInOperators() {
+        final String drl1 = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"eval rewrite with 'in'\"\n" +
+                "    when\n" +
+                "        $p : Person( age in ( 1, (1 + 1) ))\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person luca = new Person("Luca");
+        luca.setAge(2);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        mario.setAge(12);
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
 }
