@@ -342,7 +342,7 @@ nameRef
     ;
 
 nameRefOtherToken
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}')
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!')
     ;
 
 /********************************
