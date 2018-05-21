@@ -470,7 +470,6 @@ public class DMNDecisionTableRuntimeTest {
                                                DMNDecisionResult.DecisionEvaluationStatus.FAILED);
     }
 
-    @Ignore("This should be unignored after DROOLS-2543 is fixed")
     @Test
     public void testDecisionTablesQuestionMarkMultivalue() {
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalue.dmn",
