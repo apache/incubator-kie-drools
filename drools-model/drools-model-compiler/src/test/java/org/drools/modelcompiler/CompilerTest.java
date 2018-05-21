@@ -1455,6 +1455,32 @@ public class CompilerTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "import java.util.Map;\n" +
                 "rule R1 when\n" +
+                "   Person( items[1] == 2000 )" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 2000);
+        map.put(2, 2000);
+
+        final Person luca = new Person("Luca");
+        luca.setItems(map);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testMapAccessPropertyWithCast() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
                 "   Person( items[(Integer) 1] == 2000 )" +
                 "then\n" +
                 "end\n";
