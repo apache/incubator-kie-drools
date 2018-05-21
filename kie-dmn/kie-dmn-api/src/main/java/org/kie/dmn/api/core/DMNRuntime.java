@@ -123,6 +123,15 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
     DMNResult evaluateById( DMNModel model, DMNContext context, String... decisionIds );
 
     /**
+     * Evaluate all test cases for the model
+     *
+     * @param model the model to evaluate
+     *
+     * @return result containing a list of DMN messages generated during the evaluation of tests.
+     */
+    DMNResult testAll( DMNModel model );
+
+    /**
      * Creates a new empty DMNContext
      *
      * @return a new empty DMNContext

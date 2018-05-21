@@ -16,8 +16,11 @@
 
 package org.kie.dmn.core.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +41,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -54,9 +58,18 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.model.v1_1.extensions.Component;
+import org.kie.dmn.model.v1_1.extensions.InputNode;
+import org.kie.dmn.model.v1_1.extensions.ResultNode;
+import org.kie.dmn.model.v1_1.extensions.TestCase;
+import org.kie.dmn.model.v1_1.extensions.TestCases;
+import org.kie.dmn.model.v1_1.extensions.ValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.DatatypeConverter;
 
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
@@ -65,6 +78,8 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SK
 public class DMNRuntimeImpl
         implements DMNRuntime {
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeImpl.class );
+
+    private static final QName XSI_TYPE = new QName("http://www.w3.org/2001/XMLSchema-instance", "type", "xsi");
 
     private KieRuntime                         runtime;
     private DMNRuntimeEventManagerImpl         eventManager;
@@ -98,7 +113,7 @@ public class DMNRuntimeImpl
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
-    
+
     @Override
     public DMNModel getModelById(String namespace, String modelId) {
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
@@ -551,6 +566,58 @@ public class DMNRuntimeImpl
     private void reportFailure(DMNDecisionResultImpl dr, DMNMessage message, DMNDecisionResult.DecisionEvaluationStatus status) {
         dr.getMessages().add( message );
         dr.setEvaluationStatus( status );
+    }
+
+    @Override
+    public DMNResult testAll(DMNModel model) {
+        TestCases testCases = null;
+        for ( Object extension : model.getDefinitions().getExtensionElements().getAny() ) {
+            if ( extension instanceof TestCases ) {
+                testCases = (TestCases) extension;
+                break;
+            }
+        }
+        if ( testCases == null ) {
+            return new DMNResultImpl( model );
+        }
+        DMNContext ctx = newContext();
+        DMNResultImpl result = null;
+        boolean typeCheck = performRuntimeTypeCheck( model );
+        for ( TestCase testCase : testCases.getTestCase() ) {
+            for ( InputNode inputNode : testCase.getInputNode() ) {
+                ctx.set( inputNode.getName(), parse( inputNode, model.getInputByName(inputNode.getName()).getType() ) );
+            }
+            result = createResult( model, ctx );
+            for ( ResultNode resultNode : testCase.getResultNode() ) {
+                DecisionNode decisionNode = model.getDecisionByName( resultNode.getName() );
+                evaluateDecision( ctx, result, decisionNode, typeCheck );
+            }
+        }
+        return result == null ? new DMNResultImpl( model) : result;
+    }
+
+    private Object parse(ValueType value, DMNType type) {
+        if ( !value.getComponent().isEmpty() ) {
+            Map<String, DMNType> fields = type.getFields();
+            Map<String, Object> result = new HashMap<>();
+            for ( Component component : value.getComponent() ) {
+                String name = component.getName();
+                result.put( name, parse( component.getValue().getText(), fields.get( name ), component.getValue().getAdditionalAttributes().get( XSI_TYPE ) ) );
+            }
+            return result;
+        } else {
+            return parse( value.getValue().getText(), type, value.getValue().getAdditionalAttributes().get( XSI_TYPE ) );
+        }
+    }
+
+    private Object parse(String text, DMNType type, String xsiType) {
+        if ( xsiType != null ) {
+            if ( xsiType.contains( "gYearMonth" ) || xsiType.contains( "gYear" ) || xsiType.contains( "gMonthDay" ) || xsiType.contains( "gMonth" ) || xsiType.contains( "gDay" )) {
+                return LocalDateTime.ofInstant( DatatypeConverter.parseDate( text ).toInstant(), ZoneId.systemDefault()) ;
+            }
+        }
+        final Object result = ( (BuiltInType) ((BaseDMNTypeImpl) type ).getFeelType() ).fromString( text );
+        return result != null ? result : text;
     }
 
     @Override
