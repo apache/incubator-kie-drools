@@ -1,10 +1,11 @@
 package org.drools.core.fluent.impl;
 
-import org.kie.api.runtime.builder.*;
-
 import java.util.Map;
 
-public abstract class BaseBatchWithProcessFluent<T, E>  extends BaseBatchFluent<T, E>
+import org.kie.api.runtime.builder.ProcessFluent;
+import org.kie.api.runtime.builder.WorkItemManagerFluent;
+
+public abstract class BaseBatchWithProcessFluent<T, E> extends BaseBatchFluent<T, E>
         implements ProcessFluent<T, E> {
 
     public BaseBatchWithProcessFluent(ExecutableImpl fluentCtx) {
@@ -50,5 +51,4 @@ public abstract class BaseBatchWithProcessFluent<T, E>  extends BaseBatchFluent<
     public WorkItemManagerFluent<WorkItemManagerFluent, T, E> getWorkItemManager() {
         return null;
     }
-
 }

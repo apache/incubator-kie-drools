@@ -53,8 +53,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                     "    kcontext.getKnowledgeRuntime().setGlobal(\"oldName\", $name);" +
                     "end";
 
-
-    ReleaseId    releaseIdUnit = SimulateTestBase.createKJarWithMultipleResources("org.kie.unit2", new String[]{drlUnit, drlUnit1}, new ResourceType[] {ResourceType.DRL, ResourceType.DRL});
+    ReleaseId releaseIdUnit = SimulateTestBase.createKJarWithMultipleResources("org.kie.unit2", new String[]{drlUnit, drlUnit1}, new ResourceType[]{ResourceType.DRL, ResourceType.DRL});
 
     @Test
     public void testUnit() {
@@ -66,17 +65,17 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
-                    .addBinding("persons")
-                    .insert(new Person("Mario", 10))
-                    .insert(new Person("Daniele", 30))
-                    .insert(new Person("Mark", 40))
+                .addBinding("persons")
+                .insert(new Person("Mario", 10))
+                .insert(new Person("Daniele", 30))
+                .insert(new Person("Mark", 40))
                 .buildDataSource()
 
                 .run(RuleUnitTest.AdultUnit.class)
                 .out("firedRules")
                 .dispose();
 
-        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals(2, requestContext.getOutputs().get("firedRules"));
     }
@@ -91,10 +90,10 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
-                    .addBinding("persons").addBinding("people")
-                    .insert(new Person("Mario", 40))
-                    .insert(new Person("Daniele", 30))
-                    .insert(new Person("Mark", 90))
+                .addBinding("persons").addBinding("people")
+                .insert(new Person("Mario", 40))
+                .insert(new Person("Daniele", 30))
+                .insert(new Person("Mark", 90))
                 .buildDataSource()
 
                 .run(RuleUnitTest.AdultUnit.class)
@@ -103,7 +102,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .out("firedRules2")
                 .dispose();
 
-        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals(3, requestContext.getOutputs().get("firedRules1"));
         assertEquals(1, requestContext.getOutputs().get("firedRules2"));
@@ -119,9 +118,9 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .newRuleUnitExecutor()
 
                 .createDataSource(Person.class)
-                    .insert(new Person("Mario", 10))
-                    .insert(new Person("Daniele", 30))
-                    .insert(new Person("Mark", 40))
+                .insert(new Person("Mario", 10))
+                .insert(new Person("Daniele", 30))
+                .insert(new Person("Mark", 40))
                 .buildDataSource()
 
                 .run(RuleUnitTest.AdultUnit.class)
@@ -131,7 +130,6 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals(0, requestContext.getOutputs().get("firedRulesNoBinding"));
-
     }
 
     @Test
@@ -153,7 +151,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .out("firedRules")
                 .dispose();
 
-        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals(1, requestContext.getOutputs().get("firedRules"));
     }
@@ -174,22 +172,24 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .run((() -> new AdultUnitDifferentDataSourceName(people)))
                 .getGlobal("oldName")
                 .set("test")
-                .bindVariableByExpression("lazyVariable" , context -> context.get("test"))
+                .bindVariableByExpression("lazyVariable", context -> context.get("test"))
                 .get("lazyVariable")
                 .out("firedRules")
                 .dispose();
 
-        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals("Mark", requestContext.getOutputs().get("firedRules"));
     }
 
     public static class AdultUnitDifferentDataSourceName implements RuleUnit {
+
         private DataSource<Person> people;
 
-        public AdultUnitDifferentDataSourceName( ) { }
+        public AdultUnitDifferentDataSourceName() {
+        }
 
-        public AdultUnitDifferentDataSourceName( DataSource<Person> people ) {
+        public AdultUnitDifferentDataSourceName(DataSource<Person> people) {
             this.people = people;
         }
 
@@ -197,5 +197,4 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
             return people;
         }
     }
-
 }

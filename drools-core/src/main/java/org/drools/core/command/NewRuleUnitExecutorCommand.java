@@ -42,26 +42,27 @@ public class NewRuleUnitExecutorCommand
         this.releaseId = releaseId;
     }
 
+    @Override
     public RuleUnitExecutor execute(Context context) {
         KieContainer kieContainer;
 
-        if ( releaseId != null ) {
+        if (releaseId != null) {
             // use the new API to retrieve the session by ID
-            KieServices  kieServices  = KieServices.Factory.get();
+            KieServices kieServices = KieServices.Factory.get();
             kieContainer = kieServices.newKieContainer(releaseId);
         } else {
-            kieContainer = ((RegistryContext)context).lookup( KieContainer.class );
-            if ( kieContainer == null ) {
+            kieContainer = ((RegistryContext) context).lookup(KieContainer.class);
+            if (kieContainer == null) {
                 throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
             }
         }
 
         RuleUnitExecutor ruleUnitExecutor = sessionId != null ? kieContainer.newRuleUnitExecutor(sessionId) : kieContainer.newRuleUnitExecutor();
 
-        ((RegistryContext)context).register( RuleUnitExecutor.class, ruleUnitExecutor);
+        ((RegistryContext) context).register(RuleUnitExecutor.class, ruleUnitExecutor);
 
         // Add KieSession from RuleUnit to support already existing Command
-        ((RegistryContext)context).register(KieSession.class, ruleUnitExecutor.getKieSession());
+        ((RegistryContext) context).register(KieSession.class, ruleUnitExecutor.getKieSession());
 
         return ruleUnitExecutor;
     }

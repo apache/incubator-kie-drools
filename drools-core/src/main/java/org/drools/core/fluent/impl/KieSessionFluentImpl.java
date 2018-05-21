@@ -21,11 +21,10 @@ import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.builder.KieSessionFluent;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionFluent, ExecutableBuilder> implements KieSessionFluent {
-
 
     public KieSessionFluentImpl(ExecutableImpl fluentCtx) {
         super(fluentCtx);
@@ -33,7 +32,7 @@ public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionF
 
     @Override
     public KieSessionFluent fireAllRules() {
-        fluentCtx.addCommand( new FireAllRulesCommand());
+        fluentCtx.addCommand(new FireAllRulesCommand());
         return this;
     }
 
@@ -50,7 +49,7 @@ public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionF
 
     @Override
     public KieSessionFluent insert(Object object) {
-        fluentCtx.addCommand( new InsertObjectCommand(object));
+        fluentCtx.addCommand(new InsertObjectCommand(object));
         return this;
     }
 
@@ -66,8 +65,7 @@ public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionF
 
     @Override
     public ExecutableBuilder dispose() {
-        fluentCtx.addCommand( new DisposeCommand());
+        fluentCtx.addCommand(new DisposeCommand());
         return fluentCtx.getExecutableBuilder();
     }
-
 }

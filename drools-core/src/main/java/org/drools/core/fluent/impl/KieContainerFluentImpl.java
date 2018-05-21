@@ -31,6 +31,7 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
         super(ctx);
         this.ctx = ctx;
     }
+
     @Override
     public KieSessionFluent newSession() {
         return newSession(null);
@@ -54,5 +55,4 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
         ctx.addCommand(cmd);
         return new RuleUnitExecutorFluentImpl(ctx);
     }
-
 }

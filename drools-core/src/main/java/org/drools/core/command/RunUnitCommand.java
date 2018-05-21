@@ -40,22 +40,21 @@ public class RunUnitCommand<T extends RuleUnit>
         this.unitSupplier = unitSupplier;
     }
 
+    @Override
     public Integer execute(Context context) {
         RuleUnitExecutor ruleUnitExecutor = ((RegistryContext) context).lookup(RuleUnitExecutor.class);
 
-        if(ruleUnitExecutor == null) {
+        if (ruleUnitExecutor == null) {
             throw new IllegalStateException("RuleUnitExecutor si not present in the Registry");
         }
 
         int firedRules;
 
-        if(unitClass != null) {
+        if (unitClass != null) {
             firedRules = ruleUnitExecutor.run(unitClass);
-        }
-        else if(unitSupplier != null) {
+        } else if (unitSupplier != null) {
             firedRules = ruleUnitExecutor.run(unitSupplier.get());
-        }
-        else {
+        } else {
             throw new IllegalStateException("State is inconsistent because there is no unitClass nor unitSupplier");
         }
 

@@ -16,9 +16,7 @@
 
 package org.drools.core.command;
 
-import java.lang.reflect.Array;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.drools.core.command.impl.ExecutableCommand;
@@ -42,14 +40,15 @@ public class AddDataSourceCommand<E>
         this.values = values;
     }
 
+    @Override
     public Void execute(Context context) {
 
         RuleUnitExecutor ruleUnitExecutor = ((RegistryContext) context).lookup(RuleUnitExecutor.class);
-        if ( ruleUnitExecutor == null ) {
+        if (ruleUnitExecutor == null) {
             throw new RuntimeException("No RuleUnitExecutor is present in the Registry");
         }
 
-        for(String name : names) {
+        for (String name : names) {
             ruleUnitExecutor.bindVariable(name, values);
         }
 

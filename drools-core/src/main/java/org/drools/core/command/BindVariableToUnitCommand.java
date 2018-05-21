@@ -40,10 +40,11 @@ public class BindVariableToUnitCommand
         this(name, context -> variable);
     }
 
+    @Override
     public Void execute(Context context) {
 
         RuleUnitExecutor ruleUnitExecutor = ((RegistryContext) context).lookup(RuleUnitExecutor.class);
-        if ( ruleUnitExecutor == null ) {
+        if (ruleUnitExecutor == null) {
             throw new RuntimeException("No RuleUnitExecutor is present in the Registry");
         }
 

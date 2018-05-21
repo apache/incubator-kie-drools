@@ -25,7 +25,7 @@ import org.kie.api.runtime.builder.DataSourceFluent;
 import org.kie.api.runtime.builder.RuleUnitFluent;
 import org.kie.api.runtime.rule.DataSource;
 
-public class DataSourceFluentImpl<E, U extends RuleUnitFluent> implements DataSourceFluent<E, U>{
+public class DataSourceFluentImpl<E, U extends RuleUnitFluent> implements DataSourceFluent<E, U> {
 
     protected ExecutableImpl fluentCtx;
     protected U ruleUnitFluent;

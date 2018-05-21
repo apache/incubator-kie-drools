@@ -31,7 +31,6 @@ import org.kie.api.runtime.rule.RuleUnit;
 
 public class RuleUnitExecutorFluentImpl extends BaseBatchWithProcessFluent<RuleUnitExecutorFluent, ExecutableBuilder> implements RuleUnitExecutorFluent {
 
-
     public RuleUnitExecutorFluentImpl(ExecutableImpl fluentCtx) {
         super(fluentCtx);
     }
@@ -66,7 +65,7 @@ public class RuleUnitExecutorFluentImpl extends BaseBatchWithProcessFluent<RuleU
 
     @Override
     public ExecutableBuilder dispose() {
-        fluentCtx.addCommand( new DisposeCommand());
+        fluentCtx.addCommand(new DisposeCommand());
         return fluentCtx.getExecutableBuilder();
     }
 
