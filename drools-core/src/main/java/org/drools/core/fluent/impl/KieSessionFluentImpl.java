@@ -23,55 +23,12 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.builder.KieSessionFluent;
-import org.kie.api.runtime.builder.WorkItemManagerFluent;
 
-import java.util.Map;
-
-public class KieSessionFluentImpl extends BaseBatchFluent<KieSessionFluent, ExecutableBuilder> implements KieSessionFluent {
+public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionFluent, ExecutableBuilder> implements KieSessionFluent {
 
 
     public KieSessionFluentImpl(ExecutableImpl fluentCtx) {
         super(fluentCtx);
-    }
-
-    @Override
-    public KieSessionFluent startProcess(String processId) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent startProcess(String processId, Map<String, Object> parameters) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent createProcessInstance(String processId, Map<String, Object> parameters) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent startProcessInstance(long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent signalEvent(String type, Object event) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent signalEvent(String type, Object event, long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public KieSessionFluent abortProcessInstance(long processInstanceId) {
-        return this;
-    }
-
-    @Override
-    public WorkItemManagerFluent<WorkItemManagerFluent, KieSessionFluent, ExecutableBuilder> getWorkItemManager() {
-        return null;
     }
 
     @Override
