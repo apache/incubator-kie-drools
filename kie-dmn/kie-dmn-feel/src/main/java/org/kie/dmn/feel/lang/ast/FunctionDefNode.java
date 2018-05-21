@@ -200,7 +200,7 @@ public class FunctionDefNode
     @Override
     public ASTNode[] getChildrenNode() {
         ASTNode[] children = new ASTNode[ formalParameters.size() + 1 ];
-        System.arraycopy( formalParameters, 0, children, 0, formalParameters.size() );
+        System.arraycopy(formalParameters.toArray(new ASTNode[]{}), 0, children, 0, formalParameters.size());
         children[ children.length-1 ] = body;
         return children;
     }
