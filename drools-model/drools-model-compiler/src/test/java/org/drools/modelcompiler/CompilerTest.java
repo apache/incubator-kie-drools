@@ -1500,4 +1500,29 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testInOperators() {
+        final String drl1 = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule \"eval rewrite with 'in'\"\n" +
+                "    when\n" +
+                "        $p : Person( age in ( 1, (1 + 1) ))\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person luca = new Person("Luca");
+        luca.setAge(2);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        mario.setAge(12);
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
 }

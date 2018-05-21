@@ -154,7 +154,7 @@ public class ExpressionTyper {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
             OperatorSpec opSpec = getOperatorSpec(drlxExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
 
-            return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left ), left.getType())
+            return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left, this), left.getType())
                     .setStatic(opSpec.isStatic())
                     .setLeft(left) );
 
@@ -179,7 +179,7 @@ public class ExpressionTyper {
                     );
 
             return optLeft.map(left ->
-                                       new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left ), left.getType())
+                                       new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left, this), left.getType())
                                                .setStatic(opSpec.isStatic())
                                                .setLeft(left));
         } else if (drlxExpr instanceof ObjectCreationExpr) {
