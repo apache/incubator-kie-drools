@@ -16,14 +16,17 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
-
-import java.util.*;
 
 public class QuantifiedExpressionNode
         extends BaseNode {
@@ -189,7 +192,7 @@ public class QuantifiedExpressionNode
     @Override
     public ASTNode[] getChildrenNode() {
         ASTNode[] children = new ASTNode[ iterationContexts.size() + 1 ];
-        System.arraycopy( iterationContexts, 0, children, 0, iterationContexts.size() );
+        System.arraycopy(iterationContexts.toArray(new ASTNode[]{}), 0, children, 0, iterationContexts.size());
         children[ children.length-1 ] = expression;
         return children;
     }

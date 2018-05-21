@@ -499,10 +499,23 @@ public class DMNDecisionTableRuntimeTest {
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Ignore("This should be unignored after DROOLS-2544 is fixed")
     @Test
     public void testDecisionTablesQuestionMarkWithQuantifiedExpression() {
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithQuantifiedExpr.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithForExpression() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithForExpr.dmn",
+                                               "OK",
+                                               DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void testDecisionTablesQuestionMarkWithFuncDef() {
+        testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithFuncDef.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
