@@ -221,8 +221,8 @@ public class KieContainerImpl
 
         List<String> modifiedClassNames = getModifiedClasses(cs);
         final boolean modifyingUsedClass = isModifyingUsedClass( modifiedClassNames, getClassLoader() );
-        final List<Class<?>> modifiedClasses = reinitModifiedClasses( newKM, modifiedClassNames, getClassLoader() );
-        final List<String> unchangedResources = getUnchangedResources( newKM, cs );
+        final Collection<Class<?>> modifiedClasses = reinitModifiedClasses( newKM, modifiedClassNames, getClassLoader(), modifyingUsedClass );
+        final Collection<String> unchangedResources = getUnchangedResources( newKM, cs );
 
         Map<String, KieBaseModel> currentKieBaseModels = ((KieModuleKieProject) kProject).updateToModule( newKM );
 
@@ -257,7 +257,7 @@ public class KieContainerImpl
         return results;
     }
 
-    private List<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
+    private Collection<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
         List<String> dslFiles = new ArrayList<String>();
         for (String file : newKM.getFileNames()) {
             if ( includeIfUnchanged( file ) && !cs.contains( file ) ) {
@@ -279,31 +279,28 @@ public class KieContainerImpl
     }
 
     private boolean isModifyingUsedClass( List<String> modifiedClasses, ClassLoader classLoader ) {
-        for (String modifiedClass : modifiedClasses) {
-            if ( isClassInUse( classLoader, convertResourceToClassName(modifiedClass) ) ) {
-                return true;
-            }
-        }
-        return false;
+        return modifiedClasses.stream().anyMatch( c -> isClassInUse( classLoader, convertResourceToClassName(c) ) );
     }
 
     private boolean isClassInUse(ClassLoader rootClassLoader, String className) {
         return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
     }
 
-    private List<Class<?>> reinitModifiedClasses( InternalKieModule newKM, List<String> modifiedClasses, ClassLoader classLoader ) {
+    private Collection<Class<?>> reinitModifiedClasses( InternalKieModule newKM, List<String> modifiedClasses, ClassLoader classLoader, boolean modifyingUsedClass ) {
+        if (modifiedClasses.isEmpty() || !(classLoader instanceof ProjectClassLoader)) {
+            return Collections.emptyList();
+        }
+
         List<Class<?>> classes = new ArrayList<Class<?>>();
-        if (!modifiedClasses.isEmpty()) {
-            if ( classLoader instanceof ProjectClassLoader ) {
-                ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
-                projectClassLoader.reinitTypes();
-                for (String resourceName : modifiedClasses) {
-                    String className = convertResourceToClassName( resourceName );
-                    byte[] bytes = newKM.getBytes(resourceName);
-                    Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
-                    classes.add(clazz);
-                }
-            }
+        ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
+        if (modifyingUsedClass) {
+            projectClassLoader.reinitTypes();
+        }
+        for (String resourceName : modifiedClasses) {
+            String className = convertResourceToClassName( resourceName );
+            byte[] bytes = newKM.getBytes(resourceName);
+            Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
+            classes.add(clazz);
         }
         return classes;
     }

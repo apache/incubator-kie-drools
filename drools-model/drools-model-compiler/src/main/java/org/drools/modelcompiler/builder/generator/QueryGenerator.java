@@ -27,6 +27,7 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
@@ -82,6 +83,7 @@ public class QueryGenerator {
     public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr) {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
+        context.addGlobalDeclarations(packageModel.getGlobals());
 
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
@@ -117,8 +119,7 @@ public class QueryGenerator {
     }
 
     private static ClassOrInterfaceType getQueryType(List<QueryParameter> queryParameters) {
-        Class<?> res = QueryDef.getQueryClassByArity(queryParameters.size());
-        ClassOrInterfaceType queryType = JavaParser.parseClassOrInterfaceType(res.getCanonicalName());
+        ClassOrInterfaceType queryType = toClassOrInterfaceType( QueryDef.getQueryClassByArity(queryParameters.size()) );
 
         Type[] genericType = queryParameters.stream()
                 .map(e -> e.type)

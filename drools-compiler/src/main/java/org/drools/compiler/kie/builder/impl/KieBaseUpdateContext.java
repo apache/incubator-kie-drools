@@ -16,7 +16,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -31,16 +31,16 @@ public class KieBaseUpdateContext {
     public final ReleaseId newReleaseId;
     public final InternalKieModule newKM;
     public final KieJarChangeSet cs;
-    public final List<Class<?>> modifiedClasses;
+    public final Collection<Class<?>> modifiedClasses;
     public final boolean modifyingUsedClass;
-    public final List<String> unchangedResources;
+    public final Collection<String> unchangedResources;
     public final ResultsImpl results;
     public final KieBaseModelImpl newKieBaseModel;
     public final KieBaseModelImpl currentKieBaseModel;
 
     public KieBaseUpdateContext( KieProject kProject, InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
-                                 InternalKieModule newKM, KieJarChangeSet cs, List<Class<?>> modifiedClasses,
-                                 boolean modifyingUsedClass, List<String> unchangedResources, ResultsImpl results,
+                                 InternalKieModule newKM, KieJarChangeSet cs, Collection<Class<?>> modifiedClasses,
+                                 boolean modifyingUsedClass, Collection<String> unchangedResources, ResultsImpl results,
                                  KieBaseModelImpl newKieBaseModel, KieBaseModelImpl currentKieBaseModel ) {
         this.kProject = kProject;
         this.kBase = kBase;

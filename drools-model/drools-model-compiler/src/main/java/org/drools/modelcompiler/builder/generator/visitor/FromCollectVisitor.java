@@ -22,7 +22,7 @@ public class FromCollectVisitor {
         accumulateDescr.setInputPattern(collectDescrInputPattern);
         accumulateDescr.addFunction("collectList", null, false, new String[]{collectDescrInputPattern.getIdentifier()});
 
-        final PatternDescr transformedPatternDescr = new PatternDescr(pattern.getObjectType());
+        final PatternDescr transformedPatternDescr = new PatternDescr(pattern.getObjectType(), pattern.getIdentifier());
         for (BaseDescr o : pattern.getConstraint().getDescrs()) {
             transformedPatternDescr.addConstraint(o);
         }

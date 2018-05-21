@@ -67,11 +67,7 @@ public class IncrementalCompilationCepTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        final Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
-        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
-        return parameters;
-//        return TestParametersUtil.getKieBaseStreamConfigurations();
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test
@@ -519,7 +515,11 @@ public class IncrementalCompilationCepTest {
         ksession.insert(new SimpleEvent("3", "MY_CODE", 21));
         ksession.fireAllRules();
 
-        assertEquals(5, counter1.get());
+        if (kieBaseTestConfiguration.useCanonicalModel()) {
+            assertEquals(3, counter1.get());
+        } else {
+            assertEquals(5, counter1.get());
+        }
         assertEquals(1, counter2.get());
     }
 
