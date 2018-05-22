@@ -15,6 +15,10 @@
 
 package org.drools.core.phreak;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -33,10 +37,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -117,18 +117,10 @@ public class PhreakFromNode {
                                                                   wm,
                                                                   object);
 
-                checkConstraintsAndPropagate(sink,
-                                             leftTuple,
-                                             rightTuple,
-                                             alphaConstraints,
-                                             betaConstraints,
-                                             propagationContext,
-                                             wm,
-                                             fm,
-                                             context,
-                                             useLeftMemory,
-                                             trgLeftTuples,
-                                             null);
+                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
+                    propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, useLeftMemory, trgLeftTuples, null );
+                }
+
                 if (useLeftMemory) {
                     fromNode.addToCreatedHandlesMap(matches,
                                                     rightTuple);
@@ -196,21 +188,12 @@ public class PhreakFromNode {
                     }
                 }
 
-                checkConstraintsAndPropagate(sink,
-                                             leftTuple,
-                                             rightTuple,
-                                             alphaConstraints,
-                                             betaConstraints,
-                                             propagationContext,
-                                             wm,
-                                             fm,
-                                             context,
-                                             true,
-                                             trgLeftTuples,
-                                             stagedLeftTuples);
-
-                fromNode.addToCreatedHandlesMap(newMatches,
-                                                rightTuple);
+                if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
+                    propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, true, trgLeftTuples, stagedLeftTuples );
+                    fromNode.addToCreatedHandlesMap(newMatches, rightTuple);
+                } else {
+                    deleteChildLeftTuple(propagationContext, trgLeftTuples, stagedLeftTuples, rightTuple.getFirstChild());
+                }
             }
 
             for (RightTuple rightTuple : previousMatches.values()) {
@@ -271,23 +254,6 @@ public class PhreakFromNode {
                 current.unlinkFromRightParent();
                 current = next;
             }
-        }
-    }
-
-    public static void checkConstraintsAndPropagate(final LeftTupleSink sink,
-                                                    final LeftTuple leftTuple,
-                                                    final RightTuple rightTuple,
-                                                    final AlphaNodeFieldConstraint[] alphaConstraints,
-                                                    final BetaConstraints betaConstraints,
-                                                    final PropagationContext propagationContext,
-                                                    final InternalWorkingMemory wm,
-                                                    final FromMemory fm,
-                                                    final ContextEntry[] context,
-                                                    final boolean useLeftMemory,
-                                                    TupleSets<LeftTuple> trgLeftTuples,
-                                                    TupleSets<LeftTuple> stagedLeftTuples) {
-        if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
-            propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, useLeftMemory, trgLeftTuples, stagedLeftTuples );
         }
     }
 
