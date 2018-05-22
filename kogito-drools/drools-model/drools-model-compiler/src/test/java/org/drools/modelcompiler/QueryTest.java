@@ -64,7 +64,7 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(new Person("Mark", 39));
         ksession.insert(new Person("Mario", 41));
 
-        QueryResults results = ksession.getQueryResults("older than", 40);
+        QueryResults results = ksession.getQueryResults("older than");
 
         assertEquals(1, results.size());
         QueryResultsRow res = results.iterator().next();

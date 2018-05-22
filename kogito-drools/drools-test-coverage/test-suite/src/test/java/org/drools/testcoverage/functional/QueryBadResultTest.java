@@ -17,13 +17,13 @@
 package org.drools.testcoverage.functional;
 
 import java.util.Collection;
+
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -32,6 +32,9 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests bad using and accessing to queries.
@@ -77,14 +80,18 @@ public class QueryBadResultTest {
         Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Ignore("TODO - check correct exception in this test when DROOLS-2186 is fixed.")
     @Test
     public void testQueryCalledWithoutParamsButItHasParams() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "query.drl");
         final KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 
-        ksession.getQueryResults("personWithName");
+        try {
+            ksession.getQueryResults("personWithName");
+            fail("invocation with wrong number of arguments must fail");
+        } catch (RuntimeException e) {
+            assertTrue( e.getMessage().contains( "wrong number of arguments" ) );
+        }
     }
 
     @Test
