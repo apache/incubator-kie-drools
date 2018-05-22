@@ -903,6 +903,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             QueryTerminalNode tnode = (QueryTerminalNode) tnodes[0];
+
+            if (queryObject.getElements().length != tnode.getQuery().getParameters().length) {
+                throw new RuntimeException( "Query '" + queryName + "' has been invoked with a wrong number of arguments. Expected " +
+                        tnode.getQuery().getParameters().length + ", actual " + queryObject.getElements().length );
+            }
+
             LeftTupleSource lts = tnode.getLeftTupleSource();
             while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
                 lts = lts.getLeftTupleSource();

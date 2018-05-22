@@ -49,7 +49,6 @@ import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -448,7 +447,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                 ecs.submit(() -> {
                     boolean succ = false;
                     try {
-                        final QueryResults res = ksession.getQueryResults("foo", Variable.v);
+                        final QueryResults res = ksession.getQueryResults("foo");
                         succ = (res.size() == 1);
                         return succ;
                     } catch (final Exception e) {

@@ -15,6 +15,13 @@
 
 package org.drools.compiler.beliefsystem.abductive;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.QueryResultsImpl;
@@ -47,13 +54,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -926,7 +926,7 @@ public class AbductionTest extends CommonTestMethodBase {
         assertNotNull( q1 );
         assertNotNull( q2 );
 
-        QueryResults q10res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo" ));
+        QueryResults q10res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", null ));
         QueryResults q11res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", Variable.v ));
         QueryResults q20res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "bar", "foo", Variable.v ));
 
