@@ -23,7 +23,7 @@ import org.drools.model.view.QueryCallViewItemImpl;
 
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-public class Query0DefImpl extends QueryDefImpl implements Query0Def {
+public class Query0DefImpl extends QueryDefImpl implements Query0Def, ModelComponent {
 
     public Query0DefImpl( ViewBuilder viewBuilder, String name ) {
         this(viewBuilder, DEFAULT_PACKAGE, name);
@@ -41,5 +41,10 @@ public class Query0DefImpl extends QueryDefImpl implements Query0Def {
     @Override
     public Variable<?>[] getArguments() {
         return new Variable<?>[] { };
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent other ) {
+        return other instanceof Query0DefImpl;
     }
 }

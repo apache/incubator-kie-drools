@@ -66,6 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 
@@ -497,7 +498,7 @@ public class PackageModel {
     }
 
     private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
-        ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Global.class.getCanonicalName());
+        ClassOrInterfaceType varType = toClassOrInterfaceType(Global.class);
         varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
         Type declType = DrlxParseUtil.classToReferenceType(globalClass);
 

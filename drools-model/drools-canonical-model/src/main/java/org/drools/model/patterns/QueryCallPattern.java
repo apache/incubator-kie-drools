@@ -22,9 +22,10 @@ import org.drools.model.Argument;
 import org.drools.model.Condition;
 import org.drools.model.QueryDef;
 import org.drools.model.Variable;
+import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.QueryCallViewItem;
 
-public class QueryCallPattern implements Condition {
+public class QueryCallPattern implements Condition, ModelComponent {
 
     private final QueryDef query;
     private final boolean open;
@@ -71,7 +72,6 @@ public class QueryCallPattern implements Condition {
 
         if ( open != that.open ) return false;
         if ( query != null ? !query.equals( that.query ) : that.query != null ) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals( arguments, that.arguments );
     }
 
@@ -81,5 +81,15 @@ public class QueryCallPattern implements Condition {
         result = 31 * result + (open ? 1 : 0);
         result = 31 * result + Arrays.hashCode( arguments );
         return result;
+    }
+
+    @Override
+    public boolean isEqualTo( ModelComponent other ) {
+        if ( this == other ) return true;
+        if ( !(other instanceof QueryCallPattern) ) return false;
+
+        QueryCallPattern that = ( QueryCallPattern ) other;
+
+        return open == that.open && ModelComponent.areEqualInModel( query, that.query ) && ModelComponent.areEqualInModel( arguments, that.arguments );
     }
 }

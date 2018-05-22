@@ -16,12 +16,16 @@
 
 package org.drools.modelcompiler.util;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
 import org.drools.model.AnnotationValue;
 import org.drools.model.TypeMetaData;
 import org.drools.modelcompiler.constraints.MvelReadAccessor;
@@ -31,64 +35,64 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
 import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
+import static org.drools.core.util.ClassUtils.getter2property;
 
 public class TypeDeclarationUtil {
 
     public static TypeDeclaration createTypeDeclaration( KnowledgePackageImpl pkg, TypeMetaData metaType ) {
-        try {
-            Class<?> typeClass = pkg.getTypeResolver().resolveType( metaType.getPackage() + "." + metaType.getName() );
-            TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
-            for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
-                switch (ann.getKey()) {
-                    case "role":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
-                                typeDeclaration.setRole( Role.Type.EVENT );
-                            }
+        Class<?> typeClass = metaType.getType();
+
+        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
+        typeDeclaration.setTypeClassDef( new ClassDefinitionForModel( typeClass ) );
+
+        for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
+            switch (ann.getKey()) {
+                case "role":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
+                            typeDeclaration.setRole( Role.Type.EVENT );
                         }
-                        break;
-                    case "duration":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
-                            }
+                    }
+                    break;
+                case "duration":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
                         }
-                        break;
-                    case "timestamp":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
-                            }
+                    }
+                    break;
+                case "timestamp":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
                         }
-                        break;
-                    case "expires":
-                        for (AnnotationValue annVal : ann.getValue()) {
-                            if (annVal.getKey().equals( "value" )) {
-                                long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
-                                typeDeclaration.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
-                            } else if (annVal.getKey().equals( "policy" )) {
-                                typeDeclaration.setExpirationType( Enum.valueOf( Expires.Policy.class, annVal.getValue().toString() ) );
-                            }
+                    }
+                    break;
+                case "expires":
+                    for (AnnotationValue annVal : ann.getValue()) {
+                        if (annVal.getKey().equals( "value" )) {
+                            long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
+                            typeDeclaration.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
+                        } else if (annVal.getKey().equals( "policy" )) {
+                            typeDeclaration.setExpirationType( Enum.valueOf( Expires.Policy.class, annVal.getValue().toString() ) );
                         }
-                        break;
-                    case "propertyReactive":
-                        typeDeclaration.setPropertyReactive( true );
-                        break;
-                    case "classReactive":
-                        typeDeclaration.setPropertyReactive( false );
-                        break;
-                    default:
-                        throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
-                }
+                    }
+                    break;
+                case "propertyReactive":
+                    typeDeclaration.setPropertyReactive( true );
+                    break;
+                case "classReactive":
+                    typeDeclaration.setPropertyReactive( false );
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
             }
-            return typeDeclaration;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
         }
+        return typeDeclaration;
     }
 
     public static TypeDeclaration createTypeDeclaration(Class<?> cls) {
-        TypeDeclaration typeDeclaration = createTypeDeclarationForBean(cls);
+        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( cls );
 
         Duration duration = cls.getAnnotation( Duration.class );
         if (duration != null) {
@@ -114,5 +118,51 @@ public class TypeDeclarationUtil {
 
     private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String field, Class<?> returnType ) {
         return new MvelReadAccessor( type.getTypeClass(), returnType, field );
+    }
+
+    public static class ClassDefinitionForModel extends ClassDefinition {
+
+        public ClassDefinitionForModel( Class<?> cls ) {
+            super( cls );
+            processFields();
+        }
+
+        public void processFields() {
+            for (Method m : getDefinedClass().getDeclaredMethods()) {
+                if (m.getParameterCount() == 0) {
+                    String fieldName = getter2property(m.getName());
+                    if (fieldName != null) {
+                        addField( new FieldDefinition( fieldName, m.getReturnType().getCanonicalName() ) );
+                    }
+                }
+            }
+        }
+
+        @Override
+        public Object get(Object bean, String field) {
+            java.lang.reflect.Field f = ClassUtils.getField( getDefinedClass(), field );
+            if (f != null) {
+                f.setAccessible( true );
+                try {
+                    return f.get( bean );
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public void set(Object bean, String field, Object value) {
+            java.lang.reflect.Field f = ClassUtils.getField( getDefinedClass(), field );
+            if (f != null) {
+                f.setAccessible( true );
+                try {
+                    f.set( bean, value );
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+        }
     }
 }

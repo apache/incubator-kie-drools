@@ -312,18 +312,42 @@ public class CanonicalKieModule implements InternalKieModule {
         for (Map.Entry<String, Model> entry : oldModels.entrySet()) {
             Model newModel = newModels.get( entry.getKey() );
             if ( newModel == null ) {
-                result.removeFile( entry.getKey() );
+                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.REMOVED ) );
                 continue;
             }
 
             Model oldModel = entry.getValue();
-            ResourceChangeSet changeSet = calculateResourceChangeSet( oldModel, newModel );
-            if ( !changeSet.getChanges().isEmpty() ) {
-                result.registerChanges( entry.getKey(), changeSet );
+            for (ResourceChangeSet changeSet : calculateResourceChangeSet( oldModel, newModel )) {
+                if ( !changeSet.getChanges().isEmpty() ) {
+                    result.registerChanges( entry.getKey(), changeSet );
+                }
+            }
+        }
+
+        for (Map.Entry<String, Model> entry : newModels.entrySet()) {
+            if ( oldModels.get( entry.getKey() ) == null ) {
+                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.ADDED ) );
             }
         }
 
         return result;
+    }
+
+    private ResourceChangeSet buildAllItemsChangeSet( Model oldModel, ChangeType changeType ) {
+        ResourceChangeSet changeSet = new ResourceChangeSet( oldModel.getName(), ChangeType.UPDATED );
+        for (NamedModelItem item : oldModel.getRules()) {
+            changeSet.getChanges().add( new ResourceChange( changeType, ResourceChange.Type.RULE, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getQueries()) {
+            changeSet.getChanges().add( new ResourceChange( changeType, ResourceChange.Type.RULE, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getGlobals()) {
+            changeSet.getChanges().add( new ResourceChange( changeType, ResourceChange.Type.GLOBAL, item.getName() ) );
+        }
+        for (NamedModelItem item : oldModel.getTypeMetaDatas()) {
+            changeSet.getChanges().add( new ResourceChange( changeType, ResourceChange.Type.DECLARATION, item.getName() ) );
+        }
+        return changeSet;
     }
 
     private void findChanges(KieJarChangeSet result, InternalKieModule newKieModule) {
@@ -360,25 +384,34 @@ public class CanonicalKieModule implements InternalKieModule {
         return fileName.endsWith( ".class" ) && !module.getRuleClassNames().stream().anyMatch( fileNameToClass(fileName)::startsWith );
     }
 
-    private ResourceChangeSet calculateResourceChangeSet( Model oldModel, Model newModel ) {
+    private Collection<ResourceChangeSet> calculateResourceChangeSet( Model oldModel, Model newModel ) {
         ResourceChangeSet changeSet = new ResourceChangeSet( oldModel.getName(), ChangeType.UPDATED );
+        Map<String, ResourceChangeSet> changes = new HashMap<>();
+        changes.put( oldModel.getName(), changeSet );
+
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getRules(), newModel.getRules() );
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.RULE, oldModel.getQueries(), newModel.getQueries() );
         addModifiedItemsToChangeSet( changeSet, ResourceChange.Type.GLOBAL, oldModel.getGlobals(), newModel.getGlobals() );
-        return changeSet;
+        addModifiedItemsToChangeSet( changeSet, changes, ResourceChange.Type.DECLARATION, oldModel.getTypeMetaDatas(), newModel.getTypeMetaDatas() );
+
+        return changes.values();
     }
 
     private void addModifiedItemsToChangeSet( ResourceChangeSet changeSet, ResourceChange.Type type, List<? extends NamedModelItem> oldItems, List<? extends NamedModelItem> newItems ) {
+        addModifiedItemsToChangeSet( changeSet, null, type, oldItems, newItems );
+    }
+
+    private void addModifiedItemsToChangeSet( ResourceChangeSet mainChangeSet, Map<String, ResourceChangeSet> changes, ResourceChange.Type type, List<? extends NamedModelItem> oldItems, List<? extends NamedModelItem> newItems ) {
         if ( oldItems.isEmpty() ) {
             if ( !newItems.isEmpty() ) {
                 for (NamedModelItem newItem : newItems) {
-                    changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, newItem.getName() ) );
+                    registerChange( mainChangeSet, changes, type, ChangeType.ADDED, newItem );
                 }
             }
             return;
         } else if ( newItems.isEmpty() ) {
             for (NamedModelItem oldItem : oldItems) {
-                changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, oldItem.getName() ) );
+                registerChange( mainChangeSet, changes, type, ChangeType.REMOVED, oldItem );
             }
             return;
         }
@@ -396,7 +429,7 @@ public class CanonicalKieModule implements InternalKieModule {
             int compare = currentOld.getName().compareTo( currentNew.getName() );
             if ( compare == 0 ) {
                 if ( !areEqualInModel( currentOld, currentNew ) ) {
-                    changeSet.getChanges().add( new ResourceChange( ChangeType.UPDATED, type, currentOld.getName() ) );
+                    registerChange( mainChangeSet, changes, type, ChangeType.UPDATED, currentOld );
                 }
                 if ( oldRulesIterator.hasNext() ) {
                     currentOld = oldRulesIterator.next();
@@ -406,32 +439,43 @@ public class CanonicalKieModule implements InternalKieModule {
                 if ( newRulesIterator.hasNext() ) {
                     currentNew = newRulesIterator.next();
                 } else {
+                    registerChange( mainChangeSet, changes, type, ChangeType.REMOVED, currentOld );
                     break;
                 }
             } else if ( compare < 0 ) {
-                changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, currentOld.getName() ) );
+                registerChange( mainChangeSet, changes, type, ChangeType.REMOVED, currentOld );
                 if ( oldRulesIterator.hasNext() ) {
                     currentOld = oldRulesIterator.next();
                 } else {
+                    registerChange( mainChangeSet, changes, type, ChangeType.ADDED, currentNew );
                     break;
                 }
             } else {
-                changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, currentNew.getName() ) );
+                registerChange( mainChangeSet, changes, type, ChangeType.ADDED, currentNew );
                 if ( newRulesIterator.hasNext() ) {
                     currentNew = newRulesIterator.next();
                 } else {
+                    registerChange( mainChangeSet, changes, type, ChangeType.REMOVED, currentOld );
                     break;
                 }
             }
         }
 
         while (oldRulesIterator.hasNext()) {
-            changeSet.getChanges().add( new ResourceChange( ChangeType.REMOVED, type, oldRulesIterator.next().getName() ) );
+            registerChange( mainChangeSet, changes, type, ChangeType.REMOVED, oldRulesIterator.next() );
         }
 
         while (newRulesIterator.hasNext()) {
-            changeSet.getChanges().add( new ResourceChange( ChangeType.ADDED, type, newRulesIterator.next().getName() ) );
+            registerChange( mainChangeSet, changes, type, ChangeType.ADDED, newRulesIterator.next() );
         }
+    }
+
+    private void registerChange( ResourceChangeSet mainChangeSet, Map<String, ResourceChangeSet> changes, ResourceChange.Type resourceChangeType, ChangeType changeType, NamedModelItem item ) {
+        getChangeSetForItem(mainChangeSet, changes, item ).getChanges().add( new ResourceChange( changeType, resourceChangeType, item.getName() ) );
+    }
+
+    private ResourceChangeSet getChangeSetForItem(ResourceChangeSet mainChangeSet, Map<String, ResourceChangeSet> changes, NamedModelItem item) {
+        return changes != null ? changes.computeIfAbsent( item.getPackage(), pkg -> new ResourceChangeSet( pkg, ChangeType.UPDATED ) ) : mainChangeSet;
     }
 
     @Override
