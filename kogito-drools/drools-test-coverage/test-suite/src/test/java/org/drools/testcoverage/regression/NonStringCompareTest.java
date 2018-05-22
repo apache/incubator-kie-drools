@@ -16,7 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import java.io.StringReader;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
@@ -29,11 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
 @RunWith(Parameterized.class)
@@ -102,8 +99,6 @@ public class NonStringCompareTest {
 
     private KieBuilder build(final String replacement) {
         final String drl = String.format(genericDrl, replacement);
-        final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
-        resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource);
+        return KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
     }
 }

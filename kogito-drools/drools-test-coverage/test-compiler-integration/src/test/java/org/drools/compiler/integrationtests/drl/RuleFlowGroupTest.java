@@ -16,23 +16,41 @@
 
 package org.drools.compiler.integrationtests.drl;
 
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
+import java.util.Collection;
+
 import org.drools.core.common.InternalAgenda;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class RuleFlowGroupTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class RuleFlowGroupTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RuleFlowGroupTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testRuleFlowGroupWithLockOnActivate() {
         // JBRULES-3590
-        final String str = "import org.drools.compiler.Person;\n" +
-                "import org.drools.compiler.Cheese;\n" +
+        final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "rule R1\n" +
                 "ruleflow-group \"group1\"\n" +
                 "lock-on-active true\n" +
@@ -51,14 +69,16 @@ public class RuleFlowGroupTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("ruleflowgroup-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
-
-        ksession.insert(new Person());
-        ksession.insert(new Cheese("gorgonzola"));
-        ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("group1");
-        assertEquals(1, ksession.fireAllRules());
-        ksession.dispose();
+        try {
+            ksession.insert(new Person());
+            ksession.insert(new Cheese("gorgonzola"));
+            ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("group1");
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
     }
 
 }

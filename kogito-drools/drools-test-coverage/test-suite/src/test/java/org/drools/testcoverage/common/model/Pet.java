@@ -26,9 +26,14 @@ public class Pet implements Serializable {
         DOG, CAT, PARROT
     }
 
+    private String name;
     private PetType type;
     private int age;
     private Person owner;
+
+    public Pet(final String name) {
+        this.name = name;
+    }
 
     public Pet(final PetType type) {
         this.type = type;
@@ -63,5 +68,13 @@ public class Pet implements Serializable {
 
     public void setOwner(final Person owner) {
         this.owner = owner;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 }

@@ -18,6 +18,8 @@ package org.drools.testcoverage.common.util;
 
 import java.io.File;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -109,10 +111,9 @@ public final class KieBaseUtil {
     }
 
     public static KieBase getKieBaseFromKieModuleFromDrl(final String moduleGroupId,
-                                                         final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drlResource);
+                                                         final KieBaseTestConfiguration kieBaseTestConfiguration, final String... drls) {
+        final List<Resource> resources = KieUtil.getResourcesFromDrls(drls);
+        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
     }
 
     private KieBaseUtil() {

@@ -28,6 +28,7 @@ public class Cheese implements Serializable {
 
     private String type;
     private int price;
+    private int oldPrice;
 
     public Cheese() {
     }
@@ -55,4 +56,11 @@ public class Cheese implements Serializable {
         this.price = price;
     }
 
+    public int getOldPrice() {
+        return oldPrice;
+    }
+
+    public void setOldPrice(final int oldPrice) {
+        this.oldPrice = oldPrice;
+    }
 }

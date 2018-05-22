@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.drl;
+package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.io.impl.InputStreamResource;
@@ -44,7 +43,7 @@ public class DRLDumperTest extends CommonTestMethodBase {
     @Test
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        final Resource resource = new InputStreamResource(getClass().getResourceAsStream("test_Dumpers.drl"));
+        final Resource resource = new InputStreamResource(getClass().getResourceAsStream("drl/test_Dumpers.drl"));
         final PackageDescr pkg = parser.parse(resource);
 
         if (parser.hasErrors()) {
