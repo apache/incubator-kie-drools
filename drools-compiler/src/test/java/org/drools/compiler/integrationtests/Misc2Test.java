@@ -44,11 +44,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.Address;
+import org.drools.compiler.AddressWithoutHashCodeEquals;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonHolder;
+import org.drools.compiler.PersonWithoutHashCodeEquals;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -9109,5 +9111,49 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(2, fired);
+    }
+
+    @Test
+    public void testSharingFromWithoutHashCodeEquals() {
+        // DROOLS-2557
+        String str =
+                "import org.drools.compiler.PersonWithoutHashCodeEquals\n" +
+                "import org.drools.compiler.AddressWithoutHashCodeEquals\n" +
+
+                "rule R1 when\n" +
+                "  $p: PersonWithoutHashCodeEquals( age == 30 );\n" +
+                "  $a: AddressWithoutHashCodeEquals( street == null ) from $p.addresses;\n" +
+                "then\n" +
+                "  System.out.println( \"R1 : \" + $a.getStreet() );\n" +
+                "  $a.setStreet( \"MyStreet#1\" );" +
+                "  update( $p );" +
+                "end\n" +
+
+                "rule R2 when\n" +
+                "  $p: PersonWithoutHashCodeEquals( age == 30 );\n" +
+                "  $a: AddressWithoutHashCodeEquals( street == null ) from $p.addresses;\n" +
+                "then\n" +
+                "  System.out.println( \"R2 : \" + $a.getStreet() );\n" +
+                "  $a.setStreet( \"MyStreet#2\" );" +
+                "  update( $p );" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<>();
+
+        AddressWithoutHashCodeEquals a = new AddressWithoutHashCodeEquals();
+        a.setZipCode("5555");
+        a.setStreet(null);
+        PersonWithoutHashCodeEquals p = new PersonWithoutHashCodeEquals();
+        p.setName("John");
+        p.setAge(30);
+        p.getAddresses().add(a);
+
+        ksession.insert(p);
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
     }
 }
