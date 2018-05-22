@@ -20,18 +20,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Cheesery;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.FirstClass;
-import org.drools.compiler.Person;
-import org.drools.compiler.SecondClass;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import org.assertj.core.api.Assertions;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Cheesery;
+import org.drools.testcoverage.common.model.FirstClass;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.SecondClass;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -42,120 +48,230 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
-public class ImportsTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ImportsTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ImportsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportsTest.class);
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ImportsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testImportFunctions() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ImportFunctions.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    public void testImportFunctions() {
 
-        final Cheese cheese = new Cheese("stilton",
-                15);
-        session.insert(cheese);
-        List list = new ArrayList();
-        session.setGlobal("list", list);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        final int fired = session.fireAllRules();
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import function " + StaticMethods.class.getCanonicalName() + ".*;\n" +
+                "import function " + StaticMethods2.class.getCanonicalName() + ".getString3;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "function String getString4( String string ) {\n" +
+                "    return string;\n" +
+                "}\n" +
+                "\n" +
+                "rule \"test rule1\"\n" +
+                "    salience 30\n" +
+                "    when\n" +
+                "        Cheese()\n" +
+                "    then\n" +
+                "        list.add( getString1( \"rule1\" ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule2\"\n" +
+                "    salience 20\n" +
+                "    when\n" +
+                "        Cheese( type == ( getString2(\"stilton\") ) );\n" +
+                "    then\n" +
+                "        list.add( getString3( \"rule\", new Integer( 2 ) ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule3\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "        Cheese( $type : type);\n" +
+                "        eval( $type.equals( getString1( \"stilton\" ) ) );\n" +
+                "    then\n" +
+                "        list.add( getString2( \"rule3\" ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule4\"\n" +
+                "    salience 0\n" +
+                "    when\n" +
+                "        Cheese();\n" +
+                "    then\n" +
+                "        list.add( getString4( \"rule4\" ) );\n" +
+                "end";
 
-        list = (List) session.getGlobal("list");
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final Cheese cheese = new Cheese("stilton",
+                                             15);
+            session.insert(cheese);
+            List list = new ArrayList();
+            session.setGlobal("list", list);
+            final int fired = session.fireAllRules();
 
-        assertEquals(4, fired);
-        assertEquals(4, list.size());
+            list = (List) session.getGlobal("list");
 
-        assertEquals("rule1", list.get(0));
-        assertEquals("rule2", list.get(1));
-        assertEquals("rule3", list.get(2));
-        assertEquals("rule4", list.get(3));
+            assertEquals(4, fired);
+            assertEquals(4, list.size());
+
+            assertEquals("rule1", list.get(0));
+            assertEquals("rule2", list.get(1));
+            assertEquals("rule3", list.get(2));
+            assertEquals("rule4", list.get(3));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test()
-    public void testImport() throws Exception {
+    public void testImport() {
         // Same package as this test
-        String rule = "";
-        rule += "package org.drools.compiler.integrationtests;\n";
-        rule += "import java.lang.Math;\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "  dialect \"mvel\"\n";
-        rule += "  when\n";
-        rule += "  then\n";
-        // Can't handle the TestFact.TEST
-        rule += "    new TestFact(TestFact.TEST);\n";
-        rule += "end";
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import java.lang.Math;\n" +
+                "rule \"Test Rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+            "    new Cheese(Cheese.STILTON);\n" +
+            "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession ksession = createKnowledgeSession(kbase);
-        ksession.fireAllRules();
-    }
-
-    @Test
-    public void testImportColision() throws Exception {
-        final Collection<KiePackage> kpkgs1 = loadKnowledgePackages("nested1.drl");
-        final Collection<KiePackage> kpkgs2 = loadKnowledgePackages("nested2.drl");
-        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
-        kbase.addPackages(kpkgs1);
-        kbase.addPackages(kpkgs2);
-
-        final KieSession ksession = createKnowledgeSession(kbase);
-
-        SerializationHelper.serializeObject(kbase);
-
-        ksession.insert(new FirstClass());
-        ksession.insert(new SecondClass());
-        ksession.insert(new FirstClass.AlternativeKey());
-        ksession.insert(new SecondClass.AlternativeKey());
-
-        ksession.fireAllRules();
-    }
-
-    @Test
-    public void testImportConflict() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ImportConflict.drl"));
-        createKnowledgeSession(kbase);
-    }
-
-    @Test
-    public void testMissingImport() throws Exception {
-        String str = "";
-        str += "package org.drools.compiler \n";
-        str += "import " + Person.class.getName() + "\n";
-        str += "global java.util.List list \n";
-        str += "rule rule1 \n";
-        str += "when \n";
-        str += "    $i : Cheese() \n";
-        str += "         MissingClass( fieldName == $i ) \n";
-        str += "then \n";
-        str += "    list.add( $i ); \n";
-        str += "end \n";
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            logger.warn(kbuilder.getErrors().toString());
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            session.fireAllRules();
+        } finally {
+            session.dispose();
         }
-        assertTrue(kbuilder.hasErrors());
+    }
+
+    @Test
+    public void testImportColision() {
+        final String drl1 = "package org.drools.compiler.integrationtests.drl;\n" +
+                "\n" +
+                "//list any import classes here.\n" +
+                "import " + FirstClass.class.getCanonicalName() + ";\n" +
+                "import " + FirstClass.class.getCanonicalName() + ".AlternativeKey;\n" +
+                "\n" +
+                "//declare any global variables here\n" +
+                "\n" +
+                "rule \"First Class\"\n" +
+                "\n" +
+                "    when\n" +
+                "        FirstClass()\n" +
+                "        FirstClass.AlternativeKey()\n" +
+                "    then\n" +
+                "        System.out.println(\"First class!\");\n" +
+                "\n" +
+                "end";
+
+        final String drl2 = "package org.drools.compiler.integrationtests.drl;\n" +
+                "\n" +
+                "//list any import classes here.\n" +
+                "import " + SecondClass.class.getCanonicalName() + ";\n" +
+                "import " + SecondClass.class.getCanonicalName() + ".AlternativeKey;\n" +
+                "\n" +
+                "//declare any global variables here\n" +
+                "\n" +
+                "rule \"Second Class\"\n" +
+                "\n" +
+                "    when\n" +
+                "        SecondClass()\n" +
+                "        SecondClass.AlternativeKey()\n" +
+                "    then\n" +
+                "        System.out.println(\"Second class!\");\n" +
+                "\n" +
+                "end";
+
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl1);
+        final Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl2).getKiePackages();
+        kbase.addPackages(kpkgs);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.insert(new FirstClass());
+            ksession.insert(new SecondClass());
+            ksession.insert(new FirstClass.AlternativeKey());
+            ksession.insert(new SecondClass.AlternativeKey());
+
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testImportConflict() {
+
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"A rule\"\n" +
+                "    when\n" +
+                "        p:Person( )\n" +
+                "    then\n" +
+                "        // do something\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
+    }
+
+    @Test
+    public void testMissingImport() {
+        final String drl =
+            "package org.drools.compiler.integrationtests.drl;\n" +
+            "import " + Person.class.getName() + ";\n" +
+            "global java.util.List list \n" +
+            "rule rule1 \n" +
+            "when \n" +
+            "    $i : Cheese() \n" +
+            "         MissingClass( fieldName == $i ) \n" +
+            "then \n" +
+            "    list.add( $i ); \n" +
+            "end \n";
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
     public void testMissingImports() {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_missing_import.drl",
-                getClass() ),
-                ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+
+        final String drl = "package foo;\n" +
+                "\n" +
+                "rule \"Generates NPE\"\n" +
+                "  when\n" +
+                "    $count : Thing( size > 0 ) from collect( Gizmo( length == 1 ) )\n" +
+                "  then\n" +
+                "    System.out.println(\"boo\");\n" +
+                "end";
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
-    public void testPackageImportWithMvelDialect() throws Exception {
+    public void testPackageImportWithMvelDialect() {
         // JBRULES-2244
-        final String str = "package org.drools.compiler.test;\n" +
-                "import org.drools.compiler.*\n" +
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
                 "dialect \"mvel\"\n" +
                 "rule R1 no-loop when\n" +
                 "   $p : Person( )" +
@@ -164,47 +280,72 @@ public class ImportsTest extends CommonTestMethodBase {
                 "   modify($p) { setCheese($c) };\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString( str );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person p = new Person( "Mario", 38 );
+            ksession.insert( p );
+            final Cheese c = new Cheese( "Gorgonzola" );
+            ksession.insert( c );
 
-        final Person p = new Person( "Mario", 38 );
-        ksession.insert( p );
-        final Cheese c = new Cheese( "Gorgonzola" );
-        ksession.insert( c );
-
-        assertEquals( 1, ksession.fireAllRules() );
-        assertSame( c, p.getCheese() );
+            assertEquals( 1, ksession.fireAllRules() );
+            assertSame( c, p.getCheese() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testImportStaticClass() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_StaticField.drl"));
-        KieSession session = createKnowledgeSession(kbase);
+    public void testImportStaticClass() {
 
-        // will test serialisation of int and typesafe enums tests
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.class.getCanonicalName() + ";\n" +
+                "import " + Cheesery.Maturity.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule \"status, int based enum\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "           p : Cheesery(status == Cheesery.SELLING_CHEESE, maturity == Maturity.OLD)\n" +
+                "    then\n" +
+                "        list.add( p );\n" +
+                "\n" +
+                "end   \n" +
+                "\n" +
+                "rule \"maturity, object based enum\"\n" +
+                "    when\n" +
+                "           p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)\n" +
+                "    then\n" +
+                "        list.add( p );\n" +
+                "end";
 
-        final List list = new ArrayList();
-        session.setGlobal("list", list);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        final Cheesery cheesery1 = new Cheesery();
-        cheesery1.setStatus(Cheesery.SELLING_CHEESE);
-        cheesery1.setMaturity(Cheesery.Maturity.OLD);
-        session.insert(cheesery1);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+            final Cheesery cheesery1 = new Cheesery();
+            cheesery1.setStatus(Cheesery.SELLING_CHEESE);
+            cheesery1.setMaturity(Cheesery.Maturity.OLD);
+            session.insert(cheesery1);
 
-        final Cheesery cheesery2 = new Cheesery();
-        cheesery2.setStatus(Cheesery.MAKING_CHEESE);
-        cheesery2.setMaturity(Cheesery.Maturity.YOUNG);
-        session.insert(cheesery2);
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+            final Cheesery cheesery2 = new Cheesery();
+            cheesery2.setStatus(Cheesery.MAKING_CHEESE);
+            cheesery2.setMaturity(Cheesery.Maturity.YOUNG);
+            session.insert(cheesery2);
 
-        session.fireAllRules();
+            session.fireAllRules();
 
-        assertEquals(2, list.size());
+            assertEquals(2, list.size());
 
-        assertEquals(cheesery1, list.get(0));
-        assertEquals(cheesery2, list.get(1));
+            assertEquals(cheesery1, list.get(0));
+            assertEquals(cheesery2, list.get(1));
+        } finally {
+            session.dispose();
+        }
     }
 
     public static class StaticMethods {

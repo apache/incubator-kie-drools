@@ -17,49 +17,60 @@
 package org.drools.compiler.integrationtests.drl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
+
+import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-public class RHSTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class RHSTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RHSTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testGenericsInRHS() throws Exception {
+    public void testGenericsInRHS() {
 
-        String rule = "";
-        rule += "package org.drools.compiler;\n";
-        rule += "import java.util.Map;\n";
-        rule += "import java.util.HashMap;\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "  when\n";
-        rule += "  then\n";
-        rule += "    Map<String,String> map = new HashMap<String,String>();\n";
-        rule += "end";
+        final String drl =
+            "package org.drools.compiler.integrationtests.drl;\n" +
+            "import java.util.Map;\n" +
+            "import java.util.HashMap;\n" +
+            "rule \"Test Rule\"\n" +
+            "  when\n" +
+            "  then\n" +
+            "    Map<String,String> map = new HashMap<String,String>();\n" +
+            "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
-        assertNotNull(session);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rhs-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
     }
 
     @Test
     public void testRHSClone() {
         // JBRULES-3539
-        final String str = "import java.util.Map;\n" +
+        final String drl = "import java.util.Map;\n" +
                 "dialect \"mvel\"\n" +
                 "rule \"RHSClone\"\n" +
                 "when\n" +
@@ -68,75 +79,70 @@ public class RHSTest extends CommonTestMethodBase {
                 "   System.out.println( $valOne.clone() );\n" +
                 "end\n";
 
-        final KnowledgeBuilderConfigurationImpl pkgBuilderCfg = new KnowledgeBuilderConfigurationImpl();
-        final MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration("mvel");
-        mvelConf.setStrict(false);
-        mvelConf.setLangLevel(5);
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        final KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() > 0) {
-            for (final KnowledgeBuilderError error : errors) {
-                System.err.println(error);
-            }
-            fail("Could not parse knowledge");
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+    }
+
+    @Test
+    public void testIncrementOperator() {
+        final String drl =
+            "package org.drools.compiler.integrationtest.drl \n" +
+            "global java.util.List list \n" +
+            "rule rule1 \n" +
+            "    dialect \"java\" \n" +
+            "when \n" +
+            "    $I : Integer() \n" +
+            "then \n" +
+            "    int i = $I.intValue(); \n" +
+            "    i += 5; \n" +
+            "    list.add( i ); \n" +
+            "end \n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rhs-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            ksession.insert(5);
+            ksession.fireAllRules();
+
+            assertEquals(1, list.size());
+            assertEquals(10, list.get(0));
+        } finally {
+            ksession.dispose();
         }
     }
 
     @Test
-    public void testIncrementOperator() throws Exception {
-        String str = "";
-        str += "package org.drools.compiler \n";
-        str += "global java.util.List list \n";
-        str += "rule rule1 \n";
-        str += "    dialect \"java\" \n";
-        str += "when \n";
-        str += "    $I : Integer() \n";
-        str += "then \n";
-        str += "    int i = $I.intValue(); \n";
-        str += "    i += 5; \n";
-        str += "    list.add( i ); \n";
-        str += "end \n";
-
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        ksession.insert(5);
-        ksession.fireAllRules();
-
-        assertEquals(1, list.size());
-        assertEquals(10, list.get(0));
-    }
-
-    @Test
     public void testKnowledgeHelperFixerInStrings() {
-        String str = "";
-        str += "package org.simple \n";
-        str += "global java.util.List list \n";
-        str += "rule xxx \n";
-        str += "  no-loop true ";
-        str += "when \n";
-        str += "  $fact : String() \n";
-        str += "then \n";
-        str += "  list.add(\"This is an update()\"); \n";
-        str += "  list.add(\"This is an update($fact)\"); \n";
-        str += "  update($fact); \n";
-        str += "end  \n";
+        final String drl =
+            "package org.drools.compiler.integrationtests.drl; \n" +
+            "global java.util.List list \n" +
+            "rule xxx \n" +
+            "  no-loop true " +
+            "when \n" +
+            "  $fact : String() \n" +
+            "then \n" +
+            "  list.add(\"This is an update()\"); \n" +
+            "  list.add(\"This is an update($fact)\"); \n" +
+            "  update($fact); \n" +
+            "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rhs-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        ksession.insert("hello");
-        ksession.fireAllRules();
-
-        ksession.dispose();
-
-        assertEquals(2, list.size());
-        assertEquals("This is an update()", list.get(0));
-        assertEquals("This is an update($fact)", list.get(1));
+            ksession.insert("hello");
+            ksession.fireAllRules();
+            assertEquals(2, list.size());
+            assertEquals("This is an update()", list.get(0));
+            assertEquals("This is an update($fact)", list.get(1));
+        } finally {
+            ksession.dispose();
+        }
     }
 }

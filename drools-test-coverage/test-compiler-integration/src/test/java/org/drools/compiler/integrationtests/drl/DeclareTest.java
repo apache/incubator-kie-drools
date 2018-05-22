@@ -17,36 +17,49 @@
 package org.drools.compiler.integrationtests.drl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.drools.compiler.Address;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.integrationtests.facts.ClassB;
-import org.drools.compiler.integrationtests.facts.InterfaceB;
+
+import org.drools.testcoverage.common.model.Address;
+import org.drools.testcoverage.common.model.ClassB;
+import org.drools.testcoverage.common.model.InterfaceB;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class DeclareTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DeclareTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DeclareTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testDeclaredTypesDefaultHashCode() {
         // JBRULES-3481
-        final String str = "package com.sample\n" +
+        final String str = "package org.drools.compiler.integrationtests.drl;\n" +
                 "\n" +
                 "global java.util.List list; \n" +
                 "" +
@@ -68,87 +81,110 @@ public class DeclareTest extends CommonTestMethodBase {
                 " list.add( new KeyedBean(1) ); \n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
 
-        final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+            ksession.fireAllRules();
 
-        ksession.setGlobal("list", list);
-        ksession.fireAllRules();
+            ksession.dispose();
 
-        ksession.dispose();
+            assertNotEquals(34, list.get(0).hashCode());
+            assertNotEquals(34, list.get(1).hashCode());
+            assertNotEquals(list.get(0).hashCode(), list.get(1).hashCode());
+            assertNotSame(list.get(0), list.get(1));
+            assertNotEquals(list.get(0), list.get(1));
 
-        assertFalse(list.get(0).hashCode() == 34);
-        assertFalse(list.get(1).hashCode() == 34);
-        assertFalse(list.get(0).hashCode() == list.get(1).hashCode());
-        assertNotSame(list.get(0), list.get(1));
-        assertFalse(list.get(0).equals(list.get(1)));
-
-        assertTrue(list.get(2).hashCode() == 32);
-        assertTrue(list.get(3).hashCode() == 32);
-        assertNotSame(list.get(2), list.get(3));
-        assertTrue(list.get(2).equals(list.get(3)));
+            assertEquals(32, list.get(2).hashCode());
+            assertEquals(32, list.get(3).hashCode());
+            assertNotSame(list.get(2), list.get(3));
+            assertEquals(list.get(2), list.get(3));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testDeclareAndFrom() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_DeclareWithFrom.drl");
-        final FactType profileType = kbase.getFactType("org.drools.compiler", "Profile");
+        final String drl = "package org.drools.compiler.integrationtests.drl\n" +
+                "\n" +
+                "declare Profile\n" +
+                "    pageFreq : java.util.Map\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Testing out UdayCompare Custom Operator\"\n" +
+                "    ruleflow-group \"udaytesting\"\n" +
+                "when\n" +
+                "    $profile : Profile( $pg : pageFreq )\n" +
+                "    Integer( this > 1 ) from $profile.pageFreq[\"internet\"]\n" +
+                "then\n" +
+                "    System.out.println(\"Yippie it works!!\");\n" +
+                "end";
 
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final Object profile = profileType.newInstance();
-        final Map<String, Integer> map = new HashMap<String, Integer>();
-        map.put("internet", Integer.valueOf(2));
-        profileType.set(profile, "pageFreq", map);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final FactType profileType = kbase.getFactType("org.drools.compiler.integrationtests.drl", "Profile");
+            final Object profile = profileType.newInstance();
+            final Map<String, Integer> map = new HashMap<>();
+            map.put("internet", 2);
+            profileType.set(profile, "pageFreq", map);
 
-        ksession.insert(profile);
-        ksession.fireAllRules();
-        ksession.dispose();
+            ksession.insert(profile);
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testDeclaredFactAndFunction() throws Exception {
-        String rule = "package com.jboss.qa;\n";
-        rule += "global java.util.List list\n";
-        rule += "declare Address\n";
-        rule += "    street: String\n";
-        rule += "end\n";
-        rule += "function void myFunction() {\n";
-        rule += "}\n";
-        rule += "rule \"r1\"\n";
-        rule += "    dialect \"mvel\"\n";
-        rule += "when\n";
-        rule += "    Address()\n";
-        rule += "then\n";
-        rule += "    list.add(\"r1\");\n";
-        rule += "end\n";
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+            "global java.util.List list\n" +
+            "declare Address\n" +
+            "    street: String\n" +
+            "end\n" +
+            "function void myFunction() {\n" +
+            "}\n" +
+            "rule \"r1\"\n" +
+            "    dialect \"mvel\"\n" +
+            "when\n" +
+            "    Address()\n" +
+            "then\n" +
+            "    list.add(\"r1\");\n" +
+            "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
-        final KieSession session = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
+        try {
+            List list = new ArrayList();
+            session.setGlobal("list", list);
 
-        List list = new ArrayList();
-        session.setGlobal("list", list);
+            final FactType addressFact = kbase.getFactType("org.drools.compiler.integrationtests.drl", "Address");
+            final Object address = addressFact.newInstance();
+            session.insert(address);
+            session.fireAllRules();
 
-        final FactType addressFact = kbase.getFactType("com.jboss.qa", "Address");
-        final Object address = addressFact.newInstance();
-        session.insert(address);
-        session.fireAllRules();
+            list = (List) session.getGlobal("list");
+            assertEquals(1, list.size());
 
-        list = (List) session.getGlobal("list");
-        assertEquals(1, list.size());
-
-        assertEquals("r1", list.get(0));
+            assertEquals("r1", list.get(0));
+        } finally {
+            session.dispose();
+        }
     }
 
     @Test
-    public void testTypeDeclarationOnSeparateResource() throws Exception {
-        final String file1 = "package a.b.c\n" +
+    public void testTypeDeclarationOnSeparateResource() {
+        final String drl1 = "package a.b.c\n" +
                 "declare SomePerson\n" +
                 "    weight : double\n" +
                 "    height : double\n" +
                 "end\n";
-        final String file2 = "package a.b.c\n" +
-                "import org.drools.compiler.*\n" +
+        final String drl2 = "package a.b.c\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "declare Holder\n" +
                 "    person : Person\n" +
                 "end\n" +
@@ -162,19 +198,22 @@ public class DeclareTest extends CommonTestMethodBase {
                 "        insert(new Holder(person));\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(file1, file2);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl1, drl2);
         final KieSession ksession = kbase.newKieSession();
-
-        assertEquals(0, ksession.fireAllRules());
-        ksession.insert(new Person("Bob"));
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(0, ksession.fireAllRules());
+        try {
+            assertEquals(0, ksession.fireAllRules());
+            ksession.insert(new Person("Bob"));
+            assertEquals(1, ksession.fireAllRules());
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testDeclaredTypeAsFieldForAnotherDeclaredType() {
         // JBRULES-3468
-        final String str = "package com.sample\n" +
+        final String drl = "package com.sample\n" +
                 "\n" +
                 "import com.sample.*;\n" +
                 "\n" +
@@ -223,11 +262,13 @@ public class DeclareTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
-
-        assertEquals(20, ksession.fireAllRules());
-        ksession.dispose();
+        try {
+            assertEquals(20, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
@@ -239,15 +280,15 @@ public class DeclareTest extends CommonTestMethodBase {
         }
         sb.append("end");
 
-        final KieBase kbase = loadKnowledgeBaseFromString(sb.toString());
-        kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, sb.toString());
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
     }
 
     @Test
-    public void testDeclaresWithArrayFields() throws Exception {
-        final String rule = "package org.drools.compiler.test; \n" +
-                "import " + org.drools.compiler.test.Person.class.getName() + ";\n" +
-                "import " + org.drools.compiler.test.Man.class.getName() + ";\n" +
+    public void testDeclaresWithArrayFields() {
+        final String drl = "package org.drools.compiler.integrationtests.drl; \n" +
+                "import " + Person.class.getName() + ";\n" +
                 "\n" +
                 "global java.util.List list;" +
                 "\n" +
@@ -268,7 +309,7 @@ public class DeclareTest extends CommonTestMethodBase {
                 "    zint\t: Integer[] " + " = new Integer[] {2,3}                   @key \n" +
                 "    aaaa\t: String[][] \n" +
                 "    bbbb\t: int[][] \n" +
-                "    aprs\t: Person[] " + " = new Person[] { new Man() } \n" +
+                "    aprs\t: Person[] " + " = new Person[] { } \n" +
                 "end\n" +
                 "\n" +
                 "rule \"Init\"\n" +
@@ -310,28 +351,37 @@ public class DeclareTest extends CommonTestMethodBase {
                 "       $x : astr[1],               \n" +
                 "       aint[0] == 7  )             \n" +
                 "then\n" +
+                " System.out.println(\"Fired!!!!!!!!!!!!!!\" + $x); \n" +
                 "    list.add( $x );\n" +
                 "end \n" +
                 "";
 
-        final KieBase kbase = loadKnowledgeBaseFromString( rule );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
-        final List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal( "list", list );
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        assertTrue( list.contains( "hash" ) );
-        assertTrue( list.contains( "equals" ) );
-        assertTrue( list.contains( 7 ) );
-        assertTrue( list.contains( "y11" ) );
-        assertTrue( list.contains( "y22" ) );
+            assertTrue( list.contains( "hash" ) );
+            assertTrue( list.contains( "equals" ) );
+            assertTrue( list.contains( 7 ) );
+            // The X instances are considered equal so when using EQUALITY, the second insert doesn't insert anything,
+            // therefore, the fire produced by the second insert should be checked just with IDENTITY.
+            if (kieBaseTestConfiguration == KieBaseTestConfiguration.CLOUD_IDENTITY) {
+                assertTrue( list.contains( "y11" ) );
+            }
+            assertTrue( list.contains( "y22" ) );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testMvelFunctionWithDeclaredTypeArg() {
         // JBRULES-3562
-        final String rule = "package test; \n" +
+        final String drl = "package org.drools.compiler.integrationtests.drl; \n" +
                 "dialect \"mvel\"\n" +
                 "global java.lang.StringBuilder value;\n" +
                 "function String getFieldValue(Bean bean) {" +
@@ -354,19 +404,21 @@ public class DeclareTest extends CommonTestMethodBase {
                 "   value.append( getFieldValue($bean) ); \n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString( rule );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final StringBuilder sb = new StringBuilder();
+            ksession.setGlobal( "value", sb );
+            ksession.fireAllRules();
 
-        final StringBuilder sb = new StringBuilder();
-        ksession.setGlobal( "value", sb );
-        ksession.fireAllRules();
-
-        assertEquals( "mario", sb.toString() );
-        ksession.dispose();
+            assertEquals( "mario", sb.toString() );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
-    public void testMvelFunctionWithDeclaredTypeArgForGuvnor() throws Exception {
+    public void testMvelFunctionWithDeclaredTypeArgForGuvnor() {
         // JBRULES-3562
         final String function = "function String getFieldValue(Bean bean) {" +
                 " return bean.getField();" +
@@ -382,22 +434,19 @@ public class DeclareTest extends CommonTestMethodBase {
                 " System.out.println( getFieldValue($bean) ); \n" +
                 "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( declaredFactType.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( function.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
-
-        for ( final KnowledgeBuilderError error : kbuilder.getErrors() ) {
-            System.out.println( "ERROR:" );
-            System.out.println( error.getMessage() );
-        }
-        assertFalse( kbuilder.hasErrors() );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         declaredFactType,
+                                                                         function,
+                                                                         rule);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
     }
 
     @Test
     public void testNoneTypeSafeDeclarations() {
         // same namespace
-        String str = "package org.drools.compiler\n" +
+        String str = "package " + Person.class.getPackage().getName() + ";\n" +
                 "global java.util.List list\n" +
                 "declare Person\n" +
                 "    @typesafe(false)\n" +
@@ -412,8 +461,8 @@ public class DeclareTest extends CommonTestMethodBase {
                 true );
 
         // different namespace with import
-        str = "package org.drools.compiler.test\n" +
-                "import org.drools.compiler.Person\n" +
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List list\n" +
                 "declare Person\n" +
                 "    @typesafe(false)\n" +
@@ -427,13 +476,13 @@ public class DeclareTest extends CommonTestMethodBase {
                 true );
 
         // different namespace without import using qualified name
-        str = "package org.drools.compiler.test\n" +
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
                 "global java.util.List list\n" +
-                "declare org.drools.compiler.Person\n" +
+                "declare " + Person.class.getCanonicalName() + "\n" +
                 "    @typesafe(false)\n" +
                 "end\n" +
                 "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : org.drools.compiler.Person( object.street == 's1' )\n" +
+                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
                 "then\n" +
                 "   list.add( $p );\n" +
                 "end\n";
@@ -441,13 +490,13 @@ public class DeclareTest extends CommonTestMethodBase {
                 true );
 
         // this should fail as it's not declared non typesafe
-        str = "package org.drools.compiler.test\n" +
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
                 "global java.util.List list\n" +
-                "declare org.drools.compiler.Person\n" +
+                "declare " + Person.class.getCanonicalName() + "\n" +
                 "    @typesafe(true)\n" +
                 "end\n" +
                 "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : org.drools.compiler.Person( object.street == 's1' )\n" +
+                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
                 "then\n" +
                 "   list.add( $p );\n" +
                 "end\n";
@@ -455,10 +504,10 @@ public class DeclareTest extends CommonTestMethodBase {
                 false );
     }
 
-    private void executeTypeSafeDeclarations(final String str, final boolean mustSucceed) {
+    private void executeTypeSafeDeclarations(final String drl, final boolean mustSucceed) {
         final KieBase kbase;
         try {
-            kbase = loadKnowledgeBaseFromString(str);
+            kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
             if (!mustSucceed) {
                 fail("Compilation Should fail");
             }
@@ -469,22 +518,26 @@ public class DeclareTest extends CommonTestMethodBase {
             return;
         }
 
-        final KieSession ksession = createKnowledgeSession(kbase);
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-        final Address a = new Address("s1");
-        final Person p = new Person("yoda");
-        p.setObject(a);
+            final Address a = new Address("s1", 10, "city");
+            final Person p = new Person("yoda");
+            p.setObject(a);
 
-        ksession.insert(p);
-        ksession.fireAllRules();
-        assertEquals(p, list.get(0));
+            ksession.insert(p);
+            ksession.fireAllRules();
+            assertEquals(p, list.get(0));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testTypeUnsafe() throws Exception {
-        final String str = "import " + DeclareTest.class.getName() + ".*\n" +
+        final String drl = "import " + DeclareTest.class.getName() + ".*\n" +
                 "declare\n" +
                 "   Parent @typesafe(false)\n" +
                 "end\n" +
@@ -494,22 +547,25 @@ public class DeclareTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            for (int i = 0; i < 20; i++) {
+                ksession.insert(new ChildA(i % 10));
+                ksession.insert(new ChildB(i % 10));
+            }
 
-        for (int i = 0; i < 20; i++) {
-            ksession.insert(new ChildA(i % 10));
-            ksession.insert(new ChildB(i % 10));
+            assertEquals(4, ksession.fireAllRules());
+
+            // give time to async jitting to complete
+            Thread.sleep(100);
+
+            ksession.insert(new ChildA(1));
+            ksession.insert(new ChildB(1));
+            assertEquals(2, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
         }
-
-        assertEquals(4, ksession.fireAllRules());
-
-        // give time to async jitting to complete
-        Thread.sleep(100);
-
-        ksession.insert(new ChildA(1));
-        ksession.insert(new ChildB(1));
-        assertEquals(2, ksession.fireAllRules());
     }
 
     public static class Parent {
@@ -541,10 +597,8 @@ public class DeclareTest extends CommonTestMethodBase {
 
     @Test
     public void testConstructorWithOtherDefaults() {
-        final String str = "" +
-                "\n" +
+        final String drl =
                 "global java.util.List list;\n" +
-                "\n" +
                 "declare Bean\n" +
                 "   kField : String     @key\n" +
                 "   sField : String     = \"a\"\n" +
@@ -566,22 +620,23 @@ public class DeclareTest extends CommonTestMethodBase {
                 "    insert( new Bean( \"key\") ); \n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final java.util.List list = new java.util.ArrayList();
+            ksession.setGlobal("list", list);
 
-        final java.util.List list = new java.util.ArrayList();
-        ksession.setGlobal("list", list);
-
-        ksession.fireAllRules();
-        assertTrue(list.contains("OK"));
-
-        ksession.dispose();
+            ksession.fireAllRules();
+            assertTrue(list.contains("OK"));
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
     public void testKeyedInterfaceField() {
         //JBRULES-3441
-        final String str = "package org.drools.compiler.integrationtest; \n" +
+        final String drl = "package org.drools.compiler.integrationtests.drl; \n" +
                 "\n" +
                 "import " + ClassB.class.getCanonicalName() + "; \n" +
                 "import " + InterfaceB.class.getCanonicalName() + "; \n" +
@@ -607,16 +662,17 @@ public class DeclareTest extends CommonTestMethodBase {
                 "  list.add( $b.equals( new Bean( new ClassB() ) ) ); \n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
+        try {
+            final java.util.List list = new java.util.ArrayList();
+            ksession.setGlobal("list", list);
 
-        final java.util.List list = new java.util.ArrayList();
-        ksession.setGlobal("list", list);
-
-        ksession.fireAllRules();
-        assertTrue(list.contains(31 + 123));
-        assertTrue(list.contains(true));
-
-        ksession.dispose();
+            ksession.fireAllRules();
+            assertTrue(list.contains(31 + 123));
+            assertTrue(list.contains(true));
+        } finally {
+            ksession.dispose();
+        }
     }
 }

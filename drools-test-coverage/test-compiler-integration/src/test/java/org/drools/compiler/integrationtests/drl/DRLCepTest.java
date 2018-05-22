@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,7 @@ package org.drools.compiler.integrationtests.drl;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
-import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -30,47 +30,39 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 @RunWith(Parameterized.class)
-public class ExceptionTest {
+public class DRLCepTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public ExceptionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public DRLCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
     }
 
     @Test
-    public void testReturnValueException() {
-
+    public void testEventsInDifferentPackages() {
         final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "function String throwException( ) {\n" +
-                "    throw new RuntimeException( \"this should throw an exception\" );\n" +
-                "}\n" +
-                "\n" +
-                "rule \"Throw ReturnValue Exception\"\n" +
-                "    when\n" +
-                "        Cheese( type == ( throwException( ) ) )\n" +
-                "    then\n" +
-                "\n" +
-                "end";
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "rule r1\n" +
+                "when\n" +
+                "then\n" +
+                "    StockTick st = new StockTick();\n" +
+                "    st.setCompany(\"RHT\");\n" +
+                "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("exception-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("drl-cep-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            final Cheese brie = new Cheese("brie", 12);
-
-            Assertions.assertThatThrownBy(() -> {
-                ksession.insert(brie);
-                ksession.fireAllRules();
-            }).hasRootCauseInstanceOf(RuntimeException.class).hasMessageContaining("Error evaluating constraint 'type == ( throwException( ) )");
+            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
     }
-
 }

@@ -16,30 +16,51 @@
 
 package org.drools.compiler.integrationtests.drl;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Test;
-import org.kie.api.KieBase;
+import java.util.Collection;
 
-public class CommentTest extends CommonTestMethodBase {
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+
+@RunWith(Parameterized.class)
+public class CommentTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public CommentTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
-    public void testCommentDelimiterInString() throws Exception {
+    public void testCommentDelimiterInString() {
         // JBRULES-3401
-        final String str = "rule x\n" +
+        final String drl = "rule x\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "then\n" +
                 "System.out.println( \"/*\" );\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString( str );
-        kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("comment-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
     }
 
     @Test
     public void testCommentWithCommaInRHS() {
         // JBRULES-3648
-        final String str = "import org.drools.compiler.*;\n" +
+        final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
                 "   $p : Person( age < name.length ) \n" +
                 "then\n" +
@@ -48,7 +69,8 @@ public class CommentTest extends CommonTestMethodBase {
                 "       38));" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString( str );
-        kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("comment-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        ksession.dispose();
     }
 }
