@@ -16,7 +16,7 @@
   -->
 
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.rocktour.domain.RockTourSolution</solutionClass>
   <entityClass>org.optaplanner.examples.rocktour.domain.RockShow</entityClass>
   <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
@@ -28,4 +28,15 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
+  <constructionHeuristic/>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <tailChainSwapMoveSelector/>
+      <subChainChangeMoveSelector/>
+      <subChainSwapMoveSelector/>
+      <!-- TODO use nearby selection to scale out -->
+    </unionMoveSelector>
+  </localSearch>
 </solver>

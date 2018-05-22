@@ -91,7 +91,8 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
     }
 
     private Arrival calculateArrival(RockTourSolution solution, RockShow show, RockStandstill previousStandstill) {
-        if (show == null || previousStandstill == null || previousStandstill.getDepartureDate() == null) {
+        if (show == null || previousStandstill == null || previousStandstill.getDepartureDate() == null
+                || previousStandstill.getHosWeekStart().getHosWeekStart() == null) {
             return new Arrival(null, null, null, null);
         }
         long earlyLateBreakDrivingSecondsBudget = solution.getParametrization().getEarlyLateBreakDrivingSecondsBudget();
