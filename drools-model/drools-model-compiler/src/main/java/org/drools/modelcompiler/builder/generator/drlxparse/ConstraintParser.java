@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
