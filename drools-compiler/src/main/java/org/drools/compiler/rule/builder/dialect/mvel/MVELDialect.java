@@ -15,6 +15,20 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
@@ -81,20 +95,6 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 public class MVELDialect
         implements
         Dialect,
@@ -149,8 +149,6 @@ public class MVELDialect
 
     private MVELDialectRuntimeData data;
 
-    private final ClassLoader rootClassLoader;
-
     static {
         // always use mvel reflective optimizer
         OptimizerFactory.setDefaultOptimizer(OptimizerFactory.SAFE_REFLECTIVE);
@@ -172,7 +170,6 @@ public class MVELDialect
                        PackageRegistry pkgRegistry,
                        InternalKnowledgePackage pkg,
                        String id) {
-        this.rootClassLoader = rootClassLoader;
         this.id = id;
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
@@ -416,28 +413,26 @@ public class MVELDialect
         String className = staticImportEntry.substring(0, index);
         String methodName = staticImportEntry.substring(index + 1);
 
-        try {
-            Class cls = this.packageRegistry.getPackageClassLoader().loadClass(className);
-            if (cls != null) {
+        Class cls = loadImportedClass(className);
+        if (cls != null) {
 
-                // First try and find a matching method
-                for (Method method : cls.getDeclaredMethods()) {
-                    if (method.getName().equals(methodName)) {
-                        this.data.addImport(methodName, method);
-                        return;
-                    }
-                }
-
-                //no matching method, so now try and find a matching public property
-                for (Field field : cls.getFields()) {
-                    if (field.isAccessible() && field.getName().equals(methodName)) {
-                        this.data.addImport(methodName, field);
-                        return;
-                    }
+            // First try and find a matching method
+            for (Method method : cls.getDeclaredMethods()) {
+                if (method.getName().equals(methodName)) {
+                    this.data.addImport(methodName, method);
+                    return;
                 }
             }
-        } catch (ClassNotFoundException e) {
+
+            //no matching method, so now try and find a matching public property
+            for (Field field : cls.getFields()) {
+                if (field.isAccessible() && field.getName().equals(methodName)) {
+                    this.data.addImport(methodName, field);
+                    return;
+                }
+            }
         }
+
         // we never managed to make the import, so log an error
         this.results.add(new ImportError(importDescr, -1));
     }
@@ -446,11 +441,8 @@ public class MVELDialect
         String staticImportEntry = importDescr.getTarget();
         int index = staticImportEntry.lastIndexOf('.');
         String className = staticImportEntry.substring(0, index);
-        Class cls = null;
-        try {
-            cls = rootClassLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-        }
+        Class cls = loadImportedClass(className);
+
         if (cls == null) {
             results.add(new ImportError(importDescr, -1));
             return;
@@ -470,8 +462,15 @@ public class MVELDialect
         }
     }
 
-    //    private Map staticFieldImports = new HashMap();
-    //    private Map staticMethodImports = new HashMap();
+    private Class<?> loadImportedClass(String className) {
+        try {
+            return pkg.getTypeResolver().resolveType(className);
+        } catch (ClassNotFoundException e) { }
+        try {
+            return this.packageRegistry.getPackageClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) { }
+        return null;
+    }
 
     public boolean isStrictMode() {
         return strictMode;
