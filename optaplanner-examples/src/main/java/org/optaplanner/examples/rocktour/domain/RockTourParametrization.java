@@ -22,6 +22,9 @@ public class RockTourParametrization extends AbstractPersistable {
 
     public static final String EARLY_LATE_BREAK_DRIVING_SECONDS = "Early late break driving seconds budget";
     public static final String NIGHT_DRIVING_SECONDS = "Night driving seconds budget";
+    public static final String HOS_WEEK_DRIVING_SECONDS_BUDGET = "HOS week driving seconds budget";
+    public static final String HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET = "HOS week consecutive driving days budget";
+    public static final String HOS_WEEK_REST_DAYS = "HOS week rest days";
 
     public static final String MISSED_SHOW_PENALTY = "Minimize missed shows";
     public static final String REVENUE_OPPORTUNITY = "Maximize revenue opportunity";
@@ -29,7 +32,10 @@ public class RockTourParametrization extends AbstractPersistable {
     public static final String DELAY_COST_PER_DAY = "Visit sooner than later";
 
     private long earlyLateBreakDrivingSecondsBudget = 1L * 60L * 60L;
-    private long nightDrivingSecondsBudget = 8L * 60L * 60L;
+    private long nightDrivingSecondsBudget = 7L * 60L * 60L;
+    private long hosWeekDrivingSecondsBudget = 50L * 60L * 60L;
+    private int hosWeekConsecutiveDrivingDaysBudget = 7;
+    private int hosWeekRestDays = 2;
 
     private long missedShowPenalty = 0;
     private long revenueOpportunity = 1;
@@ -69,6 +75,30 @@ public class RockTourParametrization extends AbstractPersistable {
 
     public void setNightDrivingSecondsBudget(long nightDrivingSecondsBudget) {
         this.nightDrivingSecondsBudget = nightDrivingSecondsBudget;
+    }
+
+    public long getHosWeekDrivingSecondsBudget() {
+        return hosWeekDrivingSecondsBudget;
+    }
+
+    public void setHosWeekDrivingSecondsBudget(long hosWeekDrivingSecondsBudget) {
+        this.hosWeekDrivingSecondsBudget = hosWeekDrivingSecondsBudget;
+    }
+
+    public int getHosWeekConsecutiveDrivingDaysBudget() {
+        return hosWeekConsecutiveDrivingDaysBudget;
+    }
+
+    public void setHosWeekConsecutiveDrivingDaysBudget(int hosWeekConsecutiveDrivingDaysBudget) {
+        this.hosWeekConsecutiveDrivingDaysBudget = hosWeekConsecutiveDrivingDaysBudget;
+    }
+
+    public int getHosWeekRestDays() {
+        return hosWeekRestDays;
+    }
+
+    public void setHosWeekRestDays(int hosWeekRestDays) {
+        this.hosWeekRestDays = hosWeekRestDays;
     }
 
     public long getRevenueOpportunity() {

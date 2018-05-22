@@ -34,7 +34,20 @@ public interface RockStandstill {
      */
     LocalDate getDepartureDate();
 
+    /**
+     * @return sometimes null;
+     */
     RockTimeOfDay getDepartureTimeOfDay();
+
+    /**
+     * @return sometimes null;
+     */
+    RockStandstill getHosWeekStart();
+
+    /**
+     * @return sometimes null;
+     */
+    Long getHosWeekDrivingSecondsTotal();
 
     /**
      * @return never null;

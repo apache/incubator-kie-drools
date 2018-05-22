@@ -26,7 +26,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.rocktour.domain.solver.RockShowDateUpdatingVariableListener;
+import org.optaplanner.examples.rocktour.domain.solver.RockShowVariableListener;
 
 import static java.time.temporal.ChronoUnit.*;
 
@@ -49,13 +49,19 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     @AnchorShadowVariable(sourceVariableName = "previousStandstill")
     private RockBus bus;
 
-    @CustomShadowVariable(variableListenerClass = RockShowDateUpdatingVariableListener.class,
+    @CustomShadowVariable(variableListenerClass = RockShowVariableListener.class,
             sources = {@PlanningVariableReference(variableName = "previousStandstill"),
             @PlanningVariableReference(variableName = "bus")})
     private LocalDate date;
 
     @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
-    private RockTimeOfDay timeOfDay;
+    private RockTimeOfDay timeOfDay; // There can be 2 shows on the same date (early and late)
+
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    private RockStandstill hosWeekStart; // HOS stands for Hours of Service regulation
+
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    private Long hosWeekDrivingSecondsTotal; // HOS stands for Hours of Service regulation
 
     public RockShow() {
     }
@@ -192,6 +198,24 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     public void setTimeOfDay(RockTimeOfDay timeOfDay) {
         this.timeOfDay = timeOfDay;
+    }
+
+    @Override
+    public RockStandstill getHosWeekStart() {
+        return hosWeekStart;
+    }
+
+    public void setHosWeekStart(RockStandstill hosWeekStart) {
+        this.hosWeekStart = hosWeekStart;
+    }
+
+    @Override
+    public Long getHosWeekDrivingSecondsTotal() {
+        return hosWeekDrivingSecondsTotal;
+    }
+
+    public void setHosWeekDrivingSecondsTotal(Long hosWeekDrivingSecondsTotal) {
+        this.hosWeekDrivingSecondsTotal = hosWeekDrivingSecondsTotal;
     }
 
 }

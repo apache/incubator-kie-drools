@@ -96,6 +96,12 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     "Maximum driving time in seconds between 2 shows on the same day.");
             readLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::setNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
+            readLongConstraintLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, parametrization::setHosWeekDrivingSecondsBudget,
+                    "Maximum driving time in seconds since last weekend rest.");
+            readIntConstraintLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, parametrization::setHosWeekConsecutiveDrivingDaysBudget,
+                    "Maximum driving days since last weekend rest.");
+            readIntConstraintLine(HOS_WEEK_REST_DAYS, parametrization::setHosWeekRestDays,
+                    "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
             nextRow(true);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
@@ -324,7 +330,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 5, false);
+            nextSheet("Configuration", 1, 8, false);
             nextRow();
             nextHeaderCell("Tour name");
             nextCell().setCellValue(solution.getTourName());
@@ -333,6 +339,12 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     "Maximum driving time in seconds between 2 shows on the same day.");
             writeLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::getNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
+            writeLongConstraintLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, parametrization::getHosWeekDrivingSecondsBudget,
+                    "Maximum driving time in seconds since last weekend rest.");
+            writeIntConstraintLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, parametrization::getHosWeekConsecutiveDrivingDaysBudget,
+                    "Maximum driving days since last weekend rest.");
+            writeIntConstraintLine(HOS_WEEK_REST_DAYS, parametrization::getHosWeekRestDays,
+                    "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");

@@ -48,6 +48,16 @@ public class RockBus extends AbstractPersistable implements RockStandstill {
     }
 
     @Override
+    public RockStandstill getHosWeekStart() {
+        return this;
+    }
+
+    @Override
+    public Long getHosWeekDrivingSecondsTotal() {
+        return 0L;
+    }
+
+    @Override
     public RockLocation getArrivalLocation() {
         return endLocation;
     }
