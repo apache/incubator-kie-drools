@@ -105,9 +105,9 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     "Set this to 1 to prioritize visiting all shows (over the other constraints).");
             readLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::setRevenueOpportunity,
                     "Reward per revenue opportunity.");
-            readLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::setRevenueOpportunity,
+            readLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::setDrivingTimeCostPerSecond,
                     "Driving time cost per second.");
-            readLongConstraintLine(DELAY_COST_PER_DAY, parametrization::setRevenueOpportunity,
+            readLongConstraintLine(DELAY_COST_PER_DAY, parametrization::setDelayCostPerDay,
                     "Cost per day for each day that a visit is later in the schedule.");
             solution.setParametrization(parametrization);
         }
@@ -342,9 +342,9 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                     "Set this to 1 to prioritize visiting all shows (over the other constraints).");
             writeLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::getRevenueOpportunity,
                     "Reward per revenue opportunity.");
-            writeLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::getRevenueOpportunity,
+            writeLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::getDrivingTimeCostPerSecond,
                     "Driving time cost per second.");
-            writeLongConstraintLine(DELAY_COST_PER_DAY, parametrization::getRevenueOpportunity,
+            writeLongConstraintLine(DELAY_COST_PER_DAY, parametrization::getDelayCostPerDay,
                     "Cost per day for each day that a visit is later in the schedule.");
             autoSizeColumnsWithHeader();
         }
@@ -494,6 +494,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             nextHeaderCell("Venue name");
             nextHeaderCell("City name");
             nextHeaderCell("Driving time");
+            nextHeaderCell("Driving time per week");
             nextHeaderCell("Latitude");
             nextHeaderCell("Longitude");
             nextHeaderCell("Duration (in days)");
@@ -505,6 +506,7 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
             Map<LocalDate, List<RockShow>> dateToShowListMap = solution.getShowList().stream()
                     .filter(show -> show.getDate() != null)
                     .collect(groupingBy(RockShow::getDate));
+            long drivingTimeWeekTotal = 0L;
             for (LocalDate date = startDate; date.compareTo(endDate) < 0; date = date.plusDays(1)) {
                 List<RockShow> showList = dateToShowListMap.computeIfAbsent(date, k -> Collections.emptyList());
                 showList.sort(Comparator.comparing(RockShow::getTimeOfDay).thenComparing(RockShow::getVenueName));
@@ -514,26 +516,45 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 } else {
                     nextHeaderCell(DAY_FORMATTER.format(date));
                 }
-                boolean first = true;
-                for (RockShow show : showList) {
-                    if (!first) {
-                        nextRow();
-                        nextCell();
+                if (!showList.isEmpty()) {
+                    boolean first = true;
+                    for (RockShow show : showList) {
+                        if (!first) {
+                            nextRow();
+                            nextCell();
+                        }
+                        nextCell().setCellValue(show.getVenueName());
+                        nextCell().setCellValue(show.getLocation().getCityName());
+                        long drivingTime = show.getDrivingTimeFromPreviousStandstill();
+                        drivingTimeWeekTotal += drivingTime;
+                        nextCell().setCellValue((drivingTime / 3600L) + " hours " + (drivingTime % 3600 / 60) + " minutes");
+                        if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                            nextCell().setCellValue((drivingTimeWeekTotal / 3600L) + " hours " + (drivingTimeWeekTotal % 3600 / 60) + " minutes");
+                            drivingTimeWeekTotal = 0;
+                        } else {
+                            nextCell();
+                        }
+                        nextCell().setCellValue(show.getLocation().getLatitude());
+                        nextCell().setCellValue(show.getLocation().getLongitude());
+                        nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
+                        nextCell().setCellValue(show.getRevenueOpportunity());
+                        nextCell().setCellValue(show.isRequired());
+                        nextCell().setCellValue(show.getAvailableDateSet().size());
+                        first = false;
                     }
-                    nextCell().setCellValue(show.getVenueName());
-                    nextCell().setCellValue(show.getLocation().getCityName());
-                    long drivingTime = show.getDrivingTimeFromPreviousStandstill();
-                    nextCell().setCellValue((drivingTime / 3600L) + " hours " + (drivingTime % 3600 / 60) + " minutes");
-                    nextCell().setCellValue(show.getLocation().getLatitude());
-                    nextCell().setCellValue(show.getLocation().getLongitude());
-                    nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
-                    nextCell().setCellValue(show.getRevenueOpportunity());
-                    nextCell().setCellValue(show.isRequired());
-                    nextCell().setCellValue(show.getAvailableDateSet().size());
-                    first = false;
+                } else {
+                    nextCell();
+                    nextCell();
+                    nextCell();
+                    if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                        nextCell().setCellValue((drivingTimeWeekTotal / 3600L) + " hours " + (drivingTimeWeekTotal % 3600 / 60) + " minutes");
+                        drivingTimeWeekTotal = 0;
+                    }
                 }
             }
             nextRow();
+            nextRow();
+            long revenueOpportunityLoss = 0L;
             for (RockShow show : solution.getShowList().stream()
                     .filter(show -> show.getDate() == null)
                     .sorted(Comparator.comparing(RockShow::getVenueName))
@@ -547,9 +568,19 @@ public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolut
                 nextCell().setCellValue(show.getLocation().getLongitude());
                 nextCell().setCellValue(show.getDurationInHalfDay() * 0.5);
                 nextCell().setCellValue(show.getRevenueOpportunity());
+                revenueOpportunityLoss += show.getRevenueOpportunity();
                 nextCell().setCellValue(show.isRequired());
                 nextCell().setCellValue(show.getAvailableDateSet().size());
             }
+            nextRow();
+            nextHeaderCell("Total revenue opportunity loss");
+            nextCell();
+            nextCell();
+            nextCell();
+            nextCell();
+            nextCell();
+            nextCell();
+            nextCell().setCellValue(revenueOpportunityLoss);
             autoSizeColumnsWithHeader();
         }
 

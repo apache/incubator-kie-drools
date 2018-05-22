@@ -34,7 +34,7 @@ public class RockTourParametrization extends AbstractPersistable {
     private long missedShowPenalty = 0;
     private long revenueOpportunity = 1;
     private long drivingTimeCostPerSecond = 1;
-    private long delayCostPerDay = 10 * 60;
+    private long delayCostPerDay = 30;
 
     public RockTourParametrization() {
     }
