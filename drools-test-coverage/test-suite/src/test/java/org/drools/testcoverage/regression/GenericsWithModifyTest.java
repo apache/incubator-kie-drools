@@ -16,12 +16,10 @@
 
 package org.drools.testcoverage.regression;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collection;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -65,10 +62,8 @@ public class GenericsWithModifyTest {
     }
 
     @Before
-    public void initialize() throws IOException {
-        final Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(DRL.getBytes(Charset.forName("UTF-8")));
-        resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
+    public void initialize()  {
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
 
         final KieContainer kieContainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
         this.kieSession = kieContainer.newKieSession();

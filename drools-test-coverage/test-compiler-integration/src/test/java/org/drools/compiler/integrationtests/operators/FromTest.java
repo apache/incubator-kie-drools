@@ -16,7 +16,6 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,7 +54,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -349,11 +347,9 @@ public class FromTest {
                         "    out.add($s);\n" +
                         "end\n";
 
-        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
-        resource.setSourcePath("testdrl.drl");
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
-                                                                         false,
-                                                                         resource);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
         Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
@@ -480,11 +476,9 @@ public class FromTest {
                         "    out.add($s);\n" +
                         "end\n";
 
-        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
-        resource.setSourcePath("testdrl.drl");
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
-                                                                         false,
-                                                                         resource);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
         Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
@@ -896,11 +890,9 @@ public class FromTest {
                         "   System.out.println( $valOne.toLowerCase() );\n" +
                         "end\n";
 
-        final Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl));
-        resource.setSourcePath("testdrl.drl");
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration,
-                                                                         false,
-                                                                         resource);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
+                                                                    false,
+                                                                    drl);
         Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
