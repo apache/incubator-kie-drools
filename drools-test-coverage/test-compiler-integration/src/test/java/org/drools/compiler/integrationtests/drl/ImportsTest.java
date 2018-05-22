@@ -39,10 +39,6 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,72 +63,7 @@ public class ImportsTest {
 
     @Test
     public void testImportFunctions() {
-
-        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
-                "import function " + StaticMethods.class.getCanonicalName() + ".*;\n" +
-                "import function " + StaticMethods2.class.getCanonicalName() + ".getString3;\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "function String getString4( String string ) {\n" +
-                "    return string;\n" +
-                "}\n" +
-                "\n" +
-                "rule \"test rule1\"\n" +
-                "    salience 30\n" +
-                "    when\n" +
-                "        Cheese()\n" +
-                "    then\n" +
-                "        list.add( getString1( \"rule1\" ) );\n" +
-                "end    \n" +
-                "\n" +
-                "rule \"test rule2\"\n" +
-                "    salience 20\n" +
-                "    when\n" +
-                "        Cheese( type == ( getString2(\"stilton\") ) );\n" +
-                "    then\n" +
-                "        list.add( getString3( \"rule\", new Integer( 2 ) ) );\n" +
-                "end    \n" +
-                "\n" +
-                "rule \"test rule3\"\n" +
-                "    salience 10\n" +
-                "    when\n" +
-                "        Cheese( $type : type);\n" +
-                "        eval( $type.equals( getString1( \"stilton\" ) ) );\n" +
-                "    then\n" +
-                "        list.add( getString2( \"rule3\" ) );\n" +
-                "end    \n" +
-                "\n" +
-                "rule \"test rule4\"\n" +
-                "    salience 0\n" +
-                "    when\n" +
-                "        Cheese();\n" +
-                "    then\n" +
-                "        list.add( getString4( \"rule4\" ) );\n" +
-                "end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
-        final KieSession session = kbase.newKieSession();
-        try {
-            final Cheese cheese = new Cheese("stilton",
-                                             15);
-            session.insert(cheese);
-            List list = new ArrayList();
-            session.setGlobal("list", list);
-            final int fired = session.fireAllRules();
-
-            list = (List) session.getGlobal("list");
-
-            assertEquals(4, fired);
-            assertEquals(4, list.size());
-
-            assertEquals("rule1", list.get(0));
-            assertEquals("rule2", list.get(1));
-            assertEquals("rule3", list.get(2));
-            assertEquals("rule4", list.get(3));
-        } finally {
-            session.dispose();
-        }
+        testImportFunctionsBase(StaticMethods.class.getCanonicalName(), StaticMethods2.class.getCanonicalName());
     }
 
     @Test()
@@ -370,8 +301,8 @@ public class ImportsTest {
     public void testImportInnerFunctions() {
 
         final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
-                "import function " + StaticMethods.class.getCanonicalName() + ".*;\n" +
-                "import function " + StaticMethods2.class.getCanonicalName() + ".getString3;\n" +
+                "import function " + org.drools.compiler.integrationtests.drl.ImportsTest.StaticMethods.class.getCanonicalName() + ".*;\n" +
+                "import function " + org.drools.compiler.integrationtests.drl.ImportsTest.StaticMethods2.class.getCanonicalName() + ".getString3;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -412,17 +343,65 @@ public class ImportsTest {
                 "        list.add( getString4( \"rule4\" ) );\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        testImportFunctionsBase(org.drools.compiler.integrationtests.drl.ImportsTest.StaticMethods.class.getCanonicalName(),
+                                org.drools.compiler.integrationtests.drl.ImportsTest.StaticMethods2.class.getCanonicalName());
+    }
 
+    private void testImportFunctionsBase(final String staticMethodImport1, final String staticMethodImport2) {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import function " + staticMethodImport1 + ".*;\n" +
+                "import function " + staticMethodImport2 + ".getString3;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "function String getString4( String string ) {\n" +
+                "    return string;\n" +
+                "}\n" +
+                "\n" +
+                "rule \"test rule1\"\n" +
+                "    salience 30\n" +
+                "    when\n" +
+                "        Cheese()\n" +
+                "    then\n" +
+                "        list.add( getString1( \"rule1\" ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule2\"\n" +
+                "    salience 20\n" +
+                "    when\n" +
+                "        Cheese( type == ( getString2(\"stilton\") ) );\n" +
+                "    then\n" +
+                "        list.add( getString3( \"rule\", new Integer( 2 ) ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule3\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "        Cheese( $type : type);\n" +
+                "        eval( $type.equals( getString1( \"stilton\" ) ) );\n" +
+                "    then\n" +
+                "        list.add( getString2( \"rule3\" ) );\n" +
+                "end    \n" +
+                "\n" +
+                "rule \"test rule4\"\n" +
+                "    salience 0\n" +
+                "    when\n" +
+                "        Cheese();\n" +
+                "    then\n" +
+                "        list.add( getString4( \"rule4\" ) );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("imports-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
         try {
             final Cheese cheese = new Cheese("stilton",
-                    15);
-            ksession.insert(cheese);
+                                             15);
+            session.insert(cheese);
             List list = new ArrayList();
-            ksession.setGlobal("list", list);
-            final int fired = ksession.fireAllRules();
+            session.setGlobal("list", list);
+            final int fired = session.fireAllRules();
 
-            list = (List) ksession.getGlobal("list");
+            list = (List) session.getGlobal("list");
 
             assertEquals(4, fired);
             assertEquals(4, list.size());
@@ -432,7 +411,7 @@ public class ImportsTest {
             assertEquals("rule3", list.get(2));
             assertEquals("rule4", list.get(3));
         } finally {
-            ksession.dispose();
+            session.dispose();
         }
     }
 }
