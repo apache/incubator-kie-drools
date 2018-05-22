@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,65 +14,53 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression;
+package org.drools.compiler.integrationtests.drl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
-/**
- * Tests handling a null value in a list used in FROM (BZ 1093174).
- */
 @RunWith(Parameterized.class)
-public class NullInListInFromTest {
-
-    private static final String DRL =
-            "global java.util.List list\n" +
-            "\n" +
-            "rule R\n" +
-            "when\n" +
-            "    $i : Integer( ) from list\n" +
-            "then\n" +
-            "end\n";
+public class DRLCepTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public NullInListInFromTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public DRLCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
     }
 
     @Test
-    public void testNullValueInFrom() {
-        final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
+    public void testEventsInDifferentPackages() {
+        final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "rule r1\n" +
+                "when\n" +
+                "then\n" +
+                "    StockTick st = new StockTick();\n" +
+                "    st.setCompany(\"RHT\");\n" +
+                "end\n";
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("drl-cep-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
-
-        final List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
-
-        list.add(1);
-        list.add(null);
-        list.add(2);
-
         try {
-            ksession.fireAllRules();
+            Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

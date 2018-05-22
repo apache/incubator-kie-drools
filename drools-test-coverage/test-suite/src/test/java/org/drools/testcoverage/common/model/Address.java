@@ -26,6 +26,10 @@ public class Address implements Serializable {
     private int number;
     private String city;
 
+    public Address(final String street) {
+        this.street = street;
+    }
+
     public Address() {
         this("", 0, "");
     }

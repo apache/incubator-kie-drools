@@ -16,7 +16,6 @@
 
 package org.drools.compiler.integrationtests.operators;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,10 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -501,9 +498,7 @@ public class OrTest {
                 "    System.out.println($bField);\n" +
                 "end\n";
 
-        Resource resource = KieServices.get().getResources().newReaderResource(new StringReader(drl1));
-        resource.setSourcePath("testdrl1.drl");
-        KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource);
+        KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl1);
         assertFalse(kbuilder.getResults().getMessages().isEmpty());
 
         final String drl2 = "package org.drools.compiler.integrationtests.operators; \n" +
@@ -523,9 +518,7 @@ public class OrTest {
                 "    System.out.println($field);\n" +
                 "end\n";
 
-        resource = KieServices.get().getResources().newReaderResource(new StringReader(drl2));
-        resource.setSourcePath("testdrl2.drl");
-        kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource);
+        kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl2);
         assertTrue(kbuilder.getResults().getMessages().isEmpty());
     }
 
