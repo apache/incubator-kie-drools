@@ -21,39 +21,34 @@ import org.drools.model.Variable;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 
-public class FromImpl<T> implements From<T>, ModelComponent {
+public class FromSupplierImpl<T> implements From<T>,
+                                            ModelComponent {
 
-    private final Variable<T> variable;
-    private final Function1<T, ?> provider;
+    private final Function0<T> supplier;
     private final boolean reactive;
 
-    public FromImpl( Variable<T> variable ) {
-        this(variable, null, false);
+    public FromSupplierImpl(Function0<T> provider) {
+        this(provider, false);
     }
 
-    public FromImpl( Variable<T> variable, Function1<T, ?> provider ) {
-        this(variable, provider, false);
-    }
-
-    public FromImpl( Variable<T> variable, Function1<T, ?> provider, boolean reactive ) {
-        this.variable = variable;
-        this.provider = provider;
+    public FromSupplierImpl(Function0<T> supplier, boolean reactive) {
+        this.supplier = supplier;
         this.reactive = reactive;
     }
 
     @Override
     public Variable<T> getVariable() {
-        return variable;
+        return null;
     }
 
     @Override
     public Function1<T, ?> getProvider() {
-        return provider;
+        return null;
     }
 
     @Override
     public Function0<T> getSupplier() {
-        return null;
+        return supplier;
     }
 
     @Override
@@ -62,14 +57,19 @@ public class FromImpl<T> implements From<T>, ModelComponent {
     }
 
     @Override
-    public boolean isEqualTo( ModelComponent o ) {
-        if ( this == o ) return true;
-        if ( !(o instanceof FromImpl) ) return false;
+    public boolean isEqualTo(ModelComponent o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FromSupplierImpl)) {
+            return false;
+        }
 
-        FromImpl<?> from = ( FromImpl<?> ) o;
+        FromSupplierImpl<?> from = (FromSupplierImpl<?>) o;
 
-        if ( reactive != from.reactive ) return false;
-        if ( !ModelComponent.areEqualInModel( variable, from.variable ) ) return false;
-        return provider != null ? provider.equals( from.provider ) : from.provider == null;
+        if (reactive != from.reactive) {
+            return false;
+        }
+        return supplier != null ? supplier.equals(from.supplier) : from.supplier == null;
     }
 }

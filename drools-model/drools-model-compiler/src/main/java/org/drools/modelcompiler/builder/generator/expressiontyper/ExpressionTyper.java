@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.core.util.ClassUtils;
-import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
@@ -47,6 +46,7 @@ import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpe
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.util.ClassUtil;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -268,9 +268,9 @@ public class ExpressionTyper {
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
         if(patternType == null && drlxExpr instanceof FieldAccessExpr) {
             // try to see if it's a constant
-            final Optional<TypedExpressionResult> typedExpressionResult = tryParseAsConstantField(drlxExpr);
-            if(typedExpressionResult.isPresent()) {
-                return typedExpressionResult.get();
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField((FieldAccessExpr) drlxExpr, ruleContext.getTypeResolver());
+            if(typedExpression.isPresent()) {
+                return new TypedExpressionResult(typedExpression, context);
             }
         }
 
@@ -331,11 +331,10 @@ public class ExpressionTyper {
         return new TypedExpressionResult(of(new TypedExpression().setExpression(previous).setType(typeCursor)), context);
     }
 
-    private Optional<TypedExpressionResult> tryParseAsConstantField(Expression drlxExpr) {
-        FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) drlxExpr;
+    public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
         Class<?> clazz;
         try {
-            clazz = DrlxParseUtil.getClassFromContext(ruleContext.getTypeResolver(), fieldAccessExpr.getScope().toString());
+            clazz = DrlxParseUtil.getClassFromContext(typeResolver, fieldAccessExpr.getScope().toString());
         } catch(RuntimeException e) {
             return empty();
         }
@@ -349,7 +348,7 @@ public class ExpressionTyper {
         }
 
         if(staticValue != null) {
-            return of(new TypedExpressionResult(of(new TypedExpression(drlxExpr, clazz)), context));
+            return of(new TypedExpression(fieldAccessExpr, clazz));
         } else {
             return empty();
         }
