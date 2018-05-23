@@ -44,6 +44,12 @@ public interface MigrationReport extends Serializable {
      * @return
      */
     Date getEndDate();
+    
+    /**
+     * Returns process instance id that was migrated
+     * @return
+     */
+    Long getProcessInstanceId();
 
     /**
      * Returns complete list of migration entries (steps performed) with details about them

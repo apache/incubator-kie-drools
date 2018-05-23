@@ -34,6 +34,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
+import org.jbpm.casemgmt.api.admin.CaseInstanceMigrationService;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
@@ -47,6 +48,7 @@ import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.impl.AuthorizationManagerImpl;
 import org.jbpm.casemgmt.impl.CaseRuntimeDataServiceImpl;
 import org.jbpm.casemgmt.impl.CaseServiceImpl;
+import org.jbpm.casemgmt.impl.admin.CaseInstanceMigrationServiceImpl;
 import org.jbpm.casemgmt.impl.event.CaseConfigurationDeploymentListener;
 import org.jbpm.casemgmt.impl.generator.TableCaseIdGenerator;
 import org.jbpm.casemgmt.impl.marshalling.CaseMarshallerFactory;
@@ -56,6 +58,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.ProcessServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.UserTaskServiceImpl;
+import org.jbpm.kie.services.impl.admin.ProcessInstanceMigrationServiceImpl;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
@@ -67,9 +70,11 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.api.admin.ProcessInstanceMigrationService;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.jbpm.services.api.query.QueryService;
 import org.jbpm.services.api.service.ServiceRegistry;
@@ -128,7 +133,10 @@ public abstract class AbstractCaseServicesBaseTest {
 
     protected CaseRuntimeDataService caseRuntimeDataService;
     protected CaseService caseService;
-
+    protected CaseInstanceMigrationService caseInstanceMigrationService;
+    
+    protected ProcessInstanceMigrationService migrationService;
+    
     protected TestIdentityProvider identityProvider;
     protected CaseIdGenerator caseIdGenerator;
 
@@ -317,6 +325,14 @@ public abstract class AbstractCaseServicesBaseTest {
         ((KModuleDeploymentService) deploymentService).addListener((QueryServiceImpl) queryService);
         ((KModuleDeploymentService) deploymentService).addListener((CaseRuntimeDataServiceImpl) caseRuntimeDataService);
         ((KModuleDeploymentService) deploymentService).addListener(configurationListener);
+        
+        // build case instance migration service
+        migrationService = new ProcessInstanceMigrationServiceImpl();
+        caseInstanceMigrationService = new CaseInstanceMigrationServiceImpl();
+        ((CaseInstanceMigrationServiceImpl) caseInstanceMigrationService).setCaseRuntimeDataService(caseRuntimeDataService);
+        ((CaseInstanceMigrationServiceImpl) caseInstanceMigrationService).setCommandService(new TransactionalCommandService(emf));
+        ((CaseInstanceMigrationServiceImpl) caseInstanceMigrationService).setProcessInstanceMigrationService(migrationService);
+        ((CaseInstanceMigrationServiceImpl) caseInstanceMigrationService).setProcessService(processService);
     }
 
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
@@ -556,6 +572,10 @@ public abstract class AbstractCaseServicesBaseTest {
     
     protected Map<String, TaskSummary> mapTaskSummaries(Collection<TaskSummary> tasks) {
         return tasks.stream().collect(toMap(TaskSummary::getName, t -> t));
+    }
+    
+    protected Map<Long, ProcessInstanceDesc> mapProcessesInstances(Collection<ProcessInstanceDesc> processes) {
+        return processes.stream().collect(toMap(ProcessInstanceDesc::getId, p -> p));
     }
 
     protected void assertComment(CommentInstance comment, String author, String content) {

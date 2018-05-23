@@ -100,7 +100,7 @@ public class ProcessInstanceMigrationServiceImpl implements ProcessInstanceMigra
         for (org.jbpm.runtime.manager.impl.migration.MigrationEntry orig : report.getEntries()) {
             logs.add(new MigrationEntryImpl(orig.getTimestamp(), orig.getMessage(), orig.getType().toString()));
         }
-        return new MigrationReportImpl(report.isSuccessful(), report.getStartDate(), report.getEndDate(), logs);
+        return new MigrationReportImpl(report.getMigrationSpec().getProcessInstanceId(), report.isSuccessful(), report.getStartDate(), report.getEndDate(), logs);
     }
 
 

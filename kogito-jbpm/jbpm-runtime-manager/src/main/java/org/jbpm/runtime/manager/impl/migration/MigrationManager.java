@@ -378,6 +378,9 @@ public class MigrationManager {
     private void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<String, String> nodeMapping, NodeContainer nodeContainer, EntityManager em) {
 
         for (NodeInstance nodeInstance : nodeInstanceContainer.getNodeInstances()) {
+            if (nodeInstance.getNode() == null) {
+                continue;
+            }
             Long upgradedNodeId = null;
             String oldNodeId = (String) ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getMetaData().get("UniqueId");
             String newNodeId = nodeMapping.get(oldNodeId);

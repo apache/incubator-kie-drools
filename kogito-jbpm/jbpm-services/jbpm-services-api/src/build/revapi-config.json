@@ -838,7 +838,16 @@
           "methodName": "getColumns",
           "elementKind": "method",
           "justification": "Expose query definition resolved columns"
-         }
+         },
+         {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Long org.jbpm.services.api.admin.MigrationReport::getProcessInstanceId()",
+          "package": "org.jbpm.services.api.admin",
+          "classSimpleName": "MigrationReport",
+          "methodName": "getProcessInstanceId",
+          "elementKind": "method",
+          "justification": "Support for case instance migration"
+        }
       ]
     }
   }

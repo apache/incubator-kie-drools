@@ -33,9 +33,12 @@ public class MigrationReportImpl implements org.jbpm.services.api.admin.Migratio
     private Date startDate;
     private Date endDate;
     
+    private Long processInstanceId;
+    
     private List<MigrationEntry> entries = new ArrayList<MigrationEntry>();
 
-    public MigrationReportImpl(boolean successful, Date startDate, Date endDate, List<MigrationEntry> entries) {
+    public MigrationReportImpl(Long processInstanceId, boolean successful, Date startDate, Date endDate, List<MigrationEntry> entries) {
+        this.processInstanceId = processInstanceId;
         this.successful = successful;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -64,8 +67,16 @@ public class MigrationReportImpl implements org.jbpm.services.api.admin.Migratio
     
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }    
+    
+    public Long getProcessInstanceId() {
+        return processInstanceId;
     }
     
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
     public List<MigrationEntry> getEntries() {
         return entries;
     }
