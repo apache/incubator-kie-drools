@@ -333,7 +333,12 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionResult> tryParseAsConstantField(Expression drlxExpr) {
         FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) drlxExpr;
-        Class<?> clazz = DrlxParseUtil.getClassFromContext(ruleContext.getTypeResolver(), fieldAccessExpr.getScope().toString());
+        Class<?> clazz;
+        try {
+            clazz = DrlxParseUtil.getClassFromContext(ruleContext.getTypeResolver(), fieldAccessExpr.getScope().toString());
+        } catch(RuntimeException e) {
+            return empty();
+        }
         String field = fieldAccessExpr.getNameAsString();
 
         final Object staticValue;
