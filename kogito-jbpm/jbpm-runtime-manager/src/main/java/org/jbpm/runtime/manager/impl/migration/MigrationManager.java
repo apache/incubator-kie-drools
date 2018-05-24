@@ -381,6 +381,11 @@ public class MigrationManager {
             if (nodeInstance.getNode() == null) {
                 continue;
             }
+            
+            if (nodeInstance instanceof NodeInstanceContainer) {
+                updateNodeInstances((NodeInstanceContainer) nodeInstance, nodeMapping, nodeContainer, em);
+            }
+            
             Long upgradedNodeId = null;
             String oldNodeId = (String) ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getMetaData().get("UniqueId");
             String newNodeId = nodeMapping.get(oldNodeId);
@@ -456,9 +461,7 @@ public class MigrationManager {
                 }
             }
 
-            if (nodeInstance instanceof NodeInstanceContainer) {
-                updateNodeInstances((NodeInstanceContainer) nodeInstance, nodeMapping, nodeContainer, em);
-            }
+            
         }
 
     }
