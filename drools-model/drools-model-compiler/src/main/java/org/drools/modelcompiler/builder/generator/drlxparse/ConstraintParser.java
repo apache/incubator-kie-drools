@@ -228,6 +228,8 @@ public class ConstraintParser {
                 for (Expression arg : arguments) {
                     if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
                         usedDeclarations.add(arg.toString());
+                    } else if (arg instanceof CastExpr) {
+                        usedDeclarations.add((((CastExpr)arg).getExpression().toString()));
                     } else if (arg instanceof MethodCallExpr) {
                         TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
                         usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
