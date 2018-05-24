@@ -15,6 +15,10 @@
 
 package org.drools.compiler.builder.impl;
 
+import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
+import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.core.util.StringUtils.ucFirst;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,6 +55,7 @@ import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.compiler.CMMNCaseFactory;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
@@ -90,7 +95,6 @@ import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -149,7 +153,6 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -176,10 +179,6 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
-import static org.drools.core.util.StringUtils.isEmpty;
-import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
@@ -867,6 +866,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addProcessFromXml(resource);
             } else if (ResourceType.BPMN2.equals(type)) {
                 BPMN2ProcessFactory.configurePackageBuilder(this);
+                addProcessFromXml(resource);
+            } else if (ResourceType.CMMN.equals(type)) {
+                CMMNCaseFactory.configurePackageBuilder(this);
                 addProcessFromXml(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
                 addPackageFromDecisionTable(resource, configuration);
