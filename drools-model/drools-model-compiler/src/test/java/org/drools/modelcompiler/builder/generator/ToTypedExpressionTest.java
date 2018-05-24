@@ -97,6 +97,13 @@ public class ToTypedExpressionTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void testBooleanComparison() {
+        final TypedExpression expected = typedResult("_this.getAge() == 18", Boolean.class);
+        final TypedExpression actual = toTypedExpression("age == 18", Person.class);
+        assertEquals(expected, actual);
+    }
+
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
 
         for(DeclarationSpec d : declarations) {

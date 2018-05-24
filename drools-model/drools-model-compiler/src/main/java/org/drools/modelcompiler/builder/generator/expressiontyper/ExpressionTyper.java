@@ -50,6 +50,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Arrays.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
@@ -128,7 +129,14 @@ public class ExpressionTyper {
 
             return optLeft.flatMap(left -> optRight.flatMap(right -> {
                 final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
-                return of(new TypedExpression(combo, left.getType()));
+                final Class<?> leftType;
+                if(asList(BinaryExpr.Operator.EQUALS, BinaryExpr.Operator.NOT_EQUALS).contains(operator)) {
+                    leftType = Boolean.class;
+                } else {
+                    leftType = left.getType();
+                }
+
+                return of(new TypedExpression(combo, leftType));
             }));
 
         } else if (drlxExpr instanceof HalfBinaryExpr) {
