@@ -140,5 +140,6 @@ public interface QueryParameterIdentifiers {
     // this is a weird one, becaues it's not used in the query builder API, but internally for a
     // pseudo-normal (but technically group) criteria
     public static final String TASK_VARIABLE_COMBINED_ID = "-" + String.valueOf(idGen.getAndIncrement());
+    public static final String TASK_VARIABLE_DATE_ID_LIST = String.valueOf(idGen.getAndIncrement());
 
 }
