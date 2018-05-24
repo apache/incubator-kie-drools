@@ -541,7 +541,7 @@ public class PMML4Compiler implements PMMLCompiler {
     public Map<String,String> getJavaClasses(InputStream stream) {
         Map<String,String> javaClasses = new HashMap<>();
         PMML pmml = loadModel(PMML, stream);
-        if (pmml != null) {
+        if (pmml != null && results.isEmpty()) {
             PMML4Unit unit = new PMML4UnitImpl(pmml);
             if (unit != null) {
                 List<PMML4Model> models = unit.getModels();
@@ -597,8 +597,11 @@ public class PMML4Compiler implements PMMLCompiler {
                     .setDefault(true)
                     .setEventProcessingMode(EventProcessingOption.CLOUD);
                 PMMLResource resource = new PMMLResource(helper.getPack());
+                StringBuilder bldr = new StringBuilder(this.compile(pmml, classLoader));
+                String extBeanMiningRules = unit.getModelExternalMiningBeansRules(rootModel.getModelId());
+                if (extBeanMiningRules != null) bldr.append(extBeanMiningRules);
                 resource.setKieBaseModel(kbm);
-                resource.addRules(rootModel.getModelId(), this.compile(pmml, classLoader));
+                resource.addRules(rootModel.getModelId(), bldr.toString());
                 resources.add(resource);
             }
         }
@@ -647,7 +650,9 @@ public class PMML4Compiler implements PMMLCompiler {
         addMissingFieldDefinition(pmml,segment.getOwner(),segment);
         helper.setPack(segment.getModel().getModelPackageName());//PMML4Helper.pmmlDefaultPackageName()+".mining.segment_"+segment.getSegmentId());
 
-        String rules = this.compile(pmml, classLoader);
+        StringBuilder rules = new StringBuilder(this.compile(pmml, classLoader));
+        String extBeanMiningRules = segment.getModel().getExternalBeansMiningRules();
+        if (extBeanMiningRules != null) rules.append(extBeanMiningRules);
         KieBaseModel kbModel = module.newKieBaseModel(segment.getOwner().getOwner().getModelId()+"_"+segment.getOwner().getSegmentationId()+"_SEGMENT_"+segment.getSegmentId());
         kbModel.addPackage(helper.getPack())
             .setDefault(false)
@@ -656,7 +661,7 @@ public class PMML4Compiler implements PMMLCompiler {
         ksm.setDefault(true);
         PMMLResource resource = new PMMLResource(helper.getPack());
         resource.setKieBaseModel(kbModel);
-        resource.addRules(segment.getModel().getModelId(), rules);
+        resource.addRules(segment.getModel().getModelId(), rules.toString());
         return resource;
     }
     

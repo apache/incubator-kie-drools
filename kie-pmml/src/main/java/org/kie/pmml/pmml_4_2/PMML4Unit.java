@@ -34,4 +34,5 @@ public interface PMML4Unit {
     public boolean containsMiningModel();
     public Map<String, PMMLDataField> getDataDictionaryMap();
     public String getRootPackage();
+    public String getModelExternalMiningBeansRules(String modelName);
 }

@@ -282,4 +282,10 @@ public class PMML4UnitImpl implements PMML4Unit {
     	
     	return packageNames;
     }
+
+	@Override
+	public String getModelExternalMiningBeansRules(String modelName) {
+		PMML4Model model = getModelsMap().get(modelName);
+		return model != null ? model.getExternalBeansMiningRules() : null;
+	}
 }

@@ -53,4 +53,5 @@ public interface PMML4Model {
     public Serializable getRawModel();
     public String getModelPackageName();
     public String getModelRuleUnitName();
+    public String getExternalBeansMiningRules();
 }

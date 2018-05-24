@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -115,7 +115,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildProcesses() {
         buildResourceType(ResourceBuilder.BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
     }
-    
+
     private void buildResources() {
         buildResourceType(ResourceBuilder.DSL_RESOURCE_BUILDER, ResourceType.DSL);
         buildResourceType(ResourceBuilder.DRF_RESOURCE_BUILDER, ResourceType.DRF);
@@ -124,6 +124,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResourceType(ResourceBuilder.XSD_RESOURCE_BUILDER, ResourceType.XSD);
         buildResourceType(ResourceBuilder.PMML_RESOURCE_BUILDER, ResourceType.PMML);
         buildResourceType(ResourceBuilder.SCD_RESOURCE_BUILDER, ResourceType.SCARD);
+        buildResourceType(ResourceBuilder.GSCD_RESOURCE_BUILDER, ResourceType.SCGD);
     }
 
     private void buildResourceType(ResourceBuilder resourceBuilder, ResourceType resourceType) {
@@ -181,7 +182,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.TDRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, ResourceToPkgDescrMapper.TEMPLATE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.GDST, ResourceToPkgDescrMapper.GUIDED_DTABLE_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.SCGD, ResourceToPkgDescrMapper.GUIDED_SCARD_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
         return packages.values();
     }
@@ -246,11 +246,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 globalChangeType = null;
             }
         }
-        
+
         public KnowledgeBuilderImpl.AssetFilter getFilter() {
             return changeMap == null ? null : this.new ChangeSetAssetFilter();
         }
-        
+
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
             public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
@@ -290,8 +290,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 kBuilder.addPackageFromXSD( resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration );
             }
         };
-        
+
         ResourceBuilder SCD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromScoreCard(resourceDescr.resource, resourceDescr.configuration);
+
+        ResourceBuilder GSCD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromGuidedScoreCard(resourceDescr.resource);
 
         ResourceBuilder CHANGE_SET_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromChangeSet( resourceDescr.resource);
 
@@ -315,6 +317,5 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceToPkgDescrMapper XML_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.xmlToPackageDescr(resourceDescr.resource);
         ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
         ResourceToPkgDescrMapper GUIDED_DTABLE_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.guidedDecisionTableToPackageDescr(resourceDescr.resource);
-        ResourceToPkgDescrMapper GUIDED_SCARD_TO_PKG_DESCR = ( kBuilder, resourceDescr ) -> kBuilder.guidedScoreCardToPackageDescr(resourceDescr.resource);
     }
 }

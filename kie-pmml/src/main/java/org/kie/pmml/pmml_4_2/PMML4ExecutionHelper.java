@@ -154,6 +154,7 @@ public class PMML4ExecutionHelper {
             kbase = new KieHelper().addResource(resource, ResourceType.PMML).build(kieBaseConf);
             initRuleUnitExecutor();
         } catch (Exception e) {
+        	e.printStackTrace(System.out);
 //            logger.error("Unable to initialize PMML4ExecutionHelper", e);
         }
     }
@@ -266,13 +267,20 @@ public class PMML4ExecutionHelper {
      * @throws InvalidParameterException
      * @throws IllegalStateException
      */
-    public PMML4Result submitRequest(PMMLRequestData request)
+    public synchronized PMML4Result submitRequest(PMMLRequestData request)
             throws InvalidParameterException, IllegalStateException {
         if (request == null) {
             throw new InvalidParameterException("PMML model cannot be applied to a null request");
         }
         if (ruleUnitClass == null) {
             throw new IllegalStateException("PMML model cannot be applied. Missing ruleUnitClass.");
+        }
+        /*
+         * If the executor was previously used then we need to re-initialize it
+         */
+        if (used) {
+        	used = false;
+        	initRuleUnitExecutor();
         }
         requestData.insert(request);
         baseResultHolder = new PMML4Result(request.getCorrelationId());

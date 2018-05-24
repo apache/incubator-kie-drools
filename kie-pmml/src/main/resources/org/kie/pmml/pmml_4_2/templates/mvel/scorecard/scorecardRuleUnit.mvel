@@ -30,6 +30,9 @@ import org.kie.pmml.pmml_4_2.model.datatypes.*;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+@if{externMiningBeans != null}
+@foreach{externBean: externMiningBeans}import @{externBean.qualifiedBeanName};@end{}
+@end{}
 
 public class @{className} implements RuleUnit {
    private DataSource<PMMLRequestData> request;
@@ -39,9 +42,13 @@ public class @{className} implements RuleUnit {
    private DataSource<PMMLRequestData> childModelRequest;
    private DataSource<PMML4Result> childModelResults;
    private DataSource<Object> miningModelPojo;
+   @if{externMiningBeans != null}
+   @foreach{externBean: externMiningBeans}private DataSource<@{externBean.beanName}> externalBean@{externBean.beanName};@end{}
+   @end{}
    
    public @{className}() {
    }
+   
    
    public @{className}(DataSource<PMMLRequestData> request, 
                        DataSource<PMML4Data> pmmlData, 
@@ -49,7 +56,10 @@ public class @{className} implements RuleUnit {
                        DataSource<SegmentExecution> childModelSegments,
                        DataSource<PMMLRequestData> childModelRequest,
                        DataSource<PMML4Result> childModelResults,
-                       DataSource<Object> miningModelPojo) {
+                       DataSource<Object> miningModelPojo@if{externMiningBeans != null && externMiningBeans.size > 0},
+             @foreach{externBean: externMiningBeans}DataSource<@{externBean.beanName}> externalBean@{externBean.beanName}@end{','}
+             @end{}
+                       ) {
       this.request = request;
       this.pmmlData = pmmlData;
       this.results = results;
@@ -57,7 +67,11 @@ public class @{className} implements RuleUnit {
       this.childModelRequest = childModelRequest;
       this.childModelResults = childModelResults;
       this.miningModelPojo = miningModelPojo;
+      @if{externMiningBeans != null}
+      @foreach{externBean: externMiningBeans}this.externalBean@{externBean.beanName} = externalBean@{externBean.beanName};@end{}
+      @end{}
    }
+   
    
    public DataSource<PMMLRequestData> getRequest() {
       return request;
@@ -86,6 +100,14 @@ public class @{className} implements RuleUnit {
    public DataSource<Object> getMiningModelPojo() {
       return miningModelPojo;
    }
+   
+   @if{externMiningBeans != null}
+   @foreach{externBean: externMiningBeans}
+   public DataSource<@{externBean.beanName}> getExternalBean@{externBean.beanName}() {
+      return externalBean@{externBean.beanName};
+   }
+   @end{}
+   @end{}
    
    @Override
    public void onStart() {
