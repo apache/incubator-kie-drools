@@ -21,8 +21,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -96,6 +98,9 @@ public class MigrationManagerTest extends AbstractBaseTest {
     private static final String REMOVENONACTIVEBEFORETASK_ID_V1 = "process-migration-testv1.RemoveNonActiveBeforeTask";
     private static final String REMOVENONACTIVEBEFORETASK_ID_V2 = "process-migration-testv2.RemoveNonActiveBeforeTask";
     
+    private static final String MULTIINSTANCE_ID_V1 = "MultiInstance-1";
+    private static final String MULTIINSTANCE_ID_V2 = "MultiInstance-2";
+
     private JPAAuditLogService auditService;
     
     @Before
@@ -576,6 +581,73 @@ public class MigrationManagerTest extends AbstractBaseTest {
         assertEquals(TASK_NAME_V1, task.getName());
         managerV1.disposeRuntimeEngine(runtime);
         
+    }
+
+    @Test
+    public void testMigrateMultiInstance() {
+        createRuntimeManagers("migration/v1/BPMN2-MultiInstance-v1.bpmn2", "migration/v2/BPMN2-MultiInstance-v2.bpmn2");
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);
+
+        List<String> processVar1 = new ArrayList<String>();
+        processVar1.add("one");
+        processVar1.add("two");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processVar1", processVar1);
+        ProcessInstance pi1 = ksession.startProcess(MULTIINSTANCE_ID_V1, params);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        JPAAuditLogService auditService = new JPAAuditLogService(emf);
+        ProcessInstanceLog log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(MULTIINSTANCE_ID_V1, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+
+        TaskService taskService = runtime.getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(USER_JOHN, "en-UK");
+        assertNotNull(tasks);
+        assertEquals(2, tasks.size());
+
+        TaskSummary task = tasks.get(0);
+        assertNotNull(task);
+
+        assertEquals(MULTIINSTANCE_ID_V1, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, task.getDeploymentId());
+        managerV1.disposeRuntimeEngine(runtime);
+
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, MULTIINSTANCE_ID_V2);
+
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        MigrationReport report = migrationManager.migrate();
+
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+
+        log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(MULTIINSTANCE_ID_V2, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
+        auditService.dispose();
+
+        runtime = managerV2.getRuntimeEngine(EmptyContext.get());
+        taskService = runtime.getTaskService();
+
+        tasks = taskService.getTasksAssignedAsPotentialOwner(USER_JOHN, "en-UK");
+        assertNotNull(tasks);
+        assertEquals(2, tasks.size());
+
+        task = tasks.get(0);
+        assertNotNull(task);
+
+        assertEquals(MULTIINSTANCE_ID_V2, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, task.getDeploymentId());
+
+        managerV2.disposeRuntimeEngine(runtime);
     }
     
     /*
