@@ -19,7 +19,9 @@ package org.jbpm.test.functional.log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
@@ -31,12 +33,15 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.AuditTask;
+import org.kie.internal.task.api.TaskVariable;
+
 import qa.tools.ikeeper.annotation.BZ;
 
 /**
  * Tests for:
  * - AuditTaskInstanceLogDeleteBuilder
  * - TaskEventInstanceLogDeleteBuilder
+ * - TaskVariabletInstanceLogDeleteBuilder
  * - TaskJPAAuditService.clear()
  */
 public class TaskLogCleanTest extends JbpmTestCase {
@@ -222,6 +227,85 @@ public class TaskLogCleanTest extends JbpmTestCase {
         // 3) Reserved -> In Progress (by start)
         // 4) In Progress -> Completed (by complete)
         Assertions.assertThat(resultCount).isEqualTo(4);
+    }
+    
+    @Test
+    public void testDeleteTaskVariablesByDateActiveProcess() {
+        kieSession = createKSession(INPUT_ASSOCIATION);
+
+        Date startDate = new Date();
+        processInstanceList = startProcess(kieSession, INPUT_ASSOCIATION_ID, 1);
+
+        // Get the task
+        TaskService taskService = getRuntimeEngine().getTaskService();
+        Task task = taskService.getTaskById(
+                taskService.getTasksByProcessInstanceId(
+                        processInstanceList.get(0).getId()).get(0));
+        Assertions.assertThat(task).isNotNull();
+        Assertions.assertThat(task.getTaskData().getStatus()).isEqualTo(Status.Reserved);
+        
+        List<TaskVariable> vars = taskAuditService.taskVariableQuery()
+                .build()
+                .getResultList();
+        Assertions.assertThat(vars).hasSize(1);
+
+        // Delete all task operation between dates
+        int resultCount = taskAuditService.taskVariableInstanceLogDelete()
+                .dateRangeStart(startDate)
+                .dateRangeEnd(new Date())
+                .build()
+                .execute();
+        Assertions.assertThat(resultCount).isEqualTo(0);
+        
+        vars = taskAuditService.taskVariableQuery()
+                .build()
+                .getResultList();
+        Assertions.assertThat(vars).hasSize(1);
+    }
+    
+    @Test
+    public void testDeleteTaskVariablesByDate() {
+        kieSession = createKSession(HUMAN_TASK_MULTIACTORS);
+
+        Date startDate = new Date();
+        processInstanceList = startProcess(kieSession, HUMAN_TASK_MULTIACTORS_ID, 1);
+
+        // Get the task
+        TaskService taskService = getRuntimeEngine().getTaskService();
+        Task task = taskService.getTaskById(
+                taskService.getTasksByProcessInstanceId(
+                        processInstanceList.get(0).getId()).get(0));
+        Assertions.assertThat(task).isNotNull();
+        Assertions.assertThat(task.getTaskData().getStatus()).isEqualTo(Status.Ready);
+        
+        List<TaskVariable> vars = taskAuditService.taskVariableQuery()
+                .build()
+                .getResultList();
+        Assertions.assertThat(vars).hasSize(0);
+
+        // Perform 2 operation on the task
+        taskService.claim(task.getId(), "krisv");
+        taskService.start(task.getId(), "krisv");
+        
+        Map<String, Object> results = new HashMap<>();
+        results.put("test", "testvalue");
+        taskService.complete(task.getId(), "krisv", results);
+        
+        vars = taskAuditService.taskVariableQuery()
+                .build()
+                .getResultList();
+        Assertions.assertThat(vars).hasSize(1);
+
+        // Remove the instance from the running list as it has ended already.
+        processInstanceList.clear();
+
+        // Delete all task operation between dates
+        int resultCount = taskAuditService.taskVariableInstanceLogDelete()
+                .dateRangeStart(startDate)
+                .dateRangeEnd(new Date())
+                .build()
+                .execute();
+        Assertions.assertThat(resultCount).isEqualTo(1);
     }
 
     @Test

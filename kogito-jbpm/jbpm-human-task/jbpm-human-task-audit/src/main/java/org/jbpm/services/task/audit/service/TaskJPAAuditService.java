@@ -16,16 +16,21 @@
 
 package org.jbpm.services.task.audit.service;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.*;
+import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_ON_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_DESCRIPTION_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_EVENT_DATE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_NAME_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_VARIABLE_DATE_ID_LIST;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.jbpm.services.task.audit.BAMTaskSummaryQueryBuilder;
 import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
@@ -35,6 +40,7 @@ import org.kie.internal.task.query.AuditTaskDeleteBuilder;
 import org.kie.internal.task.query.AuditTaskQueryBuilder;
 import org.kie.internal.task.query.TaskEventDeleteBuilder;
 import org.kie.internal.task.query.TaskEventQueryBuilder;
+import org.kie.internal.task.query.TaskVariableDeleteBuilder;
 import org.kie.internal.task.query.TaskVariableQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +57,7 @@ public class TaskJPAAuditService extends JPAAuditLogService {
         addCriteria(TASK_NAME_LIST, "l.name", String.class);
         addCriteria(TASK_DESCRIPTION_LIST, "l.description", String.class);
         addCriteria(TASK_STATUS_LIST, "l.status", String.class);
+        addCriteria(TASK_VARIABLE_DATE_ID_LIST, "l.modificationDate", Date.class);
 	}
 
 	public TaskJPAAuditService() {
@@ -83,6 +90,10 @@ public class TaskJPAAuditService extends JPAAuditLogService {
 	public TaskEventDeleteBuilder taskEventInstanceLogDelete(){
 		return new TaskEventDeleteBuilderImpl(this);
 	}
+	
+	public TaskVariableDeleteBuilder taskVariableInstanceLogDelete(){
+        return new TaskVariableDeleteBuilderImpl(this);
+    }
 
 	@Override
     public void clear() {

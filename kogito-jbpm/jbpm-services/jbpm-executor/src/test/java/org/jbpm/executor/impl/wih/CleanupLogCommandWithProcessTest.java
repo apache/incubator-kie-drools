@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -255,6 +257,69 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
         assertEquals(0, getVariableLogSize("ScriptTask"));
     }
     
+    @Test
+    public void testCleanupLogOfUserTaskProcess() throws Exception {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTaskWithSLA.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        assertEquals(0, getProcessLogSize("UserTask"));
+        assertEquals(0, getNodeInstanceLogSize("UserTask"));
+        assertEquals(0, getTaskLogSize("UserTask"));
+        assertEquals(0, getVariableLogSize("UserTask"));
+        assertEquals(0, getTaskVariableLogSize("UserTask"));
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        assertEquals(1, getProcessLogSize("UserTask"));
+        assertEquals(3, getNodeInstanceLogSize("UserTask"));
+        assertEquals(1, getTaskLogSize("UserTask"));
+        assertEquals(0, getVariableLogSize("UserTask"));
+        assertEquals(0, getTaskVariableLogSize("UserTask"));
+        
+        List<Long> tasks = runtime.getTaskService().getTasksByProcessInstanceId(processInstance.getId());
+        assertEquals(1, tasks.size());
+        
+        long taskId = tasks.get(0);
+        
+        runtime.getTaskService().start(taskId, "john");
+        
+        Map<String, Object> results = new HashMap<>();
+        results.put("test", "testvalue");
+        runtime.getTaskService().complete(taskId, "john", results);
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        assertEquals(1, getProcessLogSize("UserTask"));
+        assertEquals(6, getNodeInstanceLogSize("UserTask"));
+        assertEquals(1, getTaskLogSize("UserTask"));
+        assertEquals(0, getVariableLogSize("UserTask"));
+        assertEquals(1, getTaskVariableLogSize("UserTask"));
+        
+        Thread.sleep(1000);
+        
+        scheduleLogCleanup(false, false, false, new Date(), "UserTask", "yyyy-MM-dd HH:mm:ss", manager.getIdentifier());
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        assertEquals(0, getProcessLogSize("UserTask"));
+        assertEquals(0, getNodeInstanceLogSize("UserTask"));
+        assertEquals(0, getTaskLogSize("UserTask"));
+        assertEquals(0, getVariableLogSize("UserTask"));
+        assertEquals(0, getTaskVariableLogSize("UserTask"));
+    }
     
     private ExecutorService buildExecutorService() {        
         emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.complete");
@@ -309,6 +374,14 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
     
     private int getVariableLogSize(String processId) {
         return new JPAAuditLogService(emf).variableInstanceLogQuery()
+                .processId(processId)
+                .build()
+                .getResultList()
+                .size();
+    }
+    
+    private int getTaskVariableLogSize(String processId) {
+        return new TaskJPAAuditService(emf).taskVariableQuery()
                 .processId(processId)
                 .build()
                 .getResultList()

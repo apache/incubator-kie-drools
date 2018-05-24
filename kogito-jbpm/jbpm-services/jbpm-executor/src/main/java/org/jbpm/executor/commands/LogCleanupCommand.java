@@ -143,6 +143,14 @@ public class LogCleanupCommand implements Command, Reoccurring {
             .execute();
             logger.info("TaskEventLogRemoved {}", teLogsRemoved);
             executionResults.setData("TaskEventLogRemoved", teLogsRemoved);
+            
+            long tvLogsRemoved = 0l;
+            tvLogsRemoved = auditLogService.taskVariableInstanceLogDelete()
+            .dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))        
+            .build()
+            .execute();
+            logger.info("TaskVariableLogRemoved {}", tvLogsRemoved);
+            executionResults.setData("TaskVariableLogRemoved", tvLogsRemoved);
         }		
 		
 		if (!skipProcessLog) {
