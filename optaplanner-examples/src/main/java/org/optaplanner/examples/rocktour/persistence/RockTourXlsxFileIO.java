@@ -42,7 +42,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.examples.common.persistence.AbstractXslxSolutionFileIO;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockLocation;
@@ -53,7 +53,7 @@ import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.rocktour.domain.RockTourParametrization.*;
 
-public class RockTourXslxFileIO extends AbstractXslxSolutionFileIO<RockTourSolution> {
+public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolution> {
 
     @Override
     public RockTourSolution read(File inputSolutionFile) {

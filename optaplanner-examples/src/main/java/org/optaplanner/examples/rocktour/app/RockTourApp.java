@@ -18,7 +18,7 @@ package org.optaplanner.examples.rocktour.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
-import org.optaplanner.examples.rocktour.persistence.RockTourXslxFileIO;
+import org.optaplanner.examples.rocktour.persistence.RockTourXlsxFileIO;
 import org.optaplanner.examples.rocktour.swingui.RockTourPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -48,7 +48,7 @@ public class RockTourApp extends CommonApp<RockTourSolution> {
 
     @Override
     public SolutionFileIO<RockTourSolution> createSolutionFileIO() {
-        return new RockTourXslxFileIO();
+        return new RockTourXlsxFileIO();
     }
 
 }

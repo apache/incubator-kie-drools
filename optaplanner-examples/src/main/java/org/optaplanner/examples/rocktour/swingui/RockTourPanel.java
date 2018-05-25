@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
-import org.optaplanner.examples.rocktour.persistence.RockTourXslxFileIO;
+import org.optaplanner.examples.rocktour.persistence.RockTourXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class RockTourPanel extends SolutionPanel<RockTourSolution> {
@@ -41,7 +41,7 @@ public class RockTourPanel extends SolutionPanel<RockTourSolution> {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton button = new JButton("Show in LibreOffice or Excel");
         button.addActionListener(event -> {
-            SolutionFileIO<RockTourSolution> solutionFileIO = new RockTourXslxFileIO();
+            SolutionFileIO<RockTourSolution> solutionFileIO = new RockTourXlsxFileIO();
             File tempFile;
             try {
                 tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());

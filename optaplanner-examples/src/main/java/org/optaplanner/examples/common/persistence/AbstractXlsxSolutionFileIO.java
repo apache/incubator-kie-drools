@@ -52,10 +52,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-public abstract class AbstractXslxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
+public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
     protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
-    protected static final Pattern VALID_NAME_PATTERN = AbstractXslxSolutionFileIO.VALID_TAG_PATTERN;
+    protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
     protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
 
     protected static final DateTimeFormatter DAY_FORMATTER

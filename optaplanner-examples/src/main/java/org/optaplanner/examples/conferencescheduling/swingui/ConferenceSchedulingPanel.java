@@ -24,7 +24,7 @@ import javax.swing.JLabel;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
-import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXslxFileIO;
+import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
@@ -34,7 +34,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public ConferenceSchedulingPanel() {
         JButton button = new JButton("Show in LibreOffice or Excel");
         button.addActionListener(event -> {
-            SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXslxFileIO();
+            SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
             File tempFile;
             try {
                 tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());

@@ -218,7 +218,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     protected Random random;
 
     public ConferenceSchedulingGenerator() {
-        solutionFileIO = new ConferenceSchedulingXslxFileIO();
+        solutionFileIO = new ConferenceSchedulingXlsxFileIO();
         outputDir = new File(CommonApp.determineDataDir(ConferenceSchedulingApp.DATA_DIR_NAME), "unsolved");
     }
 

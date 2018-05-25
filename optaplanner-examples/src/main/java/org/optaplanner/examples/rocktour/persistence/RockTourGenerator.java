@@ -58,7 +58,7 @@ public class RockTourGenerator extends LoggingMain {
     protected static final LocalDate END_DATE = LocalDate.of(2018, 12, 1);
 
     public RockTourGenerator() {
-        solutionFileIO = new RockTourXslxFileIO();
+        solutionFileIO = new RockTourXlsxFileIO();
         outputDir = new File(CommonApp.determineDataDir(RockTourApp.DATA_DIR_NAME), "unsolved");
     }
 

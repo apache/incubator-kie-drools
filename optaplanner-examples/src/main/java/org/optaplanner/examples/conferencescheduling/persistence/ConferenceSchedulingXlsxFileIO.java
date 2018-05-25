@@ -53,7 +53,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.examples.common.persistence.AbstractXslxSolutionFileIO;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -66,7 +66,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
 
-public class ConferenceSchedulingXslxFileIO extends AbstractXslxSolutionFileIO<ConferenceSolution> {
+public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
     @Override
     public ConferenceSolution read(File inputSolutionFile) {
