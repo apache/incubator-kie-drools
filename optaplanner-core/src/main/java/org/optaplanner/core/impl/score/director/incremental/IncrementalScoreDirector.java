@@ -72,6 +72,10 @@ public class IncrementalScoreDirector<Solution_>
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = incrementalScoreCalculator.calculateScore();
+        if (score == null) {
+            throw new IllegalStateException("The incrementalScoreCalculator (" + incrementalScoreCalculator.getClass()
+                    + ") must return a non-null score (" + score + ") in the method calculateScore().");
+        }
         if (workingInitScore != 0) {
             score = score.withInitScore(workingInitScore);
         }

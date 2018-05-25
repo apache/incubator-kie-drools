@@ -54,6 +54,10 @@ public class EasyScoreDirector<Solution_>
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = easyScoreCalculator.calculateScore(workingSolution);
+        if (score == null) {
+            throw new IllegalStateException("The easyScoreCalculator (" + easyScoreCalculator.getClass()
+                    + ") must return a non-null score (" + score + ") in the method calculateScore().");
+        }
         if (workingInitScore != 0) {
             score = score.withInitScore(workingInitScore);
         }
