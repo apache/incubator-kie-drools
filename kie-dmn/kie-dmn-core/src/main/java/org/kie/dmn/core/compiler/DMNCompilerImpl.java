@@ -181,6 +181,15 @@ public class DMNCompilerImpl
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                         importFromModel(model, located);
                     }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          model,
+                                          null,
+                                          null,
+                                          Msg.IMPORT_TYPE_UNKNOWN,
+                                          i.getImportType());
                 }
             }
         }
@@ -196,6 +205,9 @@ public class DMNCompilerImpl
         }
         for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
             model.addBusinessKnowledgeModel(bkm);
+        }
+        for (DecisionNode dn : m.getDecisions()) {
+            model.addDecision(dn);
         }
     }
 

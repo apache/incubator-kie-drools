@@ -59,6 +59,7 @@ public class ImportDMNResolverUtil {
         switch (_import.getImportType()) {
             case "http://www.omg.org/spec/DMN/20151101/dmn.xsd":
             case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
+            case "http://www.omg.org/spec/DMN/20180521/MODEL/":
                 return ImportType.DMN;
             default:
                 return ImportType.UNKNOWN;

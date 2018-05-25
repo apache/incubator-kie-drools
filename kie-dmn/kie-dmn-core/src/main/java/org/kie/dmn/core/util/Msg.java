@@ -5,6 +5,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 public final class Msg {
     // consolidated
     public static final Message2 UNSUPPORTED_ELEMENT                                 = new Message2( DMNMessageType.UNSUPPORTED_ELEMENT, "Element %s with type='%s' is not supported." );
+    public static final Message1 IMPORT_TYPE_UNKNOWN                                 = new Message1( DMNMessageType.INVALID_SYNTAX, "Import type unknown: '%s'." );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS             = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s'; missing DMN Import name alias." );
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );

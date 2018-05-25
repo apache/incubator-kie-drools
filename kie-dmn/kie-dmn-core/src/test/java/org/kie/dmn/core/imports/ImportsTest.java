@@ -67,4 +67,35 @@ public class ImportsTest {
         assertThat(evaluateAll.getDecisionResultByName("A Decision Ctx with DT").getResult(), is("Respectfully, Hello John!"));
     }
 
+    @Test
+    public void testImportHardcodedDecisions() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Spell_Greeting.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Import_Spell_Greeting.dmn");
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce",
+                                                  "Spell Greeting");
+        assertThat(importedModel, notNullValue());
+        for (DMNMessage message : importedModel.getMessages()) {
+            LOG.debug("1 {}", message);
+        }
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392",
+                                             "Import Spell Greeting");
+        assertThat(dmnModel, notNullValue());
+        for (DMNMessage message : dmnModel.getMessages()) {
+            LOG.debug("2 {}", message);
+        }
+
+        DMNContext context = runtime.newContext();
+        context.set("Person Name", "John");
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        for (DMNMessage message : evaluateAll.getMessages()) {
+            LOG.debug("e {}", message);
+        }
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Say the Greeting to Person").getResult(), is("Hello, John"));
+    }
+
 }
