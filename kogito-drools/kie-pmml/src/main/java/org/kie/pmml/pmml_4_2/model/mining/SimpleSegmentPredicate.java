@@ -18,7 +18,7 @@ package org.kie.pmml.pmml_4_2.model.mining;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.SimplePredicate;
+import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 
 public class SimpleSegmentPredicate implements PredicateRuleProducer {

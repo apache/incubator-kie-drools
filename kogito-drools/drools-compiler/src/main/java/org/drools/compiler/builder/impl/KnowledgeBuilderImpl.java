@@ -518,7 +518,34 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                         ResourceConfiguration configuration) throws DroolsParserException,
             IOException {
         this.resource = resource;
-        addPackage(scoreCardToPackageDescr(resource, configuration));
+        ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
+                (ScoreCardConfiguration) configuration :
+                null;
+        String pmmlString = ScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream(), scardConfiguration);
+        if (pmmlString != null) {
+            File dumpDir = this.configuration.getDumpDir();
+            if (dumpDir != null) {
+                try {
+                    String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+                    String outputPath = dirName + "scorecard_generated.pmml";
+                    try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+                        fos.write(pmmlString.getBytes());
+                    } catch (IOException iox) {
+                        iox.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
+            try {
+                addPackageFromKiePMML(getPMMLCompiler(),res,ResourceType.PMML,null);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+//        addPackage(scoreCardToPackageDescr(resource, configuration));
         this.resource = null;
     }
 
@@ -535,7 +562,30 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void addPackageFromGuidedScoreCard(Resource resource) throws DroolsParserException,
             IOException {
         this.resource = resource;
-        addPackage(guidedScoreCardToPackageDescr(resource));
+        String pmmlString = GuidedScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream());
+        if (pmmlString != null) {
+            File dumpDir = this.configuration.getDumpDir();
+            if (dumpDir != null) {
+                try {
+                    String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+                    String outputPath = dirName + "guided_scorecard_generated.pmml";
+                    try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+                        fos.write(pmmlString.getBytes());
+                    } catch (IOException iox) {
+                        iox.printStackTrace();
+                    }
+                } catch (IOException iox) {
+                    iox.printStackTrace();
+                }
+            }
+            Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
+            try {
+                addPackageFromKiePMML(getPMMLCompiler(),res,ResourceType.PMML,null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+//        addPackage(guidedScoreCardToPackageDescr(resource));
         this.resource = null;
     }
 
@@ -927,14 +977,17 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             if (compiler.getResults().isEmpty()) {
                 this.resource = resource;
                 addPMMLPojos(compiler,resource);
-                List<PackageDescr> descrs = pmmlModelToKiePackageDescr(compiler, resource);
-                if (descrs != null && !descrs.isEmpty()) {
-                    for (PackageDescr descr: descrs) {
-                        addPackage(descr);
+                if (compiler.getResults().isEmpty()) {
+                    List<PackageDescr> descrs = pmmlModelToKiePackageDescr(compiler, resource);
+                    if (descrs != null && !descrs.isEmpty()) {
+                        for (PackageDescr descr: descrs) {
+                            addPackage(descr);
+                        }
                     }
                 }
                 this.resource = null;
-            } else {
+            }
+            if (!compiler.getResults().isEmpty()) {
                 this.results.addAll(compiler.getResults());
             }
             compiler.clearResults();
@@ -964,36 +1017,38 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         } catch (IOException e) {
             results.add(new SrcError(resource, e.getMessage()));
         }
-        if (modelSources != null && !modelSources.isEmpty()) {
-            javaSources.putAll(modelSources);
-        }
-
-        for (Map.Entry<String, String> entry: javaSources.entrySet()) {
-            String key = entry.getKey();
-            String javaCode = entry.getValue();
-            if (javaCode != null && !javaCode.trim().isEmpty()) {
-                Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
-                String sourcePath = key.replaceAll("\\.", "/")+".java";
-                res.setSourcePath(sourcePath);
-                javaSource.write(res);
+        if (compiler.getResults().isEmpty()) {
+            if (modelSources != null && !modelSources.isEmpty()) {
+                javaSources.putAll(modelSources);
             }
-        }
 
-        ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
-        List<String> javaFileNames = getJavaFileNames(src);
-        if (javaFileNames != null && !javaFileNames.isEmpty()) {
-            ClassLoader classLoader = rootClassLoader;
-            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
-            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
-            MemoryFileSystem trgMfs = new MemoryFileSystem();
-            compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
-            Map<String, byte[]> classesMap = new HashMap<>();
-
-            for (String name: trgMfs.getFileNames()) {
-                classesMap.put(name, trgMfs.getBytes(name));
+            for (Map.Entry<String, String> entry: javaSources.entrySet()) {
+                String key = entry.getKey();
+                String javaCode = entry.getValue();
+                if (javaCode != null && !javaCode.trim().isEmpty()) {
+                    Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
+                    String sourcePath = key.replaceAll("\\.", "/")+".java";
+                    res.setSourcePath(sourcePath);
+                    javaSource.write(res);
+                }
             }
-            if (!classesMap.isEmpty()) {
-                ((ProjectClassLoader)rootClassLoader).storeClasses(classesMap);
+
+            ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
+            List<String> javaFileNames = getJavaFileNames(src);
+            if (javaFileNames != null && !javaFileNames.isEmpty()) {
+                ClassLoader classLoader = rootClassLoader;
+                KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
+                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
+                MemoryFileSystem trgMfs = new MemoryFileSystem();
+                compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
+                Map<String, byte[]> classesMap = new HashMap<>();
+
+                for (String name: trgMfs.getFileNames()) {
+                    classesMap.put(name, trgMfs.getBytes(name));
+                }
+                if (!classesMap.isEmpty()) {
+                    ((ProjectClassLoader)rootClassLoader).storeClasses(classesMap);
+                }
             }
         }
     }

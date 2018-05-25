@@ -17,14 +17,14 @@ package org.drools.workbench.models.guided.scorecard.backend.test1;
 
 public class Applicant {
 
-    private double score;
+    private double calculatedScore;
 
-    public double getScore() {
-        return score;
+    public double getCalculatedScore() {
+        return calculatedScore;
     }
 
-    public void setScore( double score ) {
-        this.score = score;
+    public void setCalculatedScore( double score ) {
+        this.calculatedScore = score;
     }
 
 }

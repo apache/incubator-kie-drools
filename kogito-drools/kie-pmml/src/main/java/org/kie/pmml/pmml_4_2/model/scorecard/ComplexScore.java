@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.Apply;
-import org.kie.dmg.pmml.pmml_4_2.descr.Attribute;
-import org.kie.dmg.pmml.pmml_4_2.descr.Characteristic;
-import org.kie.dmg.pmml.pmml_4_2.descr.ComplexPartialScore;
-import org.kie.dmg.pmml.pmml_4_2.descr.FieldRef;
+import org.dmg.pmml.pmml_4_2.descr.Apply;
+import org.dmg.pmml.pmml_4_2.descr.Attribute;
+import org.dmg.pmml.pmml_4_2.descr.Characteristic;
+import org.dmg.pmml.pmml_4_2.descr.ComplexPartialScore;
+import org.dmg.pmml.pmml_4_2.descr.FieldRef;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 
 public class ComplexScore {

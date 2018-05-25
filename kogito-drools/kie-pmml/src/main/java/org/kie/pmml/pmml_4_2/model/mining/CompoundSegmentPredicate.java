@@ -19,9 +19,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.CompoundPredicate;
-import org.kie.dmg.pmml.pmml_4_2.descr.SimplePredicate;
-import org.kie.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
+import org.dmg.pmml.pmml_4_2.descr.CompoundPredicate;
+import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
+import org.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
 
 public class CompoundSegmentPredicate implements PredicateRuleProducer {
 	private String booleanOperator;

@@ -35,12 +35,12 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-        assertFalse(drl.contains("package"));
-        assertEquals(12,
+//        assertFalse(drl.contains("package"));
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(2,
+        assertEquals(13,
                      StringUtil.countMatches(drl,
                                              "import "));
     }
@@ -54,12 +54,12 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-        assertFalse(drl.contains("package"));
-        assertEquals(12,
+//        assertFalse(drl.contains("package"));
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(2,
+        assertEquals(13,
                      StringUtil.countMatches(drl,
                                              "import "));
     }
@@ -74,11 +74,11 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(12,
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(2,
+        assertEquals(13,
                      StringUtil.countMatches(drl,
                                              "import "));
     }
@@ -94,11 +94,11 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(12,
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(3,
+        assertEquals(14,
                      StringUtil.countMatches(drl,
                                              "import "));
     }
@@ -115,11 +115,11 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(12,
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(3,
+        assertEquals(14,
                      StringUtil.countMatches(drl,
                                              "import "));
     }
@@ -136,11 +136,11 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(12,
+        assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
-        assertEquals(3,
+        assertEquals(14,
                      StringUtil.countMatches(drl,
                                              "import "));
     }

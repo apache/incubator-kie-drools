@@ -41,12 +41,15 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.PMML4Data;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.pmml.pmml_4_2.PMMLExecutor;
 import org.kie.pmml.pmml_4_2.PMMLKieBaseUtil;
+import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
@@ -71,26 +74,26 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         PMML4Result resultHolder[] = new PMML4Result[3];
         Resource res = ResourceFactory.newClassPathResource(source1);
         kbase = new KieHelper().addResource(res, ResourceType.PMML).build();
-        
+
         executor[0] = RuleUnitExecutor.create().bind(kbase);
         executor[1] = RuleUnitExecutor.create().bind(kbase);
         executor[2] = RuleUnitExecutor.create().bind(kbase);
-        
+
         DataSource<PMMLRequestData> requests[] = new DataSource[3];
         DataSource<PMML4Result> results[] = new DataSource[3];
         DataSource<PMML4Data> pmmlDatas[] = new DataSource[3];
-        
+
         Double expectedScores[] = new Double[3];
         expectedScores[0] = 41.345;
         expectedScores[1] = 26.345;
         expectedScores[2] = 39.345;
-        
+
         LinkedHashMap<String,Double> expectedResults[] = new LinkedHashMap[3];
         expectedResults[0] = new LinkedHashMap<>();
         expectedResults[0].put("LX00", -1.0);
         expectedResults[0].put("RES", -10.0);
         expectedResults[0].put("CX2", -30.0);
-        
+
         expectedResults[1] = new LinkedHashMap<>();
         expectedResults[1].put("RES", 10.0);
         expectedResults[1].put("LX00", -1.0);
@@ -120,29 +123,29 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         for (int x = 0; x < 3; x++) {
             executor[x].run(unitClass);
         }
-        
+
         for (int y = 0; y < 3; y++) {
             requests[y].insert(requestData[y]);
             results[y].insert(resultHolder[y]);
         }
-        
+
         for (int z = 0; z < 3; z++) {
             executor[z].run(unitClass);
         }
-        
+
         for (int p = 0; p < 3; p++) {
             checkResult(resultHolder[p],expectedScores[p],expectedResults[p]);
         }
-        
+
     }
-    
+
     private void checkResult(PMML4Result result, Double score, LinkedHashMap<String, Double> expectedResults) {
         assertEquals("OK",result.getResultCode());
         assertTrue(result.getResultVariables().containsKey("ScoreCard"));
         assertNotNull(result.getResultValue("ScoreCard", null));
         Double scoreFromCard = result.getResultValue("ScoreCard", "score", Double.class).orElse(null);
         assertEquals(score,scoreFromCard,1e-3);
-        
+
         Object ranks = result.getResultValue("ScoreCard", "ranking");
         assertNotNull(ranks);
         assertTrue(ranks instanceof LinkedHashMap);
@@ -162,27 +165,22 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecard() throws Exception {
-        RuleUnitExecutor executor = createExecutor(source1);
-
-        PMMLRequestData requestData = createRequest("123","Sample Score",33.0,"SKYDIVER","KN",true);
-        PMML4Result resultHolder = new PMML4Result();
-
-        List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
-        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
-
-        assertNotNull(unitClass);
-        executor.run(unitClass);
-        Collection<? extends EntryPoint> eps = ((InternalRuleUnitExecutor)executor).getKieSession().getEntryPoints();
-        eps.forEach(ep -> {System.out.println(ep);});
-        
-        data.insert(requestData);
-        resultData.insert(resultHolder);
-        executor.run(unitClass);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("Sample Score",
+                ResourceFactory.newClassPathResource(source1),
+                null);
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", "Sample Score")
+                .addParameter("age", 33.0, Double.class)
+                .addParameter("occupation", "SKYDIVER", String.class)
+                .addParameter("residenceState", "KN", String.class)
+                .addParameter("validLicense", true, Boolean.class)
+                .build();
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMML4Result resultHolder = helper.submitRequest(request);
 
         assertEquals(3, resultHolder.getResultVariables().size());
         Object scorecard = resultHolder.getResultValue("ScoreCard", null);
         assertNotNull(scorecard);
-        
+
         Double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).orElse(null);
         assertEquals(41.345,score,0.000);
         Object ranking = resultHolder.getResultValue("ScoreCard", "ranking");
@@ -200,29 +198,30 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals( "RES", iter.next() );
         assertEquals( "CX2", iter.next() );
 
-        
+
     }
 
     @Test
     public void testSimpleScorecard() {
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SimpleScorecard",
+                ResourceFactory.newClassPathResource(SOURCE_SIMPLE_SCORECARD),
+                null);
+        PMMLRequestDataBuilder rdb = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("param1", 10.0, Double.class)
+                .addParameter("param2", 15.0, Double.class);
+        PMML4Result resultHolder = helper.submitRequest(rdb.build());
 
-        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SCORECARD);
-        PMMLExecutor executor = new PMMLExecutor(kieBase);
-
-        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleScorecard");
-        requestData.addRequestParam("param1", 10.0);
-        requestData.addRequestParam("param2", 15.0);
-        PMML4Result resultHolder = executor.run(requestData);
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(40.8);
         Map<String,Double> rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
         Assertions.assertThat(rankingMap.get("reasonCh1")).isEqualTo(5);
         Assertions.assertThat(rankingMap.get("reasonCh2")).isEqualTo(-6);
 
-        requestData = new PMMLRequestData("123", "SimpleScorecard");
-        requestData.addRequestParam("param1", 51.0);
-        requestData.addRequestParam("param2", 12.0);
-        resultHolder = executor.run(requestData);
+        PMMLRequestDataBuilder rdb2 = new PMMLRequestDataBuilder("123", "SimpleScorecard")
+                .addParameter("param1", 51.0, Double.class)
+                .addParameter("param2", 12.0, Double.class);
+        resultHolder = helper.submitRequest(rdb2.build());
+
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(120.8);
         rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
@@ -232,13 +231,16 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardWithCompoundPredicate() {
-        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPOUND_PREDICATE_SCORECARD);
-        PMMLExecutor executor = new PMMLExecutor(kieBase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("ScorecardCompoundPredicate",
+                ResourceFactory.newClassPathResource(SOURCE_COMPOUND_PREDICATE_SCORECARD),
+                null);
 
-        PMMLRequestData requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
-        requestData.addRequestParam("param1", 41.0);
-        requestData.addRequestParam("param2", 21.0);
-        PMML4Result resultHolder = executor.run(requestData);
+        PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("param1", 41.0, Double.class)
+                .addParameter("param2", 21.0, Double.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(requestData);
+
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(120.8);
         Map<String,Double> rankingMap = (Map<String, Double>) resultHolder.getResultValue("ScoreCard", "ranking");
@@ -248,34 +250,37 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
         requestData.addRequestParam("param1", 40.0);
         requestData.addRequestParam("param2", 25.0);
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(120.8);
 
         requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
         requestData.addRequestParam("param1", 40.0);
         requestData.addRequestParam("param2", 55.0);
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(210.8);
 
         requestData = new PMMLRequestData("123", "ScorecardCompoundPredicate");
         requestData.addRequestParam("param1", 4.0);
         requestData.addRequestParam("param2", -25.0);
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(30.8);
     }
 
     @Test
     public void testScorecardWithSimpleSetPredicate() {
-        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SCORECARD);
-        PMMLExecutor executor = new PMMLExecutor(kieBase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SimpleSetScorecard",
+                ResourceFactory.newClassPathResource(SOURCE_SIMPLE_SET_SCORECARD),
+                null);
 
-        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleSetScorecard");
-        requestData.addRequestParam("param1", 4);
-        requestData.addRequestParam("param2", "optA");
-        PMML4Result resultHolder = executor.run(requestData);
+        PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("param1", 4, Integer.class)
+                .addParameter("param2", "optA", String.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(requestData);
+
         Assertions.assertThat(resultHolder).isNotNull();
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(113);
@@ -283,7 +288,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData = new PMMLRequestData("123", "SimpleSetScorecard");
         requestData.addRequestParam("param1", 5);
         requestData.addRequestParam("param2", "optA");
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(33);
@@ -291,7 +296,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData = new PMMLRequestData("123", "SimpleSetScorecard");
         requestData.addRequestParam("param1", -5);
         requestData.addRequestParam("param2", "optC");
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(123);
@@ -299,7 +304,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         requestData = new PMMLRequestData("123", "SimpleSetScorecard");
         requestData.addRequestParam("param1", -5);
         requestData.addRequestParam("param2", "optA");
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(113);
@@ -307,12 +312,15 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardWithSimpleSetPredicateWithSpaceValue() {
-        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD);
-        PMMLExecutor executor = new PMMLExecutor(kieBase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SimpleSetScorecardWithSpaceValue",
+                ResourceFactory.newClassPathResource(SOURCE_SIMPLE_SET_SPACE_VALUE_SCORECARD),
+                null);
 
-        PMMLRequestData requestData = new PMMLRequestData("123", "SimpleSetScorecardWithSpaceValue");
-        requestData.addRequestParam("param", "optA");
-        PMML4Result resultHolder = executor.run(requestData);
+        PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("param", "optA", String.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(requestData);
+
         Assertions.assertThat(resultHolder).isNotNull();
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(13);
@@ -320,26 +328,29 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardWithComplexPartialScore() {
-        KieBase kieBase = PMMLKieBaseUtil.createKieBaseWithPMML(SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD);
-        PMMLExecutor executor = new PMMLExecutor(kieBase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("ComplexPartialScoreScorecard",
+                ResourceFactory.newClassPathResource(SOURCE_COMPLEX_PARTIAL_SCORE_SCORECARD),
+                null);
 
-        PMMLRequestData requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
-        requestData.addRequestParam("param", 5.0);
-        PMML4Result resultHolder = executor.run(requestData);
+        PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("param", 5.0, Double.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(requestData);
+
         Assertions.assertThat(resultHolder).isNotNull();
         double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(20);
 
         requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
         requestData.addRequestParam("param", 40.0);
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(150);
 
         requestData = new PMMLRequestData("123", "ComplexPartialScoreScorecard");
         requestData.addRequestParam("param", 100.0);
-        resultHolder = executor.run(requestData);
+        resultHolder = helper.submitRequest(requestData);
         Assertions.assertThat(resultHolder).isNotNull();
         score = resultHolder.getResultValue("ScoreCard", "score", Double.class).get();
         Assertions.assertThat(score).isEqualTo(205);
@@ -347,27 +358,17 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testScorecardOutputs() throws Exception {
-        RuleUnitExecutor executor = createExecutor(source2);//RuleUnitExecutor.create().bind(kbase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScorecard",
+                ResourceFactory.newClassPathResource(source2),
+                null);
 
+        PMMLRequestData requestData = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("cage", "engineering", String.class)
+                .addParameter("age", 25, Integer.class)
+                .addParameter("wage", 500.00, Double.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(requestData);
 
-        PMMLRequestData requestData = new PMMLRequestData("123","SampleScorecard");
-        requestData.addRequestParam("cage","engineering");
-        requestData.addRequestParam("age",25);
-        requestData.addRequestParam("wage",500.0);
-        
-        PMML4Result resultHolder = new PMML4Result();
-        
-        List<String> possiblePackages = calculatePossiblePackageNames("SampleScorecard");
-        Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
-
-
-        assertNotNull(unitClass);
-        executor.run(unitClass);
-        
-        data.insert(requestData);
-        resultData.insert(resultHolder);
-        executor.run(unitClass);
-        
         assertEquals("OK",resultHolder.getResultCode());
         assertEquals(6,resultHolder.getResultVariables().size());
         assertNotNull(resultHolder.getResultValue("OutRC1", null));
@@ -376,20 +377,20 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals("RC2",resultHolder.getResultValue("OutRC1", "value"));
         assertEquals("RC1",resultHolder.getResultValue("OutRC2", "value"));
         assertEquals("RC1",resultHolder.getResultValue("OutRC3", "value"));
-        
+
     }
-    
-    protected PMMLRequestData createRequest(String correlationId, 
-            String model, 
-            Double age, 
-            String occupation, 
-            String residenceState, 
+
+    protected PMMLRequestData createRequest(String correlationId,
+            String model,
+            Double age,
+            String occupation,
+            String residenceState,
             boolean validLicense) {
-        PMMLRequestData data = new PMMLRequestData(correlationId,model);
-        data.addRequestParam("age", age);
-        data.addRequestParam("occupation", occupation);
-        data.addRequestParam("residenceState", residenceState);
-        data.addRequestParam("validLicense", validLicense);
-        return data;
+        PMMLRequestDataBuilder rdb = new PMMLRequestDataBuilder(correlationId, model);
+        rdb.addParameter("age", age, Double.class)
+           .addParameter("occupation", occupation, String.class)
+           .addParameter("residenceState", residenceState, String.class)
+           .addParameter("validLicense", validLicense, Boolean.class);
+        return rdb.build();
     }
 }

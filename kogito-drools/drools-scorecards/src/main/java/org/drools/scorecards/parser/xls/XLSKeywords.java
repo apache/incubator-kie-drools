@@ -44,6 +44,8 @@ public interface XLSKeywords {
     public static final String SCORECARD_CHARACTERISTIC_BIN_INITIALSCORE = "Partial Score";
     public static final String SCORECARD_CHARACTERISTIC_BIN_DESC = "Description";
     public static final String DATATYPE_NUMBER = "Number";
+    public static final String DATATYPE_DOUBLE = "Double";
+    public static final String DATATYPE_INTEGER = "Integer";
     public static final String DATATYPE_TEXT = "Text";
     public static final String DATATYPE_BOOLEAN = "Boolean";
 }

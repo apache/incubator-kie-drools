@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-pmml</artifactId>
+      <artifactId>kie-pmml</artifactId>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -68,6 +68,10 @@
       <artifactId>drools-scorecards</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

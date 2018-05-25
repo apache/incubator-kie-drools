@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-pmml</artifactId>
+      <artifactId>kie-pmml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -55,6 +55,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
+    <dependency>
+    	<groupId>org.kie</groupId>
+    	<artifactId>kie-api</artifactId>
+    	<scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>

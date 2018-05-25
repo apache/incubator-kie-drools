@@ -2,7 +2,7 @@
 package org.kie.pmml.pmml_4_2.compiler
 
 //list any import classes here.
-import org.kie.dmg.pmml.pmml_4_2.descr.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
 import org.kie.pmml.pmml_4_2.model.mining.*;

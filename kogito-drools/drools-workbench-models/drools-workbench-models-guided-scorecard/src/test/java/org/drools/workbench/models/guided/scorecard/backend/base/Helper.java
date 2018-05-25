@@ -45,12 +45,12 @@ public class Helper {
     public static String getApplicant() {
         return "package org.drools.workbench.models.guided.scorecard.backend.test2;\n" +
                 "public class Applicant {\n" +
-                "    private double score;\n" +
-                "    public double getScore() {\n" +
-                "        return score;\n" +
+                "    private double calculatedScore;\n" +
+                "    public double getCalculatedScore() {\n" +
+                "        return calculatedScore;\n" +
                 "    }\n" +
-                "    public void setScore( double score ) {\n" +
-                "        this.score = score;\n" +
+                "    public void setCalculatedScore( double score ) {\n" +
+                "        this.calculatedScore = score;\n" +
                 "    }\n" +
                 "}\n";
     }
@@ -89,7 +89,7 @@ public class Helper {
         model.setInitialScore( 0.0 );
 
         model.setFactName( "org.drools.workbench.models.guided.scorecard.backend.test1.Applicant" );
-        model.setFieldName( "score" );
+        model.setFieldName( "calculatedScore" );
         model.setUseReasonCodes( false );
         model.setReasonCodeField( "" );
 

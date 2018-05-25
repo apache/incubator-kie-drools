@@ -18,7 +18,7 @@
 package @{packageName}
 unit @{ruleUnitClassName}
 
-import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
 import org.kie.pmml.pmml_4_2.*;
 import org.kie.pmml.pmml_4_2.model.*;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;

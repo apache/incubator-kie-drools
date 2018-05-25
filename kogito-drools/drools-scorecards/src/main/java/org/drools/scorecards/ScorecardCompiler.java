@@ -18,7 +18,9 @@ package org.drools.scorecards;
 
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.core.util.IoUtils;
-import org.drools.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4Unit;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
 import org.drools.scorecards.parser.xls.XLSScorecardParser;
@@ -60,7 +62,7 @@ public class ScorecardCompiler {
     }
 
     /* method for use from Guvnor */
-    protected void setPMMLDocument(PMML pmmlDocument){
+    public void setPMMLDocument(PMML pmmlDocument){
         this.pmmlDocument = pmmlDocument;
     }
 
@@ -126,6 +128,10 @@ public class ScorecardCompiler {
     }
 
     public String getDRL(){
+    	if (pmmlDocument != null) {
+    		PMML4Unit pmmlUnit = new PMML4UnitImpl(pmmlDocument);
+    		compiler.getHelper().setPack(pmmlUnit.getRootPackage());
+    	}
         String drl = compiler.generateTheory( pmmlDocument );
         if ( ! compiler.getResults().isEmpty() ) {
             for ( KnowledgeBuilderResult res : compiler.getResults() ) {

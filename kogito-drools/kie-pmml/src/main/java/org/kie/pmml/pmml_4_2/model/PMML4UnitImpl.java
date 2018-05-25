@@ -25,11 +25,11 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
-import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
-import org.kie.dmg.pmml.pmml_4_2.descr.Extension;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
-import org.kie.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.Extension;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.core.io.impl.ClassPathResource;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
@@ -282,4 +282,10 @@ public class PMML4UnitImpl implements PMML4Unit {
     	
     	return packageNames;
     }
+
+	@Override
+	public String getModelExternalMiningBeansRules(String modelName) {
+		PMML4Model model = getModelsMap().get(modelName);
+		return model != null ? model.getExternalBeansMiningRules() : null;
+	}
 }

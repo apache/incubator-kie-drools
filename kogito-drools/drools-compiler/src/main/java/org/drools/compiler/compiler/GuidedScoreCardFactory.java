@@ -15,6 +15,7 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.KieBase;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.internal.utils.ServiceRegistryImpl;
 
@@ -26,6 +27,14 @@ public class GuidedScoreCardFactory {
 
     public static String loadFromInputStream(InputStream is) throws IOException {
         return getGuidedScoreCardProvider().loadFromInputStream(is);
+    }
+
+    public static KieBase getKieBaseFromInputStream(InputStream is) throws IOException {
+    	return getGuidedScoreCardProvider().getKieBaseFromInputStream(is);
+    }
+
+    public static String getPMMLStringFromInputStream(InputStream is) throws IOException {
+    	return getGuidedScoreCardProvider().getPMMLStringFromInputStream(is);
     }
 
     public static synchronized GuidedScoreCardProvider getGuidedScoreCardProvider() {

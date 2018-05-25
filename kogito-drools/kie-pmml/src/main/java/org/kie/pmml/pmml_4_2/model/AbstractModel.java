@@ -16,25 +16,33 @@
 package org.kie.pmml.pmml_4_2.model;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.DataDictionary;
-import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningSchema;
-import org.kie.dmg.pmml.pmml_4_2.descr.Output;
-import org.kie.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
+import org.dmg.pmml.pmml_4_2.descr.Extension;
+import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
+import org.dmg.pmml.pmml_4_2.descr.Output;
+import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
+import org.kie.pmml.pmml_4_2.model.ExternalBeanRef.ModelUsage;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateError;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
@@ -48,6 +56,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected T rawModel;
     protected Map<String, MiningField> miningFieldMap;
     protected Map<String, OutputField> outputFieldMap;
+    protected List<ExternalBeanRef> externalMiningFields;
     private static Map<String,Integer> generatedModelIds;
     protected static PMML4Helper helper = new PMML4Helper();
     protected final static String MINING_TEMPLATE_NAME = "MiningSchemaPOJOTemplate";
@@ -90,10 +99,38 @@ public abstract class AbstractModel<T> implements PMML4Model {
 
     protected void initMiningFieldMap() {
         MiningSchema schema = getMiningSchema();
+        boolean addExternalBeanRefs = isUseExternalBeanRefs(schema);
         miningFieldMap = new HashMap<>();
+        externalMiningFields = new ArrayList<>();
         for (MiningField field: schema.getMiningFields()) {
             miningFieldMap.put(field.getName(), field);
+            if (addExternalBeanRefs) {
+            	Extension ext = getExternalClassInfo(field.getExtensions());
+            	if (ext != null) {
+            		ExternalBeanRef ref = new ExternalBeanRef(field.getName(),ext.getValue(),ModelUsage.MINING);
+            		externalMiningFields.add(ref);
+            	}
+            }
         }
+    }
+    
+    protected boolean isUseExternalBeanRefs(MiningSchema schema) {
+        List<Extension> extensions = schema.getExtensions();
+        if (extensions != null && !extensions.isEmpty()) {
+        	Optional<Extension> ext = extensions.stream()
+        			.filter(e -> ("adapter".equals(e.getName()) && "BEAN".equals(e.getValue())))
+        			.findFirst();
+        	return ext.isPresent();
+        }
+    	return false;
+    }
+    
+    protected Extension getExternalClassInfo(List<Extension> extensions) {
+    	Extension ext = null;
+    	if (extensions != null && !extensions.isEmpty()) {
+    		ext = extensions.stream().filter(e -> "externalClass".equals(e.getName())).findFirst().orElse(null);
+    	}
+    	return ext;
     }
 
     protected void initOutputFieldMap() {
@@ -105,7 +142,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
             }
         }
     }
-
+    
     protected MiningField getValidMiningField( PMMLDataField dataField) {
         if (miningFieldMap.containsKey(dataField.getName())) {
             return miningFieldMap.get(dataField.getName());
@@ -192,6 +229,43 @@ public abstract class AbstractModel<T> implements PMML4Model {
         result.put(className, new String(baos.toByteArray()));
         return result.entrySet().iterator().next();
     }
+    
+    protected List<ExternalBeanDefinition> getExternalMiningClasses() {
+    	List<ExternalBeanDefinition> list = null;
+    	if (externalMiningFields != null && !externalMiningFields.isEmpty()) {
+    		list = externalMiningFields.stream()
+    				.map(ref -> ref.getBeanDefinition())
+    				.distinct()
+    				.collect(Collectors.toList());
+    	}
+    	return list != null ? list : Collections.emptyList();
+    }
+    
+    public List<ExternalBeanRef> getExternalMiningFields() {
+    	return this.externalMiningFields;
+    }
+    
+    public String getExternalBeansMiningRules() {
+    	if (!templateRegistry.contains("ExternalBeansMiningRules")) {
+    		InputStream istrm = AbstractModel.class.getResourceAsStream("/org/kie/pmml/pmml_4_2/templates/mvel/global/externalBeanInput.mvel");
+    		if (istrm != null) {
+    			CompiledTemplate ct = TemplateCompiler.compileTemplate(istrm);
+    			templateRegistry.addNamedTemplate("ExternalBeansMiningRules", ct);
+    		}
+    	}
+    	Map<String,Object> vars = new HashMap<>();
+    	vars.put("externalBeanRefs", externalMiningFields);
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		TemplateRuntime.execute(templateRegistry.getNamedTemplate("ExternalBeansMiningRules"),
+    				null,
+    				new MapVariableResolverFactory(vars),
+    				baos);
+    	} catch (TemplateError te) {
+    		return null;
+    	}
+    	return new String(baos.toByteArray());
+    }
 
     @Override
     public Map.Entry<String, String> getMappedRuleUnit() {
@@ -204,6 +278,10 @@ public abstract class AbstractModel<T> implements PMML4Model {
         vars.put("pmmlPackageName", this.getModelPackageName());
         vars.put("className", className);
         vars.put("pojoInputClassName", PMMLRequestData.class.getName());
+        List<ExternalBeanDefinition> beanDefs = getExternalMiningClasses();
+        if (beanDefs != null) {
+        	vars.put("externMiningBeans", getExternalMiningClasses());
+        }
         if (this instanceof Miningmodel) {
             vars.put("miningPojoClassName", this.getMiningPojoClassName());
         }

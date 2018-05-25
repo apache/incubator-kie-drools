@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
-import org.kie.dmg.pmml.pmml_4_2.descr.Segment;
+import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.Segment;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.model.PMML4ModelFactory;

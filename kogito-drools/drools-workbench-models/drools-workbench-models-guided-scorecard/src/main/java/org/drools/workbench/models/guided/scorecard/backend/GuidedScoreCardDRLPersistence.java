@@ -32,7 +32,7 @@ import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.drools.core.util.StringUtils;
-import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
@@ -59,7 +59,7 @@ public class GuidedScoreCardDRLPersistence {
         return sb.toString();
     }
 
-    private static PMML createPMMLDocument(final ScoreCardModel model) {
+    public static PMML createPMMLDocument(final ScoreCardModel model) {
         final Scorecard pmmlScorecard = ScorecardPMMLUtils.createScorecard();
         final Output output = new Output();
         final Characteristics characteristics = new Characteristics();
@@ -134,8 +134,14 @@ public class GuidedScoreCardDRLPersistence {
             extension.setName(ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
             if ("string".equalsIgnoreCase(characteristic.getDataType())) {
                 extension.setValue(XLSKeywords.DATATYPE_TEXT);
+            } else if ("int".equalsIgnoreCase(characteristic.getDataType()) ) {
+            	extension.setValue(XLSKeywords.DATATYPE_INTEGER);
+            } else if ("double".equalsIgnoreCase(characteristic.getDataType())) {
+                extension.setValue(XLSKeywords.DATATYPE_DOUBLE);
+/*                
             } else if ("int".equalsIgnoreCase(characteristic.getDataType()) || "double".equalsIgnoreCase(characteristic.getDataType())) {
-                extension.setValue(XLSKeywords.DATATYPE_NUMBER);
+            	extension.setValue(XLSKeywords.DATATYPE_NUMBER);
+*/
             } else if ("boolean".equalsIgnoreCase(characteristic.getDataType())) {
                 extension.setValue(XLSKeywords.DATATYPE_BOOLEAN);
             } else {
