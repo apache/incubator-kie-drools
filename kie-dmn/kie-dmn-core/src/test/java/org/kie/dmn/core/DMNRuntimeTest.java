@@ -57,6 +57,8 @@ import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
 
@@ -1446,13 +1448,32 @@ public class DMNRuntimeTest {
         FEELStringMarshaller.INSTANCE.marshall( Arrays.asList(decisionResults.get(0).getResult(), decisionResults.get(1).getResult()) );
     }
 
+    private Definitions buildSimplifiedDefinitions(String namespace, String... decisions) {
+        Definitions def = new Definitions();
+        def.setNamespace(namespace);
+        for (String d : decisions) {
+            Decision dec = new Decision();
+            dec.setName(d);
+            def.getDrgElement().add(dec);
+            def.addChildren(dec);
+            dec.setParent(def);
+        }
+        return def;
+    }
+
+    private DecisionNodeImpl buildSimplifiedDecisionNode(Definitions def, String name) {
+        return new DecisionNodeImpl(def.getDrgElement().stream().filter(drg -> drg.getName().equals(name)).filter(Decision.class::isInstance).map(Decision.class::cast).findFirst().get());
+    }
+
     @Test
     public void testCycleDetection() {
-        DecisionNodeImpl a = new DecisionNodeImpl();
-        DecisionNodeImpl b = new DecisionNodeImpl();
+        Definitions defs = buildSimplifiedDefinitions("ns", "a", "b");
+        DecisionNodeImpl a = buildSimplifiedDecisionNode(defs, "a");
+        DecisionNodeImpl b = buildSimplifiedDecisionNode(defs, "b");
         a.addDependency("b", b);
         b.addDependency("a", b);
         DMNModelImpl model = new DMNModelImpl();
+        model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
@@ -1462,9 +1483,11 @@ public class DMNRuntimeTest {
 
     @Test
     public void testCycleDetectionSelfReference() {
-        DecisionNodeImpl decision = new DecisionNodeImpl();
+        Definitions defs = buildSimplifiedDefinitions("ns", "self");
+        DecisionNodeImpl decision = buildSimplifiedDecisionNode(defs, "self");
         decision.addDependency("self", decision);
         DMNModelImpl model = new DMNModelImpl();
+        model.setDefinitions(defs);
         model.addDecision(decision);
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
@@ -1473,31 +1496,35 @@ public class DMNRuntimeTest {
 
     @Test
     public void testSharedDependency() {
-      DecisionNodeImpl a = new DecisionNodeImpl();
-      DecisionNodeImpl b = new DecisionNodeImpl();
-      DecisionNodeImpl c = new DecisionNodeImpl();
-      a.addDependency("c", c);
-      b.addDependency("c", c);
-      DMNModelImpl model = new DMNModelImpl();
-      model.addDecision(a);
-      model.addDecision(b);
-      model.addDecision(c);
-      DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
-      DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
-      assertFalse(result.hasErrors());
+        Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c");
+        DecisionNodeImpl a = buildSimplifiedDecisionNode(defs, "a");
+        DecisionNodeImpl b = buildSimplifiedDecisionNode(defs, "b");
+        DecisionNodeImpl c = buildSimplifiedDecisionNode(defs, "c");
+        a.addDependency("c", c);
+        b.addDependency("c", c);
+        DMNModelImpl model = new DMNModelImpl();
+        model.setDefinitions(defs);
+        model.addDecision(a);
+        model.addDecision(b);
+        model.addDecision(c);
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
+        DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
+        assertFalse(result.hasErrors());
     }
 
     @Test
     public void testCycleDetectionDeadlyDiamond() {
-        DecisionNodeImpl a = new DecisionNodeImpl();
-        DecisionNodeImpl b = new DecisionNodeImpl();
-        DecisionNodeImpl c = new DecisionNodeImpl();
-        DecisionNodeImpl d = new DecisionNodeImpl();
+        Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c", "d");
+        DecisionNodeImpl a = buildSimplifiedDecisionNode(defs, "a");
+        DecisionNodeImpl b = buildSimplifiedDecisionNode(defs, "b");
+        DecisionNodeImpl c = buildSimplifiedDecisionNode(defs, "c");
+        DecisionNodeImpl d = buildSimplifiedDecisionNode(defs, "d");
         a.addDependency("b", b);
         a.addDependency("c", c);
         b.addDependency("d", d);
         c.addDependency("d", d);
         DMNModelImpl model = new DMNModelImpl();
+        model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
         model.addDecision(c);
