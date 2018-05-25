@@ -539,9 +539,9 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                         nextCell().setCellValue(show.getLocation().getCityName());
                         long drivingTime = show.getDrivingTimeFromPreviousStandstill();
                         drivingTimeWeekTotal += drivingTime;
-                        nextCell().setCellValue((drivingTime / 3600L) + " hours " + (drivingTime % 3600 / 60) + " minutes");
+                        nextCell().setCellValue(toHoursAndMinutes(drivingTime));
                         if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                            nextCell().setCellValue((drivingTimeWeekTotal / 3600L) + " hours " + (drivingTimeWeekTotal % 3600 / 60) + " minutes");
+                            nextCell().setCellValue(toHoursAndMinutes(drivingTimeWeekTotal));
                             drivingTimeWeekTotal = 0;
                         } else {
                             nextCell();
@@ -559,7 +559,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                     nextCell();
                     nextCell();
                     if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                        nextCell().setCellValue((drivingTimeWeekTotal / 3600L) + " hours " + (drivingTimeWeekTotal % 3600 / 60) + " minutes");
+                        nextCell().setCellValue(toHoursAndMinutes(drivingTimeWeekTotal));
                         drivingTimeWeekTotal = 0;
                     }
                 }
@@ -594,6 +594,10 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             nextCell();
             nextCell().setCellValue(revenueOpportunityLoss);
             autoSizeColumnsWithHeader();
+        }
+
+        private static String toHoursAndMinutes(long drivingTimeWeekTotal) {
+            return (drivingTimeWeekTotal / 3600L) + " hours " + (drivingTimeWeekTotal % 3600 / 60) + " minutes";
         }
 
     }
