@@ -54,8 +54,6 @@
               <COMMUNITY-ONLY/>
               <shared-dir>${project.basedir}/../shared/</shared-dir>
               <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
-              <html-googleTagManagerId>GTM-NJWS5L</html-googleTagManagerId>
-              <html-googleTagManagerChannel>OptaPlanner</html-googleTagManagerChannel>
             </attributes>
           </configuration>
           <executions>
