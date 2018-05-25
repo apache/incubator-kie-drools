@@ -18,8 +18,8 @@ package org.drools.scorecards.pmml;
 
 import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.core.util.StringUtils;
-import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
-import org.drools.pmml.pmml_4_2.extensions.PMMLIOAdapterMode;
+import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+import org.kie.pmml.pmml_4_2.extensions.PMMLIOAdapterMode;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 
@@ -60,6 +60,7 @@ public class ScorecardPMMLGenerator {
 
         //now create the PMML document
         PMML pmml = new PMML();
+        pmml.setVersion("4.2.1");
         Header header = new Header();
         Timestamp timestamp = new Timestamp();
         timestamp.getContent().add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.ENGLISH).format(new Date()));
@@ -94,8 +95,8 @@ public class ScorecardPMMLGenerator {
             if ( obj instanceof MiningSchema ) {
                 MiningSchema schema = (MiningSchema)obj;
                     Extension adapter = new Extension();
-                        adapter.setName( PMMLExtensionNames.IO_ADAPTER );
-                        adapter.setValue( PMMLIOAdapterMode.BEAN.name() );
+                    adapter.setName( PMMLExtensionNames.IO_ADAPTER );
+                    adapter.setValue( PMMLIOAdapterMode.BEAN.name() );
                     schema.getExtensions().add( adapter );
                 for (MiningField miningField : schema.getMiningFields()) {
                     String fieldName = miningField.getName();
@@ -165,7 +166,14 @@ public class ScorecardPMMLGenerator {
                         dataField.getExtensions().add(extension);
                     }
 
-                    if (XLSKeywords.DATATYPE_NUMBER.equalsIgnoreCase(dataType)) {
+
+                    if (XLSKeywords.DATATYPE_DOUBLE.equalsIgnoreCase(dataType)) {
+                        dataField.setDataType(DATATYPE.DOUBLE);
+                        dataField.setOptype(OPTYPE.CONTINUOUS);
+                    } else if (XLSKeywords.DATATYPE_INTEGER.equalsIgnoreCase(dataType)) {
+                        dataField.setDataType(DATATYPE.INTEGER);
+                        dataField.setOptype(OPTYPE.CONTINUOUS);
+                    } else if (XLSKeywords.DATATYPE_NUMBER.equalsIgnoreCase(dataType)) {
                         dataField.setDataType(DATATYPE.DOUBLE);
                         dataField.setOptype(OPTYPE.CONTINUOUS);
                     } else if (XLSKeywords.DATATYPE_TEXT.equalsIgnoreCase(dataType)) {
@@ -273,7 +281,9 @@ public class ScorecardPMMLGenerator {
 
     private void setPredicatesForAttribute(Attribute pmmlAttribute, String dataType, String field, String predicateAsString) {
         predicateAsString = StringUtil.unescapeXML(predicateAsString);
-        if (XLSKeywords.DATATYPE_NUMBER.equalsIgnoreCase(dataType)) {
+        if (XLSKeywords.DATATYPE_NUMBER.equalsIgnoreCase(dataType) ||
+                XLSKeywords.DATATYPE_DOUBLE.equalsIgnoreCase(dataType) ||
+                XLSKeywords.DATATYPE_INTEGER.equalsIgnoreCase(dataType)) {
             setNumericPredicate(pmmlAttribute, field, predicateAsString);
         } else if (XLSKeywords.DATATYPE_TEXT.equalsIgnoreCase(dataType)) {
             setTextPredicate(pmmlAttribute, field, predicateAsString);

@@ -15,9 +15,9 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
-import org.kie.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
 
 public class PMMLMiningField extends PMMLDataField {
 	private boolean inDictionary;

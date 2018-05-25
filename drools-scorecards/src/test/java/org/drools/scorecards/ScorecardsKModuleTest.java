@@ -16,15 +16,22 @@
 package org.drools.scorecards;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
+import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 
 public class ScorecardsKModuleTest {
 
@@ -39,21 +46,17 @@ public class ScorecardsKModuleTest {
         KieBase kBase = kContainer.getKieBase("namedkiesession");
         assertNotNull(kBase);
 
-        KieSession kSession = kContainer.newKieSession("ksession1");
-        assertNotNull(kSession);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", kBase);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
+        		.addParameter("age", 10.0, Double.class)
+        		.addParameter("validLicense", false, Boolean.class)
+        		.build();
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertEquals("OK",resultHolder.getResultCode());
+        Double calcScore = resultHolder.getResultValue("CalculatedScore", "value", Double.class).orElse(null);
+        assertEquals(29.0,calcScore,1e-6);
 
-        FactType scorecardType = kBase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        assertNotNull(scorecardType);
-
-        Object scorecard = scorecardType.newInstance();
-        assertNotNull(scorecard);
-
-        scorecardType.set(scorecard, "age", 10);
-        kSession.insert( scorecard );
-        kSession.fireAllRules();
-        kSession.dispose();
-        //occupation = 5, age = 25, validLicence -1
-        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
     }
 
     @Test
@@ -62,24 +65,18 @@ public class ScorecardsKModuleTest {
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieBase kBase = kContainer.getKieBase("kbase2");
         assertNotNull(kBase);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", kBase);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
+        		.addParameter("age", 50.0, Double.class)
+        		.addParameter("occupation", "PROGRAMMER", String.class)
+        		.addParameter("validLicense", true, Boolean.class)
+        		.build();
+        
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertEquals("OK",resultHolder.getResultCode());
+        Double calcScore = resultHolder.getResultValue("CalculatedScore", "value", Double.class).orElse(null);
+        assertEquals(30.0, calcScore, 1e-6);
 
-        KieSession kSession = kContainer.newKieSession("ksession2");
-        assertNotNull(kSession);
-
-        FactType scorecardType = kBase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        assertNotNull(scorecardType);
-
-        Object scorecard = scorecardType.newInstance();
-        assertNotNull(scorecard);
-
-        scorecardType.set(scorecard, "age", 50);
-        scorecardType.set(scorecard, "validLicense", true);
-        scorecardType.set(scorecard, "occupation", "PROGRAMMER");
-        //occupation
-        kSession.insert( scorecard );
-        kSession.fireAllRules();
-        kSession.dispose();
-        //age = 25, validLicence 0, occupation=5
-        assertEquals( 30.0, scorecardType.get( scorecard, "scorecard__calculatedScore" ) );
     }
 }

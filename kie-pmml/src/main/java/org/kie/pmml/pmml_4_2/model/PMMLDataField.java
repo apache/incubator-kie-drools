@@ -18,11 +18,11 @@ package org.kie.pmml.pmml_4_2.model;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.DATATYPE;
-import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
-import org.kie.dmg.pmml.pmml_4_2.descr.Interval;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
-import org.kie.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.Interval;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 
 public class PMMLDataField {

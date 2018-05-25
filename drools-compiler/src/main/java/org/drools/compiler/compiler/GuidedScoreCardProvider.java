@@ -15,6 +15,7 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.KieBase;
 import org.kie.api.Service;
 
 import java.io.IOException;
@@ -24,4 +25,7 @@ public interface GuidedScoreCardProvider extends Service {
 
     String loadFromInputStream(InputStream is) throws IOException;
 
+    KieBase getKieBaseFromInputStream(InputStream is) throws IOException;
+    
+    String getPMMLStringFromInputStream(InputStream is) throws IOException;
 }

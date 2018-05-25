@@ -15,11 +15,11 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
-import org.kie.dmg.pmml.pmml_4_2.descr.DataField;
-import org.kie.dmg.pmml.pmml_4_2.descr.MiningField;
-import org.kie.dmg.pmml.pmml_4_2.descr.OPTYPE;
-import org.kie.dmg.pmml.pmml_4_2.descr.OutputField;
-import org.kie.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
+import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.MiningField;
+import org.dmg.pmml.pmml_4_2.descr.OPTYPE;
+import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
 
 public class PMMLOutputField extends PMMLDataField {
 	private String modelId;
