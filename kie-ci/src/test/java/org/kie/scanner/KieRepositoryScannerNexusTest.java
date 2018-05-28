@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -111,6 +112,9 @@ public class KieRepositoryScannerNexusTest extends AbstractKieCiTest {
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
+        
+        // Store the module originally being loaded from Nexus to re-insert it, after generating a new version
+        KieModule firstModuleLoadedFromNexus = ks.getRepository().removeKieModule( releaseId );
 
         // create a new kjar
         InternalKieModule kJar2 = createKieJar(ks, releaseId, getPomWithDistributionManagement(releaseId), true, "rule2", "rule3");
@@ -120,6 +124,9 @@ public class KieRepositoryScannerNexusTest extends AbstractKieCiTest {
 
         // remove kjar from KieRepo
         ks.getRepository().removeKieModule( releaseId );
+        
+        // Insert the module once again - should be an older snapshot than the second one and therefore be replaced when getting the second one
+        ks.getRepository().addKieModule(firstModuleLoadedFromNexus);
 
         // create new KieContainer
         KieContainer kieContainer2 = ks.newKieContainer(releaseId);
