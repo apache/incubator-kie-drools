@@ -53,7 +53,7 @@ public class ManualFilterTest {
         CompiledFEELExpression compiledExpression = new ManualFilterExpression();
         System.out.println(compiledExpression);
 
-        EvaluationContext emptyContext = new EvaluationContextImpl(null);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
         System.out.println(result);
 

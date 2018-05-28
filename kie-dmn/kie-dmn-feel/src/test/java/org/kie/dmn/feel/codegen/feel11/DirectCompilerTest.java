@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -50,7 +49,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression compiledExpression = parse( feelLiteralExpression );
         System.out.println(compiledExpression);
         
-        EvaluationContext emptyContext = new EvaluationContextImpl(null);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
         System.out.println(result);
         return result;
@@ -231,7 +230,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression nameRef = parse( "[ {x:1, y:2}, {x:2, y:3} ][x]");
         System.out.println(nameRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("x", 2);
         Object result = nameRef.apply(context);
         System.out.println(result);
@@ -244,7 +243,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression nameRef = parse("[ {x:1, y:2}, {x:2, y:3} ][x]");
         System.out.println(nameRef);
 
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("x", false);
         Object result = nameRef.apply(context);
         System.out.println(result);
@@ -334,7 +333,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
         System.out.println(nameRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("someSimpleName", 123L);
         Object result = nameRef.apply(context);
         System.out.println(result);
@@ -349,7 +348,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
         Object result = qualRef.apply(context);
         System.out.println(result);
@@ -370,7 +369,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", new MyPerson());
         Object result = qualRef.apply(context);
         System.out.println(result);
@@ -385,7 +384,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression qualRef = parse(inputExpression, mapOf(entry("a date", dateType)));
         System.out.println(qualRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("a date", LocalDate.of(2016, 8, 2));
         Object result = qualRef.apply(context);
         System.out.println(result);

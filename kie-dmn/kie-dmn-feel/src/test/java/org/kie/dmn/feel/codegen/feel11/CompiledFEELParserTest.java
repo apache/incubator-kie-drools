@@ -41,7 +41,6 @@ import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -65,7 +64,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression number = parse( inputExpression );
         System.out.println(number);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = number.apply(context);
         System.out.println(result);
         
@@ -78,7 +77,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression stringLit = parse( inputExpression );
         System.out.println(stringLit);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = stringLit.apply(context);
         System.out.println(result);
         
@@ -91,7 +90,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
         System.out.println(nameRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("someSimpleName", 123L);
         Object result = nameRef.apply(context);
         System.out.println(result);
@@ -106,7 +105,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
         Object result = qualRef.apply(context);
         System.out.println(result);
@@ -127,7 +126,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        EvaluationContext context = new EvaluationContextImpl(null);
+        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", new MyPerson());
         Object result = qualRef.apply(context);
         System.out.println(result);
