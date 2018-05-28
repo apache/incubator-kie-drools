@@ -16,15 +16,22 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.ForExpressionNode;
+import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 public class CompiledFEELSupport {
     
@@ -172,4 +179,127 @@ public class CompiledFEELSupport {
             return result;
         }
     }
+
+    public static ForBuilder ffor(EvaluationContext ctx) {
+        return new ForBuilder(ctx);
+    }
+
+    public static class ForBuilder {
+
+        private EvaluationContext ctx;
+        private List<IterationContextCompiled> iterationContexts = new ArrayList<>();
+
+        public ForBuilder(EvaluationContext evaluationContext) {
+            this.ctx = evaluationContext;
+        }
+
+        public ForBuilder with(Function<EvaluationContext, Object> nameExpression, Function<EvaluationContext, Object> iterationExpression) {
+            iterationContexts.add(new IterationContextCompiled(nameExpression, iterationExpression));
+            return this;
+        }
+
+        public ForBuilder with(Function<EvaluationContext, Object> nameExpression,
+                               Function<EvaluationContext, Object> iterationExpression,
+                               Function<EvaluationContext, Object> rangeEndExpression) {
+            iterationContexts.add(new IterationContextCompiled(nameExpression, iterationExpression, rangeEndExpression));
+            return this;
+        }
+
+        public Object rreturn(Function<EvaluationContext, Object> expression) {
+            try {
+                ctx.enterFrame();
+                List results = new ArrayList();
+                ctx.setValue("partial", results);
+                ForIteration[] ictx = initializeContexts(ctx, iterationContexts);
+
+                while (ForExpressionNode.nextIteration(ctx, ictx)) {
+                    Object result = expression.apply(ctx);
+                    results.add(result);
+                }
+                return results;
+            } catch (EndpointOfRangeNotOfNumberException e) {
+                // ast error already reported
+                return null;
+            } finally {
+                ctx.exitFrame();
+            }
+        }
+
+        private ForIteration[] initializeContexts(EvaluationContext ctx, List<IterationContextCompiled> iterationContexts) {
+            ForIteration[] ictx = new ForIteration[iterationContexts.size()];
+            int i = 0;
+            for (IterationContextCompiled icn : iterationContexts) {
+                ictx[i] = createQuantifiedExpressionIterationContext(ctx, icn);
+                if (i < iterationContexts.size() - 1 && ictx[i].hasNextValue()) {
+                    ForExpressionNode.setValueIntoContext(ctx, ictx[i]);
+                }
+                i++;
+            }
+            return ictx;
+        }
+
+        private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextCompiled icn) {
+            ForIteration fi = null;
+            String name = (String) icn.getName().apply(ctx); // TODO revise
+            Object result = icn.getExpression().apply(ctx);
+            Object rangeEnd = icn.getRangeEndExpr().apply(ctx);
+            if (rangeEnd == null) {
+                Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
+                fi = new ForIteration(name, values);
+            } else {
+                valueMustBeANumber(ctx, result);
+                BigDecimal start = (BigDecimal) result;
+                valueMustBeANumber(ctx, rangeEnd);
+                BigDecimal end = (BigDecimal) rangeEnd;
+                fi = new ForIteration(name, start, end);
+            }
+            return fi;
+        }
+
+        private void valueMustBeANumber(EvaluationContext ctx, Object value) {
+            if (!(value instanceof BigDecimal)) {
+                ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER, value), null));
+                throw new EndpointOfRangeNotOfNumberException();
+            }
+        }
+
+        private static class EndpointOfRangeNotOfNumberException extends RuntimeException {
+
+            private static final long serialVersionUID = 1L;
+        }
+
+        public static class IterationContextCompiled {
+
+            private final Function<EvaluationContext, Object> name;
+            private final Function<EvaluationContext, Object> expression;
+            private final Function<EvaluationContext, Object> rangeEndExpr;
+
+            public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression) {
+                this.name = name;
+                this.expression = expression;
+                this.rangeEndExpr = (ctx) -> null;
+            }
+
+            public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression, Function<EvaluationContext, Object> rangeEndExpr) {
+                this.name = name;
+                this.expression = expression;
+                this.rangeEndExpr = rangeEndExpr;
+            }
+
+            public Function<EvaluationContext, Object> getName() {
+                return name;
+            }
+
+            public Function<EvaluationContext, Object> getExpression() {
+                return expression;
+            }
+
+            public Function<EvaluationContext, Object> getRangeEndExpr() {
+                return rangeEndExpr;
+            }
+
+        }
+    }
+
+
 }
