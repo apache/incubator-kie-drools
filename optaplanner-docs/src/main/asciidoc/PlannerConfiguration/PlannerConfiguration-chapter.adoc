@@ -972,9 +972,9 @@ From an optimization perspective, Planner effectively only optimizes the genuine
 
 [IMPORTANT]
 ====
-**Any class that has at least one shadow variable, is a planning entity class**, even if it has no genuine planning variables.
-That entity class needs to be defined in the solver configuration (unless classes are <<automaticScanningForAnnotations,automatically scanned>>)
-and be annotated accordingly.
+**Any class that has at least one shadow variable, is a planning entity class (even if it has no genuine planning variables).
+That class must be defined in the solver configuration** (unless classes are <<automaticScanningForAnnotations,automatically scanned>>)
+**and have a `@PlanningEntity` annotation.**
 
 A genuine planning entity class has at least one genuine planning variable, but can have shadow variables too.
 A shadow planning entity class has no genuine planning variables and at least one shadow planning variable.
@@ -1022,16 +1022,18 @@ public class CloudComputer {
 }
 ----
 
+<<shadowVariableIntroduction,Register this class as a planning entity.>>
 The `sourceVariableName` property is the name of the genuine planning variable on the return type of the getter (so the name of the genuine planning variable on the _other_ side).
 
 [NOTE]
 ====
 The shadow property, which is a ``Collection``, can never be ``null``.
 If no genuine variable is referencing that shadow entity, then it is an empty ``Collection``.
-Furthermore it must be a mutable `Collection` because once the Solver starts initializing or changing genuine planning variables, it will add and remove to the ``Collection``s of those shadow variables accordingly.
+Furthermore it must be a mutable `Collection` because once the Solver starts initializing or changing genuine planning variables,
+it will add and remove to the ``Collection``s of those shadow variables accordingly.
 ====
 
-For a chained planning variable, the bi-directional relationship must be a one to one relationship.
+For a chained planning variable, the bi-directional relationship is always a one to one relationship.
 In that case, the genuine side looks like this:
 
 [source,java,options="nowrap"]
@@ -1064,11 +1066,13 @@ public class Standstill {
 }
 ----
 
+<<shadowVariableIntroduction,Register this class as a planning entity.>>
+
 [WARNING]
 ====
 The input planning problem of a `Solver` must not violate bi-directional relationships.
 If A points to B, then B must point to A.
-Planner will not violate that principle during planning, but the input must not violate it.
+Planner will not violate that principle during planning, but the input must not violate it either.
 ====
 
 
@@ -1091,6 +1095,7 @@ public class Customer {
 }
 ----
 
+<<shadowVariableIntroduction,Register this class as a planning entity.>>
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
 
 
@@ -1098,7 +1103,8 @@ The `sourceVariableName` property is the name of the chained variable on the sam
 ==== Custom `VariableListener`
 
 To update a shadow variable, Planner uses a ``VariableListener``.
-To define a custom shadow variable, write a custom ``VariableListener``: implement the interface and annotate it on the shadow variable that needs to change.
+To define a custom shadow variable, write a custom ``VariableListener``:
+implement the interface and annotate it on the shadow variable that needs to change.
 
 [source,java,options="nowrap"]
 ----
@@ -1114,7 +1120,8 @@ To define a custom shadow variable, write a custom ``VariableListener``: impleme
     }
 ----
 
-The `variableName` is the variable that triggers changes in the shadow variable(s).
+<<shadowVariableIntroduction,Register this class as a planning entity.>>
+The `variableName` is the (genuine or shadow) variable that triggers changes to this shadow variable.
 
 [NOTE]
 ====
