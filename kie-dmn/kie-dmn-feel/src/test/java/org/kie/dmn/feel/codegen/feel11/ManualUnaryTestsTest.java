@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
@@ -26,9 +24,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
+
+import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
 
 public class ManualUnaryTestsTest {
     
@@ -52,7 +51,7 @@ public class ManualUnaryTestsTest {
         CompiledFEELUnaryTests compiledUnaryTests = new ManualImpl1();
         System.out.println(compiledUnaryTests);
 
-        EvaluationContext emptyContext = new EvaluationContextImpl(null);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         List<Boolean> result = compiledUnaryTests.getUnaryTests().stream().map(ut -> ut.apply(emptyContext, left)).collect(Collectors.toList());
         System.out.println(result);
 
