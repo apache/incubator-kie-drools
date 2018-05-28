@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 public class ManualContextTest {
     
@@ -53,7 +52,7 @@ public class ManualContextTest {
         CompiledFEELExpression compiledExpression = new ManualContext();
         System.out.println(compiledExpression);
 
-        EvaluationContext emptyContext = new EvaluationContextImpl(null);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
         System.out.println(result);
 
