@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -257,6 +258,19 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].y"), is(Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))));
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2} ].y"), is(Arrays.asList(BigDecimal.valueOf(2))));
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].z"), is(Collections.emptyList()));
+    }
+
+    @Test
+    public void test_for() {
+        // for
+        assertThat(parseCompileEvaluate("for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y"),
+                   is(Arrays.asList(10, 20, 30, 20, 40, 60, 30, 60, 90).stream().map(x -> BigDecimal.valueOf(x)).collect(Collectors.toList())));
+
+        // normal:
+        assertThat(parseCompileEvaluate("for x in [1, 2, 3] return x+1"),
+                   is(Arrays.asList(1, 2, 3).stream().map(x -> BigDecimal.valueOf(x + 1)).collect(Collectors.toList())));
+        
+        // TODO in order to parse correctly the enhanced for loop it is required to configure the FEEL Profiles
     }
 
     @Test

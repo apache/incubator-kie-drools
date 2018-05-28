@@ -83,7 +83,7 @@ public class ForExpressionNode
         }
     }
 
-    private boolean nextIteration( EvaluationContext ctx, ForIteration[] ictx ) {
+    public static boolean nextIteration(EvaluationContext ctx, ForIteration[] ictx) {
         int i = ictx.length-1;
         while ( i >= 0 && i < ictx.length ) {
             if ( ictx[i].hasNextValue() ) {
@@ -96,7 +96,7 @@ public class ForExpressionNode
         return i >= 0;
     }
 
-    private void setValueIntoContext(EvaluationContext ctx, ForIteration forIteration) {
+    public static void setValueIntoContext(EvaluationContext ctx, ForIteration forIteration) {
         ctx.setValue( forIteration.getName(), forIteration.getNextValue() );
     }
     
@@ -147,7 +147,7 @@ public class ForExpressionNode
         }
     }
 
-    private static class ForIteration {
+    public static class ForIteration {
         private String   name;
         private Iterable values;
 

@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,6 +67,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.IterationContextsContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
@@ -690,10 +693,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
     }
 
-//    @Override
-//    public DirectCompilerResult visitNameDefinition(FEEL_1_1Parser.NameDefinitionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitNameDefinition(FEEL_1_1Parser.NameDefinitionContext ctx) {
+        // this is used by the For loop for the variable name of the iteration contexts.
+        StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.normalizeVariableName(ParserHelper.getOriginalText(ctx)));
+        return DirectCompilerResult.of(expr, BuiltInType.STRING);
+    }
 //
 //    @Override
 //    public DirectCompilerResult visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
@@ -766,18 +771,53 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //
 //    @Override
 //    public DirectCompilerResult visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
+    //        throw new UnsupportedOperationException("TODO"); // TODO won't be needed
 //    }
 //
 //    @Override
 //    public DirectCompilerResult visitIterationContexts(FEEL_1_1Parser.IterationContextsContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
+    //        throw new UnsupportedOperationException("TODO"); // TODO won't be needed
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitForExpression(FEEL_1_1Parser.ForExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+
+    @Override
+    public DirectCompilerResult visitForExpression(FEEL_1_1Parser.ForExpressionContext ctx) {
+        Set<FieldDeclaration> fds = new HashSet<>();
+        MethodCallExpr forCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "ffor");
+        forCall.addArgument(new NameExpr("feelExprCtx"));
+        Expression curForCallTail = forCall;
+        IterationContextsContext iCtxs = ctx.iterationContexts();
+        for (FEEL_1_1Parser.IterationContextContext ic : iCtxs.iterationContext()) {
+            DirectCompilerResult name = visit(ic.nameDefinition());
+            DirectCompilerResult expr = visit(ic.expression().get(0));
+            fds.addAll(name.getFieldDeclarations());
+            fds.addAll(expr.getFieldDeclarations());
+            if (ic.expression().size() == 1) {
+                MethodCallExpr filterWithCall = new MethodCallExpr(curForCallTail, "with");
+                Expression nameParam = anonFunctionEvaluationContext2Object(name.getExpression());
+                Expression exprParam = anonFunctionEvaluationContext2Object(expr.getExpression());
+                filterWithCall.addArgument(nameParam);
+                filterWithCall.addArgument(exprParam);
+                curForCallTail = filterWithCall;
+            } else {
+                DirectCompilerResult rangeEndExpr = visit(ic.expression().get(1));
+                fds.addAll(rangeEndExpr.getFieldDeclarations());
+                MethodCallExpr filterWithCall = new MethodCallExpr(curForCallTail, "with");
+                Expression nameParam = anonFunctionEvaluationContext2Object(name.getExpression());
+                Expression exprParam = anonFunctionEvaluationContext2Object(expr.getExpression());
+                Expression rangeEndExprParam = anonFunctionEvaluationContext2Object(rangeEndExpr.getExpression());
+                filterWithCall.addArgument(nameParam);
+                filterWithCall.addArgument(exprParam);
+                filterWithCall.addArgument(rangeEndExprParam);
+                curForCallTail = filterWithCall;
+            }
+        }
+        DirectCompilerResult expr = visit(ctx.expression());
+        fds.addAll(expr.getFieldDeclarations());
+        MethodCallExpr returnCall = new MethodCallExpr(curForCallTail, "rreturn");
+        Expression returnParam = anonFunctionEvaluationContext2Object(expr.getExpression());
+        returnCall.addArgument(returnParam);
+        return DirectCompilerResult.of(returnCall, expr.resultType, fds);
+    }
 
     @Override
     public DirectCompilerResult visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
@@ -953,18 +993,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 filterWithCall.addArgument(filter.getExpression());
             } else {
                 // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and type(FEEL(e2 , s')) is boolean
-                Expression anonFunctionClass = JavaParser.parseExpression("new java.util.function.Function<EvaluationContext, Object>() {\n" +
-                                                                          "    @Override\n" +
-                                                                          "    public Object apply(EvaluationContext feelExprCtx) {\n" +
-                                                                          "        return null;\n" +
-                                                                          "    }\n" +
-                                                                          "}");
-                List<ReturnStmt> lookupReturnList = anonFunctionClass.getChildNodesByType(ReturnStmt.class);
-                if (lookupReturnList.size() != 1) {
-                    throw new RuntimeException("Something unexpected changed in the template.");
-                }
-                ReturnStmt returnStmt = lookupReturnList.get(0);
-                returnStmt.setExpression(filter.getExpression());
+                Expression anonFunctionClass = anonFunctionEvaluationContext2Object(filter.getExpression());
                 filterWithCall.addArgument(anonFunctionClass);
             }
             return DirectCompilerResult.of(filterWithCall, BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
@@ -975,6 +1004,22 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else {
             return visit(ctx.unaryExpression());
         }
+    }
+
+    private Expression anonFunctionEvaluationContext2Object(Expression expression) {
+        Expression anonFunctionClass = JavaParser.parseExpression("new java.util.function.Function<EvaluationContext, Object>() {\n" +
+                                                                  "    @Override\n" +
+                                                                  "    public Object apply(EvaluationContext feelExprCtx) {\n" +
+                                                                  "        return null;\n" +
+                                                                  "    }\n" +
+                                                                  "}");
+        List<ReturnStmt> lookupReturnList = anonFunctionClass.getChildNodesByType(ReturnStmt.class);
+        if (lookupReturnList.size() != 1) {
+            throw new RuntimeException("Something unexpected changed in the template.");
+        }
+        ReturnStmt returnStmt = lookupReturnList.get(0);
+        returnStmt.setExpression(expression);
+        return anonFunctionClass;
     }
 
     @Override
