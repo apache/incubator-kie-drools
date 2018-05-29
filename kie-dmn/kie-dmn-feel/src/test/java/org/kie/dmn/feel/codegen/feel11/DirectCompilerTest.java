@@ -274,6 +274,18 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_quantifiedExpressions() {
+        // quantified expressions
+        assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100"             ),is(Boolean.TRUE )  );
+        assertThat(parseCompileEvaluate("some price in [ 80, 11, 90 ] satisfies price > 100"), is(Boolean.FALSE));
+        assertThat(parseCompileEvaluate("some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y"), is(Boolean.TRUE));
+        assertThat(parseCompileEvaluate("every price in [ 80, 11, 90 ] satisfies price > 10"), is(Boolean.TRUE));
+        assertThat(parseCompileEvaluate("every price in [ 80, 11, 90 ] satisfies price > 70"), is(Boolean.FALSE));
+        assertThat(parseCompileEvaluate("some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y"), is(Boolean.TRUE));
+        // TODO assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > max(100, 50, 10)"),is(Boolean.TRUE )  );
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));
