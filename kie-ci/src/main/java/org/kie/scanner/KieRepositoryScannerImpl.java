@@ -188,9 +188,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private InternalKieModule buildArtifact(Artifact artifact, ArtifactResolver resolver) {
         DependencyDescriptor dependencyDescriptor = new DependencyDescriptor(artifact);
         ReleaseId releaseId = adapt( dependencyDescriptor.getReleaseId() );
-        if (releaseId.isSnapshot()) {
-            ((ReleaseIdImpl)releaseId).setSnapshotVersion(artifact.getVersion());
-        }
         InternalKieModule kieModule = createKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
