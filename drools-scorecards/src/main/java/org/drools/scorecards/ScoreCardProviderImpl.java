@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,13 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.scorecards;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.drools.compiler.compiler.ScoreCardProvider;
@@ -34,67 +31,64 @@ public class ScoreCardProviderImpl
         ScoreCardProvider {
 
     @Deprecated
-	public String loadFromInputStream( InputStream is,
-                                       ScoreCardConfiguration configuration ) {
+    public String loadFromInputStream(InputStream is,
+                                      ScoreCardConfiguration configuration) {
 
-        return compileStream( is,
-                              configuration );
+        return compileStream(is,
+                             configuration);
     }
-    
+
     @Override
-    public KieBase getKieBaseFromInputStream( InputStream is, ScoreCardConfiguration configuration ) {
-    	String pmmlString = getPMMLStringFromInputStream(is,configuration);
-    	if (pmmlString != null && !pmmlString.isEmpty()) {
-        	Resource resource = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
-        	KieBase kbase = new KieHelper().addResource(resource, ResourceType.PMML).build();
-        	return kbase;
-    	}
-    	return null;
+    public KieBase getKieBaseFromInputStream(InputStream is, ScoreCardConfiguration configuration) {
+        String pmmlString = getPMMLStringFromInputStream(is, configuration);
+        if (pmmlString != null && !pmmlString.isEmpty()) {
+            Resource resource = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
+            KieBase kbase = new KieHelper().addResource(resource, ResourceType.PMML).build();
+            return kbase;
+        }
+        return null;
     }
-    
+
     @Override
-    public String getPMMLStringFromInputStream( InputStream is, ScoreCardConfiguration configuration ) {
-    	ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
-        if ( configuration != null && configuration.IsUsingExternalTypes() ) {
+    public String getPMMLStringFromInputStream(InputStream is, ScoreCardConfiguration configuration) {
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
+        if (configuration != null && configuration.IsUsingExternalTypes()) {
             scorecardCompiler.setDrlType(ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL);
         }
         String inputTypeExcel = ScoreCardConfiguration.SCORECARD_INPUT_TYPE.EXCEL.toString();
-        if ( configuration== null || configuration.getInputType() == null || inputTypeExcel.equalsIgnoreCase(configuration.getInputType())) {
-        	boolean compileResult = false;
-            if ( configuration == null || StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-                compileResult = scorecardCompiler.compileFromExcel( is );
+        if (configuration == null || configuration.getInputType() == null || inputTypeExcel.equalsIgnoreCase(configuration.getInputType())) {
+            boolean compileResult = false;
+            if (configuration == null || StringUtils.isEmpty(configuration.getWorksheetName())) {
+                compileResult = scorecardCompiler.compileFromExcel(is);
             } else {
-            	compileResult = scorecardCompiler.compileFromExcel(is, configuration.getWorksheetName());
+                compileResult = scorecardCompiler.compileFromExcel(is, configuration.getWorksheetName());
             }
             if (compileResult) {
-            	return scorecardCompiler.getPMML();
+                return scorecardCompiler.getPMML();
             }
-        } 
-    	return null;
-    	
+        }
+        return null;
     }
 
     @Deprecated
-    private String compileStream( InputStream is,
-                                  ScoreCardConfiguration configuration ) {
+    private String compileStream(InputStream is,
+                                 ScoreCardConfiguration configuration) {
 
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
-        if ( configuration != null && configuration.IsUsingExternalTypes() ) {
+        if (configuration != null && configuration.IsUsingExternalTypes()) {
             scorecardCompiler.setDrlType(ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL);
         }
         String inputTypeExcel = ScoreCardConfiguration.SCORECARD_INPUT_TYPE.EXCEL.toString();
-        if ( configuration== null || configuration.getInputType() == null || inputTypeExcel.equalsIgnoreCase(configuration.getInputType())) {
-            if ( configuration == null || StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-                boolean compileResult = scorecardCompiler.compileFromExcel( is );
+        if (configuration == null || configuration.getInputType() == null || inputTypeExcel.equalsIgnoreCase(configuration.getInputType())) {
+            if (configuration == null || StringUtils.isEmpty(configuration.getWorksheetName())) {
+                scorecardCompiler.compileFromExcel(is);
                 return scorecardCompiler.getDRL();
             }
 
-            boolean compileResult = scorecardCompiler.compileFromExcel( is, configuration.getWorksheetName() );
-
-        } else if (ScoreCardConfiguration.SCORECARD_INPUT_TYPE.PMML.toString().equalsIgnoreCase(configuration.getInputType())){
+            scorecardCompiler.compileFromExcel(is, configuration.getWorksheetName());
+        } else if (ScoreCardConfiguration.SCORECARD_INPUT_TYPE.PMML.toString().equalsIgnoreCase(configuration.getInputType())) {
             scorecardCompiler.compileFromPMML(is);
         }
         return scorecardCompiler.getDRL();
     }
-
 }
