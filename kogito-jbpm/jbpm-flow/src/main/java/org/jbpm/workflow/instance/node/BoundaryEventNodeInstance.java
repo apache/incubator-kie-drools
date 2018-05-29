@@ -79,6 +79,10 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) getProcessInstance();
         return processInstance.getCompletedNodeIds().contains(attachedTo);
     }
-    
 
+    @Override
+    public void cancel() {
+        getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
+        ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+    }
 }
