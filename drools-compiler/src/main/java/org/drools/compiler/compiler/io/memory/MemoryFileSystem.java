@@ -371,6 +371,8 @@ public class MemoryFileSystem
     public void write(String pResourceName,
                       byte[] pResourceData,
                       boolean createFolder) {
+        pResourceName = pResourceName.replace( java.io.File.separatorChar, '/' );
+
         if (pResourceData.length == 0 && pResourceName.endsWith( "/" )) {
             // avoid to create files for empty folders
             return;
