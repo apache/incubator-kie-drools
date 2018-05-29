@@ -3768,5 +3768,35 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals("Sofia", list.get(0) );
     }
 
+    @Test
+    public void testAverageWithNoFacts() throws Exception {
+        // DROOLS-2595
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "   accumulate( String( $l : length ) , \n" +
+                "               $avg : average( $l ) )\n" +
+                "then\n" +
+                "   list.add($avg); \n" +
+                "end\n";
 
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        FactHandle fh = kieSession.insert( "test" );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals(4, ((Number)list.get(0)).intValue());
+
+        list.clear();
+
+        kieSession.delete( fh );
+        assertEquals(0, kieSession.fireAllRules() );
+        assertEquals(0, list.size() );
+    }
 }
