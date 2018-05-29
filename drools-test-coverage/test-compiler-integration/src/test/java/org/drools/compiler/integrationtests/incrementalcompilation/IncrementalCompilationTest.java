@@ -65,6 +65,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
+import org.kie.api.command.KieCommands;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -3791,5 +3792,122 @@ public class IncrementalCompilationTest {
         nestedftype.set(nestedfact, "y", 42);
 
         ftype.set(fact, "nested", nestedfact);
+    }
+
+    @Test
+    public void testKJarUpgradeWithNewRule() throws Exception {
+        // DROOLS-2596
+        String drl1a = "package org.drools.incremental\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "   $s : String()\n" +
+                "then\n" +
+                "   list.add(\"xxx: \" + $s);" +
+                "end\n";
+
+        String drl1b = "package org.drools.incremental\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "   $s : String()\n" +
+                "then\n" +
+                "   list.add(\"yyy: \" + $s);" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $i : Integer()\n" +
+                "then\n" +
+                "   list.add(\"\" + $i);" +
+                "end\n";
+
+        KieServices ks = KieServices.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1a);
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+
+        List<String> list = new ArrayList<>();
+
+        KieSession session = kc.getKieBase().newKieSession();
+        session.setGlobal( "list", list );
+        session.insert( "test" );
+        session.insert( 1 );
+        assertEquals( 1, session.fireAllRules() );
+
+        assertEquals( 1, list.size() );
+        assertEquals( "xxx: test", list.get(0) );
+        list.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1b);
+
+        kc.updateToVersion( releaseId2 );
+
+        session = kc.getKieBase().newKieSession();
+        session.setGlobal( "list", list );
+        session.insert( "test" );
+        session.insert( 1 );
+        assertEquals( 2, session.fireAllRules() );
+        assertEquals( 2, list.size() );
+        assertEquals( "yyy: test", list.get(0) );
+        assertEquals( "1", list.get(1) );
+    }
+
+    @Test
+    public void testKJarUpgradeWithNewRuleAndStatelessSession() throws Exception {
+        // DROOLS-2596
+        String drl1a = "package org.drools.incremental\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "   $s : String()\n" +
+                "then\n" +
+                "   list.add(\"xxx: \" + $s);" +
+                "end\n";
+
+        String drl1b = "package org.drools.incremental\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "   $s : String()\n" +
+                "then\n" +
+                "   list.add(\"yyy: \" + $s);" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $i : Integer()\n" +
+                "then\n" +
+                "   list.add(\"\" + $i);" +
+                "end\n";
+
+        KieServices ks = KieServices.get();
+        KieCommands commands = ks.getCommands();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1a);
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        StatelessKieSession session = kc.getKieBase().newStatelessKieSession();
+
+        List<String> list = new ArrayList<>();
+
+        session.execute(commands.newBatchExecution( asList(commands.newSetGlobal( "list", list),
+                                                           commands.newInsert( "test" ),
+                                                           commands.newInsert( 1 ),
+                                                           commands.newFireAllRules()) ));
+
+        assertEquals( 1, list.size() );
+        assertEquals( "xxx: test", list.get(0) );
+        list.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1b);
+
+        kc.updateToVersion( releaseId2 );
+
+        session = kc.getKieBase().newStatelessKieSession();
+        session.execute(commands.newBatchExecution( asList(commands.newSetGlobal( "list", list),
+                                                           commands.newInsert( "test" ),
+                                                           commands.newInsert( 1 ),
+                                                           commands.newFireAllRules()) ));
+        assertEquals( 2, list.size() );
+        assertEquals( "yyy: test", list.get(0) );
+        assertEquals( "1", list.get(1) );
     }
 }

@@ -20,14 +20,12 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ClassAwareObjectStore;
@@ -452,12 +450,10 @@ public class ObjectTypeNode extends ObjectSource
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
 
-        Collection<InternalWorkingMemory> workingMemories = context.getWorkingMemories();
-        InternalWorkingMemory workingMemory = workingMemories.isEmpty() ? null : workingMemories.iterator().next();
-        if ( workingMemory != null ) {
-            WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getWorkingMemoryEntryPoint( ((EntryPointNode) source).getEntryPoint().getEntryPointId() );
-            ObjectTypeConf objectTypeConf = wmEntryPoint.getObjectTypeConfigurationRegistry().getObjectTypeConfByClass( ((ClassObjectType) objectType).getClassType() );
-            if (objectTypeConf != null) {
+        EntryPointNode epn = context.getKnowledgeBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
+        if (epn != null) {
+            ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getObjectTypeConfByClass( ((ClassObjectType) objectType).getClassType() );
+            if ( objectTypeConf != null ) {
                 objectTypeConf.resetCache();
             }
         }
