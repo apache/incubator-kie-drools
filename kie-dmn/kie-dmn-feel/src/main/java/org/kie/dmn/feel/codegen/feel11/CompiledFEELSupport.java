@@ -29,6 +29,9 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
@@ -267,39 +270,107 @@ public class CompiledFEELSupport {
 
             private static final long serialVersionUID = 1L;
         }
-
-        public static class IterationContextCompiled {
-
-            private final Function<EvaluationContext, Object> name;
-            private final Function<EvaluationContext, Object> expression;
-            private final Function<EvaluationContext, Object> rangeEndExpr;
-
-            public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression) {
-                this.name = name;
-                this.expression = expression;
-                this.rangeEndExpr = (ctx) -> null;
-            }
-
-            public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression, Function<EvaluationContext, Object> rangeEndExpr) {
-                this.name = name;
-                this.expression = expression;
-                this.rangeEndExpr = rangeEndExpr;
-            }
-
-            public Function<EvaluationContext, Object> getName() {
-                return name;
-            }
-
-            public Function<EvaluationContext, Object> getExpression() {
-                return expression;
-            }
-
-            public Function<EvaluationContext, Object> getRangeEndExpr() {
-                return rangeEndExpr;
-            }
-
-        }
     }
 
+    public static class IterationContextCompiled {
+
+        private final Function<EvaluationContext, Object> name;
+        private final Function<EvaluationContext, Object> expression;
+        private final Function<EvaluationContext, Object> rangeEndExpr;
+
+        public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression) {
+            this.name = name;
+            this.expression = expression;
+            this.rangeEndExpr = (ctx) -> null;
+        }
+
+        public IterationContextCompiled(Function<EvaluationContext, Object> name, Function<EvaluationContext, Object> expression, Function<EvaluationContext, Object> rangeEndExpr) {
+            this.name = name;
+            this.expression = expression;
+            this.rangeEndExpr = rangeEndExpr;
+        }
+
+        public Function<EvaluationContext, Object> getName() {
+            return name;
+        }
+
+        public Function<EvaluationContext, Object> getExpression() {
+            return expression;
+        }
+
+        public Function<EvaluationContext, Object> getRangeEndExpr() {
+            return rangeEndExpr;
+        }
+
+    }
+
+    public static QuantBuilder quant(Quantifier quantOp, EvaluationContext ctx) {
+        return new QuantBuilder(quantOp, ctx);
+    }
+
+    public static class QuantBuilder {
+
+        private Quantifier quantOp;
+        private EvaluationContext ctx;
+        private List<IterationContextCompiled> iterationContexts = new ArrayList<>();
+
+        public QuantBuilder(Quantifier quantOp, EvaluationContext evaluationContext) {
+            this.quantOp = quantOp;
+            this.ctx = evaluationContext;
+        }
+
+        public QuantBuilder with(Function<EvaluationContext, Object> nameExpression, Function<EvaluationContext, Object> iterationExpression) {
+            iterationContexts.add(new IterationContextCompiled(nameExpression, iterationExpression));
+            return this;
+        }
+
+        public Object satisfies(Function<EvaluationContext, Object> expression) {
+            if (quantOp == Quantifier.SOME || quantOp == Quantifier.EVERY) {
+                return iterateContexts(ctx, iterationContexts, expression, quantOp);
+            }
+            // TODO can never happen?
+            ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Quantifier"), null));
+            return null;
+        }
+
+        private Boolean iterateContexts(EvaluationContext ctx, List<IterationContextCompiled> iterationContexts, Function<EvaluationContext, Object> expression, Quantifier quantifier) {
+            try {
+                ctx.enterFrame();
+                QEIteration[] ictx = initializeContexts(ctx, iterationContexts);
+
+                while (QuantifiedExpressionNode.nextIteration(ctx, ictx)) {
+                    Boolean result = (Boolean) expression.apply(ctx);
+                    if (result != null && result.equals(quantifier.positiveTest())) {
+                        return quantifier.positiveTest();
+                    }
+                }
+                return quantifier.defaultValue();
+            } finally {
+                ctx.exitFrame();
+            }
+        }
+
+        private QEIteration[] initializeContexts(EvaluationContext ctx, List<IterationContextCompiled> iterationContexts) {
+            QEIteration[] ictx = new QEIteration[iterationContexts.size()];
+            int i = 0;
+            for (IterationContextCompiled icn : iterationContexts) {
+                ictx[i] = createQuantifiedExpressionIterationContext(ctx, icn);
+                if (i < ictx.length - 1) {
+                    // initalize all contexts except the very last one, as it will be initialized in the nextIteration() method
+                    QuantifiedExpressionNode.setValueIntoContext(ctx, ictx[i]);
+                }
+                i++;
+            }
+            return ictx;
+        }
+
+        private QEIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextCompiled icn) {
+            String name = (String) icn.getName().apply(ctx); // TODO revise
+            Object result = icn.getExpression().apply(ctx);
+            Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
+            QEIteration qei = new QEIteration(name, values);
+            return qei;
+        }
+    }
 
 }
