@@ -67,6 +67,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ExpressionContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.IterationContextsContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
@@ -80,6 +81,8 @@ import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
 public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerResult> {
 
+    private static final Expression QUANTIFIER_SOME = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.SOME");
+    private static final Expression QUANTIFIER_EVERY = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.EVERY");
     private static final Expression DASH_UNARY_TEST = JavaParser.parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
     private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
@@ -894,15 +897,42 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(c, t, e));
     }
 
-//    @Override
-//    public DirectCompilerResult visitQuantExprSome(FEEL_1_1Parser.QuantExprSomeContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitQuantExprEvery(FEEL_1_1Parser.QuantExprEveryContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitQuantExprSome(FEEL_1_1Parser.QuantExprSomeContext ctx) {
+        return visitQuantExpr(QUANTIFIER_SOME, ctx.iterationContexts(), ctx.expression());
+    }
+
+    @Override
+    public DirectCompilerResult visitQuantExprEvery(FEEL_1_1Parser.QuantExprEveryContext ctx) {
+        return visitQuantExpr(QUANTIFIER_EVERY, ctx.iterationContexts(), ctx.expression());
+    }
+
+    private DirectCompilerResult visitQuantExpr(Expression quantOp, IterationContextsContext iterationContexts, ExpressionContext expression) {
+        Set<FieldDeclaration> fds = new HashSet<>();
+        MethodCallExpr forCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "quant");
+        forCall.addArgument(quantOp);
+        forCall.addArgument(new NameExpr("feelExprCtx"));
+        Expression curForCallTail = forCall;
+        IterationContextsContext iCtxs = iterationContexts;
+        for (FEEL_1_1Parser.IterationContextContext ic : iCtxs.iterationContext()) {
+            DirectCompilerResult name = visit(ic.nameDefinition());
+            DirectCompilerResult expr = visit(ic.expression().get(0));
+            fds.addAll(name.getFieldDeclarations());
+            fds.addAll(expr.getFieldDeclarations());
+            MethodCallExpr filterWithCall = new MethodCallExpr(curForCallTail, "with");
+            Expression nameParam = anonFunctionEvaluationContext2Object(name.getExpression());
+            Expression exprParam = anonFunctionEvaluationContext2Object(expr.getExpression());
+            filterWithCall.addArgument(nameParam);
+            filterWithCall.addArgument(exprParam);
+            curForCallTail = filterWithCall;
+        }
+        DirectCompilerResult expr = visit(expression);
+        fds.addAll(expr.getFieldDeclarations());
+        MethodCallExpr returnCall = new MethodCallExpr(curForCallTail, "satisfies");
+        Expression returnParam = anonFunctionEvaluationContext2Object(expr.getExpression());
+        returnCall.addArgument(returnParam);
+        return DirectCompilerResult.of(returnCall, expr.resultType, fds);
+    }
 
     @Override
     public DirectCompilerResult visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {

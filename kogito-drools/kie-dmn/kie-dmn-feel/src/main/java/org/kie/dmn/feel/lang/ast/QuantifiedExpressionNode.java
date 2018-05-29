@@ -115,7 +115,7 @@ public class QuantifiedExpressionNode
         }
     }
 
-    private boolean nextIteration( EvaluationContext ctx, QEIteration[] ictx ) {
+    public static boolean nextIteration(EvaluationContext ctx, QEIteration[] ictx) {
         int i = ictx.length-1;
         while ( i >= 0 && i < ictx.length ) {
             if ( ictx[i].hasNextValue() ) {
@@ -128,7 +128,7 @@ public class QuantifiedExpressionNode
         return i >= 0;
     }
 
-    private void setValueIntoContext(EvaluationContext ctx, QEIteration qeIteration) {
+    public static void setValueIntoContext(EvaluationContext ctx, QEIteration qeIteration) {
         ctx.setValue( qeIteration.getName(), qeIteration.getNextValue() );
     }
 
@@ -159,7 +159,7 @@ public class QuantifiedExpressionNode
         return qei;
     }
 
-    private static class QEIteration {
+    public static class QEIteration {
         private String name;
         private Iterable values;
         private Iterator iterator;
