@@ -973,7 +973,7 @@ public class CompilerTest extends BaseModelTest {
     public void testChainOfMethodCallInConstraintSub() {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
-                     "  $p : Person( address.( city.length() == 5 && city.startsWith(\"I\") ) )\n" + // DRL feature "Grouped accessors for nested objects" is addressed by the RuleDescr directly.
+                     "  $p : Person( address.(city.startsWith(\"I\") &&  city.length() == 5  ) )\n" + // DRL feature "Grouped accessors for nested objects" is addressed by the RuleDescr directly.
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";
