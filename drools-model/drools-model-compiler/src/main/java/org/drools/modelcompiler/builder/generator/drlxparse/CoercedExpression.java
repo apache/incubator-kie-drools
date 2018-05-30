@@ -38,7 +38,10 @@ public class CoercedExpression {
         final TypedExpression coercedRight;
         final Expression rightExpression = right.getExpression();
 
-        if (shouldCoerceBToString(left, right)) {
+        if (left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) && rightExpression instanceof LiteralStringValueExpr ) {
+            final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
+            coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
+        } else if (shouldCoerceBToString(left, right)) {
             if (rightExpression instanceof CharLiteralExpr) {
                 coercedRight = right.cloneWithNewExpression( new StringLiteralExpr((( CharLiteralExpr ) rightExpression).getValue() ) );
             } else if (right.isPrimitive() ){
@@ -50,10 +53,7 @@ public class CoercedExpression {
             }
             coercedRight.setType(String.class);
 
-        } else if (left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) && rightExpression instanceof LiteralStringValueExpr ) {
-            final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
-            coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
-        }  else if (!areCompatible( left.getType(), right.getType() ) ) {
+        } else if (areCompatible(right.getType(), left.getType() ) ) {
             coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
         } else {
             coercedRight = right;

@@ -78,6 +78,24 @@ public class CoercedExpressionTest {
     }
 
     @Test
+    public void test444x6() {
+
+        /*
+
+ZZZ left = TypedExpression{expression=_this.getRate(), jpType=MethodCallExpr, type=class java.math.BigDecimal, fieldName='rate', unificationVariable=Optional.empty, unificationName=Optional.empty}
+ZZZ right = TypedExpression{expression=0.0, jpType=DoubleLiteralExpr, type=double, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+ZZZ right = TypedExpression{expression=java.math.BigDecimal.valueOf(0.0), jpType=MethodCallExpr, type=double, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+
+
+         */
+        final TypedExpression left = expr("_this.getRate()", java.math.BigDecimal.class);
+        final TypedExpression right = expr("0.0d", Double.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("java.math.BigDecimal.valueOf(0.0)", double.class), coerce.getCoercedRight() );
+    }
+
+    @Test
     public void test222x1() {
         /*
 
@@ -109,11 +127,9 @@ public class CoercedExpressionTest {
         assertEquals(expr("50", String.class), coerce.getCoercedRight() );
     }
 
-
     @Test
     public void test555() {
         /*
-
 
 
 555 left = TypedExpression{expression=_this.getItems().get((Integer) 1), jpType=MethodCallExpr, type=class java.lang.Object, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
