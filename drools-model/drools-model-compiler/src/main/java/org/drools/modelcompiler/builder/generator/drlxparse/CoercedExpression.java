@@ -1,6 +1,8 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.BinaryExpr;
@@ -48,19 +50,26 @@ public class CoercedExpression {
             }
             coercedRight.setType(String.class);
 
-        } else if (!areCompatible( left.getType(), right.getType() ) ) {
-            coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
-        } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
+        } else if (left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) && rightExpression instanceof LiteralStringValueExpr ) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
-        }  else {
+        }  else if (!areCompatible( left.getType(), right.getType() ) ) {
+            coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
+        } else {
             coercedRight = right;
         }
 
         System.out.println("XXX right = " + coercedRight);
         System.out.println("\n\n");
-        return new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
+        final CoercedExpressionResult coercedExpressionResult = new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
+        return coercedExpressionResult;
     }
+
+    public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
+        final List<? extends Class<?>> classes = Arrays.asList(int.class, long.class, double.class);
+        return classes.contains(type);
+    }
+
 
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
         boolean aIsString = a.getType() == String.class;
