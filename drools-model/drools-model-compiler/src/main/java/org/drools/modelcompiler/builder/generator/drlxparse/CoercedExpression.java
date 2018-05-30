@@ -48,8 +48,6 @@ public class CoercedExpression {
     }
 
     public CoercedExpressionResult coerce() {
-        System.out.println("XXX left = " + left);
-        System.out.println("XXX right = " + right);
         final TypedExpression coercedRight;
         final Expression rightExpression = right.getExpression();
 
@@ -75,10 +73,7 @@ public class CoercedExpression {
             coercedRight = right;
         }
 
-        System.out.println("XXX right = " + coercedRight);
-        System.out.println("\n\n");
-        final CoercedExpressionResult coercedExpressionResult = new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
-        return coercedExpressionResult;
+        return new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
