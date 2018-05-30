@@ -1,0 +1,29 @@
+package org.drools.modelcompiler.builder.generator.drlxparse;
+
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class CoercedExpressionTest {
+
+    @Test
+    public void test444() {
+
+        /*
+        444 left = TypedExpression{expression=_this.getAge(), jpType=MethodCallExpr, type=int, fieldName='age', unificationVariable=Optional.empty, unificationName=Optional.empty}
+        444 right = TypedExpression{expression=10, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+        444 right = TypedExpression{expression=10, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("_this.getAge()", int.class);
+        final TypedExpression right = expr("10", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("10", int.class), coerce.getCoercedRight() );
+    }
+
+    private TypedExpression expr(String leftStr, Class<Integer> leftClass) {
+        return new TypedExpression(DrlxParseUtil.parseExpression(leftStr).getExpr(), leftClass);
+    }
+}
