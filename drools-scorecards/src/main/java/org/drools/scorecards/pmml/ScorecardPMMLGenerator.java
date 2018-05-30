@@ -32,6 +32,8 @@ import java.util.Locale;
 
 public class ScorecardPMMLGenerator {
 
+    private static final String PMML_VERSION = "4.2.1";
+
     public PMML generateDocument(Scorecard pmmlScorecard) {
         //first clean up the scorecard
         removeEmptyExtensions(pmmlScorecard);
@@ -60,7 +62,7 @@ public class ScorecardPMMLGenerator {
 
         //now create the PMML document
         PMML pmml = new PMML();
-        pmml.setVersion("4.2.1");
+        pmml.setVersion(PMML_VERSION);
         Header header = new Header();
         Timestamp timestamp = new Timestamp();
         timestamp.getContent().add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.ENGLISH).format(new Date()));

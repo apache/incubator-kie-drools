@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.pmml_4_2;
 
-import java.io.InputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,6 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PMML4ExecutionHelper {
 
@@ -62,108 +59,93 @@ public class PMML4ExecutionHelper {
     public static class PMML4ExecutionHelperFactory {
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                KieBase kbase) {
-            return new PMML4ExecutionHelper(modelName,kbase,false);
+                                                              KieBase kbase) {
+            return new PMML4ExecutionHelper(modelName, kbase, false);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                KieBase kbase,
-                boolean includeMiningDataSources) {
-            return new PMML4ExecutionHelper(modelName,kbase,includeMiningDataSources);
+                                                              KieBase kbase,
+                                                              boolean includeMiningDataSources) {
+            return new PMML4ExecutionHelper(modelName, kbase, includeMiningDataSources);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                String classPath,
-                KieBaseConfiguration kieBaseConf) {
-            return new PMML4ExecutionHelper(modelName,classPath,kieBaseConf,false);
+                                                              String classPath,
+                                                              KieBaseConfiguration kieBaseConf) {
+            return new PMML4ExecutionHelper(modelName, classPath, kieBaseConf, false);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                String classPath,
-                KieBaseConfiguration kieBaseConf,
-                boolean includeMiningDataSources) {
-            return new PMML4ExecutionHelper(modelName,classPath,kieBaseConf,includeMiningDataSources);
+                                                              String classPath,
+                                                              KieBaseConfiguration kieBaseConf,
+                                                              boolean includeMiningDataSources) {
+            return new PMML4ExecutionHelper(modelName, classPath, kieBaseConf, includeMiningDataSources);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                byte[] content,
-                KieBaseConfiguration kieBaseConf) {
-            return new PMML4ExecutionHelper(modelName,content,kieBaseConf,false);
+                                                              byte[] content,
+                                                              KieBaseConfiguration kieBaseConf) {
+            return new PMML4ExecutionHelper(modelName, content, kieBaseConf, false);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                byte[] content,
-                KieBaseConfiguration kieBaseConf,
-                boolean includeMiningDataSources) {
-            return new PMML4ExecutionHelper(modelName,content,kieBaseConf,includeMiningDataSources);
+                                                              byte[] content,
+                                                              KieBaseConfiguration kieBaseConf,
+                                                              boolean includeMiningDataSources) {
+            return new PMML4ExecutionHelper(modelName, content, kieBaseConf, includeMiningDataSources);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                Resource resource,
-                KieBaseConfiguration kieBaseConf) {
-            return new PMML4ExecutionHelper(modelName,resource,kieBaseConf,false);
+                                                              Resource resource,
+                                                              KieBaseConfiguration kieBaseConf) {
+            return new PMML4ExecutionHelper(modelName, resource, kieBaseConf, false);
         }
 
         public static PMML4ExecutionHelper getExecutionHelper(String modelName,
-                Resource resource,
-                KieBaseConfiguration kieBaseConf,
-                boolean includeMiningDataSources) {
-            return new PMML4ExecutionHelper(modelName,resource,kieBaseConf,includeMiningDataSources);
+                                                              Resource resource,
+                                                              KieBaseConfiguration kieBaseConf,
+                                                              boolean includeMiningDataSources) {
+            return new PMML4ExecutionHelper(modelName, resource, kieBaseConf, includeMiningDataSources);
         }
     }
 
     private PMML4ExecutionHelper(String modelName, KieBase kbase, boolean includeMiningDataSources) {
+        this.kbase = kbase;
+        initExecutionHelper(modelName, includeMiningDataSources);
+    }
+
+    private PMML4ExecutionHelper(String modelName, String classpathName, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
+        kbase = new KieHelper().addFromClassPath(classpathName).build(kieBaseConf);
+        initExecutionHelper(modelName, includeMiningDataSources);
+    }
+
+    private PMML4ExecutionHelper(String modelName, byte[] content, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
+        kbase = new KieHelper().addContent(new String(content), ResourceType.PMML).build(kieBaseConf);
+        initExecutionHelper(modelName, includeMiningDataSources);
+    }
+
+    private PMML4ExecutionHelper(String modelName, Resource resource, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
+        kbase = new KieHelper().addResource(resource, ResourceType.PMML).build(kieBaseConf);
+        initExecutionHelper(modelName, includeMiningDataSources);
+    }
+
+    private void initExecutionHelper(final String modelName, final boolean includeMiningDataSources) {
         this.modelName = modelName;
         this.possiblePackageNames = new ArrayList<>();
-        this.kbase = kbase;
         this.includeMiningDataSources = includeMiningDataSources;
         initRuleUnitExecutor();
     }
 
-
-
-    private PMML4ExecutionHelper(String modelName, String classpathName, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
-        this.modelName = modelName;
-        this.possiblePackageNames = new ArrayList<>();
-        this.includeMiningDataSources = includeMiningDataSources;
-        try {
-            kbase = new KieHelper().addFromClassPath(classpathName).build(kieBaseConf);
-            initRuleUnitExecutor();
-        } catch (Exception e) {
-//            logger.error("Unable to initialize PMML4ExecutionHelper", e);
-        }
-    }
-
-    private PMML4ExecutionHelper(String modelName, byte[] content, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
-        this.modelName = modelName;
-        this.possiblePackageNames = new ArrayList<>();
-        this.includeMiningDataSources = includeMiningDataSources;
-        try {
-            kbase = new KieHelper().addContent(new String(content), ResourceType.PMML).build(kieBaseConf);
-            initRuleUnitExecutor();
-        } catch (Exception e) {
-//            logger.error("Unable to initialize PMML4ExecutionHelper", e);
-        }
-    }
-
-    private PMML4ExecutionHelper(String modelName, Resource resource, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
-        this.modelName = modelName;
-        this.possiblePackageNames = new ArrayList<>();
-        this.includeMiningDataSources = includeMiningDataSources;
-        try {
-            kbase = new KieHelper().addResource(resource, ResourceType.PMML).build(kieBaseConf);
-            initRuleUnitExecutor();
-        } catch (Exception e) {
-        	e.printStackTrace(System.out);
-//            logger.error("Unable to initialize PMML4ExecutionHelper", e);
-        }
-    }
-
-
     protected void initRuleUnitExecutor() throws IllegalStateException {
-        if (kbase == null) throw new IllegalStateException("Unable to create executor: KieBase is null or invalid");
-        if (used) throw new IllegalStateException("Executor cannot be reinitalized if it has been used");
-        if (executor != null) executor.dispose();
+        if (kbase == null) {
+            throw new IllegalStateException("Unable to create executor: KieBase is null or invalid");
+        }
+        if (used) {
+            throw new IllegalStateException("Executor cannot be reinitalized if it has been used");
+        }
+        if (executor != null) {
+            executor.dispose();
+        }
         executor = RuleUnitExecutor.create().bind(kbase);
         requestData = executor.newDataSource("request");
         resultData = executor.newDataSource("results");
@@ -172,7 +154,7 @@ public class PMML4ExecutionHelper {
         if (includeMiningDataSources) {
             childModelSegments = executor.newDataSource("childModelSegments");
             miningModelPojo = executor.newDataSource("miningModelPojo");
-            startingRuleName = "Start Mining - "+modelName;
+            startingRuleName = "Start Mining - " + modelName;
         }
 
         ruleUnitClass = getStartingRuleUnit(startingRuleName);
@@ -279,8 +261,8 @@ public class PMML4ExecutionHelper {
          * If the executor was previously used then we need to re-initialize it
          */
         if (used) {
-        	used = false;
-        	initRuleUnitExecutor();
+            used = false;
+            initRuleUnitExecutor();
         }
         requestData.insert(request);
         baseResultHolder = new PMML4Result(request.getCorrelationId());
@@ -291,12 +273,14 @@ public class PMML4ExecutionHelper {
     }
 
     protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule) throws IllegalStateException {
-        if (kbase == null) throw new IllegalStateException("Cannot determine starting rule unit. KieBase is null");
-        InternalKnowledgeBase ikb = (InternalKnowledgeBase)kbase;
+        if (kbase == null) {
+            throw new IllegalStateException("Cannot determine starting rule unit. KieBase is null");
+        }
+        InternalKnowledgeBase ikb = (InternalKnowledgeBase) kbase;
         RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
-        Map<String,InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
-        RuleImpl ruleImpl = null;
-        for (String pkgName: calculatePossiblePackageNames()) {
+        Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+        RuleImpl ruleImpl;
+        for (String pkgName : calculatePossiblePackageNames()) {
             if (pkgs.containsKey(pkgName)) {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
@@ -312,31 +296,18 @@ public class PMML4ExecutionHelper {
     }
 
     protected List<String> calculatePossiblePackageNames() {
-        List<String> packageNames = new ArrayList<>();
-        String javaModelId = modelName.replaceAll("\\s", "");
-        if (possiblePackageNames != null && !possiblePackageNames.isEmpty()) {
-            for (String pkgName: possiblePackageNames) {
-                packageNames.add(pkgName + "." + javaModelId);
-            }
-        }
-        packageNames.add( PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId );
-
-        return packageNames;
+        return calculatePossiblePackageNames(modelName, possiblePackageNames.toArray(new String[]{}));
     }
 
-    protected List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
+    protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
         List<String> packageNames = new ArrayList<>();
-        String javaModelId = modelId.replaceAll("\\s","");
+        String javaModelId = modelId.replaceAll("\\s", "");
         if (knownPackageNames != null && knownPackageNames.length > 0) {
-            for (String knownPkgName: knownPackageNames) {
+            for (String knownPkgName : knownPackageNames) {
                 packageNames.add(knownPkgName + "." + javaModelId);
             }
         }
-        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
-        packageNames.add(basePkgName);
+        packageNames.add(PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId);
         return packageNames;
     }
-
-
-
 }

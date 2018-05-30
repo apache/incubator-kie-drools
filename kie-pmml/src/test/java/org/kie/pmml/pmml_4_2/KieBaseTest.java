@@ -16,7 +16,6 @@
 
 package org.kie.pmml.pmml_4_2;
 
-
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -26,17 +25,10 @@ import static org.junit.Assert.assertFalse;
 
 public class KieBaseTest {
 
-
     @Test
     public void testKieBaseCompilation() {
-
         KieServices ks = KieServices.Factory.get();
         Results rs = ks.getKieClasspathContainer().verify();
-        System.out.println( rs.getMessages() );
-        assertFalse( rs.hasMessages( Message.Level.ERROR ) );
-
+        assertFalse(rs.hasMessages(Message.Level.ERROR));
     }
-
-
-
 }

@@ -82,16 +82,14 @@ import org.xml.sax.SAXException;
 
 public class PMML4Compiler implements PMMLCompiler {
 
-
     public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_2";
     public static final String PMML_DROOLS = "org.kie.pmml.pmml_4_2";
     public static final String PMML = PMML_NAMESPACE + ".descr";
     public static final String SCHEMA_PATH = "xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd";
-    public static final String BASE_PACK = PMML_DROOLS.replace('.','/');
-    
+    public static final String BASE_PACK = PMML_DROOLS.replace('.', '/');
 
     protected static boolean globalLoaded = false;
-    protected static final String[] GLOBAL_TEMPLATES = new String[] {
+    protected static final String[] GLOBAL_TEMPLATES = new String[]{
             "global/pmml_header.drlt",
             "global/pmml_import.drlt",
             "global/rule_meta.drlt",
@@ -117,9 +115,9 @@ public class PMML4Compiler implements PMMLCompiler {
             "global/validation/valuesOnDomainRestrictionMissing.drlt",
             "global/validation/valuesOnDomainRestrictionInvalid.drlt",
     };
-            
+
     protected static boolean transformationLoaded = false;
-    protected static final String[] TRANSFORMATION_TEMPLATES = new String[] {
+    protected static final String[] TRANSFORMATION_TEMPLATES = new String[]{
             "transformations/normContinuous/boundedLowerOutliers.drlt",
             "transformations/normContinuous/boundedUpperOutliers.drlt",
             "transformations/normContinuous/normContOutliersAsMissing.drlt",
@@ -146,9 +144,9 @@ public class PMML4Compiler implements PMMLCompiler {
             "transformations/functions/apply.drlt",
             "transformations/functions/function.drlt"
     };
-    
+
     protected static boolean miningLoaded = false;
-    protected static final String[] MINING_TEMPLATES = new String[] {
+    protected static final String[] MINING_TEMPLATES = new String[]{
             "models/common/mining/miningField.drlt",
             "models/common/mining/miningFieldInvalid.drlt",
             "models/common/mining/miningFieldMissing.drlt",
@@ -163,9 +161,9 @@ public class PMML4Compiler implements PMMLCompiler {
             "models/common/targets/outputQuery.drlt",
             "models/common/targets/outputQueryPredicate.drlt"
     };
-    
-    protected static boolean neuralLoaded = false; 
-    protected static final String[] NEURAL_TEMPLATES = new String[] {
+
+    protected static boolean neuralLoaded = false;
+    protected static final String[] NEURAL_TEMPLATES = new String[]{
             "models/neural/neuralBeans.drlt",
             "models/neural/neuralWireInput.drlt",
             "models/neural/neuralBuildSynapses.drlt",
@@ -179,7 +177,7 @@ public class PMML4Compiler implements PMMLCompiler {
     };
 
     protected static boolean svmLoaded = false;
-    protected static final String[] SVM_TEMPLATES = new String[] {
+    protected static final String[] SVM_TEMPLATES = new String[]{
             "models/svm/svmParams.drlt",
             "models/svm/svmDeclare.drlt",
             "models/svm/svmFunctions.drlt",
@@ -194,7 +192,7 @@ public class PMML4Compiler implements PMMLCompiler {
     };
 
     protected static boolean naiveBayesLoaded = false;
-    protected static final String[] NAIVE_BAYES_TEMPLATES = new String[] {
+    protected static final String[] NAIVE_BAYES_TEMPLATES = new String[]{
             "models/bayes/naiveBayesDeclare.drlt",
             "models/bayes/naiveBayesEvalDiscrete.drlt",
             "models/bayes/naiveBayesEvalContinuous.drlt",
@@ -204,7 +202,7 @@ public class PMML4Compiler implements PMMLCompiler {
     };
 
     protected static boolean simpleRegLoaded = false;
-    protected static final String[] SIMPLEREG_TEMPLATES = new String[] {
+    protected static final String[] SIMPLEREG_TEMPLATES = new String[]{
             "models/regression/regDeclare.drlt",
             "models/regression/regCommon.drlt",
             "models/regression/regParams.drlt",
@@ -212,11 +210,10 @@ public class PMML4Compiler implements PMMLCompiler {
             "models/regression/regClaxOutput.drlt",
             "models/regression/regNormalization.drlt",
             "models/regression/regDecumulation.drlt",
-
     };
-            
+
     protected static boolean clusteringLoaded = false;
-    protected static final String[] CLUSTERING_TEMPLATES = new String[] {
+    protected static final String[] CLUSTERING_TEMPLATES = new String[]{
             "models/clustering/clusteringDeclare.drlt",
             "models/clustering/clusteringInit.drlt",
             "models/clustering/clusteringEvalDistance.drlt",
@@ -225,7 +222,7 @@ public class PMML4Compiler implements PMMLCompiler {
     };
 
     protected static boolean treeLoaded = false;
-    protected static final String[] TREE_TEMPLATES = new String[] {
+    protected static final String[] TREE_TEMPLATES = new String[]{
             "models/tree/treeDeclare.drlt",
             "models/tree/treeCommon.drlt",
             "models/tree/treeInputDeclare.drlt",
@@ -242,7 +239,7 @@ public class PMML4Compiler implements PMMLCompiler {
     };
 
     protected static boolean scorecardLoaded = false;
-    protected static final String[] SCORECARD_TEMPLATES = new String[] {
+    protected static final String[] SCORECARD_TEMPLATES = new String[]{
             "models/scorecard/scorecardInit.drlt",
             "models/scorecard/scorecardParamsInit.drlt",
             "models/scorecard/scorecardDeclare.drlt",
@@ -254,75 +251,66 @@ public class PMML4Compiler implements PMMLCompiler {
             "mvel/scorecard/complexPartialScore.mvel"
     };
 
-
-
     protected static final String RESOURCE_PATH = BASE_PACK;
     protected static final String TEMPLATE_PATH = "/" + RESOURCE_PATH + "/templates/";
-
-
 
     private static TemplateRegistry registry;
 
     private static List<KnowledgeBuilderResult> visitorBuildResults = new ArrayList<KnowledgeBuilderResult>();
     private List<KnowledgeBuilderResult> results;
     private Schema schema;
-    
-    private PMML4Helper helper;
 
+    private PMML4Helper helper;
 
     public PMML4Compiler() {
         super();
         this.results = new ArrayList<KnowledgeBuilderResult>();
         helper = new PMML4Helper();
-            helper.setPack( "org.kie.pmml.pmml_4_2.test" );
+        helper.setPack("org.kie.pmml.pmml_4_2.test");
 
-        SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         try {
-            schema = sf.newSchema( PMML4Compiler.class.getClassLoader().getResource( SCHEMA_PATH ) );
-        } catch ( SAXException e ) {
+            schema = sf.newSchema(PMML4Compiler.class.getClassLoader().getResource(SCHEMA_PATH));
+        } catch (SAXException e) {
             e.printStackTrace();
         }
-
     }
-
 
     public PMML4Helper getHelper() {
         return helper;
     }
-    
-    
+
     private String getRuleUnitClass(PMML4Unit unit) {
         PMML4Model root = unit.getRootModel();
         return root.getRuleUnitClassName();
     }
-    
-    public String generateTheory( PMML pmml ) {
+
+    public String generateTheory(PMML pmml) {
         StringBuilder sb = new StringBuilder();
         PMML4Unit unit = new PMML4UnitImpl(pmml);
-        
 
         KieBase visitor;
         try {
-            visitor = checkBuildingResources( pmml );
-        } catch ( IOException e ) {
-            this.results.add( new PMMLError( e.getMessage() ) );
+            visitor = checkBuildingResources(pmml);
+        } catch (IOException e) {
+            this.results.add(new PMMLError(e.getMessage()));
             return null;
         }
-        
+
         KieSession visitorSession = visitor.newKieSession();
 
         helper.reset();
-        visitorSession.setGlobal( "registry", registry );
-            visitorSession.setGlobal( "fld2var", new HashMap() );
-            visitorSession.setGlobal( "utils", helper );
-            visitorSession.setGlobal("unitPackageName", helper.getPack());
-            visitorSession.setGlobal("ruleUnitClassName", getRuleUnitClass(unit));
+        visitorSession.setGlobal("registry", registry);
+        visitorSession.setGlobal("fld2var", new HashMap());
+        visitorSession.setGlobal("utils", helper);
+        visitorSession.setGlobal("unitPackageName", helper.getPack());
+        visitorSession.setGlobal("ruleUnitClassName", getRuleUnitClass(unit));
 
-        visitorSession.setGlobal( "theory", sb );
+        visitorSession.setGlobal("theory", sb);
 
-        visitorSession.insert( pmml );
-        
+        visitorSession.insert(pmml);
+
         visitorSession.fireAllRules();
 
         String modelEvaluatingRules = sb.toString();
@@ -332,112 +320,110 @@ public class PMML4Compiler implements PMMLCompiler {
         return modelEvaluatingRules;
     }
 
-
-    
     private static void initRegistry() {
-        if ( registry == null ) {
+        if (registry == null) {
             registry = new SimpleTemplateRegistry();
         }
 
-        if ( ! globalLoaded ) {
-            for ( String ntempl : GLOBAL_TEMPLATES ) {
-                prepareTemplate( ntempl );
+        if (!globalLoaded) {
+            for (String ntempl : GLOBAL_TEMPLATES) {
+                prepareTemplate(ntempl);
             }
             globalLoaded = true;
         }
 
-        if ( ! transformationLoaded ) {
-            for ( String ntempl : TRANSFORMATION_TEMPLATES ) {
-                prepareTemplate( ntempl );
+        if (!transformationLoaded) {
+            for (String ntempl : TRANSFORMATION_TEMPLATES) {
+                prepareTemplate(ntempl);
             }
             transformationLoaded = true;
         }
 
-        if ( ! miningLoaded ) {
-            for ( String ntempl : MINING_TEMPLATES ) {
-                prepareTemplate( ntempl );
+        if (!miningLoaded) {
+            for (String ntempl : MINING_TEMPLATES) {
+                prepareTemplate(ntempl);
             }
             miningLoaded = true;
         }
     }
 
-    private static KieBase checkBuildingResources( PMML pmml ) throws IOException {
+    private static KieBase checkBuildingResources(PMML pmml) throws IOException {
 
         KieServices ks = KieServices.Factory.get();
-        KieContainer kieContainer = ks.getKieClasspathContainer( PMML4Compiler.class.getClassLoader() );
+        KieContainer kieContainer = ks.getKieClasspathContainer(PMML4Compiler.class.getClassLoader());
 
-        if ( registry == null ) {
+        if (registry == null) {
             initRegistry();
         }
 
         String chosenKieBase = null;
 
-        for ( Object o : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels() ) {
+        for (Object o : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
 
-            if ( o instanceof NaiveBayesModel ) {
-                if ( ! naiveBayesLoaded ) {
-                    for ( String ntempl : NAIVE_BAYES_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof NaiveBayesModel) {
+                if (!naiveBayesLoaded) {
+                    for (String ntempl : NAIVE_BAYES_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     naiveBayesLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-Bayes" : "KiePMML";
             }
 
-            if ( o instanceof NeuralNetwork ) {
-                if ( ! neuralLoaded ) {
-                    for ( String ntempl : NEURAL_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof NeuralNetwork) {
+                if (!neuralLoaded) {
+                    for (String ntempl : NEURAL_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     neuralLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-Neural" : "KiePMML";
             }
 
-            if ( o instanceof ClusteringModel ) {
-                if ( ! clusteringLoaded  ) {
-                    for ( String ntempl : CLUSTERING_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof ClusteringModel) {
+                if (!clusteringLoaded) {
+                    for (String ntempl : CLUSTERING_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     clusteringLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-Cluster" : "KiePMML";
             }
 
-            if ( o instanceof SupportVectorMachineModel ) {
-                if ( ! svmLoaded ) {
-                    for ( String ntempl : SVM_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof SupportVectorMachineModel) {
+                if (!svmLoaded) {
+                    for (String ntempl : SVM_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     svmLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-SVM" : "KiePMML";
             }
 
-            if ( o instanceof TreeModel ) {
-                if ( ! treeLoaded ) {
-                    for ( String ntempl : TREE_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof TreeModel) {
+                if (!treeLoaded) {
+                    for (String ntempl : TREE_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     treeLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-Tree" : "KiePMML";
             }
 
-            if ( o instanceof RegressionModel ) {
-                if ( ! simpleRegLoaded ) {
-                    for ( String ntempl : SIMPLEREG_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof RegressionModel) {
+                if (!simpleRegLoaded) {
+                    for (String ntempl : SIMPLEREG_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     simpleRegLoaded = true;
                 }
                 chosenKieBase = chosenKieBase == null ? "KiePMML-Regression" : "KiePMML";
             }
 
-            if ( o instanceof Scorecard ) {
-                if ( ! scorecardLoaded ) {
-                    for ( String ntempl : SCORECARD_TEMPLATES ) {
-                        prepareTemplate( ntempl );
+            if (o instanceof Scorecard) {
+                if (!scorecardLoaded) {
+                    for (String ntempl : SCORECARD_TEMPLATES) {
+                        prepareTemplate(ntempl);
                     }
                     scorecardLoaded = true;
                 }
@@ -445,25 +431,21 @@ public class PMML4Compiler implements PMMLCompiler {
             }
         }
 
-        if ( chosenKieBase == null ) {
+        if (chosenKieBase == null) {
             chosenKieBase = "KiePMML-Base";
         }
-        return kieContainer.getKieBase( chosenKieBase );
+        return kieContainer.getKieBase(chosenKieBase);
     }
 
-
-
-
-
-    private static void prepareTemplate( String ntempl ) {
+    private static void prepareTemplate(String ntempl) {
         try {
             String path = TEMPLATE_PATH + ntempl;
             Resource res = ResourceFactory.newClassPathResource(path, org.kie.pmml.pmml_4_2.PMML4Compiler.class);
-            if ( res != null ) {
+            if (res != null) {
                 InputStream stream = res.getInputStream();
-                if ( stream != null ) {
-                    registry.addNamedTemplate( path.substring(path.lastIndexOf('/') + 1),
-                                               TemplateCompiler.compileTemplate(stream));
+                if (stream != null) {
+                    registry.addNamedTemplate(path.substring(path.lastIndexOf('/') + 1),
+                                              TemplateCompiler.compileTemplate(stream));
                 }
             }
         } catch (IOException e) {
@@ -471,45 +453,44 @@ public class PMML4Compiler implements PMMLCompiler {
         }
     }
 
-
-    public String compile( String resource, ClassLoader classLoader ) {
+    public String compile(String resource, ClassLoader classLoader) {
         String theory = null;
-        Resource cpr = new ClassPathResource( resource );
+        Resource cpr = new ClassPathResource(resource);
         try {
-            theory = compile( cpr.getInputStream(), classLoader );
-        } catch ( IOException e ) {
-            results.add( new PMMLError( e.toString() ) );
+            theory = compile(cpr.getInputStream(), classLoader);
+        } catch (IOException e) {
+            results.add(new PMMLError(e.toString()));
             e.printStackTrace();
         }
         return theory;
     }
 
-    public Resource[] transform( Resource resource, ClassLoader classLoader ) {
+    public Resource[] transform(Resource resource, ClassLoader classLoader) {
         String theory = null;
         try {
-            theory = compile( resource.getInputStream(), classLoader );
-        } catch ( IOException e ) {
-            results.add( new PMMLError( e.toString() ) );
+            theory = compile(resource.getInputStream(), classLoader);
+        } catch (IOException e) {
+            results.add(new PMMLError(e.toString()));
             e.printStackTrace();
-            return new Resource[ 0 ];
+            return new Resource[0];
         }
-        return new Resource[] { buildOutputResource( resource, theory ) };
+        return new Resource[]{buildOutputResource(resource, theory)};
     }
 
-    private Resource buildOutputResource( Resource resource, String theory ) {
-        ByteArrayResource byteArrayResource = new ByteArrayResource( theory.getBytes( IoUtils.UTF8_CHARSET ) );
-        byteArrayResource.setResourceType( ResourceType.PMML );
+    private Resource buildOutputResource(Resource resource, String theory) {
+        ByteArrayResource byteArrayResource = new ByteArrayResource(theory.getBytes(IoUtils.UTF8_CHARSET));
+        byteArrayResource.setResourceType(ResourceType.PMML);
 
-        if ( resource.getSourcePath() != null ) {
+        if (resource.getSourcePath() != null) {
             String originalPath = resource.getSourcePath();
-            int start = originalPath.lastIndexOf( File.separator );
-            byteArrayResource.setSourcePath( "generated-sources/" + originalPath.substring( start ) + ".pmml" );
+            int start = originalPath.lastIndexOf(File.separator);
+            byteArrayResource.setSourcePath("generated-sources/" + originalPath.substring(start) + ".pmml");
         } else {
-            byteArrayResource.setSourcePath( "generated-sources/" + helper.getContext() + ".pmml" );
+            byteArrayResource.setSourcePath("generated-sources/" + helper.getContext() + ".pmml");
         }
         return byteArrayResource;
     }
-    
+
     private InputStream getInputStreamByFileName(String fileName) {
         InputStream is = null;
         Resource res = ResourceFactory.newClassPathResource(fileName);
@@ -523,23 +504,23 @@ public class PMML4Compiler implements PMMLCompiler {
         try {
             is = res.getInputStream();
         } catch (Exception e) {
-            this.results.add(new PMMLError("Unable to retrieve file based resource: "+fileName));
+            this.results.add(new PMMLError("Unable to retrieve file based resource: " + fileName));
         }
         return is;
     }
-    
+
     @Override
-    public Map<String,String> getJavaClasses(String fileName) {
+    public Map<String, String> getJavaClasses(String fileName) {
         InputStream is = getInputStreamByFileName(fileName);
         if (is != null) {
             return getJavaClasses(is);
         }
         return new HashMap<>();
     }
-    
+
     @Override
-    public Map<String,String> getJavaClasses(InputStream stream) {
-        Map<String,String> javaClasses = new HashMap<>();
+    public Map<String, String> getJavaClasses(InputStream stream) {
+        Map<String, String> javaClasses = new HashMap<>();
         PMML pmml = loadModel(PMML, stream);
         if (pmml != null && results.isEmpty()) {
             PMML4Unit unit = new PMML4UnitImpl(pmml);
@@ -550,34 +531,38 @@ public class PMML4Compiler implements PMMLCompiler {
                     Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
                     Map.Entry<String, String> outcome = null;
                     if (model.getModelType() == PMML4ModelType.TREE) {
-                    	outcome = ((Treemodel)model).getTreeNodeJava();
+                        outcome = ((Treemodel) model).getTreeNodeJava();
                     }
-                    if (inputPojo != null) javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
-                    if (ruleUnit != null) javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
-                    if (outcome != null) javaClasses.put(outcome.getKey(), outcome.getValue());
+                    if (inputPojo != null) {
+                        javaClasses.put(inputPojo.getKey(), inputPojo.getValue());
+                    }
+                    if (ruleUnit != null) {
+                        javaClasses.put(ruleUnit.getKey(), ruleUnit.getValue());
+                    }
+                    if (outcome != null) {
+                        javaClasses.put(outcome.getKey(), outcome.getValue());
+                    }
                 });
             }
         }
         return javaClasses;
     }
-    
-    
-    public List<PMMLResource> precompile( String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
+
+    public List<PMMLResource> precompile(String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
         InputStream is = getInputStreamByFileName(fileName);
         List<PMMLResource> resources = null;
         if (is != null) {
             try {
-                resources = precompile(is,classLoader,rootKieBaseModel);
+                resources = precompile(is, classLoader, rootKieBaseModel);
             } catch (Exception e) {
-                PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: "+e.getMessage());
+                PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: " + e.getMessage());
                 this.results.add(err);
             }
         }
-        return (resources != null) ? resources:Collections.emptyList();
+        return (resources != null) ? resources : Collections.emptyList();
     }
-    
-    
-    public List<PMMLResource> precompile( InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
+
+    public List<PMMLResource> precompile(InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
         List<PMMLResource> resources = new ArrayList<>();
         KieServices services = KieServices.Factory.get();
         KieModuleModel module = services.newKieModuleModel();
@@ -587,19 +572,21 @@ public class PMML4Compiler implements PMMLCompiler {
         PMML4Unit unit = new PMML4UnitImpl(pmml);
         if (unit.containsMiningModel()) {
             Miningmodel rootModel = unit.getRootMiningModel();
-            resources = buildResourcesFromModel(pmml,rootModel,null,classLoader,module);
+            resources = buildResourcesFromModel(pmml, rootModel, null, classLoader, module);
         } else {
             PMML4Model rootModel = unit.getRootModel();
             if (rootModel != null) {
                 helper.setPack(rootModel.getModelPackageName());
                 KieBaseModel kbm = module.newKieBaseModel(rootModel.getModelId());
                 kbm.addPackage(helper.getPack())
-                    .setDefault(true)
-                    .setEventProcessingMode(EventProcessingOption.CLOUD);
+                        .setDefault(true)
+                        .setEventProcessingMode(EventProcessingOption.CLOUD);
                 PMMLResource resource = new PMMLResource(helper.getPack());
                 StringBuilder bldr = new StringBuilder(this.compile(pmml, classLoader));
                 String extBeanMiningRules = unit.getModelExternalMiningBeansRules(rootModel.getModelId());
-                if (extBeanMiningRules != null) bldr.append(extBeanMiningRules);
+                if (extBeanMiningRules != null) {
+                    bldr.append(extBeanMiningRules);
+                }
                 resource.setKieBaseModel(kbm);
                 resource.addRules(rootModel.getModelId(), bldr.toString());
                 resources.add(resource);
@@ -612,12 +599,14 @@ public class PMML4Compiler implements PMMLCompiler {
         // get the list of models that may contain the field definition
         List<PMML4Model> models = msm.getMiningSegments().stream()
                 .filter(s -> s != seg && s.getSegmentIndex() < seg.getSegmentIndex())
-                .map(iseg -> { return iseg.getModel(); })
+                .map(iseg -> {
+                    return iseg.getModel();
+                })
                 .collect(Collectors.toList());
         seg.getModel().getMiningFields().stream().filter(mf -> !mf.isInDictionary()).forEach(pmf -> {
             String fldName = pmf.getName();
             boolean fieldAdded = false;
-            for (Iterator<PMML4Model> iter = models.iterator(); iter.hasNext() && !fieldAdded;) {
+            for (Iterator<PMML4Model> iter = models.iterator(); iter.hasNext() && !fieldAdded; ) {
                 PMML4Model mdl = iter.next();
                 PMMLOutputField outfield = mdl.findOutputField(fldName);
                 PMMLMiningField target = (outfield != null && outfield.getTargetField() != null) ?
@@ -626,7 +615,7 @@ public class PMML4Compiler implements PMMLCompiler {
                     DataField e = null;
                     if (outfield.getRawDataField() != null && outfield.getRawDataField().getDataType() != null) {
                         e = outfield.getRawDataField();
-                    } else if (target != null ) {
+                    } else if (target != null) {
                         e = target.getRawDataField();
                     }
                     if (e != null) {
@@ -640,33 +629,33 @@ public class PMML4Compiler implements PMMLCompiler {
             }
         });
     }
-    
-    protected PMMLResource buildResourceFromSegment( PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
+
+    protected PMMLResource buildResourceFromSegment(PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
         PMML pmml = new PMML();
         DataDictionary dd = pmml_origin.getDataDictionary();
         pmml.setDataDictionary(dd);
         pmml.setHeader(pmml_origin.getHeader());
         pmml.getAssociationModelsAndBaselineModelsAndClusteringModels().add(segment.getModel().getRawModel());
-        addMissingFieldDefinition(pmml,segment.getOwner(),segment);
+        addMissingFieldDefinition(pmml, segment.getOwner(), segment);
         helper.setPack(segment.getModel().getModelPackageName());//PMML4Helper.pmmlDefaultPackageName()+".mining.segment_"+segment.getSegmentId());
 
         StringBuilder rules = new StringBuilder(this.compile(pmml, classLoader));
         String extBeanMiningRules = segment.getModel().getExternalBeansMiningRules();
-        if (extBeanMiningRules != null) rules.append(extBeanMiningRules);
-        KieBaseModel kbModel = module.newKieBaseModel(segment.getOwner().getOwner().getModelId()+"_"+segment.getOwner().getSegmentationId()+"_SEGMENT_"+segment.getSegmentId());
+        if (extBeanMiningRules != null) {
+            rules.append(extBeanMiningRules);
+        }
+        KieBaseModel kbModel = module.newKieBaseModel(segment.getOwner().getOwner().getModelId() + "_" + segment.getOwner().getSegmentationId() + "_SEGMENT_" + segment.getSegmentId());
         kbModel.addPackage(helper.getPack())
-            .setDefault(false)
-            .setEventProcessingMode(EventProcessingOption.CLOUD);
-        KieSessionModel ksm = kbModel.newKieSessionModel("SEGMENT_"+segment.getSegmentId());
+                .setDefault(false)
+                .setEventProcessingMode(EventProcessingOption.CLOUD);
+        KieSessionModel ksm = kbModel.newKieSessionModel("SEGMENT_" + segment.getSegmentId());
         ksm.setDefault(true);
         PMMLResource resource = new PMMLResource(helper.getPack());
         resource.setKieBaseModel(kbModel);
         resource.addRules(segment.getModel().getModelId(), rules.toString());
         return resource;
     }
-    
-    
-    
+
     protected List<PMMLResource> buildResourcesFromModel(PMML pmml, Miningmodel miningModel, List<PMMLResource> resourcesList, ClassLoader classLoader, KieModuleModel module) {
         if (resourcesList == null) {
             resourcesList = new ArrayList<>();
@@ -678,49 +667,46 @@ public class PMML4Compiler implements PMMLCompiler {
         resource.setKieBaseModel(rootKieBaseModel);
         resource.addRules(miningModel.getModelId(), miningModel.generateRules());
         resourcesList.add(resource);
-        getChildResources(pmml,miningModel, resourcesList, classLoader, module);
+        getChildResources(pmml, miningModel, resourcesList, classLoader, module);
         return resourcesList;
     }
-    
+
     protected List<PMMLResource> getChildResources(PMML pmml_origin, Miningmodel parent, List<PMMLResource> resourceList, ClassLoader classLoader, KieModuleModel module) {
         if (parent != null && parent.getSegmentation() != null) {
             MiningSegmentation segmentation = parent.getSegmentation();
             if (segmentation.getMiningSegments() != null) {
                 List<MiningSegment> segments = segmentation.getMiningSegments();
-                for (MiningSegment segment: segments) {
+                for (MiningSegment segment : segments) {
                     if (segment.getModel() instanceof Miningmodel) {
-                        buildResourcesFromModel(pmml_origin,(Miningmodel)segment.getModel(), resourceList, classLoader, module);
+                        buildResourcesFromModel(pmml_origin, (Miningmodel) segment.getModel(), resourceList, classLoader, module);
                     } else {
-                        resourceList.add(buildResourceFromSegment(pmml_origin,segment, classLoader, module));
+                        resourceList.add(buildResourceFromSegment(pmml_origin, segment, classLoader, module));
                     }
                 }
             }
         }
         return resourceList;
     }
-    
-    
-    public String compile( PMML pmml, ClassLoader classLoader) {
-        helper.setResolver( classLoader );
 
-        if ( getResults().isEmpty() ) {
-            return generateTheory( pmml );
+    public String compile(PMML pmml, ClassLoader classLoader) {
+        helper.setResolver(classLoader);
+
+        if (getResults().isEmpty()) {
+            return generateTheory(pmml);
         } else {
             return null;
         }
-
     }
 
-
-    public String compile( InputStream source, ClassLoader classLoader ) {
+    public String compile(InputStream source, ClassLoader classLoader) {
         this.results = new ArrayList<KnowledgeBuilderResult>();
-        PMML pmml = loadModel( PMML, source );
-        return compile(pmml,classLoader);
+        PMML pmml = loadModel(PMML, source);
+        return compile(pmml, classLoader);
     }
 
     public List<KnowledgeBuilderResult> getResults() {
-        List<KnowledgeBuilderResult> combinedResults = new ArrayList<KnowledgeBuilderResult>( this.results );
-        combinedResults.addAll( visitorBuildResults );
+        List<KnowledgeBuilderResult> combinedResults = new ArrayList<KnowledgeBuilderResult>(this.results);
+        combinedResults.addAll(visitorBuildResults);
         return combinedResults;
     }
 
@@ -729,19 +715,17 @@ public class PMML4Compiler implements PMMLCompiler {
         this.results.clear();
     }
 
-
-    public void dump( String s, OutputStream ostream ) {
+    public void dump(String s, OutputStream ostream) {
         // write to outstream
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter( ostream, "UTF-8" );
+            writer = new OutputStreamWriter(ostream, "UTF-8");
             writer.write(s);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 if (writer != null) {
                     writer.flush();
@@ -752,63 +736,58 @@ public class PMML4Compiler implements PMMLCompiler {
         }
     }
 
-
     /**
      * Imports a PMML source file, returning a Java descriptor
-     * @param model            the PMML package name (classes derived from a specific schema)
-     * @param source        the name of the PMML resource storing the predictive model
-     * @return                the Java Descriptor of the PMML resource
+     * @param model the PMML package name (classes derived from a specific schema)
+     * @param source the name of the PMML resource storing the predictive model
+     * @return the Java Descriptor of the PMML resource
      */
-    public PMML loadModel( String model, InputStream source ) {
+    public PMML loadModel(String model, InputStream source) {
         try {
-            if ( schema == null ) {
-                visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document, schema not available" ) );
+            if (schema == null) {
+                visitorBuildResults.add(new PMMLWarning(ResourceFactory.newInputStreamResource(source), "Could not validate PMML document, schema not available"));
             }
             final JAXBContext jc;
             final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader( PMML4Compiler.class.getClassLoader() );
-                jc = JAXBContext.newInstance( model, PMML4Compiler.class.getClassLoader() );
+                Thread.currentThread().setContextClassLoader(PMML4Compiler.class.getClassLoader());
+                jc = JAXBContext.newInstance(model, PMML4Compiler.class.getClassLoader());
             } finally {
-                Thread.currentThread().setContextClassLoader( ccl );
+                Thread.currentThread().setContextClassLoader(ccl);
             }
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            if ( schema != null ) {
-                unmarshaller.setSchema( schema );
+            if (schema != null) {
+                unmarshaller.setSchema(schema);
             }
 
-            return (PMML) unmarshaller.unmarshal( source );
-        } catch ( JAXBException e ) {
-            this.results.add( new PMMLError( e.toString() ) );
+            return (PMML) unmarshaller.unmarshal(source);
+        } catch (JAXBException e) {
+            this.results.add(new PMMLError(e.toString()));
             return null;
         }
-
     }
 
-    public static void dumpModel( PMML model, OutputStream target ) {
+    public static void dumpModel(PMML model, OutputStream target) {
         try {
             final JAXBContext jc;
             final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader( PMML4Compiler.class.getClassLoader() );
-                jc = JAXBContext.newInstance( PMML.class.getPackage().getName(), PMML4Compiler.class.getClassLoader() );
+                Thread.currentThread().setContextClassLoader(PMML4Compiler.class.getClassLoader());
+                jc = JAXBContext.newInstance(PMML.class.getPackage().getName(), PMML4Compiler.class.getClassLoader());
             } finally {
-                Thread.currentThread().setContextClassLoader( ccl );
+                Thread.currentThread().setContextClassLoader(ccl);
             }
             Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            marshaller.marshal( model, target );
-        } catch ( JAXBException e ) {
+            marshaller.marshal(model, target);
+        } catch (JAXBException e) {
             e.printStackTrace();
         }
-
     }
-    
-    
+
     @Override
     public String getCompilerVersion() {
         return "KIE PMML v2";
     }
-
 }

@@ -62,7 +62,7 @@ public class ScorecardCompiler {
     }
 
     /* method for use from Guvnor */
-    public void setPMMLDocument(PMML pmmlDocument){
+    public void setPMMLDocument(PMML pmmlDocument) {
         this.pmmlDocument = pmmlDocument;
     }
 
@@ -94,7 +94,7 @@ public class ScorecardCompiler {
         try {
             AbstractScorecardParser parser = new XLSScorecardParser();
             scorecardErrors = parser.parseFile(stream, worksheetName);
-            if ( scorecardErrors.isEmpty() ) {
+            if (scorecardErrors.isEmpty()) {
                 pmmlDocument = parser.getPMMLDocument();
                 return true;
             }
@@ -108,34 +108,32 @@ public class ScorecardCompiler {
 
     /* This is a temporary workaround till drools-chance is fully integrated. */
     public boolean compileFromPMML(final InputStream stream) {
-        pmmlDocument = compiler.loadModel( PMML.class.getPackage().getName(), stream  );
+        pmmlDocument = compiler.loadModel(PMML.class.getPackage().getName(), stream);
         return pmmlDocument != null;
     }
-
-
 
     public PMML getPMMLDocument() {
         return pmmlDocument;
     }
 
-    public String getPMML(){
-        if (pmmlDocument == null ) {
+    public String getPMML() {
+        if (pmmlDocument == null) {
             return null;
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PMML4Compiler.dumpModel( pmmlDocument, baos );
-        return new String( baos.toByteArray(), IoUtils.UTF8_CHARSET );
+        PMML4Compiler.dumpModel(pmmlDocument, baos);
+        return new String(baos.toByteArray(), IoUtils.UTF8_CHARSET);
     }
 
-    public String getDRL(){
-    	if (pmmlDocument != null) {
-    		PMML4Unit pmmlUnit = new PMML4UnitImpl(pmmlDocument);
-    		compiler.getHelper().setPack(pmmlUnit.getRootPackage());
-    	}
-        String drl = compiler.generateTheory( pmmlDocument );
-        if ( ! compiler.getResults().isEmpty() ) {
-            for ( KnowledgeBuilderResult res : compiler.getResults() ) {
-                logger.error( res.getMessage() );
+    public String getDRL() {
+        if (pmmlDocument != null) {
+            PMML4Unit pmmlUnit = new PMML4UnitImpl(pmmlDocument);
+            compiler.getHelper().setPack(pmmlUnit.getRootPackage());
+        }
+        String drl = compiler.generateTheory(pmmlDocument);
+        if (!compiler.getResults().isEmpty()) {
+            for (KnowledgeBuilderResult res : compiler.getResults()) {
+                logger.error(res.getMessage());
             }
             compiler.clearResults();
         }
@@ -158,7 +156,7 @@ public class ScorecardCompiler {
 
     private void closeStream(final InputStream stream) {
         try {
-            if ( stream != null ) {
+            if (stream != null) {
                 stream.close();
             }
         } catch (final Exception e) {
@@ -167,6 +165,7 @@ public class ScorecardCompiler {
     }
 
     public static enum DrlType {
-        INTERNAL_DECLARED_TYPES, EXTERNAL_OBJECT_MODEL
+        INTERNAL_DECLARED_TYPES,
+        EXTERNAL_OBJECT_MODEL
     }
 }

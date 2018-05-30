@@ -132,20 +132,21 @@ public class GuidedScoreCardDRLPersistence {
 
             extension = new Extension();
             extension.setName(ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
-            if ("string".equalsIgnoreCase(characteristic.getDataType())) {
-                extension.setValue(XLSKeywords.DATATYPE_TEXT);
-            } else if ("int".equalsIgnoreCase(characteristic.getDataType()) ) {
-            	extension.setValue(XLSKeywords.DATATYPE_INTEGER);
-            } else if ("double".equalsIgnoreCase(characteristic.getDataType())) {
-                extension.setValue(XLSKeywords.DATATYPE_DOUBLE);
-/*                
-            } else if ("int".equalsIgnoreCase(characteristic.getDataType()) || "double".equalsIgnoreCase(characteristic.getDataType())) {
-            	extension.setValue(XLSKeywords.DATATYPE_NUMBER);
-*/
-            } else if ("boolean".equalsIgnoreCase(characteristic.getDataType())) {
-                extension.setValue(XLSKeywords.DATATYPE_BOOLEAN);
-            } else {
-                System.out.println(">>>> Found unknown data type :: " + characteristic.getDataType());
+            switch (characteristic.getDataType().toLowerCase()) {
+                case "string":
+                    extension.setValue(XLSKeywords.DATATYPE_TEXT);
+                    break;
+                case "int":
+                    extension.setValue(XLSKeywords.DATATYPE_INTEGER);
+                    break;
+                case "double":
+                    extension.setValue(XLSKeywords.DATATYPE_DOUBLE);
+                    break;
+                case "boolean":
+                    extension.setValue(XLSKeywords.DATATYPE_BOOLEAN);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown datatype found: " + characteristic.getDataType() + "!");
             }
             _characteristic.getExtensions().add(extension);
 
