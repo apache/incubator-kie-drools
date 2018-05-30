@@ -126,7 +126,8 @@ public class ConstraintParser {
 
             CoercedExpression.CoercedExpressionResult coerced = new CoercedExpression(left, right).coerce();
 
-            right.setExpression(coerced.getCoercedRight().getExpression());
+            left = coerced.getCoercedLeft();
+            right = coerced.getCoercedRight();
 
             Expression combo;
 

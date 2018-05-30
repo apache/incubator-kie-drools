@@ -55,16 +55,7 @@ public class CoercedExpression {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
-            if (rightExpression instanceof CharLiteralExpr) {
-                coercedRight = right.cloneWithNewExpression(new StringLiteralExpr(((CharLiteralExpr) rightExpression).getValue()));
-            } else if (right.isPrimitive()) {
-                coercedRight = right.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(rightExpression)));
-            } else if (right.getType() == Object.class) {
-                coercedRight = right.cloneWithNewExpression(new MethodCallExpr(rightExpression, "toString"));
-            } else {
-                coercedRight = right.cloneWithNewExpression(new StringLiteralExpr(rightExpression.toString()));
-            }
-            coercedRight.setType(String.class);
+            coercedRight = coerceToString(right);
         } else if (canBeNarrowed(left.getType(), right.getType())) {
             coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
         } else if (left.getType().equals(Object.class) && right.getType() != Object.class) {
@@ -73,7 +64,30 @@ public class CoercedExpression {
             coercedRight = right;
         }
 
-        return new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
+        final TypedExpression coercedLeft;
+        if (shouldCoerceBToString(right, left)) {
+            coercedLeft = coerceToString(left);
+        } else {
+            coercedLeft = left;
+        }
+
+        return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private static TypedExpression coerceToString(TypedExpression typedExpression) {
+        final Expression expression = typedExpression.getExpression();
+        TypedExpression coercedExpression;
+        if (expression instanceof CharLiteralExpr) {
+            coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(((CharLiteralExpr) expression).getValue()));
+        } else if (typedExpression.isPrimitive()) {
+            coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(expression)));
+        } else if (typedExpression.getType() == Object.class) {
+            coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(expression, "toString"));
+        } else {
+            coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(expression.toString()));
+        }
+        coercedExpression.setType(String.class);
+        return coercedExpression;
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
@@ -112,16 +126,16 @@ public class CoercedExpression {
 
     public static class CoercedExpressionResult {
 
-        private final TypedExpression left;
+        private final TypedExpression coercedLeft;
         private final TypedExpression coercedRight;
 
-        CoercedExpressionResult(TypedExpression left, TypedExpression coercedRight, BinaryExpr binaryExpr) {
-            this.left = left;
+        CoercedExpressionResult(TypedExpression left, TypedExpression coercedRight) {
+            this.coercedLeft = left;
             this.coercedRight = coercedRight;
         }
 
-        public TypedExpression getLeft() {
-            return left;
+        public TypedExpression getCoercedLeft() {
+            return coercedLeft;
         }
 
         public TypedExpression getCoercedRight() {
