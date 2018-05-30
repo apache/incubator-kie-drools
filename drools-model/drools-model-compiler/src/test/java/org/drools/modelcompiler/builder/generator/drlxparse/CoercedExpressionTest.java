@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.junit.Test;
@@ -39,6 +40,43 @@ public class CoercedExpressionTest {
         assertEquals(expr("0d", int.class), coerce.getCoercedRight() );
     }
 
+
+    @Test
+    public void test444x4() {
+
+        /*
+
+
+222 left = TypedExpression{expression=_this, jpType=NameExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+222 right = TypedExpression{expression='x', jpType=CharLiteralExpr, type=char, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+222 right = TypedExpression{expression="x", jpType=StringLiteralExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+
+         */
+        final TypedExpression left = expr("_this", java.lang.String.class);
+        final TypedExpression right = expr("\'x'", char.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        final TypedExpression expected = new TypedExpression(new StringLiteralExpr("x"), String.class);
+        assertEquals(expected, coerce.getCoercedRight() );
+    }
+
+
+    @Test
+    public void test444x3() {
+
+        /*
+
+444 left = TypedExpression{expression=$pr.compareTo(new BigDecimal("0.0")), jpType=MethodCallExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+444 right = TypedExpression{expression=0, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+444 right = TypedExpression{expression=0, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("$pr.compareTo(new BigDecimal(\"0.0\"))", int.class);
+        final TypedExpression right = expr("0", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("0", int.class), coerce.getCoercedRight() );
+    }
+
     @Test
     public void test222x1() {
         /*
@@ -53,6 +91,42 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("40", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("String.valueOf(40)", String.class), coerce.getCoercedRight() );
+    }
+
+    @Test
+    public void test333() {
+        /*
+
+
+333 left = TypedExpression{expression=_this.getAge(), jpType=MethodCallExpr, type=int, fieldName='age', unificationVariable=Optional.empty, unificationName=Optional.empty}
+333 right = TypedExpression{expression="50", jpType=StringLiteralExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+333 right = TypedExpression{expression=50, jpType=IntegerLiteralExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("_this.getAge()", int.class);
+        final TypedExpression right = expr("\"50\"", String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("50", String.class), coerce.getCoercedRight() );
+    }
+
+
+    @Test
+    public void test555() {
+        /*
+
+
+
+555 left = TypedExpression{expression=_this.getItems().get((Integer) 1), jpType=MethodCallExpr, type=class java.lang.Object, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+555 right = TypedExpression{expression=2000, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+555 right = TypedExpression{expression=(java.lang.Object) 2000, jpType=CastExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+
+
+         */
+        final TypedExpression left = expr("_this.getItems().get((Integer) 1)", java.lang.Object.class);
+        final TypedExpression right = expr("2000", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("(java.lang.Object)2000", int.class), coerce.getCoercedRight() );
     }
 
     private TypedExpression expr(String leftStr, Class<?> leftClass) {

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.Expression;
@@ -15,6 +16,9 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
+import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class CoercedExpression {
 
@@ -44,17 +48,18 @@ public class CoercedExpression {
             }
             coercedRight.setType(String.class);
 
+        } else if (!areCompatible( left.getType(), right.getType() ) ) {
+            coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
         } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
-        } else {
+        }  else {
             coercedRight = right;
         }
 
         System.out.println("XXX right = " + coercedRight);
         System.out.println("\n\n");
-        final CoercedExpressionResult coercedExpressionResult = new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
-        return coercedExpressionResult;
+        return new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
     }
 
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
@@ -78,6 +83,11 @@ public class CoercedExpression {
         }
         throw new RuntimeException("Unknown literal: " + expr);
     }
+
+    private boolean areCompatible( Class<?> leftType, Class<?> rightType ) {
+        return toNonPrimitiveType( rightType ).isAssignableFrom( toNonPrimitiveType( leftType ) );
+    }
+
 
     static class CoercedExpressionResult {
         private final TypedExpression left;
