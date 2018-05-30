@@ -944,11 +944,17 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(getFromScope, type);
     }
 
-//    @Override
-//    public DirectCompilerResult visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+    @Override
+    public DirectCompilerResult visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {
+        List<DirectCompilerResult> exprs = new ArrayList<>();
+        for (FEEL_1_1Parser.ExpressionContext ec : ctx.expression()) {
+            exprs.add(visit(ec));
+        }
+        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
+        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
+    }
+
 //    @Override
 //    public DirectCompilerResult visitNamedParameter(FEEL_1_1Parser.NamedParameterContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -968,28 +974,44 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitParametersNamed(FEEL_1_1Parser.ParametersNamedContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitParametersPositional(FEEL_1_1Parser.ParametersPositionalContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    private String getFunctionName(DirectCompilerResult name) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    private DirectCompilerResult buildFunctionCall(ParserRuleContext ctx, DirectCompilerResult name, ListNode params) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, ListNode params) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+
+    @Override
+    public DirectCompilerResult visitParametersPositional(FEEL_1_1Parser.ParametersPositionalContext ctx) {
+        return visit(ctx.positionalParameters());
+    }
+
+
+    @Override
+    public DirectCompilerResult visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
+        String originalTextOfName = ParserHelper.getOriginalText(ctx.qualifiedName());
+        DirectCompilerResult name = visit(ctx.qualifiedName());
+        if (ctx.parameters() != null) {
+            DirectCompilerResult params = visit(ctx.parameters());
+            if ("not".equals(originalTextOfName)) {
+                return buildNotCall(ctx, name, params);
+            } else {
+                return buildFunctionCall(ctx, name, params);
+            }
+        } else {
+            return name;
+        }
+    }
+
+    //    private String getFunctionName(DirectCompilerResult name) {
+    //        throw new UnsupportedOperationException(); // REUSED AS STATIC METHOD ON THE ORIGINAL VISITOR
+    //    }
+
+    private DirectCompilerResult buildFunctionCall(ParserRuleContext ctx, DirectCompilerResult name, DirectCompilerResult params) {
+        MethodCallExpr invokeCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "invoke");
+        invokeCall.addArgument(new NameExpr("feelExprCtx"));
+        invokeCall.addArgument(name.getExpression());
+        invokeCall.addArgument(params.getExpression());
+        return DirectCompilerResult.of(invokeCall, name.resultType).withFD(name).withFD(params);
+    }
+
+    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, DirectCompilerResult params) {
+        throw new UnsupportedOperationException("TODO"); // TODO
+    }
 
     @Override
     public DirectCompilerResult visitType(FEEL_1_1Parser.TypeContext ctx) {
