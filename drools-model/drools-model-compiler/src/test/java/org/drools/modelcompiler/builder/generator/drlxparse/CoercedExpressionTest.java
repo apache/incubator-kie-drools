@@ -79,6 +79,24 @@ public class CoercedExpressionTest {
     }
 
     @Test
+    public void test444x7() {
+
+        /*
+
+
+444 left = TypedExpression{expression=_this.doubleValue(), jpType=MethodCallExpr, type=double, fieldName='doubleValue', unificationVariable=Optional.empty, unificationName=Optional.empty}
+444 right = TypedExpression{expression=0, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+444 right = TypedExpression{expression=0d, jpType=DoubleLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+
+         */
+        final TypedExpression left = expr("_this.doubleValue()", double.class);
+        final TypedExpression right = expr("0", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("0d", int.class), coerce.getCoercedRight() );
+    }
+
+    @Test
     @Ignore("should support bigDecimal coercion also?")
     public void test444x6() {
 
@@ -111,6 +129,23 @@ ZZZ right = TypedExpression{expression=java.math.BigDecimal.valueOf(0.0), jpType
         final TypedExpression right = expr("40", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("String.valueOf(40)", String.class), coerce.getCoercedRight() );
+    }
+
+    @Test
+    public void test222x2() {
+        /*
+
+
+ZZZ left = TypedExpression{expression=_this.getName(), jpType=MethodCallExpr, type=class java.lang.String, fieldName='name', unificationVariable=Optional.empty, unificationName=Optional.empty}
+ZZZ right = TypedExpression{expression="50", jpType=StringLiteralExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+ZZZ left = TypedExpression{expression=_this.getName(), jpType=MethodCallExpr, type=class java.lang.String, fieldName='name', unificationVariable=Optional.empty, unificationName=Optional.empty}
+ZZZ right = TypedExpression{expression="50", jpType=StringLiteralExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("_this.getName()", String.class);
+        final TypedExpression right = expr("\"50\"", String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("\"50\"", String.class), coerce.getCoercedRight() );
     }
 
     @Test
