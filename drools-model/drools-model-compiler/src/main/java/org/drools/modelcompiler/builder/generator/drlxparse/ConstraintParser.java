@@ -133,44 +133,22 @@ public class ConstraintParser {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
-            System.out.println("ZZZ left = " + left);
-            System.out.println("ZZZ right = " + right);
+            CoercedExpression.CoercedExpressionResult coerced = new CoercedExpression(left, right).coerce();
+
+            right.setExpression(coerced.getCoercedRight().getExpression());
 
             Expression combo;
-            if ( left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) ) {
-                if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom( right.getType() ) &&
-                        !Boolean.class.isAssignableFrom( right.getType() ) && !String.class.isAssignableFrom( right.getType() )) {
-                    return new DrlxParseFail( new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()) );
-                }
-                if (right.getExpression() instanceof StringLiteralExpr) {
-                    System.out.println("333 left = " + left);
-                    System.out.println("333 right = " + right);
-                    right.setExpression(new IntegerLiteralExpr(((StringLiteralExpr) right.getExpression()).asString()));
-                    System.out.println("333 right = " + right);
-                    System.out.println("\n\n");
-                } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
-                    System.out.println("444 left = " + left);
-                    System.out.println("444 right = " + right);
-                    right.setExpression(coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType()));
-                    System.out.println("444 right = " + right);
-                    System.out.println("\n\n");
-                }
-                combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
-            } else {
 
-                coerceRightExpression( left, right );
-
-                switch ( operator ) {
-                    case EQUALS:
-                    case NOT_EQUALS:
-                        combo = getEqualityExpression( left, right, operator );
-                        break;
-                    default:
-                        if ( left.getExpression() == null || right.getExpression() == null ) {
-                            return new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) );
-                        }
-                        combo = handleSpecialComparisonCases( operator, left, right );
-                }
+            switch ( operator ) {
+                case EQUALS:
+                case NOT_EQUALS:
+                    combo = getEqualityExpression( left, right, operator );
+                    break;
+                default:
+                    if ( left.getExpression() == null || right.getExpression() == null ) {
+                        return new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) );
+                    }
+                    combo = handleSpecialComparisonCases( operator, left, right );
             }
 
             for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
@@ -184,7 +162,6 @@ public class ConstraintParser {
             }
 
 
-            System.out.println("ZZZ left = " + left);
             System.out.println("ZZZ right = " + right);
             System.out.println("\n\n");
             boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
@@ -302,30 +279,6 @@ public class ConstraintParser {
         }
     }
 
-    public static void coerceRightExpression( TypedExpression left, TypedExpression right ) {
-        if (right.getExpression() == null) {
-            return;
-        }
-
-        if (left.getType() == ClassUtil.NullType.class || right.getType() == ClassUtil.NullType.class ||
-            left.getType() == BigDecimal.class || Number.class.isAssignableFrom( right.getType() ) ||
-            left.getType() == String.class || right.getType() == String.class) {
-            return;
-        }
-
-        if (!areCompatible( left.getType(), right.getType() ) ) {
-            System.out.println("555 left = " + left);
-            System.out.println("555 right = " + right);
-            right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
-            System.out.println("555 right = " + right);
-            System.out.println("\n\n");
-        }
-    }
-
-    private static boolean areCompatible( Class<?> leftType, Class<?> rightType ) {
-        return toNonPrimitiveType( rightType ).isAssignableFrom( toNonPrimitiveType( leftType ) );
-    }
-
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
         if(isAnyOperandBigDecimal(left, right)) {
             return compareBigDecimal(operator, left, right);
@@ -337,52 +290,13 @@ public class ConstraintParser {
         if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
             if (left.getType() != String.class) {
                 return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            }  else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
-                System.out.println("111 left = " + left);
-                System.out.println("111 right = " + right);
-
-                right.setExpression(new StringLiteralExpr(rightExpression.toString()));
-                System.out.println("111 right = " + right);
-                System.out.println("\n\n");
             }
         }
-
-        coerceToString(left, right);
-        coerceToString(right, left);
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals" );
         methodCallExpr.addArgument(left.getExpression());
         methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
-    }
-
-    private static void coerceToString(TypedExpression left, TypedExpression right) {
-        final Expression rightExpression = right.getExpression();
-        if (shouldCoerceBToString(left, right)) {
-            System.out.println("222 left = " + left);
-            System.out.println("222 right = " + right);
-            if (rightExpression instanceof CharLiteralExpr) {
-                right.setExpression( new StringLiteralExpr((( CharLiteralExpr ) rightExpression).getValue() ) );
-            } else if (right.isPrimitive() ){
-                right.setExpression( new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList( rightExpression )) );
-            } else if(right.getType() == Object.class) {
-                right.setExpression( new MethodCallExpr(rightExpression, "toString" ) );
-            } else {
-                right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
-            }
-            System.out.println("222 right = " + right);
-            System.out.println("\n\n");
-            right.setType(String.class);
-        }
-    }
-
-    private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
-        boolean aIsString = a.getType() == String.class;
-        boolean bIsNotString = b.getType() != String.class;
-        boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
-        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
-        boolean bExpressionExists = b.getExpression() != null;
-        return bExpressionExists && aIsString && (bIsNotString &&  bIsNotNull && bIsNotSerializable);
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right ) {
