@@ -46,7 +46,7 @@ public class CoercedExpressionTest {
 
     222 left = TypedExpression{expression=_this.getName(), jpType=MethodCallExpr, type=class java.lang.String, fieldName='name', unificationVariable=Optional.empty, unificationName=Optional.empty}
     222 right = TypedExpression{expression=40, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
-    222 right = TypedExpression{expression=String.valueOf(40), jpType=MethodCallExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+    222 right = TypedExpression{expression=String.valueOf(40), jpType=MethodCallExpr, type=class java.lang.String, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
 
          */
         final TypedExpression left = expr("_this.getName()", String.class);

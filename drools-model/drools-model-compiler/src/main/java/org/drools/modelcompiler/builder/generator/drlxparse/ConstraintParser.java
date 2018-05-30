@@ -140,9 +140,17 @@ public class ConstraintParser {
                     return new DrlxParseFail( new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()) );
                 }
                 if (right.getExpression() instanceof StringLiteralExpr) {
-                    right.setExpression( new IntegerLiteralExpr( (( StringLiteralExpr ) right.getExpression()).asString() ) );
+                    System.out.println("333 left = " + left);
+                    System.out.println("333 right = " + right);
+                    right.setExpression(new IntegerLiteralExpr(((StringLiteralExpr) right.getExpression()).asString()));
+                    System.out.println("333 right = " + right);
+                    System.out.println("\n\n");
                 } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
-                    right.setExpression(coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType() ) );
+                    System.out.println("444 left = " + left);
+                    System.out.println("444 right = " + right);
+                    right.setExpression(coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType()));
+                    System.out.println("444 right = " + right);
+                    System.out.println("\n\n");
                 }
                 combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
             } else {
@@ -299,7 +307,11 @@ public class ConstraintParser {
         }
 
         if (!areCompatible( left.getType(), right.getType() ) ) {
-            right.setExpression( new CastExpr( toJavaParserType( left.getType(), right.getType().isPrimitive() ), right.getExpression() ) );
+            System.out.println("555 left = " + left);
+            System.out.println("555 right = " + right);
+            right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
+            System.out.println("555 right = " + right);
+            System.out.println("\n\n");
         }
     }
 
@@ -319,7 +331,12 @@ public class ConstraintParser {
             if (left.getType() != String.class) {
                 return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
             }  else if ( rightExpression instanceof LiteralExpr && !(rightExpression instanceof NullLiteralExpr)) {
-                right.setExpression( new StringLiteralExpr(rightExpression.toString() ) );
+                System.out.println("111 left = " + left);
+                System.out.println("111 right = " + right);
+
+                right.setExpression(new StringLiteralExpr(rightExpression.toString()));
+                System.out.println("111 right = " + right);
+                System.out.println("\n\n");
             }
         }
 
@@ -335,6 +352,8 @@ public class ConstraintParser {
     private static void coerceToString(TypedExpression left, TypedExpression right) {
         final Expression rightExpression = right.getExpression();
         if (shouldCoerceBToString(left, right)) {
+            System.out.println("222 left = " + left);
+            System.out.println("222 right = " + right);
             if (rightExpression instanceof CharLiteralExpr) {
                 right.setExpression( new StringLiteralExpr((( CharLiteralExpr ) rightExpression).getValue() ) );
             } else if (right.isPrimitive() ){
@@ -345,6 +364,8 @@ public class ConstraintParser {
                 right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
             }
             right.setType(String.class);
+            System.out.println("222 right = " + right);
+            System.out.println("\n\n");
         }
     }
 
