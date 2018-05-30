@@ -450,12 +450,19 @@ public class ObjectTypeNode extends ObjectSource
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
 
+        Class<?> nodeTypeClass = objectType.getClassType();
+        if (nodeTypeClass == null) {
+            return;
+        }
+
         EntryPointNode epn = context.getKnowledgeBase().getRete().getEntryPointNode( ((EntryPointNode) source).getEntryPoint() );
-        if (epn != null) {
-            ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getObjectTypeConfByClass( ((ClassObjectType) objectType).getClassType() );
-            if ( objectTypeConf != null ) {
-                objectTypeConf.resetCache();
-            }
+        if (epn == null) {
+            return;
+        }
+
+        ObjectTypeConf objectTypeConf = epn.getTypeConfReg().getObjectTypeConfByClass( nodeTypeClass );
+        if ( objectTypeConf != null ) {
+            objectTypeConf.resetCache();
         }
     }
 
