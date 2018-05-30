@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.scorecards;
 
@@ -48,28 +48,26 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
-
 public class ScoringStrategiesTest {
 
-
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @Test
-    public void testScoringExtension() throws Exception {
+    public void testScoringExtension() {
         PMML pmmlDocument;
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_scoring_strategies.xls")) ) {
+        if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_scoring_strategies.xls"))) {
             pmmlDocument = scorecardCompiler.getPMMLDocument();
             assertNotNull(pmmlDocument);
-            for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-                if (serializable instanceof Scorecard){
-                    Scorecard scorecard = (Scorecard)serializable;
-                    assertEquals("Sample Score",scorecard.getModelName());
+            for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
+                if (serializable instanceof Scorecard) {
+                    Scorecard scorecard = (Scorecard) serializable;
+                    assertEquals("Sample Score", scorecard.getModelName());
                     Extension extension = ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
                     assertNotNull(extension);
-                    assertEquals( extension.getValue(), AggregationStrategy.AGGREGATE_SCORE.toString() );
+                    assertEquals(extension.getValue(), AggregationStrategy.AGGREGATE_SCORE.toString());
                     return;
                 }
             }
@@ -214,21 +212,20 @@ public class ScoringStrategiesTest {
     }
 
     /* Internal functions */
-    private double executeAndFetchScore(String sheetName) throws Exception {
+    private double executeAndFetchScore(String sheetName) {
 
-    	Resource resource = ResourceFactory.newClassPathResource("scoremodel_scoring_strategies.xls").setResourceType(ResourceType.SCARD);
-    	ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
-    	resConf.setWorksheetName(sheetName);
-    	resource.setConfiguration(resConf);
-    	PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
-    	helper.addPossiblePackageName("org.drools.scorecards.example");
-    	PMMLRequestData request = new PMMLRequestData("123",helper.getModelName());
-    	request.addRequestParam("age",10.0);
-    	request.addRequestParam("validLicense", false);
-    	
-    	PMML4Result resultHolder = helper.submitRequest(request);
-    	assertEquals("OK",resultHolder.getResultCode());
-    	return resultHolder.getResultValue("Scorecard__calculatedScore", "value", Double.class).orElse(null);
+        Resource resource = ResourceFactory.newClassPathResource("scoremodel_scoring_strategies.xls").setResourceType(ResourceType.SCARD);
+        ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
+        resConf.setWorksheetName(sheetName);
+        resource.setConfiguration(resConf);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestData("123", helper.getModelName());
+        request.addRequestParam("age", 10.0);
+        request.addRequestParam("validLicense", false);
+
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertEquals("OK", resultHolder.getResultCode());
+        return resultHolder.getResultValue("Scorecard__calculatedScore", "value", Double.class).orElse(null);
     }
-
 }

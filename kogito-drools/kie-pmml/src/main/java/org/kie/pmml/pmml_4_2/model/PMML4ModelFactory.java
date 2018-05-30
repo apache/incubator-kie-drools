@@ -28,6 +28,7 @@ import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
 
 public class PMML4ModelFactory {
+
     static PMML4ModelFactory instance = new PMML4ModelFactory();
 
     private PMML4ModelFactory() {
@@ -37,24 +38,24 @@ public class PMML4ModelFactory {
     public static PMML4ModelFactory getInstance() {
         return PMML4ModelFactory.instance;
     }
-    
-    public PMML4Model getModel( Segment segment, MiningSegmentation segmentation) {
-    	PMML4Model model = null;
-    	if (segment.getMiningModel() != null) {
-    		MiningModel mm = segment.getMiningModel();
-    		model = new Miningmodel(mm.getModelName(), mm, segmentation.getOwner() ,null);
-    	} else if (segment.getRegressionModel() != null) {
-    		RegressionModel rm = segment.getRegressionModel();
-    		model = new Regression(rm.getModelName(), rm, segmentation.getOwner(), null);
-    	} else if (segment.getScorecard() != null) {
-    		Scorecard sc = segment.getScorecard();
-    		model = new ScorecardModel(sc.getModelName(), sc, segmentation.getOwner(), null);
-    	} else if (segment.getTreeModel() != null) {
-    		TreeModel tm = segment.getTreeModel();
-    		model = new Treemodel(tm.getModelName(), tm, segmentation.getOwner(), null);
-    	}
-    	
-    	return model;
+
+    public PMML4Model getModel(Segment segment, MiningSegmentation segmentation) {
+        PMML4Model model = null;
+        if (segment.getMiningModel() != null) {
+            MiningModel mm = segment.getMiningModel();
+            model = new Miningmodel(mm.getModelName(), mm, segmentation.getOwner(), null);
+        } else if (segment.getRegressionModel() != null) {
+            RegressionModel rm = segment.getRegressionModel();
+            model = new Regression(rm.getModelName(), rm, segmentation.getOwner(), null);
+        } else if (segment.getScorecard() != null) {
+            Scorecard sc = segment.getScorecard();
+            model = new ScorecardModel(sc.getModelName(), sc, segmentation.getOwner(), null);
+        } else if (segment.getTreeModel() != null) {
+            TreeModel tm = segment.getTreeModel();
+            model = new Treemodel(tm.getModelName(), tm, segmentation.getOwner(), null);
+        }
+
+        return model;
     }
 
     public List<PMML4Model> getModels(PMML4Unit owner) {
@@ -62,21 +63,21 @@ public class PMML4ModelFactory {
         owner.getRawPMML().getAssociationModelsAndBaselineModelsAndClusteringModels()
                 .forEach(serializable -> {
                     if (serializable instanceof Scorecard) {
-                        Scorecard sc = (Scorecard)serializable;
+                        Scorecard sc = (Scorecard) serializable;
                         ScorecardModel model = new ScorecardModel(sc.getModelName(), sc, null, owner);
                         pmml4Models.add(model);
                     } else if (serializable instanceof RegressionModel) {
-                        RegressionModel rm = (RegressionModel)serializable;
+                        RegressionModel rm = (RegressionModel) serializable;
                         Regression model = new Regression(rm.getModelName(), rm, null, owner);
                         pmml4Models.add(model);
                     } else if (serializable instanceof TreeModel) {
-                    	TreeModel tm = (TreeModel)serializable;
-                    	Treemodel model = new Treemodel(tm.getModelName(), tm, null, owner);
-                    	pmml4Models.add(model);
+                        TreeModel tm = (TreeModel) serializable;
+                        Treemodel model = new Treemodel(tm.getModelName(), tm, null, owner);
+                        pmml4Models.add(model);
                     } else if (serializable instanceof MiningModel) {
-                    	MiningModel mm = (MiningModel)serializable;
-                    	Miningmodel model = new Miningmodel(mm.getModelName(), mm, null, owner);
-                    	pmml4Models.add(model);
+                        MiningModel mm = (MiningModel) serializable;
+                        Miningmodel model = new Miningmodel(mm.getModelName(), mm, null, owner);
+                        pmml4Models.add(model);
                     }
                 });
         return pmml4Models;

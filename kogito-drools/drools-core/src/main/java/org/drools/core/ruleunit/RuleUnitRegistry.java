@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -68,7 +69,7 @@ public class RuleUnitRegistry {
 
     private transient final TypeResolver typeResolver;
 
-    private final Map<String, RuleUnitDescr> ruleUnits = new HashMap<>();
+    private final Map<String, RuleUnitDescr> ruleUnits = new ConcurrentHashMap<>();
 
     private final Set<String> nonExistingUnits = new HashSet<>();
 

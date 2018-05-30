@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.scorecards;
 
@@ -61,33 +61,30 @@ import static org.junit.Assert.fail;
 public class ScorecardReasonCodeTest {
 
     @Test
-    public void testPMMLDocument() throws Exception {
+    public void testPMMLDocument() {
         final ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
             assertErrors(scorecardCompiler);
         }
         Assert.assertNotNull(scorecardCompiler.getPMMLDocument());
-//        String pmml = scorecardCompiler.getPMML();
-//        Assert.assertNotNull(pmml);
-//        assertTrue(pmml.length() > 0);
     }
 
     @Test
-    public void testAbsenceOfReasonCodes() throws Exception {
+    public void testAbsenceOfReasonCodes() {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        scorecardCompiler.compileFromExcel( PMMLDocumentTest.class.getResourceAsStream( "/scoremodel_c.xls" ) );
+        scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_c.xls"));
         PMML pmml = scorecardCompiler.getPMMLDocument();
-        for (Object serializable : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-            if (serializable instanceof Scorecard){
+        for (Object serializable : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
+            if (serializable instanceof Scorecard) {
                 assertFalse(((Scorecard) serializable).getUseReasonCodes());
             }
         }
     }
 
     @Test
-    public void testUseReasonCodes() throws Exception {
-        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+    public void testUseReasonCodes() {
+        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
             assertErrors(scorecardCompiler);
@@ -95,18 +92,18 @@ public class ScorecardReasonCodeTest {
 
         final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-            if (serializable instanceof Scorecard){
-                assertTrue(((Scorecard)serializable).getUseReasonCodes());
-                assertEquals(100.0, ((Scorecard)serializable).getInitialScore(), 0.0);
-                assertEquals("pointsBelow",((Scorecard)serializable).getReasonCodeAlgorithm());
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
+            if (serializable instanceof Scorecard) {
+                assertTrue(((Scorecard) serializable).getUseReasonCodes());
+                assertEquals(100.0, ((Scorecard) serializable).getInitialScore(), 0.0);
+                assertEquals("pointsBelow", ((Scorecard) serializable).getReasonCodeAlgorithm());
             }
         }
     }
 
     @Test
-    public void testReasonCodes() throws Exception {
-        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+    public void testReasonCodes() {
+        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
             assertErrors(scorecardCompiler);
@@ -114,14 +111,14 @@ public class ScorecardReasonCodeTest {
 
         final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-            if (serializable instanceof Scorecard){
-                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
-                    if (obj instanceof Characteristics){
-                        Characteristics characteristics = (Characteristics)obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
+            if (serializable instanceof Scorecard) {
+                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
+                    if (obj instanceof Characteristics) {
+                        Characteristics characteristics = (Characteristics) obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
-                        for (Characteristic characteristic : characteristics.getCharacteristics()){
-                            for (Attribute attribute : characteristic.getAttributes()){
+                        for (Characteristic characteristic : characteristics.getCharacteristics()) {
+                            for (Attribute attribute : characteristic.getAttributes()) {
                                 assertNotNull(attribute.getReasonCode());
                             }
                         }
@@ -134,8 +131,8 @@ public class ScorecardReasonCodeTest {
     }
 
     @Test
-    public void testBaselineScores() throws Exception {
-        ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+    public void testBaselineScores() {
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
             assertErrors(scorecardCompiler);
@@ -143,17 +140,17 @@ public class ScorecardReasonCodeTest {
 
         final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-            if (serializable instanceof Scorecard){
-                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
-                    if (obj instanceof Characteristics){
-                        Characteristics characteristics = (Characteristics)obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
+            if (serializable instanceof Scorecard) {
+                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
+                    if (obj instanceof Characteristics) {
+                        Characteristics characteristics = (Characteristics) obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
                         assertEquals(10.0, characteristics.getCharacteristics().get(0).getBaselineScore(), 0.0);
                         assertEquals(99.0, characteristics.getCharacteristics().get(1).getBaselineScore(), 0.0);
                         assertEquals(12.0, characteristics.getCharacteristics().get(2).getBaselineScore(), 0.0);
                         assertEquals(15.0, characteristics.getCharacteristics().get(3).getBaselineScore(), 0.0);
-                        assertEquals(25.0, ((Scorecard)serializable).getBaselineScore(), 0.0);
+                        assertEquals(25.0, ((Scorecard) serializable).getBaselineScore(), 0.0);
                         return;
                     }
                 }
@@ -163,7 +160,7 @@ public class ScorecardReasonCodeTest {
     }
 
     @Test
-    public void testMissingReasonCodes() throws Exception {
+    public void testMissingReasonCodes() {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
         scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"), "scorecards_reason_error");
         assertEquals(3, scorecardCompiler.getScorecardParseErrors().size());
@@ -172,7 +169,7 @@ public class ScorecardReasonCodeTest {
     }
 
     @Test
-    public void testMissingBaselineScores() throws Exception {
+    public void testMissingBaselineScores() {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"), "scorecards_reason_error");
         assertEquals(3, scorecardCompiler.getScorecardParseErrors().size());
@@ -180,183 +177,180 @@ public class ScorecardReasonCodeTest {
     }
 
     @Test
-    public void testReasonCodesCombinations() throws Exception {
+    public void testReasonCodesCombinations() {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources().newClassPathResource( "scoremodel_reasoncodes.xls" )
-                           .setSourcePath( "scoremodel_reasoncodes.xls" )
-                           .setResourceType( ResourceType.SCARD ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        kfs.write(ks.getResources().newClassPathResource("scoremodel_reasoncodes.xls")
+                          .setSourcePath("scoremodel_reasoncodes.xls")
+                          .setResourceType(ResourceType.SCARD));
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         Results res = kieBuilder.buildAll().getResults();
-        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
+        KieContainer kieContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
         KieBase kbase = kieContainer.getKieBase();
-    	PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", kbase);
-    	helper.addPossiblePackageName("org.drools.scorecards.example");
-    	PMMLRequestData request = new PMMLRequestDataBuilder("123",helper.getModelName())
-    			.addParameter("age", 10.0, Double.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	
-    	PMML4Result resultHolder = helper.submitRequest(request);
-    	assertEquals("OK",resultHolder.getResultCode());
-    	assertCalculatedScore(resultHolder, 129.0);
-    	LinkedHashMap<String,Object> lhm = checkAndGetReasonCodeMap(resultHolder, 2);
-    	assertEquals(2, lhm.size());
-    	assertEquals(16.0, lhm.get("VL002"));
-    	assertEquals(-20.0, lhm.get("AGE02"));
-    	assertReasonCode(resultHolder,"VL002");
-    	
-    	request = new PMMLRequestDataBuilder("234", helper.getModelName())
-    			.addParameter("age", 0.0, Double.class)
-    			.addParameter("occupation", "SKYDIVER", String.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,99.0);
-    	lhm = checkAndGetReasonCodeMap(resultHolder,3);
-    	assertEquals(109.0, lhm.get("OCC01"));
-    	assertEquals(16.0, lhm.get("VL002"));
-    	assertEquals(0.0, lhm.get("AGE01"));
-    	assertReasonCode(resultHolder,"OCC01");
-    	
-    	request = new PMMLRequestDataBuilder("234", helper.getModelName())
-    			.addParameter("age", 20.0, Double.class)
-    			.addParameter("occupation", "TEACHER", String.class)
-    			.addParameter("residenceState", "AP", String.class)
-    			.addParameter("validLicense", true, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,141.0);
-    	lhm = checkAndGetReasonCodeMap(resultHolder,4);
-    	assertEquals(89.0, lhm.get("OCC02"));
-    	assertEquals(22.0, lhm.get("RS001"));
-    	assertEquals(14.0, lhm.get("VL001"));
-    	assertEquals(-30.0, lhm.get("AGE03"));
-    	assertReasonCode(resultHolder,"OCC02");
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", kbase);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 10.0, Double.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
 
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertEquals("OK", resultHolder.getResultCode());
+        assertCalculatedScore(resultHolder, 129.0);
+        LinkedHashMap<String, Object> lhm = checkAndGetReasonCodeMap(resultHolder, 2);
+        assertEquals(2, lhm.size());
+        assertEquals(16.0, lhm.get("VL002"));
+        assertEquals(-20.0, lhm.get("AGE02"));
+        assertReasonCode(resultHolder, "VL002");
+
+        request = new PMMLRequestDataBuilder("234", helper.getModelName())
+                .addParameter("age", 0.0, Double.class)
+                .addParameter("occupation", "SKYDIVER", String.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 99.0);
+        lhm = checkAndGetReasonCodeMap(resultHolder, 3);
+        assertEquals(109.0, lhm.get("OCC01"));
+        assertEquals(16.0, lhm.get("VL002"));
+        assertEquals(0.0, lhm.get("AGE01"));
+        assertReasonCode(resultHolder, "OCC01");
+
+        request = new PMMLRequestDataBuilder("234", helper.getModelName())
+                .addParameter("age", 20.0, Double.class)
+                .addParameter("occupation", "TEACHER", String.class)
+                .addParameter("residenceState", "AP", String.class)
+                .addParameter("validLicense", true, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 141.0);
+        lhm = checkAndGetReasonCodeMap(resultHolder, 4);
+        assertEquals(89.0, lhm.get("OCC02"));
+        assertEquals(22.0, lhm.get("RS001"));
+        assertEquals(14.0, lhm.get("VL001"));
+        assertEquals(-30.0, lhm.get("AGE03"));
+        assertReasonCode(resultHolder, "OCC02");
     }
-    
+
     private void assertCalculatedScore(PMML4Result resultHolder, Double score) {
-    	Double calcScore = resultHolder.getResultValue("CalculatedScore", "value", Double.class).orElse(null);
-    	assertEquals(score,calcScore,1e-6);
+        Double calcScore = resultHolder.getResultValue("CalculatedScore", "value", Double.class).orElse(null);
+        assertEquals(score, calcScore, 1e-6);
     }
-    
+
     private void assertReasonCode(PMML4Result resultHolder, String reasonCode) {
-    	String rc = resultHolder.getResultValue("ReasonCode", "value", String.class).orElse(null);
-    	assertEquals(reasonCode,rc);
-    }
-    
-    private LinkedHashMap<String,Object> checkAndGetReasonCodeMap(PMML4Result resultHolder, int mapSize) {
-    	Object obj = resultHolder.getResultValue("ScoreCard", "ranking");
-    	assertTrue(obj instanceof LinkedHashMap);
-    	LinkedHashMap<String,Object> lhm = (LinkedHashMap<String,Object>)obj;
-    	assertEquals(mapSize,lhm.size());
-    	return lhm;
+        String rc = resultHolder.getResultValue("ReasonCode", "value", String.class).orElse(null);
+        assertEquals(reasonCode, rc);
     }
 
-    @Test
-    public void testPointsAbove() throws Exception {
-    	Resource resource = ResourceFactory.newClassPathResource("scoremodel_reasoncodes.xls").setResourceType(ResourceType.SCARD);
-    	ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
-    	resConf.setWorksheetName("scorecards_pointsAbove");
-    	resource.setConfiguration(resConf);
-    	
-    	PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
-    	helper.addPossiblePackageName("org.drools.scorecards.example");
-    	PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 10.0, Double.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	PMML4Result resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,29.0);
-    	LinkedHashMap<String,Object> reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 2);
-        assertEquals( -16.0, reasonCodesMap.get( "VL002" ) );
-        assertEquals( 20.0, reasonCodesMap.get( "AGE02" ) );
-    	assertReasonCode(resultHolder, "AGE02");
-    	
-    	request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 0.0, Double.class)
-    			.addParameter("occupation", "SKYDIVER", String.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,-1.0);
-    	reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 3);
-        assertEquals( -109.0, reasonCodesMap.get( "OCC01" ) );
-        assertEquals( -16.0, reasonCodesMap.get( "VL002" ) );
-        assertEquals( 0.0, reasonCodesMap.get( "AGE01" ) );
-        assertEquals( Arrays.asList("AGE01","VL002","OCC01"), new ArrayList(reasonCodesMap.keySet()));
-    	assertReasonCode(resultHolder, "AGE01");
-    	
-    	request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 20.0, Double.class)
-    			.addParameter("occupation", "TEACHER", String.class)
-    			.addParameter("residenceState", "AP", String.class)
-    			.addParameter("validLicense", true, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder, 41.0);
-    	reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 4);
-        assertEquals( -89.0, reasonCodesMap.get( "OCC02" ) );
-        assertEquals( -22.0, reasonCodesMap.get( "RS001" ) );
-        assertEquals( -14.0, reasonCodesMap.get( "VL001" ) );
-        assertEquals( 30.0, reasonCodesMap.get( "AGE03" ) );
-        assertEquals( Arrays.asList( "AGE03", "VL001", "RS001", "OCC02" ), new ArrayList( reasonCodesMap.keySet() ) );
-    	assertReasonCode(resultHolder, "AGE03");
-    	
+    private LinkedHashMap<String, Object> checkAndGetReasonCodeMap(PMML4Result resultHolder, int mapSize) {
+        Object obj = resultHolder.getResultValue("ScoreCard", "ranking");
+        assertTrue(obj instanceof LinkedHashMap);
+        LinkedHashMap<String, Object> lhm = (LinkedHashMap<String, Object>) obj;
+        assertEquals(mapSize, lhm.size());
+        return lhm;
     }
 
     @Test
-    public void testPointsBelow() throws Exception {
-    	Resource resource = ResourceFactory.newClassPathResource("scoremodel_reasoncodes.xls").setResourceType(ResourceType.SCARD);
-    	ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
-    	resConf.setWorksheetName("scorecards_pointsBelow");
-    	resource.setConfiguration(resConf);
-    	
-    	PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
-    	helper.addPossiblePackageName("org.drools.scorecards.example");
-    	PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 10.0, Double.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	PMML4Result resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,29.0);
-    	LinkedHashMap<String,Object> reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 2);
-        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
-        assertEquals( -20.0, reasonCodesMap.get( "AGE02" ) );
-    	assertReasonCode(resultHolder, "VL002");
-    	
-    	request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 0.0, Double.class)
-    			.addParameter("occupation", "SKYDIVER", String.class)
-    			.addParameter("validLicense", false, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder,-1.0);
-    	reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 3);
-        assertEquals( 109.0, reasonCodesMap.get( "OCC01" ) );
-        assertEquals( 16.0, reasonCodesMap.get( "VL002" ) );
-        assertEquals( 0.0, reasonCodesMap.get( "AGE01" ) );
-        assertEquals( Arrays.asList("OCC01","VL002","AGE01"), new ArrayList(reasonCodesMap.keySet()));
-    	assertReasonCode(resultHolder, "OCC01");
+    public void testPointsAbove() {
+        Resource resource = ResourceFactory.newClassPathResource("scoremodel_reasoncodes.xls").setResourceType(ResourceType.SCARD);
+        ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
+        resConf.setWorksheetName("scorecards_pointsAbove");
+        resource.setConfiguration(resConf);
 
-    	request = new PMMLRequestDataBuilder("123", helper.getModelName())
-    			.addParameter("age", 20.0, Double.class)
-    			.addParameter("occupation", "TEACHER", String.class)
-    			.addParameter("residenceState", "AP", String.class)
-    			.addParameter("validLicense", true, Boolean.class)
-    			.build();
-    	resultHolder = helper.submitRequest(request);
-    	assertCalculatedScore(resultHolder, 41.0);
-    	reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 4);
-        assertEquals( 89.0, reasonCodesMap.get( "OCC02" ) );
-        assertEquals( 22.0, reasonCodesMap.get( "RS001" ) );
-        assertEquals( 14.0, reasonCodesMap.get( "VL001" ) );
-        assertEquals( -30.0, reasonCodesMap.get( "AGE03" ) );
-        assertEquals( Arrays.asList( "OCC02", "RS001", "VL001", "AGE03" ), new ArrayList( reasonCodesMap.keySet() ) );
-    	assertReasonCode(resultHolder, "OCC02");
-    	    	
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 10.0, Double.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 29.0);
+        LinkedHashMap<String, Object> reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 2);
+        assertEquals(-16.0, reasonCodesMap.get("VL002"));
+        assertEquals(20.0, reasonCodesMap.get("AGE02"));
+        assertReasonCode(resultHolder, "AGE02");
+
+        request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 0.0, Double.class)
+                .addParameter("occupation", "SKYDIVER", String.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, -1.0);
+        reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 3);
+        assertEquals(-109.0, reasonCodesMap.get("OCC01"));
+        assertEquals(-16.0, reasonCodesMap.get("VL002"));
+        assertEquals(0.0, reasonCodesMap.get("AGE01"));
+        assertEquals(Arrays.asList("AGE01", "VL002", "OCC01"), new ArrayList(reasonCodesMap.keySet()));
+        assertReasonCode(resultHolder, "AGE01");
+
+        request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 20.0, Double.class)
+                .addParameter("occupation", "TEACHER", String.class)
+                .addParameter("residenceState", "AP", String.class)
+                .addParameter("validLicense", true, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 41.0);
+        reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 4);
+        assertEquals(-89.0, reasonCodesMap.get("OCC02"));
+        assertEquals(-22.0, reasonCodesMap.get("RS001"));
+        assertEquals(-14.0, reasonCodesMap.get("VL001"));
+        assertEquals(30.0, reasonCodesMap.get("AGE03"));
+        assertEquals(Arrays.asList("AGE03", "VL001", "RS001", "OCC02"), new ArrayList(reasonCodesMap.keySet()));
+        assertReasonCode(resultHolder, "AGE03");
+    }
+
+    @Test
+    public void testPointsBelow() {
+        Resource resource = ResourceFactory.newClassPathResource("scoremodel_reasoncodes.xls").setResourceType(ResourceType.SCARD);
+        ScoreCardConfiguration resConf = new ScoreCardConfigurationImpl();
+        resConf.setWorksheetName("scorecards_pointsBelow");
+        resource.setConfiguration(resConf);
+
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("SampleScore", resource, null);
+        helper.addPossiblePackageName("org.drools.scorecards.example");
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 10.0, Double.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
+        PMML4Result resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 29.0);
+        LinkedHashMap<String, Object> reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 2);
+        assertEquals(16.0, reasonCodesMap.get("VL002"));
+        assertEquals(-20.0, reasonCodesMap.get("AGE02"));
+        assertReasonCode(resultHolder, "VL002");
+
+        request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 0.0, Double.class)
+                .addParameter("occupation", "SKYDIVER", String.class)
+                .addParameter("validLicense", false, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, -1.0);
+        reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 3);
+        assertEquals(109.0, reasonCodesMap.get("OCC01"));
+        assertEquals(16.0, reasonCodesMap.get("VL002"));
+        assertEquals(0.0, reasonCodesMap.get("AGE01"));
+        assertEquals(Arrays.asList("OCC01", "VL002", "AGE01"), new ArrayList(reasonCodesMap.keySet()));
+        assertReasonCode(resultHolder, "OCC01");
+
+        request = new PMMLRequestDataBuilder("123", helper.getModelName())
+                .addParameter("age", 20.0, Double.class)
+                .addParameter("occupation", "TEACHER", String.class)
+                .addParameter("residenceState", "AP", String.class)
+                .addParameter("validLicense", true, Boolean.class)
+                .build();
+        resultHolder = helper.submitRequest(request);
+        assertCalculatedScore(resultHolder, 41.0);
+        reasonCodesMap = checkAndGetReasonCodeMap(resultHolder, 4);
+        assertEquals(89.0, reasonCodesMap.get("OCC02"));
+        assertEquals(22.0, reasonCodesMap.get("RS001"));
+        assertEquals(14.0, reasonCodesMap.get("VL001"));
+        assertEquals(-30.0, reasonCodesMap.get("AGE03"));
+        assertEquals(Arrays.asList("OCC02", "RS001", "VL001", "AGE03"), new ArrayList(reasonCodesMap.keySet()));
+        assertReasonCode(resultHolder, "OCC02");
     }
 
     private void assertErrors(final ScorecardCompiler compiler) {

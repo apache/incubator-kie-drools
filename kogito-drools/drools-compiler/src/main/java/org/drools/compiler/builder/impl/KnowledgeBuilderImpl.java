@@ -90,7 +90,6 @@ import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -149,7 +148,6 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -514,85 +512,44 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return new File(dumpDir, fileName.replaceAll("[^a-zA-Z0-9\\.\\-_]+", "_") + extension);
     }
 
-    public void addPackageFromScoreCard(Resource resource,
-                                        ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
+    public void addPackageFromScoreCard(final Resource resource,
+                                        final ResourceConfiguration configuration) throws DroolsParserException, IOException {
         this.resource = resource;
-        ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
+        final ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
                 (ScoreCardConfiguration) configuration :
                 null;
-        String pmmlString = ScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream(), scardConfiguration);
+        final String pmmlString = ScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream(), scardConfiguration);
         if (pmmlString != null) {
-            File dumpDir = this.configuration.getDumpDir();
-            if (dumpDir != null) {
-                try {
-                    String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
-                    String outputPath = dirName + "scorecard_generated.pmml";
-                    try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-                        fos.write(pmmlString.getBytes());
-                    } catch (IOException iox) {
-                        iox.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
-            try {
-                addPackageFromKiePMML(getPMMLCompiler(),res,ResourceType.PMML,null);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            addPackageFromScoreCard(pmmlString, "scorecard_generated.pmml");
         }
-//        addPackage(scoreCardToPackageDescr(resource, configuration));
         this.resource = null;
     }
 
-    PackageDescr scoreCardToPackageDescr(Resource resource,
-                                         ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
-        ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
-                (ScoreCardConfiguration) configuration :
-                null;
-        String string = ScoreCardFactory.loadFromInputStream(resource.getInputStream(), scardConfiguration);
-        return generatedDrlToPackageDescr(resource, string);
-    }
-
-    public void addPackageFromGuidedScoreCard(Resource resource) throws DroolsParserException,
-            IOException {
+    public void addPackageFromGuidedScoreCard(final Resource resource) throws DroolsParserException, IOException {
         this.resource = resource;
-        String pmmlString = GuidedScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream());
+        final String pmmlString = GuidedScoreCardFactory.getPMMLStringFromInputStream(resource.getInputStream());
         if (pmmlString != null) {
-            File dumpDir = this.configuration.getDumpDir();
-            if (dumpDir != null) {
-                try {
-                    String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
-                    String outputPath = dirName + "guided_scorecard_generated.pmml";
-                    try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-                        fos.write(pmmlString.getBytes());
-                    } catch (IOException iox) {
-                        iox.printStackTrace();
-                    }
-                } catch (IOException iox) {
-                    iox.printStackTrace();
-                }
-            }
-            Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
-            try {
-                addPackageFromKiePMML(getPMMLCompiler(),res,ResourceType.PMML,null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            addPackageFromScoreCard(pmmlString, "guided_scorecard_generated.pmml");
         }
-//        addPackage(guidedScoreCardToPackageDescr(resource));
         this.resource = null;
     }
 
-    PackageDescr guidedScoreCardToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
-        String drl = GuidedScoreCardFactory.loadFromInputStream(resource.getInputStream());
-        return generatedDrlToPackageDescr(resource, drl);
+    private void addPackageFromScoreCard(final String pmmlString, final String fileName) throws DroolsParserException, IOException  {
+        final File dumpDir = this.configuration.getDumpDir();
+        if (dumpDir != null) {
+            final String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+            final String outputPath = dirName + fileName;
+            try (final FileOutputStream fos = new FileOutputStream(outputPath)) {
+                fos.write(pmmlString.getBytes());
+            }
+        }
+        final Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
+
+        try {
+            addPackageFromKiePMML(getPMMLCompiler(), res, ResourceType.PMML, null);
+        } catch (Exception e) {
+            throw new DroolsParserException(e);
+        }
     }
 
     public void addPackageFromTemplate(Resource resource) throws DroolsParserException,

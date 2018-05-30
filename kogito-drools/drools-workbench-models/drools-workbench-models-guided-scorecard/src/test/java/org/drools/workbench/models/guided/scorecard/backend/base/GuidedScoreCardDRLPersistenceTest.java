@@ -35,7 +35,6 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-//        assertFalse(drl.contains("package"));
         assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));
@@ -54,7 +53,6 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-//        assertFalse(drl.contains("package"));
         assertEquals(17,
                      StringUtil.countMatches(drl,
                                              "rule \""));

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,10 +11,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.scorecards;
-
 
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
@@ -54,20 +53,20 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import static org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
 
-
 public class ScorecardProviderPMMLTest {
+
     private static String drl;
     private ScoreCardProvider scoreCardProvider;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         scoreCardProvider = ScoreCardFactory.getScoreCardProvider();
         assertNotNull(scoreCardProvider);
     }
 
     @Test
     @Ignore
-    public void testDrlGeneration() throws Exception {
+    public void testDrlGeneration() {
         InputStream is = ScorecardProviderPMMLTest.class.getResourceAsStream("/SimpleScorecard.pmml");
         assertNotNull(is);
 
@@ -79,96 +78,64 @@ public class ScorecardProviderPMMLTest {
     }
 
     @Test
-    public void testKnowledgeBaseWithExecution() throws Exception {
-    	KieBase kbase = new KieHelper().addFromClassPath("/SimpleScorecard.pmml").build();
-    	RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-    	assertNotNull(executor);
-    	
-    	DataSource<PMMLRequestData> data = executor.newDataSource("request");
-    	DataSource<PMML4Result> resultData = executor.newDataSource("results");
-    	DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
-    	
-    	PMMLRequestData request = new PMMLRequestData("123","SampleScore");
-    	request.addRequestParam("age", 33.0);
-    	request.addRequestParam("occupation", "PROGRAMMER");
-    	request.addRequestParam("residenceState", "KN");
-    	request.addRequestParam("validLicense", true);
-    	
-    	data.insert(request);
-    	
-    	PMML4Result resultHolder = new PMML4Result("123");
-    	resultData.insert(resultHolder);
-    	
+    public void testKnowledgeBaseWithExecution() {
+        KieBase kbase = new KieHelper().addFromClassPath("/SimpleScorecard.pmml").build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+        assertNotNull(executor);
+
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");
+        DataSource<PMML4Result> resultData = executor.newDataSource("results");
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+
+        PMMLRequestData request = new PMMLRequestData("123", "SampleScore");
+        request.addRequestParam("age", 33.0);
+        request.addRequestParam("occupation", "PROGRAMMER");
+        request.addRequestParam("residenceState", "KN");
+        request.addRequestParam("validLicense", true);
+
+        data.insert(request);
+
+        PMML4Result resultHolder = new PMML4Result("123");
+        resultData.insert(resultHolder);
+
         List<String> possiblePackages = calculatePossiblePackageNames("Sample Score", "org.drools.scorecards.example");
-        Class<? extends RuleUnit> ruleUnitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
-    	int executions = executor.run(ruleUnitClass);
-    	assertTrue(executions > 0);
-    	
-    	System.out.println(resultHolder);
-    	Double calculatedScore = resultHolder.getResultValue("Scorecard_calculatedScore", "value", Double.class).orElse(null);
-    	assertEquals(56.0,calculatedScore,1e-6);
-/*
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources().newUrlResource( ScorecardProviderPMMLTest.class.getResource( "/SimpleScorecard.pmml" ) )
-                           .setSourcePath( "SimpleScorecard.pmml" )
-                           .setResourceType( ResourceType.PMML ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Class<? extends RuleUnit> ruleUnitClass = getStartingRuleUnit("RuleUnitIndicator", (InternalKnowledgeBase) kbase, possiblePackages);
+        int executions = executor.run(ruleUnitClass);
+        assertTrue(executions > 0);
 
-        Results res = kieBuilder.buildAll().getResults();
-        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
-
-        KieBase kbase = kieContainer.getKieBase();
-        KieSession session = kbase.newKieSession();
-
-
-        FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        assertNotNull(scorecardType);
-
-        Object scorecard = scorecardType.newInstance();
-        assertNotNull(scorecard);
-
-        scorecardType.set(scorecard, "age", 10);
-        session.insert( scorecard );
-        session.fireAllRules();
-        session.dispose();
-        //occupation = 5, age = 25, validLicence -1
-        assertEquals( 29.0, scorecardType.get( scorecard, "scorecard_calculatedScore" ) );
-*/
-
+        Double calculatedScore = resultHolder.getResultValue("Scorecard_calculatedScore", "value", Double.class).orElse(null);
+        assertEquals(56.0, calculatedScore, 1e-6);
     }
-    
+
     protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
-    	RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
-    	Map<String,InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
-    	RuleImpl ruleImpl = null;
-    	for (String pkgName: possiblePackages) {
-    		if (pkgs.containsKey(pkgName)) {
-    			InternalKnowledgePackage pkg = pkgs.get(pkgName);
-    			ruleImpl = pkg.getRule(startingRule);
-    			if (ruleImpl != null) {
-    				RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
-    				if (descr != null) {
-    					return descr.getRuleUnitClass();
-    				}
-    			}
-    		}
-    	}
-    	return null;
-    }
-    
-    protected List<String> calculatePossiblePackageNames(String modelId, String...knownPackageNames) {
-    	List<String> packageNames = new ArrayList<>();
-    	String javaModelId = modelId.replaceAll("\\s","");
-    	if (knownPackageNames != null && knownPackageNames.length > 0) {
-    		for (String knownPkgName: knownPackageNames) {
-    			packageNames.add(knownPkgName + "." + javaModelId);
-    		}
-    	}
-		String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE+"."+javaModelId;
-		packageNames.add(basePkgName);
-    	return packageNames;
+        RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
+        Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+        RuleImpl ruleImpl = null;
+        for (String pkgName : possiblePackages) {
+            if (pkgs.containsKey(pkgName)) {
+                InternalKnowledgePackage pkg = pkgs.get(pkgName);
+                ruleImpl = pkg.getRule(startingRule);
+                if (ruleImpl != null) {
+                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+                    if (descr != null) {
+                        return descr.getRuleUnitClass();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
-    
+    protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
+        List<String> packageNames = new ArrayList<>();
+        String javaModelId = modelId.replaceAll("\\s", "");
+        if (knownPackageNames != null && knownPackageNames.length > 0) {
+            for (String knownPkgName : knownPackageNames) {
+                packageNames.add(knownPkgName + "." + javaModelId);
+            }
+        }
+        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
+        packageNames.add(basePkgName);
+        return packageNames;
+    }
 }

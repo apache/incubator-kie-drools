@@ -23,7 +23,7 @@ import org.kie.internal.builder.ScoreCardConfiguration;
 
 public interface ScoreCardProvider extends Service {
 
-	@Deprecated
+    @Deprecated
     String loadFromInputStream( InputStream is,
                                 ScoreCardConfiguration configuration );
 
