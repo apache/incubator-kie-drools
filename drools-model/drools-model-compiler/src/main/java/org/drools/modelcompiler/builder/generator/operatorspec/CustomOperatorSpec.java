@@ -36,7 +36,15 @@ public class CustomOperatorSpec implements OperatorSpec {
             final Optional<TypedExpression> optionalRight = expressionTyper.toTypedExpression(rightExpr).getTypedExpression();
             optionalRight.ifPresent( right -> {
                 if (operator.requiresCoercion()) {
+                    System.out.println("\n\n");
+                    System.out.println("YYY left = " + left);
+                    System.out.println("YYY right = " + right);
                     coerceRightExpression(left, right);
+
+                    System.out.println("YYY left = " + left);
+                    System.out.println("YYY right = " + right);
+                    System.out.println("\n\n");
+
                 }
                 methodCallExpr.addArgument(right.getExpression() );
             });

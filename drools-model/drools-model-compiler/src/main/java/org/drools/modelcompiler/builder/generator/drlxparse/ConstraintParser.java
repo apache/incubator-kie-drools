@@ -133,6 +133,9 @@ public class ConstraintParser {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
+            System.out.println("ZZZ left = " + left);
+            System.out.println("ZZZ right = " + right);
+
             Expression combo;
             if ( left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) ) {
                 if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom( right.getType() ) &&
@@ -180,6 +183,10 @@ public class ConstraintParser {
                 combo = new EnclosedExpr( combo );
             }
 
+
+            System.out.println("ZZZ left = " + left);
+            System.out.println("ZZZ right = " + right);
+            System.out.println("\n\n");
             boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( decodeConstraintType )
                     .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft )
@@ -363,9 +370,9 @@ public class ConstraintParser {
             } else {
                 right.setExpression( new StringLiteralExpr( rightExpression.toString() ) );
             }
-            right.setType(String.class);
             System.out.println("222 right = " + right);
             System.out.println("\n\n");
+            right.setType(String.class);
         }
     }
 
