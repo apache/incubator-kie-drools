@@ -123,7 +123,7 @@ public class TypedExpression {
     public String toString() {
         return "TypedExpression{" +
                 "expression=" + expression +
-                ", jpType=" + expression.getClass().getSimpleName() +
+                ", jpType=" + (expression == null ? "" : expression.getClass().getSimpleName()) +
                 ", type=" + type +
                 ", fieldName='" + fieldName + '\'' +
                 ", unificationVariable=" + unificationVariable +
