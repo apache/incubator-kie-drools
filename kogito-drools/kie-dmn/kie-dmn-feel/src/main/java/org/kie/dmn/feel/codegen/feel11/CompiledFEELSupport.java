@@ -32,6 +32,8 @@ import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
@@ -371,6 +373,27 @@ public class CompiledFEELSupport {
             QEIteration qei = new QEIteration(name, values);
             return qei;
         }
+    }
+
+    public static Object invoke(EvaluationContext feelExprCtx, Object function, Object params) {
+        if (function == null) {
+            feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.FUNCTION_NOT_FOUND, function), null));
+            return null;
+        }
+        if (function instanceof FEELFunction) {
+            Object[] invocationParams = null;
+            if (params instanceof List) {
+                invocationParams = ((List) params).toArray(new Object[]{});
+            } else if (params instanceof Object[]) {
+                invocationParams = (Object[]) params;
+            } else {
+                invocationParams = new Object[]{params};
+            }
+            return ((FEELFunction) function).invokeReflectively(feelExprCtx, invocationParams);
+        } else if (function instanceof UnaryTest) {
+            throw new UnsupportedOperationException("TODO"); // TODO
+        }
+        return null;
     }
 
 }
