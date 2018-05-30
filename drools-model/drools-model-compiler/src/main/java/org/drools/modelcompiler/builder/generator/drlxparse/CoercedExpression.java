@@ -98,7 +98,7 @@ public class CoercedExpression {
     }
 
 
-    static class CoercedExpressionResult {
+    public static class CoercedExpressionResult {
         private final TypedExpression left;
         private final TypedExpression coercedRight;
 
