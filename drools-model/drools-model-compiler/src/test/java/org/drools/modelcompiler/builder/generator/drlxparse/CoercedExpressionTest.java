@@ -23,7 +23,23 @@ public class CoercedExpressionTest {
         assertEquals(expr("10", int.class), coerce.getCoercedRight() );
     }
 
-    private TypedExpression expr(String leftStr, Class<Integer> leftClass) {
+    @Test
+    public void test444x2() {
+
+        /*
+
+        444 left = TypedExpression{expression=_this.doubleValue(), jpType=MethodCallExpr, type=double, fieldName='doubleValue', unificationVariable=Optional.empty, unificationName=Optional.empty}
+        444 right = TypedExpression{expression=0, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+        444 right = TypedExpression{expression=0d, jpType=DoubleLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("_this.doubleValue()", double.class);
+        final TypedExpression right = expr("0", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("0d", int.class), coerce.getCoercedRight() );
+    }
+
+    private TypedExpression expr(String leftStr, Class<?> leftClass) {
         return new TypedExpression(DrlxParseUtil.parseExpression(leftStr).getExpr(), leftClass);
     }
 }
