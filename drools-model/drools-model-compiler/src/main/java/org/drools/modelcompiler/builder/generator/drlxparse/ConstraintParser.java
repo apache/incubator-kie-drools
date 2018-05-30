@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -17,16 +16,13 @@ import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
-import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
@@ -43,21 +39,16 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.core.util.StringUtils.lcFirst;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.canCoerceLiteralNumberExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.coerceLiteralNumberExprToType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
-import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class ConstraintParser {
 
