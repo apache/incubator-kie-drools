@@ -147,6 +147,26 @@ ZZZ right = TypedExpression{expression=java.math.BigDecimal.valueOf(0.0), jpType
         assertEquals(expr("(java.lang.Object)2000", int.class), coerce.getCoercedRight() );
     }
 
+    @Test
+    public void test555x2() {
+        /*
+
+
+YYY left = TypedExpression{expression=_this.getAgeAsShort(), jpType=MethodCallExpr, type=class java.lang.Short, fieldName='ageAsShort', unificationVariable=Optional.empty, unificationName=Optional.empty}
+YYY right = TypedExpression{expression=40, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+555 left = TypedExpression{expression=_this.getAgeAsShort(), jpType=MethodCallExpr, type=class java.lang.Short, fieldName='ageAsShort', unificationVariable=Optional.empty, unificationName=Optional.empty}
+555 right = TypedExpression{expression=40, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+555 right = TypedExpression{expression=(short) 40, jpType=CastExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+
+
+         */
+        final TypedExpression left = expr("_this.getAgeAsShort()", java.lang.Short.class);
+        final TypedExpression right = expr("40", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("(short)40", int.class), coerce.getCoercedRight() );
+    }
+
     private TypedExpression expr(String leftStr, Class<?> leftClass) {
         return new TypedExpression(DrlxParseUtil.parseExpression(leftStr).getExpr(), leftClass);
     }
