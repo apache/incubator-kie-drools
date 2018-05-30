@@ -42,6 +42,7 @@ public class CoercedExpression {
             } else {
                 coercedRight = right.cloneWithNewExpression( new StringLiteralExpr( rightExpression.toString() ) );
             }
+            coercedRight.setType(String.class);
 
         } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());

@@ -52,7 +52,7 @@ public class CoercedExpressionTest {
         final TypedExpression left = expr("_this.getName()", String.class);
         final TypedExpression right = expr("40", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
-        assertEquals(expr("String.valueOf(40)", int.class), coerce.getCoercedRight() );
+        assertEquals(expr("String.valueOf(40)", String.class), coerce.getCoercedRight() );
     }
 
     private TypedExpression expr(String leftStr, Class<?> leftClass) {
