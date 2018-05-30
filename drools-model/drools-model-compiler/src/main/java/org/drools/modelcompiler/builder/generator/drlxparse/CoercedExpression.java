@@ -1,11 +1,19 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.io.Serializable;
+
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.LongLiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 public class CoercedExpression {
@@ -22,8 +30,20 @@ public class CoercedExpression {
         System.out.println("XXX left = " + left);
         System.out.println("XXX right = " + right);
         final TypedExpression coercedRight;
+        final Expression rightExpression = right.getExpression();
 
-        if (right.getExpression() instanceof LiteralStringValueExpr ) {
+        if (shouldCoerceBToString(left, right)) {
+            if (rightExpression instanceof CharLiteralExpr) {
+                coercedRight = right.cloneWithNewExpression( new StringLiteralExpr((( CharLiteralExpr ) rightExpression).getValue() ) );
+            } else if (right.isPrimitive() ){
+                coercedRight = right.cloneWithNewExpression( new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(rightExpression )) );
+            } else if(right.getType() == Object.class) {
+                coercedRight = right.cloneWithNewExpression( new MethodCallExpr(rightExpression, "toString" ) );
+            } else {
+                coercedRight = right.cloneWithNewExpression( new StringLiteralExpr( rightExpression.toString() ) );
+            }
+
+        } else if (right.getExpression() instanceof LiteralStringValueExpr ) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else {
@@ -34,6 +54,15 @@ public class CoercedExpression {
         System.out.println("\n\n");
         final CoercedExpressionResult coercedExpressionResult = new CoercedExpressionResult(left, coercedRight, new BinaryExpr());
         return coercedExpressionResult;
+    }
+
+    private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
+        boolean aIsString = a.getType() == String.class;
+        boolean bIsNotString = b.getType() != String.class;
+        boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
+        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
+        boolean bExpressionExists = b.getExpression() != null;
+        return bExpressionExists && aIsString && (bIsNotString &&  bIsNotNull && bIsNotSerializable);
     }
 
     private Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type ) {

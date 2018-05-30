@@ -39,6 +39,22 @@ public class CoercedExpressionTest {
         assertEquals(expr("0d", int.class), coerce.getCoercedRight() );
     }
 
+    @Test
+    public void test222x1() {
+        /*
+
+
+    222 left = TypedExpression{expression=_this.getName(), jpType=MethodCallExpr, type=class java.lang.String, fieldName='name', unificationVariable=Optional.empty, unificationName=Optional.empty}
+    222 right = TypedExpression{expression=40, jpType=IntegerLiteralExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+    222 right = TypedExpression{expression=String.valueOf(40), jpType=MethodCallExpr, type=int, fieldName='null', unificationVariable=Optional.empty, unificationName=Optional.empty}
+
+         */
+        final TypedExpression left = expr("_this.getName()", String.class);
+        final TypedExpression right = expr("40", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("String.valueOf(40)", int.class), coerce.getCoercedRight() );
+    }
+
     private TypedExpression expr(String leftStr, Class<?> leftClass) {
         return new TypedExpression(DrlxParseUtil.parseExpression(leftStr).getExpr(), leftClass);
     }
