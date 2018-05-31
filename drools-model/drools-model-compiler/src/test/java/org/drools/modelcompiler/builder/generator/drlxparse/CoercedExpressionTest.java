@@ -60,6 +60,15 @@ public class CoercedExpressionTest {
     }
 
     @Test
+    public void stringToInt2() {
+        final TypedExpression left = expr("_this.getAge()", int.class);
+        final TypedExpression right = expr("\"50\"", String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("_this.getAge()", int.class), coerce.getCoercedLeft());
+        assertEquals(expr("50", String.class), coerce.getCoercedRight());
+    }
+
+    @Test
     public void avoidCoercingStrings() {
         final TypedExpression left = expr("_this.getName()", String.class);
         final TypedExpression right = expr("\"50\"", String.class);

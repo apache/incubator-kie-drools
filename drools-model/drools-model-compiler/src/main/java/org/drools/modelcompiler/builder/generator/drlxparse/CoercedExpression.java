@@ -65,7 +65,7 @@ public class CoercedExpression {
         }
 
         final TypedExpression coercedLeft;
-        if (shouldCoerceBToString(right, left)) {
+        if (!left.isPrimitive() && shouldCoerceBToString(right, left)) {
             coercedLeft = coerceToString(left);
         } else {
             coercedLeft = left;
