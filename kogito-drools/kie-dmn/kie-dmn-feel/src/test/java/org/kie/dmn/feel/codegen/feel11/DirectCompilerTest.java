@@ -298,6 +298,11 @@ public class DirectCompilerTest {
     }
 
     @Test
+    public void test_namedFunctionInvocation() {
+        assertThat(parseCompileEvaluate("substring(start position: 2, string: \"FOOBAR\")"), is("OOBAR"));
+    }
+
+    @Test
     public void test_contextExpression() {
         assertThat(parseCompileEvaluate("{}"), is(Collections.emptyMap()));
         assertThat(parseCompileEvaluate("{ }"), is(Collections.emptyMap()));

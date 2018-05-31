@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -53,6 +54,7 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.CompositeType;
@@ -63,6 +65,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -136,7 +139,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
      * or ranges, they need to be converted into an equality test unary expression.
      * This way, we have to compile and check the low level AST nodes to properly
      * deal with this case
-     * 
+     *
      * @param replaceEqualForUnaryTest use `true` to obtain the behavior described.
      */
     public DirectCompilerVisitor(Map<String, Type> inputTypes, boolean replaceEqualForUnaryTest) {
@@ -161,7 +164,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         fd.addVariable(vd);
         return DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.NUMBER, fd);
     }
-    
+
     @Override
     public DirectCompilerResult visitBooleanLiteral(FEEL_1_1Parser.BooleanLiteralContext ctx) {
         Expression result = null;
@@ -179,7 +182,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
         return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
     }
-    
+
     @Override
     public DirectCompilerResult visitSignedUnaryExpressionMinus(FEEL_1_1Parser.SignedUnaryExpressionMinusContext ctx) {
         DirectCompilerResult unaryExpr = visit(ctx.unaryExpression());
@@ -208,7 +211,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.unescapeString(ParserHelper.getOriginalText(ctx)));
         return DirectCompilerResult.of(expr, BuiltInType.STRING);
     }
-    
+
     @Override
     public DirectCompilerResult visitPrimaryParens(FEEL_1_1Parser.PrimaryParensContext ctx) {
         DirectCompilerResult expr = visit( ctx.expression() );
@@ -263,7 +266,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitAddExpression(FEEL_1_1Parser.AddExpressionContext ctx) {
         DirectCompilerResult left = visit( ctx.additiveExpression() );
         DirectCompilerResult right = visit( ctx.multiplicativeExpression() );
-        
+
         String opText = ctx.op.getText();
         InfixOperator op = InfixOperator.determineOperator(opText);
         if ( op == InfixOperator.ADD ) {
@@ -274,7 +277,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             throw new UnsupportedOperationException("this was a visitAddExpression but unrecognized op: " + opText); // parser problem.
         }
     }
-    
+
     /**
      * PLEASE NOTICE:
      * operation may perform a check for null-literal values, but might need this utility for runtime purposes.
@@ -286,10 +289,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                                       .map(e -> new BinaryExpr(e, new NullLiteralExpr(), BinaryExpr.Operator.EQUALS))
                                       .reduce( (x, y) -> new BinaryExpr(x, y, BinaryExpr.Operator.OR) )
                                       .get();
-        
+
         return new ConditionalExpr(new EnclosedExpr(nullChecks), new NullLiteralExpr(), originalOperation);
     }
-    
+
     private DirectCompilerResult visitAdd( DirectCompilerResult left, DirectCompilerResult right ) {
         if (left.getExpression() instanceof NullLiteralExpr || right.getExpression() instanceof NullLiteralExpr) {
             // optimization: if either left or right is a null literal, just null
@@ -323,7 +326,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         }
     }
-    
+
     private DirectCompilerResult visitSub( DirectCompilerResult left, DirectCompilerResult right ) {
         if (left.getExpression() instanceof NullLiteralExpr || right.getExpression() instanceof NullLiteralExpr) {
             // optimization: if either left or right is a null literal, just null
@@ -471,7 +474,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
         Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
-        
+
         String originalText = ParserHelper.getOriginalText(ctx);
 
         ObjectCreationExpr initializer = new ObjectCreationExpr();
@@ -509,7 +512,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
      * Create a DirectCompilerResult for an equivalent expression representing a Unary test.
      * That means the resulting expression is the name of the unary test,
      * which is referring to a FieldDeclaration, for a class field member using said name, of type UnaryTest and as value a lambda expression of a unarytest
-     * 
+     *
      * @param ctx mainly used to retrieve original text information (used to build the FieldDeclaration javadoc of the original FEEL text representation)
      * @param endpoint the right of the unary test
      * @param op the operator of the unarytest
@@ -614,7 +617,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//    
+//
 //    @Override
 //    public DirectCompilerResult visitRelExpressionValue(RelExpressionValueContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -892,9 +895,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult c = visit( ctx.c );
         DirectCompilerResult t = visit( ctx.t );
         DirectCompilerResult e = visit( ctx.e );
-        
+
 //        String snippet = "(e1 instanceof Boolean) ? ((boolean) e1 ? e2 : e3 ) : "+CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)";
-//        
+//
 //        Expression parsed = JavaParser.parseExpression(snippet);
 //        for ( NameExpr ne : parsed.getChildNodesByType(NameExpr.class) ) {
 //            switch (ne.getNameAsString()) {
@@ -910,7 +913,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //            }
 //        }
 //        return DirectCompilerResult.of(parsed, BuiltInType.UNKNOWN);
-        
+
         Expression errorExpression = JavaParser.parseExpression(CompiledFEELSupport.class.getSimpleName() + ".conditionWasNotBoolean(feelExprCtx)");
         MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
         castC.addArgument(new EnclosedExpr(c.getExpression()));
@@ -980,25 +983,45 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
 
-//    @Override
-//    public DirectCompilerResult visitNamedParameter(FEEL_1_1Parser.NamedParameterContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitNamedParameters(FEEL_1_1Parser.NamedParametersContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitNamedParameter(FEEL_1_1Parser.NamedParameterContext ctx) {
+        DirectCompilerResult name = visit(ctx.name);
+        DirectCompilerResult value = visit(ctx.value);
+
+        NodeList<Expression> expressions = new NodeList<>();
+        expressions.add(name.getExpression());
+        expressions.add(value.getExpression());
+        ObjectCreationExpr objectCreationExpr =
+                new ObjectCreationExpr(null,
+                                       new ClassOrInterfaceType(null, NamedParameter.class.getCanonicalName()), expressions);
+
+        return DirectCompilerResult.of(
+                objectCreationExpr,
+                BuiltInType.UNKNOWN,
+                value.getFieldDeclarations());
+    }
+
+    @Override
+    public DirectCompilerResult visitNamedParameters(FEEL_1_1Parser.NamedParametersContext ctx) {
+        List<DirectCompilerResult> exprs = new ArrayList<>();
+
+        for (FEEL_1_1Parser.NamedParameterContext npc : ctx.namedParameter()) {
+            exprs.add(visitNamedParameter(npc));
+        }
+        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
+        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
+    }
 //
 //    @Override
 //    public DirectCompilerResult visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
 //
-//    @Override
-//    public DirectCompilerResult visitParametersNamed(FEEL_1_1Parser.ParametersNamedContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitParametersNamed(FEEL_1_1Parser.ParametersNamedContext ctx) {
+        return visit(ctx.namedParameters());
+    }
 
     @Override
     public DirectCompilerResult visitParametersPositional(FEEL_1_1Parser.ParametersPositionalContext ctx) {
@@ -1010,7 +1033,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         String originalTextOfName = ParserHelper.getOriginalText(ctx.qualifiedName());
         DirectCompilerResult name = visit(ctx.qualifiedName());
         if (ctx.parameters() != null) {
-            DirectCompilerResult params = visit(ctx.parameters());
+            DirectCompilerResult params = visit( ctx.parameters() );
             if ("not".equals(originalTextOfName)) {
                 return buildNotCall(ctx, name, params);
             } else {
