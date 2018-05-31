@@ -152,10 +152,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         ObjectCreationExpr result = new ObjectCreationExpr();
         result.setType(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
         String originalText = ParserHelper.getOriginalText(ctx);
+        String constantName = ParserHelper.toNumericIdentifier(originalText);
         result.addArgument(originalText);
         result.addArgument(DECIMAL_128);
-        String constantName = "K_"+originalText;
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(
+                JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
         vd.setInitializer(result);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.PUBLIC, true);
