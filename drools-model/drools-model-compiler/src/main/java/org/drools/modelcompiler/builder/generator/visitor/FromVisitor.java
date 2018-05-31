@@ -137,13 +137,20 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {
-        for(Expression argument : methodCallExpr.getArguments()) {
+        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        String bindingId = null;
+
+        for (Expression argument : methodCallExpr.getArguments()) {
             final String argumentName = argument.toString();
             if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
-                return of(createFromCall(expression, of(argumentName), argumentName));
+                if (bindingId == null) {
+                    bindingId = argumentName;
+                }
+                fromCall.addArgument(new NameExpr(toVar(argumentName)));
             }
         }
-        return Optional.empty();
+
+        return bindingId != null ? of(addLambdaToFromExpression( expression, of(bindingId), bindingId, fromCall )) : Optional.empty();
     }
 
     private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {
@@ -165,7 +172,10 @@ public class FromVisitor {
     private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         fromCall.addArgument(new NameExpr(toVar(bindingId)));
+        return addLambdaToFromExpression( expression, optContainsBinding, bindingId, fromCall );
+    }
 
+    private Expression addLambdaToFromExpression( String expression, Optional<String> optContainsBinding, String bindingId, MethodCallExpr fromCall ) {
         Expression exprArg = createArg( expression, optContainsBinding, bindingId );
         if (exprArg != null) {
             fromCall.addArgument( exprArg );
