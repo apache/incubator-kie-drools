@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 
@@ -27,6 +28,7 @@ public class FunctionGenerator {
 
         EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC);
         MethodDeclaration methodDeclaration = new MethodDeclaration(modifiers, desc.getName(), parseType(desc.getReturnType()), nodeList(parameters));
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(DrlxParseUtil.toClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.setBody(DrlxParseUtil.parseBlock(desc.getBody()));
 
         return methodDeclaration;

@@ -109,10 +109,21 @@ public class TypedExpression {
         return left;
     }
 
+    public TypedExpression cloneWithNewExpression(Expression newExpression) {
+        final TypedExpression cloned = new TypedExpression(newExpression, type, fieldName);
+        cloned.unificationName = unificationName;
+        cloned.unificationVariable = unificationVariable;
+        cloned.staticExpr = staticExpr;
+        cloned.left = left;
+        return cloned;
+
+    }
+
     @Override
     public String toString() {
         return "TypedExpression{" +
                 "expression=" + expression +
+                ", jpType=" + (expression == null ? "" : expression.getClass().getSimpleName()) +
                 ", type=" + type +
                 ", fieldName='" + fieldName + '\'' +
                 ", unificationVariable=" + unificationVariable +

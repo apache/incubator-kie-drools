@@ -1,20 +1,27 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.NodeList;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
 import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
@@ -64,14 +71,33 @@ public class FromVisitor {
         Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expression);
         final String bindingId = optContainsBinding.orElse(expression);
 
+        final DrlxExpression drlxExpression = DrlxParseUtil.parseExpression(expression);
+
+        final Expression parsedExpression = drlxExpression.getExpr();
+        Optional<TypedExpression> staticField = Optional.empty();
+        if (parsedExpression instanceof FieldAccessExpr) {
+            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, ruleContext.getTypeResolver());
+        }
+
         Expression fromCall;
-        if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+        if (staticField.isPresent()) {
+            fromCall = createSupplier(parsedExpression);
+        } else if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
             fromCall = createFromCall(expression, optContainsBinding, bindingId);
         } else {
             fromCall = createUnitDataCall(optContainsBinding, bindingId);
         }
 
         return of(fromCall);
+    }
+
+    private Expression createSupplier(Expression parsedExpression) {
+        Supplier<String> str = () -> "ciao";
+        final LambdaExpr lambdaExpr = new LambdaExpr(NodeList.nodeList(), new ExpressionStmt(parsedExpression), true);
+
+        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        fromCall.addArgument(lambdaExpr);
+        return fromCall;
     }
 
     private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {

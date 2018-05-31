@@ -10,10 +10,10 @@ import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
-import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.coerceRightExpression;
 
 public class CustomOperatorSpec implements OperatorSpec {
     public static final CustomOperatorSpec INSTANCE = new CustomOperatorSpec();
@@ -35,10 +35,14 @@ public class CustomOperatorSpec implements OperatorSpec {
         for (Expression rightExpr : pointFreeExpr.getRight()) {
             final Optional<TypedExpression> optionalRight = expressionTyper.toTypedExpression(rightExpr).getTypedExpression();
             optionalRight.ifPresent( right -> {
+                final TypedExpression coercedRight;
                 if (operator.requiresCoercion()) {
-                    coerceRightExpression(left, right);
+                    final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+                    coercedRight = coerce.getCoercedRight();
+                } else {
+                    coercedRight = right;
                 }
-                methodCallExpr.addArgument(right.getExpression() );
+                methodCallExpr.addArgument(coercedRight.getExpression() );
             });
         }
 

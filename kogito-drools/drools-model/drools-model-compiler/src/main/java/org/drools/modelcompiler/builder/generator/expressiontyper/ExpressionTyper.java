@@ -38,6 +38,7 @@ import org.drools.javaparser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -45,9 +46,11 @@ import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpe
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.util.ClassUtil;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -188,7 +191,7 @@ public class ExpressionTyper {
             final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), objectCreationExpr.getType());
             TypedExpression typedExpression = new TypedExpression(objectCreationExpr, castClass);
 
-            return Optional.of(typedExpression);
+            return of(typedExpression);
 
         } else if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
@@ -207,7 +210,7 @@ public class ExpressionTyper {
         MethodCallExpr mapAccessExpr = new MethodCallExpr(scope, "get" );
         mapAccessExpr.addArgument(index);
         TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Object.class);
-        return Optional.of(typedExpression);
+        return of(typedExpression);
     }
 
     private Optional<TypedExpression> nameExpr(Expression drlxExpr, Class<?> typeCursor) {
@@ -236,7 +239,7 @@ public class ExpressionTyper {
                     expression = new TypedExpression(unificationVariable, typeCursor, name);
                     return of(expression);
                 }
-                return Optional.empty();
+                return empty();
             }
             context.addReactOnProperties(name);
             Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
@@ -263,6 +266,14 @@ public class ExpressionTyper {
     }
 
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
+        if(patternType == null && drlxExpr instanceof FieldAccessExpr) {
+            // try to see if it's a constant
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField((FieldAccessExpr) drlxExpr, ruleContext.getTypeResolver());
+            if(typedExpression.isPresent()) {
+                return new TypedExpressionResult(typedExpression, context);
+            }
+        }
+
         final List<Node> childrenNodes = flattenScope(drlxExpr);
         final Node firstChild = childrenNodes.get(0);
 
@@ -283,7 +294,7 @@ public class ExpressionTyper {
         Expression previous;
         Class<?> typeCursor;
         if(!teCursor.isPresent()) {
-            return new TypedExpressionResult(Optional.empty(), context);
+            return new TypedExpressionResult(empty(), context);
         } else {
             previous = teCursor.get().expressionCursor;
             typeCursor = teCursor.get().typeCursor;
@@ -318,6 +329,29 @@ public class ExpressionTyper {
         }
 
         return new TypedExpressionResult(of(new TypedExpression().setExpression(previous).setType(typeCursor)), context);
+    }
+
+    public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
+        Class<?> clazz;
+        try {
+            clazz = DrlxParseUtil.getClassFromContext(typeResolver, fieldAccessExpr.getScope().toString());
+        } catch(RuntimeException e) {
+            return empty();
+        }
+        String field = fieldAccessExpr.getNameAsString();
+
+        final Object staticValue;
+        try {
+            staticValue = clazz.getDeclaredField(field).get(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return empty();
+        }
+
+        if(staticValue != null) {
+            return of(new TypedExpression(fieldAccessExpr, clazz));
+        } else {
+            return empty();
+        }
     }
 
     private void extractPrefixExpressions(NullSafeFieldAccessExpr drlxExpr, Expression previous) {
@@ -494,7 +528,7 @@ public class ExpressionTyper {
 
             // In OOPath a declaration is based on a position rather than a name.
             // Only an OOPath chunk can have a backreference expression
-            Optional<DeclarationSpec> backReference = Optional.empty();
+            Optional<DeclarationSpec> backReference = empty();
             if(firstNode.getBackReferencesCount()  > 0) {
                 List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
                 DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
@@ -534,7 +568,7 @@ public class ExpressionTyper {
                     Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
                     ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
                 });
-                teCursor = Optional.empty();
+                teCursor = empty();
             }
         }
         return teCursor;
