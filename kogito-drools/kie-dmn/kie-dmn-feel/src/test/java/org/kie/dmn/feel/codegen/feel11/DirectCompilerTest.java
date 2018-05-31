@@ -38,6 +38,7 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -276,7 +277,7 @@ public class DirectCompilerTest {
     @Test
     public void test_quantifiedExpressions() {
         // quantified expressions
-        assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100"             ),is(Boolean.TRUE )  );
+        assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100"), is(Boolean.TRUE));
         assertThat(parseCompileEvaluate("some price in [ 80, 11, 90 ] satisfies price > 100"), is(Boolean.FALSE));
         assertThat(parseCompileEvaluate("some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y"), is(Boolean.TRUE));
         assertThat(parseCompileEvaluate("every price in [ 80, 11, 90 ] satisfies price > 10"), is(Boolean.TRUE));
@@ -288,6 +289,12 @@ public class DirectCompilerTest {
     @Test
     public void test_basicFunctionInvocation() {
         assertThat(parseCompileEvaluate("max(1, 2, 3)"), is(new BigDecimal(3)));
+    }
+
+    @Test
+    public void test_basicFunctionDefinition() {
+        assertThat(parseCompileEvaluate("function (a, b) a + b"), is(instanceOf(CompiledCustomFEELFunction.class)));
+        assertThat(parseCompileEvaluate("{ s : function (a, b) a + b, x : 1, y : 2, r : s(x,y) }.r"), is(new BigDecimal(3)));
     }
 
     @Test
