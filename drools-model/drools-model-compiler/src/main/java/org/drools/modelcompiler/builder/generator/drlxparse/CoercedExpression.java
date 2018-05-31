@@ -101,7 +101,8 @@ public class CoercedExpression {
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
         boolean bIsNotSerializable = !(b.getType() == Serializable.class);
         boolean bExpressionExists = b.getExpression() != null;
-        return bExpressionExists && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
+        boolean bIsNotABinaryExpression = !(b.getExpression() != null && b.getExpression().isBinaryExpr());
+        return bExpressionExists && bIsNotABinaryExpression && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
     }
 
     private Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type) {

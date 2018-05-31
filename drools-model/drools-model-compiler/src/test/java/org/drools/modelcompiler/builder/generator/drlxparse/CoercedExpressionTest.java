@@ -85,6 +85,15 @@ public class CoercedExpressionTest {
     }
 
     @Test
+    public void avoidCoercingBinaryExpressions () {
+        final TypedExpression left = expr("_this.getAddress().getCity() == \"Brno\" && _this.getAddress().getStreet() == \"Technology Park\"", String.class);
+        final TypedExpression right = expr("_this.getAddress().getNumber() == 1", int.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("_this.getAddress().getCity() == \"Brno\" && _this.getAddress().getStreet() == \"Technology Park\"", String.class), coerce.getCoercedLeft());
+        assertEquals(expr("_this.getAddress().getNumber() == 1", int.class), coerce.getCoercedRight());
+    }
+
+    @Test
     public void castToObject() {
         final TypedExpression left = expr("_this.getItems().get((Integer) 1)", java.lang.Object.class);
         final TypedExpression right = expr("2000", int.class);
