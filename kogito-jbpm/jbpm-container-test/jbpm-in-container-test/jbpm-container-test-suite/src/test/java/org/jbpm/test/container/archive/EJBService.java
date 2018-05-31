@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.model.DeploymentUnit;
@@ -54,6 +55,9 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.NamedObjectModel;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,6 +333,10 @@ public class EJBService {
     private static InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources, Map<String, String> extraResources) {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
         kfs.writePomXML(getPom(releaseId));
+
+        DeploymentDescriptor descriptor = createDeploymentDescriptor();
+        kfs.write("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, descriptor.toXml());
+
         for (String resource : resources) {
             kfs.write("src/main/resources/KBase-test/" + resource,
                     ResourceFactory.newClassPathResource(EJB_SERVICES_ASSETS_PATH + resource));
@@ -352,14 +360,21 @@ public class EJBService {
         KieModuleModel kproj = ks.newKieModuleModel();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase-test").setDefault(true).addPackage("*")
                 .setEqualsBehavior(EqualityBehaviorOption.EQUALITY).setEventProcessingMode(EventProcessingOption.STREAM);
-        KieSessionModel kieSessionModel1 = kieBaseModel1.newKieSessionModel("ksession-test").setDefault(true).setType(KieSessionModel.KieSessionType.STATEFUL)
+        kieBaseModel1.newKieSessionModel("ksession-test").setDefault(true).setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType(ClockTypeOption.get("realtime"));
-        kieSessionModel1.newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
-        kieSessionModel1.newWorkItemHandlerModel("Rest", "new org.jbpm.process.workitem.rest.RESTWorkItemHandler()");
-        kieSessionModel1.newWorkItemHandlerModel("ThreadInfo", "new org.jbpm.test.container.archive.ejbservices.ThreadInfoWorkItemHandler()");
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
         return kfs;
+    }
+
+    private static DeploymentDescriptor createDeploymentDescriptor() {
+        return new DeploymentDescriptorImpl("org.jbpm.domain")
+                .getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE)
+                .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"))
+                .addWorkItemHandler(new NamedObjectModel("Rest", "org.jbpm.process.workitem.rest.RESTWorkItemHandler"))
+                .addWorkItemHandler(new NamedObjectModel("ThreadInfo", "org.jbpm.test.container.archive.ejbservices.ThreadInfoWorkItemHandler"))
+                .get();
     }
 
     public static enum KieJar {
