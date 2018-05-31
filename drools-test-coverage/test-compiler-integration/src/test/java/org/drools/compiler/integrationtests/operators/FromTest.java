@@ -45,6 +45,7 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -76,7 +77,7 @@ public class FromTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     public static class ListsContainer {
@@ -582,7 +583,7 @@ public class FromTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testFromWithParams() {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +

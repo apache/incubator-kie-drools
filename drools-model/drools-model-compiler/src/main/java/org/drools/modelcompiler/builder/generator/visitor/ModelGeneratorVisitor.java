@@ -20,6 +20,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorFlowDSL;
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorPatternDSL;
+import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
@@ -34,7 +35,6 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     private final ConditionalElementVisitor conditionalElementVisitor;
     private final OrVisitor orVisitor;
     private final EvalVisitor evalVisitor;
-    private final FromVisitor fromVisitor;
     private final NamedConsequenceVisitor namedConsequenceVisitor;
     private final PatternVisitor patternVisitor;
     private final FromCollectVisitor fromCollectVisitor;
@@ -46,10 +46,9 @@ public class ModelGeneratorVisitor implements DescrVisitor {
             accumulateVisitor = new AccumulateVisitorFlowDSL(this, context, packageModel);
         }
         andVisitor = new AndVisitor(this, context);
-        conditionalElementVisitor = new ConditionalElementVisitor(context, this);
+        conditionalElementVisitor = new ConditionalElementVisitor(this, context);
         orVisitor = new OrVisitor(this, context);
         evalVisitor = new EvalVisitor(context, packageModel);
-        fromVisitor = new FromVisitor(context, packageModel);
         namedConsequenceVisitor = new NamedConsequenceVisitor(context, packageModel);
         patternVisitor = new PatternVisitor(context, packageModel);
         fromCollectVisitor = new FromCollectVisitor(this);
@@ -97,7 +96,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(FromDescr descr) {
-        fromVisitor.visit(descr);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -129,5 +128,9 @@ public class ModelGeneratorVisitor implements DescrVisitor {
                 patternVisitor.visit(descr).buildPattern();
             }
         }
+    }
+
+    public void initPattern(PatternDescr descr) {
+        ((PatternDSL)patternVisitor.visit(descr)).initPattern();
     }
 }

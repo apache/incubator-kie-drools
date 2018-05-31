@@ -208,7 +208,7 @@ public class DSL {
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
-        return new FromImpl<>( variable, provider );
+        return new FromImpl<>( variable, new Function1.Impl<>(provider) );
     }
 
     public static <T> From<T> reactiveFrom( Variable<T> variable, Function1<T, ?> provider ) {

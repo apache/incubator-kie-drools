@@ -19,6 +19,7 @@ package org.drools.modelcompiler.constraints;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
@@ -100,5 +101,20 @@ public class LambdaDataProvider implements DataProvider {
     @Override
     public boolean isReactive() {
         return reactive;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        LambdaDataProvider that = ( LambdaDataProvider ) o;
+        return reactive == that.reactive &&
+                Objects.equals( providerFunction, that.providerFunction ) &&
+                Objects.equals( declaration, that.declaration );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( providerFunction, declaration, reactive );
     }
 }

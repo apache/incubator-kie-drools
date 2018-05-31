@@ -36,6 +36,7 @@ import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -472,8 +473,12 @@ public class ExpressionTyper {
             methodCallExpr.setArgument( i, typedExpr.getExpression() );
         }
 
-        Class<?> type = ClassUtil.findMethod( originalTypeCursor, methodCallExpr.getNameAsString(), argsType ).getReturnType();
-        return new TypedExpressionCursor(methodCallExpr, type);
+        Method m = ClassUtil.findMethod( originalTypeCursor, methodCallExpr.getNameAsString(), argsType );
+        if (m == null) {
+            ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Method " + methodCallExpr.getNameAsString() + " on " + originalTypeCursor + " is missing" ) );
+            return new TypedExpressionCursor(methodCallExpr, Object.class);
+        }
+        return new TypedExpressionCursor(methodCallExpr, m.getReturnType());
     }
 
     private TypedExpressionCursor arrayCreationExpr(ArrayCreationExpr arrayCreationExpr) {
