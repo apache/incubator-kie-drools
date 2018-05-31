@@ -48,10 +48,6 @@ public class DecisionNodeImpl
         return decision;
     }
 
-    public void setDecision(Decision decision) {
-        this.decision = decision;
-    }
-
     public DMNExpressionEvaluator getEvaluator() {
         return evaluator;
     }
