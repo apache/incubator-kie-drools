@@ -56,7 +56,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         if( drlxParseResult.isPatternBindingUnification() ) {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
         } else {
-            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
+            if (drlxParseResult.getPatternBinding() != null) {
                 exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
             }
         }
