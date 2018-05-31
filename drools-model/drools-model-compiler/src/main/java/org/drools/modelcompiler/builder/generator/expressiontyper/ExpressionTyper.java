@@ -202,6 +202,11 @@ public class ExpressionTyper {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
                 return nameExpr.flatMap( te -> createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
             }
+
+        } else if (drlxExpr instanceof InstanceOfExpr) {
+            InstanceOfExpr instanceOfExpr = (InstanceOfExpr)drlxExpr;
+            return toTypedExpressionRec(instanceOfExpr.getExpression())
+                    .map( e -> new TypedExpression(new InstanceOfExpr(e.getExpression(), instanceOfExpr.getType()), boolean.class) );
         }
 
         throw new UnsupportedOperationException();
