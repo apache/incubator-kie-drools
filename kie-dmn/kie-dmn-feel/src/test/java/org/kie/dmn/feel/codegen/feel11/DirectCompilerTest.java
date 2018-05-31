@@ -300,6 +300,7 @@ public class DirectCompilerTest {
     @Test
     public void test_namedFunctionInvocation() {
         assertThat(parseCompileEvaluate("substring(start position: 2, string: \"FOOBAR\")"), is("OOBAR"));
+        assertThat(parseCompileEvaluate("ceiling( n : 1.5 )"), is(new BigDecimal("2")));
     }
 
     @Test
