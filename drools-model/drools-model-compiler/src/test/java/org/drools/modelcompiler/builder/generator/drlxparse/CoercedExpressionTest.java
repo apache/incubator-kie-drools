@@ -109,6 +109,13 @@ public class CoercedExpressionTest {
         assertEquals(expr("(short)40", int.class), coerce.getCoercedRight());
     }
 
+    @Test(expected = CoercedExpression.CoercedExpressionException.class)
+    public void testException() {
+        final TypedExpression left = expr("_this.getAge()", int.class);
+        final TypedExpression right = expr("rage", java.lang.Object.class);
+        new CoercedExpression(left, right).coerce();
+    }
+
     private TypedExpression expr(String exprString, Class<?> exprClass) {
         return new TypedExpression(DrlxParseUtil.parseExpression(exprString).getExpr(), exprClass);
     }

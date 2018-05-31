@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
@@ -20,6 +19,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
@@ -51,7 +51,17 @@ public class CoercedExpression {
         final TypedExpression coercedRight;
         final Expression rightExpression = right.getExpression();
 
-        if (left.isPrimitive() && canCoerceLiteralNumberExpr(left.getType()) && rightExpression instanceof LiteralStringValueExpr) {
+        final boolean leftIsPrimitive = left.isPrimitive();
+        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(left.getType());
+
+        if (leftIsPrimitive && canCoerceLiteralNumberExpr) {
+            if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom(right.getType()) &&
+                    !Boolean.class.isAssignableFrom(right.getType()) && !String.class.isAssignableFrom(right.getType())) {
+                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()));
+            }
+        }
+
+        if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
@@ -141,6 +151,19 @@ public class CoercedExpression {
 
         public TypedExpression getCoercedRight() {
             return coercedRight;
+        }
+    }
+
+    public static class CoercedExpressionException extends RuntimeException {
+
+        private final InvalidExpressionErrorResult invalidExpressionErrorResult;
+
+        public CoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
+            this.invalidExpressionErrorResult = invalidExpressionErrorResult;
+        }
+
+        public InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
+            return invalidExpressionErrorResult;
         }
     }
 }

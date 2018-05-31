@@ -124,7 +124,12 @@ public class ConstraintParser {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
-            CoercedExpression.CoercedExpressionResult coerced = new CoercedExpression(left, right).coerce();
+            CoercedExpression.CoercedExpressionResult coerced;
+            try {
+                coerced = new CoercedExpression(left, right).coerce();
+            } catch (CoercedExpression.CoercedExpressionException e) {
+                return new DrlxParseFail(e.getInvalidExpressionErrorResult());
+            }
 
             left = coerced.getCoercedLeft();
             right = coerced.getCoercedRight();
