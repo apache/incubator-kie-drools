@@ -87,6 +87,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
     private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
+    private static final Expression ANONYMOUS_STRING_LITERAL = new StringLiteralExpr("<anonymous>");
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
     private boolean replaceEqualForUnaryTest = false;
@@ -762,16 +763,40 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
     }
 
-//    @Override
-//    public DirectCompilerResult visitFormalParameters(FEEL_1_1Parser.FormalParametersContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
-//    @Override
-//    public DirectCompilerResult visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+    @Override
+    public DirectCompilerResult visitFormalParameters(FEEL_1_1Parser.FormalParametersContext ctx) {
+        List<DirectCompilerResult> exprs = new ArrayList<>();
+        for (FEEL_1_1Parser.FormalParameterContext fpc : ctx.formalParameter()) {
+            exprs.add(visit(fpc));
+        }
+        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
+        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
+    }
+
+    @Override
+    public DirectCompilerResult visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
+        DirectCompilerResult parameters = null;
+        if (ctx.formalParameters() != null) {
+            parameters = visit(ctx.formalParameters());
+        }
+        boolean external = ctx.external != null;
+        if (external) {
+            throw new UnsupportedOperationException("TODO"); // TODO
+        }
+        DirectCompilerResult body = visit(ctx.body);
+        ObjectCreationExpr functionDefExpr = new ObjectCreationExpr();
+        functionDefExpr.setType(JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName()));
+        functionDefExpr.addArgument(ANONYMOUS_STRING_LITERAL);
+        functionDefExpr.addArgument((parameters != null) ? parameters.getExpression() : EMPTY_LIST);
+        functionDefExpr.addArgument(anonFunctionEvaluationContext2Object(body.getExpression()));
+        DirectCompilerResult result = DirectCompilerResult.of(functionDefExpr, BuiltInType.FUNCTION).withFD(body);
+        if (parameters != null) {
+            result.withFD(parameters);
+        }
+        return result;
+    }
+
 //    @Override
 //    public DirectCompilerResult visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
     //        throw new UnsupportedOperationException("TODO"); // TODO won't be needed
@@ -979,7 +1004,6 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitParametersPositional(FEEL_1_1Parser.ParametersPositionalContext ctx) {
         return visit(ctx.positionalParameters());
     }
-
 
     @Override
     public DirectCompilerResult visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
