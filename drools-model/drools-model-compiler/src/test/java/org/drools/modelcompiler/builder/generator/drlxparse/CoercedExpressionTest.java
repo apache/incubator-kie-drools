@@ -44,14 +44,6 @@ public class CoercedExpressionTest {
     }
 
     @Test
-    public void charToStringOnLeft() {
-        final TypedExpression left = expr("_this.getCharPrimitive()", char.class);
-        final TypedExpression right = expr("$c1", java.lang.String.class);
-        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
-        assertEquals(expr("String.valueOf(_this.getCharPrimitive())", String.class), coerce.getCoercedLeft());
-    }
-
-    @Test
     public void stringToInt() {
         final TypedExpression left = expr("_this.getName()", String.class);
         final TypedExpression right = expr("40", int.class);
@@ -66,6 +58,14 @@ public class CoercedExpressionTest {
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("_this.getAge()", int.class), coerce.getCoercedLeft());
         assertEquals(expr("50", String.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void charToStringOnLeft() {
+        final TypedExpression left = expr("_this.getCharPrimitive()", char.class);
+        final TypedExpression right = expr("$c1", java.lang.String.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("String.valueOf(_this.getCharPrimitive())", String.class), coerce.getCoercedLeft());
     }
 
     @Test

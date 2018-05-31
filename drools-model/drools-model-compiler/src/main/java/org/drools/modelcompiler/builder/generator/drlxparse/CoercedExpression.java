@@ -65,7 +65,7 @@ public class CoercedExpression {
         }
 
         final TypedExpression coercedLeft;
-        if (!left.isPrimitive() && shouldCoerceBToString(right, left)) {
+        if (toNonPrimitiveType(left.getType()) == Character.class && shouldCoerceBToString(right, left)) {
             coercedLeft = coerceToString(left);
         } else {
             coercedLeft = left;
