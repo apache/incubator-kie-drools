@@ -156,7 +156,7 @@ public class DMNModelImpl
             return null;
         }
         for ( DecisionNode dn : this.decisions.values() ) {
-            if ( dn.getName() != null && name.equals( dn.getName() ) ) {
+            if (dn.getName() != null && name.equals(dn.getName()) && getNamespace().equals(dn.getModelNamespace())) {
                 return dn;
             }
         }

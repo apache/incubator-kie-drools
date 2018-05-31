@@ -297,7 +297,7 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck) {
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
-        if( result.getContext().isDefined( decision.getName() ) ) {
+        if (isNodeValueDefined(result, decision)) {
             // already resolved
             return true;
         } else {
@@ -341,7 +341,7 @@ public class DMNRuntimeImpl
                                            getIdentifier( dep ),
                                            e.getMessage() );
                 }
-                if( ! result.getContext().isDefined( dep.getName() ) ) {
+                if (!isNodeValueDefined(result, dep)) {
                     if( dep instanceof DecisionNode ) {
                         if (!evaluateDecision(context, result, (DecisionNode) dep, typeCheck)) {
                             missingInput = true;
@@ -429,7 +429,14 @@ public class DMNRuntimeImpl
                         return false;
                     }
 
-                    result.getContext().set( decision.getDecision().getVariable().getName(), value );
+                    if (decision.getModelNamespace().equals(result.getModel().getNamespace())) {
+                        result.getContext().set(decision.getDecision().getVariable().getName(), value);
+                    } else {
+                        DMNModelImpl model = (DMNModelImpl) result.getModel();
+                        Optional<String> importAlias = model.getImportAliasFor(decision.getModelNamespace(), decision.getModelName());
+                        Map<String, Object> aliasContext = (Map) result.getContext().getAll().computeIfAbsent(importAlias.get(), x -> new LinkedHashMap<>());
+                        aliasContext.put(decision.getDecision().getVariable().getName(), value);
+                    }
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
