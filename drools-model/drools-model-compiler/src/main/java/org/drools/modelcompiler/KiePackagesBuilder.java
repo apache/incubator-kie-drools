@@ -108,6 +108,7 @@ import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
+import org.drools.modelcompiler.constraints.SupplierDataProvider;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
@@ -653,10 +654,15 @@ public class KiePackagesBuilder {
                     pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
                 } else if ( decl.getSource() instanceof From ) {
                     From<?> from = (From) decl.getSource();
-                    DataProvider provider = new LambdaDataProvider( ctx.getDeclaration( from.getVariable() ), from.getProvider(), from.isReactive() );
+                    DataProvider provider = null;
+                    if (from.getVariable() != null) {
+                        provider = new LambdaDataProvider(ctx.getDeclaration(from.getVariable()), from.getProvider(), from.isReactive());
+                    } else if (from.getSupplier() != null) {
+                        provider = new SupplierDataProvider(from.getSupplier());
+                    }
                     org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
-                    fromSource.setResultPattern( pattern );
-                    pattern.setSource( fromSource );
+                    fromSource.setResultPattern(pattern);
+                    pattern.setSource(fromSource);
                 } else if ( decl.getSource() instanceof UnitData ) {
                     UnitData unitData = (UnitData ) decl.getSource();
                     pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );

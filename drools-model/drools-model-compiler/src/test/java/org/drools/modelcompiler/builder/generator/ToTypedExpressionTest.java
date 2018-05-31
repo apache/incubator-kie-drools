@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -86,6 +87,20 @@ public class ToTypedExpressionTest {
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
         final TypedExpression actual = typedExpressionResult.getTypedExpression().get();
         final TypedExpression expected = typedResult("D.eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), \"[A-Z]\")", String.class);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBigDecimalConstant() {
+        final TypedExpression expected = typedResult("java.math.BigDecimal.ONE", BigDecimal.class);
+        final TypedExpression actual = toTypedExpression("java.math.BigDecimal.ONE", null);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBooleanComparison() {
+        final TypedExpression expected = typedResult("_this.getAge() == 18", int.class);
+        final TypedExpression actual = toTypedExpression("age == 18", Person.class);
         assertEquals(expected, actual);
     }
 

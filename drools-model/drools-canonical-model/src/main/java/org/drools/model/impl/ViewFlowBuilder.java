@@ -252,9 +252,11 @@ public class ViewFlowBuilder implements ViewBuilder {
             Declaration declaration = (( Declaration ) patterVariable);
             if ( declaration.getSource() instanceof From ) {
                 Variable var = (( From ) declaration.getSource()).getVariable();
-                addInputFromVariableSource( inputs, var );
-                if (var.isFact()) {
-                    inputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
+                if(var != null) { // If from is from a supplier source is missing
+                    addInputFromVariableSource(inputs, var);
+                    if (var.isFact()) {
+                        inputs.putIfAbsent(var, (InputViewItemImpl) input(var));
+                    }
                 }
             }
         }

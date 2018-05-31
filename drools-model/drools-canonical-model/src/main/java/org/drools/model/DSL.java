@@ -25,6 +25,7 @@ import org.drools.model.datasources.impl.DataStreamImpl;
 import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
+import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
@@ -52,6 +53,7 @@ import org.drools.model.impl.AnnotationValueImpl;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.FromImpl;
+import org.drools.model.impl.FromSupplierImpl;
 import org.drools.model.impl.GlobalImpl;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -199,6 +201,10 @@ public class DSL {
 
     public static <T> From<T> from( Variable<T> variable ) {
         return new FromImpl<>( variable );
+    }
+
+    public static <T> From<T> from( Function0<T> provider ) {
+        return new FromSupplierImpl<T>( provider );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
