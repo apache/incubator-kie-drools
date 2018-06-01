@@ -256,17 +256,6 @@ public class ParserHelper {
         return ctx.getStart().getInputStream().getText( interval );
     }
 
-    /**
-     * Sanitizes a number of the form: <code>123e+10</code> and turns it into a valid identifier
-     */
-    public static String toNumericIdentifier(String number) {
-        // FIXME quick & dirty sanitization routine
-        return "K_" + number
-                .replace(".", "$point$")
-                .replace("+", "$plus$")
-                .replace("-", "$minus$");
-    }
-
     public static List<Token> getAllTokens(
             ParseTree ctx,
             List<Token> tokens) {
