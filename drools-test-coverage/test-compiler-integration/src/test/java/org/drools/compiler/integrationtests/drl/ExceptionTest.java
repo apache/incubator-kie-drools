@@ -40,16 +40,23 @@ public class ExceptionTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
+    public static class TestException extends RuntimeException {
+        public TestException(String message) {
+            super(message);
+        }
     }
 
     @Test
     public void testReturnValueException() {
 
         final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + TestException.class.getCanonicalName() + ";\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "function String throwException( ) {\n" +
-                "    throw new RuntimeException( \"this should throw an exception\" );\n" +
+                "    throw new TestException( \"this should throw an exception\" );\n" +
                 "}\n" +
                 "\n" +
                 "rule \"Throw ReturnValue Exception\"\n" +
@@ -67,7 +74,7 @@ public class ExceptionTest {
             Assertions.assertThatThrownBy(() -> {
                 ksession.insert(brie);
                 ksession.fireAllRules();
-            }).hasRootCauseInstanceOf(RuntimeException.class).hasMessageContaining("Error evaluating constraint 'type == ( throwException( ) )");
+            }).hasRootCauseInstanceOf(TestException.class);
         } finally {
             ksession.dispose();
         }

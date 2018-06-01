@@ -161,40 +161,42 @@ public class POJOGenerator {
         Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
 
         if (!inheritedFields.isEmpty() || !typeDeclaration.getFields().isEmpty()) {
-            ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
-            NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
+            if (typeFields.size() < 65) {
+                ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
 
-            MethodCallExpr superCall = new MethodCallExpr( null, "super" );
-            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
-                superCall.addArgument( fieldName );
-                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
-                    keyFields.add(typeFieldDescr);
+                MethodCallExpr superCall = new MethodCallExpr( null, "super" );
+                for (TypeFieldDescr typeFieldDescr : inheritedFields) {
+                    String fieldName = typeFieldDescr.getFieldName();
+                    addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                    superCall.addArgument( fieldName );
+                    if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                        keyFields.add( typeFieldDescr );
+                    }
                 }
-            }
-            ctorFieldStatement.add( new ExpressionStmt(superCall) );
+                ctorFieldStatement.add( new ExpressionStmt( superCall ) );
 
-            int position = inheritedFields.size();
-            for (TypeFieldDescr typeFieldDescr : typeFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                int position = inheritedFields.size();
+                for (TypeFieldDescr typeFieldDescr : typeFields) {
+                    String fieldName = typeFieldDescr.getFieldName();
+                    Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
 
-                FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
-                field.createSetter();
-                field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
-                MethodDeclaration getter = field.createGetter();
-                equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
-                hashCodeFieldStatement.addAll(generateHashCodeForField(getter, fieldName));
+                    FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
+                    field.createSetter();
+                    field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
+                    MethodDeclaration getter = field.createGetter();
+                    equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
+                    hashCodeFieldStatement.addAll( generateHashCodeForField( getter, fieldName ) );
 
-                ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
+                    ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
 
-                toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
-                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
-                    keyFields.add(typeFieldDescr);
+                    toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+                    if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                        keyFields.add( typeFieldDescr );
+                    }
                 }
+                fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
             }
-            fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
 
             if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.size()) {
                 ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );

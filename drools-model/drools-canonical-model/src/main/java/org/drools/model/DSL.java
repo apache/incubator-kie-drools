@@ -467,8 +467,8 @@ public class DSL {
         return new ConsequenceBuilder._0(block);
     }
 
-    public static ConsequenceBuilder._0 executeScript(String language, String script) {
-        return new ConsequenceBuilder._0(language, script);
+    public static ConsequenceBuilder._0 executeScript(String language, String ruleFile, String script) {
+        return new ConsequenceBuilder._0(language, ruleFile, script);
     }
 
     public static <A> ConsequenceBuilder._1<A> on(Variable<A> dec1) {

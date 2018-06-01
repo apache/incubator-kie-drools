@@ -242,6 +242,9 @@ public class ConstraintParser {
             NameExpr nameExpr = (NameExpr) drlxExpr;
 
             TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
+            if (converted == null) {
+                return new DrlxParseFail();
+            }
             Expression withThis = DrlxParseUtil.prepend(new NameExpr("_this"), converted.getExpression());
 
             if (hasBind) {

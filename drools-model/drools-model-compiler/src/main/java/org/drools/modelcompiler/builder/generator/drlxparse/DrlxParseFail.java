@@ -6,6 +6,10 @@ public class DrlxParseFail implements DrlxParseResult {
 
     private final DroolsError error;
 
+    public DrlxParseFail() {
+        this(null);
+    }
+
     public DrlxParseFail( DroolsError error ) {
         this.error = error;
     }

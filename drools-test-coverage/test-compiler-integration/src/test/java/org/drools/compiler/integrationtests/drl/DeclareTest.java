@@ -53,7 +53,7 @@ public class DeclareTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -532,66 +532,6 @@ public class DeclareTest {
             assertEquals(p, list.get(0));
         } finally {
             ksession.dispose();
-        }
-    }
-
-    @Test
-    public void testTypeUnsafe() throws Exception {
-        final String drl = "import " + DeclareTest.class.getName() + ".*\n" +
-                "declare\n" +
-                "   Parent @typesafe(false)\n" +
-                "end\n" +
-                "rule R1\n" +
-                "when\n" +
-                "   $a : Parent( x == 1 )\n" +
-                "then\n" +
-                "end\n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            for (int i = 0; i < 20; i++) {
-                ksession.insert(new ChildA(i % 10));
-                ksession.insert(new ChildB(i % 10));
-            }
-
-            assertEquals(4, ksession.fireAllRules());
-
-            // give time to async jitting to complete
-            Thread.sleep(100);
-
-            ksession.insert(new ChildA(1));
-            ksession.insert(new ChildB(1));
-            assertEquals(2, ksession.fireAllRules());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    public static class Parent {
-    }
-
-    public static class ChildA extends Parent {
-        private final int x;
-
-        public ChildA(final int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
-        }
-    }
-
-    public static class ChildB extends Parent {
-        private final int x;
-
-        public ChildB(final int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
         }
     }
 
