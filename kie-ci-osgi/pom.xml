@@ -81,6 +81,11 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/kie.conf</resource>
+                </transformer>
+              </transformers>
               <artifactSet>
                 <excludes>
                   <exclude>org.kie.soup:kie-soup-maven-support</exclude>
