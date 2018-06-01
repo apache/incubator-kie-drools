@@ -70,6 +70,14 @@ rule "Required room capacity"
         scoreHolder.addHardConstraintMatch(kcontext, $penalty);
 end
 
+rule "Start and end on same day"
+    when
+        MeetingAssignment(startingTimeGrain != null, $firstTimeGrain : startingTimeGrain, $lastTimeGrainIndex : getLastTimeGrainIndex())
+        $lastTimeGrain : TimeGrain(grainIndex == $lastTimeGrainIndex, $firstTimeGrain.getDay() != getDay())
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
 // ############################################################################
 // Medium constraints
 // ############################################################################
