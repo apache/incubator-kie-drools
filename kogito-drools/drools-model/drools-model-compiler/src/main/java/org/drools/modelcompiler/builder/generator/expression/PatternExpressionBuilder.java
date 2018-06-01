@@ -11,7 +11,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -21,7 +20,6 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -70,7 +68,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
-        if (!drlxParseResult.getReactOnProperties().isEmpty()) {
+        if (!drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)

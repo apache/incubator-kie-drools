@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler.constraints;
 
+import java.util.Objects;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
@@ -38,5 +40,19 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements In
     @Override
     public Object getValue( InternalWorkingMemory workingMemory, Object object ) {
         return lambda.apply( object );
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        if ( !super.equals( o ) ) return false;
+        LambdaReadAccessor that = ( LambdaReadAccessor ) o;
+        return Objects.equals( lambda, that.lambda );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( super.hashCode(), lambda );
     }
 }

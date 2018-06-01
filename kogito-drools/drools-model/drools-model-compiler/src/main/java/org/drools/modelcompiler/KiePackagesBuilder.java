@@ -75,6 +75,9 @@ import org.drools.model.Consequence;
 import org.drools.model.Constraint;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
+import org.drools.model.From0;
+import org.drools.model.From1;
+import org.drools.model.From2;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -108,7 +111,6 @@ import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
-import org.drools.modelcompiler.constraints.SupplierDataProvider;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
 import org.kie.api.KieBaseConfiguration;
@@ -126,6 +128,7 @@ import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
+import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
@@ -654,12 +657,7 @@ public class KiePackagesBuilder {
                     pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
                 } else if ( decl.getSource() instanceof From ) {
                     From<?> from = (From) decl.getSource();
-                    DataProvider provider = null;
-                    if (from.getVariable() != null) {
-                        provider = new LambdaDataProvider(ctx.getDeclaration(from.getVariable()), from.getProvider(), from.isReactive());
-                    } else if (from.getSupplier() != null) {
-                        provider = new SupplierDataProvider(from.getSupplier());
-                    }
+                    DataProvider provider = createFromDataProvider( ctx, from );
                     org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
                     fromSource.setResultPattern(pattern);
                     pattern.setSource(fromSource);
@@ -694,6 +692,19 @@ public class KiePackagesBuilder {
         }
         ctx.registerPattern( patternVariable, pattern );
         return pattern;
+    }
+
+    private DataProvider createFromDataProvider( RuleContext ctx, From<?> from ) {
+        if (from instanceof From0 ) {
+            return new LambdaDataProvider( toFunctionN( (( From0 ) from).getProvider() ), from.isReactive() );
+        }
+        if (from instanceof From1) {
+            return new LambdaDataProvider( toFunctionN( (( From1 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ) );
+        }
+        if (from instanceof From2 ) {
+            return new LambdaDataProvider( toFunctionN( (( From2 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From2 ) from).getVariable2() ) );
+        }
+        throw new UnsupportedOperationException( "Unknown from type " + from );
     }
 
     private <T> void createWindowReference( RuleContext ctx, WindowReference<T> window ) {

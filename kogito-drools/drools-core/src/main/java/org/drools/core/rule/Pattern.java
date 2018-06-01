@@ -550,18 +550,30 @@ public class Pattern
     }
 
     public boolean isCompatibleWithAccumulateReturnType( Class<?> returnType ) {
-        return returnType == null ||
-               returnType == Object.class ||
-               ( returnType == Number.class && objectType instanceof ClassObjectType && Number.class.isAssignableFrom( ((ClassObjectType)objectType).getClassType() ) ) ||
-               objectType.isAssignableFrom( convertFromPrimitiveType(returnType) );
+        return isCompatibleWithAccumulateReturnType( getPatternType(), returnType );
     }
 
     public boolean isCompatibleWithFromReturnType( Class<?> returnType ) {
-        return isCompatibleWithAccumulateReturnType( returnType ) ||
-               isIterable( returnType ) ||
-               ( objectType instanceof ClassObjectType && 
-                       ( returnType.isAssignableFrom( ((ClassObjectType)objectType).getClassType()) || 
-                         ( !isFinal( returnType ) && isInterface(((ClassObjectType)objectType).getClassType()))   
-                         ) );
+        return isCompatibleWithFromReturnType( getPatternType(), returnType );
+    }
+
+    public static boolean isCompatibleWithAccumulateReturnType( Class<?> patternType, Class<?> returnType ) {
+        return returnType == null ||
+                returnType == Object.class ||
+                ( returnType == Number.class && patternType != null && Number.class.isAssignableFrom( patternType ) ||
+                patternType.isAssignableFrom( convertFromPrimitiveType(returnType) ) );
+    }
+
+    public static boolean isCompatibleWithFromReturnType( Class<?> patternType, Class<?> returnType ) {
+        return isCompatibleWithAccumulateReturnType( patternType, returnType ) ||
+                isIterable( returnType ) ||
+                ( patternType != null &&
+                        ( returnType.isAssignableFrom( patternType ) ||
+                                ( !isFinal( returnType ) && isInterface(patternType))
+                        ) );
+    }
+
+    private Class<?> getPatternType() {
+        return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
 }

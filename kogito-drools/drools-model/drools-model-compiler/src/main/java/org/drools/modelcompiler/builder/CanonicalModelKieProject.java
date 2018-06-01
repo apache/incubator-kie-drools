@@ -55,7 +55,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(isPattern);
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration( kBaseModel, kModule ), isPattern);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }

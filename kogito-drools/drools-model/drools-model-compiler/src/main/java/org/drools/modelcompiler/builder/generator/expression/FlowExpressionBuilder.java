@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -19,13 +18,11 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
@@ -59,7 +56,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         if( drlxParseResult.isPatternBindingUnification() ) {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
         } else {
-            if (drlxParseResult.getPatternBinding() != null && !drlxParseResult.getUsedDeclarations().contains( drlxParseResult.getPatternBinding() )) {
+            if (drlxParseResult.getPatternBinding() != null) {
                 exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
             }
         }
@@ -89,7 +86,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildReactOn(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
-        if ( !drlxParseResult.getReactOnProperties().isEmpty() ) {
+        if ( !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() ) ) {
             exprDSL = new MethodCallExpr(exprDSL, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map( StringLiteralExpr::new )

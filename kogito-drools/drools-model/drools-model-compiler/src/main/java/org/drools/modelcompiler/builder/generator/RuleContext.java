@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -20,9 +19,12 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
@@ -50,7 +52,6 @@ public class RuleContext {
     private RuleUnitDescr ruleUnitDescr;
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
-
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public enum RuleDialect {
@@ -262,6 +263,12 @@ public class RuleContext {
 
     public TypeResolver getTypeResolver() {
         return typeResolver;
+    }
+
+    public boolean isPropertyReactive( Class<?> patternClass) {
+        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
+        return propertySpecificOption.isPropSpecific( patternClass.getAnnotation( PropertyReactive.class ) != null,
+                                                      patternClass.getAnnotation( ClassReactive.class ) != null );
     }
 }
 

@@ -12,7 +12,6 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -31,10 +30,7 @@ class PatternDSLPattern extends PatternDSL {
 
     @Override
     public void buildPattern() {
-        generatePatternIdentifierIfMissing();
-
-        final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
-        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
+        initPattern();
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
             context.addExpression( addWatchToPattern( createPatternExpression(pattern) ) );

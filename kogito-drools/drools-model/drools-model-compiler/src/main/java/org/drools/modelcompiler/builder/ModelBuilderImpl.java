@@ -32,7 +32,6 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
@@ -48,23 +47,8 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private boolean isPattern = false;
 
-    public ModelBuilderImpl() {
-        super();
-    }
-
-    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration) {
+    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, boolean isPattern) {
         super(configuration);
-    }
-
-    public ModelBuilderImpl(InternalKnowledgeBase kBase) {
-        super(kBase);
-    }
-
-    public ModelBuilderImpl(InternalKnowledgeBase kBase, KnowledgeBuilderConfigurationImpl configuration) {
-        super(kBase, configuration);
-    }
-
-    public ModelBuilderImpl(boolean isPattern) {
         this.isPattern = isPattern;
     }
 

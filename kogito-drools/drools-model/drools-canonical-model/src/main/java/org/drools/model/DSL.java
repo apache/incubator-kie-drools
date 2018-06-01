@@ -27,6 +27,7 @@ import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
 import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
@@ -52,8 +53,9 @@ import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.AnnotationValueImpl;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.EntryPointImpl;
-import org.drools.model.impl.FromImpl;
-import org.drools.model.impl.FromSupplierImpl;
+import org.drools.model.impl.From0Impl;
+import org.drools.model.impl.From1Impl;
+import org.drools.model.impl.From2Impl;
 import org.drools.model.impl.GlobalImpl;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -200,19 +202,23 @@ public class DSL {
     }
 
     public static <T> From<T> from( Variable<T> variable ) {
-        return new FromImpl<>( variable );
+        return new From1Impl<>( variable );
     }
 
     public static <T> From<T> from( Function0<T> provider ) {
-        return new FromSupplierImpl<T>( provider );
+        return new From0Impl<T>( provider );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
-        return new FromImpl<>( variable, provider );
+        return new From1Impl<>( variable, new Function1.Impl<>(provider) );
+    }
+
+    public static <T,U> From<T> from( Variable<T> var1, Variable<U> var2, Function2<T, U, ?> provider ) {
+        return new From2Impl<>( var1, var2, new Function2.Impl<>(provider) );
     }
 
     public static <T> From<T> reactiveFrom( Variable<T> variable, Function1<T, ?> provider ) {
-        return new FromImpl<>( variable, provider, true );
+        return new From1Impl<>( variable, provider, true );
     }
 
     public static ViewItem or( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions) {

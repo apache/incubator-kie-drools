@@ -2,7 +2,6 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -10,12 +9,10 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
-import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -36,10 +33,7 @@ class FlowDSLPattern extends PatternDSL {
 
     @Override
     public void buildPattern() {
-        generatePatternIdentifierIfMissing();
-
-        final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
-        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
+        initPattern();
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
             context.addExpression(createInputExpression(pattern));
@@ -55,8 +49,8 @@ class FlowDSLPattern extends PatternDSL {
     }
 
     private boolean shouldAddInputPattern(List<PatternConstraintParseResult> parseResults) {
-        final Predicate<? super PatternConstraintParseResult> hasOneOOPathExpr = (Predicate<PatternConstraintParseResult>) patternConstraintParseResult -> {
-            return patternConstraintParseResult.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Boolean>() {
+        final Predicate<? super PatternConstraintParseResult> hasOneOOPathExpr = (Predicate<PatternConstraintParseResult>) patternConstraintParseResult ->
+            patternConstraintParseResult.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Boolean>() {
                 @Override
                 public Boolean onSuccess(DrlxParseSuccess drlxParseResult) {
                     return drlxParseResult.getExpr() instanceof OOPathExpr;
@@ -67,7 +61,6 @@ class FlowDSLPattern extends PatternDSL {
                     return false;
                 }
             });
-        };
 
         return parseResults
                 .stream()
