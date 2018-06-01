@@ -16,7 +16,8 @@
 
 package org.kie.api.internal.utils;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -104,58 +104,47 @@ public class ServiceDiscoveryImpl {
     }
 
     public void registerConfs( ClassLoader classLoader, URL url ) {
-        log.info("Loading kie.conf from  ", classLoader);
-        Properties props = loadConfs( url );
-        processKieConf( classLoader, props );
-    }
+        log.info("Loading kie.conf from  " + url + " in classloader " + classLoader);
 
-    private Properties loadConfs(URL url) {
-        // iterate urls, then for each url split the service key and attempt to register each service
-        Properties props = new Properties();
-        try (InputStream is = url.openStream()) {
-            props.load( is );
-            log.info("Discovered kie.conf url={} ", url);
-        } catch (Exception exc) {
-            throw new RuntimeException("Unable to build kie service url = " + url.toExternalForm(), exc);
-        }
-        return props;
-    }
-
-    private void processKieConf(ClassLoader classLoader, Properties props) {
-        props.forEach( (k, v) -> {
-            String key = k.toString();
-            String[] values = v.toString().split(",");
-            for (String value : values) {
-                if (!(value.isEmpty() || value.contains("["))) { // DROOLS-2122: parsing with Properties.load a Drools version 6 kie.conf, hence skipping this entry
-                    boolean optional = key.startsWith( "?" );
-                    try {
-                        processKieService( classLoader, optional ? key.substring( 1 ) : key, value );
-                    } catch (RuntimeException e) {
-                        if (optional) {
-                            log.info("Cannot load service: " + key.substring( 1 ));
-                        } else {
-                            System.out.println("Loading failed because " + e.getMessage());
-                            throw e;
-                        }
-                    }
+        try ( BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream())) ) {
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
+                // DROOLS-2122: parsing with Properties.load a Drools version 6 kie.conf, hence skipping this entry
+                if (line.contains( "=" ) && !line.contains( "[" )) {
+                    String[] entry = line.split( "=" );
+                    processKieService( classLoader, entry[0].trim(), entry[1].trim() );
                 }
             }
-        });
+        } catch (Exception exc) {
+            throw new RuntimeException( "Unable to build kie service url = " + url.toExternalForm(), exc );
+        }
+    }
+
+    private void processKieService(ClassLoader classLoader, String key, String values) {
+        for (String value : values.split( "," )) {
+            boolean optional = key.startsWith( "?" );
+            String serviceName = optional ? key.substring( 1 ) : key;
+            try {
+                if ( value.startsWith( "+" ) ) {
+                    childServices.computeIfAbsent( serviceName, k -> new ArrayList<>() )
+                            .add( newInstance( classLoader, value.substring( 1 ) ) );
+                } else {
+                    services.put( serviceName, newInstance( classLoader, value ) );
+                }
+            } catch (RuntimeException e) {
+                if (optional) {
+                    log.info("Cannot load service: " + serviceName);
+                } else {
+                    System.out.println("Loading failed because " + e.getMessage());
+                    throw e;
+                }
+            }
+            log.info( "Adding Service {}\n", value );
+        }
     }
 
     @FunctionalInterface
     private interface ServiceProcessor {
         boolean process(ClassLoader classLoader, String key, String value);
-    }
-
-    private void processKieService(ClassLoader classLoader, String key, String value) {
-        if (value.startsWith( "+" )) {
-            childServices.computeIfAbsent( key, k -> new ArrayList<>() )
-                         .add( newInstance( classLoader, value.substring( 1 ) ) );
-        } else {
-            services.put( key, newInstance( classLoader, value ) );
-        }
-        log.info( "Adding Service {}\n", value );
     }
 
     private <T> T newInstance( ClassLoader classLoader, String className ) {
