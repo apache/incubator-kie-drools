@@ -66,10 +66,10 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
-        } else if (canBeNarrowed(left.getType(), right.getType())) {
-            coercedRight = right.setExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
-        } else if (left.getType().equals(Object.class) && right.getType() != Object.class) {
-            coercedRight = right.setExpression(new CastExpr(toJavaParserType(Object.class, right.getType().isPrimitive()), right.getExpression()));
+        } else if (isNotBinaryExpression(right) && canBeNarrowed(left.getType(), right.getType())) {
+            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
+        } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
+            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(Object.class, right.getType().isPrimitive()), right.getExpression()));
         } else {
             coercedRight = right;
         }
@@ -111,8 +111,11 @@ public class CoercedExpression {
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
         boolean bIsNotSerializable = !(b.getType() == Serializable.class);
         boolean bExpressionExists = b.getExpression() != null;
-        boolean bIsNotABinaryExpression = !(b.getExpression() != null && b.getExpression().isBinaryExpr());
-        return bExpressionExists && bIsNotABinaryExpression && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
+        return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
+    }
+
+    private static boolean isNotBinaryExpression(TypedExpression e) {
+        return !(e.getExpression() != null && e.getExpression().isBinaryExpr());
     }
 
     private Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type) {

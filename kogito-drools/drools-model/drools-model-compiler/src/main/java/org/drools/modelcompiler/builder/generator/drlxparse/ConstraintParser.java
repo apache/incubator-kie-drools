@@ -136,16 +136,20 @@ public class ConstraintParser {
 
             Expression combo;
 
-            switch ( operator ) {
-                case EQUALS:
-                case NOT_EQUALS:
-                    combo = getEqualityExpression( left, right, operator );
-                    break;
-                default:
-                    if ( left.getExpression() == null || right.getExpression() == null ) {
-                        return new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) );
-                    }
-                    combo = handleSpecialComparisonCases( operator, left, right );
+            if(left.isPrimitive()) {
+                combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+            } else {
+                switch (operator) {
+                    case EQUALS:
+                    case NOT_EQUALS:
+                        combo = getEqualityExpression(left, right, operator);
+                        break;
+                    default:
+                        if (left.getExpression() == null || right.getExpression() == null) {
+                            return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+                        }
+                        combo = handleSpecialComparisonCases(operator, left, right);
+                }
             }
 
             for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {

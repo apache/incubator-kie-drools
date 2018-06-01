@@ -109,6 +109,14 @@ public class CoercedExpressionTest {
         assertEquals(expr("(short)40", int.class), coerce.getCoercedRight());
     }
 
+    @Test
+    public void doNotCast() {
+        final TypedExpression left = expr("_this.intValue()", int.class);
+        final TypedExpression right = expr("$one << $shift", long.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("$one << $shift", long.class), coerce.getCoercedRight());
+    }
+
     @Test(expected = CoercedExpression.CoercedExpressionException.class)
     public void testException() {
         final TypedExpression left = expr("_this.getAge()", int.class);
