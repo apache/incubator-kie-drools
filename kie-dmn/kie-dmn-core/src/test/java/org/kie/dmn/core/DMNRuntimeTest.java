@@ -1954,5 +1954,75 @@ public class DMNRuntimeTest {
         assertFalse(result.hasErrors());
         assertEquals("This is product 1", result.getResult());
     }
+
+    @Test
+    public void testNotWithPredicates20180601() {
+        // DROOLS-2605
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("test20180601.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context3 = DMNFactory.newContext();
+        context3.set("my num", new BigDecimal(3));
+
+        DMNResult dmnResult3 = runtime.evaluateAll(dmnModel, context3);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult3.getMessages()), dmnResult3.hasErrors(), is(false));
+        assertThat(dmnResult3.getDecisionResultByName("my decision").getResult(), is(false));
+
+        DMNContext context10 = DMNFactory.newContext();
+        context10.set("my num", new BigDecimal(10));
+
+        DMNResult dmnResult10 = runtime.evaluateAll(dmnModel, context10);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult10.getMessages()), dmnResult10.hasErrors(), is(false));
+        assertThat(dmnResult10.getDecisionResultByName("my decision").getResult(), is(true));
+    }
+
+    @Test
+    public void testNotWithPredicates20180601b() {
+        // DROOLS-2605
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BruceTask20180601.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab", "Bruce Task");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("TheBook", Arrays.asList(prototype(entry("Title", "55"), entry("Price", new BigDecimal(5)), entry("Quantity", new BigDecimal(5))),
+                                             prototype(entry("Title", "510"), entry("Price", new BigDecimal(5)), entry("Quantity", new BigDecimal(10))),
+                                             prototype(entry("Title", "810"), entry("Price", new BigDecimal(8)), entry("Quantity", new BigDecimal(10))),
+                                             prototype(entry("Title", "85"), entry("Price", new BigDecimal(8)), entry("Quantity", new BigDecimal(5))),
+                                             prototype(entry("Title", "66"), entry("Price", new BigDecimal(6)), entry("Quantity", new BigDecimal(6)))));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Bruce"), is(instanceOf(Map.class)));
+        Map<String, Object> bruce = (Map<String, Object>) result.get("Bruce");
+
+        assertEquals(2, ((List) bruce.get("one")).size());
+        assertTrue(((List) bruce.get("one")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("55")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("one")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("510")).findFirst().isPresent());
+
+        assertEquals(3, ((List) bruce.get("two")).size());
+        assertTrue(((List) bruce.get("two")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("810")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("two")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("two")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
+
+        assertEquals(1, ((List) bruce.get("three")).size());
+        assertTrue(((List) bruce.get("three")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("510")).findFirst().isPresent());
+
+        assertEquals(2, ((List) bruce.get("Four")).size());
+        assertTrue(((List) bruce.get("Four")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("Four")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
+
+        assertEquals(2, ((List) bruce.get("Five")).size());
+        assertTrue(((List) bruce.get("Five")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("Five")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
+
+        assertEquals(2, ((List) bruce.get("six")).size());
+        assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
+        assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
+    }
 }
 
