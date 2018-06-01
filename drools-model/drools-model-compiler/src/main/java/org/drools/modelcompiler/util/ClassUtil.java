@@ -35,11 +35,7 @@ public class ClassUtil {
         try {
             return clazz.getMethod(methodName, argsType);
         } catch (NoSuchMethodException e) {
-            Method m = getBestCandidate(clazz, argsType, methodName);
-            if (m != null) {
-                return m;
-            }
-            throw new UnsupportedOperationException("Method " + methodName + " on class " + clazz.getName() + " is missing");
+            return getBestCandidate(clazz, argsType, methodName);
         }
     }
 

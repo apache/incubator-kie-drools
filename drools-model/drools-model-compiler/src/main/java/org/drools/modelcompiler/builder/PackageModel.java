@@ -300,7 +300,7 @@ public class PackageModel {
 
         BodyDeclaration<?> getRulesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Rule> getRules() {\n" +
+                "    public List<org.drools.model.Rule> getRules() {\n" +
                 "        return rules;\n" +
                 "    }\n"
                 );
@@ -315,21 +315,21 @@ public class PackageModel {
 
         BodyDeclaration<?> getGlobalsMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Global> getGlobals() {\n" +
+                "    public List<org.drools.model.Global> getGlobals() {\n" +
                 "        return globals;\n" +
                 "    }\n");
         rulesClass.addMember(getGlobalsMethod);
 
         BodyDeclaration<?> getQueriesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<Query> getQueries() {\n" +
+                "    public List<org.drools.model.Query> getQueries() {\n" +
                 "        return queries;\n" +
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
         BodyDeclaration<?> getTypeMetaDataMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<TypeMetaData> getTypeMetaDatas() {\n" +
+                "    public List<org.drools.model.TypeMetaData> getTypeMetaDatas() {\n" +
                 "        return typeMetaDatas;\n" +
                 "    }\n");
         rulesClass.addMember(getTypeMetaDataMethod);
@@ -363,18 +363,18 @@ public class PackageModel {
         rulesListInitializer.setBody(rulesListInitializerBody);
 
         queryMethods.values().forEach(rulesClass::addMember);
-        buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "Query", "queries", false );
-        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "WindowReference", "windowReferences", false );
-        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "Global", "globals", true );
+        buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Query", "queries", false );
+        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.WindowReference", "windowReferences", false );
+        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
-            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = new ArrayList<>();");
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = new ArrayList<>();");
             rulesClass.addMember(typeMetaDatasList);
             for (Expression expr : typeMetaDataExpressions) {
                 addInitStatement( rulesListInitializerBody, expr, "typeMetaDatas" );
             }
         } else {
-            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<TypeMetaData> typeMetaDatas = Collections.emptyList();");
+            BodyDeclaration<?> typeMetaDatasList = JavaParser.parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = Collections.emptyList();");
             rulesClass.addMember(typeMetaDatasList);
         }
 
@@ -416,8 +416,8 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
-                JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>(" + ruleCount + ");") :
-                JavaParser.parseBodyDeclaration("List<Rule> rules = rulesList;");
+                JavaParser.parseBodyDeclaration("List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
+                JavaParser.parseBodyDeclaration("List<org.drools.model.Rule> rules = rulesList;");
         rulesClass.addMember(rulesList);
 
         if (!rulesListInitializer.getBody().getStatements().isEmpty()) {

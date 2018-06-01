@@ -19,6 +19,7 @@ package org.drools.modelcompiler.constraints;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
@@ -26,24 +27,23 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.model.functions.Function1;
+import org.drools.model.functions.FunctionN;
 
 public class LambdaDataProvider implements DataProvider {
 
-    private final Function1 providerFunction;
-    private Declaration declaration;
+    private final FunctionN providerFunction;
+    private Declaration[] declarations;
     private final boolean reactive;
 
-
-    public LambdaDataProvider( Declaration declaration, Function1 providerFunction, boolean reactive ) {
-        this.declaration = declaration;
+    public LambdaDataProvider( FunctionN providerFunction, boolean reactive, Declaration... declarations  ) {
+        this.declarations = declarations;
         this.providerFunction = providerFunction;
         this.reactive = reactive;
     }
 
     @Override
     public Declaration[] getRequiredDeclarations() {
-        return new Declaration[] { declaration };
+        return declarations;
     }
 
     @Override
@@ -53,12 +53,7 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public Iterator getResults( Tuple tuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext ) {
-        Object result = declaration.getExtractor().isGlobal() ?
-                declaration.getExtractor().getValue(wm, declaration.getIdentifier()) :
-                declaration.getValue( wm, tuple.get(declaration).getObject() );
-        if (providerFunction != null) {
-            result = providerFunction.apply( result );
-        }
+        Object result = getResult( tuple, wm );
 
         if (isReactive()) {
             if ( result instanceof ReactiveObject ) {
@@ -85,20 +80,66 @@ public class LambdaDataProvider implements DataProvider {
         return Collections.singletonList( result ).iterator();
     }
 
+    private Object getResult( Tuple tuple, InternalWorkingMemory wm ) {
+        Object result;
+        if (declarations.length == 0) {
+            result = providerFunction.apply();
+        } else if (declarations.length == 1) {
+            result = getValueForDeclaration( tuple, wm, declarations[0] );
+            if ( providerFunction != null ) {
+                result = providerFunction.apply( result );
+            }
+        } else {
+            Object[] args = new Object[declarations.length];
+            for (int i = 0; i < declarations.length; i++) {
+                args[i] = getValueForDeclaration( tuple, wm, declarations[i] );
+            }
+            result = providerFunction.apply( args );
+        }
+        return result;
+    }
+
+    private Object getValueForDeclaration( Tuple tuple, InternalWorkingMemory wm, Declaration declaration ) {
+        return declaration.getExtractor().isGlobal() ?
+                declaration.getExtractor().getValue( wm, declaration.getIdentifier() ) :
+                declaration.getValue( wm, tuple.get( declaration ).getObject() );
+    }
+
     @Override
     public DataProvider clone() {
-        return new LambdaDataProvider( declaration.clone(), providerFunction, reactive );
+        Declaration[] clonedDecls = new Declaration[declarations.length];
+        for (int i = 0; i < declarations.length; i++) {
+            clonedDecls[i] = declarations[i].clone();
+        }
+        return new LambdaDataProvider( providerFunction, reactive, clonedDecls );
     }
 
     @Override
     public void replaceDeclaration( Declaration declaration, Declaration resolved ) {
-        if (this.declaration.getIdentifier().equals( declaration.getIdentifier() )) {
-            this.declaration = resolved;
+        for (int i = 0; i < declarations.length; i++) {
+            if ( this.declarations[i].getIdentifier().equals( declaration.getIdentifier() ) ) {
+                this.declarations[i] = resolved;
+            }
         }
     }
 
     @Override
     public boolean isReactive() {
         return reactive;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        LambdaDataProvider that = ( LambdaDataProvider ) o;
+        return reactive == that.reactive &&
+                Objects.equals( providerFunction, that.providerFunction ) &&
+                Arrays.equals( declarations, that.declarations );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( providerFunction, Arrays.hashCode( declarations ), reactive );
     }
 }

@@ -24,7 +24,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -156,7 +155,6 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("from clause supports binding of only one declaration")
     public void testFromExternalFunctionMultipleBindingArguments() {
         final String str =
                 "import " + FromTest.class.getCanonicalName() + ";\n" +

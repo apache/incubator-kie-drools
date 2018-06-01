@@ -30,9 +30,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     @Override
     public Serializable createContext() {
         try {
-            final Serializable originalContext = accumulateFunction.createContext();
-            accumulateFunction.init(originalContext);
-            return originalContext;
+            return accumulateFunction.createContext();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,6 +38,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
+        accumulateFunction.init((Serializable) context);
     }
 
     @Override

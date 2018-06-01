@@ -29,7 +29,6 @@
   <logger name="org.drools.core.management" level="debug"/>
   <!--<logger name="org.drools.modelcompiler.builder" level="debug"/>-->
 
-
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>

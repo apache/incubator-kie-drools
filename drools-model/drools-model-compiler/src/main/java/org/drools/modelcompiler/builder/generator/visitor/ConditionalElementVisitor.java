@@ -10,9 +10,9 @@ public class ConditionalElementVisitor {
     private final RuleContext context;
     private final ModelGeneratorVisitor visitor;
 
-    public ConditionalElementVisitor(RuleContext context, ModelGeneratorVisitor visitor) {
-        this.context = context;
+    public ConditionalElementVisitor(ModelGeneratorVisitor visitor, RuleContext context) {
         this.visitor = visitor;
+        this.context = context;
     }
 
     public void visit(ConditionalElementDescr descr, String methodName) {

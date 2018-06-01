@@ -16,7 +16,8 @@
 
 package org.drools.model;
 
-public interface From<A> extends DeclarationSource {
-    Variable<A> getVariable();
-    boolean isReactive();
+import org.drools.model.functions.Function1;
+
+public interface From1<A> extends From<A> {
+    Function1<A,?> getProvider();
 }
