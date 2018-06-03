@@ -58,6 +58,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
 @RunWith(Parameterized.class)
@@ -95,6 +96,9 @@ public class TimerMigrationManagerTest extends AbstractBaseTest {
     
     private static final String EVENT_SUBPROCESS_TIMER_ID_V1 = "BPMN2-EventSubprocessTimerV1";
     private static final String EVENT_SUBPROCESS_TIMER_ID_V2 = "BPMN2-EventSubprocessTimerV2";
+    
+    private static final String CYCLE_TIMER_ID_V1 = "CycleTimer-V1";
+    private static final String CYCLE_TIMER_ID_V2 = "CycleTimer-V2";
     
     private JPAAuditLogService auditService;
     
@@ -328,6 +332,67 @@ public class TimerMigrationManagerTest extends AbstractBaseTest {
         assertNotNull(log);
         assertEquals(TIMER_ID_V1, log.getProcessId());
         assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
+
+    }
+    
+    @Test(timeout=20000)
+    public void testMigrateTimerCycleProcessInstance() throws Exception {
+        NodeLeftCountDownProcessEventListener countdownListener = new NodeLeftCountDownProcessEventListener("print smt", 2);
+        createRuntimeManagers("migration/v1/BPMN2-TimerCycle-v1.bpmn2", "migration/v2/BPMN2-TimerCycle-v2.bpmn2", countdownListener);
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+        
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ProcessInstance pi1 = ksession.startProcess(CYCLE_TIMER_ID_V1);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState()); 
+        JPAAuditLogService auditService = new JPAAuditLogService(emf);
+        ProcessInstanceLog log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(CYCLE_TIMER_ID_V1, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+                
+        managerV1.disposeRuntimeEngine(runtime);
+        
+        // wait for first timer expiration before migration
+        countdownListener.waitTillCompleted();
+        
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, CYCLE_TIMER_ID_V2);
+        
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        MigrationReport report = migrationManager.migrate();
+        
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(CYCLE_TIMER_ID_V2, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_ACTIVE, log.getStatus().intValue());
+        
+        
+        // wait till timer fires
+        countdownListener.reset(1);
+        countdownListener.waitTillCompleted();
+        
+        runtime = managerV2.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ksession.signalEvent("endMe", null, pi1.getId());
+                
+        managerV2.disposeRuntimeEngine(runtime);  
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        auditService.dispose();
+        assertNotNull(log);
+        assertEquals(CYCLE_TIMER_ID_V2, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
         assertEquals(ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
 
     }

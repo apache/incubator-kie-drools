@@ -168,7 +168,8 @@ public class ProtobufProcessMarshaller
                 .setDelay( timer.getDelay() )
                 .setPeriod( timer.getPeriod() )
                 .setProcessInstanceId( timer.getProcessInstanceId() )
-                .setActivatedTime( timer.getActivated().getTime() );
+                .setActivatedTime( timer.getActivated().getTime() )
+                .setRepeatLimit(timer.getRepeatLimit());
         Date lastTriggered = timer.getLastTriggered();
         if ( lastTriggered != null ) {
             _timer.setLastTriggered( lastTriggered.getTime() );
@@ -193,6 +194,7 @@ public class ProtobufProcessMarshaller
         if ( _timer.hasLastTriggered() ) {
             timer.setLastTriggered( new Date( _timer.getLastTriggered() ) );
         }
+        timer.setRepeatLimit(_timer.getRepeatLimit());
         return timer;
     }
 

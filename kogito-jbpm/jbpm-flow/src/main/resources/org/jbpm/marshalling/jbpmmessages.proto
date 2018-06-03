@@ -196,6 +196,7 @@ message ProcessTimer {
         optional int64 last_triggered = 7;
         optional int32 DEPRECATED_sessionId = 8;
         optional int64 sessionId = 9;
+        optional int32 repeatLimit = 10;
     }
 }
 

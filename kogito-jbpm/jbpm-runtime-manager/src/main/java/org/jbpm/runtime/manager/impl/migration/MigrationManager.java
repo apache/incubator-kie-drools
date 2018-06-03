@@ -36,6 +36,9 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.DefaultJobHandle;
+import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.persistence.api.SessionNotFoundException;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerFactory;
@@ -418,17 +421,19 @@ public class MigrationManager {
                 List<Long> nodeInstanceIds = nodeInstanceIdQuery.getResultList();
                 report.addEntry(Type.INFO, "Mapping: Node instance logs to be updated  = " + nodeInstanceIds);
 
-                Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType " +
-                                                    "where nodeInstanceId in (:ids) and processInstanceId = :processInstanceId");
-                nodeLogQuery
-                            .setParameter("nodeId", (String) upgradedNode.getMetaData().get("UniqueId"))
-                            .setParameter("nodeName", upgradedNode.getName())
-                            .setParameter("nodeType", upgradedNode.getClass().getSimpleName())
-                            .setParameter("ids", nodeInstanceIds)
-                            .setParameter("processInstanceId", nodeInstance.getProcessInstance().getId());
-
-                int nodesUpdated = nodeLogQuery.executeUpdate();
-                report.addEntry(Type.INFO, "Mapping: Node instance logs updated = " + nodesUpdated + " for node instance id " + nodeInstance.getId());
+                if (!nodeInstanceIds.isEmpty()) {
+                    Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType " +
+                                                        "where nodeInstanceId in (:ids) and processInstanceId = :processInstanceId");
+                    nodeLogQuery
+                                .setParameter("nodeId", (String) upgradedNode.getMetaData().get("UniqueId"))
+                                .setParameter("nodeName", upgradedNode.getName())
+                                .setParameter("nodeType", upgradedNode.getClass().getSimpleName())
+                                .setParameter("ids", nodeInstanceIds)
+                                .setParameter("processInstanceId", nodeInstance.getProcessInstance().getId());
+    
+                    int nodesUpdated = nodeLogQuery.executeUpdate();
+                    report.addEntry(Type.INFO, "Mapping: Node instance logs updated = " + nodesUpdated + " for node instance id " + nodeInstance.getId());
+                }
 
                 if (upgradedNode instanceof HumanTaskNode && nodeInstance instanceof HumanTaskNodeInstance) {
 
@@ -531,7 +536,7 @@ public class MigrationManager {
                     for (org.jbpm.workflow.instance.NodeInstance active : activeInstances) {
                         if (active instanceof TimerNodeInstance) {
                             TimerInstance timerInstance = timerManager.getTimerMap().get(((TimerNodeInstance) active).getTimerId());
-
+                            
                             timerManager.cancelTimer(timerInstance.getId());
                             result.put(active.getId(), Arrays.asList(timerInstance));
                         } else if (active instanceof StateBasedNodeInstance) {
@@ -579,10 +584,12 @@ public class MigrationManager {
                         org.jbpm.workflow.instance.NodeInstance active = processInstance.getNodeInstance(entry.getKey(), false);
                         if (active instanceof TimerNodeInstance) {
                             TimerInstance timerInstance = entry.getValue().get(0);
-
+                            
                             long delay = timerInstance.getDelay() - (System.currentTimeMillis() - timerInstance.getActivated().getTime());
                             timerInstance.setDelay(delay);
-
+                            
+                            updateBasedOnTrigger(timerInstance);
+                                
                             timerManager.registerTimer(timerInstance, processInstance);
                             ((TimerNodeInstance) active).internalSetTimerId(timerInstance.getId());
                         } else if (active instanceof StateBasedNodeInstance) {
@@ -592,6 +599,8 @@ public class MigrationManager {
                             for (TimerInstance timerInstance : timerInstances) {
                                 long delay = timerInstance.getDelay() - (System.currentTimeMillis() - timerInstance.getActivated().getTime());
                                 timerInstance.setDelay(delay);
+                                
+                                updateBasedOnTrigger(timerInstance);
 
                                 timerManager.registerTimer(timerInstance, processInstance);
                                 timers.add(timerInstance.getId());
@@ -608,6 +617,17 @@ public class MigrationManager {
         } finally {
 
             manager.disposeRuntimeEngine(engine);
+        }
+    }
+    
+    protected void updateBasedOnTrigger(TimerInstance timerInstance) {
+        Trigger trigger = ((DefaultJobHandle)timerInstance.getJobHandle()).getTimerJobInstance().getTrigger();
+        if (trigger instanceof IntervalTrigger && timerInstance.getPeriod() > 0) {
+            if (timerInstance.getRepeatLimit() > 0) {
+                timerInstance.setRepeatLimit(((IntervalTrigger) trigger).getRepeatLimit() - ((IntervalTrigger) trigger).getRepeatCount());
+            }
+            long delay = timerInstance.getPeriod() - (System.currentTimeMillis() - ((IntervalTrigger) trigger).getLastFireTime().getTime());
+            timerInstance.setDelay(delay);
         }
     }
 

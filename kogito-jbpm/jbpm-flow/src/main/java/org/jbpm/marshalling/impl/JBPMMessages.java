@@ -21068,6 +21068,16 @@ public final class JBPMMessages {
        * <code>optional int64 sessionId = 9;</code>
        */
       long getSessionId();
+
+      // optional int32 repeatLimit = 10;
+      /**
+       * <code>optional int32 repeatLimit = 10;</code>
+       */
+      boolean hasRepeatLimit();
+      /**
+       * <code>optional int32 repeatLimit = 10;</code>
+       */
+      int getRepeatLimit();
     }
     /**
      * Protobuf type {@code org.jbpm.marshalling.ProcessTimer.TimerInstance}
@@ -21163,6 +21173,11 @@ public final class JBPMMessages {
               case 72: {
                 bitField0_ |= 0x00000100;
                 sessionId_ = input.readInt64();
+                break;
+              }
+              case 80: {
+                bitField0_ |= 0x00000200;
+                repeatLimit_ = input.readInt32();
                 break;
               }
             }
@@ -21349,6 +21364,22 @@ public final class JBPMMessages {
         return sessionId_;
       }
 
+      // optional int32 repeatLimit = 10;
+      public static final int REPEATLIMIT_FIELD_NUMBER = 10;
+      private int repeatLimit_;
+      /**
+       * <code>optional int32 repeatLimit = 10;</code>
+       */
+      public boolean hasRepeatLimit() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int32 repeatLimit = 10;</code>
+       */
+      public int getRepeatLimit() {
+        return repeatLimit_;
+      }
+
       private void initFields() {
         id_ = 0L;
         timerId_ = 0L;
@@ -21359,6 +21390,7 @@ public final class JBPMMessages {
         lastTriggered_ = 0L;
         dEPRECATEDSessionId_ = 0;
         sessionId_ = 0L;
+        repeatLimit_ = 0;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -21398,6 +21430,9 @@ public final class JBPMMessages {
         }
         if (((bitField0_ & 0x00000100) == 0x00000100)) {
           output.writeInt64(9, sessionId_);
+        }
+        if (((bitField0_ & 0x00000200) == 0x00000200)) {
+          output.writeInt32(10, repeatLimit_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -21443,6 +21478,10 @@ public final class JBPMMessages {
         if (((bitField0_ & 0x00000100) == 0x00000100)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt64Size(9, sessionId_);
+        }
+        if (((bitField0_ & 0x00000200) == 0x00000200)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(10, repeatLimit_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -21578,6 +21617,8 @@ public final class JBPMMessages {
           bitField0_ = (bitField0_ & ~0x00000080);
           sessionId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000100);
+          repeatLimit_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000200);
           return this;
         }
 
@@ -21642,6 +21683,10 @@ public final class JBPMMessages {
             to_bitField0_ |= 0x00000100;
           }
           result.sessionId_ = sessionId_;
+          if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+            to_bitField0_ |= 0x00000200;
+          }
+          result.repeatLimit_ = repeatLimit_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -21684,6 +21729,9 @@ public final class JBPMMessages {
           }
           if (other.hasSessionId()) {
             setSessionId(other.getSessionId());
+          }
+          if (other.hasRepeatLimit()) {
+            setRepeatLimit(other.getRepeatLimit());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -22005,6 +22053,39 @@ public final class JBPMMessages {
         public Builder clearSessionId() {
           bitField0_ = (bitField0_ & ~0x00000100);
           sessionId_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // optional int32 repeatLimit = 10;
+        private int repeatLimit_ ;
+        /**
+         * <code>optional int32 repeatLimit = 10;</code>
+         */
+        public boolean hasRepeatLimit() {
+          return ((bitField0_ & 0x00000200) == 0x00000200);
+        }
+        /**
+         * <code>optional int32 repeatLimit = 10;</code>
+         */
+        public int getRepeatLimit() {
+          return repeatLimit_;
+        }
+        /**
+         * <code>optional int32 repeatLimit = 10;</code>
+         */
+        public Builder setRepeatLimit(int value) {
+          bitField0_ |= 0x00000200;
+          repeatLimit_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 repeatLimit = 10;</code>
+         */
+        public Builder clearRepeatLimit() {
+          bitField0_ = (bitField0_ & ~0x00000200);
+          repeatLimit_ = 0;
           onChanged();
           return this;
         }
@@ -24091,31 +24172,32 @@ public final class JBPMMessages {
       "\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variab" +
       "le\030\005 \003(\0132\036.org.jbpm.marshalling.Variable" +
       "\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_instance" +
-      "_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\323\002\n\014ProcessTi" +
+      "_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\350\002\n\014ProcessTi" +
       "mer\022?\n\005timer\030\001 \001(\01320.org.jbpm.marshallin" +
       "g.ProcessTimer.TimerInstance\0225\n\007trigger\030" +
       "\002 \001(\0132$.org.drools.core.marshalling.Trig" +
-      "ger\032\312\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010tim" +
+      "ger\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010tim" +
       "er_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001",
       "(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n\016activ" +
       "ated_time\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022" +
       "\034\n\024DEPRECATED_sessionId\030\010 \001(\005\022\021\n\tsession" +
-      "Id\030\t \001(\003\"+\n\016IterationLevel\022\n\n\002id\030\001 \001(\t\022\r" +
-      "\n\005level\030\002 \001(\005\"E\n\021VariableContainer\0220\n\010va" +
-      "riable\030\001 \003(\0132\036.org.jbpm.marshalling.Vari" +
-      "able:i\n\020process_instance\022(.org.drools.co" +
-      "re.marshalling.ProcessData\030\n \003(\0132%.org.j" +
-      "bpm.marshalling.ProcessInstance:[\n\twork_" +
-      "item\022(.org.drools.core.marshalling.Proce",
-      "ssData\030\013 \003(\0132\036.org.jbpm.marshalling.Work" +
-      "Item::\n\010timer_id\022(.org.drools.core.marsh" +
-      "alling.ProcessData\030\r \001(\003:c\n\rprocess_time" +
-      "r\022(.org.drools.core.marshalling.ProcessD" +
-      "ata\030\014 \003(\0132\".org.jbpm.marshalling.Process" +
-      "Timer:a\n\nproc_timer\022).org.drools.core.ma" +
-      "rshalling.Timers.Timer\030d \001(\0132\".org.jbpm." +
-      "marshalling.ProcessTimerB)\n\031org.jbpm.mar" +
-      "shalling.implB\014JBPMMessages"
+      "Id\030\t \001(\003\022\023\n\013repeatLimit\030\n \001(\005\"+\n\016Iterati" +
+      "onLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021Va" +
+      "riableContainer\0220\n\010variable\030\001 \003(\0132\036.org." +
+      "jbpm.marshalling.Variable:i\n\020process_ins" +
+      "tance\022(.org.drools.core.marshalling.Proc" +
+      "essData\030\n \003(\0132%.org.jbpm.marshalling.Pro" +
+      "cessInstance:[\n\twork_item\022(.org.drools.c",
+      "ore.marshalling.ProcessData\030\013 \003(\0132\036.org." +
+      "jbpm.marshalling.WorkItem::\n\010timer_id\022(." +
+      "org.drools.core.marshalling.ProcessData\030" +
+      "\r \001(\003:c\n\rprocess_timer\022(.org.drools.core" +
+      ".marshalling.ProcessData\030\014 \003(\0132\".org.jbp" +
+      "m.marshalling.ProcessTimer:a\n\nproc_timer" +
+      "\022).org.drools.core.marshalling.Timers.Ti" +
+      "mer\030d \001(\0132\".org.jbpm.marshalling.Process" +
+      "TimerB)\n\031org.jbpm.marshalling.implB\014JBPM" +
+      "Messages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -24259,7 +24341,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor,
-              new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", "DEPRECATEDSessionId", "SessionId", });
+              new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", "DEPRECATEDSessionId", "SessionId", "RepeatLimit", });
           internal_static_org_jbpm_marshalling_IterationLevel_descriptor =
             getDescriptor().getMessageTypes().get(4);
           internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable = new
