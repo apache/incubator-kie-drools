@@ -31,6 +31,7 @@ import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toList;
@@ -88,7 +89,15 @@ public class Consequence {
                     .forEach(n -> n.replace(new CastExpr( toClassOrInterfaceType(org.kie.api.runtime.rule.RuleContext.class), new NameExpr("drools") )));
         }
 
-        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
+        Set<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
+
+        Set<String> usedUnusableDeclarations = new HashSet<>(context.getUnusableOrBinding());
+        usedUnusableDeclarations.retainAll(usedDeclarationInRHS);
+
+        for(String s : usedUnusableDeclarations) {
+            context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s)) );
+        }
+
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr(onCall, BREAKING_CALL);
@@ -111,7 +120,7 @@ public class Consequence {
         return parseBlock(ruleConsequenceAsBlock);
     }
 
-    private Collection<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
+    private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());

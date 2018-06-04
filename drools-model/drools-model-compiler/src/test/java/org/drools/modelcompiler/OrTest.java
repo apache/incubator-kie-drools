@@ -24,9 +24,14 @@ import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Employee;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OrTest extends BaseModelTest {
 
@@ -115,5 +120,31 @@ public class OrTest extends BaseModelTest {
         kieSession.fireAllRules();
 
         Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
+
+    @Test
+    public void generateErrorForEveryFieldInRHSNotDefinedInLHS() {
+        // JBRULES-3390
+        final String drl1 = "package org.drools.compiler.integrationtests.operators; \n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   ( B( $bField : field ) or C( $cField : field ) ) " +
+                ")\n" +
+                "then\n" +
+                "    System.out.println($bField);\n" +
+                "end\n";
+
+        Results results = getCompilationResults(drl1);
+        assertFalse(results.getMessages().isEmpty());
+    }
+
+    private Results getCompilationResults( String drl ) {
+        return createKieBuilder( drl ).getResults();
     }
 }
