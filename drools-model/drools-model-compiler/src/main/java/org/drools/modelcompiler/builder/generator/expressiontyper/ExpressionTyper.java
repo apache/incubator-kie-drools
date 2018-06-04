@@ -200,7 +200,9 @@ public class ExpressionTyper {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
             } else {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
-                return nameExpr.flatMap( te -> createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
+                return nameExpr.flatMap( te -> te.getType().isArray() ?
+                        createArrayAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()) :
+                        createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
             }
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
@@ -210,6 +212,12 @@ public class ExpressionTyper {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private Optional<TypedExpression> createArrayAccessExpression(Expression index, Expression scope) {
+        ArrayAccessExpr arrayAccessExpr = new ArrayAccessExpr(scope, index);
+        TypedExpression typedExpression = new TypedExpression(arrayAccessExpr, Object.class);
+        return of(typedExpression);
     }
 
     private Optional<TypedExpression> createMapAccessExpression(Expression index, Expression scope) {

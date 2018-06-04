@@ -70,7 +70,7 @@ public class DRLTest {
                 "end\n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).filteredOn(message -> message.getText().contains("is already defined")).isNotEmpty();
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test

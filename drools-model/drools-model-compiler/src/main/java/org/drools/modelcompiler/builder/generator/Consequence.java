@@ -153,7 +153,7 @@ public class Consequence {
     private MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
         MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTESCRIPT_CALL : EXECUTESCRIPT_CALL);
         executeCall.addArgument(new StringLiteralExpr("mvel"));
-        executeCall.addArgument(new StringLiteralExpr(packageModel.getName() + "." + packageModel.getRulesFileName()));
+        executeCall.addArgument(packageModel.getName() + "." + packageModel.getRulesFileName() + ".class");
 
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(StringBuilder.class.getCanonicalName());

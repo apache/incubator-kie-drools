@@ -509,13 +509,11 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
-        Class<?> patternType;
         try {
-            patternType = typeResolver.resolveType(className);
+            return typeResolver.resolveType(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException( e );
         }
-        return patternType;
     }
 
     public static boolean isPrimitiveExpression(Expression expr) {

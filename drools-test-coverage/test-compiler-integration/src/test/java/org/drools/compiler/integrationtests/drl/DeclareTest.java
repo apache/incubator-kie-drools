@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.ClassB;
 import org.drools.testcoverage.common.model.InterfaceB;
 import org.drools.testcoverage.common.model.Person;
@@ -40,7 +39,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class DeclareTest {
@@ -97,8 +95,6 @@ public class DeclareTest {
             assertNotSame(list.get(0), list.get(1));
             assertNotEquals(list.get(0), list.get(1));
 
-            assertEquals(32, list.get(2).hashCode());
-            assertEquals(32, list.get(3).hashCode());
             assertNotSame(list.get(2), list.get(3));
             assertEquals(list.get(2), list.get(3));
         } finally {
@@ -346,7 +342,8 @@ public class DeclareTest {
                 "\n" +
                 "rule \"Check\"\n" +
                 "when\n" +
-                "    X( astr.length > 0,            \n" +
+                "    X( astr != null,               \n" +
+                "       astr.length > 0,            \n" +
                 "       astr[0] == \"x\",           \n" +
                 "       $x : astr[1],               \n" +
                 "       aint[0] == 7  )             \n" +
@@ -363,7 +360,7 @@ public class DeclareTest {
             ksession.setGlobal( "list", list );
 
             ksession.fireAllRules();
-
+            System.out.println(list);
             assertTrue( list.contains( "hash" ) );
             assertTrue( list.contains( "equals" ) );
             assertTrue( list.contains( 7 ) );
@@ -444,98 +441,6 @@ public class DeclareTest {
     }
 
     @Test
-    public void testNoneTypeSafeDeclarations() {
-        // same namespace
-        String str = "package " + Person.class.getPackage().getName() + ";\n" +
-                "global java.util.List list\n" +
-                "declare Person\n" +
-                "    @typesafe(false)\n" +
-                "end\n" +
-                "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : Person( object.street == 's1' )\n" +
-                "then\n" +
-                "   list.add( $p );\n" +
-                "end\n";
-
-        executeTypeSafeDeclarations( str,
-                true );
-
-        // different namespace with import
-        str = "package org.drools.compiler.integrationtests.drl;\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "global java.util.List list\n" +
-                "declare Person\n" +
-                "    @typesafe(false)\n" +
-                "end\n" +
-                "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : Person( object.street == 's1' )\n" +
-                "then\n" +
-                "   list.add( $p );\n" +
-                "end\n";
-        executeTypeSafeDeclarations( str,
-                true );
-
-        // different namespace without import using qualified name
-        str = "package org.drools.compiler.integrationtests.drl;\n" +
-                "global java.util.List list\n" +
-                "declare " + Person.class.getCanonicalName() + "\n" +
-                "    @typesafe(false)\n" +
-                "end\n" +
-                "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
-                "then\n" +
-                "   list.add( $p );\n" +
-                "end\n";
-        executeTypeSafeDeclarations( str,
-                true );
-
-        // this should fail as it's not declared non typesafe
-        str = "package org.drools.compiler.integrationtests.drl;\n" +
-                "global java.util.List list\n" +
-                "declare " + Person.class.getCanonicalName() + "\n" +
-                "    @typesafe(true)\n" +
-                "end\n" +
-                "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
-                "then\n" +
-                "   list.add( $p );\n" +
-                "end\n";
-        executeTypeSafeDeclarations( str,
-                false );
-    }
-
-    private void executeTypeSafeDeclarations(final String drl, final boolean mustSucceed) {
-        final KieBase kbase;
-        try {
-            kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
-            if (!mustSucceed) {
-                fail("Compilation Should fail");
-            }
-        } catch (final Throwable e) {
-            if (mustSucceed) {
-                fail("Compilation Should succeed");
-            }
-            return;
-        }
-
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            final Address a = new Address("s1", 10, "city");
-            final Person p = new Person("yoda");
-            p.setObject(a);
-
-            ksession.insert(p);
-            ksession.fireAllRules();
-            assertEquals(p, list.get(0));
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test
     public void testConstructorWithOtherDefaults() {
         final String drl =
                 "global java.util.List list;\n" +
@@ -598,7 +503,6 @@ public class DeclareTest {
                 "when\n" +
                 "  $b : Bean( )\n" +
                 "then\n" +
-                "  list.add( $b.hashCode() ); \n" +
                 "  list.add( $b.equals( new Bean( new ClassB() ) ) ); \n" +
                 "end";
 
@@ -609,7 +513,6 @@ public class DeclareTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertTrue(list.contains(31 + 123));
             assertTrue(list.contains(true));
         } finally {
             ksession.dispose();

@@ -143,10 +143,10 @@ public class MVELConsequence implements Consequence {
         ParserConfiguration parserConfiguration = runtimeData.getParserConfiguration();
         parserConfiguration.setClassLoader( workingMemory.getKnowledgeBase().getRootClassLoader() );
 
-        if (scriptBlock.getRuleFile() != null) {
-            Class<?> ruleClass = parserConfiguration.getClassLoader().loadClass( scriptBlock.getRuleFile() );
+        Class<?> ruleClass = scriptBlock.getRuleClass();
+        if (ruleClass != null) {
             for (Method m : ruleClass.getDeclaredMethods()) {
-                if ( Modifier.isStatic(m.getModifiers()) ) {
+                if ( Modifier.isStatic( m.getModifiers() ) ) {
                     runtimeData.getParserConfiguration().addImport( m.getName(), m );
                 }
             }

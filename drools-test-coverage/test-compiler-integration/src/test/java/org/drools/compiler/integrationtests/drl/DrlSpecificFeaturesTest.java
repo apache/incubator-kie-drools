@@ -16,9 +16,12 @@
 
 package org.drools.compiler.integrationtests.drl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -32,6 +35,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class DrlSpecificFeaturesTest {
@@ -126,6 +130,98 @@ public class DrlSpecificFeaturesTest {
 
         public int getX() {
             return x;
+        }
+    }
+
+    @Test
+    public void testNoneTypeSafeDeclarations() {
+        // same namespace
+        String str = "package " + Person.class.getPackage().getName() + ";\n" +
+                "global java.util.List list\n" +
+                "declare Person\n" +
+                "    @typesafe(false)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : Person( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+
+        executeTypeSafeDeclarations( str,
+                true );
+
+        // different namespace with import
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "declare Person\n" +
+                "    @typesafe(false)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : Person( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                true );
+
+        // different namespace without import using qualified name
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
+                "global java.util.List list\n" +
+                "declare " + Person.class.getCanonicalName() + "\n" +
+                "    @typesafe(false)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                true );
+
+        // this should fail as it's not declared non typesafe
+        str = "package org.drools.compiler.integrationtests.drl;\n" +
+                "global java.util.List list\n" +
+                "declare " + Person.class.getCanonicalName() + "\n" +
+                "    @typesafe(true)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : " + Person.class.getCanonicalName() + "( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                false );
+    }
+
+    private void executeTypeSafeDeclarations(final String drl, final boolean mustSucceed) {
+        final KieBase kbase;
+        try {
+            kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
+            if (!mustSucceed) {
+                fail("Compilation Should fail");
+            }
+        } catch (final Throwable e) {
+            if (mustSucceed) {
+                fail("Compilation Should succeed");
+            }
+            return;
+        }
+
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            final Address a = new Address("s1", 10, "city");
+            final Person p = new Person("yoda");
+            p.setObject(a);
+
+            ksession.insert(p);
+            ksession.fireAllRules();
+            assertEquals(p, list.get(0));
+        } finally {
+            ksession.dispose();
         }
     }
 }
