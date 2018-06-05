@@ -32,6 +32,7 @@ import org.drools.compiler.Message;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -183,4 +184,79 @@ public class SerializedPackageMergeTest {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testBuildAndSerializePackagesWithGetterInLHS() throws Exception {
+        // DROOLS-2495
+        String drl =   "package com.sample\n" +
+                        "import org.drools.compiler.Person\n" +
+                        "import org.drools.compiler.Cheese\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p : Person()\n" +
+                        "  $c : Cheese(type == $p.getName())\n" +
+                        "then\n" +
+                        "end\n";
+
+        KnowledgeBuilder builder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder1.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        Collection<KnowledgePackage> knowledgePackages = builder1.getKnowledgePackages();
+
+        byte[] pkgBin = null;
+        try (ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+                DroolsObjectOutputStream out = new DroolsObjectOutputStream(byteOutStream);) {
+            out.writeObject(knowledgePackages);
+            out.flush();
+            pkgBin = byteOutStream.toByteArray();
+        }
+
+        KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder2.add(ResourceFactory.newByteArrayResource(pkgBin), ResourceType.PKG);
+
+        KieBase kbase = builder2.newKnowledgeBase();
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert(new org.drools.compiler.Person("aaa"));
+        ksession.insert(new org.drools.compiler.Cheese("aaa"));
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
+
+
+    @Test
+    public void testBuildAndSerializePackagesWithGlobalMethodInLHS() throws Exception {
+        // DROOLS-2517
+        String drl =   "package com.sample\n" +
+                "import org.drools.compiler.Person\n" +
+                "global org.drools.compiler.MyUtil myUtil\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  Person(myUtil.transform(name) == \"John-san\")\n" + // call global's method
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilder builder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder1.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        Collection<KnowledgePackage> knowledgePackages = builder1.getKnowledgePackages();
+
+        byte[] pkgBin = null;
+        try (ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+                DroolsObjectOutputStream out = new DroolsObjectOutputStream(byteOutStream);) {
+            out.writeObject(knowledgePackages);
+            out.flush();
+            pkgBin = byteOutStream.toByteArray();
+        }
+
+        KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder2.add(ResourceFactory.newByteArrayResource(pkgBin), ResourceType.PKG);
+        KieBase kbase = builder2.newKnowledgeBase();
+
+        KieSession ksession = kbase.newKieSession();
+        ksession.setGlobal("myUtil", new org.drools.compiler.MyUtil());
+        ksession.insert(new org.drools.compiler.Person("John"));
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+
+        ksession.dispose();
+    }
+
 }
