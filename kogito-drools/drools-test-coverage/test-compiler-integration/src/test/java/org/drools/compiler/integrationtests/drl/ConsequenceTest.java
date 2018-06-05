@@ -58,7 +58,7 @@ public class ConsequenceTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -155,28 +155,6 @@ public class ConsequenceTest {
         } finally {
             session.dispose();
         }
-    }
-
-    // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
-    @Test
-    public void testMVELConsequenceUsingFactConstructors() {
-        final String drl =
-                "package org.drools.compiler.integrationtests.drl;\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "global " + KieSession.class.getCanonicalName() + " ksession\n" +
-                "rule test dialect 'mvel'\n" +
-                "when\n" +
-                "    $person:Person( name == 'mark' )\n" +
-                "then\n" +
-                "    // below constructor for Person does not exist\n" +
-                "    Person p = new Person( 'bob', 30, 555 )\n" +
-                "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n" +
-                "end\n";
-
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
-                                                                    false,
-                                                                    drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test

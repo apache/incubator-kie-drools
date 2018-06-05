@@ -181,7 +181,9 @@ public abstract class PatternDSL implements DSLNode {
 
                     @Override
                     public void onFail( DrlxParseFail failure ) {
-                        context.addCompilationError( failure.getError() );
+                        if (failure.getError() != null) {
+                            context.addCompilationError( failure.getError() );
+                        }
                     }
                 } );
     }

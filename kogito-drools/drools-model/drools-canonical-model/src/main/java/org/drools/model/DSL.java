@@ -246,6 +246,10 @@ public class DSL {
 
     // -- Expressions --
 
+    public static Expr1ViewItem<Boolean> expr( String exprId, Variable<Boolean> var ) {
+        return new Expr1ViewItemImpl<>( exprId, var, new Predicate1.Impl<>( x -> x != null ? x : false ) );
+    }
+
     public static <T> Expr1ViewItem<T> expr( Variable<T> var, Predicate1<T> predicate ) {
         return new Expr1ViewItemImpl<>( var, new Predicate1.Impl<>(predicate) );
     }
@@ -467,8 +471,8 @@ public class DSL {
         return new ConsequenceBuilder._0(block);
     }
 
-    public static ConsequenceBuilder._0 executeScript(String language, String script) {
-        return new ConsequenceBuilder._0(language, script);
+    public static ConsequenceBuilder._0 executeScript(String language, Class<?> ruleClass, String script) {
+        return new ConsequenceBuilder._0(language, ruleClass, script);
     }
 
     public static <A> ConsequenceBuilder._1<A> on(Variable<A> dec1) {

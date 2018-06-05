@@ -30,6 +30,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -120,6 +121,42 @@ public class OrTest extends BaseModelTest {
         kieSession.fireAllRules();
 
         Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
+
+    @Test
+    public void testOrWithDuplicatedVariables() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "   Person( $name: name == \"Mark\", $age: age ) or\n" +
+                "   Person( $name: name == \"Mario\", $age : age )\n" +
+                "then\n" +
+                "  list.add( $name + \" is \" + $age);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $p: Person( name == \"Mark\", $age: age ) or\n" +
+                "   $p: Person( name == \"Mario\", $age : age )\n" +
+                "then\n" +
+                "  list.add( $p + \" has \" + $age + \" years\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("list", results);
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        assertEquals(4, results.size());
+        assertTrue(results.contains("Mark is 37"));
+        assertTrue(results.contains("Mark has 37 years"));
+        assertTrue(results.contains("Mario is 40"));
+        assertTrue(results.contains("Mario has 40 years"));
     }
 
     @Test

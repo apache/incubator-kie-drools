@@ -17,6 +17,8 @@
 package org.drools.modelcompiler.consequence;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -44,6 +46,7 @@ import org.drools.model.functions.ScriptBlock;
 import org.drools.modelcompiler.RuleContext;
 import org.kie.api.definition.KiePackage;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
@@ -134,6 +137,18 @@ public class MVELConsequence implements Consequence {
         for (KiePackage kp : context.getKnowledgePackages()) {
             if (!kp.getName().equals(context.getPkg().getName())) {
                 runtimeData.addPackageImport(kp.getName());
+            }
+        }
+
+        ParserConfiguration parserConfiguration = runtimeData.getParserConfiguration();
+        parserConfiguration.setClassLoader( workingMemory.getKnowledgeBase().getRootClassLoader() );
+
+        Class<?> ruleClass = scriptBlock.getRuleClass();
+        if (ruleClass != null) {
+            for (Method m : ruleClass.getDeclaredMethods()) {
+                if ( Modifier.isStatic( m.getModifiers() ) ) {
+                    runtimeData.getParserConfiguration().addImport( m.getName(), m );
+                }
             }
         }
 

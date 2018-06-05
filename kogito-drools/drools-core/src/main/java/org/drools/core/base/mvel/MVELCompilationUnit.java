@@ -16,6 +16,22 @@
 
 package org.drools.core.base.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ModifyInterceptor;
 import org.drools.core.common.InternalFactHandle;
@@ -39,22 +55,6 @@ import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class MVELCompilationUnit
     implements
@@ -257,7 +257,7 @@ public class MVELCompilationUnit
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
                 identifier = inputIdentifiers[i];
                 type = inputTypes[i];
-                Class< ? > cls = loadClass( runtimeData.getPackageClassLoader(),
+                Class< ? > cls = loadClass( runtimeData.getParserConfiguration().getClassLoader(),
                                             inputTypes[i] );
                 parserContext.addInput( inputIdentifiers[i],
                                         cls );

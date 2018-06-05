@@ -39,6 +39,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
@@ -125,6 +126,9 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz, Expression scope) {
+        if (clazz == null) {
+            return null;
+        }
         Method accessor = ClassUtils.getAccessor(clazz, name);
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
@@ -146,8 +150,9 @@ public class DrlxParseUtil {
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
         } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
+            // There's no field with the given name, return null and manage the problem on the caller
         }
+        return null;
     }
 
     public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz, Collection<String> usedDeclarations) {
@@ -343,7 +348,7 @@ public class DrlxParseUtil {
         return key.substring( "var_".length() );
     }
 
-    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
+    public static BlockStmt parseBlock(String ruleConsequenceAsBlock) throws ParseProblemException {
         return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
@@ -394,6 +399,10 @@ public class DrlxParseUtil {
                     }
                 } else {
                     TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
+                    if (te == null) {
+                        context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
+                        return null;
+                    }
                     Class<?> returnType = te.getType();
                     previousScope = te.getExpression();
                     previousClass = returnType;
@@ -500,13 +509,11 @@ public class DrlxParseUtil {
     }
 
     public static Class<?> getClassFromContext(TypeResolver typeResolver, String className) {
-        Class<?> patternType;
         try {
-            patternType = typeResolver.resolveType(className);
+            return typeResolver.resolveType(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException( e );
         }
-        return patternType;
     }
 
     public static boolean isPrimitiveExpression(Expression expr) {

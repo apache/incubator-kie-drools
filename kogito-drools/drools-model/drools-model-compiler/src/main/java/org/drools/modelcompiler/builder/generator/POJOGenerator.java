@@ -3,9 +3,9 @@ package org.drools.modelcompiler.builder.generator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +34,7 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.Statement;
+import org.drools.javaparser.ast.type.ArrayType;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.PrimitiveType.Primitive;
@@ -46,6 +47,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
 
+import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.javaparser.JavaParser.parseStatement;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -152,8 +154,8 @@ public class POJOGenerator {
         
         generatedClass.addConstructor(Modifier.PUBLIC); // No-args ctor
 
-        List<Statement> equalsFieldStatement = new ArrayList<>();
-        List<Statement> hashCodeFieldStatement = new ArrayList<>();
+        Map<String, Statement> equalsFieldStatement = new LinkedHashMap<>();
+        Map<String, Statement> hashCodeFieldStatement = new LinkedHashMap<>();
         List<String> toStringFieldStatement = new ArrayList<>();
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
@@ -161,40 +163,44 @@ public class POJOGenerator {
         Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
 
         if (!inheritedFields.isEmpty() || !typeDeclaration.getFields().isEmpty()) {
-            ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
-            NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
+            if (typeFields.size() < 65) {
+                ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
 
-            MethodCallExpr superCall = new MethodCallExpr( null, "super" );
-            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
-                superCall.addArgument( fieldName );
-                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
-                    keyFields.add(typeFieldDescr);
+                MethodCallExpr superCall = new MethodCallExpr( null, "super" );
+                for (TypeFieldDescr typeFieldDescr : inheritedFields) {
+                    String fieldName = typeFieldDescr.getFieldName();
+                    addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                    superCall.addArgument( fieldName );
+                    if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                        keyFields.add( typeFieldDescr );
+                    }
                 }
-            }
-            ctorFieldStatement.add( new ExpressionStmt(superCall) );
+                ctorFieldStatement.add( new ExpressionStmt( superCall ) );
 
-            int position = inheritedFields.size();
-            for (TypeFieldDescr typeFieldDescr : typeFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
+                int position = inheritedFields.size();
+                for (TypeFieldDescr typeFieldDescr : typeFields) {
+                    String fieldName = typeFieldDescr.getFieldName();
+                    Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
 
-                FieldDeclaration field = generatedClass.addField( returnType, fieldName, Modifier.PRIVATE );
-                field.createSetter();
-                field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
-                MethodDeclaration getter = field.createGetter();
-                equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
-                hashCodeFieldStatement.addAll(generateHashCodeForField(getter, fieldName));
+                    FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
+                            generatedClass.addField( returnType, fieldName, Modifier.PRIVATE ) :
+                            generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
+                    field.createSetter();
+                    field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
+                    MethodDeclaration getter = field.createGetter();
+                    equalsFieldStatement.put( fieldName, generateEqualsForField( getter, fieldName ) );
+                    hashCodeFieldStatement.put( fieldName, generateHashCodeForField( getter, fieldName ) );
 
-                ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
+                    ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
 
-                toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
-                if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
-                    keyFields.add(typeFieldDescr);
+                    toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+                    if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
+                        keyFields.add( typeFieldDescr );
+                    }
                 }
+                fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
             }
-            fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
 
             if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.size()) {
                 ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
@@ -215,10 +221,13 @@ public class POJOGenerator {
                 keyArgumentsCtor.setBody( new BlockStmt( ctorKeyFieldStatement ) );
             }
 
-            if (hasSuper) {
-                generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement ) );
-                generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement ) );
+            if (!keyFields.isEmpty()) {
+                equalsFieldStatement.keySet().retainAll( keyFields );
+                hashCodeFieldStatement.keySet().retainAll( keyFields );
             }
+
+            generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement.values(), hasSuper ) );
+            generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement.values(), hasSuper ) );
         }
 
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
@@ -250,10 +259,12 @@ public class POJOGenerator {
                 Optional.empty();
     }
 
-    private static MethodDeclaration generateEqualsMethod(String generatedClassName, List<Statement> equalsFieldStatement) {
+    private static MethodDeclaration generateEqualsMethod(String generatedClassName, Collection<Statement> equalsFieldStatement, boolean hasSuper) {
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
         equalsStatements.add(classCastStatement(generatedClassName));
-        equalsStatements.add( parseStatement("if ( !super.equals( o ) ) return false;") );
+        if (hasSuper) {
+            equalsStatements.add( parseStatement( "if ( !super.equals( o ) ) return false;" ) );
+        }
         equalsStatements.addAll(equalsFieldStatement);
         equalsStatements.add(parseStatement("return true;"));
 
@@ -280,6 +291,13 @@ public class POJOGenerator {
         Statement statement;
         if (type instanceof ClassOrInterfaceType) {
             statement = parseStatement(" if( __fieldName != null ? !__fieldName.equals(that.__fieldName) : that.__fieldName != null) { return false; }");
+        } else if (type instanceof ArrayType) {
+            Type componentType = (( ArrayType ) type).getComponentType();
+            if (componentType instanceof PrimitiveType) {
+                statement = parseStatement(" if( !java.util.Arrays.equals((" + componentType + "[])__fieldName, (" + componentType + "[])that.__fieldName)) { return false; }");
+            } else {
+                statement = parseStatement(" if( !java.util.Arrays.equals((Object[])__fieldName, (Object[])that.__fieldName)) { return false; }");
+            }
         } else if (type instanceof PrimitiveType) {
             statement = parseStatement(" if( __fieldName != that.__fieldName) { return false; }");
         } else {
@@ -300,8 +318,8 @@ public class POJOGenerator {
         return statement;
     }
 
-    private static MethodDeclaration generateHashCodeMethod(List<Statement> hashCodeFieldStatement) {
-        final Statement header = parseStatement("int result = super.hashCode();");
+    private static MethodDeclaration generateHashCodeMethod(Collection<Statement> hashCodeFieldStatement, boolean hasSuper) {
+        final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 1;");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);
         hashCodeStatements.add(parseStatement("return result;"));
@@ -313,12 +331,18 @@ public class POJOGenerator {
         return equals;
     }
 
-    private static List<Statement> generateHashCodeForField(MethodDeclaration getter, String fieldName) {
+    private static Statement generateHashCodeForField(MethodDeclaration getter, String fieldName) {
         Type type = getter.getType();
         if (type instanceof ClassOrInterfaceType) {
-            return Collections.singletonList( parseStatement( format( "result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName ) ) );
+            return parseStatement( format( "result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName ) );
+        } else if (type instanceof ArrayType) {
+            Type componentType = (( ArrayType ) type).getComponentType();
+            if (componentType instanceof PrimitiveType) {
+                return parseStatement( format( "result = 31 * result + ({0} != null ? java.util.Arrays.hashCode((" + componentType + "[]){0}) : 0);", fieldName ) );
+            } else {
+                return parseStatement( format( "result = 31 * result + ({0} != null ? java.util.Arrays.hashCode((Object[]){0}) : 0);", fieldName ) );
+            }
         } else if (type instanceof PrimitiveType) {
-            List<Statement> result = new ArrayList<>();
             String primitiveToInt = fieldName;
             Primitive primitiveType = ((PrimitiveType) type).getType();
             switch (primitiveType) {
@@ -326,10 +350,7 @@ public class POJOGenerator {
                     primitiveToInt = format("({0} ? 1231 : 1237)", fieldName);
                     break;
                 case DOUBLE:
-                    Statement doubleToLongStatement = parseStatement(format("long temp{0} = Double.doubleToLongBits({0});", fieldName));
-                    result.add(doubleToLongStatement);
-                    // please notice the actual primitiveToInt is using the doubleToLongStatement variable.
-                    primitiveToInt = format("(int) (temp{0} ^ (temp{0} >>> 32))", fieldName);
+                    primitiveToInt = format("(int) (Double.doubleToLongBits({0}) ^ (Double.doubleToLongBits({0}) >>> 32))", fieldName);
                     break;
                 case FLOAT:
                     primitiveToInt = format("Float.floatToIntBits({0})", fieldName);
@@ -338,9 +359,7 @@ public class POJOGenerator {
                     primitiveToInt = format("(int) ({0} ^ ({0} >>> 32))", fieldName);
                     break;
             }
-            Statement primitiveStatement = parseStatement(format("result = 31 * result + {0};", primitiveToInt));
-            result.add(primitiveStatement);
-            return result;
+            return parseStatement(format("result = 31 * result + {0};", primitiveToInt));
         } else {
             throw new RuntimeException("Unknown type");
         }

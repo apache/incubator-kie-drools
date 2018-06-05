@@ -200,7 +200,9 @@ public class ExpressionTyper {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
             } else {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
-                return nameExpr.flatMap( te -> createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
+                return nameExpr.flatMap( te -> te.getType().isArray() ?
+                        createArrayAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()) :
+                        createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
             }
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
@@ -210,6 +212,12 @@ public class ExpressionTyper {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private Optional<TypedExpression> createArrayAccessExpression(Expression index, Expression scope) {
+        ArrayAccessExpr arrayAccessExpr = new ArrayAccessExpr(scope, index);
+        TypedExpression typedExpression = new TypedExpression(arrayAccessExpr, Object.class);
+        return of(typedExpression);
     }
 
     private Optional<TypedExpression> createMapAccessExpression(Expression index, Expression scope) {
@@ -236,10 +244,8 @@ public class ExpressionTyper {
             context.addUsedDeclarations(name);
             return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
         } else {
-            TypedExpression expression;
-            try {
-                expression = nameExprToMethodCallExpr(name, typeCursor, null);
-            } catch (IllegalArgumentException e) {
+            TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
+            if (expression == null) {
                 if (isPositional || ruleContext.getQueryName().isPresent()) {
                     String unificationVariable = ruleContext.getOrCreateUnificationId(name);
                     expression = new TypedExpression(unificationVariable, typeCursor, name);
@@ -314,6 +320,10 @@ public class ExpressionTyper {
             } else if (part instanceof SimpleName) {
                 String field = part.toString();
                 TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
+                if (expression == null) {
+                    ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + field + " on " + typeCursor ) );
+                    break;
+                }
                 typeCursor = expression.getType();
                 previous = expression.getExpression();
 
@@ -326,6 +336,10 @@ public class ExpressionTyper {
                 InlineCastExpr inlineCastExprPart = (InlineCastExpr) part;
                 final FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) inlineCastExprPart.getExpression();
                 final TypedExpression toMethodCallExpr = nameExprToMethodCallExpr(fieldAccessExpr.getNameAsString(), typeCursor, previous);
+                if (toMethodCallExpr == null) {
+                    ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + fieldAccessExpr.getNameAsString() + " on " + typeCursor ) );
+                    break;
+                }
                 final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), inlineCastExprPart.getType());
                 previous = addCastToExpression(castClass, toMethodCallExpr.getExpression(), false);
 
@@ -480,6 +494,11 @@ public class ExpressionTyper {
 
         Method m = ClassUtil.findMethod( originalTypeCursor, methodCallExpr.getNameAsString(), argsType );
         if (m == null) {
+            Optional<Class<?>> functionType = ruleContext.getFunctionType( methodCallExpr.getNameAsString() );
+            if (functionType.isPresent()) {
+                methodCallExpr.setScope( null );
+                return new TypedExpressionCursor(methodCallExpr, functionType.get());
+            }
             ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Method " + methodCallExpr.getNameAsString() + " on " + originalTypeCursor + " is missing" ) );
             return new TypedExpressionCursor(methodCallExpr, Object.class);
         }
