@@ -176,6 +176,7 @@ public abstract class PatternDSL implements DSLNode {
                             new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
                             createSimpleConstraint( drlxParseResult, pattern );
                         constraint.buildPattern();
+                        registerUsedBindingInOr(drlxParseResult.getExprBinding());
                     }
 
                     @Override
@@ -185,6 +186,12 @@ public abstract class PatternDSL implements DSLNode {
                         }
                     }
                 } );
+    }
+
+    private void registerUsedBindingInOr(String exprBinding) {
+        if(context.isNestedInsideOr()) {
+            context.getBindingOr().add(exprBinding);
+        }
     }
 
     protected abstract DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern );

@@ -96,7 +96,15 @@ public class Consequence {
             }
         }
 
-        Collection<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
+        Set<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
+
+        Set<String> usedUnusableDeclarations = new HashSet<>(context.getUnusableOrBinding());
+        usedUnusableDeclarations.retainAll(usedDeclarationInRHS);
+
+        for(String s : usedUnusableDeclarations) {
+            context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s)) );
+        }
+
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
         if (isBreaking) {
             onCall = new MethodCallExpr(onCall, BREAKING_CALL);
@@ -120,7 +128,7 @@ public class Consequence {
         return null;
     }
 
-    private Collection<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
+    private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
         existingDecls.addAll(packageModel.getGlobals().keySet());
