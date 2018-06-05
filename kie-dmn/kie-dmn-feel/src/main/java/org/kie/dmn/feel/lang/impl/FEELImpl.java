@@ -26,18 +26,30 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
+import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.ASTNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -57,6 +69,7 @@ public class FEELImpl
     // pre-cached results from the above profiles...
     private final Optional<ExecutionFrameImpl> customFrame;
     private final Collection<FEELFunction> customFunctions;
+    private final boolean doCompile;
 
     public FEELImpl() {
         this(ClassLoaderUtil.findDefaultClassLoader(), Collections.emptyList());
@@ -81,6 +94,7 @@ public class FEELImpl
                 functions.put(f.getName(), f);
             }
         }
+        doCompile = profiles.stream().filter(DoCompileFEELProfile.class::isInstance).findFirst().isPresent();
         customFrame = Optional.of(frame);
         customFunctions = Collections.unmodifiableCollection(functions.values());
     }
@@ -98,10 +112,19 @@ public class FEELImpl
     public CompiledExpression compile(String expression, CompilerContext ctx) {
         FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
         ParseTree tree = parser.compilation_unit();
-        ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
-        BaseNode expr = v.visit( tree );
-        CompiledExpression ce = new CompiledExpressionImpl( expr );
-        return ce;
+        if (!doCompile) {
+            ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
+            BaseNode expr = v.visit(tree);
+            CompiledExpression ce = new CompiledExpressionImpl(expr);
+            return ce;
+        } else {
+            DirectCompilerVisitor v = new DirectCompilerVisitor(ctx.getInputVariableTypes());
+            DirectCompilerResult directResult = v.visit(tree);
+
+            Expression expr = directResult.getExpression();
+            CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(expression, expr, directResult.getFieldDeclarations());
+            return cu;
+        }
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
@@ -145,12 +168,20 @@ public class FEELImpl
 
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
+        if (expr instanceof CompiledExpressionImpl) {
+            return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
+        } else {
+            return ((CompiledFEELExpression) expr).apply(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
+        }
     }
     
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
-        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+        if (expr instanceof CompiledExpressionImpl) {
+            return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+        } else {
+            return ((CompiledFEELExpression) expr).apply(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+        }
     }
 
     /**
