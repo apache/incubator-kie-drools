@@ -23,10 +23,19 @@ public class OrVisitor {
 
         for (BaseDescr subDescr : descr.getDescrs()) {
             final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
+            context.setNestedInsideOr(true);
             context.pushExprPointer(andDSL::addArgument);
             subDescr.accept(modelGeneratorVisitor);
             context.popExprPointer();
             ceDSL.addArgument( andDSL );
+            context.setNestedInsideOr(false);
+        }
+
+
+        for(String k : context.getBindingOr()) {
+            if(context.getBindingOr().sizeFor(k) != descr.getDescrs().size())  {
+                context.getUnusableOrBinding().add(k);
+            }
         }
     }
 }

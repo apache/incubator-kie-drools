@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -17,6 +19,7 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.definition.type.ClassReactive;
@@ -52,6 +55,11 @@ public class RuleContext {
     private RuleUnitDescr ruleUnitDescr;
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
+
+    /* These are used to check if some binding used in an OR expression is used in every branch */
+    private Boolean isNestedInsideOr = false;
+    private Bag<String> bindingOr = new Bag<>();
+    private Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
     public enum RuleDialect {
@@ -269,6 +277,22 @@ public class RuleContext {
         PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
         return propertySpecificOption.isPropSpecific( patternClass.getAnnotation( PropertyReactive.class ) != null,
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
+    }
+
+    public Boolean isNestedInsideOr() {
+        return isNestedInsideOr;
+    }
+
+    public void setNestedInsideOr(Boolean nestedInsideOr) {
+        isNestedInsideOr = nestedInsideOr;
+    }
+
+    public Bag<String> getBindingOr() {
+        return bindingOr;
+    }
+
+    public Set<String> getUnusableOrBinding() {
+        return unusableOrBinding;
     }
 }
 
