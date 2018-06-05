@@ -163,7 +163,7 @@ public final class KieUtil {
 
     public static ReleaseId generateReleaseId(final String groupId) {
         final KieServices kieServices = KieServices.Factory.get();
-        return kieServices.newReleaseId(groupId, UUID.randomUUID().toString(), "1.0.0-SNAPSHOT");
+        return kieServices.newReleaseId(groupId, UUID.randomUUID().toString(), "1.0.0");
     }
 
     public static KieBuilder getKieBuilderFromClasspathResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
