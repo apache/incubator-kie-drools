@@ -16,15 +16,7 @@
 
 package org.kie.dmn.feel.runtime;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,12 +24,25 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.mockito.ArgumentCaptor;
+
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance();
+    private final boolean doTestCompile = false;
+
+    private final FEEL feel = doTestCompile ? FEEL.newInstance(Arrays.asList(new DoCompileFEELProfile())) : FEEL.newInstance();
 
     @Parameterized.Parameter(0)
     public String expression;

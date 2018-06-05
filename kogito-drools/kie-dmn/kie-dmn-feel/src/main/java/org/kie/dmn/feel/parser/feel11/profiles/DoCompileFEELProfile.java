@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.codegen.feel11;
+package org.kie.dmn.feel.parser.feel11.profiles;
 
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.List;
 
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.runtime.FEELFunction;
 
-public interface CompiledFEELExpression extends CompiledExpression, Function<EvaluationContext, Object> {
-    
+public class DoCompileFEELProfile implements FEELProfile {
+
+    @Override
+    public List<FEELFunction> getFEELFunctions() {
+        return Collections.emptyList();
+    }
+
 }
