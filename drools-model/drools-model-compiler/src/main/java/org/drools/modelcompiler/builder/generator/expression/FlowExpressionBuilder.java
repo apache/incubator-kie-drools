@@ -140,7 +140,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         if ( isAlphaIndex( usedDeclarations ) ) {
-            addIndexedByValue(right, indexedByDSL);
+            addIndexedByValue(right, left.getType(), indexedByDSL);
         } else {
             LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
             indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
