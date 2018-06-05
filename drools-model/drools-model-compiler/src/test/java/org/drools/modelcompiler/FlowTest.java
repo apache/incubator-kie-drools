@@ -1064,7 +1064,7 @@ public class FlowTest {
         final Variable<Integer> var_$pattern_Integer$1$ = declarationOf(Integer.class, "$pattern_Integer$1$");
 
         org.drools.model.Rule rule = rule("R").build(input(var_$pattern_Integer$1$),
-                                                     executeScript("mvel",
+                                                     executeScript("mvel", null,
                                                                    "System.out.println(\"Hello World\");\n" +
                                                                    "drools.insert(\"Hello World\");")
                                                      );
@@ -1088,7 +1088,7 @@ public class FlowTest {
                                                                                          "age");
 
         org.drools.model.Rule rule = rule("R").build(input(var_$p),
-                                                     on(var_$p).executeScript("mvel", "System.out.println($p); modify($p) { setAge(1); } System.out.println($p);"));
+                                                     on(var_$p).executeScript("mvel", null, "System.out.println($p); modify($p) { setAge(1); } System.out.println($p);"));
 
         Model model = new ModelImpl().addRule(rule);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);

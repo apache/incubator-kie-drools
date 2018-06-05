@@ -48,6 +48,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 
 public class ConstraintParser {
@@ -95,7 +96,7 @@ public class ConstraintParser {
 
         String exprId;
         if ( GENERATE_EXPR_ID ) {
-            exprId = context.getExprId( patternType, expression );
+            exprId = context.getExprId( patternType, hasBind ? expression.substring( expression.indexOf( ':' )+1 ).trim() : expression );
         }
 
         if ( drlxExpr instanceof BinaryExpr ) {
@@ -242,12 +243,17 @@ public class ConstraintParser {
             NameExpr nameExpr = (NameExpr) drlxExpr;
 
             TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
+            if (converted == null) {
+                return new DrlxParseFail();
+            }
             Expression withThis = DrlxParseUtil.prepend(new NameExpr("_this"), converted.getExpression());
 
             if (hasBind) {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, null, converted.getType() )
                         .setLeft( new TypedExpression( withThis, converted.getType() ) )
                         .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
+            } else if (context.hasDeclaration( "b" )) {
+                return new DrlxParseSuccess(patternType, exprId, bindingId, new NameExpr( toVar(drlxExpr.toString()) ), Boolean.class );
             } else {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType() )
                         .addReactOnProperty( nameExpr.getNameAsString() );

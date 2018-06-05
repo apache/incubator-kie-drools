@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.AssignExpr;
@@ -81,12 +82,18 @@ public class Consequence {
     }
 
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
-        BlockStmt ruleConsequence = rewriteConsequence(consequenceString);
-        if(ruleConsequence != null) {
-            ruleConsequence.findAll(Expression.class)
-                    .stream()
-                    .filter(s -> isNameExprWithName(s, "kcontext"))
-                    .forEach(n -> n.replace(new CastExpr( toClassOrInterfaceType(org.kie.api.runtime.rule.RuleContext.class), new NameExpr("drools") )));
+        BlockStmt ruleConsequence = null;
+        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+            // mvel consequences will be treated as a ScriptBlock
+            ruleConsequence = rewriteConsequence( consequenceString );
+            if ( ruleConsequence != null ) {
+                ruleConsequence.findAll( Expression.class )
+                        .stream()
+                        .filter( s -> isNameExprWithName( s, "kcontext" ) )
+                        .forEach( n -> n.replace( new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) );
+            } else {
+                return null;
+            }
         }
 
         Set<String> usedDeclarationInRHS = extractUsedDeclarations(ruleConsequence, consequenceString);
@@ -112,12 +119,13 @@ public class Consequence {
     }
 
     private BlockStmt rewriteConsequence(String consequence) {
-        if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            // anyhow the consequence will be used as a ScriptBlock.
-            return null;
-        }
         String ruleConsequenceAsBlock = rewriteConsequenceBlock(consequence.trim());
-        return parseBlock(ruleConsequenceAsBlock);
+        try {
+            return parseBlock( ruleConsequenceAsBlock );
+        } catch (ParseProblemException e) {
+            context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
+        }
+        return null;
     }
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
@@ -153,6 +161,7 @@ public class Consequence {
     private MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
         MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTESCRIPT_CALL : EXECUTESCRIPT_CALL);
         executeCall.addArgument(new StringLiteralExpr("mvel"));
+        executeCall.addArgument(packageModel.getName() + "." + packageModel.getRulesFileName() + ".class");
 
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(StringBuilder.class.getCanonicalName());
@@ -162,11 +171,7 @@ public class Consequence {
             if (i.equals(packageModel.getName() + ".*")) {
                 continue; // skip same-package star import.
             }
-            MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
-            StringLiteralExpr importAsStringLiteral = new StringLiteralExpr();
-            importAsStringLiteral.setString("import " + i + ";\n"); // use the setter method in order for the string literal be properly escaped.
-            appendCall.addArgument(importAsStringLiteral);
-            mvelSB = appendCall;
+            mvelSB = appendImport( mvelSB, i );
         }
 
         StringLiteralExpr mvelScriptBodyStringLiteral = new StringLiteralExpr();
@@ -177,6 +182,14 @@ public class Consequence {
 
         executeCall.addArgument(new MethodCallExpr(appendCall, "toString"));
         return executeCall;
+    }
+
+    private MethodCallExpr appendImport( Expression mvelSB, String i ) {
+        MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
+        StringLiteralExpr importAsStringLiteral = new StringLiteralExpr();
+        importAsStringLiteral.setString("import " + i + ";\n"); // use the setter method in order for the string literal be properly escaped.
+        appendCall.addArgument(importAsStringLiteral);
+        return appendCall;
     }
 
     private static MethodCallExpr onCall(Collection<String> usedArguments) {

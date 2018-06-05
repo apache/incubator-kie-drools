@@ -30,6 +30,8 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class RuleContext {
@@ -50,7 +52,7 @@ public class RuleContext {
     private Map<String, String> namedConsequences = new HashMap<>();
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
-    private Optional<String> queryName = Optional.empty();
+    private Optional<String> queryName = empty();
 
     private RuleUnitDescr ruleUnitDescr;
 
@@ -279,6 +281,21 @@ public class RuleContext {
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }
 
+    public Optional<Class<?>> getFunctionType(String name) {
+        return packageModel.getFunctions().stream()
+                .filter( method -> method.getNameAsString().equals( name ) )
+                .findFirst()
+                .flatMap( method -> resolveType( method.getType().asString() ) );
+    }
+
+    public Optional<Class<?>> resolveType(String name) {
+        try {
+            return of( typeResolver.resolveType( name ) );
+        } catch(ClassNotFoundException e) {
+            return empty();
+        }
+    }
+  
     public Boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }

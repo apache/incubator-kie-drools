@@ -18,10 +18,11 @@ package org.drools.model.functions;
 
 public class ScriptBlock implements BlockN {
 
+    private final Class<?> ruleClass;
     private final String script;
 
-    public ScriptBlock(String script) {
-        super();
+    public ScriptBlock(Class<?> ruleClass, String script) {
+        this.ruleClass = ruleClass;
         this.script = script;
     }
 
@@ -32,6 +33,10 @@ public class ScriptBlock implements BlockN {
 
     public String getScript() {
         return script;
+    }
+
+    public Class<?> getRuleClass() {
+        return ruleClass;
     }
 
     @Override
