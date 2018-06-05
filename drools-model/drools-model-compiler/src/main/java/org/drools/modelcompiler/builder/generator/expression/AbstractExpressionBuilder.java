@@ -20,14 +20,19 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
@@ -134,17 +139,37 @@ public abstract class AbstractExpressionBuilder {
         return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
     }
 
-    protected void addIndexedByValue(TypedExpression right, Class<?> leftType, MethodCallExpr indexedByDSL) {
+    protected Expression narrowExpressionWithBigDecimal(TypedExpression right, Class<?> leftType) {
         Expression expression = right.getExpression();
         if(expression instanceof BigDecimalLiteralExpr) {
-            expression = toNewBigDecimalExpr(((BigDecimalLiteralExpr) expression).asBigDecimal());
+            expression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
         } else if (expression instanceof LiteralExpr && leftType.equals(BigDecimal.class)) {
-            expression = toNewBigDecimalExpr(new BigDecimal(expression.toString()));
+            final BigDecimal bigDecimal = new BigDecimal(expression.toString());
+            expression = toNewBigDecimalExpr(new StringLiteralExpr(bigDecimal.toString()));
+        } else if (expression instanceof NameExpr && leftType.equals(BigDecimal.class)) {
+            expression = toNewBigDecimalExpr(expression);
         } else if (expression instanceof BigIntegerLiteralExpr) {
-            expression = toNewBigIntegerExpr(((BigIntegerLiteralExpr) expression).asBigInteger());
+            expression = toNewBigIntegerExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
         } else if (expression instanceof LiteralExpr && leftType.equals(BigInteger.class)) {
-            expression = toNewBigIntegerExpr(new BigDecimal(expression.toString()).toBigInteger());
+            final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
+            expression = toNewBigIntegerExpr(new StringLiteralExpr(bigInteger.toString()));
+        } else if (expression instanceof NameExpr && leftType.equals(BigInteger.class)) {
+            expression = toNewBigIntegerExpr(expression);
         }
-        indexedByDSL.addArgument(expression);
+        return expression;
+    }
+
+    protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, Class<?> leftType) {
+        LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
+        indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
+        final TypedExpression expression;
+        if (!leftContainsThis) {
+            expression = left;
+        } else {
+            expression = right;
+        }
+        final Expression narrowed = narrowExpressionWithBigDecimal(expression, leftType);
+        indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+        indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
     }
 }

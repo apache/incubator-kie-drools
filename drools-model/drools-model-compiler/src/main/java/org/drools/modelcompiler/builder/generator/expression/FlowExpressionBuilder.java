@@ -8,8 +8,6 @@ import java.util.stream.Stream;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -25,8 +23,6 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigIntegerExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
@@ -139,13 +135,11 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
+        final Class<?> leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations ) ) {
-            addIndexedByValue(right, left.getType(), indexedByDSL);
+            indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, leftType));
         } else {
-            LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-            indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
-            indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
-            indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
         }
 
         return indexedByDSL;

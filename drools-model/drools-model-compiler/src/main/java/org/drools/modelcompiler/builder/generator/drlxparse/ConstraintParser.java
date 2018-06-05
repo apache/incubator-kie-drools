@@ -51,7 +51,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLitera
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigIntegerExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 
@@ -358,7 +357,7 @@ public class ConstraintParser {
         final Expression convertedExpression;
         if(te.getType() == BigInteger.class) {
             if(te.getExpression() instanceof BigIntegerLiteralExpr) {
-                convertedExpression = toNewBigDecimalExpr(((BigIntegerLiteralExpr) te.getExpression()).asBigInteger());
+                convertedExpression = toNewBigDecimalExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) te.getExpression()).asBigInteger().toString()));
             } else {
                 convertedExpression = new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
                                              NodeList.nodeList(te.getExpression()));
@@ -368,7 +367,7 @@ public class ConstraintParser {
             convertedExpression = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
                     .addArgument(te.getExpression());
         } else if(te.getExpression() instanceof BigDecimalLiteralExpr) {
-            convertedExpression = toNewBigDecimalExpr(((BigDecimalLiteralExpr) te.getExpression()).asBigDecimal());
+            convertedExpression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) te.getExpression()).asBigDecimal().toString()));
         } else {
             convertedExpression = te.getExpression();
         }

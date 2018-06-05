@@ -647,13 +647,13 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Expression toNewBigIntegerExpr(Object bigInteger) {
+    public static Expression toNewBigIntegerExpr(Expression initExpression) {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class),
-                                      NodeList.nodeList(new StringLiteralExpr(bigInteger.toString())));
+                                      NodeList.nodeList(initExpression));
     }
 
-    public static Expression toNewBigDecimalExpr(Object bigDecimal) {
+    public static Expression toNewBigDecimalExpr(Expression initExpression) {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
-                                      NodeList.nodeList(new StringLiteralExpr(bigDecimal.toString())));
+                                      NodeList.nodeList(initExpression));
     }
 }
