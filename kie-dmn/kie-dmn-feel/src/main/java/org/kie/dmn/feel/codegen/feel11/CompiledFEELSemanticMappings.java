@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.math.BigDecimal;
+
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -96,6 +98,11 @@ public class CompiledFEELSemanticMappings {
      */
     public static Object div(Object left, Object right) {
         return InfixOpNode.div(left, right, null);
+    }
+
+    // to ground to null if right = 0
+    public static Object div(Object left, BigDecimal right) {
+        return right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
     }
 
     /**
