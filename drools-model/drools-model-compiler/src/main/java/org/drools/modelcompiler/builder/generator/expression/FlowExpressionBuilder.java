@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -23,6 +25,8 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigIntegerExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
@@ -136,7 +140,13 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         if ( isAlphaIndex( usedDeclarations ) ) {
-            indexedByDSL.addArgument( right.getExpression() );
+            Expression expression = right.getExpression();
+            if(expression instanceof BigDecimalLiteralExpr) {
+                expression = toNewBigDecimalExpr(((BigDecimalLiteralExpr) expression).asBigDecimal());
+            } else if (expression instanceof BigIntegerLiteralExpr) {
+                expression = toNewBigIntegerExpr(((BigIntegerLiteralExpr) expression).asBigInteger());
+            }
+            indexedByDSL.addArgument(expression);
         } else {
             LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
             indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
