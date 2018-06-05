@@ -126,7 +126,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         if ( isAlphaIndex( usedDeclarations )) {
-            indexedByDSL.addArgument(right.getExpression());
+            addIndexedByValue(right, indexedByDSL);
         } else if (usedDeclarations.size() == 1) {
             LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
             indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));

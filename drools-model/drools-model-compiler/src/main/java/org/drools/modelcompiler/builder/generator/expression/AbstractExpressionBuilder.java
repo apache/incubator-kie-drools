@@ -18,6 +18,8 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.util.Collection;
 
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -31,6 +33,8 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigIntegerExpr;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -125,5 +129,15 @@ public abstract class AbstractExpressionBuilder {
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
         return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
+    }
+
+    protected void addIndexedByValue(TypedExpression right, MethodCallExpr indexedByDSL) {
+        Expression expression = right.getExpression();
+        if(expression instanceof BigDecimalLiteralExpr) {
+            expression = toNewBigDecimalExpr(((BigDecimalLiteralExpr) expression).asBigDecimal());
+        } else if (expression instanceof BigIntegerLiteralExpr) {
+            expression = toNewBigIntegerExpr(((BigIntegerLiteralExpr) expression).asBigInteger());
+        }
+        indexedByDSL.addArgument(expression);
     }
 }
