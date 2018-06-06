@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,12 +43,15 @@ import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
@@ -246,6 +251,12 @@ public class DrlxParseUtil {
         }
         if (expr instanceof StringLiteralExpr) {
             return String.class;
+        }
+        if (expr instanceof BigDecimalLiteralExpr) {
+            return BigDecimal.class;
+        }
+        if (expr instanceof BigIntegerLiteralExpr) {
+            return BigInteger.class;
         }
         throw new RuntimeException("Unknown literal: " + expr);
     }
@@ -634,5 +645,15 @@ public class DrlxParseUtil {
             accumulator.add(child);
             findAllChildrenRecursiveRec(accumulator, child);
         }
+    }
+
+    public static Expression toNewBigIntegerExpr(Expression initExpression) {
+        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class),
+                                      NodeList.nodeList(initExpression));
+    }
+
+    public static Expression toNewBigDecimalExpr(Expression initExpression) {
+        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
+                                      NodeList.nodeList(initExpression));
     }
 }

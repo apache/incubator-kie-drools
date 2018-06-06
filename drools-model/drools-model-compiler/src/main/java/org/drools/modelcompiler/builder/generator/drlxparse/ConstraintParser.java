@@ -14,6 +14,8 @@ import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
@@ -48,6 +50,7 @@ import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 
@@ -285,7 +288,7 @@ public class ConstraintParser {
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
-        if(isAnyOperandBigDecimal(left, right)) {
+        if(isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) {
             return compareBigDecimal(operator, left, right);
         }
 
@@ -305,6 +308,10 @@ public class ConstraintParser {
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right ) {
+        if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && (isComparisonOperator(operator))) {
+            return compareBigDecimal(operator, left, right);
+        }
+
         if ( isComparisonOperator( operator ) ) {
             MethodCallExpr compareMethod = null;
             if ( left.getType() == String.class && right.getType() == String.class ) {
@@ -323,10 +330,6 @@ public class ConstraintParser {
             }
         }
 
-        if (isAnyOperandBigDecimal(left, right) && (isComparisonOperator(operator))) {
-            return compareBigDecimal(operator, left, right);
-        }
-
         return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
     }
 
@@ -338,27 +341,37 @@ public class ConstraintParser {
         return left.getType() == BigDecimal.class || right.getType() == BigDecimal.class;
     }
 
+    private static boolean isAnyOperandBigInteger(TypedExpression left, TypedExpression right) {
+        return left.getType() == BigInteger.class || right.getType() == BigInteger.class;
+    }
+
     private static Expression compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
-        left.setExpression( convertExpressionToBigDecimal(left) );
-        right.setExpression( convertExpressionToBigDecimal(right) );
-        final MethodCallExpr methodCallExpr = new MethodCallExpr(left.getExpression(), "compareTo");
-        methodCallExpr.addArgument(right.getExpression());
+        final TypedExpression convertedLeft = left.cloneWithNewExpression(convertExpressionToBigDecimal(left));
+        final TypedExpression convertedRight = right.cloneWithNewExpression(convertExpressionToBigDecimal(right));
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(convertedLeft.getExpression(), "compareTo");
+        methodCallExpr.addArgument(convertedRight.getExpression());
         return new BinaryExpr(methodCallExpr, new IntegerLiteralExpr(0), operator);
     }
 
-    private static Expression convertExpressionToBigDecimal(TypedExpression left) {
-        final Expression ret;
-        if(left.getType() == BigInteger.class) {
-            ret = new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
-                                                            NodeList.nodeList(left.getExpression()));
+    private static Expression convertExpressionToBigDecimal(TypedExpression te) {
+        final Expression convertedExpression;
+        if(te.getType() == BigInteger.class) {
+            if(te.getExpression() instanceof BigIntegerLiteralExpr) {
+                convertedExpression = toNewBigDecimalExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) te.getExpression()).asBigInteger().toString()));
+            } else {
+                convertedExpression = new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
+                                             NodeList.nodeList(te.getExpression()));
+            }
         }
-        else if(left.getType() != BigDecimal.class) {
-            ret = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
-                    .addArgument(left.getExpression());
+        else if(te.getType() != BigDecimal.class) {
+            convertedExpression = new MethodCallExpr(new NameExpr(BigDecimal.class.getCanonicalName()), "valueOf")
+                    .addArgument(te.getExpression());
+        } else if(te.getExpression() instanceof BigDecimalLiteralExpr) {
+            convertedExpression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) te.getExpression()).asBigDecimal().toString()));
         } else {
-            ret = left.getExpression();
+            convertedExpression = te.getExpression();
         }
-        return ret;
+        return convertedExpression;
     }
 
     private static boolean isComparisonOperator( BinaryExpr.Operator op ) {
