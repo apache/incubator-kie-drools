@@ -48,7 +48,7 @@ public class WireListenerTest {
     public void testWireListener() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0");
         build(ks, releaseId);
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 

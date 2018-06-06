@@ -410,7 +410,7 @@ public class KieModuleRepoTest {
 
         @Override
         public ReleaseId getReleaseId() {
-            return new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0-SNAPSHOT");
+            return new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0");
         }
     }
 
@@ -421,10 +421,10 @@ public class KieModuleRepoTest {
     public void newerVersionDeployOverwritesTest() throws Exception {
 
         // setup
-        final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0-SNAPSHOT");
+        final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "deployTwiceAfterUpdateDependency", "1.0");
         final InternalKieModule originalOldKieModule = new InternalKieModuleStub();
 
-        final ReleaseId dependentReleaseid = new ReleaseIdImpl("org", "deployTwiceAfterUpdate", "1.0-SNAPSHOT");
+        final ReleaseId dependentReleaseid = new ReleaseIdImpl("org", "deployTwiceAfterUpdate", "1.0");
         final KieContainerImpl kieContainer = createMockKieContainer(dependentReleaseid, kieModuleRepo);
 
         // 1. deploy
