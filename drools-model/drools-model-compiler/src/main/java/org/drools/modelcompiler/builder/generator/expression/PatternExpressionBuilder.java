@@ -24,6 +24,7 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.util.ClassUtil;
 
 import static java.util.Optional.of;
 
@@ -109,6 +110,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         Class<?> indexType = Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
+                .map(ClassUtil::toRawClass)
                 .findFirst().get();
 
         ClassExpr indexedBy_indexedClass = new ClassExpr(JavaParser.parseType(indexType.getCanonicalName()));
@@ -125,7 +127,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         indexedByDSL.addArgument(indexedBy_leftOperandExtractor);
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
-        final Class<?> leftType = left.getType();
+        java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations )) {
             indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, left.getType()));
         } else if (usedDeclarations.size() == 1) {

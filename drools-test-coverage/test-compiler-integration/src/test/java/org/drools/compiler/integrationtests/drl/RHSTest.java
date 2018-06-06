@@ -20,17 +20,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +42,7 @@ public class RHSTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -65,23 +61,6 @@ public class RHSTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rhs-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         ksession.dispose();
-    }
-
-    @Test
-    public void testRHSClone() {
-        // JBRULES-3539
-        final String drl = "import java.util.Map;\n" +
-                "dialect \"mvel\"\n" +
-                "rule \"RHSClone\"\n" +
-                "when\n" +
-                "   Map($valOne : this['keyOne'] !=null)\n" +
-                "then\n" +
-                "   System.out.println( $valOne.clone() );\n" +
-                "end\n";
-
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test

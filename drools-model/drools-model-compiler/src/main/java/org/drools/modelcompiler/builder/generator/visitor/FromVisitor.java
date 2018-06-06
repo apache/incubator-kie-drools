@@ -191,10 +191,10 @@ public class FromVisitor {
             DrlxParseResult drlxParseResult = new ConstraintParser( ruleContext, packageModel ).drlxParse( clazz, bindingId, expression );
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
-                if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getType() ) ) {
+                if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getRawClass() ) ) {
                     ruleContext.addCompilationError( new InvalidExpressionErrorResult(
                             "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + ruleContext.getRuleDescr().getName() +
-                                    "' is not compatible with type " + drlxParseSuccess.getLeft().getType().getCanonicalName() + " returned by source" ) );
+                                    "' is not compatible with type " + drlxParseSuccess.getLeft().getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
                 return generateLambdaWithoutParameters( drlxParseSuccess.getUsedDeclarations(), parsedExpression );

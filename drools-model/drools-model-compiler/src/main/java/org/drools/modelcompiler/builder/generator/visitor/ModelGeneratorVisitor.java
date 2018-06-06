@@ -130,7 +130,12 @@ public class ModelGeneratorVisitor implements DescrVisitor {
         }
     }
 
-    public void initPattern(PatternDescr descr) {
-        ((PatternDSL)patternVisitor.visit(descr)).initPattern();
+    public boolean initPattern(PatternDescr descr) {
+        DSLNode dslNode = patternVisitor.visit(descr);
+        if (dslNode instanceof PatternDSL) {
+            (( PatternDSL ) dslNode).initPattern();
+            return true;
+        }
+        return false;
     }
 }

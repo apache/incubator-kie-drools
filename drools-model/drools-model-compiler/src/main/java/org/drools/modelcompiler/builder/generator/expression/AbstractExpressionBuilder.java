@@ -139,7 +139,7 @@ public abstract class AbstractExpressionBuilder {
         return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
     }
 
-    protected Expression narrowExpressionWithBigDecimal(TypedExpression right, Class<?> leftType) {
+    protected Expression narrowExpressionWithBigDecimal(TypedExpression right, java.lang.reflect.Type leftType) {
         Expression expression = right.getExpression();
         if(expression instanceof BigDecimalLiteralExpr) {
             expression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
@@ -159,7 +159,7 @@ public abstract class AbstractExpressionBuilder {
         return expression;
     }
 
-    protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, Class<?> leftType) {
+    protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {
         LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
         indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
         final TypedExpression expression;

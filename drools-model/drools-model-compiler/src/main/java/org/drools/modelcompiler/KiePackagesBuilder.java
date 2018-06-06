@@ -188,12 +188,14 @@ public class KiePackagesBuilder {
         return new CanonicalKiePackages(packages);
     }
 
+    public ClassLoader getClassLoader() {
+        return configuration.getClassLoader();
+    }
+
     private KnowledgePackageImpl createKiePackage(String name) {
         KnowledgePackageImpl kpkg = new KnowledgePackageImpl( name );
-        kpkg.setClassFieldAccessorCache(new ClassFieldAccessorCache( configuration.getClassLoader() ) );
-        TypeResolver typeResolver = new ClassTypeResolver( new HashSet<>( kpkg.getImports().keySet() ),
-                                                           configuration.getClassLoader(),
-                                                           name );
+        kpkg.setClassFieldAccessorCache(new ClassFieldAccessorCache( getClassLoader() ) );
+        TypeResolver typeResolver = new ClassTypeResolver( new HashSet<>( kpkg.getImports().keySet() ), getClassLoader(), name );
         typeResolver.addImport( name + ".*" );
         kpkg.setTypeResolver(typeResolver);
         return kpkg;

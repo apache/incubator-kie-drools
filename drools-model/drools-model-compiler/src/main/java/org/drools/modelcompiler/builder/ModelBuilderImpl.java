@@ -88,7 +88,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 
         List<GeneratedClassWithPackage> allGeneratedPojos =
                 packageModels.values().stream()
-                             .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports())))
+                             .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
                         .collect(Collectors.toList());
 
 

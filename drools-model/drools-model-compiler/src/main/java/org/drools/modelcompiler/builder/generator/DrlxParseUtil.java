@@ -90,6 +90,7 @@ import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
@@ -130,10 +131,11 @@ public class DrlxParseUtil {
         return Operator.valueOf(operator.name());
     }
 
-    public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz, Expression scope) {
-        if (clazz == null) {
+    public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope) {
+        if (type == null) {
             return null;
         }
+        Class<?> clazz = toRawClass( type );
         Method accessor = ClassUtils.getAccessor(clazz, name);
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
@@ -149,7 +151,7 @@ public class DrlxParseUtil {
                 if ( Modifier.isStatic( field.getModifiers() ) ) {
                     scope = new NameExpr(clazz.getCanonicalName());
                 } else {
-                    throw new IllegalArgumentException( "Unknown field " + name + " on " + clazz );
+                    throw new IllegalArgumentException( "Unknown field " + name + " on " + type );
                 }
             }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
@@ -160,14 +162,14 @@ public class DrlxParseUtil {
         return null;
     }
 
-    public static Class<?> returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, Class<?> clazz, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
                 .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
                 .toArray(Class[]::new);
-        return findMethod(clazz, methodCallExpr.getNameAsString(), argsType).getReturnType();
+        return findMethod(toRawClass( clazz ), methodCallExpr.getNameAsString(), argsType).getGenericReturnType();
     }
 
-    public static Class<?> getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type getExpressionType(RuleContext context, TypeResolver typeResolver, Expression expr, Collection<String> usedDeclarations) {
         if (expr instanceof LiteralExpr) {
             return getLiteralExpressionType( ( LiteralExpr ) expr );
         }
@@ -190,7 +192,7 @@ public class DrlxParseUtil {
 
         if (expr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
-            Class<?> scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
+            java.lang.reflect.Type scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
             return returnTypeOfMethodCallExpr(context, typeResolver, methodCallExpr, scopeType, usedDeclarations);
         }
 
@@ -387,7 +389,7 @@ public class DrlxParseUtil {
 
         createExpressionCall(expr, callStackLeftToRight);
 
-        Class<?> previousClass = clazz;
+        java.lang.reflect.Type previousClass = clazz;
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
@@ -414,12 +416,12 @@ public class DrlxParseUtil {
                         context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
                         return null;
                     }
-                    Class<?> returnType = te.getType();
+                    java.lang.reflect.Type returnType = te.getType();
                     previousScope = te.getExpression();
                     previousClass = returnType;
                 }
             } else if (e.expression instanceof MethodCallExpr) {
-                Class<?> returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
+                java.lang.reflect.Type returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
                 previousScope = cloned;
                 previousClass = returnType;
@@ -509,7 +511,6 @@ public class DrlxParseUtil {
 
         return Optional.empty();
     }
-
 
     public static DrlxExpression parseExpression(String expression) {
         return DrlxParser.parseExpression(DrlxParser.buildDrlxParserWithArguments(OperatorsHolder.operators), expression);

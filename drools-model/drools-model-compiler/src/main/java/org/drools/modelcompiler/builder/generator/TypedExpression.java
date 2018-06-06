@@ -16,15 +16,18 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.javaparser.ast.expr.Expression;
 
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+
 public class TypedExpression {
 
     private Expression expression;
-    private Class<?> type;
+    private Type type;
     private String fieldName;
     private Optional<String> unificationVariable = Optional.empty();
     private Optional<String> unificationName = Optional.empty();
@@ -37,11 +40,11 @@ public class TypedExpression {
         this(expression, null);
     }
 
-    public TypedExpression( Expression expression, Class<?> type ) {
+    public TypedExpression( Expression expression, Type type ) {
         this(expression, type, null);
     }
 
-    public TypedExpression( Expression expression, Class<?> type, String fieldName ) {
+    public TypedExpression( Expression expression, Type type, String fieldName ) {
         this.expression = expression;
         this.type = type;
         this.fieldName = fieldName;
@@ -66,7 +69,7 @@ public class TypedExpression {
         return this;
     }
 
-    public TypedExpression setType( Class<?> type ) {
+    public TypedExpression setType( Type type ) {
         this.type = type;
         return this;
     }
@@ -75,12 +78,20 @@ public class TypedExpression {
         return expression.toString();
     }
 
-    public Class<?> getType() {
+    public Type getType() {
         return type;
     }
 
+    public Class<?> getRawClass() {
+        return toRawClass( type );
+    }
+
     public boolean isPrimitive() {
-        return type != null && type.isPrimitive();
+        return type != null && toRawClass(type).isPrimitive();
+    }
+
+    public boolean isArray() {
+        return type != null && toRawClass(type).isArray();
     }
 
     public Optional<String> getUnificationVariable() {
