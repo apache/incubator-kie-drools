@@ -17,6 +17,8 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -28,6 +30,23 @@ import org.kie.dmn.feel.util.EvalHelper;
  */
 public class CompiledFEELSemanticMappings {
     
+    /**
+     * Represent a [e1, e2, e3] construct.
+     */
+    @SafeVarargs
+    @SuppressWarnings("varargs")
+    public static <T> List<T> list(T... a) {
+        ArrayList<T> result = new ArrayList<T>();
+        if (a == null) {
+            result.add(null);
+            return result;
+        }
+        for (T elem : a) {
+            result.add(elem);
+        }
+        return result;
+    }
+
     /**
      * FEEL spec Table 38
      * Delegates to {@link InfixOpNode} except evaluationcontext

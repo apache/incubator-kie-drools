@@ -155,7 +155,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         String constantName =  "K_" + CodegenStringUtil.escapeIdentifier(originalText);
         try {
             Long.parseLong(originalText);
-            result.addArgument(originalText);
+            result.addArgument(originalText.replaceFirst("^0+(?!$)", "")); // see EvalHelper.getBigDecimalOrNull
         } catch (Throwable t) {
             result.addArgument(new StringLiteralExpr(originalText));
         }
@@ -214,7 +214,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitStringLiteral(FEEL_1_1Parser.StringLiteralContext ctx) {
-        StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.unescapeString(ParserHelper.getOriginalText(ctx)));
+        StringLiteralExpr expr = new StringLiteralExpr();
+        String actualStringContent = ParserHelper.getOriginalText(ctx);
+        actualStringContent = actualStringContent.substring(1, actualStringContent.length() - 1); // remove start/end " from the FEEL text expression.
+        expr.setValue(actualStringContent);
         return DirectCompilerResult.of(expr, BuiltInType.STRING);
     }
 
@@ -292,7 +295,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         // Q: What is heavier, checking a list of arguments each one is not null, or just doing the operation on the arguments and try-catch the NPE, please?
         // A: raising exceptions is a lot heavier
         BinaryExpr nullChecks = Stream.of(arguments)
-                                      .map(e -> new BinaryExpr(e, new NullLiteralExpr(), BinaryExpr.Operator.EQUALS))
+                                      .map(e -> new BinaryExpr(new EnclosedExpr(e), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS))
                                       .reduce( (x, y) -> new BinaryExpr(x, y, BinaryExpr.Operator.OR) )
                                       .get();
 
@@ -462,7 +465,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 }
             }
         }
-        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        MethodCallExpr list = new MethodCallExpr(null, "list");
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
@@ -779,7 +782,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         for (FEEL_1_1Parser.FormalParameterContext fpc : ctx.formalParameter()) {
             exprs.add(visit(fpc));
         }
-        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        MethodCallExpr list = new MethodCallExpr(null, "list");
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
@@ -985,7 +988,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         for (FEEL_1_1Parser.ExpressionContext ec : ctx.expression()) {
             exprs.add(visit(ec));
         }
-        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        MethodCallExpr list = new MethodCallExpr(null, "list");
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
@@ -1015,7 +1018,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         for (FEEL_1_1Parser.NamedParameterContext npc : ctx.namedParameter()) {
             exprs.add(visitNamedParameter(npc));
         }
-        MethodCallExpr list = new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList");
+        MethodCallExpr list = new MethodCallExpr(null, "list");
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }

@@ -307,6 +307,13 @@ public class DirectCompilerTest {
     public void test_Misc_fromOriginalFEELInterpretedTestSuite() {
         assertThat(parseCompileEvaluate("if null then \"foo\" else \"bar\""), is("bar"));
         assertThat(parseCompileEvaluate("{ hello world : function() \"Hello World!\", message : hello world() }.message"), is("Hello World!"));
+        assertThat(parseCompileEvaluate("1 + if true then 1 else 2"), is(new BigDecimal("2")));
+        assertThat(parseCompileEvaluate("\"string with \\\"quotes\\\"\""), is("string with \"quotes\""));
+        assertThat(parseCompileEvaluate("date( -0105, 8, 2 )"), is(LocalDate.of(-105, 8, 2)));
+        assertThat(parseCompileEvaluate("string(null)"), is(nullValue()));
+        assertThat(parseCompileEvaluate("[ null ]"), is(Arrays.asList(new Object[]{null})));
+        assertThat(parseCompileEvaluate("[ null, null ]"), is(Arrays.asList(new Object[]{null, null})));
+        assertThat(parseCompileEvaluate("[ null, 47, null ]"), is(Arrays.asList(new Object[]{null, BigDecimal.valueOf(47), null})));
     }
 
     @Test
