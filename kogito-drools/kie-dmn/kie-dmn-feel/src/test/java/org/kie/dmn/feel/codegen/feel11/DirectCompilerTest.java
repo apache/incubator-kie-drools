@@ -139,8 +139,8 @@ public class DirectCompilerTest {
     public void test_if() {
         assertThat(parseCompileEvaluate( "if true then 15 else 5"), is(BigDecimal.valueOf( 15 )));
         assertThat(parseCompileEvaluate( "if false then 15 else 5"), is(BigDecimal.valueOf( 5 )));
-        assertThat(parseCompileEvaluate( "if null then 15 else 5"), nullValue());
-        assertThat(parseCompileEvaluate( "if \"hello\" then 15 else 5"), nullValue());
+        assertThat(parseCompileEvaluate("if null then 15 else 5"), is(BigDecimal.valueOf(5)));
+        assertThat(parseCompileEvaluate("if \"hello\" then 15 else 5"), is(BigDecimal.valueOf(5)));
     }
     
     @Test
@@ -301,6 +301,12 @@ public class DirectCompilerTest {
     public void test_namedFunctionInvocation() {
         assertThat(parseCompileEvaluate("substring(start position: 2, string: \"FOOBAR\")"), is("OOBAR"));
         assertThat(parseCompileEvaluate("ceiling( n : 1.5 )"), is(new BigDecimal("2")));
+    }
+
+    @Test
+    public void test_Misc_fromOriginalFEELInterpretedTestSuite() {
+        assertThat(parseCompileEvaluate("if null then \"foo\" else \"bar\""), is("bar"));
+        assertThat(parseCompileEvaluate("{ hello world : function() \"Hello World!\", message : hello world() }.message"), is("Hello World!"));
     }
 
     @Test

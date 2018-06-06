@@ -39,11 +39,6 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class CompiledFEELSupport {
-    
-    public static Object conditionWasNotBoolean(EvaluationContext ctx) {
-        // TODO insert here some "exception" raise by notify ctx that the IF condition was not a boolean.
-        return null;
-    }
 
     public static ContextBuilder openContext(EvaluationContext ctx) {
         return new ContextBuilder(ctx);
@@ -129,7 +124,7 @@ public class CompiledFEELSupport {
                 } else if (i < 0 && Math.abs(i) <= list.size()) {
                     return list.get(list.size() + i);
                 } else {
-                    // TODO report error.
+                    ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND), null));
                     return null;
                 }
             } else {
