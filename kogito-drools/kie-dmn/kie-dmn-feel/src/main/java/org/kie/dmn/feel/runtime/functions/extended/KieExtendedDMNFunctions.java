@@ -34,11 +34,20 @@ public class KieExtendedDMNFunctions {
                                                                          new NowFunction(),
                                                                          new TodayFunction(),
                                                                          new AbsFunction(),
-                                                                         new ModuloFunction(),
+                                                                         ModuloFunction.INSTANCE,
                                                                          new ProductFunction(),
                                                                          new CodeFunction(),
                                                                          new InvokeFunction(),
-                                                                         new SplitFunction(),
+                                                                         SplitFunction.INSTANCE,
+                                                                         StddevFunction.INSTANCE,
+                                                                         ModeFunction.INSTANCE,
+                                                                         AbsFunction.INSTANCE,
+                                                                         SqrtFunction.INSTANCE,
+                                                                         LogFunction.INSTANCE,
+                                                                         ExpFunction.INSTANCE,
+                                                                         EvenFunction.INSTANCE,
+                                                                         OddFunction.INSTANCE,
+                                                                         MedianFunction.INSTANCE
     };
 
     public static FEELFunction[] getFunctions() {

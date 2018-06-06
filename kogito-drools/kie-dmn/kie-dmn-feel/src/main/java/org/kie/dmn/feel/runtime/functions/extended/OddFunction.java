@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,31 @@
 
 package org.kie.dmn.feel.runtime.functions.extended;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-public class ModuloFunction
-        extends BaseFEELFunction {
-    public static final ModuloFunction INSTANCE = new ModuloFunction();
+import java.math.BigDecimal;
 
-    ModuloFunction() {
-        super( "modulo" );
+public class OddFunction
+        extends BaseFEELFunction {
+    public static final OddFunction INSTANCE = new OddFunction();
+
+    private static final BigDecimal TWO = BigDecimal.valueOf(2);
+
+    OddFunction() {
+        super("odd");
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "dividend" ) BigDecimal divident, @ParameterName( "divisor" ) BigDecimal divisor) {
-        if ( divident == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "divident", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "number" ) BigDecimal number) {
+        if ( number == null ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "number", "cannot be null" ) );
         }
-        if ( divisor == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "divisor", "cannot be null"));
+        if ( number.remainder( BigDecimal.ONE ).signum() != 0 ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "number", "cannot have non-zero fractional part" ) );
         }
-        return FEELFnResult.ofResult( divident.remainder( divisor, MathContext.DECIMAL128 ) );
+        return FEELFnResult.ofResult( BigDecimal.ZERO.compareTo( number.remainder(TWO) ) != 0);
     }
 }
