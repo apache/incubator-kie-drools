@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package org.jbpm.process.workitem.core.util;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import java.lang.annotation.Documented;
 
+import org.jbpm.process.workitem.core.util.service.WidService;
 
 /**
  * Defines an annotated class that is of type Wid.
@@ -32,16 +33,30 @@ import java.lang.annotation.Documented;
 @Target(ElementType.TYPE)
 @Documented
 public @interface Wid {
+
     String widfile() default "";
+
     String name() default "";
+
     String displayName() default "";
+
     String category() default "";
+
     String icon() default "";
+
     String description() default "";
+
     String defaultHandler() default "";
+
     String documentation() default "";
+
     WidParameter[] parameters() default {};
+
     WidParameterValues[] parameterValues() default {};
+
     WidResult[] results() default {};
+
     WidMavenDepends[] mavenDepends() default {};
+
+    WidService serviceInfo() default @WidService;
 }

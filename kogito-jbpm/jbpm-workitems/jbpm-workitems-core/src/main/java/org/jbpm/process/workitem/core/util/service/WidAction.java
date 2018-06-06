@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.core.util;
+package org.jbpm.process.workitem.core.util.service;
 
 import java.lang.annotation.Documented;
 
 /**
- * Used within the <code>Wid</code> annotation to define
- * the maven dependencies to be placed within the
- * workitem configuration.
+ * Used within the <code>Service</code> annotation to define
+ * the action this workitem handler exposes.
  */
 @Documented
-public @interface WidMavenDepends {
+public @interface WidAction {
 
-    String group() default "";
+    String title() default "";
 
-    String artifact() default "";
+    String description() default "";
 
-    String version() default "";
+    boolean requiredFieldsOnly() default true;
 }

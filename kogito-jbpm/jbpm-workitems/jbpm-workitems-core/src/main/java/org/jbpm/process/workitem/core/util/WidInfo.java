@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.jbpm.process.workitem.core.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
+
+import org.jbpm.process.workitem.core.util.service.WidService;
 
 public class WidInfo {
 
@@ -34,6 +37,7 @@ public class WidInfo {
     private Map<String, InternalWidParameterValues> parameterValues;
     private Map<String, InternalWidParamsAndResults> results;
     private Map<String, InternalWidMavenDependencies> mavenDepends;
+    private InternalServiceInfo serviceInfo;
 
     public WidInfo(List<Wid> wids) {
         this.parameters = new HashMap<>();
@@ -61,7 +65,8 @@ public class WidInfo {
             this.defaultHandlerNoType = removeType(setParamValue(this.defaultHandler,
                                                                  wid.defaultHandler()));
 
-            this.documentation = setParamValue(this.documentation, wid.documentation());
+            this.documentation = setParamValue(this.documentation,
+                                               wid.documentation());
 
             if (wid.parameters().length > 0) {
                 for (WidParameter widParam : wid.parameters()) {
@@ -97,6 +102,8 @@ public class WidInfo {
                                                                            widMavenDepends.version()));
                 }
             }
+
+            this.serviceInfo = new InternalServiceInfo(wid.serviceInfo());
         }
     }
 
@@ -229,6 +236,164 @@ public class WidInfo {
         }
     }
 
+    public class InternalServiceInfo {
+
+        private boolean hasTrigger;
+        private boolean hasAction;
+        private String category;
+        private List<String> keywords;
+        private String description;
+        private InternalServiceTrigger trigger;
+        private InternalServiceAction action;
+
+        public InternalServiceInfo(WidService service) {
+            if (service.category().length() > 0 && service.description().length() > 0) {
+                this.category = service.category();
+                this.description = service.description();
+                this.keywords = Arrays.asList(service.keywords().split("\\s*,\\s*"));
+
+                if (service.trigger().title().length() > 0) {
+                    this.hasTrigger = true;
+                    this.trigger = new InternalServiceTrigger(service.trigger().title(),
+                                                              service.trigger().description());
+                }
+
+                if (service.action().title().length() > 0) {
+                    this.hasAction = true;
+                    this.action = new InternalServiceAction(service.action().title(),
+                                                            service.action().description(),
+                                                            service.action().requiredFieldsOnly());
+                }
+            } else {
+                hasTrigger = false;
+                hasAction = false;
+            }
+        }
+
+        public boolean isHasTrigger() {
+            return hasTrigger;
+        }
+
+        public void setHasTrigger(boolean hasTrigger) {
+            this.hasTrigger = hasTrigger;
+        }
+
+        public boolean isHasAction() {
+            return hasAction;
+        }
+
+        public void setHasAction(boolean hasAction) {
+            this.hasAction = hasAction;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public List<String> getKeywords() {
+            return keywords;
+        }
+
+        public void setKeywords(List<String> keywords) {
+            this.keywords = keywords;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public InternalServiceTrigger getTrigger() {
+            return trigger;
+        }
+
+        public void setTrigger(InternalServiceTrigger trigger) {
+            this.trigger = trigger;
+        }
+
+        public InternalServiceAction getAction() {
+            return action;
+        }
+
+        public void setAction(InternalServiceAction action) {
+            this.action = action;
+        }
+    }
+
+    public class InternalServiceTrigger {
+
+        private String title;
+        private String description;
+
+        public InternalServiceTrigger(String title,
+                                      String description) {
+            this.title = title;
+            this.description = description;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+    }
+
+    public class InternalServiceAction {
+
+        private String title;
+        private String description;
+        private boolean requiredFieldsOnly;
+
+        public InternalServiceAction(String title,
+                                     String description,
+                                     boolean requiredFieldsOnly) {
+            this.title = title;
+            this.description = description;
+            this.requiredFieldsOnly = requiredFieldsOnly;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public boolean isRequiredFieldsOnly() {
+            return requiredFieldsOnly;
+        }
+
+        public void setRequiredFieldsOnly(boolean requiredFieldsOnly) {
+            this.requiredFieldsOnly = requiredFieldsOnly;
+        }
+    }
+
     public String getWidfile() {
         return widfile;
     }
@@ -331,5 +496,13 @@ public class WidInfo {
 
     public void setMavenDepends(Map<String, WidInfo.InternalWidMavenDependencies> mavenDepends) {
         this.mavenDepends = mavenDepends;
+    }
+
+    public InternalServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(InternalServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
     }
 }
