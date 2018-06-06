@@ -20,27 +20,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.apache.commons.io.IOUtils;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
+import org.jbpm.kie.services.impl.store.DeploymentStoreEntry;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.deploy.TransientNamedObjectModel;
 import org.jbpm.runtime.manager.impl.deploy.TransientObjectModel;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.Context;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 
 public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
 
 	private DeploymentStore store;
+
+	private TransactionalCommandService transactionalCommandService;
 	
 	@Before
 	public void setup() {
@@ -48,7 +57,8 @@ public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
 		
 		store = new DeploymentStore();
-		store.setCommandService(new TransactionalCommandService(emf));
+		transactionalCommandService = new TransactionalCommandService(emf);
+		store.setCommandService(transactionalCommandService);
 	}
 	
 	@After
@@ -168,5 +178,38 @@ public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
         assertEquals(0, descriptorEnabled.getWorkItemHandlers().size());
         assertEquals(0, descriptorEnabled.getEventListeners().size());
         
+    }
+
+    @Test
+    public void testActiveDefaultValueInDeploymentUnit() {
+
+        // add an entry for testing
+        transactionalCommandService.execute(new ExecutableCommand<Long>() {
+            @Override
+            public Long execute(Context context) {
+                try {
+                    DeploymentStoreEntry entry = new DeploymentStoreEntry();
+                    entry.setDeploymentId("org.guvnor:guvnor-asset-mgmt-project:6.5.0.Final-redhat-17 ");
+                    URL file = getClass().getClassLoader().getResource("descriptor/KModuleDeploymentUnit.txt");
+                    entry.setDeploymentUnit(IOUtils.toString(file, "UTF-8"));
+                    entry.setState(2); // DeploymentStore.STATE_ACTIVATED
+                    entry.setUpdateDate(new Date());
+
+                    JpaPersistenceContext jpaContext = (JpaPersistenceContext) context;
+                    entry = jpaContext.persist(entry);
+                    return entry.getId();
+                } catch (IOException e) {
+                    return null;
+                }
+            }
+
+        });
+
+
+        Collection<DeploymentUnit> enabled = store.getEnabledDeploymentUnits();
+        assertTrue(enabled.size() > 0);
+        KModuleDeploymentUnit deploymentUnit = (KModuleDeploymentUnit) enabled.iterator().next();
+
+        assertTrue(deploymentUnit.isActive());
     }
 }

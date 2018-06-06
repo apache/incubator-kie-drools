@@ -82,6 +82,8 @@ public class DeploymentStore {
 	        	
 	        	if (entry.getState() == STATE_DEACTIVATED) {
 	        	    ((KModuleDeploymentUnit)unit).setActive(false);
+	        	} else if(entry.getState() == STATE_ACTIVATED) {
+	        		((KModuleDeploymentUnit)unit).setActive(true);
 	        	}
 	        	
 	        	activeDeployments.add(unit);

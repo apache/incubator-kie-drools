@@ -1,0 +1,103 @@
+<org.jbpm.kie.services.impl.KModuleDeploymentUnit>
+  <artifactId>guvnor-asset-mgmt-project</artifactId>
+  <groupId>org.guvnor</groupId>
+  <version>6.5.0.Final-redhat-17</version>
+  <strategy>SINGLETON</strategy>
+  <mergeMode>MERGE_COLLECTIONS</mergeMode>
+  <deploymentDescriptor class="org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl">
+    <persistenceUnit>org.jbpm.domain</persistenceUnit>
+    <auditPersistenceUnit>org.jbpm.domain</auditPersistenceUnit>
+    <auditMode>JPA</auditMode>
+    <persistenceMode>JPA</persistenceMode>
+    <runtimeStrategy>SINGLETON</runtimeStrategy>
+    <marshallingStrategies class="linked-hash-set"/>
+    <eventListeners class="linked-hash-set">
+      <org.kie.internal.runtime.conf.ObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister()</identifier>
+        <parameters/>
+      </org.kie.internal.runtime.conf.ObjectModel>
+    </eventListeners>
+    <taskEventListeners class="linked-hash-set"/>
+    <globals class="linked-hash-set">
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>org.slf4j.LoggerFactory.getLogger(&quot;AssetMgmt&quot;)</identifier>
+        <parameters/>
+        <name>logger</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+    </globals>
+    <workItemHandlers class="linked-hash-set">
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession, classLoader)</identifier>
+        <parameters/>
+        <name>Service Task</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()</identifier>
+        <parameters/>
+        <name>Log</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler(ksession, classLoader)</identifier>
+        <parameters/>
+        <name>WebService</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.workitem.rest.RESTWorkItemHandler(&quot;&quot;, &quot;&quot;)</identifier>
+        <parameters/>
+        <name>Rest</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.guvnor.asset.management.backend.handlers.AssetMgmtStartWorkItemHandler()</identifier>
+        <parameters/>
+        <name>AssetMgmtStart</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+      <org.kie.internal.runtime.conf.NamedObjectModel>
+        <resolver>mvel</resolver>
+        <identifier>new org.guvnor.asset.management.backend.handlers.AssetMgmtEndWorkItemHandler()</identifier>
+        <parameters/>
+        <name>AssetMgmtEnd</name>
+      </org.kie.internal.runtime.conf.NamedObjectModel>
+    </workItemHandlers>
+    <environmentEntries class="linked-hash-set"/>
+    <configuration class="linked-hash-set"/>
+    <requiredRoles class="linked-hash-set">
+      <string>view:kiemgmt</string>
+    </requiredRoles>
+    <classes/>
+    <limitSerializationClasses>true</limitSerializationClasses>
+    <mappedRoles>
+      <entry>
+        <string>all</string>
+        <linked-hash-set>
+          <string>kiemgmt</string>
+        </linked-hash-set>
+      </entry>
+      <entry>
+        <string>view</string>
+        <linked-hash-set>
+          <string>kiemgmt</string>
+        </linked-hash-set>
+      </entry>
+      <entry>
+        <string>execute</string>
+        <linked-hash-set/>
+      </entry>
+    </mappedRoles>
+  </deploymentDescriptor>
+  <deployed>false</deployed>
+
+  <strategyUnset>false</strategyUnset>
+  <attributes>
+    <entry>
+      <string>sync</string>
+      <string>false</string>
+    </entry>
+  </attributes>
+</org.jbpm.kie.services.impl.KModuleDeploymentUnit> 
