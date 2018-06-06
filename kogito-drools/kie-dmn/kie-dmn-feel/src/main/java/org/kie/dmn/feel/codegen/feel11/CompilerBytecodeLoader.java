@@ -26,20 +26,20 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.comments.JavadocComment;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.FieldDeclaration;
+import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.comments.JavadocComment;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.stmt.ReturnStmt;
 
 public class CompilerBytecodeLoader {
 

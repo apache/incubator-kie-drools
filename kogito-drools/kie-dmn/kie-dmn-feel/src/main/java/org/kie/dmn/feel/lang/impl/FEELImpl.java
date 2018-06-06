@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.drools.javaparser.ast.expr.Expression;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;

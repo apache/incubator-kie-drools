@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.drools.javaparser.ast.expr.Expression;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -307,6 +307,13 @@ public class DirectCompilerTest {
     public void test_Misc_fromOriginalFEELInterpretedTestSuite() {
         assertThat(parseCompileEvaluate("if null then \"foo\" else \"bar\""), is("bar"));
         assertThat(parseCompileEvaluate("{ hello world : function() \"Hello World!\", message : hello world() }.message"), is("Hello World!"));
+    }
+
+    @Test
+    public void test_Benchmark_feelExpressions() {
+        assertThat(parseCompileEvaluate("{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name"), is("Doe"));
+        assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100"), is(Boolean.TRUE));
+        assertThat(parseCompileEvaluate("every price in [ 80, 11, 90 ] satisfies price > 10"), is(Boolean.TRUE));
     }
 
     @Test

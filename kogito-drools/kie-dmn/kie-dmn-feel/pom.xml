@@ -37,20 +37,13 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-  
     <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-        <groupId>com.github.javaparser</groupId>
-        <artifactId>javaparser-core</artifactId>
-        <version>3.2.10</version>
+        <groupId>org.drools</groupId>
+        <artifactId>drlx-parser</artifactId>
     </dependency>
 
     <!-- Logging -->
