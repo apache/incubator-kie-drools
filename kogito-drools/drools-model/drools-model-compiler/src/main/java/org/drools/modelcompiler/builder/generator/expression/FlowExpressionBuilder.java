@@ -135,13 +135,11 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
+        final Class<?> leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations ) ) {
-            indexedByDSL.addArgument( right.getExpression() );
+            indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, leftType));
         } else {
-            LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-            indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
-            indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(!leftContainsThis ? left.getExpression() : right.getExpression()));
-            indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
         }
 
         return indexedByDSL;

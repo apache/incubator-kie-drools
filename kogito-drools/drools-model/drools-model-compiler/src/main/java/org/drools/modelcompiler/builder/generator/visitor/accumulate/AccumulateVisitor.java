@@ -35,6 +35,7 @@ import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -192,7 +193,8 @@ public abstract class AccumulateVisitor {
             }
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else {
-            throw new UnsupportedOperationException("Unsupported expression " + expr);
+            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + expression));
+            return Optional.empty();
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
