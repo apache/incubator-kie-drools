@@ -29,8 +29,9 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class SplitFunction
         extends BaseFEELFunction {
+    public static final SplitFunction INSTANCE = new SplitFunction();
 
-    public SplitFunction() {
+    SplitFunction() {
         super( "split" );
     }
 
@@ -48,7 +49,7 @@ public class SplitFunction
         try {
             int f = processFlags( flags );
             Pattern p = Pattern.compile( delimiter, f );
-            String[] split = p.split( input );
+            String[] split = p.split( input , -1);
             return FEELFnResult.ofResult( Arrays.asList( split ) );
         } catch ( PatternSyntaxException e ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "delimiter", "is invalid and can not be compiled", e ) );

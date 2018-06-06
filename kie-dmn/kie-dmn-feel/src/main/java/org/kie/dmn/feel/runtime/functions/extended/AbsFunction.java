@@ -26,8 +26,9 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class AbsFunction
         extends BaseFEELFunction {
+    public static final AbsFunction INSTANCE = new AbsFunction();
 
-    public AbsFunction() {
+    AbsFunction() {
         super( "abs" );
     }
 
