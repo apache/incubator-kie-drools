@@ -34,6 +34,9 @@ public class FEELListsTest extends BaseFEELTest {
         final Object[][] cases = new Object[][] {
 
                 { "[ 5, 10+2, \"foo\"+\"bar\", true ]", Arrays.asList( BigDecimal.valueOf( 5 ), BigDecimal.valueOf( 12 ), "foobar", Boolean.TRUE ), null },
+                { "[ null ]", Arrays.asList(new Object[] {null}), null },
+                { "[ null, null ]", Arrays.asList(new Object[] {null, null}), null },
+                { "[ null, 47, null ]", Arrays.asList(new Object[] {null, BigDecimal.valueOf( 47 ), null}), null },
 
                 // Filtering by index
                 {"[\"a\", \"b\", \"c\"][1]", "a", null },
