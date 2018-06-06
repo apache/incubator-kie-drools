@@ -47,7 +47,7 @@ public class KieContainerTest {
     private static final ReleaseId RELEASE_ID = KieServices.Factory.get().newReleaseId(
             TestConstants.PACKAGE_TESTCOVERAGE,
             "kie-container-test",
-            "1.0.0-SNAPSHOT");
+            "1.0.0");
 
     private KieServices kieServices;
 

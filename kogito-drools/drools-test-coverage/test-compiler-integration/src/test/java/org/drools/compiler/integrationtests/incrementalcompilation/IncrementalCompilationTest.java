@@ -708,7 +708,7 @@ public class IncrementalCompilationTest {
     @Test
     public void testIncrementalCompilationWithSnapshots() {
         // DROOLS-358
-        final ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.test", "test", "1.0.0-SNAPSHOT");
+        final ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.test", "test", "1.0.0");
         testIncrementalCompilation(releaseId, releaseId, false);
     }
 
@@ -1039,7 +1039,7 @@ public class IncrementalCompilationTest {
                 " list.add( \"b\" + $s );" +
                 "end\n";
 
-        final ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.test", "test", "1.0.0-SNAPSHOT");
+        final ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.test", "test", "1.0.0");
         final KieServices ks = KieServices.Factory.get();
 
         final KieModuleModel kproj = ks.newKieModuleModel();

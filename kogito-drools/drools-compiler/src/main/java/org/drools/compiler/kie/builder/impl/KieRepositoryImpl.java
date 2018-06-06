@@ -55,7 +55,7 @@ public class KieRepositoryImpl
 
     private static final Logger log = LoggerFactory.getLogger(KieRepositoryImpl.class);
 
-    private static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
+    private static final String DEFAULT_VERSION = "1.0.0";
     private static final String DEFAULT_ARTIFACT = "artifact";
     private static final String DEFAULT_GROUP = "org.default";
 
