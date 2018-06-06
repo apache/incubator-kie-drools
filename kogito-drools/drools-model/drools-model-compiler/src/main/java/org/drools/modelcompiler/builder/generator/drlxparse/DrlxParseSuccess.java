@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,17 +10,27 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.util.index.IndexUtil;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.AND;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseSuccess implements DrlxParseResult {
 
     private final Class<?> patternType;
     private Expression expr;
-    private final Class<?> exprType;
+    private final Type exprType;
 
     private final String exprId;
     private String patternBinding;
@@ -41,7 +52,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private boolean isBetaNode;
     private boolean requiresSplit;
 
-    public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Class<?> exprType) {
+    public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
         this.exprId = exprId;
         this.patternBinding = patternBinding;
@@ -163,7 +174,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     }
 
     public Class<?> getUnificationVariableType() {
-        return left.getUnificationVariable().isPresent() ? right.getType() : left.getType();
+        return left.getUnificationVariable().isPresent() ? right.getRawClass() : left.getRawClass();
     }
 
     public Expression getExpr() {
@@ -174,8 +185,12 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return exprBinding;
     }
 
-    public Class<?> getExprType() {
+    public Type getExprType() {
         return exprType;
+    }
+
+    public Class<?> getExprRawClass() {
+        return toRawClass( exprType );
     }
 
     public Class<?> getPatternType() {
@@ -222,7 +237,18 @@ public class DrlxParseSuccess implements DrlxParseResult {
             if ( getExprType() == Boolean.class || getExprType() == boolean.class ) {
                 return true;
             }
-            return !(expr instanceof EnclosedExpr) && right != null;
+            if (expr instanceof EnclosedExpr) {
+                return isEnclosedExprValid( (( EnclosedExpr ) expr).getInner());
+            }
+            return right != null;
+        }
+        return false;
+    }
+
+    private boolean isEnclosedExprValid( Expression expr ) {
+        if (expr instanceof BinaryExpr) {
+            BinaryExpr.Operator op = (( BinaryExpr ) expr).getOperator();
+            return op == AND || op == OR || op == EQUALS || op == NOT_EQUALS || op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
         }
         return false;
     }

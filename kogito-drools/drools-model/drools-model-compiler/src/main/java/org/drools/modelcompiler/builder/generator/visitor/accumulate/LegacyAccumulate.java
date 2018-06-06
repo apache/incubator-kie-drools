@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,7 +88,7 @@ public class LegacyAccumulate {
                                   .collect(Collectors.toList()));
 
         return new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) parsedInvokedClass.getType(0), packageName, allImports
+                (ClassOrInterfaceDeclaration) parsedInvokedClass.getType(0), packageName, allImports, Collections.emptyList()
         );
     }
 
@@ -95,7 +96,7 @@ public class LegacyAccumulate {
         final String allAccumulatesClass = new JavaRuleClassBuilder().buildRule(ruleBuildContext);
         final CompilationUnit parsedAccumulateClass = JavaParser.parse(allAccumulatesClass);
         return new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) parsedAccumulateClass.getType(0), packageName, imports
+                (ClassOrInterfaceDeclaration) parsedAccumulateClass.getType(0), packageName, imports, Collections.emptyList()
         );
     }
 }

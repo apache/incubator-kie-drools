@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -282,6 +283,11 @@ public class RuleContext {
     }
 
     public Optional<Class<?>> getFunctionType(String name) {
+        Method m = packageModel.getStaticMethod(name);
+        if (m != null) {
+            return of(m.getReturnType());
+        }
+
         return packageModel.getFunctions().stream()
                 .filter( method -> method.getNameAsString().equals( name ) )
                 .findFirst()

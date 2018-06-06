@@ -77,7 +77,7 @@ public class ConstraintParser {
         drlxParseResult.accept(result -> {
             if (drlx.getBind() != null) {
                 String bindId = drlx.getBind().asString();
-                context.addDeclaration( new DeclarationSpec( bindId, result.getExprType() ) );
+                context.addDeclaration( new DeclarationSpec( bindId, result.getExprRawClass() ) );
                 result.setExprBinding( bindId );
             }
 
@@ -192,7 +192,7 @@ public class ConstraintParser {
 
             return optTypedExpression.<DrlxParseResult>map(typedExpression -> {
                 final Expression returnExpression = typedExpression.getExpression();
-                final Class<?> returnType = typedExpression.getType();
+                final java.lang.reflect.Type returnType = typedExpression.getType();
 
                 return new DrlxParseSuccess(patternType, exprId, bindingId, returnExpression, returnType)
                         .setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
@@ -316,9 +316,9 @@ public class ConstraintParser {
             MethodCallExpr compareMethod = null;
             if ( left.getType() == String.class && right.getType() == String.class ) {
                 compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareStringsAsNumbers" );
-            } else if ( isNumericType( left.getType() ) || isNumericType( right.getType() ) ) {
+            } else if ( isNumericType( left.getRawClass() ) || isNumericType( right.getRawClass() ) ) {
                 compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compareNumbers" );
-            } else if ( Comparable.class.isAssignableFrom( left.getType() ) && Comparable.class.isAssignableFrom( right.getType() ) ) {
+            } else if ( Comparable.class.isAssignableFrom( left.getRawClass() ) && Comparable.class.isAssignableFrom( right.getRawClass() ) ) {
                 compareMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.compare" );
             }
 

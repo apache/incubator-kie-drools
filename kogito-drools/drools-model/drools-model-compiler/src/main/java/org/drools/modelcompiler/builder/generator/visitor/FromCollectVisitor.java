@@ -16,7 +16,9 @@ public class FromCollectVisitor {
     public void trasformFromCollectToCollectList(PatternDescr pattern, CollectDescr collectDescr) {
         // The inner pattern of the "from collect" needs to be processed to have the binding
         final PatternDescr collectDescrInputPattern = collectDescr.getInputPattern();
-        parentVisitor.initPattern( collectDescrInputPattern );
+        if (!parentVisitor.initPattern( collectDescrInputPattern )) {
+            return;
+        }
 
         final AccumulateDescr accumulateDescr = new AccumulateDescr();
         accumulateDescr.setInputPattern(collectDescrInputPattern);

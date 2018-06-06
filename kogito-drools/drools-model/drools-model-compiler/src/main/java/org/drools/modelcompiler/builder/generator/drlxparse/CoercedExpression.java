@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,13 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class CoercedExpression {
+
+    private static final List<Class<?>> LITERAL_NUMBER_CLASSES = Arrays.asList(int.class, long.class, double.class);
 
     private TypedExpression left;
     private TypedExpression right;
@@ -51,31 +55,36 @@ public class CoercedExpression {
         final TypedExpression coercedRight;
         final Expression rightExpression = right.getExpression();
 
-        final boolean leftIsPrimitive = left.isPrimitive();
-        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(left.getType());
+        final Class<?> leftClass = left.getRawClass();
+        final Class<?> rightClass = right.getRawClass();
+
+        final boolean leftIsPrimitive = leftClass.isPrimitive();
+        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr) {
-            if (!right.getType().isPrimitive() && !Number.class.isAssignableFrom(right.getType()) &&
-                    !Boolean.class.isAssignableFrom(right.getType()) && !String.class.isAssignableFrom(right.getType())) {
-                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + left.getType() + " and " + right.getType()));
+            if (!rightClass.isPrimitive() && !Number.class.isAssignableFrom(rightClass) &&
+                    !Boolean.class.isAssignableFrom(rightClass) && !String.class.isAssignableFrom(rightClass)) {
+                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
             }
         }
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
-            final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), left.getType());
+            final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
-        } else if (isNotBinaryExpression(right) && canBeNarrowed(left.getType(), right.getType())) {
-            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(left.getType(), right.getType().isPrimitive()), right.getExpression()));
+        } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass)) {
+            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(leftClass, rightClass.isPrimitive()), right.getExpression()));
         } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
-            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(Object.class, right.getType().isPrimitive()), right.getExpression()));
+            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(Object.class, rightClass.isPrimitive()), right.getExpression()));
+        } else if (leftClass == Date.class && rightClass == String.class) {
+            coercedRight = coerceToDate(right);
         } else {
             coercedRight = right;
         }
 
         final TypedExpression coercedLeft;
-        if (toNonPrimitiveType(left.getType()) == Character.class && shouldCoerceBToString(right, left)) {
+        if (toNonPrimitiveType(leftClass) == Character.class && shouldCoerceBToString(right, left)) {
             coercedLeft = coerceToString(left);
         } else {
             coercedLeft = left;
@@ -100,9 +109,14 @@ public class CoercedExpression {
         return coercedExpression;
     }
 
+    private static TypedExpression coerceToDate(TypedExpression typedExpression) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr( null, STRING_TO_DATE_METHOD );
+        methodCallExpr.addArgument( typedExpression.getExpression() );
+        return new TypedExpression( methodCallExpr, Date.class );
+    }
+
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
-        final List<? extends Class<?>> classes = Arrays.asList(int.class, long.class, double.class);
-        return classes.contains(type);
+        return LITERAL_NUMBER_CLASSES.contains(type);
     }
 
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {

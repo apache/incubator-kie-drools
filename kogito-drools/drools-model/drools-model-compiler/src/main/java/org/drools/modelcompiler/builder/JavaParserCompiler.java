@@ -113,18 +113,21 @@ public class JavaParserCompiler {
             final String folderName = pkgName.replace( '.', '/' );
             final ClassOrInterfaceDeclaration generatedClass = generatedPojo.getGeneratedClass();
             final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
-            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedClass).getBytes());
+            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes());
             sources.add( varsSourceName );
         }
 
         return sources.toArray( new String[sources.size()] );
     }
 
-    public static String toPojoSource(String pkgName, Collection<String> imports, ClassOrInterfaceDeclaration pojo) {
+    public static String toPojoSource(String pkgName, Collection<String> imports, Collection<String> staticImports, ClassOrInterfaceDeclaration pojo) {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
         for (String i : imports) {
             cu.addImport(i);
+        }
+        for (String i : staticImports) {
+            cu.addImport(i, true, false);
         }
         cu.addType(pojo);
         return getPrettyPrinter().print(cu);

@@ -65,6 +65,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.javaparser.JavaParser.parseExpression;
+import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -119,7 +120,8 @@ public class ModelGenerator {
 
     public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel, boolean isPattern) {
         TypeResolver typeResolver = pkg.getTypeResolver();
-        packageModel.addImports(pkg.getTypeResolver().getImports());
+        packageModel.addImports(pkg.getImports().keySet());
+        packageModel.addStaticImports(pkg.getStaticImports());
         packageModel.addGlobals(pkg.getGlobals());
         packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage(pkg);
@@ -253,7 +255,7 @@ public class ModelGenerator {
                     break;
                 case "date-effective":
                 case "date-expires":
-                    attributeCall.addArgument( parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
+                    attributeCall.addArgument( parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", " + DATE_TIME_FORMATTER_FIELD + ").atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());

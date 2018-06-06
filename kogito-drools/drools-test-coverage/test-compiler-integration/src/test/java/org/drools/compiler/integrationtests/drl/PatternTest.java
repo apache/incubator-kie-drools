@@ -22,7 +22,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.ClassA;
@@ -69,7 +71,7 @@ public class PatternTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -236,7 +238,7 @@ public class PatternTest {
         final String drl = "import " + InitialFactImpl.class.getCanonicalName() + "\n" +
                 "import " + FactB.class.getCanonicalName() + "\n" +
                 "rule \"Clear\" when\n" +
-                "   $f: Object(class != FactB.class)\n" +
+                "   $f: Object(getClass() != FactB.class)\n" +
                 "then\n" +
                 "   if( ! ($f instanceof InitialFactImpl) ){\n" +
                 "     delete( $f );\n" +
@@ -682,8 +684,9 @@ public class PatternTest {
             ksession.insert(p3);
 
             ksession.fireAllRules();
+
             // selects p1 and p3
-            if (kieBaseTestConfiguration == KieBaseTestConfiguration.CLOUD_IDENTITY) {
+            if ((( KnowledgeBaseImpl ) kbase).getConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
                 assertEquals(2, list.size());
                 assertSame(p1, list.get(0));
                 assertSame(p3, list.get(1));

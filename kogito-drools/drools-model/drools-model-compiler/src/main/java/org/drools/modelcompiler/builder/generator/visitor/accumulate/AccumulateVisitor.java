@@ -129,17 +129,18 @@ public abstract class AccumulateVisitor {
             newBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<AccumulateVisitorPatternDSL.NewBinding>>() {
                 @Override
                 public Optional<AccumulateVisitorPatternDSL.NewBinding> onSuccess(DrlxParseSuccess drlxParseResult) {
-                    final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, drlxParseResult.getExprType());
+                    Class<?> exprRawClass = drlxParseResult.getExprRawClass();
+                    final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
 
                     final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
                     drlxParseResult.setExprBinding(bindExpressionVariable);
 
-                    context.addDeclarationReplacing(new DeclarationSpec(drlxParseResult.getPatternBinding(), drlxParseResult.getExprType()));
+                    context.addDeclarationReplacing(new DeclarationSpec(drlxParseResult.getPatternBinding(), exprRawClass));
 
                     functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                     final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr());
-                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, drlxParseResult.getExprType()));
+                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, exprRawClass));
                     functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
                     return Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.empty(), newBindingFromBinary));
                 }
@@ -156,7 +157,7 @@ public abstract class AccumulateVisitor {
             final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
             final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
-            final Class<?> methodCallExprType = typedExpression.getType();
+            final Class<?> methodCallExprType = typedExpression.getRawClass();
 
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
 

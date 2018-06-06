@@ -121,4 +121,8 @@ public class RuleContext {
     public Object getBoundFact( Variable variable, Object[] objs ) {
         return objs[ patterns.get( variable ).getOffset() ];
     }
+
+    public ClassLoader getClassLoader() {
+        return builder.getClassLoader();
+    }
 }

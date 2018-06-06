@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.expression;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -117,11 +119,11 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             return exprDSL;
         }
 
-        Class<?> indexType = Stream.of( left, right ).map( TypedExpression::getType )
+        Type indexType = Stream.of( left, right ).map( TypedExpression::getType )
                 .filter(Objects::nonNull )
                 .findFirst().get();
 
-        ClassExpr indexedBy_indexedClass = new ClassExpr(JavaParser.parseType(indexType.getCanonicalName() ) );
+        ClassExpr indexedBy_indexedClass = new ClassExpr(JavaParser.parseType(toRawClass( indexType ).getCanonicalName() ) );
         FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr("org.drools.model.Index.ConstraintType" ), drlxParseResult.getDecodeConstraintType().toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
         LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
         indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), "_this"));
@@ -135,7 +137,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         indexedByDSL.addArgument( indexedBy_leftOperandExtractor );
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
-        final Class<?> leftType = left.getType();
+        java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations ) ) {
             indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, leftType));
         } else {

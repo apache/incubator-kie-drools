@@ -61,7 +61,7 @@ public class OOPathExprGenerator {
             }
             Class<?> fieldType = (chunk.getInlineCast() != null)
                     ? DrlxParseUtil.getClassFromContext(context.getTypeResolver(), chunk.getInlineCast().toString())
-                    : callExpr.getType();
+                    : callExpr.getRawClass();
 
             if (Iterable.class.isAssignableFrom(fieldType)) {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
