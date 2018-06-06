@@ -153,7 +153,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         result.setType(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
         String originalText = ParserHelper.getOriginalText(ctx);
         String constantName =  "K_" + CodegenStringUtil.escapeIdentifier(originalText);
-        result.addArgument(originalText);
+        try {
+            Long.parseLong(originalText);
+            result.addArgument(originalText);
+        } catch (Throwable t) {
+            result.addArgument(new StringLiteralExpr(originalText));
+        }
         result.addArgument(DECIMAL_128);
         VariableDeclarator vd = new VariableDeclarator(
                 JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
@@ -382,11 +387,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             // optimization: if either left or right is a null literal, just null
             return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
-            MethodCallExpr subtractCall = new MethodCallExpr(left.getExpression(), "divide");
-            subtractCall.addArgument(right.getExpression());
-            subtractCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(subtractCall, left.getExpression(), right.getExpression());
-            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
+            // right might be zero, hence if divide-by-zero we should ground to null.
+            MethodCallExpr addCall = new MethodCallExpr(null, "div");
+            addCall.addArgument(left.getExpression());
+            addCall.addArgument(right.getExpression());
+            Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
+            return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else {
             // TODO temporary support strategy:
             MethodCallExpr addCall = new MethodCallExpr(null, "div");
@@ -897,7 +903,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult t = visit( ctx.t );
         DirectCompilerResult e = visit( ctx.e );
 
-//        String snippet = "(e1 instanceof Boolean) ? ((boolean) e1 ? e2 : e3 ) : "+CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)";
+//        String snippet = "(e1 instanceof Boolean) ? ((boolean) e1 ? e2 : e3 ) : e3 // notice how if e1 is not a Boolean, simply e3 is returned with no errors.
 //
 //        Expression parsed = JavaParser.parseExpression(snippet);
 //        for ( NameExpr ne : parsed.getChildNodesByType(NameExpr.class) ) {
@@ -915,14 +921,14 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        }
 //        return DirectCompilerResult.of(parsed, BuiltInType.UNKNOWN);
 
-        Expression errorExpression = JavaParser.parseExpression(CompiledFEELSupport.class.getSimpleName() + ".conditionWasNotBoolean(feelExprCtx)");
+        // Instead of using Java operator `instanceof` and `cast` directly, safer to use this method-based version, to avoid issue with primitives (eg: true instanceof Boolean does not compile) 
         MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
         castC.addArgument(new EnclosedExpr(c.getExpression()));
         Expression safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.getExpression()), new EnclosedExpr(e.getExpression()));
         safeInternal = new EnclosedExpr(safeInternal);
         MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "isInstance");
         instanceOfBoolean.addArgument(new EnclosedExpr(c.getExpression()));
-        ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, errorExpression);
+        ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, e.getExpression());
         return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(c, t, e));
     }
 
@@ -1013,12 +1019,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
-//
-//    @Override
-//    public DirectCompilerResult visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
+        return DirectCompilerResult.of(JavaParser.parseExpression("java.util.Collections.emptyList()"), BuiltInType.LIST);
+    }
+
     @Override
     public DirectCompilerResult visitParametersNamed(FEEL_1_1Parser.ParametersNamedContext ctx) {
         return visit(ctx.namedParameters());
