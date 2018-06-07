@@ -33,7 +33,6 @@ import org.drools.model.bitmask.EmptyBitMask;
 import org.drools.model.bitmask.EmptyButLastBitMask;
 import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
-import org.drools.model.functions.FunctionN;
 import org.drools.modelcompiler.RuleContext;
 
 public class LambdaConsequence implements Consequence {
@@ -83,24 +82,6 @@ public class LambdaConsequence implements Consequence {
         }
 
         consequence.getBlock().execute( facts );
-
-        Object[] objs = knowledgeHelper.getTuple().toObjects();
-
-        for ( org.drools.model.Consequence.Update update : consequence.getUpdates() ) {
-            Object updatedFact = context.getBoundFact( update.getUpdatedVariable(), objs );
-            // TODO the Update specs has the changed fields so use update(FactHandle newObject, long mask, Class<?> modifiedClass) instead
-            knowledgeHelper.update( updatedFact );
-        }
-
-        for ( FunctionN insert : consequence.getInserts() ) {
-            Object insertedFact = insert.apply( facts );
-            knowledgeHelper.insert( insertedFact );
-        }
-
-        for ( Variable delete : consequence.getDeletes() ) {
-            Object deletedFact = context.getBoundFact( delete, objs );
-            knowledgeHelper.delete( deletedFact );
-        }
     }
 
     static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
