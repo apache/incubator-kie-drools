@@ -111,7 +111,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
@@ -171,7 +171,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "cache-accumulate", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "cache-accumulate", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)

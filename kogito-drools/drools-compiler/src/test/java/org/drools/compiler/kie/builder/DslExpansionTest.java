@@ -37,7 +37,7 @@ public class DslExpansionTest {
     @Test
     public void testDSLExpansion_MessageImplNPE() throws Exception {
         final KieServices ks = KieServices.Factory.get();
-        final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0-SNAPSHOT" );
+        final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0" );
         final KieModuleModel kproj = ks.newKieModuleModel();
 
         final KieFileSystem kfs = ks.newKieFileSystem();
@@ -59,7 +59,7 @@ public class DslExpansionTest {
     @Test
     public void testDSLExpansion_NoExpansion() throws Exception {
         final KieServices ks = KieServices.Factory.get();
-        final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0-SNAPSHOT" );
+        final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0" );
         final KieModuleModel kproj = ks.newKieModuleModel();
 
         final KieFileSystem kfs = ks.newKieFileSystem();

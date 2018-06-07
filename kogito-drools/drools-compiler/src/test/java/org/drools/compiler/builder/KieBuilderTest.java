@@ -71,7 +71,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testInMemory() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0" );
         
         KieModuleModel kProj = createKieProject( namespace );
         
@@ -87,7 +87,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0");
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs, namespace, releaseId, kProj);
@@ -104,7 +104,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         
         String namespace1 = "org.kie.test1";
-        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId(namespace1, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId(namespace1, "memory", "1.0");
         KieModuleModel kProj1 = createKieProject(namespace1);        
         KieFileSystem kfs1 = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs1, namespace1, releaseId1, kProj1);
@@ -120,7 +120,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         
         
         String namespace2 = "org.kie.test2";
-        ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId(namespace2, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId(namespace2, "memory", "1.0");
         KieModuleModel kProj2 = createKieProject(namespace2);        
         KieBaseModelImpl kieBase2 = ( KieBaseModelImpl ) kProj2.getKieBaseModels().get( namespace2 );
         kieBase2.addInclude( namespace1 );
@@ -207,7 +207,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0" );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generatePomXML( kfs, releaseId );
@@ -228,7 +228,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieModuleModel kProj = ks.newKieModuleModel();
         
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0");
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateKProjectXML( kfs, namespace, kProj );
@@ -283,7 +283,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0");
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         kfs.write( "pom.xml", "xxxx" );
@@ -302,7 +302,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieModuleModel kProj = createKieProject( namespace );
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0" );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generatePomXML( kfs, releaseId );
@@ -321,7 +321,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace,
                                                                       "pomModelReuse",
-                                                                      "1.0-SNAPSHOT" );
+                                                                      "1.0" );
 
         String pom = KieBuilderImpl.generatePomXml( releaseId );
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
