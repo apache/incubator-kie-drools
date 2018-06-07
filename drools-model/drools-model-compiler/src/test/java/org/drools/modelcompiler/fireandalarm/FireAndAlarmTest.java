@@ -33,11 +33,11 @@ public class FireAndAlarmTest {
                         expr( sprinkler, s -> !s.isOn() ),
                         expr( sprinkler, fire, ( s, f ) -> s.getRoom().equals( f.getRoom() ) ),
                         on( sprinkler )
-                                .execute( s -> {
+                                .execute( (drools, s) -> {
                                     System.out.println( "Turn on the sprinkler for room " + s.getRoom().getName() );
                                     s.setOn( true );
+                                    drools.update( s, "on" );
                                 } )
-                                .update( sprinkler, "on" )
                      );
 
         Rule r2 = rule("When the fire is gone turn off the sprinkler")
@@ -45,25 +45,31 @@ public class FireAndAlarmTest {
                         expr(sprinkler, Sprinkler::isOn),
                         not(fire, sprinkler, (f, s) -> f.getRoom().equals(s.getRoom())),
                         on(sprinkler)
-                            .execute(s -> {
+                            .execute( (drools, s) -> {
                                 System.out.println("Turn off the sprinkler for room " + s.getRoom().getName());
                                 s.setOn(false);
+                                drools.update( s, "on" );
                             })
-                            .update(sprinkler, "on")
                      );
 
         Rule r3 = rule("Raise the alarm when we have one or more fires")
                 .build(
                         exists(fire),
-                        execute(() -> System.out.println("Raise the alarm"))
-                            .insert(() -> new Alarm())
+                        execute((drools) -> {
+                            System.out.println("Raise the alarm");
+                            drools.insert(new Alarm());
+                        })
                      );
 
         Rule r4 = rule("Lower the alarm when all the fires have gone")
                 .build(
                         not(fire),
                         input(alarm),
-                        execute(() -> System.out.println("Lower the alarm")).delete(alarm)
+                        on(alarm).
+                            execute((drools, a) -> {
+                                System.out.println("Lower the alarm");
+                                drools.delete(a);
+                            })
                      );
 
         Rule r5 = rule("Status output when things are ok")
