@@ -1,32 +1,25 @@
 package org.drools.model.consequences;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.model.Consequence;
 import org.drools.model.Drools;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
+import org.drools.model.functions.Block10;
+import org.drools.model.functions.Block11;
+import org.drools.model.functions.Block12;
+import org.drools.model.functions.Block13;
 import org.drools.model.functions.Block2;
 import org.drools.model.functions.Block3;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Block5;
 import org.drools.model.functions.Block6;
 import org.drools.model.functions.Block7;
+import org.drools.model.functions.Block8;
+import org.drools.model.functions.Block9;
 import org.drools.model.functions.BlockN;
-import org.drools.model.functions.Function0;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
-import org.drools.model.functions.Function3;
-import org.drools.model.functions.Function4;
-import org.drools.model.functions.Function5;
-import org.drools.model.functions.Function6;
-import org.drools.model.functions.FunctionN;
 import org.drools.model.functions.ScriptBlock;
-
-import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
 public class ConsequenceBuilder {
 
@@ -51,9 +44,6 @@ public class ConsequenceBuilder {
     public static abstract class AbstractValidBuilder<T extends AbstractValidBuilder> implements ValidBuilder {
         private final Variable[] declarations;
         protected BlockN block;
-        private List<FunctionN> inserts = new ArrayList<FunctionN>();
-        private List<Consequence.Update> updates = new ArrayList<Consequence.Update>();
-        private Variable[] deletes;
         protected boolean usingDrools = false;
         protected boolean breaking = false;
         protected String language = "java";
@@ -66,26 +56,9 @@ public class ConsequenceBuilder {
         public Consequence get() {
             return new ConsequenceImpl( block,
                                         declarations,
-                                        inserts.toArray(new FunctionN[inserts.size()]),
-                                        updates.toArray(new Consequence.Update[updates.size()]),
-                                        deletes,
                                         usingDrools,
                                         breaking,
                                         language);
-        }
-
-        public AbstractValidBuilder update(Variable updatedVariable, String... updatedFields) {
-            updates.add(new ConsequenceImpl.UpdateImpl(updatedVariable, updatedFields));
-            return this;
-        }
-
-        public AbstractValidBuilder delete(Variable... deletes) {
-            this.deletes = deletes;
-            return this;
-        }
-
-        protected void addInsert(FunctionN f) {
-            inserts.add(f);
         }
 
         public T breaking() {
@@ -112,11 +85,6 @@ public class ConsequenceBuilder {
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
         }
-
-        public <R> _0 insert(final Function0<R> f) {
-            addInsert(toFunctionN(f));
-            return this;
-        }
     }
 
     public static class _1<A> extends AbstractValidBuilder<_1<A>> {
@@ -139,11 +107,6 @@ public class ConsequenceBuilder {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
-            return this;
-        }
-
-        public <R> _1 insert(final Function1<A, R> f) {
-            addInsert(toFunctionN(f));
             return this;
         }
     }
@@ -170,11 +133,6 @@ public class ConsequenceBuilder {
             this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
-
-        public <R> _2 insert(final Function2<A, B, R> f) {
-            addInsert(toFunctionN(f));
-            return this;
-        }
     }
 
     public static class _3<A, B, C> extends AbstractValidBuilder<_3<A,B,C>> {
@@ -197,11 +155,6 @@ public class ConsequenceBuilder {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
-            return this;
-        }
-
-        public <R> _3 insert(final Function3<A, B, C, R> f) {
-            addInsert(toFunctionN(f));
             return this;
         }
     }
@@ -228,11 +181,6 @@ public class ConsequenceBuilder {
             this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
-
-        public <R> _4 insert(final Function4<A, B, C, D, R> f) {
-            addInsert(toFunctionN(f));
-            return this;
-        }
     }
 
     public static class _5<A, B, C, D, E> extends AbstractValidBuilder<_5<A,B,C,D,E>> {
@@ -255,11 +203,6 @@ public class ConsequenceBuilder {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
-            return this;
-        }
-
-        public <R> _5 insert(final Function5<A, B, C, D, E, R> f) {
-            addInsert(toFunctionN(f));
             return this;
         }
     }
@@ -286,9 +229,154 @@ public class ConsequenceBuilder {
             this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
+    }
 
-        public <R> _6 insert(final Function6<A, B, C, D, E, F, R> f) {
-            addInsert(toFunctionN(f));
+    public static class _7<A, B, C, D, E, F, G> extends AbstractValidBuilder<_7<A,B,C,D,E,F,G>> {
+        public _7(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7);
+        }
+
+        public _7<A, B, C, D, E, F, G> execute(final Block7<A, B, C, D, E, F, G> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _7<A, B, C, D, E, F, G> execute(final Block8<Drools, A, B, C, D, E, F, G> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _7<A, B, C, D, E, F, G> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _8<A, B, C, D, E, F, G, H> extends AbstractValidBuilder<_8<A,B,C,D,E,F,G,H>> {
+        public _8(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8);
+        }
+
+        public _8<A, B, C, D, E, F, G, H> execute(final Block8<A, B, C, D, E, F, G, H> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _8<A, B, C, D, E, F, G, H> execute(final Block9<Drools, A, B, C, D, E, F, G, H> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _8<A, B, C, D, E, F, G, H> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _9<A, B, C, D, E, F, G, H, I> extends AbstractValidBuilder<_9<A,B,C,D,E,F,G,H,I>> {
+        public _9(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8, Variable<I> decl9) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9);
+        }
+
+        public _9<A, B, C, D, E, F, G, H, I> execute(final Block9<A, B, C, D, E, F, G, H, I> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _9<A, B, C, D, E, F, G, H, I> execute(final Block10<Drools, A, B, C, D, E, F, G, H, I> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _9<A, B, C, D, E, F, G, H, I> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _10<A, B, C, D, E, F, G, H, I, J> extends AbstractValidBuilder<_10<A,B,C,D,E,F,G,H,I,J>> {
+        public _10(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10);
+        }
+
+        public _10<A, B, C, D, E, F, G, H, I, J> execute(final Block10<A, B, C, D, E, F, G, H, I, J> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _10<A, B, C, D, E, F, G, H, I, J> execute(final Block11<Drools, A, B, C, D, E, F, G, H, I, J> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _10<A, B, C, D, E, F, G, H, I, J> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _11<A, B, C, D, E, F, G, H, I, J, K> extends AbstractValidBuilder<_11<A,B,C,D,E,F,G,H,I,J,K>> {
+        public _11(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11);
+        }
+
+        public _11<A, B, C, D, E, F, G, H, I, J, K> execute(final Block11<A, B, C, D, E, F, G, H, I, J, K> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _11<A, B, C, D, E, F, G, H, I, J, K> execute(final Block12<Drools, A, B, C, D, E, F, G, H, I, J, K> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _11<A, B, C, D, E, F, G, H, I, J, K> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _12<A, B, C, D, E, F, G, H, I, J, K, L> extends AbstractValidBuilder<_12<A,B,C,D,E,F,G,H,I,J,K,L>> {
+        public _12(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                   Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11, Variable<L> decl12) {
+            super(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11, decl12);
+        }
+
+        public _12<A, B, C, D, E, F, G, H, I, J, K, L> execute(final Block12<A, B, C, D, E, F, G, H, I, J, K, L> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _12<A, B, C, D, E, F, G, H, I, J, K, L> execute(final Block13<Drools, A, B, C, D, E, F, G, H, I, J, K, L> block ) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _12<A, B, C, D, E, F, G, H, I, J, K, L> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
             return this;
         }
     }
@@ -303,11 +391,6 @@ public class ConsequenceBuilder {
             this.usingDrools = true;
             this.language = language;
             this.block = new ScriptBlock(ruleClass, script);
-            return this;
-        }
-
-        public <R> _N insert(final FunctionN<R> f) {
-            addInsert(f);
             return this;
         }
     }

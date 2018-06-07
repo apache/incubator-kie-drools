@@ -499,6 +499,36 @@ public class DSL {
         return new ConsequenceBuilder._6(decl1, decl2, decl3, decl4, decl5, decl6);
     }
 
+    public static <A, B, C, D, E, F, G> ConsequenceBuilder._7<A, B, C, D, E, F, G> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                      Variable<G> decl7) {
+        return new ConsequenceBuilder._7(decl1, decl2, decl3, decl4, decl5, decl6, decl7);
+    }
+
+    public static <A, B, C, D, E, F, G, H> ConsequenceBuilder._8<A, B, C, D, E, F, G, H> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                            Variable<G> decl7, Variable<H> decl8) {
+        return new ConsequenceBuilder._8(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8);
+    }
+
+    public static <A, B, C, D, E, F, G, H, I> ConsequenceBuilder._9<A, B, C, D, E, F, G, H, I> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                                  Variable<G> decl7, Variable<H> decl8, Variable<I> decl9) {
+        return new ConsequenceBuilder._9(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9);
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J> ConsequenceBuilder._10<A, B, C, D, E, F, G, H, I, J> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                                         Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10) {
+        return new ConsequenceBuilder._10(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10);
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K> ConsequenceBuilder._11<A, B, C, D, E, F, G, H, I, J, K> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                                               Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11) {
+        return new ConsequenceBuilder._11(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11);
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L> ConsequenceBuilder._12<A, B, C, D, E, F, G, H, I, J, K, L> on(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3, Variable<D> decl4, Variable<E> decl5, Variable<F> decl6,
+                                                                                                                     Variable<G> decl7, Variable<H> decl8, Variable<I> decl9, Variable<J> decl10, Variable<K> decl11, Variable<L> decl12) {
+        return new ConsequenceBuilder._12(decl1, decl2, decl3, decl4, decl5, decl6, decl7, decl8, decl9, decl10, decl11, decl12);
+    }
+
     public static ConsequenceBuilder._N on(Variable... declarations) {
         return new ConsequenceBuilder._N(declarations);
     }

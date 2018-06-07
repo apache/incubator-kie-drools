@@ -50,14 +50,6 @@ public class BruteForceEngine {
             });
             return !matches.isEmpty();
         }).collect(toList());
-
-        // TODO: implement conflict resulution strategy (?)
-
-        if ( firedRules.stream()
-                       .filter(rule -> rule.getDefaultConsequence().isChangingWorkingMemory() )
-                       .findFirst().isPresent() ) {
-            evaluate(rules);
-        }
     }
 
     public List<TupleHandle> evaluate(View view) {
