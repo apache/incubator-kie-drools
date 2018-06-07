@@ -16,12 +16,16 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
 
 import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
 import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_DSL;
@@ -45,6 +49,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -58,6 +72,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -75,6 +90,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -88,6 +113,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -105,6 +131,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -118,6 +154,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -135,6 +172,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -148,6 +195,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -165,6 +213,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -178,6 +236,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -195,6 +254,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
         public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.CLOUD);
@@ -208,6 +277,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -225,7 +295,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
@@ -238,6 +318,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -255,7 +336,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
@@ -268,6 +359,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -285,7 +377,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return true;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.IDENTITY);
@@ -298,6 +400,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -315,7 +418,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
@@ -328,6 +441,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -345,7 +459,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
@@ -358,6 +482,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     },
@@ -375,7 +500,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         }
 
         @Override
-        public KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel) {
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
             final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);
             kieBaseModel.setEventProcessingMode(EventProcessingOption.STREAM);
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
@@ -388,9 +523,17 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
             return kieBaseConfiguration;
         }
     };
 
     public static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
+
+    private static List<KieBaseOption> additionalKieBaseOptions;
+
+    @Override
+    public void setAdditionalKieBaseOptions(final KieBaseOption... options) {
+        additionalKieBaseOptions = Arrays.asList(options);
+    }
 }

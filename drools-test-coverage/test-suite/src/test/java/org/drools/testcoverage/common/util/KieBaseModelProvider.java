@@ -19,6 +19,7 @@ package org.drools.testcoverage.common.util;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.KieBaseOption;
 
 import static java.util.Arrays.asList;
 
@@ -29,6 +30,9 @@ public interface KieBaseModelProvider {
     KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
     KieBaseConfiguration getKieBaseConfiguration();
     RunType runType();
+    void setAdditionalKieBaseOptions(KieBaseOption... options);
+    boolean isIdentity();
+    boolean isStreamMode();
 
     enum RunType {
         FLOW_DSL,
