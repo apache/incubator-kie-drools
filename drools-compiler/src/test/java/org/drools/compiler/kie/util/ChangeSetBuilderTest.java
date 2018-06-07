@@ -240,7 +240,7 @@ public class ChangeSetBuilderTest {
     private InternalKieModule createKieJar( String... drls) {
         InternalKieModule kieJar = mock( InternalKieModule.class );
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         List<String> drlFs = new ArrayList<String>();
         

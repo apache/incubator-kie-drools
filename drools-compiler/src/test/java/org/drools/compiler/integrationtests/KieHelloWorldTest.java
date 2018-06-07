@@ -198,7 +198,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     @Test
     public void testHelloWorldWithPackages() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML( releaseId )
@@ -226,7 +226,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId = ks.newReleaseId( "org.kie", "hello-world", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "hello-world", "1.0" );
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
@@ -245,7 +245,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     @Test
     public void testHelloWorldWithWildcardPackages() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML( releaseId )
@@ -268,7 +268,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     public void testHelloWorldWithWildcardPackagesComplex() throws Exception {
         // BZ-1174563
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
@@ -424,7 +424,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
@@ -498,7 +498,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                       "end\n";
 
         KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-import", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-import", "1.0" );
 
         KieModuleModel kproj = ks.newKieModuleModel();
         kproj.newKieBaseModel( "kbase" )
