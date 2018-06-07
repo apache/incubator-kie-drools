@@ -5,7 +5,7 @@
     <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_9c4bee17-fcab-4a17-b365-50a45cd56631">
       <semantic:formalParameter id="_72ccabd6-2849-4cdc-bc6f-3a4fe056ab55" name="name" typeRef="feel:string"/>
       <semantic:literalExpression id="_da18f08a-5c4d-4a43-b357-763bac2b8b41">
-        <semantic:text>knowledge of hello() + name</semantic:text>
+        <semantic:text>knowledge of hello() + ", " + name</semantic:text>
       </semantic:literalExpression>
     </semantic:encapsulatedLogic>
     <semantic:variable id="_a6116420-5c19-41c1-b945-2f38b1782c68" name="Say hello" typeRef="feel:string"/>

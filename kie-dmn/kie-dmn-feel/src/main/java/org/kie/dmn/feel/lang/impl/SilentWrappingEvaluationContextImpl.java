@@ -77,7 +77,7 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
 
     @Override
     public Map<String, Object> getAllValues() {
-        return getAllValues();
+        return wrapped.getAllValues();
     }
 
     @Override

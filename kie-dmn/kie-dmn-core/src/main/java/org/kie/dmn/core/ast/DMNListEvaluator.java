@@ -16,23 +16,22 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DMNListEvaluator
         implements DMNExpressionEvaluator {
@@ -62,7 +61,7 @@ public class DMNListEvaluator
         DMNResultImpl result = (DMNResultImpl) dmnr;
         List<Object> results = new ArrayList<>();
         DMNContext previousContext = result.getContext();
-        DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
+        DMNContext dmnContext = previousContext.clone();
         result.setContext( dmnContext );
 
         try {

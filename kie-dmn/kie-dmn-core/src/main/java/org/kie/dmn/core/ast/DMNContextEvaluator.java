@@ -30,7 +30,6 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
@@ -71,7 +70,7 @@ public class DMNContextEvaluator
         // OR if a default result is implemented, it should return the result instead
         Map<String, Object> results = new HashMap<>();
         DMNContext previousContext = result.getContext();
-        DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
+        DMNContext dmnContext = previousContext.clone();
         result.setContext( dmnContext );
 
         try {

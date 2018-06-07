@@ -120,4 +120,16 @@ public abstract class DMNBaseNode
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DMNBaseNode [getName()=");
+        builder.append(getName());
+        builder.append(", getModelNamespace()=");
+        builder.append(getModelNamespace());
+        builder.append("]");
+        return builder.toString();
+    }
+
 }
