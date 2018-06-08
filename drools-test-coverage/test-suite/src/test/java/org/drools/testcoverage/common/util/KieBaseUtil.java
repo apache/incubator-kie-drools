@@ -116,6 +116,13 @@ public final class KieBaseUtil {
         return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
     }
 
+    public static KieBase getKieBaseFromClasspathResources(final String moduleGroupId,
+                                                           final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                           final String... classpathResources) {
+        final List<Resource> resources = KieUtil.getClasspathResources(classpathResources);
+        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
+    }
+
     private KieBaseUtil() {
         // Creating instances of util classes should not be possible.
     }
