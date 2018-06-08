@@ -78,6 +78,7 @@ import org.drools.model.From;
 import org.drools.model.From0;
 import org.drools.model.From1;
 import org.drools.model.From2;
+import org.drools.model.From3;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -105,6 +106,8 @@ import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
+import org.drools.modelcompiler.constraints.BindingEvaluator;
+import org.drools.modelcompiler.constraints.BindingInnerObjectEvaluator;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
@@ -382,7 +385,7 @@ public class KiePackagesBuilder {
                 AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
                 Pattern pattern = null;
                 if (accumulatePattern.getAccumulateFunctions().length == 1) {
-                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
+                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getResult() );
                 }
                 boolean existingPattern = pattern != null;
                 if (!existingPattern) {
@@ -459,7 +462,7 @@ public class KiePackagesBuilder {
     }
 
     private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
-        Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
+        Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getOrCreateDeclaration ).toArray( Declaration[]::new );
         EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
         return new EvalCondition(evalExpr, declarations);
     }
@@ -497,7 +500,6 @@ public class KiePackagesBuilder {
                                        ClassObjectType.ObjectArray_ObjectType,
                                        null );
 
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
         QueryArgument[] arguments = new QueryArgument[queryPattern.getArguments().length];
         List<Integer> varIndexList = new ArrayList<>();
         List<Declaration> requiredDeclarations = new ArrayList<>();
@@ -511,10 +513,12 @@ public class KiePackagesBuilder {
                     requiredDeclarations.add( decl );
                     arguments[i] = new QueryArgument.Declr(decl);
                 } else {
-                    ArrayElementReader reader = new ArrayElementReader( arrayReader,
+                    ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader( Object[].class ),
                                                                         i,
                                                                         arg.getType() );
-                    pattern.addDeclaration( var.getName() ).setReadAccessor( reader );
+                    Declaration varDeclaration = pattern.addDeclaration( var.getName() );
+                    varDeclaration.setReadAccessor( reader );
+                    ctx.addInnerDeclaration( var, varDeclaration );
                     arguments[i] = QueryArgument.VAR;
                     varIndexList.add( i );
                 }
@@ -564,27 +568,26 @@ public class KiePackagesBuilder {
                                        List<String> usedVariableName, Binding binding) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
+        BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
         Accumulate accumulate;
 
         if (accFunctions.length == 1) {
             final Class<?> functionClass = accFunctions[0].getFunctionClass();
-            final Accumulator accumulator = createAccumulator(usedVariableName, binding, functionClass);
+            final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, functionClass);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
                                                             getReadAcessor( JAVA_CLASS_OBJECT_TYPE ),
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
-
-            Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
-            accumulate = new SingleAccumulate(source, bindingDeclaration, accumulator);
+            accumulate = new SingleAccumulate(source, getRequiredDeclarationsForAccumulate( ctx, binding, accFunctions[0] ), accumulator);
 
         } else {
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
             for (int i = 0; i < accFunctions.length; i++) {
                 final Class<?> functionClass = accFunctions[i].getFunctionClass();
-                final Accumulator accumulator = createAccumulator(usedVariableName, binding, functionClass);
+                final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, functionClass);
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
                 pattern.addDeclaration( new Declaration( boundVar.getName(),
@@ -605,7 +608,38 @@ public class KiePackagesBuilder {
         return accumulate;
     }
 
-    private Accumulator createAccumulator(List<String> usedVariableName, Binding binding, Class<?> functionClass) {
+    private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, Binding binding, AccumulateFunction accFunction ) {
+        if (binding != null || accFunction.getSource() == null) {
+            if (accFunction.getExternalVars() != null) {
+                Variable[] extVars = accFunction.getExternalVars();
+                Declaration[] bindingDeclaration = new Declaration[extVars.length];
+                for (int i = 0; i < extVars.length; i++) {
+                    bindingDeclaration[i] = ctx.getDeclaration( extVars[i] );
+                }
+                return bindingDeclaration;
+            } else {
+                return new Declaration[0];
+            }
+        }
+        return new Declaration[] { ctx.getPattern( accFunction.getSource() ).getDeclaration() };
+    }
+
+    private BindingEvaluator createBindingEvaluator(RuleContext ctx, Binding binding) {
+        if (binding == null) {
+            return null;
+        }
+        Variable[] inputs = binding.getInputVariables();
+        if (inputs.length == 1) {
+            return new BindingInnerObjectEvaluator( binding );
+        }
+        Declaration[] declarations = new Declaration[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            declarations[i] = ctx.getDeclaration( inputs[i] );
+        }
+        return new BindingEvaluator( declarations, binding );
+    }
+
+    private Accumulator createAccumulator(List<String> usedVariableName, BindingEvaluator binding, Class<?> functionClass) {
         if (org.kie.api.runtime.rule.AccumulateFunction.class.isAssignableFrom(functionClass)) {
             return createLambdaAccumulator(usedVariableName, binding, functionClass);
         } else if (Accumulator.class.isAssignableFrom(functionClass)) {
@@ -625,7 +659,7 @@ public class KiePackagesBuilder {
         return accumulator;
     }
 
-    private Accumulator createLambdaAccumulator(List<String> usedVariableName, Binding binding, Class<?> functionClass) {
+    private Accumulator createLambdaAccumulator(List<String> usedVariableName, BindingEvaluator binding, Class<?> functionClass) {
         final org.kie.api.runtime.rule.AccumulateFunction accFunction1;
         try {
             accFunction1 = (org.kie.api.runtime.rule.AccumulateFunction) (functionClass).newInstance();
@@ -706,6 +740,9 @@ public class KiePackagesBuilder {
         if (from instanceof From2 ) {
             return new LambdaDataProvider( toFunctionN( (( From2 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From2 ) from).getVariable2() ) );
         }
+        if (from instanceof From3 ) {
+            return new LambdaDataProvider( toFunctionN( (( From3 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From3 ) from).getVariable2() ), ctx.getDeclaration( (( From3 ) from).getVariable3() ) );
+        }
         throw new UnsupportedOperationException( "Unknown from type " + from );
     }
 
@@ -743,7 +780,7 @@ public class KiePackagesBuilder {
                 Declaration[] declarations = new Declaration[vars.length];
                 Declaration unificationDeclaration = null;
                 for (int i = 0; i < vars.length; i++) {
-                    declarations[i] = ctx.getDeclaration( vars[i] );
+                    declarations[i] = ctx.getOrCreateDeclaration( vars[i] );
                     if ( isEqual && declarations[i].getPattern().getObjectType().equals( ClassObjectType.DroolsQuery_ObjectType ) ) {
                         unificationDeclaration = declarations[i];
                     } else if ( pattern.getSource() instanceof MultiAccumulate) {

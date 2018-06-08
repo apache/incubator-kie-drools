@@ -38,6 +38,7 @@ import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.Predicate6;
 import org.drools.model.functions.Predicate7;
 import org.drools.model.functions.temporal.TemporalPredicate;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
@@ -59,6 +60,11 @@ public class PatternDSL extends DSL {
     private static final ViewBuilder VIEW_BUILDER = ViewBuilder.PATTERN;
 
     public static <T> PatternDef<T> pattern(Variable<T> var) {
+        return new PatternDefImpl<>( var );
+    }
+
+    public static <T> PatternDef<T> pattern(Variable<T> var, DeclarationSource source) {
+        (( DeclarationImpl<T> ) var).setSource( source );
         return new PatternDefImpl<>( var );
     }
 

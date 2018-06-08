@@ -73,6 +73,7 @@ import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
@@ -123,6 +124,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfMethodCall(be.getLeft());
         } else if(expression instanceof MethodCallExpr) {
             return expression;
+        } else if(expression instanceof FieldAccessExpr) {
+            return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
@@ -143,7 +146,7 @@ public class DrlxParseUtil {
             return new TypedExpression( body, accessor.getReturnType() );
         }
         if (clazz.isArray() && name.equals( "length" )) {
-            FieldAccessExpr expr = new FieldAccessExpr( scope, name );
+            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
             return new TypedExpression( expr, int.class );
         }
         try {
@@ -382,10 +385,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static String toVar(String key) {
-        return "var_" + key;
-    }
-
     public static String fromVar(String key) {
         return key.substring( "var_".length() );
     }
@@ -503,7 +502,7 @@ public class DrlxParseUtil {
         Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
         return parsedType instanceof PrimitiveType ?
                 ((PrimitiveType) parsedType).toBoxedType() :
-                parsedType.getElementType();
+                parsedType;
     }
 
     public static Type toType(Class<?> declClass) {
@@ -574,7 +573,7 @@ public class DrlxParseUtil {
     public static void forceCastForName(String nameRef, Type type, Expression expression) {
         List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
         for (NameExpr n : allNameExprForName) {
-            n.getParentNode().get().replace(n, new CastExpr(type, n));
+            n.getParentNode().get().replace(n, new EnclosedExpr(new CastExpr(type, n)));
         }
     }
 
@@ -584,6 +583,14 @@ public class DrlxParseUtil {
      * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
      */
     public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
+
+        if (e instanceof NodeWithArguments) {
+            NodeWithArguments<?> arguments = (NodeWithArguments) e;
+            for (Expression argument : arguments.getArguments()) {
+                rescopeNamesToNewScope(newScope, names, argument);
+            }
+        }
+
         if (e instanceof AssignExpr) {
             AssignExpr assignExpr = (AssignExpr) e;
             rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
@@ -632,11 +639,11 @@ public class DrlxParseUtil {
                         .collect( Collectors.toList() );
     }
 
-    public static Optional<MethodCallExpr> findPatternWithBinding(String patternBinding, List<Expression> expressions) {
+    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, String patternBinding, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
                 final boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
-                final boolean hasBindingHasArgument = expr.getArguments().contains(new NameExpr(toVar(patternBinding)));
+                final boolean hasBindingHasArgument = expr.getArguments().contains(context.getVarExpr(patternBinding));
                 return isPatternExpr && hasBindingHasArgument;
             });
             return pattern.map(Stream::of).orElse(Stream.empty());
@@ -685,5 +692,9 @@ public class DrlxParseUtil {
     public static Expression toNewBigDecimalExpr(Expression initExpression) {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
                                       NodeList.nodeList(initExpression));
+    }
+
+    public static String toVar(String key) {
+        return "var_" + key;
     }
 }

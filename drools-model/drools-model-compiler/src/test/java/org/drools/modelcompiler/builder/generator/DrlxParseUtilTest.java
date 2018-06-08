@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.Function;
 
@@ -84,9 +85,9 @@ public class DrlxParseUtilTest {
             DrlxParseUtil.forceCastForName("$my", JavaParser.parseType("Integer"), expr);
             return expr.toString();
         };
-        assertEquals("ciao += (Integer) $my", c.apply("ciao += $my"));
-        assertEquals("ciao.add((Integer) $my)", c.apply("ciao.add($my)"));
-        assertEquals("ciao.asd.add((Integer) $my)", c.apply("ciao.asd.add($my)"));
+        assertEquals("ciao += ((Integer) $my)", c.apply("ciao += $my"));
+        assertEquals("ciao.add(((Integer) $my))", c.apply("ciao.add($my)"));
+        assertEquals("ciao.asd.add(((Integer) $my))", c.apply("ciao.asd.add($my)"));
     }
 
     @Test
@@ -98,5 +99,15 @@ public class DrlxParseUtilTest {
         };
         assertEquals("nscope.name = \"John\"", c.apply("name = \"John\" "));
         assertEquals("nscope.name = nscope.surname", c.apply("name = surname"));
+    }
+
+    @Test
+    public void test_rescopeAlsoArgumentsToNewScope() {
+        Function<String, String> c = (String input) -> {
+            Expression expr = JavaParser.parseExpression(input);
+            DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Collections.singletonList("total"), expr);
+            return expr.toString();
+        };
+        assertEquals("new Integer(nscope.total)", c.apply("new Integer(total) "));
     }
 }

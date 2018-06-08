@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
@@ -35,7 +37,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -130,18 +131,25 @@ public class Consequence {
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
-        existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
+        existingDecls.addAll(context.getAvailableBindings());
         existingDecls.addAll(packageModel.getGlobals().keySet());
         if (context.getRuleUnitDescr() != null) {
             existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
         }
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(consequenceString::contains).collect(toSet());
+            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
         }
 
         Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+    }
+
+    public static boolean containsWord(String word, String body) {
+        final String withoutSpecialCharacters = word.replace("$", "");
+        Pattern p = Pattern.compile("\\b" + withoutSpecialCharacters + "\\b");
+        Matcher m = p.matcher(body);
+        return m.find();
     }
 
     private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
@@ -192,12 +200,12 @@ public class Consequence {
         return appendCall;
     }
 
-    private static MethodCallExpr onCall(Collection<String> usedArguments) {
+    private MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument);
+            usedArguments.stream().map(context::getVar).forEach(onCall::addArgument);
         }
         return onCall;
     }

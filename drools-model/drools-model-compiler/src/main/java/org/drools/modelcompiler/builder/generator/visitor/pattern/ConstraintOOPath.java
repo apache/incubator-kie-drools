@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.OOPathExprGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -38,7 +37,7 @@ class ConstraintOOPath implements DSLNode {
             patternIdentifierGenerated = patternConstraintParseResult.getPatternIdentifier();
         } else {
             patternIdentifierGenerated = context.getExprId(patternType, expression);
-            context.addDeclaration(new DeclarationSpec(patternIdentifierGenerated, patternType, Optional.of(pattern), Optional.empty()));
+            context.addDeclaration(patternIdentifierGenerated, patternType, Optional.of(pattern), Optional.empty());
         }
 
         new OOPathExprGenerator(context, packageModel).visit(patternType, patternIdentifierGenerated, drlxParseResult);

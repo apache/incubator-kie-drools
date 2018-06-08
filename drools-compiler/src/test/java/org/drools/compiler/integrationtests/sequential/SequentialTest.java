@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,6 +14,11 @@
 */
 
 package org.drools.compiler.integrationtests.sequential;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -48,17 +53,10 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -247,7 +245,7 @@ public class SequentialTest extends CommonTestMethodBase {
         assertEquals( 3,
                       list.size() );
     }
-    
+
     @Test
     public void testSalience() throws Exception {
         KieBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
@@ -261,12 +259,12 @@ public class SequentialTest extends CommonTestMethodBase {
 
         assertEquals( 3,
                       list.size() );
-        
+
         assertEquals( "rule 3", list.get( 0 ));
         assertEquals( "rule 2", list.get( 1 ) );
         assertEquals( "rule 1", list.get( 2 ) );
     }
-    
+
     @Test
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
@@ -281,10 +279,10 @@ public class SequentialTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
         StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
-        
+
         ksession.execute( new Message( "help" ) );
     }
-    
+
     @Test
     public void testEvents() throws Exception {
         String str = "";
@@ -299,9 +297,9 @@ public class SequentialTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
         StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
-        
+
         final List list = new ArrayList();
-        
+
         ksession.addEventListener( new AgendaEventListener() {
 
             public void matchCancelled( MatchCancelledEvent event ) {
@@ -355,7 +353,7 @@ public class SequentialTest extends CommonTestMethodBase {
             }
 
         } );
-        
+
         ksession.addEventListener( new RuleRuntimeEventListener() {
 
             public void objectInserted( ObjectInsertedEvent event ) {
@@ -374,12 +372,12 @@ public class SequentialTest extends CommonTestMethodBase {
             }
 
         } );
-        
+
         ksession.execute( new Message( "help" ) );
-        
+
         assertEquals( 4, list.size() );
     }
-    
+
 
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     @Test
@@ -451,7 +449,7 @@ public class SequentialTest extends CommonTestMethodBase {
         runTestProfileManyRulesAndFacts( true,
                                          "JDT",
                                          2000, "sequentialProfile.drl"  );
-        
+
     }
 
     @Test
@@ -459,7 +457,7 @@ public class SequentialTest extends CommonTestMethodBase {
         runTestProfileManyRulesAndFacts( true,
                                          "MVEL",
                                          2000, "sequentialProfileMVEL.drl"  );
-        
+
     }
 
 
