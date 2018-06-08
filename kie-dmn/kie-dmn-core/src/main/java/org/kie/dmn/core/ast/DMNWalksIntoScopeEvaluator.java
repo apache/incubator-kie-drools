@@ -28,15 +28,17 @@ public class DMNWalksIntoScopeEvaluator implements DMNExpressionEvaluator {
 
     private DMNExpressionEvaluator delegate;
     private String scopeName;
+    private String scopeNamespace;
 
-    public DMNWalksIntoScopeEvaluator(DMNExpressionEvaluator delegate, String scopeName) {
+    public DMNWalksIntoScopeEvaluator(DMNExpressionEvaluator delegate, String scopeName, String scopeNamespace) {
         this.delegate = delegate;
         this.scopeName = scopeName;
+        this.scopeNamespace = scopeNamespace;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult result) {
-        result.getContext().pushScope(scopeName);
+        result.getContext().pushScope(scopeName, scopeNamespace);
         EvaluatorResult evResult = delegate.evaluate(dmrem, result);
         result.getContext().popScope();
         return evResult;

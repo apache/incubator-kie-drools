@@ -17,6 +17,7 @@
 package org.kie.dmn.core.impl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -65,12 +66,17 @@ public class DMNContextFEELCtxWrapper implements DMNContext {
     }
 
     @Override
-    public void pushScope(String name) {
+    public void pushScope(String name, String namespace) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void popScope() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<String> scopeNamespace() {
         throw new UnsupportedOperationException();
     }
 

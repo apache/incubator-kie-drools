@@ -96,6 +96,7 @@ public class ImportsTest {
         }
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Say hello decision").getResult(), is("Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult(), is("Hello"));
     }
 
     @Test

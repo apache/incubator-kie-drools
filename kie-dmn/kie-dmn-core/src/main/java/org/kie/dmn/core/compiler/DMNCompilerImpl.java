@@ -47,11 +47,9 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
-import org.kie.dmn.core.ast.DMNWalksIntoScopeEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
@@ -251,6 +249,7 @@ public class DMNCompilerImpl
 
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
+            bkmi.addModelImportAliases(model.getImportAliasesForNS());
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( bkmi.getEvaluator() == null && dc.accept( bkm ) ) {
                     dc.compileEvaluator(bkm, this, ctx, model);
@@ -260,6 +259,7 @@ public class DMNCompilerImpl
 
         for ( DecisionNode d : model.getDecisions() ) {
             DecisionNodeImpl di = (DecisionNodeImpl) d;
+            di.addModelImportAliases(model.getImportAliasesForNS());
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( di.getEvaluator() == null && dc.accept( d ) ) {
                     dc.compileEvaluator(d, this, ctx, model);

@@ -20,11 +20,11 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
 
-public class DMNContextImpl
-        implements DMNContext {
+public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
 
     private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
@@ -51,19 +51,28 @@ public class DMNContextImpl
         if (stack.isEmpty()) {
             return entries;
         } else {
-            return stack.peek().getRef();
+            return stack.peek().getRef(); // Intentional, symbol resolution in scope should limit at the top of the stack (for DMN semantic).
         }
     }
 
     @Override
-    public void pushScope(String name) {
+    public void pushScope(String name, String namespace) {
         Map<String, Object> scopeRef = (Map<String, Object>) getCurrentEntries().computeIfAbsent(name, s -> new LinkedHashMap<String, Object>());
-        stack.push(new ScopeReference(name, scopeRef));
+        stack.push(new ScopeReference(name, namespace, scopeRef));
     }
 
     @Override
     public void popScope() {
         stack.pop();
+    }
+
+    @Override
+    public Optional<String> scopeNamespace() {
+        if (stack.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(stack.peek().getNamespace());
+        }
     }
 
     @Override
@@ -80,7 +89,7 @@ public class DMNContextImpl
     public DMNContext clone() {
         DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries));
         for (ScopeReference e : stack) {
-            newCtx.pushScope(e.getName());
+            newCtx.pushScope(e.getName(), e.getNamespace());
         }
         return newCtx;
     }
@@ -112,11 +121,13 @@ public class DMNContextImpl
     public static class ScopeReference {
 
         private final String name;
+        private final String namespace;
         private final Map<String, Object> ref;
 
-        public ScopeReference(String name, Map<String, Object> ref) {
+        public ScopeReference(String name, String namespace, Map<String, Object> ref) {
             super();
             this.name = name;
+            this.namespace = namespace;
             this.ref = ref;
         }
 
@@ -124,9 +135,14 @@ public class DMNContextImpl
             return name;
         }
 
+        public String getNamespace() {
+            return namespace;
+        }
+
         public Map<String, Object> getRef() {
             return ref;
         }
 
     }
+
 }

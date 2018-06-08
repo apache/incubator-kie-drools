@@ -18,11 +18,12 @@ package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -196,7 +197,7 @@ public class DMNRuntimeImpl
 
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b, boolean typeCheck) {
         BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) b;
-        if (isNodeValueDefined(result, bkm)) {
+        if (isNodeValueDefined(result, bkm, bkm)) {
             // already resolved
             // TODO: do we need to check if the defined variable is a function as it should?
             return;
@@ -231,9 +232,13 @@ public class DMNRuntimeImpl
                                            );
                     return;
                 }
-                if (!isNodeValueDefined(result, dep)) {
+                if (!isNodeValueDefined(result, bkm, dep)) {
                     if( dep instanceof BusinessKnowledgeModelNode ) {
+                        boolean walkingIntoScope = walkIntoImportScope(result, bkm, dep);
                         evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
+                        if (walkingIntoScope) {
+                            result.getContext().popScope();
+                        }
                     } else {
                         MsgUtil.reportMessage( logger,
                                                DMNMessage.Severity.ERROR,
@@ -253,15 +258,7 @@ public class DMNRuntimeImpl
             EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 FEELFunction resultFn = (FEELFunction) er.getResult();
-                if (bkm.getModelNamespace().equals(result.getModel().getNamespace())) {
-                    // TODO check of the return type will need calculation/inference of function return type.
-                    result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
-                } else {
-                    DMNModelImpl model = (DMNModelImpl) result.getModel();
-                    Optional<String> importAlias = model.getImportAliasFor(bkm.getModelNamespace(), bkm.getModelName());
-                    Map<String, Object> aliasContext = (Map) result.getContext().getAll().computeIfAbsent(importAlias.get(), x -> new LinkedHashMap<>());
-                    aliasContext.put(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
-                }
+                result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
             }
         } catch( Throwable t ) {
             MsgUtil.reportMessage( logger,
@@ -278,12 +275,11 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode node) {
-        if (node.getModelNamespace().equals(result.getModel().getNamespace())) {
+    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
+        if (result.getContext().scopeNamespace().map(ns -> ns.equals(node.getModelNamespace())).orElse(true)) {
             return result.getContext().isDefined(node.getName());
         } else {
-            DMNModelImpl model = (DMNModelImpl) result.getModel();
-            Optional<String> importAlias = model.getImportAliasFor(node.getModelNamespace(), node.getModelName());
+            Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
             if (importAlias.isPresent()) {
                 Object aliasContext = result.getContext().get(importAlias.get());
                 if (aliasContext != null && (aliasContext instanceof Map<?, ?>)) {
@@ -295,9 +291,57 @@ public class DMNRuntimeImpl
         }
     }
 
+    private boolean walkIntoImportScope(DMNResultImpl result, DMNNode callerNode, DMNNode destinationNode) {
+        if (!result.getContext().scopeNamespace().isPresent()) {
+            if (destinationNode.getModelNamespace().equals(result.getModel().getNamespace())) {
+                return false;
+            } else {
+                Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
+                if (importAlias.isPresent()) {
+                    result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
+                    return true;
+                } else {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          ((DMNBaseNode) callerNode).getSource(),
+                                          result,
+                                          null,
+                                          null,
+                                          Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                          new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
+                                          callerNode.getName()
+                                          );
+                    return false;
+                }
+            }
+        } else {
+            if (destinationNode.getModelNamespace().equals(result.getContext().scopeNamespace().get())) {
+                return false;
+            } else {
+                Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
+                if (importAlias.isPresent()) {
+                    result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
+                    return true;
+                } else {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          ((DMNBaseNode) callerNode).getSource(),
+                                          result,
+                                          null,
+                                          null,
+                                          Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                          new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
+                                          callerNode.getName());
+                    return false;
+                }
+            }
+        }
+
+    }
+
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck) {
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
-        if (isNodeValueDefined(result, decision)) {
+        if (isNodeValueDefined(result, decision, decision)) {
             // already resolved
             return true;
         } else {
@@ -341,7 +385,8 @@ public class DMNRuntimeImpl
                                            getIdentifier( dep ),
                                            e.getMessage() );
                 }
-                if (!isNodeValueDefined(result, dep)) {
+                if (!isNodeValueDefined(result, decision, dep)) {
+                    boolean walkingIntoScope = walkIntoImportScope(result, decision, dep);
                     if( dep instanceof DecisionNode ) {
                         if (!evaluateDecision(context, result, (DecisionNode) dep, typeCheck)) {
                             missingInput = true;
@@ -371,6 +416,9 @@ public class DMNRuntimeImpl
                                                                     getIdentifier( decision )
                                                                     );
                         reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
+                    }
+                    if (walkingIntoScope) {
+                        result.getContext().popScope();
                     }
                 }
             }
@@ -429,14 +477,7 @@ public class DMNRuntimeImpl
                         return false;
                     }
 
-                    if (decision.getModelNamespace().equals(result.getModel().getNamespace())) {
-                        result.getContext().set(decision.getDecision().getVariable().getName(), value);
-                    } else {
-                        DMNModelImpl model = (DMNModelImpl) result.getModel();
-                        Optional<String> importAlias = model.getImportAliasFor(decision.getModelNamespace(), decision.getModelName());
-                        Map<String, Object> aliasContext = (Map) result.getContext().getAll().computeIfAbsent(importAlias.get(), x -> new LinkedHashMap<>());
-                        aliasContext.put(decision.getDecision().getVariable().getName(), value);
-                    }
+                    result.getContext().set(decision.getDecision().getVariable().getName(), value);
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
@@ -444,6 +485,7 @@ public class DMNRuntimeImpl
                     return false;
                 }
             } catch( Throwable t ) {
+                t.printStackTrace();
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.ERROR,
                                                             decision.getSource(),
