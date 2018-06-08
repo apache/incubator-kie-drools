@@ -28,14 +28,12 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 
 import static org.junit.Assert.assertFalse;
@@ -48,7 +46,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_SubNetworks.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl"),
                       ResourceType.DRL );
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_CollectResultsBetaConstraint.drl" ),
                       ResourceType.DRL );
@@ -132,7 +130,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_SubNetworks.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl"),
                       ResourceType.DRL );
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_CollectResultsBetaConstraint.drl" ),
                       ResourceType.DRL );

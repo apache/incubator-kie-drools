@@ -27,9 +27,13 @@ import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.drools.modelcompiler.ExecutableModelProject;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -243,6 +247,17 @@ public final class KieUtil {
         return resources;
     }
 
+    public static List<Resource> getClasspathResources(final String... classpathResources) {
+        final List<Resource> resources = new ArrayList<>();
+        for (final String classpathResource : classpathResources) {
+            // This null check can be used to skip unwanted filenames.
+            if (classpathResource != null) {
+                resources.add(KieServices.Factory.get().getResources().newClassPathResource(classpathResource));
+            }
+        }
+        return resources;
+    }
+
     public static KieCommands getCommands() {
         return getServices().getCommands();
     }
@@ -260,6 +275,16 @@ public final class KieUtil {
         final Resource resource = kieServices.getResources().newReaderResource(new StringReader(content));
         resource.setSourcePath(path);
         return resource;
+    }
+
+    public static ObjectTypeNode getObjectTypeNode(final KieBase kbase, final Class<?> nodeClass) {
+        final List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
+        for ( final ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
+                return n;
+            }
+        }
+        return null;
     }
 
     private KieUtil() {

@@ -366,7 +366,7 @@ public class DeclareTest {
             assertTrue( list.contains( 7 ) );
             // The X instances are considered equal so when using EQUALITY, the second insert doesn't insert anything,
             // therefore, the fire produced by the second insert should be checked just with IDENTITY.
-            if (kieBaseTestConfiguration == KieBaseTestConfiguration.CLOUD_IDENTITY) {
+            if (kieBaseTestConfiguration.isIdentity()) {
                 assertTrue( list.contains( "y11" ) );
             }
             assertTrue( list.contains( "y22" ) );

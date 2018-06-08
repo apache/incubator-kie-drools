@@ -56,6 +56,11 @@ public class Person implements Serializable {
         this.age = age;
     }
 
+    public Person(final String name, final String likes) {
+        this.name = name;
+        this.likes = likes;
+    }
+
     public int getId() {
         return id;
     }
