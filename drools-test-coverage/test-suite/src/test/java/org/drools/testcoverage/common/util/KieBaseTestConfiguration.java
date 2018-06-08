@@ -17,6 +17,7 @@
 package org.drools.testcoverage.common.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -530,7 +531,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
     public static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
 
-    private static List<KieBaseOption> additionalKieBaseOptions;
+    private static List<KieBaseOption> additionalKieBaseOptions = Collections.emptyList();
 
     @Override
     public void setAdditionalKieBaseOptions(final KieBaseOption... options) {
