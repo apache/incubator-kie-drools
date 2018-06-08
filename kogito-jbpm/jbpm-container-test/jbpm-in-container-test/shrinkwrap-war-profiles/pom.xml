@@ -195,7 +195,7 @@
       <activation>
         <property>
           <name>container.profile</name>
-          <value>tomcat8</value>
+          <value>tomcat9</value>
         </property>
       </activation>
       <dependencies>

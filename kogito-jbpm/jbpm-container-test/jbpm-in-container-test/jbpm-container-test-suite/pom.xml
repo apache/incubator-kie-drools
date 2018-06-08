@@ -689,15 +689,15 @@
     </profile>
 
     <profile>
-      <id>tomcat8</id>
+      <id>tomcat9</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>tomcat8</value>
+          <value>tomcat9</value>
         </property>
       </activation>
       <properties>
-        <container.id>tomcat8x</container.id>
+        <container.id>tomcat9x</container.id>
         <container.port>8080</container.port>
         <org.jbpm.persistence.ds>java:comp/env/jdbc/jbpm</org.jbpm.persistence.ds>
         <container.tm>JBossTS</container.tm>
@@ -716,10 +716,10 @@
                   <artifactInstaller>
                     <groupId>org.apache.tomcat</groupId>
                     <artifactId>tomcat</artifactId>
-                    <version>${version.tomcat8}</version>
+                    <version>${version.tomcat9}</version>
                   </artifactInstaller>
                   <systemProperties>
-                    <tomcat.home>${project.build.directory}/cargo/configurations/tomcat8x</tomcat.home>
+                    <tomcat.home>${project.build.directory}/cargo/configurations/tomcat9x</tomcat.home>
                     <jbpm.tsr.jndi.lookup>java:comp/env/TransactionSynchronizationRegistry</jbpm.tsr.jndi.lookup>
                     <org.jboss.logging.provider>jdk</org.jboss.logging.provider>
                   </systemProperties>
@@ -779,7 +779,7 @@
       <dependencyManagement>
         <dependencies>
           <!--Arquillian connector-->
-          <!-- arquillian-tomcat-managed-8 not released yet -->
+          <!-- arquillian-tomcat-remote-9 not released yet -->
           <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-tomcat-remote-7</artifactId>
@@ -788,7 +788,7 @@
         </dependencies>
       </dependencyManagement>
       <dependencies>
-        <!-- Deps needed by Tomcat 8 -->
+        <!-- Deps needed by Tomcat 9 -->
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-jdk14</artifactId>
@@ -804,7 +804,7 @@
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>
         </dependency>
-        <!-- arquillian-tomcat-managed-8 not released yet -->
+        <!-- arquillian-tomcat-remote-9 not released yet -->
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
           <artifactId>arquillian-tomcat-remote-7</artifactId>
