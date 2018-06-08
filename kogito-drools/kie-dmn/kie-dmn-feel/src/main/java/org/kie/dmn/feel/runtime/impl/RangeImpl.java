@@ -26,6 +26,7 @@ public class RangeImpl
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
 
+
     public RangeImpl() {
     }
 

@@ -17,18 +17,74 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 /**
  * The purpose of this class is to offer import .* methods to compiled FEEL classes compiling expressions.
  * Implementing DMN FEEL spec chapter 10.3.2.12 Semantic mappings
  */
 public class CompiledFEELSemanticMappings {
+
+    /**
+     * Represents a [n..m] construct
+     */
+    public static RangeImpl range(
+            EvaluationContext ctx,
+            Range.RangeBoundary lowBoundary,
+            Object lowEndPoint,
+            Object highEndPoint,
+            Range.RangeBoundary highBoundary) {
+
+        Comparable left = asComparable(lowEndPoint);
+        Comparable right = asComparable(highEndPoint);
+        if (left == null || right == null || !compatible(left, right)) {
+            ctx.notifyEvt( () -> new ASTEventBase(
+                    FEELEvent.Severity.ERROR,
+                    Msg.createMessage(
+                            Msg.INCOMPATIBLE_TYPE_FOR_RANGE,
+                            left.getClass().getSimpleName()
+                    ),
+                    null));
+            return null;
+        }
+        return new RangeImpl(
+                lowBoundary,
+                left,
+                right,
+                highBoundary);
+    }
+
+    private static boolean compatible(Comparable left, Comparable right) {
+        Class<?> leftClass = left.getClass();
+        Class<?> rightClass = right.getClass();
+        return leftClass.isAssignableFrom(rightClass)
+                || rightClass.isAssignableFrom(leftClass);
+    }
+
+    private static Comparable asComparable(Object s) {
+        if (s instanceof Comparable) {
+            return (Comparable) s;
+        } else if (s instanceof Period) {
+            // period has special semantics
+            return new RangeNode.ComparablePeriod((Period) s);
+        } else {
+            // FIXME report error
+            return null;
+        }
+    }
     
     /**
      * Represent a [e1, e2, e3] construct.
