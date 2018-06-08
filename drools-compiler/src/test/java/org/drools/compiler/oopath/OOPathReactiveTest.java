@@ -23,9 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.oopath.model.Adult;
 import org.drools.compiler.oopath.model.Child;
-import org.drools.compiler.oopath.model.Company;
 import org.drools.compiler.oopath.model.Disease;
-import org.drools.compiler.oopath.model.Employee;
 import org.drools.compiler.oopath.model.Group;
 import org.drools.compiler.oopath.model.Man;
 import org.drools.compiler.oopath.model.School;
@@ -55,7 +53,7 @@ import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
 import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
 import static org.junit.Assert.*;
 
-public class OOPathReactiveTests {
+public class OOPathReactiveTest {
 
     @Test
     public void testReactiveOnLia() {
@@ -539,44 +537,6 @@ public class OOPathReactiveTests {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("gun");
-    }
-
-    @Test
-    public void testReactiveArray() {
-        // RHBRMS-2768
-        final String drl =
-                "import org.drools.compiler.oopath.model.*;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  Company( $employee: /employees )\n" +
-                        "then\n" +
-                        "  list.add( $employee.getName() );\n" +
-                        "end\n";
-
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
-
-        final Company robotics = new Company("Robotics");
-        final Employee mark = new Employee("Mark", 35);
-        final Employee thomas = new Employee("Thomas", 40);
-        robotics.setEmployees(new Employee[] {mark, thomas});
-
-        ksession.insert(robotics);
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas");
-
-        list.clear();
-        final Employee arnold = new Employee("Arnold", 50);
-        robotics.setEmployees(new Employee[] {mark, thomas, arnold});
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas", "Arnold");
     }
 
     @Test
