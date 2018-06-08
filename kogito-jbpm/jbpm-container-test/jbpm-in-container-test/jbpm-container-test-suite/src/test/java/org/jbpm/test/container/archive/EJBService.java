@@ -378,13 +378,13 @@ public class EJBService {
     }
 
     public static enum KieJar {
-        BASIC("org.jbpm.test.container", "ejb-services-basic", "1.0-SNAPSHOT"),
-        VARIABLE("org.jbpm.test.container", "ejb-services-variable", "1.0-SNAPSHOT"),
-        SERVICE("org.jbpm.test.container", "ejb-services-service", "1.0-SNAPSHOT"),
-        TX("org.jbpm.test.container", "ejb-services-tx", "1.0-SNAPSHOT"),
-        EJBCOMPL("org.jbpm.test.container", "ejb-services-compl", "1.0-SNAPSHOT"),
-        MIGRATIONV1("org.jbpm.test.container", "ejb-migration", "1.0-SNAPSHOT"),
-        MIGRATIONV2("org.jbpm.test.container", "ejb-migration", "2.0-SNAPSHOT");
+        BASIC("org.jbpm.test.container", "ejb-services-basic", "1.0"),
+        VARIABLE("org.jbpm.test.container", "ejb-services-variable", "1.0"),
+        SERVICE("org.jbpm.test.container", "ejb-services-service", "1.0"),
+        TX("org.jbpm.test.container", "ejb-services-tx", "1.0"),
+        EJBCOMPL("org.jbpm.test.container", "ejb-services-compl", "1.0"),
+        MIGRATIONV1("org.jbpm.test.container", "ejb-migration", "1.0"),
+        MIGRATIONV2("org.jbpm.test.container", "ejb-migration", "2.0");
 
         private String groupId;
 

@@ -128,7 +128,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
 
         repository.installArtifact(releaseIdSupport, kJar2, pom2);
         
-        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0");
         
         InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
         File pom3 = new File("target/kmodule3", "pom.xml");
@@ -274,7 +274,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
 	        // duplicated deployment of the same deployment unit should fail
 	        deploymentService.deploy(deploymentUnit);
         } catch(Exception e) {
-        	assertTrue(e.getMessage().endsWith("Unit with id org.jbpm.test:test-module:1.0.0-SNAPSHOT is already deployed"));
+        	assertTrue(e.getMessage().endsWith("Unit with id org.jbpm.test:test-module:1.0.0 is already deployed"));
         }
     }
     
@@ -284,7 +284,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
         assertNotNull(deploymentService);
         
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0");
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);

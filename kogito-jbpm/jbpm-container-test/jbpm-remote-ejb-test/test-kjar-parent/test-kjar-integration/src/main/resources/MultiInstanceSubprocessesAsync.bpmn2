@@ -119,7 +119,7 @@ kcontext.setVariable("collection",l);]]></bpmn2:script>
         <bpmn2:dataInputAssociation id="_0a4FeUdAEeW0Sduv7pU8uA">
           <bpmn2:targetRef>_A700B360-9E53-4303-ABE0-96573BA29F12_DeploymentIdInputX</bpmn2:targetRef>
           <bpmn2:assignment id="_0a4FekdAEeW0Sduv7pU8uA">
-            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_0a4Fe0dAEeW0Sduv7pU8uA"><![CDATA[org.jboss:integration:2.0.0-SNAPSHOT]]></bpmn2:from>
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_0a4Fe0dAEeW0Sduv7pU8uA"><![CDATA[org.jboss:integration:2.0.0]]></bpmn2:from>
             <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_0a4FfEdAEeW0Sduv7pU8uA">_A700B360-9E53-4303-ABE0-96573BA29F12_DeploymentIdInputX</bpmn2:to>
           </bpmn2:assignment>
         </bpmn2:dataInputAssociation>

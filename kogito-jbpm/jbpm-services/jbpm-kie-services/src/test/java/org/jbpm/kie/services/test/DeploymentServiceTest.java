@@ -94,7 +94,7 @@ public class DeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         repository.deployArtifact(releaseIdSupport, kJar2, pom2);
 
-        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0");
         processes.add("repo/rules/RuleWIthDeclaredType.drl");
 
         InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
@@ -250,7 +250,7 @@ public class DeploymentServiceTest extends AbstractKieServicesBaseTest {
         assertNotNull(deploymentService);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0");
 
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -343,7 +343,7 @@ public class DeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         assertNotNull(deploymentService);
 
-        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0");
 
         deploymentService.deploy(deploymentUnit3);
         units.add(deploymentUnit3);

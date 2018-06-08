@@ -683,7 +683,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     		processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
     		fail("Deployment is deactivated so cannot start new process instances");
     	} catch (Exception e) {
-    		assertEquals("org.jbpm.services.api.DeploymentNotFoundException: Deployments org.jbpm.test:test-module:1.0.0-SNAPSHOT is not active", e.getMessage());
+    		assertEquals("org.jbpm.services.api.DeploymentNotFoundException: Deployments org.jbpm.test:test-module:1.0.0 is not active", e.getMessage());
     	}
     }
     

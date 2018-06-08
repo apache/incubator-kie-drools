@@ -54,7 +54,7 @@ public class MultipleDeploymentsProcessServiceEJBIntegrationTest extends Abstrac
     
     protected static final String ARTIFACT_ID2 = "second-test-module";
     protected static final String GROUP_ID2 = "org.jbpm.test";
-    protected static final String VERSION2 = "1.0.0-SNAPSHOT";
+    protected static final String VERSION2 = "1.0.0";
 
 	@Deployment
 	public static WebArchive createDeployment() {

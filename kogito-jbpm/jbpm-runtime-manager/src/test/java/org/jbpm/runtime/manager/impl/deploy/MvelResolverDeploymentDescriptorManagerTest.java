@@ -42,7 +42,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 public class MvelResolverDeploymentDescriptorManagerTest extends AbstractDeploymentDescriptorTest {
 	protected static final String ARTIFACT_ID = "test-module";
 	protected static final String GROUP_ID = "org.jbpm.test";
-	protected static final String VERSION = "1.0.0-SNAPSHOT";
+	protected static final String VERSION = "1.0.0";
 
 	private PoolingDataSource pds;
 	private RuntimeManager manager;

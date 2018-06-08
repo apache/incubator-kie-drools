@@ -69,7 +69,7 @@ public class ProcessServiceWithEntitiesTest extends AbstractKieServicesBaseTest 
         customDescriptor.setClasses(remotableClasses);
 
         List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
-        marshallingStrategies.add(new ObjectModel("mvel", "new org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy(\"org.jbpm.test:test-module:1.0.0-SNAPSHOT\", classLoader)"));
+        marshallingStrategies.add(new ObjectModel("mvel", "new org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy(\"org.jbpm.test:test-module:1.0.0\", classLoader)"));
         customDescriptor.setMarshallingStrategies(marshallingStrategies);
 
         Map<String, String> extraResources = new HashMap<>();

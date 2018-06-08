@@ -90,7 +90,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 		KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
-        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0");
 
         InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
         File pom3 = new File("target/kmodule3", "pom.xml");
@@ -653,7 +653,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
     	assertNotNull(deploymentService);
 
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        KModuleDeploymentUnit deploymentUnit2 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        KModuleDeploymentUnit deploymentUnit2 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0");
 
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -700,7 +700,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
     		processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
     		fail("Deployment is deactivated so cannot start new process instances");
     	} catch (Exception e) {
-    		assertTrue(e.getMessage().contains("Deployments org.jbpm.test:test-module:1.0.0-SNAPSHOT is not active"));
+    		assertTrue(e.getMessage().contains("Deployments org.jbpm.test:test-module:1.0.0 is not active"));
     	}
 
     }

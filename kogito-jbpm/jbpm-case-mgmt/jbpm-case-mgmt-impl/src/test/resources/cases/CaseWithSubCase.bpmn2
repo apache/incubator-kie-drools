@@ -102,7 +102,7 @@
       <bpmn2:dataInputAssociation id="_qh79N7WdEeez6KlxwDtT2Q">
         <bpmn2:targetRef>_2D40664E-2AFD-4BD9-AC28-C9EAD763BF5B_DeploymentIdInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_qh79OLWdEeez6KlxwDtT2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_qh79ObWdEeez6KlxwDtT2Q"><![CDATA[org.jbpm.cases:case-module:1.0.0-SNAPSHOT]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_qh79ObWdEeez6KlxwDtT2Q"><![CDATA[org.jbpm.cases:case-module:1.0.0]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_qh79OrWdEeez6KlxwDtT2Q">_2D40664E-2AFD-4BD9-AC28-C9EAD763BF5B_DeploymentIdInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

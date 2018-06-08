@@ -56,7 +56,7 @@ public class KieScannerTest {
     private File kPom;
 
     private KieServices ks = KieServices.Factory.get();
-    private ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+    private ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0");
 
     @Before
     public void setUp() throws Exception {
