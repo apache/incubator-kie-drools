@@ -336,7 +336,7 @@ objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
 
 [[jacksonMarshallingAScore]]
-==== JAXB: Marshalling a `Score`
+==== Jackson: Marshalling a `Score`
 
 When a `Score` is marshalled to/from JSON by the default Jackson configuration, it fails.
 The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonJsonSerializer`,
