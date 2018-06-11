@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.compiler.CMMNCaseFactory;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
@@ -113,7 +114,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildProcesses() {
-        buildResourceType(ResourceBuilder.BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
+    	buildResourceType(ResourceBuilder.BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
+    	buildResourceType(ResourceBuilder.CMMN_RESOURCE_BUILDER, ResourceType.CMMN);
     }
 
     private void buildResources() {
@@ -301,6 +303,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
         ResourceBuilder BPMN2_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
             BPMN2ProcessFactory.configurePackageBuilder( kBuilder );
+            kBuilder.addProcessFromXml( resourceDescr.resource );
+        };
+        
+        ResourceBuilder CMMN_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
+            CMMNCaseFactory.configurePackageBuilder( kBuilder );
             kBuilder.addProcessFromXml( resourceDescr.resource );
         };
 
