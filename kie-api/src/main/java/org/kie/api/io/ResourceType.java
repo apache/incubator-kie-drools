@@ -119,6 +119,12 @@ public class ResourceType
                                                                        "jBPM BPMN2 Language",
                                                                        "src/main/resources",
                                                                        "bpmn", "bpmn2");
+    
+    /** jBPM CMMN Language */
+    public static final ResourceType CMMN = addResourceTypeToRegistry("CMMN",
+                                                                       "jBPM CMMN Language",
+                                                                       "src/main/resources",
+                                                                       "cmmn");
 
     /** Decision Table */
     public static final ResourceType DTABLE = addResourceTypeToRegistry("DTABLE",
