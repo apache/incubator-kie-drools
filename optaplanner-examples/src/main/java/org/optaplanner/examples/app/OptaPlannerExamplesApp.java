@@ -28,7 +28,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,10 +38,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.border.TitledBorder;
 
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.optaplanner.examples.coachshuttlegathering.app.CoachShuttleGatheringApp;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
@@ -57,12 +56,13 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
+import org.optaplanner.examples.rocktour.app.RockTourApp;
+import org.optaplanner.examples.scrabble.app.ScrabbleApp;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
-import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class OptaPlannerExamplesApp extends JFrame {
 
@@ -105,6 +105,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         JScrollPane examplesScrollPane = new JScrollPane(createExamplesPanel());
         examplesScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
         examplesScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        examplesScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         contentPane.add(examplesScrollPane, BorderLayout.CENTER);
         JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
         bottomPanel.add(createDescriptionPanel(), BorderLayout.CENTER);
@@ -114,68 +115,36 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createExamplesPanel() {
-        JPanel examplesPanel = new JPanel();
-        examplesPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        GroupLayout layout = new GroupLayout(examplesPanel);
-        examplesPanel.setLayout(layout);
-        JPanel basicExamplesPanel = createBasicExamplesPanel();
-        JPanel realExamplesPanel = createRealExamplesPanel();
-        JPanel difficultExamplesPanel = createDifficultExamplesPanel();
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(basicExamplesPanel)
-                .addGap(10)
-                .addComponent(realExamplesPanel)
-                .addGap(10)
-                .addComponent(difficultExamplesPanel));
-        layout.setVerticalGroup(layout.createParallelGroup()
-                .addComponent(basicExamplesPanel)
-                .addComponent(realExamplesPanel)
-                .addComponent(difficultExamplesPanel));
-        return examplesPanel;
-    }
+        JPanel panel = new JPanel(new GridLayout(0, 4, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    private JPanel createBasicExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Basic examples");
-        titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
-        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton(new NQueensApp()));
-        panel.add(createExampleButton(new CloudBalancingApp()));
-        panel.add(createExampleButton(new TspApp()));
-        panel.add(createExampleButton(new DinnerPartyApp()));
-        panel.add(createExampleButton(new TennisApp()));
-        panel.add(createExampleButton(new MeetingSchedulingApp()));
-        return panel;
-    }
-
-    private JPanel createRealExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Real examples");
-        titledBorder.setTitleColor(TangoColorFactory.BUTTER_3);
-        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton(new CurriculumCourseApp()));
-        panel.add(createExampleButton(new MachineReassignmentApp()));
-        panel.add(createExampleButton(new VehicleRoutingApp()));
-        panel.add(createExampleButton(new ProjectJobSchedulingApp()));
-        panel.add(createExampleButton(new PatientAdmissionScheduleApp()));
-        panel.add(createExampleButton(new TaskAssigningApp()));
-        return panel;
-    }
-
-    private JPanel createDifficultExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Difficult examples");
-        titledBorder.setTitleColor(TangoColorFactory.SCARLET_3);
-        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton(new ExaminationApp()));
         panel.add(createExampleButton(new NurseRosteringApp()));
-        panel.add(createExampleButton(new TravelingTournamentApp()));
-        panel.add(createExampleButton(new CheapTimeApp()));
-        panel.add(createExampleButton(new InvestmentApp()));
+        panel.add(createExampleButton(new TspApp()));
+        panel.add(createExampleButton(new TaskAssigningApp()));
+        panel.add(createExampleButton(new CloudBalancingApp()));
+
         panel.add(createExampleButton(new ConferenceSchedulingApp()));
+        panel.add(createExampleButton(new VehicleRoutingApp()));
+        panel.add(createExampleButton(new PatientAdmissionScheduleApp()));
+        panel.add(createExampleButton(new MachineReassignmentApp()));
+
+        panel.add(createExampleButton(new CurriculumCourseApp()));
+        panel.add(createExampleButton(new RockTourApp()));
+        panel.add(createExampleButton(new ProjectJobSchedulingApp()));
+        panel.add(createExampleButton(new NQueensApp()));
+
+        panel.add(createExampleButton(new ExaminationApp()));
+        panel.add(createExampleButton(new CoachShuttleGatheringApp()));
+        panel.add(createExampleButton(new CheapTimeApp()));
+        panel.add(createExampleButton(new ScrabbleApp()));
+
+        panel.add(createExampleButton(new MeetingSchedulingApp()));
+        panel.add(createExampleButton(new TravelingTournamentApp()));
+        panel.add(createExampleButton(new InvestmentApp()));
+        panel.add(createExampleButton(new DinnerPartyApp()));
+
+        panel.add(createExampleButton(new TennisApp()));
+
         return panel;
     }
 
