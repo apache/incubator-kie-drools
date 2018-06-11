@@ -31,34 +31,44 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class SimpleRuntimeEnvironmentTest extends SimpleRuntimeEnvironment {
+public class SimpleRuntimeEnvironmentTest {
+
+    @Mock
+    KnowledgeBuilder kbuilder;
+
+    @InjectMocks
+    SimpleRuntimeEnvironment environment;
 
     @Before
-    public void before() { 
-        this.kbuilder = mock(KnowledgeBuilder.class);
+    public void before() {
+        environment = new SimpleRuntimeEnvironment();
+        MockitoAnnotations.initMocks(this);
     }
-    
+
     @Test
-    public void addAssetCsvXlsTest() { 
-       doNothing().when(this.kbuilder).add(any(Resource.class), any(ResourceType.class), any(ResourceConfiguration.class));
-       
-       doThrow(new IllegalStateException("CSV resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
-       Resource resource = ResourceFactory.newClassPathResource("/data/resource.csv", getClass());
-       addAsset(resource, ResourceType.DTABLE);
-       
-       doThrow(new IllegalStateException("XLS resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
-       resource = ResourceFactory.newClassPathResource("/data/resource.xls", getClass());
-       addAsset(resource, ResourceType.DTABLE);
-    
-       // control test
-       doThrow(new IllegalStateException("BPMN2 resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class), any(ResourceConfiguration.class));
-       doNothing().when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
-       
-       resource = ResourceFactory.newClassPathResource("/data/resource.bpmn2", getClass());
-       addAsset(resource, ResourceType.BPMN2);
+    public void addAssetCsvXlsTest() {
+        doNothing().when(this.kbuilder).add(any(Resource.class), any(ResourceType.class), any(ResourceConfiguration.class));
+        // This is to verify that 2-argument method is never called
+        doThrow(new IllegalStateException("CSV resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
+        Resource resource = ResourceFactory.newClassPathResource("/data/resource.csv", getClass());
+        environment.addAsset(resource, ResourceType.DTABLE);
+
+        doThrow(new IllegalStateException("XLS resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
+        resource = ResourceFactory.newClassPathResource("/data/resource.xls", getClass());
+        environment.addAsset(resource, ResourceType.DTABLE);
+
+        // control test
+        doThrow(new IllegalStateException("BPMN2 resource not handled correctly!")).when(this.kbuilder).add(any(Resource.class), any(ResourceType.class), any(ResourceConfiguration.class));
+        doNothing().when(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
+
+        resource = ResourceFactory.newClassPathResource("/data/resource.bpmn2", getClass());
+        environment.addAsset(resource, ResourceType.BPMN2);
     }
-    
+
     @Test
     public void addAssetCsvXlsReplaceConfigTest() {
         // config preserved
@@ -70,16 +80,16 @@ public class SimpleRuntimeEnvironmentTest extends SimpleRuntimeEnvironment {
         String worksheetName = "test-worksheet-name";
         config.setWorksheetName(worksheetName);
         resource.setConfiguration(config);
-       
+
         // do method
-        addAsset(resource, ResourceType.DTABLE);
-        
+        environment.addAsset(resource, ResourceType.DTABLE);
+
         verify(this.kbuilder).add(any(Resource.class), any(ResourceType.class), resourceConfigCaptor.capture());
         ResourceConfiguration replacedConfig = resourceConfigCaptor.getValue();
-        assertTrue( "Not a DecisionTableConfiguration, but a " + replacedConfig.getClass().getSimpleName(), 
-                replacedConfig instanceof DecisionTableConfiguration );
-        assertEquals( "Incorrect file type", DecisionTableInputType.XLS, ((DecisionTableConfiguration) replacedConfig).getInputType());
-        assertEquals( "Worksheet name not preserved",  worksheetName, ((DecisionTableConfiguration) replacedConfig).getWorksheetName());
+        assertTrue("Not a DecisionTableConfiguration, but a " + replacedConfig.getClass().getSimpleName(),
+                replacedConfig instanceof DecisionTableConfiguration);
+        assertEquals("Incorrect file type", DecisionTableInputType.XLS, ((DecisionTableConfiguration) replacedConfig).getInputType());
+        assertEquals("Worksheet name not preserved", worksheetName, ((DecisionTableConfiguration) replacedConfig).getWorksheetName());
     }
 
     @Test
@@ -91,7 +101,7 @@ public class SimpleRuntimeEnvironmentTest extends SimpleRuntimeEnvironment {
         config.setWorksheetName(worksheetName);
         resource.setConfiguration(config);
 
-        addAsset(resource, ResourceType.DTABLE);
+        environment.addAsset(resource, ResourceType.DTABLE);
         verify(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
     }
 }
