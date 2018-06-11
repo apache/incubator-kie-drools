@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cmmn:definitions id="_d7e7cad4-86f1-4c04-9dff-a9aace3afb61"
+  targetNamespace="http://cmmn.org" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/CMMN/20151109/MODEL CMMN11.xsd">
+  <cmmn:case id="loan_application" name="Loan Application">
+  </cmmn:case>
+</cmmn:definitions>

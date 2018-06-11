@@ -1,0 +1,646 @@
+<cmmn:definitions xmlns:semantic="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisocmmn="http://www.trisotech.com/2014/triso/cmmn" xmlns:ns1="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:trisob="http://www.trisotech.com/2014/triso/bpmn" xmlns:trisofeed="http://trisotech.com/feed"            xmlns="http://www.trisotech.com/cmmn/definitions/_acb4b373-b34b-43cd-8d05-a0791204c6b1" id="_acb4b373-b34b-43cd-8d05-a0791204c6b1" name="OrderITHardware" targetNamespace="http://www.trisotech.com/cmmn/definitions/_acb4b373-b34b-43cd-8d05-a0791204c6b1" exporter="CMMN Modeler" exporterVersion="6.0.8.1">
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="hwSpec" structureRef="org.jbpm.document.Document" id="_154b3a9c-ed0a-42da-9e01-ed410f07d0f9"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="managerComment" structureRef="feel:string" id="_0e5e0497-32f0-4f1c-84af-910a1b398153"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="supplierComment" structureRef="feel:string" id="_8041a942-8b1f-4bd8-87b8-c6a089b70fde"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="managerDecision" structureRef="feel:boolean" id="_8e0fe2f1-c612-4ca7-b3b4-9bede036cc1e"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="survey" structureRef="org.jbpm.demo.itorders.Survey" id="_b0391654-b6a5-4471-bb1f-08ae4960bd24"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="shipped" structureRef="feel:boolean" id="_f870fce7-145d-4173-9df7-0b63d999c5b9"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="delivered" structureRef="feel:boolean" id="_b822bf41-d56f-4330-91c2-c866e0146167"/>
+    <cmmn:caseFileItemDefinition definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" name="approved" structureRef="feel:boolean" id="_775ac6a6-7794-4bc4-b970-a0e2abb3299e"/>
+    <cmmn:caseFileItemDefinition id="_5e38f9bc-56da-4698-a4fa-473960423fb6" name="ordered"/>
+    <cmmn:case id="itorders.orderhardware" name="Order IT hardware">
+        <cmmn:caseFileModel>
+            <cmmn:caseFileItem id="_850f9a2a-fa62-4181-a76c-5e54370af4f3" name="hwSpec" definitionRef="_154b3a9c-ed0a-42da-9e01-ed410f07d0f9"/>
+            <cmmn:caseFileItem id="_d1397f9f-999a-44fc-86c4-e1f886010522" name="managerComment" definitionRef="_0e5e0497-32f0-4f1c-84af-910a1b398153"/>
+            <cmmn:caseFileItem id="_974b29a0-0365-4700-99a8-367199db7e58" name="supplierComment" definitionRef="_8041a942-8b1f-4bd8-87b8-c6a089b70fde"/>
+            <cmmn:caseFileItem id="_a730f022-9a3c-4e51-a684-f654d4cd26fd" name="survey" definitionRef="_b0391654-b6a5-4471-bb1f-08ae4960bd24"/>
+            <cmmn:caseFileItem id="_7f91f405-e647-44b5-9a2c-0db66eebd49e" name="shipped" definitionRef="_f870fce7-145d-4173-9df7-0b63d999c5b9"/>
+            <cmmn:caseFileItem id="_e63adde6-306b-492a-9fbb-78079e15a193" name="delivered" definitionRef="_b822bf41-d56f-4330-91c2-c866e0146167"/>
+            <cmmn:caseFileItem id="_d9ce2be9-f1aa-47c5-8891-d390499c8442" name="managerDecision" definitionRef="_8e0fe2f1-c612-4ca7-b3b4-9bede036cc1e"/>
+            <cmmn:caseFileItem id="_56dc77a9-e1c5-4db1-873e-835d52f9dd25" name="ordered" definitionRef="_5e38f9bc-56da-4698-a4fa-473960423fb6"/>
+        </cmmn:caseFileModel>
+        <cmmn:casePlanModel id="_ac70d76a-60be-411c-9ac2-83829b090354" name="Order IT hardware">
+            <cmmn:planItem id="_dcbfd03c-9be7-4469-902f-fd4e241e8621" definitionRef="PID__dcbfd03c-9be7-4469-902f-fd4e241e8621">
+                <cmmn:entryCriterion id="_374d1e54-77f3-458b-a876-c432f8eb1ae3" sentryRef="_91919edf-c4a8-4ae2-9b8e-949f926ac735"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_d60e7cd8-78ba-4cfc-9045-5a998df64f47" definitionRef="PID__d60e7cd8-78ba-4cfc-9045-5a998df64f47">
+                <cmmn:entryCriterion id="_47592f2a-a397-4e00-bf8c-aff814cac0b9" sentryRef="_d2882dcb-a360-4326-b516-208fde40d094"/>
+                <cmmn:exitCriterion id="_5471459c-9006-4d97-be8d-4a7d7f06daf1" sentryRef="_4e14e7e2-8b3d-4ef3-aba4-9385a9eef072"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_14673a36-9ead-4bb4-8a21-c89186edfdd4" definitionRef="PID__14673a36-9ead-4bb4-8a21-c89186edfdd4">
+                <cmmn:entryCriterion id="_e6b32fb0-17ef-4556-bf1b-8a37e98c5102" sentryRef="_e1d2a726-dd4c-40da-b803-a0e3a2d36c33"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_eb22be18-1904-49c7-a237-7e64b9318f8a" definitionRef="PID__eb22be18-1904-49c7-a237-7e64b9318f8a">
+                <cmmn:entryCriterion id="_c90277e0-4868-475d-9994-efb8edd1572d" sentryRef="_7b330ff7-bbfd-4221-9496-b3d217ec6ace"/>
+                <cmmn:exitCriterion id="_808d4091-2c9a-46da-a172-8124e7cd4bdc" sentryRef="_9f286ce9-075d-4355-835c-d50326bfbe80"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_78d3eb9f-77cc-4dba-b38e-a66dd37e82e4" definitionRef="PID__78d3eb9f-77cc-4dba-b38e-a66dd37e82e4">
+                <cmmn:entryCriterion id="_5b8edd91-e83d-4d80-b327-11fd73c6b040" sentryRef="_68a8ce9c-11af-4632-a826-dd025476edd0"/>
+                <cmmn:exitCriterion id="_5a6b1da0-2869-4eaa-92fc-e970be10bc19" sentryRef="_a65eece6-fc9a-440b-85c9-c42ce6c75146"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_8865d710-1889-4c28-896c-7a3da295686e" definitionRef="PID__8865d710-1889-4c28-896c-7a3da295686e">
+                <cmmn:entryCriterion id="_aa4f862b-c941-4019-b854-0d02fac83233" sentryRef="_ec4e09d7-ce98-4c21-bfa7-818893c2c219"/>
+                <cmmn:exitCriterion id="_b659b7c7-c87b-40de-a89f-b46b327549a5" sentryRef="_85390f9a-2852-46c0-bba3-e88d36f03a41"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_6fa31b37-ca3e-4f15-b5d9-b4f04ef00d7e" definitionRef="PID__6fa31b37-ca3e-4f15-b5d9-b4f04ef00d7e">
+                <cmmn:entryCriterion id="_ef267dce-277f-4e26-b26c-8c5a619fb5d4" sentryRef="_6517fd68-0a2f-408c-9b9f-82f26a73d8b3"/>
+                <cmmn:exitCriterion id="_3bdcac6e-db8c-48f9-bb01-b4a70f6b9dbf" sentryRef="_8b8cc963-8bc2-4932-8f00-bfbaeacdf9d9"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_fe5406e8-0d69-4dc7-bc7a-e80663754977" definitionRef="PID__fe5406e8-0d69-4dc7-bc7a-e80663754977">
+                <cmmn:entryCriterion id="_479434d9-560e-40b5-92b3-a751794d53be" sentryRef="_18183593-16f9-41fe-be84-d1a5fc74009b"/>
+                <cmmn:exitCriterion id="_d9dd8146-ec31-46bf-b1cf-2aa0d5956273" sentryRef="_c424f6bd-25da-402c-b694-9ca2cafab7e7"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_464c0a45-d569-4e47-a0c7-99df1b69f50f" definitionRef="PID__464c0a45-d569-4e47-a0c7-99df1b69f50f">
+                <cmmn:entryCriterion id="_d155b0fc-90c9-4ea6-b303-1dae95100f96" sentryRef="_3e1e7a4a-5b46-442c-9452-42cb0a0e44dd"/>
+            </cmmn:planItem>
+            <cmmn:planItem id="_dcbfd03c-9be7-4469-902f-fd4e241e8622" definitionRef="PID__511d1be5-6aa2-4b94-b8c5-0c9a3535a982">
+                <cmmn:entryCriterion id="_374d1e54-77f3-458b-a876-c432f8eb1aet" sentryRef="_3762ee9f-3487-4b14-b3de-0f791ecbd188"/>
+            </cmmn:planItem>
+            <cmmn:sentry id="_91919edf-c4a8-4ae2-9b8e-949f926ac735">
+                <cmmn:ifPart id="_503ed645-aa5d-4e11-9492-d10535b30008">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_d2882dcb-a360-4326-b516-208fde40d094">
+                <cmmn:ifPart id="_c647f915-7749-4c60-bddf-a0ae1b96c749">
+                    <cmmn:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_7dee2ec3-7205-47fc-9483-0666f135b6ad">
+                <cmmn:ifPart id="_115aa30d-a35b-4dae-ac3d-adb7f7ec43b6">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_3762ee9f-3487-4b14-b3de-0f791ecbd188">
+                <cmmn:ifPart id="_0a50086d-dd78-4c18-b201-d9adb644c548">
+                    <cmmn:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null, data.get("managerDecision") == false)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_e1d2a726-dd4c-40da-b803-a0e3a2d36c33">
+                <cmmn:ifPart id="_46e9626d-483d-4d97-9b9b-fe30cbc2b6e1">
+                    <cmmn:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null, data.get("managerDecision") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_e6e4d23f-7692-44e4-85b6-cd12fafe716c">
+                <cmmn:ifPart id="_3867db00-4045-4d6b-a6ac-eae727ffd648">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_7b330ff7-bbfd-4221-9496-b3d217ec6ace">
+                <cmmn:ifPart id="_06dbb644-5735-4ad9-871c-3117b1c44d13">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_68a8ce9c-11af-4632-a826-dd025476edd0">
+                <cmmn:ifPart id="_1710f464-f105-4fc5-8154-cb3a4cce415c">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_ec4e09d7-ce98-4c21-bfa7-818893c2c219">
+                <cmmn:ifPart id="_03203924-976b-49be-b0f2-cc1e4e5e27dc">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_6517fd68-0a2f-408c-9b9f-82f26a73d8b3">
+                <cmmn:ifPart id="_373289bd-5018-4281-8dc0-c339cf6b490e">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_18183593-16f9-41fe-be84-d1a5fc74009b">
+                <cmmn:ifPart id="_0bdd9745-abac-431e-ac07-718115ee9b78">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_3e1e7a4a-5b46-442c-9452-42cb0a0e44dd">
+                <cmmn:ifPart id="_5f9985b1-5b57-4dca-ae56-2ec393946851">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("delivered") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_21eab6a2-3c19-4ee5-a263-7504aad8f234">
+                <cmmn:ifPart id="_d428d254-5318-4f1e-964c-014693a367e2">
+                    <cmmn:condition>autostart</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_4e14e7e2-8b3d-4ef3-aba4-9385a9eef072">
+                <cmmn:ifPart id="_70ed2863-9055-4e7f-b511-debc286cf490">
+                    <cmmn:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("managerDecision") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_9f286ce9-075d-4355-835c-d50326bfbe80">
+                <cmmn:ifPart id="_f99aee45-1cc0-4d11-965b-0b599f793815">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_a65eece6-fc9a-440b-85c9-c42ce6c75146">
+                <cmmn:ifPart id="_523579d3-95b2-48d5-8652-7ea959de3527">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("managerDecision") != null)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_85390f9a-2852-46c0-bba3-e88d36f03a41">
+                <cmmn:ifPart id="_0c9331b5-d08b-4661-a351-10cd3e237c55">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("ordered") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_8b8cc963-8bc2-4932-8f00-bfbaeacdf9d9">
+                <cmmn:ifPart id="_bc4c6f3e-55ee-45f1-afd8-d3ba1efaabb7">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("shipped") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:sentry id="_c424f6bd-25da-402c-b694-9ca2cafab7e7">
+                <cmmn:ifPart id="_684d48d9-9c70-45ce-bea7-4d93ef4ff687">
+                    <cmmn:condition>org.kie.api.runtime.process.CaseData(data.get("delivered") == true)</cmmn:condition>
+                </cmmn:ifPart>
+            </cmmn:sentry>
+            <cmmn:humanTask id="PID__dcbfd03c-9be7-4469-902f-fd4e241e8621" name="Prepare hardware spec" performerRef="role_3">
+                <cmmn:output bindingRef="_850f9a2a-fa62-4181-a76c-5e54370af4f3" name="hwSpec_" id="_8a149e81-2cde-4e0f-a4f9-efdf96ac08dc"/>
+                <cmmn:output bindingRef="_974b29a0-0365-4700-99a8-367199db7e58" name="supplierComment_" id="_3098e1f5-b77a-4598-8660-e9fd91e41d53"/>
+            </cmmn:humanTask>
+            <cmmn:stage id="PID__d60e7cd8-78ba-4cfc-9045-5a998df64f47">
+                <cmmn:planItem id="_bd6b24d2-d829-44c7-b754-b9999c9e9472" definitionRef="PID__bd6b24d2-d829-44c7-b754-b9999c9e9472">
+                    <cmmn:entryCriterion id="_4e5bee36-4715-437f-8830-4722fff44d25" sentryRef="_7dee2ec3-7205-47fc-9483-0666f135b6ad"/>
+                </cmmn:planItem>
+                <cmmn:planningTable id="PT__d60e7cd8-78ba-4cfc-9045-5a998df64f47">
+                    <cmmn:discretionaryItem id="_511d1be5-6aa2-4b94-b8c5-0c9a3535a982" definitionRef="PID__511d1be5-6aa2-4b94-b8c5-0c9a3535a982"/>
+                </cmmn:planningTable>
+                <cmmn:humanTask id="PID__bd6b24d2-d829-44c7-b754-b9999c9e9472" name="Manager approval" performerRef="role_2">
+                    <cmmn:input bindingRef="_850f9a2a-fa62-4181-a76c-5e54370af4f3" name="_hwSpec" id="_040071ca-e98d-4057-923f-669aab38bb35"/>
+                    <cmmn:output bindingRef="_d9ce2be9-f1aa-47c5-8891-d390499c8442" name="approved_" id="_1d26a288-4d91-4584-b5fe-76ac1810bd0e"/>
+                    <cmmn:output bindingRef="_d1397f9f-999a-44fc-86c4-e1f886010522" name="managerComment_" id="_49a652db-3799-4d85-b255-e2c95b8fdf9a"/>
+                </cmmn:humanTask>
+                <cmmn:humanTask id="PID__511d1be5-6aa2-4b94-b8c5-0c9a3535a982" name="Order rejected" performerRef="role_1"/>
+            </cmmn:stage>
+            <cmmn:stage id="PID__14673a36-9ead-4bb4-8a21-c89186edfdd4">
+                <cmmn:planItem id="_2ba6f734-c6d5-4e08-ab9d-b60e64843fe0" definitionRef="PID__2ba6f734-c6d5-4e08-ab9d-b60e64843fe0">
+                    <cmmn:entryCriterion id="_bdeef727-656c-4b8f-9628-db15a9bd7be7" sentryRef="_e6e4d23f-7692-44e4-85b6-cd12fafe716c"/>
+                </cmmn:planItem>
+                <cmmn:processTask id="PID__2ba6f734-c6d5-4e08-ab9d-b60e64843fe0" name="Place order" processRef="itorders-data.place-order"/>
+            </cmmn:stage>
+            <cmmn:milestone id="PID__eb22be18-1904-49c7-a237-7e64b9318f8a" name="Hardware spec ready"/>
+            <cmmn:milestone id="PID__78d3eb9f-77cc-4dba-b38e-a66dd37e82e4" name="Manager decision"/>
+            <cmmn:milestone id="PID__8865d710-1889-4c28-896c-7a3da295686e" name="Milestone 1: Order placed"/>
+            <cmmn:milestone id="PID__6fa31b37-ca3e-4f15-b5d9-b4f04ef00d7e" name="Milestone 2: Order shipped"/>
+            <cmmn:milestone id="PID__fe5406e8-0d69-4dc7-bc7a-e80663754977" name="Milestone 3: Delivered to customer"/>
+            <cmmn:stage id="PID__464c0a45-d569-4e47-a0c7-99df1b69f50f">
+                <cmmn:planItem id="_4241cffc-6399-4176-a4c9-ce4738c95710" definitionRef="PID__4241cffc-6399-4176-a4c9-ce4738c95710">
+                    <cmmn:entryCriterion id="_f9bee3c0-0b91-420e-be58-cb7608b80d08" sentryRef="_21eab6a2-3c19-4ee5-a263-7504aad8f234"/>
+                </cmmn:planItem>
+                <cmmn:humanTask id="PID__4241cffc-6399-4176-a4c9-ce4738c95710" name="Customer satisfaction survey" performerRef="role_1">
+                    <cmmn:output bindingRef="_a730f022-9a3c-4e51-a684-f654d4cd26fd" name="survey_" id="_98c5e541-47bc-4a3a-8006-6c2d3ba6a650"/>
+                </cmmn:humanTask>
+            </cmmn:stage>
+        </cmmn:casePlanModel>
+        <cmmn:caseRoles>
+          <cmmn:role id="role_1" name="owner"></cmmn:role>
+          <cmmn:role id="role_2" name="manager"></cmmn:role>
+          <cmmn:role id="role_3" name="supplier"></cmmn:role>          
+        </cmmn:caseRoles>
+    </cmmn:case>
+    <cmmn:extensionElements>
+        <triso:itemDefinitions>
+            <triso:itemDefinition name="org.jbpm.document.Document" label="org.jbpm.document.Document" isCollection="false">
+                <triso:typeRef>string</triso:typeRef>
+            </triso:itemDefinition>
+            <triso:itemDefinition name="org.jbpm.demo.itorders.Survey" label="org.jbpm.demo.itorders.Survey" isCollection="false">
+                <triso:typeRef>string</triso:typeRef>
+            </triso:itemDefinition>
+        </triso:itemDefinitions>
+    </cmmn:extensionElements>
+    <cmmn:association id="_8e177bc5-de8b-4da9-8454-bc3d8e383620" sourceRef="_dcbfd03c-9be7-4469-902f-fd4e241e8621" targetRef="_850f9a2a-fa62-4181-a76c-5e54370af4f3"/>
+    <cmmn:association id="_d39b4796-f3f1-40a5-88d9-23acc111e405" sourceRef="_dcbfd03c-9be7-4469-902f-fd4e241e8621" targetRef="_974b29a0-0365-4700-99a8-367199db7e58"/>
+    <cmmn:association id="_c7cb22af-69dd-43c5-adfe-4a09599483f9" sourceRef="_d60e7cd8-78ba-4cfc-9045-5a998df64f47" targetRef="_d1397f9f-999a-44fc-86c4-e1f886010522"/>
+    <cmmn:association id="_7d3f84ba-2ac5-47eb-aed1-667d3b456c1e" sourceRef="_d9ce2be9-f1aa-47c5-8891-d390499c8442" targetRef="_d60e7cd8-78ba-4cfc-9045-5a998df64f47"/>
+    <cmmn:association id="_0e5c3e07-d192-4df5-9816-f9587bfc70cb" sourceRef="_14673a36-9ead-4bb4-8a21-c89186edfdd4" targetRef="_7f91f405-e647-44b5-9a2c-0db66eebd49e"/>
+    <cmmn:association id="_a8100d48-c84a-4112-b5e9-bffae8e7406f" sourceRef="_464c0a45-d569-4e47-a0c7-99df1b69f50f" targetRef="_e63adde6-306b-492a-9fbb-78079e15a193"/>
+    <cmmn:association id="_e5d82ea9-5d23-401e-bf39-3bf6bd6e4014" sourceRef="_a730f022-9a3c-4e51-a684-f654d4cd26fd" targetRef="_464c0a45-d569-4e47-a0c7-99df1b69f50f"/>
+    <cmmn:association id="_cd6e46f1-0da3-45c7-be93-4baa52d40339" sourceRef="_14673a36-9ead-4bb4-8a21-c89186edfdd4" targetRef="_56dc77a9-e1c5-4db1-873e-835d52f9dd25"/>
+    <cmmndi:CMMNDI>
+        <cmmndi:CMMNDiagram id="_1be0d9ee-e9ab-4261-a6b4-0b7025780b7f" name="Order IT hardware" cmmnElementRef="_a2841234-be21-4683-b266-452e22c8810f">
+            <cmmndi:Size width="1485" height="1051"/>
+            <cmmndi:CMMNShape id="_a2841234-be21-4683-b266-452e22c8810f" cmmnElementRef="_ac70d76a-60be-411c-9ac2-83829b090354">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="86.5" y="168" width="1342" height="601"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.296874999999998" width="201" x="106.63" y="173.18103448275863"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_41dfcccf-af1f-404c-af00-81aac262f833" cmmnElementRef="_dcbfd03c-9be7-4469-902f-fd4e241e8621">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="145.17192254165943" y="204" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="40.890625" width="68" x="159.67192254165943" y="221.5546875"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_e1a886f2-adb0-4e26-8f62-dc6dc769aaf3" cmmnElementRef="_374d1e54-77f3-458b-a876-c432f8eb1ae3">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="135.77369103531177" y="228" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_deffaade-3e95-400c-9027-fecd21b362b8" cmmnElementRef="_d60e7cd8-78ba-4cfc-9045-5a998df64f47">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="155.10176849365234" y="406" width="355" height="191"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_ce529c90-21d2-44e9-a594-0af7889585bc" cmmnElementRef="_bd6b24d2-d829-44c7-b754-b9999c9e9472">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="200" y="431" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="68" x="214.5" y="455.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_5985c82a-fe30-403c-a304-2605e72bae6e" cmmnElementRef="_511d1be5-6aa2-4b94-b8c5-0c9a3535a982">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="358" y="496" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.296875" width="68" x="372.5" y="527.8515625"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_6a511ec4-3385-45b4-be29-bfe7aef2cdd4" cmmnElementRef="_4e5bee36-4715-437f-8830-4722fff44d25">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="190.33843994140625" y="455" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_64e2d9af-36fe-4511-aed4-290c29a7532d" cmmnElementRef="_b4a2fe09-60cf-467a-b0b3-ed6bebb1a9a6">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="348.33877709583254" y="521.2509408546537" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_abdc1a80-1994-4dae-9769-fa99b75c4c52" cmmnElementRef="_47592f2a-a397-4e00-bf8c-aff814cac0b9">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="145.17192254165943" y="452.254480963271" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_139f835c-418a-4f0d-b21d-270d1c47698b" cmmnElementRef="_5471459c-9006-4d97-be8d-4a7d7f06daf1">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="500.5" y="487.5" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_ee84bf10-fd88-4be3-a22e-e4b1b3474ba7" cmmnElementRef="_14673a36-9ead-4bb4-8a21-c89186edfdd4">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="580" y="406.5" width="355" height="190"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_4f9bf3ed-d171-452d-9867-653e4b3d963f" cmmnElementRef="_2ba6f734-c6d5-4e08-ab9d-b60e64843fe0">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="645" y="470.1059410398133" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.296875" width="68" x="659.5" y="501.9575035398133"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_5019833a-aa3e-4b31-9795-e9675f33dced" cmmnElementRef="_bdeef727-656c-4b8f-9628-db15a9bd7be7">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="635.6017684936523" y="494.1059410398133" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_0068fee1-ce80-4de5-8c7e-5d776ca4e486" cmmnElementRef="_e6b32fb0-17ef-4556-bf1b-8a37e98c5102">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="570.9239469193168" y="470.1059410398133" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_141b52a9-0789-4a52-af6a-c96860461fe8" cmmnElementRef="_eb22be18-1904-49c7-a237-7e64b9318f8a">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="151.50266871551807" y="693" width="101.33850765228271" height="38"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="60" x="172.17192254165943" y="698.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_d5d3b266-2889-42b8-ba2e-b1b8f41e043c" cmmnElementRef="_808d4091-2c9a-46da-a172-8124e7cd4bdc">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="243.58332274208942" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_dafd0900-ef74-47f8-ae9d-ce88c0b511ff" cmmnElementRef="_c90277e0-4868-475d-9994-efb8edd1572d">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="140.94384690016307" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_8ad647c0-2e09-48cb-93c9-a1adb07fd071" cmmnElementRef="_78d3eb9f-77cc-4dba-b38e-a66dd37e82e4">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="302.83074617385864" y="693" width="101.33850765228271" height="38"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="60" x="323.5" y="698.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_9ce3cd67-80c7-4170-9810-2682b52e9c7f" cmmnElementRef="_5b8edd91-e83d-4d80-b327-11fd73c6b040">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="292.27192435850367" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_8bd873d5-ba20-4240-815b-02ef4585e58d" cmmnElementRef="_5a6b1da0-2869-4eaa-92fc-e970be10bc19">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="395.0799768754805" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_c8eca357-529d-4bbd-9c15-984e784f3a9d" cmmnElementRef="_8865d710-1889-4c28-896c-7a3da295686e">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="459.83074617385864" y="693" width="101.33850765228271" height="38"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="40.890625" width="60" x="480.5" y="691.5546875"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_99e5537b-20fc-4813-98a2-0b88305ac812" cmmnElementRef="_aa4f862b-c941-4019-b854-0d02fac83233">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="449.384657616145" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_7e1f3f84-4dff-4b45-9bc9-c270f866c7cf" cmmnElementRef="_b659b7c7-c87b-40de-a89f-b46b327549a5">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="551.9396080112347" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_ee289c2a-d4e4-47a4-b147-cb9115a7bb2b" cmmnElementRef="_6fa31b37-ca3e-4f15-b5d9-b4f04ef00d7e">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="608.8307461738586" y="693" width="101.33850765228271" height="38"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="40.890625" width="60" x="629.5" y="691.5546875"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_98c17e87-5df5-42a4-99ee-9f6bdec70236" cmmnElementRef="_ef267dce-277f-4e26-b26c-8c5a619fb5d4">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="598.7383029988559" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_764cf0d9-dc07-4d36-a164-7bb3e0a9e827" cmmnElementRef="_3bdcac6e-db8c-48f9-bb01-b4a70f6b9dbf">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="700.2616970011441" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_7fbea60a-6001-4e0f-8708-a1358a81b7f7" cmmnElementRef="_fe5406e8-0d69-4dc7-bc7a-e80663754977">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="756.8307461738586" y="693" width="101.33850765228271" height="38"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="40.890625" width="60" x="777.5" y="691.5546875"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_f10c1cd2-2cbe-404e-818f-75005ee14d5f" cmmnElementRef="_479434d9-560e-40b5-92b3-a751794d53be">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="746.2719243585036" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_b95602ea-1933-4346-a46f-4386c4a7f255" cmmnElementRef="_464c0a45-d569-4e47-a0c7-99df1b69f50f">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="1009" y="413.1059410398133" width="355" height="190"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_55532a5b-2789-4e75-9662-af66c8655166" cmmnElementRef="_4241cffc-6399-4176-a4c9-ce4738c95710">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="1063" y="470.1059410398133" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="40.890625" width="68" x="1077.5" y="487.6606285398133"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_f65b87f2-b60a-44ae-b5dc-45f9624a29f0" cmmnElementRef="_f9bee3c0-0b91-420e-be58-cb7608b80d08">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="1053.6017684936523" y="494.1059410398133" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_444420ab-1fb7-49a6-8e96-bfce39eea503" cmmnElementRef="_d155b0fc-90c9-4ea6-b303-1dae95100f96">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="999.092883348465" y="494.1059410398133" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_4ba7e9db-559b-471b-9cc4-47644b45f602" cmmnElementRef="_d9dd8146-ec31-46bf-b1cf-2aa0d5956273">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="849.0767119192751" y="698" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_15909be9-a811-496a-9305-c2ddf376e39b" cmmnElementRef="_850f9a2a-fa62-4181-a76c-5e54370af4f3">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="285.2719243585036" y="193" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="247.2719243585036" y="237"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_86f96d69-3766-49aa-899c-4dd6970dcc07" cmmnElementRef="_d1397f9f-999a-44fc-86c4-e1f886010522">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="285.2719243585036" y="346" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="247.2719243585036" y="390"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_af328a27-d788-4ab5-b848-194818b1eba7" cmmnElementRef="_974b29a0-0365-4700-99a8-367199db7e58">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="285.27192435850367" y="252" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="247.27192435850367" y="296"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_d1ec72bc-03f6-4c02-9c86-d0769482ddf0" cmmnElementRef="_a730f022-9a3c-4e51-a684-f654d4cd26fd">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="1169.5" y="360" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="1131.5" y="404"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_69a7fcaa-b783-47b7-9f9e-c7b3e9d37b33" cmmnElementRef="_7f91f405-e647-44b5-9a2c-0db66eebd49e">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="824.1692538261414" y="346" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="786.1692538261414" y="390"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_c8de0883-e235-4fa5-ac2e-546a1b5c01b5" cmmnElementRef="_e63adde6-306b-492a-9fbb-78079e15a193">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="1094.5" y="360" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="1056.5" y="404"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_3c459de3-60b7-442d-b645-614b2628e7a6" cmmnElementRef="_d9ce2be9-f1aa-47c5-8891-d390499c8442">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="389.5" y="346" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="110" x="351.5" y="390"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_e96ceea8-9d79-49de-b884-73a06062c38a" cmmnElementRef="_56dc77a9-e1c5-4db1-873e-835d52f9dd25">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="708" y="346" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="37.9375" x="706.03125" y="390"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNEdge id="_af20e419-203c-4a3b-b8c2-749a204f3d9f" cmmnElementRef="_66efa175-e7f8-4d1b-bbd4-7e2f976b2be7">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="249" y="506"/>
+                <di:waypoint x="260.5" y="534"/>
+                <di:waypoint x="360" y="534"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_48aab62b-7f22-4a44-a9b8-3285c5f481b6" cmmnElementRef="_8e177bc5-de8b-4da9-8454-bc3d8e383620">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="241.17192254165943" y="219.2"/>
+                <di:waypoint x="263.72192345008153" y="219.2"/>
+                <di:waypoint x="263.72192345008153" y="213"/>
+                <di:waypoint x="286.2719243585036" y="213"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_db320624-2f7f-4260-8ef3-ce7e03521511" cmmnElementRef="_d39b4796-f3f1-40a5-88d9-23acc111e405">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="226.17192254165943" y="279"/>
+                <di:waypoint x="226.17192254165943" y="298"/>
+                <di:waypoint x="256.22192345008153" y="298"/>
+                <di:waypoint x="256.22192345008153" y="272"/>
+                <di:waypoint x="286.27192435850367" y="272"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_653589c0-a550-4bb9-8243-b3e7e9aa0774" cmmnElementRef="_c7cb22af-69dd-43c5-adfe-4a09599483f9">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="250.90176849365236" y="406"/>
+                <di:waypoint x="250.90176849365236" y="366"/>
+                <di:waypoint x="286.2719243585036" y="366"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_67c1706c-137d-432c-a5f3-8f26e26482d4" cmmnElementRef="_7d3f84ba-2ac5-47eb-aed1-667d3b456c1e">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="422.5" y="366"/>
+                <di:waypoint x="444.5" y="366"/>
+                <di:waypoint x="444.5" y="411"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_9d3246ea-af4d-492c-ac79-9745c26b077b" cmmnElementRef="_0e5c3e07-d192-4df5-9816-f9587bfc70cb">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="778.4" y="406.5"/>
+                <di:waypoint x="778.4" y="366"/>
+                <di:waypoint x="825.1692538261414" y="366"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_261ada38-6bd8-497b-bb9f-e5fceda23d74" cmmnElementRef="_a8100d48-c84a-4112-b5e9-bffae8e7406f">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="1043" y="413.1059410398133"/>
+                <di:waypoint x="1043" y="392"/>
+                <di:waypoint x="1095.5" y="392"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_97c8135a-1a79-4173-921d-2fe46adf76e9" cmmnElementRef="_e5d82ea9-5d23-401e-bf39-3bf6bd6e4014">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="1186.5" y="399"/>
+                <di:waypoint x="1186.5" y="406.05297051990664"/>
+                <di:waypoint x="1269.2" y="406.05297051990664"/>
+                <di:waypoint x="1269.2" y="413.1059410398133"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+            <cmmndi:CMMNEdge id="_71197686-16cf-4b1a-960a-fcfd4aeb568e" cmmnElementRef="_cd6e46f1-0da3-45c7-be93-4baa52d40339">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <di:waypoint x="675.8" y="406.5"/>
+                <di:waypoint x="675.8" y="365"/>
+                <di:waypoint x="716.5" y="365"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNEdge>
+        </cmmndi:CMMNDiagram>
+    </cmmndi:CMMNDI>
+</cmmn:definitions>

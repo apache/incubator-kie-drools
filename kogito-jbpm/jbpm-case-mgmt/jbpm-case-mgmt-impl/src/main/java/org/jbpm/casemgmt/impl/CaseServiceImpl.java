@@ -745,7 +745,7 @@ public class CaseServiceImpl implements CaseService {
         });
         
         allFragments.stream()
-        .filter(fragment -> fragment.getName().equals(fragmentName))
+        .filter(fragment -> fragment.getName() != null && fragment.getName().equals(fragmentName))
         .findFirst()
         .orElseThrow(() -> new AdHocFragmentNotFoundException("AdHoc fragment '" + fragmentName + "' not found in case " + pi.getCorrelationKey()));
         

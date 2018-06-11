@@ -60,9 +60,11 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
 			return;
 		}
     	InternalAgenda agenda =  (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
-    	agenda.getRuleFlowGroup(getRuleFlowGroupName()).setAutoDeactivate(false);
-    	agenda.activateRuleFlowGroup(
-			getRuleFlowGroupName(), getProcessInstance().getId(), getUniqueId());
+    	String ruleFlowGroup = getRuleFlowGroupName();
+    	if (ruleFlowGroup != null && !agenda.getRuleFlowGroup(ruleFlowGroup).isActive()) {
+        	agenda.getRuleFlowGroup(ruleFlowGroup).setAutoDeactivate(false);
+        	agenda.activateRuleFlowGroup(ruleFlowGroup, getProcessInstance().getId(), getUniqueId());
+    	}
 //    	if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
 //    		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
 //    	}

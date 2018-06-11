@@ -91,6 +91,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     protected static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
     private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
     private static final String PROCESS_ID_XPATH = "/*[local-name() = 'definitions']/*[local-name() = 'process']/@id";
+    private static final String CASE_ID_XPATH = "/*[local-name() = 'definitions']/*[local-name() = 'case']/@id";
 
     protected DefinitionService bpmn2Service;
 
@@ -101,10 +102,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     protected ExecutorService executorService;
 
     protected XPathExpression processIdXPathExpression;
+    protected XPathExpression caseIdXPathExpression;
 
     public KModuleDeploymentService() {
         try {
             processIdXPathExpression = XPathFactory.newInstance().newXPath().compile(PROCESS_ID_XPATH);
+            caseIdXPathExpression = XPathFactory.newInstance().newXPath().compile(CASE_ID_XPATH);
         } catch (XPathExpressionException e) {
             logger.error("Unable to parse '{}' XPath expression due to {}", PROCESS_ID_XPATH, e.getMessage());
         }
@@ -399,6 +402,26 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 	throw new IllegalArgumentException("Class " + className + " not found in the project");
 				}
                 addClassToDeployedUnit(deploymentClass, deployedUnit);
+            } else if(fileName.matches(".+cmmn$")) {
+                ProcessAssetDesc process;
+                try {
+                    String processString = new String(module.getBytes(fileName), "UTF-8");
+                    String processId = getCaseId(processString);
+                    ProcessDescriptor processDesriptor = processes.get(processId);
+                    if (processDesriptor != null) {
+                        process = processDesriptor.getProcess();
+                        if (process == null) {
+                            throw new IllegalArgumentException("Unable to read process " + fileName);
+                        }
+                        process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
+                        process.setDeploymentId(unit.getIdentifier());
+
+                        deployedUnit.addAssetLocation(process.getId(), process);
+                        bpmn2Service.addProcessDefinition(unit.getIdentifier(), processId, processDesriptor, kieContainer);
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
+                }
             }
         }
     }
@@ -565,5 +588,18 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             return null;
         }
 	}
+	
+    protected String getCaseId(String processSource) {
+
+        try {
+            InputSource inputSource = new InputSource(new StringReader(processSource));
+            String caseId = (String) caseIdXPathExpression.evaluate(inputSource, XPathConstants.STRING);
+
+            return caseId;
+        } catch (XPathExpressionException e) {
+            logger.error("Unable to find case id from case source due to {}", e.getMessage());
+            return null;
+        }
+    }
 
 }

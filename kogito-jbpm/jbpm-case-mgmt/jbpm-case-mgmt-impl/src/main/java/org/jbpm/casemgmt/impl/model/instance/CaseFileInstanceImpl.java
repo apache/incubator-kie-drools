@@ -152,8 +152,12 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     }
 
     @Override
-    public Object getData(String name) {
-        return this.data.get(name);
+    public Object getData(String name) {        
+        Object result = this.data.get(name);
+        if (result == null && "caseid".equalsIgnoreCase(name)) {
+            result = getCaseId();
+        }
+        return result;
     }
     
     public void setCaseEndDate(Date caseEndDate) {

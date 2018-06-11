@@ -411,7 +411,7 @@ public class SubCaseServiceImplTest extends AbstractCaseServicesBaseTest {
             
             CaseFileInstance mainCaseFile = caseService.getCaseFileInstance(caseId);
             assertNotNull(mainCaseFile);
-            assertNull(mainCaseFile.getData("CaseId"));
+            assertEquals(FIRST_CASE_ID, mainCaseFile.getData("CaseId"));
             assertNull(mainCaseFile.getData("s"));
             
             finishCase.accept(HR_CASE_ID);

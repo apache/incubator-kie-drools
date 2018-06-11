@@ -89,7 +89,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public WorkItem getWorkItem() {
         if (workItem == null && workItemId >= 0) {
             workItem = ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                .getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
+                                                                                  .getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
         }
         return workItem;
     }
@@ -114,14 +114,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public void internalTrigger(final NodeInstance from, String type) {
         super.internalTrigger(from, type);
         // if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
-			return;
-		}
+        if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+            return;
+        }
         // TODO this should be included for ruleflow only, not for BPEL
-//        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-//            throw new IllegalArgumentException(
-//                "A WorkItemNode only accepts default incoming connections!");
-//        }
+        //        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        //            throw new IllegalArgumentException(
+        //                "A WorkItemNode only accepts default incoming connections!");
+        //        }
         WorkItemNode workItemNode = getWorkItemNode();
         createWorkItem(workItemNode);
         if (workItemNode.isWaitForCompletion()) {
@@ -133,19 +133,18 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         ((WorkItem) workItem).setNodeId(getNodeId());
         if (isInversionOfControl()) {
             ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
-                .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
+                                                    .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
         } else {
             try {
                 ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                    .getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(
-                        (org.drools.core.process.instance.WorkItem) workItem);
-            } catch (WorkItemHandlerNotFoundException wihnfe){
-                getProcessInstance().setState( ProcessInstance.STATE_ABORTED );
+                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(
+                                                                                                                                                (org.drools.core.process.instance.WorkItem) workItem);
+            } catch (WorkItemHandlerNotFoundException wihnfe) {
+                getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
                 throw wihnfe;
             } catch (Exception e) {
                 String exceptionName = e.getClass().getName();
-                ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
-                    resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
+                ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
                 if (exceptionScopeInstance == null) {
                     throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
                 }
@@ -170,22 +169,21 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (dynamicParameters != null) {
             ((WorkItem) workItem).getParameters().putAll(dynamicParameters);
         }
-        
-        for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext(); ) {
+
+        for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext();) {
             DataAssociation association = iterator.next();
             if (association.getTransformation() != null) {
-            	Transformation transformation = association.getTransformation();
-            	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-            	if (transformer != null) {
-            		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
-            		if (parameterValue != null) {
+                Transformation transformation = association.getTransformation();
+                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+                if (transformer != null) {
+                    Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
+                    if (parameterValue != null) {
                         ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
                     }
-            	}
+                }
             } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                 Object parameterValue = null;
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
                 if (variableScopeInstance != null) {
                     parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
                 } else {
@@ -201,13 +199,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
                 }
             } else {
-                for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
                     handleAssignment(it.next());
                 }
             }
         }
 
-        for (Map.Entry<String, Object> entry: workItem.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : workItem.getParameters().entrySet()) {
             if (entry.getValue() instanceof String) {
                 String s = (String) entry.getValue();
                 Map<String, String> replacements = new HashMap<String, String>();
@@ -215,8 +213,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 while (matcher.find()) {
                     String paramName = matcher.group(1);
                     if (replacements.get(paramName) == null) {
-                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                            resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
                         if (variableScopeInstance != null) {
                             Object variableValue = variableScopeInstance.getVariable(paramName);
                             String variableValueString = variableValue == null ? "" : variableValue.toString();
@@ -234,26 +231,26 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                     }
                 }
-               
-                for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+
+                for (Map.Entry<String, String> replacement : replacements.entrySet()) {
                     s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
                 }
-                ((WorkItem) workItem).setParameter(entry.getKey(), s);           
-                
+                ((WorkItem) workItem).setParameter(entry.getKey(), s);
+
             }
         }
         return workItem;
     }
 
     private void handleAssignment(Assignment assignment) {
-    	AssignmentAction action = (AssignmentAction) assignment.getMetaData("Action");
-		try {
-		    ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
-		    context.setNodeInstance(this);
-	        action.execute(getWorkItem(), context);
-		} catch (Exception e) {
-		    throw new RuntimeException("unable to execute Assignment", e);
-		}
+        AssignmentAction action = (AssignmentAction) assignment.getMetaData("Action");
+        try {
+            ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+            context.setNodeInstance(this);
+            action.execute(getWorkItem(), context);
+        } catch (Exception e) {
+            throw new RuntimeException("unable to execute Assignment", e);
+        }
     }
 
     public void triggerCompleted(WorkItem workItem) {
@@ -262,18 +259,17 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
         if (workItemNode != null && workItem.getState() == WorkItem.COMPLETED) {
             validateWorkItemResultVariable(getProcessInstance().getProcessName(), workItemNode.getOutAssociations(), workItem);
-            for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext(); ) {
+            for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext();) {
                 DataAssociation association = iterator.next();
                 if (association.getTransformation() != null) {
-                	Transformation transformation = association.getTransformation();
-                	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                	if (transformer != null) {
-                		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), workItem.getResults());
-                		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                    Transformation transformation = association.getTransformation();
+                    DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+                    if (transformer != null) {
+                        Object parameterValue = transformer.transform(transformation.getCompiledExpression(), workItem.getResults());
+                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
 
-                    	 	variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), parameterValue);
+                            variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), parameterValue);
 
                             variableScopeInstance.setVariable(association.getTarget(), parameterValue);
                         } else {
@@ -281,13 +277,12 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                             logger.warn("when trying to complete Work Item {}", workItem.getName());
                             logger.warn("Continuing without setting variable.");
                         }
-                		if (parameterValue != null) {
+                        if (parameterValue != null) {
                             ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
                         }
-                	}
+                    }
                 } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
-                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                     if (variableScopeInstance != null) {
                         Object value = workItem.getResult(association.getSources().get(0));
                         if (value == null) {
@@ -301,10 +296,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         DataType dataType = varDef.getType();
                         // exclude java.lang.Object as it is considered unknown type
                         if (!dataType.getStringType().endsWith("java.lang.Object") &&
-                                !dataType.getStringType().endsWith("Object") && value instanceof String) {
+                            !dataType.getStringType().endsWith("Object") && value instanceof String) {
                             value = dataType.readValue((String) value);
                         } else {
-                        	variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), value);
+                            variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), value);
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
@@ -313,9 +308,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         logger.warn("Continuing without setting variable.");
                     }
 
-                } else  {
+                } else {
                     try {
-                        for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+                        for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
                             handleAssignment(it.next());
                         }
                     } catch (Exception e) {
@@ -323,11 +318,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     }
                 }
             }
-        } 
+        }
         // handle dynamic nodes
         if (getNode() == null) {
             setMetaData("NodeType", workItem.getName());
-            
+
             mapDynamicOutputData(workItem.getResults());
         }
         if (isInversionOfControl()) {
@@ -341,13 +336,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public void cancel() {
         WorkItem workItem = getWorkItem();
         if (workItem != null &&
-                workItem.getState() != WorkItem.COMPLETED &&
-                workItem.getState() != WorkItem.ABORTED) {
+            workItem.getState() != WorkItem.COMPLETED &&
+            workItem.getState() != WorkItem.ABORTED) {
             try {
                 ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                    .getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
-            } catch (WorkItemHandlerNotFoundException wihnfe){
-                getProcessInstance().setState( ProcessInstance.STATE_ABORTED );
+                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
+            } catch (WorkItemHandlerNotFoundException wihnfe) {
+                getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
                 throw wihnfe;
             }
         }
@@ -376,26 +371,27 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             workItemCompleted((WorkItem) event);
         } else if ("workItemAborted".equals(type)) {
             workItemAborted((WorkItem) event);
+        } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getMetaData().get("UniqueId"))) {
+
+            trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         } else {
             super.signalEvent(type, event);
         }
     }
 
     public String[] getEventTypes() {
-        return new String[] { "workItemCompleted" };
+        return new String[]{"workItemCompleted"};
     }
 
     public void workItemAborted(WorkItem workItem) {
-        if ( workItemId == workItem.getId()
-                || ( workItemId == -1 && getWorkItem().getId() == workItem.getId()) ) {
+        if (workItemId == workItem.getId() || (workItemId == -1 && getWorkItem().getId() == workItem.getId())) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
     public void workItemCompleted(WorkItem workItem) {
-        if ( workItemId == workItem.getId()
-                || ( workItemId == -1 && getWorkItem().getId() == workItem.getId()) ) {
+        if (workItemId == workItem.getId() || (workItemId == -1 && getWorkItem().getId() == workItem.getId())) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
@@ -404,7 +400,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public String getNodeName() {
         Node node = getNode();
         if (node == null) {
-            String nodeName =  "[Dynamic]";
+            String nodeName = "[Dynamic]";
             WorkItem workItem = getWorkItem();
             if (workItem != null) {
                 nodeName += " " + workItem.getParameter("TaskName");
@@ -441,7 +437,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);
         if (contextInstances != null) {
-            for (ContextInstance contextInstance: contextInstances) {
+            for (ContextInstance contextInstance : contextInstances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }
@@ -469,28 +465,26 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     protected Map<String, Object> getSourceParameters(DataAssociation association) {
-    	Map<String, Object> parameters = new HashMap<String, Object>();
-    	for (String sourceParam : association.getSources()) {
-	    	Object parameterValue = null;
-	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	        resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
-	        if (variableScopeInstance != null) {
-	            parameterValue = variableScopeInstance.getVariable(sourceParam);
-	        } else {
-	            try {
-	                parameterValue = MVELSafeHelper.getEvaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
-	            } catch (Throwable t) {
-	                logger.warn("Could not find variable scope for variable {}", sourceParam);
-	            }
-	        }
-	        if (parameterValue != null) {
-	        	parameters.put(association.getTarget(), parameterValue);
-	        }
-    	}
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        for (String sourceParam : association.getSources()) {
+            Object parameterValue = null;
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
+            if (variableScopeInstance != null) {
+                parameterValue = variableScopeInstance.getVariable(sourceParam);
+            } else {
+                try {
+                    parameterValue = MVELSafeHelper.getEvaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
+                } catch (Throwable t) {
+                    logger.warn("Could not find variable scope for variable {}", sourceParam);
+                }
+            }
+            if (parameterValue != null) {
+                parameters.put(association.getTarget(), parameterValue);
+            }
+        }
 
-    	return parameters;
+        return parameters;
     }
-
 
     public void validateWorkItemResultVariable(String processName, List<DataAssociation> outputs, WorkItem workItem) {
         // in case work item results are skip validation as there is no notion of mandatory data outputs
@@ -504,7 +498,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 outputNames.add(association.getSources().get(0));
             }
             if (association.getAssignments() != null) {
-                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
                     outputNames.add(it.next().getFrom());
                 }
             }
@@ -512,8 +506,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
         for (String outputName : workItem.getResults().keySet()) {
             if (!outputNames.contains(outputName) && !defaultOutputVariables.contains(outputName)) {
-                throw new IllegalArgumentException("Data output '" + outputName +"' is not defined in process '"
-                                                    + processName + "' for task '" + workItem.getParameter("NodeName") +"'");
+                throw new IllegalArgumentException("Data output '" + outputName + "' is not defined in process '" + processName + "' for task '" + workItem.getParameter("NodeName") + "'");
             }
         }
     }

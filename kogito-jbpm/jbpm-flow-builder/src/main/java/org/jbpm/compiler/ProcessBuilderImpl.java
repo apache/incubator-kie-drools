@@ -15,6 +15,16 @@
  */
 package org.jbpm.compiler;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -70,15 +80,6 @@ import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files
@@ -417,6 +418,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             } else if ( nodes[i] instanceof EventNode ) {
                 EventNode state = (EventNode) nodes[i];
                 builder.append( createEventStateRule(process, state) );
+            } else if (nodes[i].getMetaData().get("customActivationExpression") != null) {
+                builder.append( createActivationRule( process, nodes[i] ) );
             }
         }
     }
@@ -548,6 +551,19 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         "    when \n" +
         "      " + dynamicNode.getActivationExpression() + "\n" +
         "    then \n" +
+        "end \n\n";
+    }
+    
+    private String createActivationRule(Process process, Node node) {
+        return
+        "rule \"RuleFlow-Activate-" + process.getId() + "-" + node.getMetaData().get("UniqueId") + "\"  \n" +
+        "       \n" +
+        "    when \n" +
+        "    org.kie.api.runtime.process.CaseData(definitionId == \""  + process.getId() + "\") \n" +
+        "      " + node.getMetaData().get("customActivationExpression") + "\n" +
+        "    then \n" +
+        "       org.jbpm.casemgmt.api.CaseService caseService = (org.jbpm.casemgmt.api.CaseService) org.jbpm.services.api.service.ServiceRegistry.get().service(org.jbpm.services.api.service.ServiceRegistry.CASE_SERVICE); \n" +
+        "       caseService.triggerAdHocFragment(org.jbpm.casemgmt.impl.CaseUtils.getCaseId(kcontext.getKieRuntime()), \"" + node.getMetaData().get("customActivationFragmentName") +"\", null); \n" +
         "end \n\n";
     }
 

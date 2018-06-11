@@ -30,6 +30,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.CaseData;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -128,6 +129,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
                 
                 caseFile.add(nameInCaseFile, value);
                 getProcessInstance().getKnowledgeRuntime().update(factHandle, caseFile);
+                ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
                 return;
             }
             

@@ -1,0 +1,130 @@
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/CMMN/20151109/MODEL"   xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI"  xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI"  xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC"  xmlns:trisocmmn="http://www.trisotech.com/2014/triso/cmmn"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:rss="http://purl.org/rss/2.0/" xmlns="http://www.trisotech.com/cmmn/definitions/_8e3778dc-4ced-4a40-a4f0-701da0402818" id="_8e3778dc-4ced-4a40-a4f0-701da0402818" name="Drawing 1" targetNamespace="http://www.trisotech.com/cmmn/definitions/_8e3778dc-4ced-4a40-a4f0-701da0402818" exporter="CMMN Modeler" exporterVersion="6.0.7.3">
+    <semantic:caseFileItemDefinition id="_04944f2a-b7be-4e08-9199-bf44ec1da94c" name="invoice" structureRef="org.jbpm.document.Document" definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType"/>
+    <semantic:caseFileItemDefinition id="_97738b54-2681-49f9-bf2a-8bc65fa583ef" name="shipped" structureRef="feel:boolean" definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType"/>
+    <semantic:case id="Case_517ac74c-fba4-4728-bcaf-e9853c864710" name="First case">
+        <semantic:caseFileModel>
+            <semantic:caseFileItem id="_f14ee42e-632c-45c2-a582-e9e250a49fa0" name="shipped" definitionRef="_97738b54-2681-49f9-bf2a-8bc65fa583ef"/>
+            <semantic:caseFileItem id="_90af4b2f-0417-4604-a510-416432549aaf" name="invoice" definitionRef="_04944f2a-b7be-4e08-9199-bf44ec1da94c"/>
+        </semantic:caseFileModel>
+        <semantic:casePlanModel id="_517ac74c-fba4-4728-bcaf-e9853c864710" name="First case">
+            <semantic:planItem id="_e866f276-9244-4db3-a2a5-365ff443d414" definitionRef="PID__e866f276-9244-4db3-a2a5-365ff443d414">
+                <semantic:entryCriterion id="_1d3ec27e-c25a-4cb3-81ab-8545e4370e62" sentryRef="_e1551099-f05c-47c1-8407-e09e099e2b6e"/>
+            </semantic:planItem>
+            <semantic:planItem id="_9f02a508-14e2-466d-8219-c5951c8dd5ef" definitionRef="PID__9f02a508-14e2-466d-8219-c5951c8dd5ef">
+                <semantic:entryCriterion id="_eb622cab-5474-43d0-978e-4de674efe949" sentryRef="_4217c7da-0802-4bf4-876e-e26890af2af4"/>
+                <semantic:exitCriterion id="_32c2350d-bd19-44ce-bef3-affcdeb515d8" sentryRef="_af444c21-70e3-4aec-b0a4-081489c94108"/>
+            </semantic:planItem>
+            <semantic:sentry id="_e1551099-f05c-47c1-8407-e09e099e2b6e">
+                <semantic:ifPart id="_d85b447b-8f3f-44ba-8f4c-f8180e37a0f6">
+                    <semantic:condition>autostart</semantic:condition>
+                </semantic:ifPart>
+            </semantic:sentry>
+            <semantic:sentry id="_4217c7da-0802-4bf4-876e-e26890af2af4">
+                <semantic:ifPart id="_f523c09d-434e-43b1-ac48-687fe76a0d92">
+                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("ordered") !=null)</semantic:condition>
+                </semantic:ifPart>
+            </semantic:sentry>
+            <semantic:sentry id="_af444c21-70e3-4aec-b0a4-081489c94108">
+                <semantic:ifPart id="_f7c1d480-39fd-44ad-b124-f270d1cd1abe">
+                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("shipped") !=null)</semantic:condition>
+                </semantic:ifPart>
+            </semantic:sentry>
+            <semantic:humanTask id="PID__e866f276-9244-4db3-a2a5-365ff443d414" name="First task">
+                <semantic:input id="_ebc83a1a-4dee-4ea4-9a89-38ad6496acf2" name="invoice" bindingRef="_90af4b2f-0417-4604-a510-416432549aaf"/>
+                <semantic:output id="_51474b5c-be7c-4cc2-82fe-146e82a0b8c2" name="approval" bindingRef="_f14ee42e-632c-45c2-a582-e9e250a49fa0"/>
+            </semantic:humanTask>
+            <semantic:stage id="PID__9f02a508-14e2-466d-8219-c5951c8dd5ef" name="First stage">
+                <semantic:planItem id="_028f370f-4cf8-48b2-a36e-89fa0c8a7bda" definitionRef="PID__028f370f-4cf8-48b2-a36e-89fa0c8a7bda"/>
+                <semantic:humanTask id="PID__028f370f-4cf8-48b2-a36e-89fa0c8a7bda" name="Stage task">
+                    <semantic:input id="_b0ee3ef6-2e51-4f15-b290-fdd5976bed5a" name="shipped" bindingRef="_f14ee42e-632c-45c2-a582-e9e250a49fa0"/>
+                    <semantic:input id="_daac8e12-dd4b-4367-a886-e52ea439128b" name="invoiceApproved" bindingRef="_90af4b2f-0417-4604-a510-416432549aaf"/>
+                    <semantic:output id="_1e0b3780-c3f6-428d-bc11-b06cc90114c3" name="shippedConfirmed" bindingRef="_f14ee42e-632c-45c2-a582-e9e250a49fa0"/>
+                </semantic:humanTask>
+            </semantic:stage>
+        </semantic:casePlanModel>
+    </semantic:case>
+    <cmmndi:CMMNDI>
+        <cmmndi:CMMNDiagram id="_37c234bd-1be9-472c-9372-54abd95b045b" name="Page 1" cmmnElementRef="_ba34c5af-38da-492e-b394-90936047cd7f">
+            <cmmndi:Size width="1485" height="1050"/>
+            <cmmndi:CMMNShape id="_ba34c5af-38da-492e-b394-90936047cd7f" cmmnElementRef="_517ac74c-fba4-4728-bcaf-e9853c864710">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="154.5" y="85" width="800" height="600"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="201" x="166.5" y="90.17241379310344"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_a5ddf73e-e3a1-4000-91b9-66d7523a0b3f" cmmnElementRef="_e866f276-9244-4db3-a2a5-365ff443d414">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="229" y="121" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.296875" width="68" x="244" y="152.8515625"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_5c8c2d75-acff-4540-bbb5-7326e587714e" cmmnElementRef="_1d3ec27e-c25a-4cb3-81ab-8545e4370e62">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="219.33843994140625" y="145" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_76a5ae6d-36bb-449d-90d2-16dd4d91ee26" cmmnElementRef="_9f02a508-14e2-466d-8219-c5951c8dd5ef">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="377" y="290" width="355" height="190"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_13d25ff4-cd25-42ff-8302-6fced5d95ef4" cmmnElementRef="_028f370f-4cf8-48b2-a36e-89fa0c8a7bda">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="435" y="347" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.296875" width="68" x="450" y="378.8515625"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_f44b3a92-6af3-4643-891f-d1dd909a3fd0" cmmnElementRef="_f14ee42e-632c-45c2-a582-e9e250a49fa0">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="623.5" y="320" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="38.5625" x="621.21875" y="364"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_37b3cfd1-ffad-4854-80fe-344c12d66884" cmmnElementRef="_eb622cab-5474-43d0-978e-4de674efe949">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="367.9216865234376" y="358.34961336287313" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_aceca6b9-f90f-4c7f-9eb0-3a5faa5bdeaa" cmmnElementRef="_32c2350d-bd19-44ce-bef3-affcdeb515d8">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="722.4974556835164" y="358.27832409705456" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_8d30a300-99fc-41ff-aa67-4b5c91601610" cmmnElementRef="_90af4b2f-0417-4604-a510-416432549aaf">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="749.5" y="139" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="34.25" x="749.375" y="183"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+        </cmmndi:CMMNDiagram>
+    </cmmndi:CMMNDI>
+</semantic:definitions>

@@ -19,5 +19,6 @@
   <modules>
     <module>jbpm-case-mgmt-api</module>
     <module>jbpm-case-mgmt-impl</module>
+    <module>jbpm-case-mgmt-cmmn</module>
   </modules>
 </project>
