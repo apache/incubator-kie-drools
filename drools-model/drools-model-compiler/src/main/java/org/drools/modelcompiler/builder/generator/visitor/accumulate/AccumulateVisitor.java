@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
@@ -274,20 +275,37 @@ public abstract class AccumulateVisitor {
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         BlockStmt initBlock = JavaParser.parseBlock("{" + descr.getInitCode() + "}");
         for (Statement stmt : initBlock.getStatements()) {
+            final BlockStmt initMethodBody = initMethod.getBody().get();
             if (stmt instanceof ExpressionStmt && ((ExpressionStmt) stmt).getExpression() instanceof VariableDeclarationExpr) {
                 VariableDeclarationExpr vdExpr = (VariableDeclarationExpr) ((ExpressionStmt) stmt).getExpression();
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
-                    contextFieldNames.add(vd.getNameAsString());
-                    templateContextClass.addField(vd.getType(), vd.getNameAsString(), Modifier.PUBLIC);
-                    if (vd.getInitializer().isPresent()) {
-                        Expression initializer = vd.getInitializer().get();
-                        Expression target = new FieldAccessExpr(new NameExpr("data"), vd.getNameAsString());
-                        Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
-                        initMethod.getBody().get().addStatement(initStmt);
-                    }
+                    final String variableName = vd.getNameAsString();
+                    contextFieldNames.add(variableName);
+                    templateContextClass.addField(vd.getType(), variableName, Modifier.PUBLIC);
+                    final Optional<Expression> optInitializer = vd.getInitializer();
+                    final Optional<Statement> initializer = createInitializer(variableName, optInitializer);
+                    initializer.ifPresent(initMethodBody::addStatement);
                 }
             } else {
-                initMethod.getBody().get().addStatement(stmt); // add as-is.
+                if(stmt.isExpressionStmt()) {
+                    final Expression statementExpression = stmt.asExpressionStmt().getExpression();
+                    if(statementExpression.isAssignExpr()) {
+                        final AssignExpr assignExpr = statementExpression.asAssignExpr();
+                        final String targetName = assignExpr.getTarget().asNameExpr().toString();
+                        // Mvel allows using a field without declaration
+                        if(!contextFieldNames.contains(targetName)) {
+                            contextFieldNames.add(targetName);
+                            final String variableName = assignExpr.getTarget().toString();
+                            final ObjectCreationExpr initExpression = assignExpr.getValue().asObjectCreationExpr();
+                            templateContextClass.addField(initExpression.getType(), variableName, Modifier.PUBLIC);
+                            final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initExpression));
+                            initializer.ifPresent(initMethodBody::addStatement);
+                        }
+
+                    }
+                } else {
+                    initMethodBody.addStatement(stmt); // add as-is.
+                }
             }
         }
 
@@ -343,6 +361,8 @@ public abstract class AccumulateVisitor {
 
         // add resulting accumulator class into the package model
         this.packageModel.addGeneratedPOJO(templateClass);
+
+        System.out.println("templateClass = " + templateClass);
         functionDSL.addArgument(new ClassExpr(JavaParser.parseType(targetClassName)));
         functionDSL.addArgument(new NameExpr(toVar(inputDescr.getIdentifier())));
 
@@ -352,6 +372,16 @@ public abstract class AccumulateVisitor {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {
+        if (optInitializer.isPresent()) {
+            Expression initializer = optInitializer.get();
+            Expression target = new FieldAccessExpr(new NameExpr("data"), variableName);
+            Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
+            return Optional.of(initStmt);
+        }
+        return Optional.empty();
     }
 
     void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
