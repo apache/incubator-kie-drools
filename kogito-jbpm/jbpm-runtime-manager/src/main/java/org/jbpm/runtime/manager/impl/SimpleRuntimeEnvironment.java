@@ -42,6 +42,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.UserInfo;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -82,6 +83,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     protected RegisterableItemsFactory registerableItemsFactory;
     protected Mapper mapper;
     protected UserGroupCallback userGroupCallback;
+    protected UserInfo userInfo;
     protected GlobalSchedulerService schedulerService;
     protected ClassLoader classLoader;
     
@@ -313,6 +315,14 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     
     public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
         this.userGroupCallback = userGroupCallback;
+    }
+    @Override
+    public UserInfo getUserInfo() {
+        return this.userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public Properties getSessionConfigProperties() {

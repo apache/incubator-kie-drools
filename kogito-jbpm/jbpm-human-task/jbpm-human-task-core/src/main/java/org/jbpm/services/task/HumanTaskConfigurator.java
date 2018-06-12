@@ -38,8 +38,9 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.UserInfo;
 import org.kie.internal.task.api.EventService;
-import org.kie.internal.task.api.UserInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -61,6 +61,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         this.schedulerService = globalSchedulerService;
         this.usePersistence = true;
         this.userGroupCallback = UserDataServiceProvider.getUserGroupCallback();
+        this.userInfo = UserDataServiceProvider.getUserInfo();
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf, boolean usePersistence) {
@@ -68,6 +69,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         this.usePersistence = usePersistence;
         this.emf = emf;
         this.userGroupCallback = UserDataServiceProvider.getUserGroupCallback();
+        this.userInfo = UserDataServiceProvider.getUserInfo();
     }
     
     public void init() {

@@ -18,7 +18,6 @@ package org.jbpm.runtime.manager.impl.factory;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -52,10 +51,11 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
         if (emf != null) {
         	
         	HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
+
                     .environment(runtimeEnvironment.getEnvironment())
                     .entityManagerFactory(emf)
                     .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
-                    .userInfo(UserDataServiceProvider.getUserInfo());
+                    .userInfo(runtimeEnvironment.getUserInfo());
         	
             TaskService internalTaskService = configurator.getTaskService();
                                   
