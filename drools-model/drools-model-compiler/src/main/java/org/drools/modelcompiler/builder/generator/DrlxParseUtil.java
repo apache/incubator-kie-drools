@@ -122,6 +122,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfMethodCall(be.getLeft());
         } else if(expression instanceof MethodCallExpr) {
             return expression;
+        } else if(expression instanceof FieldAccessExpr) {
+            return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
