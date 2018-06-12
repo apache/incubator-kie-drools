@@ -20,7 +20,6 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -62,7 +61,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
         usedDeclarationsWithUnification.stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
-                .map(x -> QueryGenerator.substituteBindingWithQueryParameter(context, x))
+                .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
         return exprDSL;

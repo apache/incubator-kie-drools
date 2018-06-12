@@ -188,19 +188,23 @@ public abstract class AccumulateVisitor {
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
 
-            Class accumulateFunctionResultType = accumulateFunction.getResultType();
-            if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
-                accumulateFunctionResultType = declarationClass;
+            if (bindingId != null) {
+                Class accumulateFunctionResultType = accumulateFunction.getResultType();
+                if ( accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom( declarationClass ) || declarationClass.isPrimitive()) ) {
+                    accumulateFunctionResultType = declarationClass;
+                }
+                context.addDeclarationReplacing( new DeclarationSpec( bindingId, accumulateFunctionResultType ) );
             }
-            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         } else {
             context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + expression));
             return Optional.empty();
         }
 
-        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
-        asDSL.addArgument(new NameExpr(toVar(bindingId)));
-        accumulateDSL.addArgument(asDSL);
+        if (bindingId != null) {
+            final MethodCallExpr asDSL = new MethodCallExpr( functionDSL, "as" );
+            asDSL.addArgument( new NameExpr( toVar( bindingId ) ) );
+            accumulateDSL.addArgument( asDSL );
+        }
 
         context.popExprPointer();
         return newBinding;

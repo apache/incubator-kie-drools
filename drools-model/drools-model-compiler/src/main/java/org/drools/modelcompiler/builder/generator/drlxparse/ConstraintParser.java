@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -196,6 +197,7 @@ public class ConstraintParser {
 
                 return new DrlxParseSuccess(patternType, exprId, bindingId, returnExpression, returnType)
                         .setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
+                        .setUsedDeclarationsOnLeft(Collections.emptyList())
                         .setReactOnProperties(typedExpressionResult.getReactOnProperties())
                         .setLeft(typedExpression.getLeft())
                         .setStatic(typedExpression.isStatic())

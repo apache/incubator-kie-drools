@@ -78,6 +78,7 @@ import org.drools.model.From;
 import org.drools.model.From0;
 import org.drools.model.From1;
 import org.drools.model.From2;
+import org.drools.model.From3;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -705,6 +706,9 @@ public class KiePackagesBuilder {
         }
         if (from instanceof From2 ) {
             return new LambdaDataProvider( toFunctionN( (( From2 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From2 ) from).getVariable2() ) );
+        }
+        if (from instanceof From3 ) {
+            return new LambdaDataProvider( toFunctionN( (( From3 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From3 ) from).getVariable2() ), ctx.getDeclaration( (( From3 ) from).getVariable3() ) );
         }
         throw new UnsupportedOperationException( "Unknown from type " + from );
     }

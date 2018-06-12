@@ -113,8 +113,15 @@ public class ExpressionTyper {
 
         Class<?> typeCursor = patternType;
 
-        if(drlxExpr instanceof EnclosedExpr) {
+        if (drlxExpr instanceof EnclosedExpr) {
             drlxExpr = ((EnclosedExpr) drlxExpr).getInner();
+        }
+
+        if (drlxExpr instanceof MethodCallExpr) {
+            MethodCallExpr methodExpr = (MethodCallExpr) drlxExpr;
+            if (methodExpr.getNameAsString().equals( "eval" ) && !methodExpr.getScope().isPresent() && methodExpr.getArguments().size() == 1) {
+                drlxExpr = methodExpr.getArgument(0);
+            }
         }
 
         if (drlxExpr instanceof UnaryExpr) {
@@ -200,9 +207,10 @@ public class ExpressionTyper {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
             } else {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
+                Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
-                        createArrayAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()) :
-                        createMapAccessExpression(arrayAccessExpr.getIndex() , te.getExpression()));
+                        createArrayAccessExpression(indexExpr , te.getExpression()) :
+                        createMapAccessExpression(indexExpr, te.getExpression()));
             }
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
