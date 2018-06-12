@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.process.instance.TypedWorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.impl.UntypedWorkItemHandlerImpl;
 import org.kie.api.builder.model.ChannelModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
@@ -31,7 +34,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.TypedWorkItem;
 
 public class InjectionHelper {
 
@@ -86,7 +89,8 @@ public class InjectionHelper {
       
     private static void wireWIHs(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<WorkItemHandlerModel> wihModels, KieSession kSession) { 
      	 for (WorkItemHandlerModel wihModel : wihModels) {
-             WorkItemHandler wih;
+     	     // avoid ClassCastException, assume neither WorkItemHandler nor TypedWorkItemHandler
+     	     Object wih;
              try {
                  wih = beanCreator.createBean(cl, wihModel.getType(), wihModel.getQualifierModel());
              } catch (Exception e) {
@@ -96,7 +100,16 @@ public class InjectionHelper {
                      throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
                  }
              }
-             kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
+
+             WorkItemHandler workItemHandler;
+             if (wih instanceof TypedWorkItemHandler) {
+                 workItemHandler = new UntypedWorkItemHandlerImpl((TypedWorkItemHandler) wih);
+             } else {
+                 // default to WorkItemHandler (will throw ClassCastException as usual if type doesn't match)
+                 workItemHandler = (WorkItemHandler) wih;
+             }
+
+             kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), workItemHandler);
          }
      }
     

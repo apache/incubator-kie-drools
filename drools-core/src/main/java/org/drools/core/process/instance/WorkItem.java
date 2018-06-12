@@ -20,6 +20,8 @@ import java.util.Map;
 
 public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
+    void setId(long id);
+
     void setName(String name);
 
     void setParameter(String name, Object value);
