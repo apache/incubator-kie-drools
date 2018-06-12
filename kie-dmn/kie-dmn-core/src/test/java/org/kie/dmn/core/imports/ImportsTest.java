@@ -100,6 +100,50 @@ public class ImportsTest {
     }
 
     @Test
+    public void testImport3Levels() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("L3_Do_say_hello.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Do_say_hello_with_2_bkms.dmn",
+                                                                                 "Saying_hello_2_bkms.dmn");
+
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a",
+                                                  "Saying hello 2 bkms");
+        assertThat(importedModel, notNullValue());
+        for (DMNMessage message : importedModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe",
+                                             "Do say hello with 2 bkms");
+        assertThat(dmnModel, notNullValue());
+        for (DMNMessage message : dmnModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        DMNModel dmnModelL3 = runtime.getModel("http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c",
+                                               "L3 Do say hello");
+        assertThat(dmnModelL3, notNullValue());
+        for (DMNMessage message : dmnModelL3.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        DMNContext context = runtime.newContext();
+        context.set("Another Name", "Bob");
+        context.set("L2import", mapOf(entry("Person name", "John")));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModelL3, context);
+        for (DMNMessage message : evaluateAll.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("L3 decision").getResult(), is("Hello, Bob"));
+        assertThat(evaluateAll.getDecisionResultByName("L3 view on M2").getResult(), is("Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("L3 what about hello").getResult(), is("Hello"));
+    }
+
+    @Test
     public void testImportHardcodedDecisions() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Spell_Greeting.dmn",
                                                                                  this.getClass(),
@@ -129,6 +173,7 @@ public class ImportsTest {
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Say the Greeting to Person").getResult(), is("Hello, John"));
     }
+
 
 }
 

@@ -360,9 +360,15 @@ public class DMNCompilerImpl
         }
     }
 
+    /**
+     * For the purpose of Compilation, in the DMNModel the DRGElements are stored with their full ID, so an ElementReference might reference in two forms:
+     *  - #id (a local to the model ID)
+     *  - namespace#id (an imported DRGElement ID)
+     * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
+     */
     private String getId(DMNElementReference er) {
         String href = er.getHref();
-        return href.contains( "#" ) ? href.substring( href.indexOf( '#' ) + 1 ) : href;
+        return href.startsWith("#") ? href.substring(1) : href;
     }
 
     private DMNType buildTypeDef(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {

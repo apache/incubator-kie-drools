@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -102,7 +103,9 @@ public class DMNRuntimeImpl
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = createResult( model, context );
-        for( DecisionNode decision : model.getDecisions() ) {
+        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
+        Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
+        for( DecisionNode decision : decisions ) {
             evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         }
         return result;
@@ -129,9 +132,9 @@ public class DMNRuntimeImpl
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        DecisionNode decision = model.getDecisionByName( name );
-        if ( decision != null ) {
-            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
+        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
+        if (decision.isPresent()) {
+            evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -155,9 +158,9 @@ public class DMNRuntimeImpl
 
     private void evaluateByIdInternal( DMNModel model, DMNContext context, DMNResultImpl result, String id ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        DecisionNode decision = model.getDecisionById( id );
-        if ( decision != null ) {
-            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
+        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
+        if (decision.isPresent()) {
+            evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -189,8 +192,8 @@ public class DMNRuntimeImpl
         DMNResultImpl result = new DMNResultImpl(model);
         result.setContext( context.clone() );
 
-        for( DecisionNode decision : model.getDecisions() ) {
-            result.setDecisionResult( decision.getId(), new DMNDecisionResultImpl( decision.getId(), decision.getName() ) );
+        for (DecisionNode decision : model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet())) {
+            result.setDecisionResult(new DMNDecisionResultImpl(decision.getId(), decision.getName()));
         }
         return result;
     }
@@ -276,7 +279,7 @@ public class DMNRuntimeImpl
     }
 
     private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
-        if (result.getContext().scopeNamespace().map(ns -> ns.equals(node.getModelNamespace())).orElse(true)) {
+        if (node.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel().getNamespace()))) {
             return result.getContext().isDefined(node.getName());
         } else {
             Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
@@ -341,12 +344,15 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck) {
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
+        String decisionId = d.getModelNamespace().equals(result.getModel().getNamespace()) ? decision.getId() : decision.getModelNamespace() + "#" + decision.getId();
         if (isNodeValueDefined(result, decision, decision)) {
             // already resolved
             return true;
         } else {
             // check if the decision was already evaluated before and returned error
-            DMNDecisionResult.DecisionEvaluationStatus status = result.getDecisionResultById( decision.getId() ).getEvaluationStatus();
+            DMNDecisionResult.DecisionEvaluationStatus status = Optional.ofNullable(result.getDecisionResultById(decisionId))
+                                                                        .map(DMNDecisionResult::getEvaluationStatus)
+                                                                        .orElse(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED); // it might be an imported Decision.
             if ( FAILED == status || SKIPPED == status || EVALUATING == status ) {
                 return false;
             }
@@ -354,7 +360,11 @@ public class DMNRuntimeImpl
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
-            DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
+            DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
+            if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
+                dr = new DMNDecisionResultImpl(decisionId, decision.getName());
+                result.setDecisionResult(dr);
+            }
             dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
             for( DMNNode dep : decision.getDependencies().values() ) {
                 try {
