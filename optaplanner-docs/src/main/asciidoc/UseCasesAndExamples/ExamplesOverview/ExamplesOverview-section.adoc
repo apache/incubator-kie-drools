@@ -23,7 +23,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<nQueens,N queens>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `256`
 * Value <= `256`
 * Search space <= `10^616`
@@ -32,7 +32,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<cloudBalancing,Cloud balancing>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `2400`
 * Value <= `800`
 * Search space <= `10^6967`
@@ -42,7 +42,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<tsp,Traveling salesman>>
 |* 1 entity class
-* 1 chained variable
+** 1 chained variable
 |* Entity <= `980`
 * Value <= `980`
 * Search space <= `10^2504`
@@ -52,7 +52,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<dinnerParty,Dinner party>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `144`
 * Value <= `72`
 * Search space <= `10^310`
@@ -61,7 +61,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<tennis,Tennis club scheduling>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `72`
 * Value <= `7`
 * Search space <= `10^60`
@@ -72,7 +72,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<meetingScheduling,Meeting scheduling>>
 |* 1 entity class
-* 2 variables
+** 2 variables
 |* Entity <= `10`
 * Value <= `320` and <= `5`
 * Search space <= `10^320`
@@ -82,7 +82,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<curriculumCourse,Course timetabling>>
 |* 1 entity class
-* 2 variables
+** 2 variables
 |* Entity <= `434`
 * Value <= `25` and <= `20`
 * Search space <= `10^1171`
@@ -92,7 +92,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<machineReassignment,Machine reassignment>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `50000`
 * Value <= `5000`
 * Search space <= `10^184948`
@@ -102,9 +102,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<vehicleRouting,Vehicle routing>>
 |* 1 entity class
-* 1 chained variable
+** 1 chained variable
 * 1 shadow entity class
-* 1 automatic shadow variable
+** 1 automatic shadow variable
 |* Entity <= `2740`
 * Value <= `2795`
 * Search space <= `10^8380`
@@ -128,8 +128,8 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<projectJobScheduling,Project job scheduling>>
 |* 1 entity class
-* 2 variables
-* 1 shadow variable
+** 2 variables
+** 1 shadow variable
 |* Entity <= `640`
 * Value <= `?` and <= `?`
 * Search space <= `?`
@@ -141,7 +141,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<bedAllocation,Hospital bed planning>>
 |* 1 entity class
-* 1 nullable variable
+** 1 nullable variable
 |* Entity <= `2750`
 * Value <= `471`
 * Search space <= `10^6851`
@@ -151,10 +151,10 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<taskAssigning,Task assigning>>
 |* 1 entity class
-* 1 chained variable
+** 1 chained variable
+** 1 shadow variable
 * 1 shadow entity class
-* 1 automatic shadow variable
-* 1 shadow variable
+** 1 automatic shadow variable
 |* Entity <= `500`
 * Value <= `520`
 * Search space <= `10^1168`
@@ -168,7 +168,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<examination,Exam timetabling>>
 |* 2 entity classes (same hierarchy)
-* 2 variables
+** 2 variables
 |* Entity <= `1096`
 * Value <= `80` and <= `49`
 * Search space <= `10^3374`
@@ -178,7 +178,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<nurseRostering,Nurse rostering>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `752`
 * Value <= `50`
 * Search space <= `10^1277`
@@ -189,7 +189,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<travelingTournament,Traveling tournament>>
 |* 1 entity class
-* 1 variable
+** 1 variable
 |* Entity <= `1560`
 * Value <= `78`
 * Search space <= `10^2301`
@@ -199,7 +199,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<cheapTimeScheduling,Cheap time scheduling>>
 |* 1 entity class
-* 2 variables
+** 2 variables
 |* Entity <= `500`
 * Value <= `100` and <= `288`
 * Search space <= `10^20078`
@@ -220,10 +220,23 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |<<conferenceScheduling,Conference scheduling>>
 |* 1 entity class
-* 2 variables
+** 2 variables
 |* Entity <= `216`
 * Value <= `18` and <= `20`
 * Search space <= `10^552`
+|* No
+* Defined by us
+|
+
+|<<rockTour,Rock Tour>>
+|* 1 entity class
+** 1 chained variable
+** 4 shadow variables
+* 1 shadow entity class
+** 1 automatic shadow variable
+|* Entity <= `47`
+* Value <= `48`
+* Search space <= `10^59`
 |* No
 * Defined by us
 |

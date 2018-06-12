@@ -30,7 +30,7 @@ global HardMediumSoftLongScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-rule "Required show"
+rule "Schedule every required show"
     when
         RockShow(required == true, date == null)
     then
@@ -57,7 +57,7 @@ rule "Maximize revenue opportunity"
         scoreHolder.addMediumConstraintMatch(kcontext, $weight * $revenueOpportunity);
 end
 
-rule "Minimize driving time cost"
+rule "Minimize driving time"
     when
         RockTourParametrization($weight : drivingTimeCostPerSecond != 0)
         RockShow(previousStandstill != null, $drivingTime : drivingTimeFromPreviousStandstill)

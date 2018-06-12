@@ -63,7 +63,7 @@ public class RockTourGenerator extends LoggingMain {
     }
 
     private void writeSolution(LocationDataGenerator.LocationData[] locationDataArray) {
-        String fileName = locationDataArray.length + "shows";
+        String fileName = (locationDataArray.length - 1) + "shows";
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         RockTourSolution solution = createRockTourSolution(fileName, locationDataArray);
         solutionFileIO.write(solution, outputFile);
