@@ -9,9 +9,24 @@
 
 include::ExamplesOverview/ExamplesOverview-section.adoc[leveloffset=+1]
 
-include::BasicExamples/BasicExamples-section.adoc[leveloffset=+1]
+include::NQueens/NQueens-section.adoc[leveloffset=+1]
+include::CloudBalancing/CloudBalancing-section.adoc[leveloffset=+1]
+include::TravellingSalesman/TravellingSalesman-section.adoc[leveloffset=+1]
+include::DinnerParty/DinnerParty-section.adoc[leveloffset=+1]
+include::TennisScheduling/TennisScheduling-section.adoc[leveloffset=+1]
+include::MeetingScheduling/MeetingScheduling-section.adoc[leveloffset=+1]
 
-include::RealExamples/RealExamples-section.adoc[leveloffset=+1]
+include::CourseTimetabling/CourseTimetabling-section.adoc[leveloffset=+1]
+include::MachineReassignment/MachineReassignment-section.adoc[leveloffset=+1]
+include::VehicleRouting/VehicleRouting-section.adoc[leveloffset=+1]
+include::ProjectJobScheduling/ProjectJobScheduling-section.adoc[leveloffset=+1]
+include::BedAllocation/BedAllocation-section.adoc[leveloffset=+1]
+include::TaskAssigning/TaskAssigning-section.adoc[leveloffset=+1]
 
-include::DifficultExamples/DifficultExamples-section.adoc[leveloffset=+1]
+include::ExamTimetabling/ExamTimetabling-section.adoc[leveloffset=+1]
+include::NurseRostering/NurseRostering-section.adoc[leveloffset=+1]
+include::TravellingTournament/TravellingTournament-section.adoc[leveloffset=+1]
+include::CheapTime/CheapTime-section.adoc[leveloffset=+1]
+include::Investment/Investment-section.adoc[leveloffset=+1]
+include::ConferenceScheduling/ConferenceScheduling-section.adoc[leveloffset=+1]
 

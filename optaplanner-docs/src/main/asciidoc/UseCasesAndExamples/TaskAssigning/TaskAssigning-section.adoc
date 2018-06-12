@@ -1,0 +1,55 @@
+[[taskAssigning]]
+= Task assigning
+:imagesdir: ../..
+
+
+[[taskAssigningProblemDescription]]
+== Problem Description
+
+Assign each task to a spot in an employee's queue.
+Each task has a duration which is affected by the employee's affinity level with the task's customer.
+
+Hard constraints:
+
+* Skill: Each task requires one or more skills. The employee must posses all these skills.
+
+Soft level 0 constraints:
+
+* Critical tasks: Complete critical tasks first, sooner than major and minor tasks.
+
+Soft level 1 constraints:
+
+* Minimize makespan: Reduce the time to complete all tasks.
+** Start with the longest working employee first, then the second longest working employee and so forth, to creates <<fairnessScoreConstraints,fairness and load balancing>>.
+
+Soft level 2 constraints:
+
+* Major tasks: Complete major tasks as soon as possible, sooner than minor tasks.
+
+Soft level 3 constraints:
+
+* Minor tasks: Complete minor tasks as soon as possible.
+
+
+[[taskAssigningValueProposition]]
+== Value Proposition
+
+image::UseCasesAndExamples/TaskAssigning/taskAssigningValueProposition.png[align="center"]
+
+
+[[taskAssigningProblemSize]]
+== Problem Size
+
+[source,options="nowrap"]
+----
+24tasks-8employees   has  24 tasks, 6 skills,  8 employees,   4 task types and  4 customers with a search space of   10^30.
+50tasks-5employees   has  50 tasks, 5 skills,  5 employees,  10 task types and 10 customers with a search space of   10^69.
+100tasks-5employees  has 100 tasks, 5 skills,  5 employees,  20 task types and 15 customers with a search space of  10^164.
+500tasks-20employees has 500 tasks, 6 skills, 20 employees, 100 task types and 60 customers with a search space of 10^1168.
+----
+
+
+[[taskAssigningDomainModel]]
+== Domain Model
+
+image::UseCasesAndExamples/TaskAssigning/taskAssigningClassDiagram.png[align="center"]

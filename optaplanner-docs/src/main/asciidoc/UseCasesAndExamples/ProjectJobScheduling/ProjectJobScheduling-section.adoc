@@ -1,0 +1,60 @@
+[[projectJobScheduling]]
+= Project Job Scheduling
+:imagesdir: ../..
+
+
+[[projectJobSchedulingProblemDescription]]
+== Problem Description
+
+Schedule all jobs in time and execution mode to minimize project delays.
+Each job is part of a project.
+A job can be executed in different ways: each way is an execution mode that implies a different duration but also different resource usages.
+This is a form of flexible __job shop scheduling__.
+
+image::UseCasesAndExamples/ProjectJobScheduling/projectJobSchedulingUseCase.png[align="center"]
+
+Hard constraints:
+
+* Job precedence: a job can only start when all its predecessor jobs are finished.
+* Resource capacity: do not use more resources than available.
+** Resources are local (shared between jobs of the same project) or global (shared between all jobs)
+** Resource are renewable (capacity available per day) or nonrenewable (capacity available for all days)
+
+Medium constraints:
+
+* Total project delay: minimize the duration (makespan) of each project.
+
+Soft constraints:
+
+* Total makespan: minimize the duration of the whole multi-project schedule.
+
+The problem is defined by http://gent.cs.kuleuven.be/mista2013challenge/[the MISTA 2013 challenge].
+
+
+[[projectJobSchedulingProblemSize]]
+== Problem Size
+
+[source,options="nowrap"]
+----
+Schedule A-1  has  2 projects,  24 jobs,   64 execution modes,  7 resources and  150 resource requirements.
+Schedule A-2  has  2 projects,  44 jobs,  124 execution modes,  7 resources and  420 resource requirements.
+Schedule A-3  has  2 projects,  64 jobs,  184 execution modes,  7 resources and  630 resource requirements.
+Schedule A-4  has  5 projects,  60 jobs,  160 execution modes, 16 resources and  390 resource requirements.
+Schedule A-5  has  5 projects, 110 jobs,  310 execution modes, 16 resources and  900 resource requirements.
+Schedule A-6  has  5 projects, 160 jobs,  460 execution modes, 16 resources and 1440 resource requirements.
+Schedule A-7  has 10 projects, 120 jobs,  320 execution modes, 22 resources and  900 resource requirements.
+Schedule A-8  has 10 projects, 220 jobs,  620 execution modes, 22 resources and 1860 resource requirements.
+Schedule A-9  has 10 projects, 320 jobs,  920 execution modes, 31 resources and 2880 resource requirements.
+Schedule A-10 has 10 projects, 320 jobs,  920 execution modes, 31 resources and 2970 resource requirements.
+Schedule B-1  has 10 projects, 120 jobs,  320 execution modes, 31 resources and  900 resource requirements.
+Schedule B-2  has 10 projects, 220 jobs,  620 execution modes, 22 resources and 1740 resource requirements.
+Schedule B-3  has 10 projects, 320 jobs,  920 execution modes, 31 resources and 3060 resource requirements.
+Schedule B-4  has 15 projects, 180 jobs,  480 execution modes, 46 resources and 1530 resource requirements.
+Schedule B-5  has 15 projects, 330 jobs,  930 execution modes, 46 resources and 2760 resource requirements.
+Schedule B-6  has 15 projects, 480 jobs, 1380 execution modes, 46 resources and 4500 resource requirements.
+Schedule B-7  has 20 projects, 240 jobs,  640 execution modes, 61 resources and 1710 resource requirements.
+Schedule B-8  has 20 projects, 440 jobs, 1240 execution modes, 42 resources and 3180 resource requirements.
+Schedule B-9  has 20 projects, 640 jobs, 1840 execution modes, 61 resources and 5940 resource requirements.
+Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 4260 resource requirements.
+----
+

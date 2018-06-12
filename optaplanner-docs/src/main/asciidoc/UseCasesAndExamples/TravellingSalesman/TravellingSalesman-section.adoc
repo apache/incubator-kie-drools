@@ -1,0 +1,36 @@
+[[tsp]]
+= Traveling Salesman (TSP - Traveling Salesman Problem)
+:imagesdir: ../..
+
+
+[[tspProblemDescription]]
+== Problem Description
+
+Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.
+
+The problem is defined by https://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
+It is http://www.math.uwaterloo.ca/tsp/[one of the most intensively studied problems] in computational mathematics.
+Yet, in the real world, it is often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
+
+
+[[tspProblemSize]]
+== Problem Size
+
+[source,options="nowrap"]
+----
+dj38     has  38 cities with a search space of   10^43.
+europe40 has  40 cities with a search space of   10^46.
+st70     has  70 cities with a search space of   10^98.
+pcb442   has 442 cities with a search space of  10^976.
+lu980    has 980 cities with a search space of 10^2504.
+----
+
+
+[[tspProblemDifficulty]]
+== Problem Difficulty
+
+Despite TSP's simple definition, the problem is surprisingly hard to solve.
+Because it is an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
+
+image::UseCasesAndExamples/TravellingSalesman/tspOptimalSolutionVolatility.png[align="center"]
+
