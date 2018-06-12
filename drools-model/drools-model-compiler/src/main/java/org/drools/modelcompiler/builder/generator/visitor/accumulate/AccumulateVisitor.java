@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
@@ -101,6 +102,18 @@ public abstract class AccumulateVisitor {
             // LEGACY: Accumulate with inline custom code
             if (input instanceof PatternDescr) {
                 visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input);
+            } else if (input instanceof AndDescr) {
+
+                BlockStmt actionBlock = getActionBlock(descr);
+                Collection<String> allNamesInActionBlock = collectNamesInBlock(context, actionBlock);
+
+                final Optional<BaseDescr> bindingUsedInAccumulate = ((AndDescr) input).getDescrs().stream().filter(b -> {
+                    return allNamesInActionBlock.contains(((PatternDescr) b).getIdentifier());
+                }).findFirst();
+
+                bindingUsedInAccumulate.ifPresent(b -> visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) b));
+
+                ;
             } else {
                 throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
             }
@@ -256,7 +269,6 @@ public abstract class AccumulateVisitor {
      */
     protected void visitAccInlineCustomCode(RuleContext context2, AccumulateDescr descr, MethodCallExpr accumulateDSL, PatternDescr basePattern, PatternDescr inputDescr) {
         context.pushExprPointer(accumulateDSL::addArgument);
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
 
         String code = null;
         try {
@@ -312,7 +324,7 @@ public abstract class AccumulateVisitor {
         Type singleAccumulateType = JavaParser.parseType("java.lang.Object");
 
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
-        BlockStmt actionBlock = JavaParser.parseBlock("{" + descr.getActionCode() + "}");
+        BlockStmt actionBlock = getActionBlock(descr);
         Collection<String> allNamesInActionBlock = collectNamesInBlock(context2, actionBlock);
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
@@ -362,7 +374,7 @@ public abstract class AccumulateVisitor {
         // add resulting accumulator class into the package model
         this.packageModel.addGeneratedPOJO(templateClass);
 
-        System.out.println("templateClass = " + templateClass);
+        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
         functionDSL.addArgument(new ClassExpr(JavaParser.parseType(targetClassName)));
         functionDSL.addArgument(new NameExpr(toVar(inputDescr.getIdentifier())));
 
@@ -372,6 +384,10 @@ public abstract class AccumulateVisitor {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private BlockStmt getActionBlock(AccumulateDescr descr) {
+        return JavaParser.parseBlock("{" + descr.getActionCode() + "}");
     }
 
     private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {
