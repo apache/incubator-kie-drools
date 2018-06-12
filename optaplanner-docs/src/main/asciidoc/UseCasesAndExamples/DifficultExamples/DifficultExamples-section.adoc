@@ -3,7 +3,7 @@
 :imagesdir: ../..
 
 include::ExamTimetabling-section.adoc[leveloffset=+1]
-include::EmployeeRostering-section.adoc[leveloffset=+1]
+include::NurseRostering-section.adoc[leveloffset=+1]
 include::TravellingTournament-section.adoc[leveloffset=+1]
 include::CheapTime-section.adoc[leveloffset=+1]
 include::Investment-section.adoc[leveloffset=+1]

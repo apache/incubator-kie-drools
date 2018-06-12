@@ -176,7 +176,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[ITC 2007 track 1]
 |* Custom <<customVariableListener,VariableListener>>
 
-|<<employeeRostering,Employee rostering>>
+|<<nurseRostering,Nurse rostering>>
 |* 1 entity class
 * 1 variable
 |* Entity <= `752`
