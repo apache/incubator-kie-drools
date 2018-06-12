@@ -205,6 +205,9 @@ public class PeopleAssignmentHelper {
             String[] ids = peopleAssignmentIds.split(separator);
             for (String id : ids) {
                 id = id.trim();
+                // JBPM-7356 - ignore empty strings
+                if(id.length()==0)
+                    continue;
                 boolean exists = false;
                 for (OrganizationalEntity orgEntity : organizationalEntities) {
                     if (orgEntity.getId().equals(id)) {

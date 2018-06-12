@@ -88,6 +88,25 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertTrue(organizationalEntities.contains(createGroup("Project Manager")));
 		
 	}
+
+	@Test
+	public void testProcessPeopleAssignmentsWithEmptyStrings() {
+
+		List<OrganizationalEntity> organizationalEntities = new ArrayList<OrganizationalEntity>();
+
+		String ids = "bpmsAdmin,";
+		assertTrue(organizationalEntities.isEmpty());
+		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, true);
+		assertTrue(organizationalEntities.size() == 1);
+		assertTrue(organizationalEntities.contains(createUser("bpmsAdmin")));
+
+		ids = ",bpmsAdmin";
+		organizationalEntities = new ArrayList<OrganizationalEntity>();
+		assertTrue(organizationalEntities.isEmpty());
+		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, true);
+		assertTrue(organizationalEntities.size() == 1);
+		assertTrue(organizationalEntities.contains(createUser("bpmsAdmin")));
+	}
 	
 	@Test
 	public void testAssignActors() {
