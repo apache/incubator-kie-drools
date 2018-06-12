@@ -193,7 +193,7 @@ public class DMNRuntimeImpl
         result.setContext( context.clone() );
 
         for (DecisionNode decision : model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet())) {
-            result.setDecisionResult(new DMNDecisionResultImpl(decision.getId(), decision.getName()));
+            result.addDecisionResult(new DMNDecisionResultImpl(decision.getId(), decision.getName()));
         }
         return result;
     }
@@ -363,7 +363,7 @@ public class DMNRuntimeImpl
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
             if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
                 dr = new DMNDecisionResultImpl(decisionId, decision.getName());
-                result.setDecisionResult(dr);
+                result.addDecisionResult(dr);
             }
             dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
             for( DMNNode dep : decision.getDependencies().values() ) {
@@ -495,7 +495,6 @@ public class DMNRuntimeImpl
                     return false;
                 }
             } catch( Throwable t ) {
-                t.printStackTrace();
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.ERROR,
                                                             decision.getSource(),

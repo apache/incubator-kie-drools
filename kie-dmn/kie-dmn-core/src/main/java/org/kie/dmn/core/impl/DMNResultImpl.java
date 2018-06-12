@@ -105,7 +105,7 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
         return decisionResults.get( id );
     }
 
-    public void setDecisionResult(DMNDecisionResult result) {
+    public void addDecisionResult(DMNDecisionResult result) {
         this.decisionResults.put(result.getDecisionId(), result);
     }
 

@@ -161,7 +161,6 @@ public class DMNInvocationEvaluator
             boolean hasErrors = hasErrors( events, eventManager, result );
             return new EvaluatorResultImpl( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } catch ( Throwable t ) {
-            t.printStackTrace();
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
                                    node,
