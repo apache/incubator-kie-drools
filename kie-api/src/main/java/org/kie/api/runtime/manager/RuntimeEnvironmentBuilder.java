@@ -20,6 +20,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,8 @@ public interface RuntimeEnvironmentBuilder {
     public RuntimeEnvironmentBuilder knowledgeBase(KieBase kbase);
 
     public RuntimeEnvironmentBuilder userGroupCallback(UserGroupCallback callback);
+
+    public RuntimeEnvironmentBuilder userInfo(UserInfo userInfo);
 
     public RuntimeEnvironmentBuilder registerableItemsFactory(RegisterableItemsFactory factory);
 

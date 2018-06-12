@@ -207,6 +207,16 @@
           "methodName": "removeOutput",
           "elementKind": "method",
           "justification": "Expose different methods for set and retrieve output variables"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.task.UserInfo org.kie.api.runtime.manager.RuntimeEnvironment::getUserInfo()",
+          "justification": "allow to set the UserInfo in the RuntimEnvorinment"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.manager.RuntimeEnvironmentBuilder org.kie.api.runtime.manager.RuntimeEnvironmentBuilder::userInfo(org.kie.api.task.UserInfo)",
+          "justification": "add UserInfo to the runtime environment builder (for completeness)"
         }
       ]
     }
