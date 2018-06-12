@@ -17,9 +17,11 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.NewKieSessionCommand;
+import org.drools.core.command.NewRuleUnitExecutorCommand;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.KieContainerFluent;
 import org.kie.api.runtime.builder.KieSessionFluent;
+import org.kie.api.runtime.builder.RuleUnitExecutorFluent;
 
 public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements KieContainerFluent {
 
@@ -29,6 +31,7 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
         super(ctx);
         this.ctx = ctx;
     }
+
     @Override
     public KieSessionFluent newSession() {
         return newSession(null);
@@ -41,5 +44,15 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
         return new KieSessionFluentImpl(ctx);
     }
 
+    @Override
+    public RuleUnitExecutorFluent newRuleUnitExecutor() {
+        return newRuleUnitExecutor(null);
+    }
 
+    @Override
+    public RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName) {
+        NewRuleUnitExecutorCommand cmd = new NewRuleUnitExecutorCommand(sessionName);
+        ctx.addCommand(cmd);
+        return new RuleUnitExecutorFluentImpl(ctx);
+    }
 }
