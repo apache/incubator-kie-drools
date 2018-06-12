@@ -210,6 +210,24 @@
         },
         {
           "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.builder.RuleUnitExecutorFluent org.kie.api.runtime.builder.KieContainerFluent::newRuleUnitExecutor()",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "KieContainerFluent",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Add Unit support to fluent builder"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.builder.RuleUnitExecutorFluent org.kie.api.runtime.builder.KieContainerFluent::newRuleUnitExecutor(java.lang.String)",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "KieContainerFluent",
+          "methodName": "newRuleUnitExecutor",
+          "elementKind": "method",
+          "justification": "Add Unit support to fluent builder"
+        },
+        {
+          "code": "java.method.addedToInterface",
           "new": "method org.kie.api.task.UserInfo org.kie.api.runtime.manager.RuntimeEnvironment::getUserInfo()",
           "justification": "allow to set the UserInfo in the RuntimEnvorinment"
         },
