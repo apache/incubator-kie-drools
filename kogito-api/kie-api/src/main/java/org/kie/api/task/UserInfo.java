@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api;
+package org.kie.api.task;
 
 import java.util.Iterator;
 
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 
-public interface UserInfo extends org.kie.api.task.UserInfo {
+public interface UserInfo {
 
     String getDisplayName(OrganizationalEntity entity);
 
@@ -32,7 +32,5 @@ public interface UserInfo extends org.kie.api.task.UserInfo {
     String getEmailForEntity(OrganizationalEntity entity);
 
     String getLanguageForEntity(OrganizationalEntity entity);
-    
-    String getEntityForEmail(String email);
 
 }

@@ -19,6 +19,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.UserInfo;
 
 /**
  * Definition of the runtime environment that will be used by instance of <code>RuntimeManager</code>.
@@ -60,6 +61,12 @@ public interface RuntimeEnvironment {
      * of <code>TaskService</code> for managing users and groups.
      */
     UserGroupCallback getUserGroupCallback();
+
+    /**
+     * @return concrete implementation of <code>UserInfo</code> that shall be registered on instances
+     * of <code>TaskService</code> for managing user info.
+     */
+    UserInfo getUserInfo();
 
     /**
      * @return custom class loader that shall be used by the process engine and task service instances
