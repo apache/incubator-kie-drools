@@ -93,20 +93,13 @@ public class FromVisitor {
         Collection<String> usedDeclarations = new ArrayList<>();
 
         for (String expr : expressions.split( "," )) {
-            Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expr);
+            Optional<DeclarationSpec> optContainsBinding = ruleContext.getDeclarationById( expr );
             if (optContainsBinding.isPresent()) {
-                String bindingId = optContainsBinding.get();
+                String bindingId = optContainsBinding.get().getBindingId();
                 fromCall.addArgument(ruleContext.getVarExpr(bindingId));
-                Expression exprArg = createArg( expr, optContainsBinding, bindingId );
-                if (exprArg != null) {
-                    asListCall.addArgument( exprArg );
-                } else {
-                    asListCall.addArgument( expr );
-                    usedDeclarations.add( expr );
-                }
-            } else {
-                asListCall.addArgument(expr);
+                usedDeclarations.add( expr );
             }
+            asListCall.addArgument(expr);
         }
 
         fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true ) );

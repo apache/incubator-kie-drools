@@ -44,9 +44,12 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
@@ -73,8 +76,9 @@ public class POJOGenerator {
     public static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
-        predefinedClassLevelAnnotation.put("duration", org.kie.api.definition.type.Duration.class);
-        predefinedClassLevelAnnotation.put("expires", org.kie.api.definition.type.Expires.class);
+        predefinedClassLevelAnnotation.put("duration", Duration.class);
+        predefinedClassLevelAnnotation.put("expires", Expires.class);
+        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
     }
 
     public static void generatePOJO(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
@@ -124,11 +128,7 @@ public class POJOGenerator {
         return typeMetaDataCall;
     }
 
-    /**
-     * @param packageDescr 
-     * 
-     */
-    public static ClassOrInterfaceDeclaration toClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
+    private static ClassOrInterfaceDeclaration toClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
         EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
@@ -201,6 +201,11 @@ public class POJOGenerator {
                             field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + ann.getValue() );
                             hasPositionAnnotation = true;
                             position++;
+                        } else if (ann.getName().equalsIgnoreCase( "duration" ) || ann.getName().equalsIgnoreCase( "expires" ) || ann.getName().equalsIgnoreCase( "timestamp" )) {
+                            Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName().toLowerCase() );
+                            String annFqn = annotationClass.getCanonicalName();
+                            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
+                            annExpr.addPair( "value", quote(fieldName) );
                         } else {
                             processAnnotation( builder, typeResolver, field, ann, null );
                         }
