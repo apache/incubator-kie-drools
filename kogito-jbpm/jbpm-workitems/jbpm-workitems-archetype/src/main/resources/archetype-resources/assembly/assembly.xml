@@ -22,7 +22,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>*.wid</include>
-        <include>*.html</include>
+        <include>index.html</include>
         <include>*.json</include>
         <include>*.xml</include>
       </includes>
@@ -32,7 +32,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>repoconf.part</include>
-        <include>repoindex.part</include>
+        <include>repoindex.html</include>
         <include>icon.png</include>
       </includes>
     </fileSet>
