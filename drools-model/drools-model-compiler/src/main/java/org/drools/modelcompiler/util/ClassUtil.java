@@ -19,6 +19,7 @@ package org.drools.modelcompiler.util;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -356,6 +357,9 @@ public class ClassUtil {
         }
         if (type instanceof ParameterizedType ) {
             return toRawClass( (( ParameterizedType ) type).getRawType() );
+        }
+        if (type instanceof TypeVariable ) {
+            return Object.class;
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
     }

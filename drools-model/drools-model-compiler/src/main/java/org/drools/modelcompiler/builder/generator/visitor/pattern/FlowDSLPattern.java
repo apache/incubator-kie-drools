@@ -10,9 +10,9 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -20,7 +20,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -33,15 +32,15 @@ class FlowDSLPattern extends PatternDSL {
 
     @Override
     public void buildPattern() {
-        initPattern();
+        DeclarationSpec declarationSpec = initPattern();
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression(createInputExpression(pattern));
+            context.addExpression(createInputExpression(pattern, declarationSpec));
         } else {
             if (!context.hasErrors()) {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
                 if(shouldAddInputPattern(patternConstraintParseResults)) {
-                    context.addExpression(createInputExpression(pattern));
+                    context.addExpression(createInputExpression(pattern, declarationSpec));
                 }
                 buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
             }
@@ -67,9 +66,12 @@ class FlowDSLPattern extends PatternDSL {
                 .anyMatch(hasOneOOPathExpr);
     }
 
-    private MethodCallExpr createInputExpression(PatternDescr pattern) {
+    private MethodCallExpr createInputExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
         MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
-        exprDSL.addArgument(new NameExpr(toVar(pattern.getIdentifier())));
+        exprDSL.addArgument( context.getVarExpr( pattern.getIdentifier()) );
+        if (context.isQuery() && declarationSpec.getDeclarationSource().isPresent()) {
+            exprDSL.addArgument( declarationSpec.getDeclarationSource().get() );
+        }
 
         Set<String> watchedProperties = new HashSet<>();
         watchedProperties.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));

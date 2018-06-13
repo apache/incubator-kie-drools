@@ -33,7 +33,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
             return ( Pattern ) condition;
         }
 
-        final Variable source = getAccumulateFunctions()[0].getSource();
+        if (accumulateFunctions.length == 0) {
+            return null;
+        }
+
+        final Variable source = accumulateFunctions[0].getSource();
 
         for (Condition subCondition : condition.getSubConditions()) {
             if (subCondition instanceof PatternImpl) {

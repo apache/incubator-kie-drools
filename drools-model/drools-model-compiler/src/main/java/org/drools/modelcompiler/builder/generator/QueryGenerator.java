@@ -11,7 +11,6 @@ import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
@@ -28,7 +27,6 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
@@ -135,21 +133,8 @@ public class QueryGenerator {
 
     public static boolean isLiteral(String value) {
         return value != null && value.length() > 0 &&
-                ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) );
+                ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) || value.endsWith( ".class" ) );
     }
-
-    public static Expression substituteBindingWithQueryParameter(RuleContext context, String x) {
-        Optional<QueryParameter> optQueryParameter = context.queryParameterWithName(p -> p.name.equals(x));
-        return optQueryParameter.map(qp -> {
-
-            final String queryDef = context.getQueryName().orElseThrow(RuntimeException::new);
-
-            final int queryParameterIndex = context.getQueryParameters().indexOf(qp) + 1;
-            return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
-
-        }).orElse(new NameExpr(toVar(x)));
-    }
-
 
     public static String toQueryDef(String queryName) {
         return "queryDef_" + toId( queryName );

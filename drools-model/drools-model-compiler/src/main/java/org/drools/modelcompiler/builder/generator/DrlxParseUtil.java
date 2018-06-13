@@ -142,7 +142,7 @@ public class DrlxParseUtil {
             return new TypedExpression( body, accessor.getReturnType() );
         }
         if (clazz.isArray() && name.equals( "length" )) {
-            FieldAccessExpr expr = new FieldAccessExpr( scope, name );
+            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
             return new TypedExpression( expr, int.class );
         }
         try {
@@ -474,7 +474,7 @@ public class DrlxParseUtil {
         Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
         return parsedType instanceof PrimitiveType ?
                 ((PrimitiveType) parsedType).toBoxedType() :
-                parsedType.getElementType();
+                parsedType;
     }
 
     public static Type toType(Class<?> declClass) {

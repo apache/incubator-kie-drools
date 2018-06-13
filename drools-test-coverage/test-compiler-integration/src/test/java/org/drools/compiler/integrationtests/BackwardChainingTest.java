@@ -410,7 +410,7 @@ public class BackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test//(timeout = 10000)
     public void testQueriesWithNestedAccessorsAllOutputs() throws IOException, ClassNotFoundException {
         String drl = "" +
                 "package org.drools.compiler.test  \n" +

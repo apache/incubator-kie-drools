@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -741,4 +742,100 @@ public class QueryTest extends BaseModelTest {
         assertEquals( 21, (int)list.get(0) );
         assertEquals( 22, (int)list.get(1) );
     }
+
+    @Test
+    public void testQueryCallWithBindings() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "query peeps( String $name, int $age ) \n" +
+                "    Person( $name := name, $age := age; ) \n" +
+                "end\n" +
+                "\n" +
+                "rule x1\n" +
+                "when\n" +
+                "    peeps($age1 : $age, $name1 : $name)\n" +
+                "then\n" +
+                "   list.add( $name1 + \" : \" + $age1 );\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( new Person( "Mario", 44 ) );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "Mario : 44", list.get(0) );
+    }
+
+    @Test
+    public void testQueryCallWithJoinInputAndOutput() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "query peeps( String $name, int $age ) \n" +
+                "    Person( $name := name, $age := age; ) \n" +
+                "end\n" +
+                "\n" +
+                "rule x1\n" +
+                "when\n" +
+                "    $name1 : String() from \"Mario\"\n" +
+                "    peeps($name1, $age1; )\n" +
+                "then\n" +
+                "   list.add( $name1 + \" : \" + $age1 );\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( new Person( "Mario", 44 ) );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "Mario : 44", list.get(0) );
+    }
+
+    @Test
+    public void testQueryWithDyanmicInsert() throws IOException, ClassNotFoundException {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "query peeps( Person $p, String $name, int $age ) \n" +
+                "    $p := Person( ) from new Person( $name, $age ) \n" +
+                "end\n" +
+                "rule x1\n" +
+                "when\n" +
+                "    $n1 : String( )\n" +
+                "    not Person( name == 'darth' )\n " +
+                "    peeps($p; $name : $n1, $age : 100 )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        try {
+            final List<Person> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final Person p1 = new Person("darth", 100);
+
+            ksession.insert("darth");
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+            assertEquals(p1, list.get(0));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+
 }

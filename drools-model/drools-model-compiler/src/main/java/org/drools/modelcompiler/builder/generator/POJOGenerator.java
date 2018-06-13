@@ -9,9 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -31,6 +32,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NormalAnnotationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.Statement;
@@ -40,12 +42,18 @@ import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.PrimitiveType.Primitive;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
+import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.text.MessageFormat.format;
+import static java.util.stream.Collectors.joining;
 
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.javaparser.JavaParser.parseStatement;
@@ -68,18 +76,19 @@ public class POJOGenerator {
     public static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
-        predefinedClassLevelAnnotation.put("duration", org.kie.api.definition.type.Duration.class);
-        predefinedClassLevelAnnotation.put("expires", org.kie.api.definition.type.Expires.class);
+        predefinedClassLevelAnnotation.put("duration", Duration.class);
+        predefinedClassLevelAnnotation.put("expires", Expires.class);
+        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
     }
 
-    public static void generatePOJO(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public static void generatePOJO(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
 
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
                 processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
             } catch (ClassNotFoundException e) {
-                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(typeDescr, packageDescr));
+                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(builder, typeDescr, packageDescr, pkg.getTypeResolver()));
                 packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
             }
         }
@@ -119,11 +128,7 @@ public class POJOGenerator {
         return typeMetaDataCall;
     }
 
-    /**
-     * @param packageDescr 
-     * 
-     */
-    public static ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+    private static ClassOrInterfaceDeclaration toClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
         EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
@@ -137,17 +142,10 @@ public class POJOGenerator {
 
         List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
-            final String annFqn = Optional.ofNullable(ann.getFullyQualifiedName())
-                                          .orElse(Optional.ofNullable(predefinedClassLevelAnnotation.get(ann.getName())).map(Class::getCanonicalName).orElse(null));
-            if (annFqn != null) {
-                NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
-                ann.getValueMap().forEach((k, v) -> annExpr.addPair(k, getAnnotationValue(annFqn, k, v.toString())));
-            } else {
-                softAnnotations.add(ann);
-            }
+            processAnnotation( builder, typeResolver, generatedClass, ann, softAnnotations );
         }
         if (softAnnotations.size() > 0) {
-            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(Collectors.joining());
+            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect( joining());
             JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
             generatedClass.setJavadocComment(generatedClassJavadoc);
         }
@@ -160,10 +158,10 @@ public class POJOGenerator {
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
         Collection<TypeFieldDescr> inheritedFields = findInheritedDeclaredFields(typeDeclaration, packageDescr);
-        Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
+        TypeFieldDescr[] typeFields = typeFieldsSortedByPosition(typeDeclaration);
 
         if (!inheritedFields.isEmpty() || !typeDeclaration.getFields().isEmpty()) {
-            if (typeFields.size() < 65) {
+            if (typeFields.length < 65) {
                 ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
                 NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
 
@@ -187,22 +185,41 @@ public class POJOGenerator {
                             generatedClass.addField( returnType, fieldName, Modifier.PRIVATE ) :
                             generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
                     field.createSetter();
-                    field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
                     MethodDeclaration getter = field.createGetter();
                     equalsFieldStatement.put( fieldName, generateEqualsForField( getter, fieldName ) );
                     hashCodeFieldStatement.put( fieldName, generateHashCodeForField( getter, fieldName ) );
 
                     ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
-
                     toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
-                    if ( typeFieldDescr.getAnnotation( "key" ) != null ) {
-                        keyFields.add( typeFieldDescr );
+
+                    boolean hasPositionAnnotation = false;
+                    for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+                        if (ann.getName().equalsIgnoreCase( "key" )) {
+                            keyFields.add( typeFieldDescr );
+                            field.addAnnotation( Key.class.getName() );
+                        } else if (ann.getName().equalsIgnoreCase( "position" )) {
+                            field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + ann.getValue() );
+                            hasPositionAnnotation = true;
+                            position++;
+                        } else if (ann.getName().equalsIgnoreCase( "duration" ) || ann.getName().equalsIgnoreCase( "expires" ) || ann.getName().equalsIgnoreCase( "timestamp" )) {
+                            Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName().toLowerCase() );
+                            String annFqn = annotationClass.getCanonicalName();
+                            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
+                            annExpr.addPair( "value", quote(fieldName) );
+                        } else {
+                            processAnnotation( builder, typeResolver, field, ann, null );
+                        }
+                    }
+
+                    if (!hasPositionAnnotation) {
+                        field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
                     }
                 }
+
                 fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
             }
 
-            if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.size()) {
+            if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.length) {
                 ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
                 NodeList<Statement> ctorKeyFieldStatement = NodeList.nodeList();
                 MethodCallExpr keySuperCall = new MethodCallExpr( null, "super" );
@@ -233,6 +250,60 @@ public class POJOGenerator {
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
 
         return generatedClass;
+    }
+
+    private static void processAnnotation( ModelBuilderImpl builder, TypeResolver typeResolver, NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations ) {
+        Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName() );
+        if (annotationClass == null) {
+            try {
+                annotationClass = typeResolver.resolveType( ann.getName() );
+            } catch (ClassNotFoundException e) {
+                return;
+            }
+        }
+
+        String annFqn = annotationClass.getCanonicalName();
+        if (annFqn != null) {
+            NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
+            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+                try {
+                    annotationClass.getMethod( entry.getKey() );
+                    annExpr.addPair( entry.getKey(), getAnnotationValue( annFqn, entry.getKey(), entry.getValue() ) );
+                } catch (NoSuchMethodException e) {
+                    if (softAnnotations == null) {
+                        builder.addBuilderResult( new AnnotationDeclarationError( ann, "Unknown annotation property " + entry.getKey() ) );
+                    }
+                }
+            }
+        } else {
+            if (softAnnotations != null) {
+                softAnnotations.add( ann );
+            }
+        }
+    }
+
+    private static TypeFieldDescr[] typeFieldsSortedByPosition(TypeDeclarationDescr typeDeclaration) {
+        Collection<TypeFieldDescr> typeFields = typeDeclaration.getFields().values();
+        TypeFieldDescr[] sortedTypes = new TypeFieldDescr[typeFields.size()];
+
+        List<TypeFieldDescr> nonPositionalFields = new ArrayList<>();
+        for (TypeFieldDescr descr : typeFields) {
+            AnnotationDescr ann = descr.getAnnotation("Position");
+            if (ann == null) {
+                nonPositionalFields.add(descr);
+            } else {
+                int pos = Integer.parseInt( ann.getValue().toString() );
+                sortedTypes[pos] = descr;
+            }
+        }
+
+        int counter = 0;
+        for (TypeFieldDescr descr : nonPositionalFields) {
+            for (; sortedTypes[counter] != null; counter++);
+            sortedTypes[counter++] = descr;
+        }
+
+        return sortedTypes;
     }
 
     private static Type addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
@@ -383,6 +454,17 @@ public class POJOGenerator {
         return format("\"{0}\"", str);
     }
 
+    private static String getAnnotationValue(String annotationName, String valueName, Object value) {
+        if (value instanceof Class) {
+            return (( Class ) value).getName() + ".class";
+        }
+        if ( value.getClass().isArray() ) {
+            String valueString = Stream.of( (Object[]) value ).map( Object::toString ).collect( joining(",", "{", "}") );
+            return valueString.replace( '[', '{' ).replace( ']', '}' );
+        }
+        return getAnnotationValue( annotationName, valueName, value.toString() );
+    }
+
     private static String getAnnotationValue(String annotationName, String valueName, String value) {
         if (annotationName.equals( Role.class.getCanonicalName() )) {
             return Role.Type.class.getCanonicalName() + "." + value.toUpperCase();
@@ -394,7 +476,11 @@ public class POJOGenerator {
             } else {
                 throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
             }
+        } else if (annotationName.equals(org.kie.api.definition.type.Duration.class.getCanonicalName())) {
+            if ( "value".equals( valueName ) ) {
+                return quote(value);
+            }
         }
-        throw new UnsupportedOperationException("Unknown annotation: " + annotationName);
+        return value;
     }
 }
