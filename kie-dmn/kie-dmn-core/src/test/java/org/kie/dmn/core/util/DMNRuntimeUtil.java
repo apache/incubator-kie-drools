@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class DMNRuntimeUtil {
 
+    public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeUtil.class);
+
     public static DMNRuntime createRuntime(final Class testClass) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
@@ -125,7 +127,7 @@ public final class DMNRuntimeUtil {
     }
 
     public static String formatMessages(final List<DMNMessage> messages) {
-        return messages.stream().map(Object::toString).collect(Collectors.joining("\n"));
+        return messages.stream().map(Object::toString).peek(m -> LOG.debug(m)).collect(Collectors.joining("\n"));
     }
 
     private DMNRuntimeUtil() {
