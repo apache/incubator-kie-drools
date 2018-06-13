@@ -40,34 +40,36 @@ class Query implements DSLNode {
         MethodCallExpr callCall = new MethodCallExpr(queryCall, QUERY_INVOCATION_CALL);
         callCall.addArgument("" + !pattern.isQuery());
 
-        List<QueryParameter> queryParams = packageModel.queryVariables( queryName );
-        Expression[] queryArgs = new Expression[queryParams.size()];
+        if (!constraintDescrs.isEmpty()) {
+            List<QueryParameter> queryParams = packageModel.queryVariables( queryName );
+            Expression[] queryArgs = new Expression[queryParams.size()];
 
-        for (int i = 0; i < constraintDescrs.size(); i++) {
-            String itemText = constraintDescrs.get(i).getText();
-            int colonPos = itemText.indexOf( ':' );
+            for (int i = 0; i < constraintDescrs.size(); i++) {
+                String itemText = constraintDescrs.get( i ).getText();
+                int colonPos = itemText.indexOf( ':' );
 
-            if (colonPos > 0) {
-                String bindingId = itemText.substring( 0, colonPos ).trim();
-                String paramName = itemText.substring( colonPos+1 ).trim();
+                if ( colonPos > 0 ) {
+                    String bindingId = itemText.substring( 0, colonPos ).trim();
+                    String paramName = itemText.substring( colonPos + 1 ).trim();
 
-                for (int j = 0; j < queryParams.size(); j++) {
-                    if (queryParams.get(j).getName().equals( paramName )) {
-                        addQueryArg( queryParams, queryArgs, bindingId, j );
-                        break;
-                    } else if (queryParams.get(j).getName().equals( bindingId )) {
-                        addQueryArg( queryParams, queryArgs, paramName, j );
-                        break;
+                    for (int j = 0; j < queryParams.size(); j++) {
+                        if ( queryParams.get( j ).getName().equals( paramName ) ) {
+                            addQueryArg( queryParams, queryArgs, bindingId, j );
+                            break;
+                        } else if ( queryParams.get( j ).getName().equals( bindingId ) ) {
+                            addQueryArg( queryParams, queryArgs, paramName, j );
+                            break;
+                        }
                     }
+
+                } else {
+                    addQueryArg( queryParams, queryArgs, itemText, i );
                 }
-
-            } else {
-                addQueryArg( queryParams, queryArgs, itemText, i );
             }
-        }
 
-        for (Expression queryArg : queryArgs) {
-            callCall.addArgument( queryArg );
+            for (Expression queryArg : queryArgs) {
+                callCall.addArgument( queryArg );
+            }
         }
 
         context.addExpression(callCall);

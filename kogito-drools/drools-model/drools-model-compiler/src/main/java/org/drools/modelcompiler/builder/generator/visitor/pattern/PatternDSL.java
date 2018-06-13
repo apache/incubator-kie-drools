@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +16,7 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.WindowReferenceGenerator;
+import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
@@ -24,7 +24,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVoidVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
-import org.kie.api.definition.type.Position;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 
@@ -54,28 +53,10 @@ public abstract class PatternDSL implements DSLNode {
         return declarationSpec;
     }
 
-    protected static String getConstraintExpression(Class<?> patternType, BaseDescr constraint, boolean isPositional) {
-        if (isPositional) {
-            int position = ((ExprConstraintDescr) constraint).getPosition();
-            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
-        }
-        return constraint.toString();
-    }
-
     protected static boolean isPositional(BaseDescr constraint) {
         return constraint instanceof ExprConstraintDescr &&
                 ((ExprConstraintDescr) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL &&
                 !constraint.getText().contains( ":=" );
-    }
-
-    static String getFieldAtPosition(Class<?> patternType, int position) {
-        for (Field field : patternType.getDeclaredFields()) {
-            Position p = field.getAnnotation(Position.class);
-            if (p != null && p.value() == position) {
-                return field.getName();
-            }
-        }
-        throw new RuntimeException("Cannot find field in position " + position + " for " + patternType);
     }
 
     private Optional<String> findInnerBindingName(List<PatternConstraintParseResult> firstParsedConstraints) {
@@ -115,7 +96,7 @@ public abstract class PatternDSL implements DSLNode {
 
     public Optional<String> findFirstInnerBinding(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
         return constraintDescrs.stream()
-                .map( constraint -> getExpression( patternType, constraint, isPositional(constraint) ) )
+                .map( constraint -> ConstraintExpression.createConstraintExpression( patternType, constraint, isPositional(constraint) ).getExpression() )
                 .map( DrlxParseUtil::parseExpression )
                 .filter( drlx -> drlx.getBind() != null )
                 .map( drlx -> drlx.getBind().asString() )
@@ -130,10 +111,12 @@ public abstract class PatternDSL implements DSLNode {
             String patternIdentifier = pattern.getIdentifier();
 
             boolean isPositional = isPositional(constraint);
-            String expression = getExpression( patternType, constraint, isPositional );
 
-            DrlxParseResult drlxParseResult = constraintParser.drlxParse(patternType, patternIdentifier, expression, isPositional);
+            ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(patternType, constraint, isPositional);
 
+            DrlxParseResult drlxParseResult = constraintParser.drlxParse(patternType, patternIdentifier, constraintExpression, isPositional);
+
+            String expression = constraintExpression.getExpression();
             if (drlxParseResult.isSuccess() && (( DrlxParseSuccess ) drlxParseResult).isRequiresSplit()) {
                 int splitPos = expression.indexOf( "&&" );
                 String expr1 = expression.substring( 0, splitPos ).trim();
@@ -150,15 +133,6 @@ public abstract class PatternDSL implements DSLNode {
         }
 
         return patternConstraintParseResults;
-    }
-
-    private String getExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
-        String expression = getConstraintExpression(patternType, constraint, isPositional);
-        int unifPos = expression.indexOf( ":=" );
-        if (unifPos > 0) {
-            expression = expression.substring( unifPos+2 ).trim() + " == " + expression.substring( 0, unifPos ).trim();
-        }
-        return expression;
     }
 
     private int firstNonIdentifierPos(String expr) {

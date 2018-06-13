@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder.generator.expression;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
@@ -39,6 +41,7 @@ import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
@@ -171,5 +174,12 @@ public abstract class AbstractExpressionBuilder {
         final Expression narrowed = narrowExpressionWithBigDecimal(expression, leftType);
         indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+    }
+
+    protected Class<?> getIndexType( TypedExpression left, TypedExpression right ) {
+        return Stream.of(left, right).map(TypedExpression::getType)
+                .filter(Objects::nonNull)
+                .map(ClassUtil::toRawClass)
+                .findFirst().get();
     }
 }

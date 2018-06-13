@@ -837,5 +837,29 @@ public class QueryTest extends BaseModelTest {
         }
     }
 
+    @Test
+    public void testQuerySameNameBinding() throws IOException, ClassNotFoundException {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "query peeps( String name ) \n" +
+                "    Person( name := name ) \n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person("Mario", 44) );
+
+        final List<String> list = new ArrayList<>();
+        QueryResults results = ksession.getQueryResults( "peeps", Variable.v );
+        for (final QueryResultsRow result : results) {
+            list.add((String) result.get("name"));
+        }
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+
+    }
+
 
 }

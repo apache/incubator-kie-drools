@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -96,6 +97,14 @@ public class RuleContext {
             InternalReadAccessor globalExtractor = new GlobalExtractor( global.getName(), objectType );
             return new Declaration( global.getName(), globalExtractor, new Pattern( 0, objectType ) );
         }
+    }
+
+    Declaration getOrCreateDeclaration( Variable variable ) {
+        Declaration declaration = getDeclaration( variable );
+        if (declaration == null) {
+            return new Declaration( variable.getName(), new Pattern( 0, new ClassObjectType( Object.class ) ) );
+        }
+        return declaration;
     }
 
     Declaration getQueryDeclaration( Variable variable ) {

@@ -28,6 +28,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import static org.drools.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 
 public class LegacyAccumulate {
 
@@ -70,7 +71,7 @@ public class LegacyAccumulate {
         final MethodCallExpr accFunctionCall = new MethodCallExpr(null, ACC_FUNCTION_CALL, nodeList(accFunctionName));
 
         final NameExpr bindingVariable = new NameExpr(toVar(basePattern.getIdentifier()));
-        final MethodCallExpr asDSL = new MethodCallExpr(accFunctionCall, "as", nodeList(bindingVariable));
+        final MethodCallExpr asDSL = new MethodCallExpr(accFunctionCall, BIND_AS_CALL, nodeList(bindingVariable));
 
         context.addExpression(asDSL);
     }

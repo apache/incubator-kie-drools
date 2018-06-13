@@ -72,7 +72,11 @@ public class ConstraintParser {
     }
 
     public DrlxParseResult drlxParse(Class<?> patternType, String bindingId, String expression, boolean isPositional) {
-        DrlxExpression drlx = DrlxParseUtil.parseExpression( expression );
+        return drlxParse(patternType, bindingId, new ConstraintExpression(expression), false);
+    }
+
+    public DrlxParseResult drlxParse(Class<?> patternType, String bindingId, ConstraintExpression expression, boolean isPositional) {
+        DrlxExpression drlx = DrlxParseUtil.parseExpression( expression.getExpression() );
         DrlxParseResult drlxParseResult = getDrlxParseResult(patternType, bindingId, expression, drlx.getExpr(), drlx.getBind() != null, isPositional );
 
         drlxParseResult.accept(result -> {
@@ -87,7 +91,7 @@ public class ConstraintParser {
         return drlxParseResult;
     }
 
-    private DrlxParseResult getDrlxParseResult(Class<?> patternType, String bindingId, String expression, Expression drlxExpr, boolean hasBind, boolean isPositional ) {
+    private DrlxParseResult getDrlxParseResult(Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr, boolean hasBind, boolean isPositional ) {
         boolean isEnclosed = false;
         while (drlxExpr instanceof EnclosedExpr) {
             drlxExpr = (( EnclosedExpr ) drlxExpr).getInner();
@@ -98,6 +102,7 @@ public class ConstraintParser {
             drlxExpr = (( MethodCallExpr ) drlxExpr).getArgument( 0 );
         }
 
+        String expression = constraint.getExpression();
         String exprId;
         if ( GENERATE_EXPR_ID ) {
             exprId = context.getExprId( patternType, hasBind ? expression.substring( expression.indexOf( ':' )+1 ).trim() : expression );
@@ -118,16 +123,22 @@ public class ConstraintParser {
                 return new DrlxParseFail( new InvalidExpressionErrorResult( "Unable to parse left part of expression: " + expression ) );
             }
 
+            TypedExpression left = optLeft.get();
             List<String> usedDeclarationsOnLeft = hasBind ? new ArrayList<>( expressionTyperContext.getUsedDeclarations() ) : null;
 
-            TypedExpressionResult rightExpressionResult = expressionTyper.toTypedExpression(binaryExpr.getRight());
-            Optional<TypedExpression> optRight = rightExpressionResult.getTypedExpression();
-            if( !optRight.isPresent()) {
-                return new DrlxParseFail( new ParseExpressionErrorResult(drlxExpr) );
+            TypedExpression right;
+            if (constraint.isNameClashingUnification()) {
+                String name = constraint.getUnificationField();
+                String unificationVariable = context.getOrCreateUnificationId( name );
+                right = new TypedExpression( unificationVariable, patternType, name );
+            } else {
+                TypedExpressionResult rightExpressionResult = expressionTyper.toTypedExpression( binaryExpr.getRight() );
+                Optional<TypedExpression> optRight = rightExpressionResult.getTypedExpression();
+                if ( !optRight.isPresent() ) {
+                    return new DrlxParseFail( new ParseExpressionErrorResult( drlxExpr ) );
+                }
+                right = optRight.get();
             }
-
-            TypedExpression left = optLeft.get();
-            TypedExpression right = optRight.get();
 
             CoercedExpression.CoercedExpressionResult coerced;
             try {
@@ -170,7 +181,7 @@ public class ConstraintParser {
 
             boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( decodeConstraintType )
-                    .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft )
+                    .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft ).setUnification( constraint.isUnification() )
                     .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode).setRequiresSplit( requiresSplit );
         }
 
