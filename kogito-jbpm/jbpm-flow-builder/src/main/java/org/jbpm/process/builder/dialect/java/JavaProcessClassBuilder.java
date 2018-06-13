@@ -48,9 +48,10 @@ public class JavaProcessClassBuilder
 
         final StringBuilder buffer = new StringBuilder();
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
-
-        for ( ImportDeclaration decl : context.getPkg().getImports().values() ) {
-            buffer.append( "import " +  decl.getTarget() + ";" + lineSeparator );
+        if ( context.getProcess() != null && ((org.jbpm.process.core.Process) context.getProcess()).getImports() != null) {
+            for ( String decl : ((org.jbpm.process.core.Process)context.getProcess()).getImports() ) {
+                buffer.append( "import " +  decl + ";" + lineSeparator );
+            }
         }
 
         for ( String systemImport : systemImports ) {
