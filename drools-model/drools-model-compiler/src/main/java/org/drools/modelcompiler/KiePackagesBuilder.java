@@ -460,7 +460,7 @@ public class KiePackagesBuilder {
     }
 
     private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
-        Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
+        Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getOrCreateDeclaration ).toArray( Declaration[]::new );
         EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
         return new EvalCondition(evalExpr, declarations);
     }
@@ -747,7 +747,7 @@ public class KiePackagesBuilder {
                 Declaration[] declarations = new Declaration[vars.length];
                 Declaration unificationDeclaration = null;
                 for (int i = 0; i < vars.length; i++) {
-                    declarations[i] = ctx.getDeclaration( vars[i] );
+                    declarations[i] = ctx.getOrCreateDeclaration( vars[i] );
                     if ( isEqual && declarations[i].getPattern().getObjectType().equals( ClassObjectType.DroolsQuery_ObjectType ) ) {
                         unificationDeclaration = declarations[i];
                     } else if ( pattern.getSource() instanceof MultiAccumulate) {

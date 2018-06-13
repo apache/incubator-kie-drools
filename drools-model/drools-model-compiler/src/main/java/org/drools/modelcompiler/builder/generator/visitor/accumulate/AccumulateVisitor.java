@@ -58,6 +58,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 
 public abstract class AccumulateVisitor {
 
@@ -201,8 +202,8 @@ public abstract class AccumulateVisitor {
         }
 
         if (bindingId != null) {
-            final MethodCallExpr asDSL = new MethodCallExpr( functionDSL, "as" );
-            asDSL.addArgument( new NameExpr( toVar( bindingId ) ) );
+            final MethodCallExpr asDSL = new MethodCallExpr( functionDSL, BIND_AS_CALL );
+            asDSL.addArgument( context.getVarExpr( bindingId ) );
             accumulateDSL.addArgument( asDSL );
         }
 
@@ -346,8 +347,8 @@ public abstract class AccumulateVisitor {
         functionDSL.addArgument(new NameExpr(toVar(inputDescr.getIdentifier())));
 
         final String bindingId = basePattern.getIdentifier();
-        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
-        asDSL.addArgument(new NameExpr(toVar(bindingId)));
+        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
+        asDSL.addArgument( context.getVarExpr( bindingId ) );
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();

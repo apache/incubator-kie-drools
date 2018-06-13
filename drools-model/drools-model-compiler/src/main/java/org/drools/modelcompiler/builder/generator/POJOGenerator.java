@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -152,8 +151,8 @@ public class POJOGenerator {
         
         generatedClass.addConstructor(Modifier.PUBLIC); // No-args ctor
 
-        Map<String, Statement> equalsFieldStatement = new LinkedHashMap<>();
-        Map<String, Statement> hashCodeFieldStatement = new LinkedHashMap<>();
+        List<Statement> equalsFieldStatement = new ArrayList<>();
+        List<Statement> hashCodeFieldStatement = new ArrayList<>();
         List<String> toStringFieldStatement = new ArrayList<>();
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
@@ -186,8 +185,6 @@ public class POJOGenerator {
                             generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
                     field.createSetter();
                     MethodDeclaration getter = field.createGetter();
-                    equalsFieldStatement.put( fieldName, generateEqualsForField( getter, fieldName ) );
-                    hashCodeFieldStatement.put( fieldName, generateHashCodeForField( getter, fieldName ) );
 
                     ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
                     toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
@@ -197,6 +194,8 @@ public class POJOGenerator {
                         if (ann.getName().equalsIgnoreCase( "key" )) {
                             keyFields.add( typeFieldDescr );
                             field.addAnnotation( Key.class.getName() );
+                            equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
+                            hashCodeFieldStatement.add( generateHashCodeForField( getter, fieldName ) );
                         } else if (ann.getName().equalsIgnoreCase( "position" )) {
                             field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + ann.getValue() );
                             hasPositionAnnotation = true;
@@ -239,12 +238,10 @@ public class POJOGenerator {
             }
 
             if (!keyFields.isEmpty()) {
-                equalsFieldStatement.keySet().retainAll( keyFields );
-                hashCodeFieldStatement.keySet().retainAll( keyFields );
+                generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement, hasSuper ) );
+                generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement, hasSuper ) );
             }
 
-            generatedClass.addMember( generateEqualsMethod( generatedClassName, equalsFieldStatement.values(), hasSuper ) );
-            generatedClass.addMember( generateHashCodeMethod( hashCodeFieldStatement.values(), hasSuper ) );
         }
 
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));

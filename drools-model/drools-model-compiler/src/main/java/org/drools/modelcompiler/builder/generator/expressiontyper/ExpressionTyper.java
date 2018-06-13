@@ -265,7 +265,7 @@ public class ExpressionTyper {
             context.addUsedDeclarations(name);
             return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
 
-        } else if (isPositional || ruleContext.getQueryName().isPresent()) {
+        } else if (isPositional || ruleContext.isQuery()) {
             String unificationVariable = ruleContext.getOrCreateUnificationId(name);
             expression = new TypedExpression(unificationVariable, typeCursor, name);
             return of(expression);
