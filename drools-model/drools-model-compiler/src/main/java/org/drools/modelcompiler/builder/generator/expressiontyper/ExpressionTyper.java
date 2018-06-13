@@ -18,6 +18,7 @@ import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.ArrayInitializerExpr;
+import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
@@ -220,6 +221,17 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof ClassExpr ) {
             return of(new TypedExpression(drlxExpr, Class.class));
+        } else if(drlxExpr.isAssignExpr()) {
+            AssignExpr assignExpr = drlxExpr.asAssignExpr();
+
+            final Expression rightSide = assignExpr.getValue();
+
+            return toTypedExpressionRec(rightSide)
+                    .map(e -> {
+                        final AssignExpr newExpression = new AssignExpr(assignExpr.getTarget(), e.getExpression(), assignExpr.getOperator());
+                        return new TypedExpression(newExpression).setType(e.getType());
+                    });
+
         }
 
         throw new UnsupportedOperationException();
@@ -305,7 +317,7 @@ public class ExpressionTyper {
         final Node firstChild = childrenNodes.get(0);
 
         boolean isInLineCast = firstChild instanceof InlineCastExpr;
-        final java.lang.reflect.Type originalTypeCursor;
+        java.lang.reflect.Type originalTypeCursor;
         final Node firstNode;
         if (isInLineCast) {
             InlineCastExpr inlineCast = (InlineCastExpr) firstChild;
@@ -314,6 +326,12 @@ public class ExpressionTyper {
         } else {
             originalTypeCursor = patternType;
             firstNode = firstChild;
+        }
+
+        if(originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
+            // try infer type  from the declarations
+            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstChild.toString());
+            originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
         final Optional<TypedExpressionCursor> teCursor = processFirstNode(drlxExpr, childrenNodes, firstNode, isInLineCast, originalTypeCursor);

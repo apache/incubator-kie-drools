@@ -547,7 +547,7 @@ public class DrlxParseUtil {
     public static void forceCastForName(String nameRef, Type type, Expression expression) {
         List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
         for (NameExpr n : allNameExprForName) {
-            n.getParentNode().get().replace(n, new CastExpr(type, n));
+            n.getParentNode().get().replace(n, new EnclosedExpr(new CastExpr(type, n)));
         }
     }
 
