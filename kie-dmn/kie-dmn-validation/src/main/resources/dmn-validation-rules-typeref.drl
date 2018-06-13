@@ -31,7 +31,7 @@ global org.kie.dmn.validation.MessageReporter reporter;
 
 rule VARIABLE_NOTYPEREF
 when
-  $ce1 : InformationItem( typeRef == null, !(parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
+  $ce1 : InformationItem( typeRef == null, !(parent instanceof BusinessKnowledgeModel || parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
 then
   reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_VARIABLE, $ce1.getName(), $ce1.getParentDRDElement().getIdentifierString() );
 end

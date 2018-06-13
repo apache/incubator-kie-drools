@@ -159,4 +159,13 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
+    
+    @Test
+    public void testBKM_WITH_NO_TYPEREF_IS_OK_DefinitionsInput() {
+        // DROOLS-2631
+        final List<DMNMessage> validate = validator.validate(
+                getDefinitions("typeref/BKM_WITH_NO_TYPEREF_IS_OK.dmn", "http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d", "Drawing 1"),
+                VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
 }
