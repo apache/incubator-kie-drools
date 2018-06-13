@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -129,7 +130,7 @@ public class DMNModelImpl
             return null;
         }
         for ( InputDataNode in : this.inputs.values() ) {
-            if ( in.getName() != null && name.equals( in.getName() ) ) {
+            if (Objects.equals(name, in.getName())) {
                 return in;
             }
         }
@@ -164,7 +165,7 @@ public class DMNModelImpl
             return null;
         }
         for ( DecisionNode dn : this.decisions.values() ) {
-            if (dn.getName() != null && name.equals(dn.getName())) {
+            if (Objects.equals(name, dn.getName())) {
                 return dn;
             }
         }
@@ -211,7 +212,7 @@ public class DMNModelImpl
             return null;
         }
         for ( BusinessKnowledgeModelNode bkm : this.bkms.values() ) {
-            if (bkm.getName() != null && name.equals(bkm.getName())) {
+            if (Objects.equals(name, bkm.getName())) {
                 return bkm;
             }
         }
@@ -251,7 +252,7 @@ public class DMNModelImpl
             return null;
         }
         for ( ItemDefNode in : this.itemDefs.values() ) {
-            if ( in.getName() != null && name.equals( in.getName() ) ) {
+            if (Objects.equals(name, in.getName())) {
                 return in;
             }
         }
