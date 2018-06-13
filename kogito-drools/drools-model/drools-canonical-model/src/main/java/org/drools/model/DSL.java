@@ -28,6 +28,7 @@ import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.Operator;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
@@ -56,6 +57,7 @@ import org.drools.model.impl.EntryPointImpl;
 import org.drools.model.impl.From0Impl;
 import org.drools.model.impl.From1Impl;
 import org.drools.model.impl.From2Impl;
+import org.drools.model.impl.From3Impl;
 import org.drools.model.impl.GlobalImpl;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -201,6 +203,10 @@ public class DSL {
         return new UnitDataImpl( type, name );
     }
 
+    public static <T> From<T> from( T value ) {
+        return from( () -> value );
+    }
+
     public static <T> From<T> from( Variable<T> variable ) {
         return new From1Impl<>( variable );
     }
@@ -213,8 +219,12 @@ public class DSL {
         return new From1Impl<>( variable, new Function1.Impl<>(provider) );
     }
 
-    public static <T,U> From<T> from( Variable<T> var1, Variable<U> var2, Function2<T, U, ?> provider ) {
+    public static <A,B> From<A> from( Variable<A> var1, Variable<B> var2, Function2<A, B, ?> provider ) {
         return new From2Impl<>( var1, var2, new Function2.Impl<>(provider) );
+    }
+
+    public static <A,B,C> From<A> from( Variable<A> var1, Variable<B> var2, Variable<C> var3, Function3<A, B, C, ?> provider ) {
+        return new From3Impl<>( var1, var2, var3, new Function3.Impl<>(provider) );
     }
 
     public static <T> From<T> reactiveFrom( Variable<T> variable, Function1<T, ?> provider ) {

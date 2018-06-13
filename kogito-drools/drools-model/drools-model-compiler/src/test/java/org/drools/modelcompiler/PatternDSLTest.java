@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.drools.modelcompiler.dsl.pattern.D;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -633,4 +635,64 @@ public class PatternDSLTest {
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
     }
+
+    @Test
+    public void testQueryWithDyanmicInsert() throws IOException, ClassNotFoundException {
+        org.drools.model.Global<java.util.List> var_list = globalOf(java.util.List.class,
+                "org.drools.compiler.test",
+                "list");
+
+        org.drools.model.Query3Def<org.drools.modelcompiler.domain.Person, java.lang.String, Integer> queryDef_peeps = query("org.drools.compiler.test",
+                "peeps",
+                org.drools.modelcompiler.domain.Person.class,
+                "$p",
+                java.lang.String.class,
+                "$name",
+                int.class,
+                "$age");
+
+        org.drools.model.Query peeps_build = queryDef_peeps.build(D.pattern(queryDef_peeps.getArg1(), D.from(queryDef_peeps.getArg2(), queryDef_peeps.getArg3(), ($name, $age) -> new Person($name, $age))));
+
+        final org.drools.model.Variable<java.lang.String> var_$n1 = D.declarationOf(java.lang.String.class,
+                "$n1");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$pattern_Person$2$ = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+                "$pattern_Person$2$");
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+                "$p");
+        org.drools.model.Rule rule = D.rule("org.drools.compiler.test",
+                "x1").build(D.pattern(var_$n1),
+                D.not(D.pattern(var_$pattern_Person$2$).expr("$expr$2$",
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(),
+                                "darth"),
+                        D.alphaIndexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                0,
+                                _this -> _this.getName(),
+                                "darth"),
+                        D.reactOn("name"))),
+                queryDef_peeps.call(true,
+                        var_$p,
+                        var_$n1,
+                        D.valueOf(100)),
+                D.on(var_list,
+                        var_$p).execute((list, $p) -> {
+                    list.add($p);
+                }));
+
+        Model model = new ModelImpl().addRule( rule ).addQuery( peeps_build ).addGlobal( var_list );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        final List<Person> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Person p1 = new Person("darth", 100);
+
+        ksession.insert("darth");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals(p1, list.get(0));
+
+    }
+
 }

@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -13,8 +14,11 @@ import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -70,6 +74,16 @@ public class FromVisitor {
             return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
         }
 
+        if (parsedExpression instanceof ObjectCreationExpr ) {
+            return fromConstructorExpr(expression, (ObjectCreationExpr) parsedExpression);
+        }
+
+        if (parsedExpression instanceof LiteralExpr ) {
+            MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+            fromCall.addArgument( parsedExpression );
+            return of(fromCall);
+        }
+
         return Optional.empty();
     }
 
@@ -79,16 +93,13 @@ public class FromVisitor {
         Collection<String> usedDeclarations = new ArrayList<>();
 
         for (String expr : expressions.split( "," )) {
-            Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expr);
-            String bindingId = optContainsBinding.orElse(expr);
-            fromCall.addArgument(new NameExpr(toVar(bindingId)));
-            Expression exprArg = createArg( expr, optContainsBinding, bindingId );
-            if (exprArg != null) {
-                asListCall.addArgument( exprArg );
-            } else {
-                asListCall.addArgument( expr );
+            Optional<DeclarationSpec> optContainsBinding = ruleContext.getDeclarationById( expr );
+            if (optContainsBinding.isPresent()) {
+                String bindingId = optContainsBinding.get().getBindingId();
+                fromCall.addArgument(ruleContext.getVarExpr(bindingId));
                 usedDeclarations.add( expr );
             }
+            asListCall.addArgument(expr);
         }
 
         fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true ) );
@@ -96,11 +107,24 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromMethodExpr(String expression, MethodCallExpr parsedExpression) {
+        return fromExpressionViaScope(expression, parsedExpression).map(Optional::of)
+                .orElseGet(() -> fromExpressionUsingArguments(expression, parsedExpression));
+    }
 
-        final Optional<Expression> fromScope = fromExpressionViaScope(expression, parsedExpression);
-        final Optional<Expression> fromCall = fromExpressionUsingArguments(expression, parsedExpression);
+    private Optional<Expression> fromConstructorExpr(String expression, ObjectCreationExpr parsedExpression) {
+        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        List<String> bindingIds = new ArrayList<>();
 
-        return fromScope.map(Optional::of).orElse(fromCall);
+        for (Expression argument : parsedExpression.getArguments()) {
+            final String argumentName = argument.toString();
+            if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+                bindingIds.add(argumentName);
+                fromCall.addArgument(ruleContext.getVarExpr(argumentName));
+            }
+        }
+
+        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true ) );
+        return of( fromCall );
     }
 
     private Optional<Expression> fromFieldOrName(String expression) {
@@ -136,7 +160,7 @@ public class FromVisitor {
         return fromCall;
     }
 
-    private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {
+    private Optional<Expression> fromExpressionUsingArguments(String expression, NodeWithArguments<?> methodCallExpr) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         String bindingId = null;
 
@@ -146,14 +170,14 @@ public class FromVisitor {
                 if (bindingId == null) {
                     bindingId = argumentName;
                 }
-                fromCall.addArgument(new NameExpr(toVar(argumentName)));
+                fromCall.addArgument(ruleContext.getVarExpr(argumentName));
             }
         }
 
         return bindingId != null ? of(addLambdaToFromExpression( expression, of(bindingId), bindingId, fromCall )) : Optional.empty();
     }
 
-    private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {
+    private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
         final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
             if(e instanceof NameExpr) {
                 final String name = ((NameExpr) e).getName().toString();
@@ -171,7 +195,7 @@ public class FromVisitor {
 
     private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
-        fromCall.addArgument(new NameExpr(toVar(bindingId)));
+        fromCall.addArgument(ruleContext.getVarExpr(bindingId));
         return addLambdaToFromExpression( expression, optContainsBinding, bindingId, fromCall );
     }
 

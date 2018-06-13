@@ -12,7 +12,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.QueryGenerator;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
@@ -30,14 +30,14 @@ class PatternDSLPattern extends PatternDSL {
 
     @Override
     public void buildPattern() {
-        initPattern();
+        DeclarationSpec declarationSpec = initPattern();
 
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression( addWatchToPattern( createPatternExpression(pattern) ) );
+            context.addExpression( addWatchToPattern( createPatternExpression(pattern, declarationSpec) ) );
         } else {
             if (!context.hasErrors()) {
                 final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-                MethodCallExpr patternExpression = createPatternExpression(pattern);
+                MethodCallExpr patternExpression = createPatternExpression(pattern, declarationSpec);
 
                 List<Expression> exprs = new ArrayList<>();
                 context.pushExprPointer(exprs::add);
@@ -73,9 +73,12 @@ class PatternDSLPattern extends PatternDSL {
         return patternExpression;
     }
 
-    private MethodCallExpr createPatternExpression(PatternDescr pattern) {
+    private MethodCallExpr createPatternExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
         MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
-        dslExpr.addArgument( QueryGenerator.substituteBindingWithQueryParameter(context, pattern.getIdentifier()) );
+        dslExpr.addArgument( context.getVarExpr( pattern.getIdentifier()) );
+        if (context.isQuery() && declarationSpec.getDeclarationSource().isPresent()) {
+            dslExpr.addArgument( declarationSpec.getDeclarationSource().get() );
+        }
         return dslExpr;
     }
 

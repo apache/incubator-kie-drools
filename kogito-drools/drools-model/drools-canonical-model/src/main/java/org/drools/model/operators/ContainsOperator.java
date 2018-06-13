@@ -29,9 +29,72 @@ public class ContainsOperator implements Operator.SingleValue<Object, Object> {
         if ( a instanceof Collection ) {
             return (( Collection ) a).contains( b );
         }
+        if ( a.getClass().isArray() && evalArray( a, b ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean evalArray( Object a, Object b ) {
         if (a instanceof Object[]) {
             for (Object o : (( Object[] ) a)) {
                 if (o.equals( b )) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof int[]) {
+            for (int o : (( int[] ) a)) {
+                if (o == (int)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof long[]) {
+            for (long o : (( long[] ) a)) {
+                if (o == (long)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof double[]) {
+            for (double o : (( double[] ) a)) {
+                if (o == (double)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof float[]) {
+            for (float o : (( float[] ) a)) {
+                if (o == (float)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof boolean[]) {
+            for (boolean o : (( boolean[] ) a)) {
+                if (o == (boolean)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof char[]) {
+            for (char o : (( char[] ) a)) {
+                if (o == (char)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof byte[]) {
+            for (byte o : (( byte[] ) a)) {
+                if (o == (byte)b) {
+                    return true;
+                }
+            }
+        }
+        if (a instanceof short[]) {
+            for (short o : (( short[] ) a)) {
+                if (o == (short)b) {
                     return true;
                 }
             }

@@ -45,7 +45,7 @@ public class ArrayTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -376,7 +376,7 @@ public class ArrayTest {
     @Test
     public void testContainsFloatArray() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("array-test", kieBaseTestConfiguration,
-                                                                         getDrl("Float", false, "10"));
+                                                                         getDrl("Float", false, "10f"));
         final KieSession kieSession = kbase.newKieSession();
         try {
             final List list = new ArrayList();
@@ -399,7 +399,7 @@ public class ArrayTest {
     @Test
     public void testNotContainsFloatArray() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("array-test", kieBaseTestConfiguration,
-                                                                         getDrl("Float", true, "10"));
+                                                                         getDrl("Float", true, "10f"));
         final KieSession kieSession = kbase.newKieSession();
         try {
             final List list = new ArrayList();

@@ -561,4 +561,31 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals(1, list.size());
     }
+
+    public static class Primitives {
+        public char[] getCharArray() {
+            return new char[0];
+        }
+    }
+
+    @Test
+    public void testPrimitiveArray() {
+        String str =
+                "import " + Primitives.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    Primitives( $c : charArray )\n" +
+                "then\n" +
+                "    list.add($c);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Primitives() );
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+    }
 }

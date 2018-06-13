@@ -46,10 +46,12 @@ public abstract class PatternDSL implements DSLNode {
         this.patternType = patternType;
     }
 
-    public void initPattern() {
+    public DeclarationSpec initPattern() {
         generatePatternIdentifierIfMissing();
         final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
-        context.addDeclaration(new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource));
+        DeclarationSpec declarationSpec = new DeclarationSpec(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource);
+        context.addDeclaration(declarationSpec);
+        return declarationSpec;
     }
 
     protected static String getConstraintExpression(Class<?> patternType, BaseDescr constraint, boolean isPositional) {
@@ -61,7 +63,9 @@ public abstract class PatternDSL implements DSLNode {
     }
 
     protected static boolean isPositional(BaseDescr constraint) {
-        return constraint instanceof ExprConstraintDescr && ((ExprConstraintDescr) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL;
+        return constraint instanceof ExprConstraintDescr &&
+                ((ExprConstraintDescr) constraint).getType() == ExprConstraintDescr.Type.POSITIONAL &&
+                !constraint.getText().contains( ":=" );
     }
 
     static String getFieldAtPosition(Class<?> patternType, int position) {
@@ -93,8 +97,10 @@ public abstract class PatternDSL implements DSLNode {
             throw new RuntimeException( e );
         }
         Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, packageModel, patternType)::visit);
-        Optional<Expression> declarationSourceWindow = source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
-        return declarationSourceFrom.isPresent() ? declarationSourceFrom : declarationSourceWindow;
+        if (declarationSourceFrom.isPresent()) {
+            return declarationSourceFrom;
+        }
+        return source.flatMap(new WindowReferenceGenerator(packageModel, context.getTypeResolver())::visit);
     }
 
     protected void generatePatternIdentifierIfMissing() {

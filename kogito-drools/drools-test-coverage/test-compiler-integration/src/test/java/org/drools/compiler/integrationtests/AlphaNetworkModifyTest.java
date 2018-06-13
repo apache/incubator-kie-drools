@@ -49,7 +49,7 @@ public class AlphaNetworkModifyTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     private ObjectTypeNode getObjectTypeNode(final KieBase kbase, final String nodeName) {
@@ -152,7 +152,6 @@ public class AlphaNetworkModifyTest {
             "rule x4 \n" +
             "when \n" +
             "    $ch : Cheese() from list\n" +
-            "    eval( $ch != null ) \n" +
             "then \n" +
             "end  \n";
 

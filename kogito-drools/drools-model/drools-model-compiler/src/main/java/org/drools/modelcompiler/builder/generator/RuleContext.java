@@ -22,6 +22,8 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
@@ -34,6 +36,9 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 
 public class RuleContext {
 
@@ -260,6 +265,10 @@ public class RuleContext {
         this.queryName = queryName;
     }
 
+    public boolean isQuery() {
+        return queryName.isPresent();
+    }
+
     public Map<String, String> getNamedConsequences() {
         return namedConsequences;
     }
@@ -316,6 +325,22 @@ public class RuleContext {
 
     public Set<String> getUnusableOrBinding() {
         return unusableOrBinding;
+    }
+
+    public Expression getVarExpr(String x) {
+        if (!isQuery()) {
+            new NameExpr(toVar(x));
+        }
+
+        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals(x));
+        return optQueryParameter.map(qp -> {
+
+            final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
+
+            final int queryParameterIndex = getQueryParameters().indexOf(qp) + 1;
+            return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
+
+        }).orElse(new NameExpr(toVar(x)));
     }
 }
 
