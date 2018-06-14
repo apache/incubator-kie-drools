@@ -38,12 +38,12 @@ public class CoercedExpression {
 
     static {
         // https://docs.oracle.com/javase/specs/jls/se7/html/jls-5.html#jls-5.1.3
-        narrowingTypes.put(Short.class, Arrays.asList(Byte.class, Character.class));
-        narrowingTypes.put(Character.class, Arrays.asList(Byte.class, Short.class));
-        narrowingTypes.put(Integer.class, Arrays.asList(Byte.class, Short.class, Character.class));
-        narrowingTypes.put(Long.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class));
-        narrowingTypes.put(Float.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class, Long.class));
-        narrowingTypes.put(Double.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class, Long.class, Float.class));
+        narrowingTypes.put(short.class, Arrays.asList(Byte.class, Character.class));
+        narrowingTypes.put(char.class, Arrays.asList(Byte.class, Short.class));
+        narrowingTypes.put(int.class, Arrays.asList(Byte.class, Short.class, Character.class));
+        narrowingTypes.put(long.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class));
+        narrowingTypes.put(float.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class, Long.class));
+        narrowingTypes.put(double.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class, Long.class, Float.class));
     }
 
     public CoercedExpression(TypedExpression left, TypedExpression right) {
@@ -146,10 +146,7 @@ public class CoercedExpression {
     }
 
     private boolean canBeNarrowed(Class<?> leftType, Class<?> rightType) {
-        final Class<?> rightNonPrimitive = toNonPrimitiveType(rightType);
-        final Class<?> leftNonPrimitive = toNonPrimitiveType(leftType);
-
-        return Optional.ofNullable(narrowingTypes.get(rightNonPrimitive)).map(a -> a.contains(leftNonPrimitive)).orElse(false);
+        return Optional.ofNullable(narrowingTypes.get(rightType)).map(a -> a.contains(toNonPrimitiveType(leftType))).orElse(false);
     }
 
     public static class CoercedExpressionResult {
