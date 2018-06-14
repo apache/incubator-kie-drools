@@ -287,7 +287,7 @@ public abstract class AccumulateVisitor {
         List<String> contextFieldNames = new ArrayList<>();
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         BlockStmt initBlock = JavaParser.parseBlock("{" + descr.getInitCode() + "}");
-        List<DeclarationSpec> mvelDeclarations = new ArrayList<>();
+        List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
         for (Statement stmt : initBlock.getStatements()) {
             final BlockStmt initMethodBody = initMethod.getBody().get();
             if (stmt instanceof ExpressionStmt && ((ExpressionStmt) stmt).getExpression() instanceof VariableDeclarationExpr) {
@@ -299,6 +299,7 @@ public abstract class AccumulateVisitor {
                     final Optional<Expression> optInitializer = vd.getInitializer();
                     final Optional<Statement> initializer = createInitializer(variableName, optInitializer);
                     initializer.ifPresent(initMethodBody::addStatement);
+                    accumulateDeclarations.add(new DeclarationSpec(variableName, Object.class));
                 }
             } else {
                 if(stmt.isExpressionStmt()) {
@@ -323,7 +324,7 @@ public abstract class AccumulateVisitor {
                             templateContextClass.addField(type, variableName, Modifier.PUBLIC);
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
-                            mvelDeclarations.add(new DeclarationSpec(variableName, Object.class));
+                            accumulateDeclarations.add(new DeclarationSpec(variableName, Object.class));
                         }
 
                     }
@@ -349,7 +350,7 @@ public abstract class AccumulateVisitor {
 
 
 
-        for(DeclarationSpec d : mvelDeclarations) {
+        for(DeclarationSpec d : accumulateDeclarations) {
             context2.addDeclaration(d);
         }
         writeAccumulateMethod(contextFieldNames, singleAccumulateType, accumulateMethod, actionBlock);
