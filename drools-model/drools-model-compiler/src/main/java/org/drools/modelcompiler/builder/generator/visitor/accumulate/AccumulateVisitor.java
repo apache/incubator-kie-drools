@@ -105,7 +105,7 @@ public abstract class AccumulateVisitor {
                 visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input);
             } else if (input instanceof AndDescr) {
 
-                BlockStmt actionBlock = getActionBlock(descr);
+                BlockStmt actionBlock = parseBlock(descr.getActionCode());
                 Collection<String> allNamesInActionBlock = collectNamesInBlock(context, actionBlock);
 
                 final Optional<BaseDescr> bindingUsedInAccumulate = ((AndDescr) input).getDescrs().stream().filter(b -> {
@@ -337,7 +337,7 @@ public abstract class AccumulateVisitor {
 
         final Type singleAccumulateType;
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
-        BlockStmt actionBlock = getActionBlock(descr);
+        BlockStmt actionBlock = parseBlock(descr.getActionCode());
         Collection<String> allNamesInActionBlock = collectNamesInBlock(context2, actionBlock);
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
@@ -348,6 +348,19 @@ public abstract class AccumulateVisitor {
             return;
         }
 
+        Optional<MethodDeclaration> optReverseMethod = Optional.empty();
+        if(descr.getReverseCode() != null) {
+            BlockStmt reverseBlock = parseBlock(descr.getReverseCode());
+            Collection<String> allNamesInReverseBlock = collectNamesInBlock(context2, reverseBlock);
+            if (allNamesInReverseBlock.size() != 1) {
+                new LegacyAccumulate(context, descr, basePattern).build();
+                return;
+            } else {
+                MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
+                reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
+                optReverseMethod = Optional.of(reverseMethod);
+            }
+        }
 
 
         for(DeclarationSpec d : accumulateDeclarations) {
@@ -367,20 +380,12 @@ public abstract class AccumulateVisitor {
         MethodDeclaration getResultTypeMethod = templateClass.getMethodsByName("getResultType").get(0);
         getResultTypeMethod.getBody().get().addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
 
-        if (descr.getReverseCode() != null) {
+        if (optReverseMethod.isPresent()) {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return true;"));
 
-            MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
-            BlockStmt reverseBlock = JavaParser.parseBlock("{" + descr.getReverseCode() + "}");
-            Collection<String> allNamesInReverseBlock = collectNamesInBlock(context2, reverseBlock);
-            if (allNamesInReverseBlock.size() == 1) {
-                reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
-            } else {
-                new LegacyAccumulate(context, descr, basePattern).build();
-                return;
-            }
-            writeAccumulateMethod(contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock);
+            BlockStmt reverseBlock = parseBlock(descr.getReverseCode());
+            writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return false;"));
@@ -391,6 +396,8 @@ public abstract class AccumulateVisitor {
 
         // add resulting accumulator class into the package model
         this.packageModel.addGeneratedPOJO(templateClass);
+        System.out.println("templateClass = " + templateClass);
+
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
         functionDSL.addArgument(new ClassExpr(JavaParser.parseType(targetClassName)));
@@ -404,9 +411,8 @@ public abstract class AccumulateVisitor {
         context.popExprPointer();
     }
 
-    private BlockStmt getActionBlock(AccumulateDescr descr) {
-        final String actionCode = descr.getActionCode();
-        final String withTerminator = actionCode.endsWith(";") ? actionCode : actionCode + ";";
+    private BlockStmt parseBlock(String block) {
+        final String withTerminator = block.endsWith(";") ? block : block + ";";
         return JavaParser.parseBlock("{" + withTerminator + "}");
     }
 
