@@ -98,6 +98,17 @@ public class DMNRuntimeImpl
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
+    
+    @Override
+    public DMNModel getModelById(String namespace, String modelId) {
+        InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
+        if( kpkg == null ) {
+            return null;
+        }
+        Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
+        DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
+        return dmnpkg != null ? dmnpkg.getModelById( modelId ) : null;
+    }
 
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {

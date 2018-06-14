@@ -71,6 +71,17 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     public DMNModel getModel(String name){
         return models.get( name );
     }
+    
+    @Override
+    public DMNModel getModelById(String id){
+        for (DMNModel model : models.values()) {
+            if (model.getDefinitions().getId().equals(id)) {
+                return model;
+            }
+        }
+        
+        return null;
+    }
 
     @Override
     public Map<String, DMNModel> getAllModels() {
