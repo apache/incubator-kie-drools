@@ -2024,5 +2024,14 @@ public class DMNRuntimeTest {
         assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
         assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
     }
+    
+    @Test
+    public void testModelById() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "simple-item-def.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModelById( "https://github.com/kiegroup/kie-dmn/itemdef", "_simple-item-def" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+    }
 }
 
