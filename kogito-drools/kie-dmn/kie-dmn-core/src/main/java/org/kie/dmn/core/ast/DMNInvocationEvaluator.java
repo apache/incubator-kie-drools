@@ -30,7 +30,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -88,7 +87,7 @@ public class DMNInvocationEvaluator
         final List<FEELEvent> events = new ArrayList<>();
         DMNResultImpl result = (DMNResultImpl) dmnr;
         DMNContext previousContext = result.getContext();
-        DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
+        DMNContext dmnContext = previousContext.clone();
         result.setContext( dmnContext );
         Object invocationResult = null;
 

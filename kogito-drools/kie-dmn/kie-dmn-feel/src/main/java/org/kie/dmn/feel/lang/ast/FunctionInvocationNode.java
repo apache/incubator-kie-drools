@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -97,7 +98,12 @@ public class FunctionInvocationNode
             try {
                 Object newRoot = ctx.getValue(names.get(0));
                 ctx.enterFrame();
-                ctx.setRootObject(newRoot);
+                try {
+                    Map<String, Object> asMap = ((Map<String, Object>) newRoot);
+                    asMap.forEach(ctx::setValue);
+                } catch (ClassCastException e) {
+                    ctx.setRootObject(newRoot); // gracefully handle the less common scenario.
+                }
                 return invokeTheFunction(names.subList(1, names.size()), fn, ctx, params);
             } finally {
                 ctx.exitFrame();

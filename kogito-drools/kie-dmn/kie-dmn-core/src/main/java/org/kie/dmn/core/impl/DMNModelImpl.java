@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -129,7 +130,7 @@ public class DMNModelImpl
             return null;
         }
         for ( InputDataNode in : this.inputs.values() ) {
-            if ( in.getName() != null && name.equals( in.getName() ) ) {
+            if (Objects.equals(name, in.getName())) {
                 return in;
             }
         }
@@ -142,12 +143,20 @@ public class DMNModelImpl
     }
 
     public void addDecision(DecisionNode dn) {
-        decisions.put( dn.getId(), dn );
+        decisions.put(computeDRGElementModelLocalId(dn), dn);
+    }
+
+    private String computeDRGElementModelLocalId(DMNNode node) {
+        if (node.getModelNamespace().equals(definitions.getNamespace())) {
+            return node.getId();
+        } else {
+            return node.getModelNamespace() + "#" + node.getId();
+        }
     }
 
     @Override
     public DecisionNode getDecisionById(String id) {
-        return this.decisions.get( id );
+        return this.decisions.get(id);
     }
 
     @Override
@@ -156,7 +165,7 @@ public class DMNModelImpl
             return null;
         }
         for ( DecisionNode dn : this.decisions.values() ) {
-            if (dn.getName() != null && name.equals(dn.getName()) && getNamespace().equals(dn.getModelNamespace())) {
+            if (Objects.equals(name, dn.getName())) {
                 return dn;
             }
         }
@@ -165,7 +174,7 @@ public class DMNModelImpl
 
     @Override
     public Set<DecisionNode> getDecisions() {
-        return this.decisions.values().stream().collect( Collectors.toSet() );
+        return this.decisions.values().stream().collect(Collectors.toSet());
     }
 
     @Override
@@ -189,7 +198,7 @@ public class DMNModelImpl
     }
 
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
-        bkms.put( bkm.getId(), bkm );
+        bkms.put(computeDRGElementModelLocalId(bkm), bkm);
     }
 
     @Override
@@ -203,7 +212,7 @@ public class DMNModelImpl
             return null;
         }
         for ( BusinessKnowledgeModelNode bkm : this.bkms.values() ) {
-            if ( bkm.getName() != null && name.equals( bkm.getName() ) ) {
+            if (Objects.equals(name, bkm.getName())) {
                 return bkm;
             }
         }
@@ -212,7 +221,7 @@ public class DMNModelImpl
 
     @Override
     public Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels() {
-        return this.bkms.values().stream().collect( Collectors.toSet() );
+        return this.bkms.values().stream().collect(Collectors.toSet());
     }
 
     private void collectRequiredInputs(Collection<DMNNode> deps, Set<InputDataNode> inputs) {
@@ -243,7 +252,7 @@ public class DMNModelImpl
             return null;
         }
         for ( ItemDefNode in : this.itemDefs.values() ) {
-            if ( in.getName() != null && name.equals( in.getName() ) ) {
+            if (Objects.equals(name, in.getName())) {
                 return in;
             }
         }
@@ -372,6 +381,7 @@ public class DMNModelImpl
         this.messages  = compiledModel.messages  ;
         this.types     = compiledModel.types     ;
         this.runtimeTypeCheck = compiledModel.runtimeTypeCheck;
+        this.importAliases = compiledModel.importAliases;
     }
 
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {

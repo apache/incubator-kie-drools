@@ -141,6 +141,9 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public Map<String, Object> getAllValues() {
         Map<String, Object> values = new HashMap<>(  );
+        if (stack.peek().getRootObject() != null) {
+            throw new RuntimeException();
+        }
         Iterator<ExecutionFrame> it = stack.descendingIterator();
         while ( it.hasNext() ) {
             values.putAll( it.next().getAllValues() );

@@ -18,7 +18,6 @@ package org.kie.dmn.core.imports;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -45,26 +44,87 @@ public class ImportsTest {
         DMNModel importedModel = runtime.getModel("http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
                                                   "Imported Model");
         assertThat(importedModel, notNullValue());
-        for (DMNMessage message : importedModel.getMessages()) {
-            LOG.debug("1 {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
 
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13",
                                              "Import BKM and have a Decision Ctx with DT");
         assertThat(dmnModel, notNullValue());
-        for (DMNMessage message : dmnModel.getMessages()) {
-            LOG.debug("2 {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
         DMNContext context = runtime.newContext();
         context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
-        for (DMNMessage message : evaluateAll.getMessages()) {
-            LOG.debug("e {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("A Decision Ctx with DT").getResult(), is("Respectfully, Hello John!"));
+    }
+    
+    @Test
+    public void testImport2BKMs() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_say_hello_with_2_bkms.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Saying_hello_2_bkms.dmn");
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a",
+                                                  "Saying hello 2 bkms");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe",
+                                             "Do say hello with 2 bkms");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = runtime.newContext();
+        context.set("Person name", "John");
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Say hello decision").getResult(), is("Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult(), is("Hello"));
+    }
+
+    @Test
+    public void testImport3Levels() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("L3_Do_say_hello.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Do_say_hello_with_2_bkms.dmn",
+                                                                                 "Saying_hello_2_bkms.dmn");
+
+        if (LOG.isDebugEnabled()) {
+            runtime.addListener(DMNRuntimeUtil.createListener());
+        }
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a",
+                                                  "Saying hello 2 bkms");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe",
+                                             "Do say hello with 2 bkms");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNModel dmnModelL3 = runtime.getModel("http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c",
+                                               "L3 Do say hello");
+        assertThat(dmnModelL3, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModelL3.getMessages()), dmnModelL3.hasErrors(), is(false));
+
+        DMNContext context = runtime.newContext();
+        context.set("Another Name", "Bob");
+        context.set("L2import", mapOf(entry("Person name", "John")));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModelL3, context);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("L3 decision").getResult(), is("Hello, Bob"));
+        assertThat(evaluateAll.getDecisionResultByName("L3 view on M2").getResult(), is("Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("L3 what about hello").getResult(), is("Hello"));
     }
 
     @Test
@@ -76,26 +136,23 @@ public class ImportsTest {
         DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce",
                                                   "Spell Greeting");
         assertThat(importedModel, notNullValue());
-        for (DMNMessage message : importedModel.getMessages()) {
-            LOG.debug("1 {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
 
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392",
                                              "Import Spell Greeting");
         assertThat(dmnModel, notNullValue());
-        for (DMNMessage message : dmnModel.getMessages()) {
-            LOG.debug("2 {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
         DMNContext context = runtime.newContext();
         context.set("Person Name", "John");
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
-        for (DMNMessage message : evaluateAll.getMessages()) {
-            LOG.debug("e {}", message);
-        }
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Say the Greeting to Person").getResult(), is("Hello, John"));
     }
 
+
 }
+
