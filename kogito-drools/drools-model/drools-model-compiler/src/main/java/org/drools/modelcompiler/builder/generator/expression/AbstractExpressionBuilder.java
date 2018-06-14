@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
@@ -34,6 +35,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -142,23 +144,39 @@ public abstract class AbstractExpressionBuilder {
         return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
     }
 
-    protected Expression narrowExpressionWithBigDecimal(TypedExpression right, java.lang.reflect.Type leftType) {
+    protected Expression narrowExpressionToType( TypedExpression right, java.lang.reflect.Type leftType ) {
         Expression expression = right.getExpression();
-        if(expression instanceof BigDecimalLiteralExpr) {
-            expression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
-        } else if (expression instanceof LiteralExpr && leftType.equals(BigDecimal.class)) {
-            final BigDecimal bigDecimal = new BigDecimal(expression.toString());
-            expression = toNewBigDecimalExpr(new StringLiteralExpr(bigDecimal.toString()));
-        } else if (expression instanceof NameExpr && leftType.equals(BigDecimal.class)) {
-            expression = toNewBigDecimalExpr(expression);
-        } else if (expression instanceof BigIntegerLiteralExpr) {
-            expression = toNewBigIntegerExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
-        } else if (expression instanceof LiteralExpr && leftType.equals(BigInteger.class)) {
-            final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
-            expression = toNewBigIntegerExpr(new StringLiteralExpr(bigInteger.toString()));
-        } else if (expression instanceof NameExpr && leftType.equals(BigInteger.class)) {
-            expression = toNewBigIntegerExpr(expression);
+
+        if (leftType.equals(Double.class)) {
+            expression = new CastExpr( PrimitiveType.doubleType(), expression );
+        } else if (leftType.equals(Long.class)) {
+            if (right.getType().equals( Double.class ) || right.getType().equals( double.class )) {
+                expression = new MethodCallExpr( expression, "longValue" );
+            } else {
+                expression = new CastExpr( PrimitiveType.longType(), expression );
+            }
+
+        } else if (expression instanceof LiteralExpr) {
+            if(expression instanceof BigDecimalLiteralExpr) {
+                expression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
+            } else if (expression instanceof BigIntegerLiteralExpr) {
+                expression = toNewBigIntegerExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
+            } else if (leftType.equals(BigDecimal.class)) {
+                final BigDecimal bigDecimal = new BigDecimal( expression.toString() );
+                expression = toNewBigDecimalExpr( new StringLiteralExpr( bigDecimal.toString() ) );
+            } else if (leftType.equals(BigInteger.class)) {
+                final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
+                expression = toNewBigIntegerExpr(new StringLiteralExpr(bigInteger.toString()));
+            }
+
+        } else if (expression instanceof NameExpr) {
+            if (leftType.equals(BigDecimal.class)) {
+                expression = toNewBigDecimalExpr(expression);
+            } else if (leftType.equals(BigInteger.class)) {
+                expression = toNewBigIntegerExpr(expression);
+            }
         }
+
         return expression;
     }
 
@@ -171,7 +189,7 @@ public abstract class AbstractExpressionBuilder {
         } else {
             expression = right;
         }
-        final Expression narrowed = narrowExpressionWithBigDecimal(expression, leftType);
+        final Expression narrowed = narrowExpressionToType(expression, leftType);
         indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
     }

@@ -1523,6 +1523,4 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
-
-
 }

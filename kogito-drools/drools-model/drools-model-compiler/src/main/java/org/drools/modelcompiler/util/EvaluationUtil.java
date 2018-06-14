@@ -42,6 +42,10 @@ public class EvaluationUtil {
         throw new RuntimeException( "unknown operator: " + op );
     }
 
+    public static boolean areNumbersNullSafeEquals(Number n1, Number n2) {
+        return n1 != null ? n1.doubleValue() == n2.doubleValue() : n2 == null;
+    }
+
     public static boolean compareNumbers(Number n1, Number n2, String op) {
         if (n1 == null || n2 == null) {
             return false;
