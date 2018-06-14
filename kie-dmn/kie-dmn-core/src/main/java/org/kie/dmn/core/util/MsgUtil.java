@@ -66,6 +66,9 @@ public final class MsgUtil {
             case WARN: logger.warn( message ); break;
             default: logger.info( message );
         }
+        if (logger.isDebugEnabled() && exception != null) {
+            logger.debug(message, exception);
+        }
         if( event != null ) {
             return result.addMessage(
                     severity,

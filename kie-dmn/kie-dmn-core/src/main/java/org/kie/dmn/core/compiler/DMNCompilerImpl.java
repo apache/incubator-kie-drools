@@ -179,7 +179,7 @@ public class DMNCompilerImpl
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                        importFromModel(model, located);
+                        importFromModel(model, located, iAlias);
                     }
                 } else {
                     MsgUtil.reportMessage(logger,
@@ -199,7 +199,7 @@ public class DMNCompilerImpl
         return model;
     }
 
-    private void importFromModel(DMNModelImpl model, DMNModel m) {
+    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
         }
@@ -249,6 +249,7 @@ public class DMNCompilerImpl
 
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
+            bkmi.addModelImportAliases(model.getImportAliasesForNS());
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( bkmi.getEvaluator() == null && dc.accept( bkm ) ) {
                     dc.compileEvaluator(bkm, this, ctx, model);
@@ -258,6 +259,7 @@ public class DMNCompilerImpl
 
         for ( DecisionNode d : model.getDecisions() ) {
             DecisionNodeImpl di = (DecisionNodeImpl) d;
+            di.addModelImportAliases(model.getImportAliasesForNS());
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( di.getEvaluator() == null && dc.accept( d ) ) {
                     dc.compileEvaluator(d, this, ctx, model);
@@ -358,9 +360,15 @@ public class DMNCompilerImpl
         }
     }
 
+    /**
+     * For the purpose of Compilation, in the DMNModel the DRGElements are stored with their full ID, so an ElementReference might reference in two forms:
+     *  - #id (a local to the model ID)
+     *  - namespace#id (an imported DRGElement ID)
+     * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
+     */
     private String getId(DMNElementReference er) {
         String href = er.getHref();
-        return href.contains( "#" ) ? href.substring( href.indexOf( '#' ) + 1 ) : href;
+        return href.startsWith("#") ? href.substring(1) : href;
     }
 
     private DMNType buildTypeDef(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {

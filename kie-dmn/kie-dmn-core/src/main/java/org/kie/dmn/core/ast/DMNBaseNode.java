@@ -17,10 +17,13 @@
 package org.kie.dmn.core.ast;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -31,12 +34,13 @@ import org.kie.dmn.model.v1_1.InformationRequirement;
 import org.kie.dmn.model.v1_1.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.NamedElement;
 
-public abstract class DMNBaseNode
-        implements DMNNode {
+public abstract class DMNBaseNode implements DMNNode {
 
     private NamedElement source;
     // need to retain dependencies order, so need to use LinkedHashMap
     private Map<String, DMNNode> dependencies = new LinkedHashMap<>();
+
+    private Map<String, QName> importAliases = new HashMap<>();
 
     public DMNBaseNode() {
     }
@@ -120,4 +124,26 @@ public abstract class DMNBaseNode
             return Collections.emptyList();
         }
     }
+
+    public void addModelImportAliases(Map<String, QName> importAliases) {
+        this.importAliases.putAll(importAliases);
+    }
+
+    @Override
+    public Optional<String> getModelImportAliasFor(String ns, String iModelName) {
+        QName lookup = new QName(ns, iModelName);
+        return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey()).findFirst();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DMNBaseNode [getName()=");
+        builder.append(getName());
+        builder.append(", getModelNamespace()=");
+        builder.append(getModelNamespace());
+        builder.append("]");
+        return builder.toString();
+    }
+
 }
