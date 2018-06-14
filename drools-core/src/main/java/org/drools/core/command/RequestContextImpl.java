@@ -24,7 +24,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
 
-import java.util.Collections;;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -799,4 +799,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         this.parser = parser;
     }
 
+    public Object getNamespaceURI(String namespace) {
+        return this.namespaces.get(namespace);
+    }
 }

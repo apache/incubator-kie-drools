@@ -26,6 +26,8 @@ public interface DMNPackage
     String getNamespace();
 
     DMNModel getModel(String name);
+    
+    DMNModel getModelById(String id);
 
     Map<String, DMNModel> getAllModels();
 }

@@ -41,6 +41,18 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      *         registered with the given name and namespace.
      */
     DMNModel getModel( String namespace, String modelName );
+    
+    /**
+     * Returns the model registered with the given namespace and
+     * model id.
+     *
+     * @param namespace the name space for the model
+     * @param modelId the identifier of the model
+     *
+     * @return the corresponding DMN model, or null if none is
+     *         registered with the given id and namespace.
+     */
+    DMNModel getModelById( String namespace, String modelId );
 
     /**
      * Evaluate all decisions for the model, given the context
