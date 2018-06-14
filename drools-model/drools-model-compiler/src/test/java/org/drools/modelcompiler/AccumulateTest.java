@@ -704,6 +704,33 @@ public class AccumulateTest extends BaseModelTest {
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
 
         assertThat(results, hasItem(4));
+    }
 
+    @Test
+    public void testAccumulateWithExternalBind() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  String( $l : length )" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($p.getAge() * $l)  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert("x");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
     }
 }
