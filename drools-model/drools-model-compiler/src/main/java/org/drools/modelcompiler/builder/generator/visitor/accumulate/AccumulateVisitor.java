@@ -299,7 +299,7 @@ public abstract class AccumulateVisitor {
                     final Optional<Expression> optInitializer = vd.getInitializer();
                     final Optional<Statement> initializer = createInitializer(variableName, optInitializer);
                     initializer.ifPresent(initMethodBody::addStatement);
-                    accumulateDeclarations.add(new DeclarationSpec(variableName, Object.class));
+                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), vd.getType().asString()) ));
                 }
             } else {
                 if(stmt.isExpressionStmt()) {
