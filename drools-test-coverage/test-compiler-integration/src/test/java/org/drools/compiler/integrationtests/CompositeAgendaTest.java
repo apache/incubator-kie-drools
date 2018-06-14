@@ -16,23 +16,22 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.integrationtests.facts.A;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
+
+import org.drools.testcoverage.common.model.A;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.LongAdder;
 
 public class CompositeAgendaTest {
 
@@ -46,7 +45,7 @@ public class CompositeAgendaTest {
 
     @Test @Ignore
     public void testCreateHaltDisposeAgenda() {
-        final String drl = " import org.drools.compiler.integrationtests.facts.*;\n" +
+        final String drl = " import " + A.class.getCanonicalName() + ";\n" +
                 " declare A @role( event ) end\n" +
                 " global java.util.concurrent.atomic.LongAdder firings;\n" +
                 " rule R0 when\n" +
@@ -90,9 +89,10 @@ public class CompositeAgendaTest {
                 "     firings.add(1);\n" +
                 " end";
 
-        final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+
+
+        final KieBaseConfiguration kieBaseConfiguration = KieBaseTestConfiguration.STREAM_IDENTITY.getKieBaseConfiguration();
         kieBaseConfiguration.setOption(MultithreadEvaluationOption.YES);
-        kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(kieBaseConfiguration);
         final KieSession kieSession = kieBase.newKieSession();
 
@@ -107,7 +107,7 @@ public class CompositeAgendaTest {
 
             try {
                 Thread.sleep(5000);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
             eventInsertThread.setActive(false);
@@ -120,7 +120,7 @@ public class CompositeAgendaTest {
                 if (!executor.awaitTermination(10, TimeUnit.MILLISECONDS)) {
                     executor.shutdownNow();
                 }
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
                 Assert.fail(e.getMessage());
             }

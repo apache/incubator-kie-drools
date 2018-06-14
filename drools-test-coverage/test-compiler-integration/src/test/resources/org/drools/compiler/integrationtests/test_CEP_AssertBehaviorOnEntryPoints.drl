@@ -14,19 +14,17 @@
 */
 
 package org.drools.compiler
+import org.drools.testcoverage.common.model.StockTick;
 
-global java.util.List list;
-
-declare StockTick 
+declare StockTick
     @role( event )
-    @duration( duration )
+    @timestamp( time )
 end
 
-rule "before"
+rule "test assert behavior on entry-points"
 when
-    $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this before[5,8] $a )
+    $a : StockTick( ) from entry-point "stocktick stream"
 then
-    list.add( new StockTick[] { $a, $b } );
+    // no-op
 end
 

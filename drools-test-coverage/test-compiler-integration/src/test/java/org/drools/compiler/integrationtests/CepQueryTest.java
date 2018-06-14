@@ -15,42 +15,53 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.kie.api.time.SessionPseudoClock;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.conf.EventProcessingOption;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.internal.io.ResourceFactory;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests queries using temporal operators on events from two entry points.
  */
-public class CepQueryTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class CepQueryTest {
 
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+    }
+    
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+    
     private KieSession ksession;
 
     private SessionPseudoClock clock;
     
     private EntryPoint firstEntryPoint, secondEntryPoint;
     
+    public CepQueryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+    
     @Before
     public void prepare() {
         final String drl = "package org.drools.compiler.integrationtests\n" + 
-                "import org.drools.compiler.integrationtests.CepQueryTest.TestEvent;\n" + 
+                "import " + CepQueryTest.TestEvent.class.getCanonicalName() + ";\n" + 
                 "declare TestEvent\n" + 
                 "    @role( event )\n" +
                 "end\n" + 
@@ -59,22 +70,8 @@ public class CepQueryTest extends CommonTestMethodBase {
                 "    $result : TestEvent( this after [0s, 9s] $event) from entry-point SecondStream\n" + 
                 "end\n";
         
-        final KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        KieModuleModel module = ks.newKieModuleModel();
-
-        KieBaseModel baseModel = module.newKieBaseModel("defaultKBase")
-                .setDefault(true)
-                .setEventProcessingMode(EventProcessingOption.STREAM);
-        baseModel.newKieSessionModel("defaultKSession")
-                .setDefault(true)
-                .setClockType(ClockTypeOption.get("pseudo"));
-
-        kfs.writeKModuleXML(module.toXML());
-        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath("defaultPkg/query.drl") );
-
-        assertTrue(ks.newKieBuilder(kfs).buildAll().getResults().getMessages().isEmpty());
-        ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-query-test", kieBaseTestConfiguration, drl);
+        ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         
         clock = ksession.getSessionClock();
         firstEntryPoint = ksession.getEntryPoint("FirstStream");
@@ -99,10 +96,10 @@ public class CepQueryTest extends CommonTestMethodBase {
     /**
      * Tests query using temporal operator 'after' on events from two entry points.
      */
-    @Test//(timeout=10000)
+    @Test
     public void testQueryWithAfter() {
         this.eventsInitialization();
-        QueryResults results = ksession.getQueryResults("EventsAfterZeroToNineSeconds");
+        final QueryResults results = ksession.getQueryResults("EventsAfterZeroToNineSeconds");
 
         assertEquals("Unexpected query result length", 1, results.size());
         assertEquals("Unexpected query result content", 

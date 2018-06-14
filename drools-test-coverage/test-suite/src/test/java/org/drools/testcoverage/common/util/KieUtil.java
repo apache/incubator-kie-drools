@@ -286,7 +286,7 @@ public final class KieUtil {
         }
         return null;
     }
-
+    
     private KieUtil() {
         // Creating instances of util classes should not be possible.
     }

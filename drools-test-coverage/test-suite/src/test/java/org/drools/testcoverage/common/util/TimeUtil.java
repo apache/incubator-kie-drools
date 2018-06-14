@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.util;
+package org.drools.testcoverage.common.util;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,13 +25,13 @@ import java.util.concurrent.TimeUnit;
  * Inspired by http://stackoverflow.com/questions/824110/accurate-sleep-for-java-on-windows
  * and http://andy-malakov.blogspot.cz/2010/06/alternative-to-threadsleep.html.
  */
-public class TimerUtils {
+public class TimeUtil {
 
     private static final long SLEEP_PRECISION = Long.valueOf(System.getProperty("TIMER_SLEEP_PRECISION", "50000"));
 
     private static final long SPIN_YIELD_PRECISION = Long.valueOf(System.getProperty("TIMER_YIELD_PRECISION", "30000"));
 
-    private TimerUtils() {
+    private TimeUtil() {
     }
 
     /**

@@ -15,13 +15,19 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.CommonTestMethodBase;
+import java.util.Collection;
+
+import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TimeUtil;
 import org.junit.Test;
-import org.kie.api.KieServices;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
@@ -31,18 +37,29 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class CepJavaTypeTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class CepJavaTypeTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public CepJavaTypeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+    }
 
     @Role(value = Role.Type.EVENT)
     public static class Event { }
 
     @Test
     public void testJavaTypeAnnotatedWithRole_WindowTime() {
-        String drl = "package org.drools.compiler.integrationtests\n"
+        final String drl = "package org.drools.compiler.integrationtests\n"
                 + "\n"
-                + "import org.drools.compiler.integrationtests.CepJavaTypeTest.Event;\n"
+                + "import " + CepJavaTypeTest.Event.class.getCanonicalName() + ";\n"
                 + "\n"
                 + "rule \"CEP Window Time\"\n"
                 + "when\n"
@@ -50,28 +67,15 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
                 + "then\n"
                 + "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-
-        KieModuleModel module = ks.newKieModuleModel();
-
-        KieBaseModel defaultBase = module.newKieBaseModel( "defaultKBase" )
-                .setDefault( true )
-                .addPackage( "*" );
-        defaultBase.newKieSessionModel( "defaultKSession" )
-                .setDefault( true );
-
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        kfs.writeKModuleXML( module.toXML() );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
-
-        assertTrue( builder.getResults().getMessages().isEmpty() );
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isEmpty();
     }
 
     @Test
     public void testJavaTypeAnnotatedWithRole_WindowLength() {
-        String drl = "package org.drools.compiler.integrationtests\n"
+        final String drl = "package org.drools.compiler.integrationtests\n"
                 + "\n"
-                + "import org.drools.compiler.integrationtests.CepJavaTypeTest.Event;\n"
+                + "import " + CepJavaTypeTest.Event.class.getCanonicalName() + ";\n"
                 + "\n"
                 + "rule \"CEP Window Length\"\n"
                 + "when\n"
@@ -79,21 +83,8 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
                 + "then\n"
                 + "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-
-        KieModuleModel module = ks.newKieModuleModel();
-
-        KieBaseModel defaultBase = module.newKieBaseModel( "defaultKBase" )
-                .setDefault( true )
-                .addPackage( "*" );
-        defaultBase.newKieSessionModel( "defaultKSession" )
-                .setDefault( true );
-
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        kfs.writeKModuleXML( module.toXML() );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
-
-        assertTrue( builder.getResults().getMessages().isEmpty() );
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isEmpty();
     }
 
     @Role(value = Role.Type.EVENT)
@@ -103,36 +94,35 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
         String name;
         long ts;
 
-        public MyMessage(String n) {
+        public MyMessage(final String n) {
             name = n;
             ts = System.currentTimeMillis();
         }
 
-        public void setName(String n) { name = n; }
+        public void setName(final String n) { name = n; }
         public String getName() { return name; }
-        public void setTs(long t) { ts = t; }
+        public void setTs(final long t) { ts = t; }
         public long getTs() { return ts; }
     }
 
     @Test
     public void testEventWithShortExpiration() throws InterruptedException {
         // BZ-1265773
-        String drl = "import " + MyMessage.class.getCanonicalName() +"\n" +
+        final String drl = "import " + MyMessage.class.getCanonicalName() +"\n" +
                      "rule \"Rule A Start\"\n" +
                      "when\n" +
                      "  MyMessage ( name == \"ATrigger\" )\n" +
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM )
-                                             .newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-java-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert(new MyMessage("ATrigger" ) );
             assertEquals( 1, ksession.fireAllRules() );
-            waitBusy(2L);
+            TimeUtil.sleepMillis(2L);
             assertEquals( 0, ksession.fireAllRules() );
-            waitBusy(30L);
+            TimeUtil.sleepMillis(30L);
             // Expire action is put into propagation queue by timer job, so there
             // can be a race condition where it puts it there right after previous fireAllRules
             // flushes the queue. So there needs to be another flush -> another fireAllRules

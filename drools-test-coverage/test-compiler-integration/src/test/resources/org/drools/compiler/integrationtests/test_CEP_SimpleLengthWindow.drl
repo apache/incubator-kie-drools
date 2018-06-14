@@ -13,19 +13,20 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.test;
+package org.drools.compiler
+import org.drools.testcoverage.common.model.OrderEvent;
+global java.util.List results;
 
-import org.drools.compiler.StockTick;
-
-declare StockTick 
+declare OrderEvent
     @role( event )
 end
 
-global java.util.List results;
-
-rule "Check event"
+rule "average over threshold"
 when
-    $st : StockTick( company == "ACME" )
+    Number( $avg : intValue >= 50 ) from accumulate(
+              OrderEvent( $amt : total ) over window:length(3),
+              average( $amt ) )
 then
-    results.add( $st );
+    results.add( $avg );
 end
+

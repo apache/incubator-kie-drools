@@ -15,28 +15,20 @@
 
 package org.drools.compiler
 
-import java.util.List
+import org.drools.testcoverage.common.model.OrderEvent;
 
-global List timeResults;
-global List lengthResults;
+global java.util.List results;
 
 declare OrderEvent
     @role( event )
-    @expires( 2m )
 end
 
-rule "collect with time window"
+rule "average over threshold"
 when
-    $list : List( empty == false ) from collect(
-              $o : OrderEvent() over window:time(30s) )
+    Number( $avg : intValue >= 50 ) from accumulate(
+              OrderEvent( $amt : total ) over window:time(30s),
+              average( $amt ) )
 then
-    timeResults.add( $list.size() );
+    results.add( $avg );
 end
 
-rule "collect with length window"
-when
-    $list : List( empty == false ) from collect(
-              $o : OrderEvent() over window:length(3) )
-then
-    lengthResults.add( $list.size() );
-end

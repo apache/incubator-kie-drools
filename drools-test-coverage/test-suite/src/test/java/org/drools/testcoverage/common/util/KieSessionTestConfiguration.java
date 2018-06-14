@@ -93,5 +93,5 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
         this.stateful = stateful;
     }
     
-    private static final String KIE_SESSION_MODEL_NAME = "KieSessionModelName";
+    public static final String KIE_SESSION_MODEL_NAME = "KieSessionModelName";
 }

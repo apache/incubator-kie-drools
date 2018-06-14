@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,14 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.OrderEvent;
-import org.drools.compiler.Sensor;
-import org.drools.compiler.StockTick;
-import org.drools.compiler.StockTickEvent;
-import org.drools.compiler.StockTickInterface;
-import org.drools.core.ClockType;
-import org.drools.core.RuleBaseConfiguration;
+import org.assertj.core.api.Assertions;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
@@ -56,9 +49,9 @@ import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -70,18 +63,26 @@ import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.testcoverage.common.model.OrderEvent;
+import org.drools.testcoverage.common.model.Sensor;
+import org.drools.testcoverage.common.model.StockTick;
+import org.drools.testcoverage.common.model.StockTickEvent;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.SerializationHelper;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TimeUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.KiePackage;
+import org.kie.api.builder.KieModule;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
@@ -90,7 +91,6 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -101,15 +101,9 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -124,34 +118,41 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class CepEspTest extends CommonTestMethodBase {
-    
+@RunWith(Parameterized.class)
+public class CepEspTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public CepEspTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+    }
+
     @Test(timeout=10000)
     public void testComplexTimestamp() {
-        String rule = "";
-        rule += "package " + Message.class.getPackage().getName() + "\n" +
+        final String drl = "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
                  "   @role( event ) \n" +
-                 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
-                 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
+                 "   @timestamp( getProperties().get( 'timestamp' ) - 1 ) \n" +
+                 "   @duration( getProperties().get( 'duration' ) + 1 ) \n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( rule );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            Message msg = new Message();
-            Properties props = new Properties();
-            props.put("timestamp",
-                      new Integer(99));
-            props.put( "duration",
-                       new Integer( 52 ) );
+            final Message msg = new Message();
+            final Properties props = new Properties();
+            props.put("timestamp", 99);
+            props.put("duration", 52);
             msg.setProperties(props);
 
-            EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
-            assertEquals( 98,
-                          efh.getStartTimestamp() );
-            assertEquals( 53,
-                          efh.getDuration() );
+            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            assertEquals(98, efh.getStartTimestamp());
+            assertEquals(53, efh.getDuration());
         } finally {
             ksession.dispose();
         }
@@ -159,26 +160,23 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testJavaSqlTimestamp() {
-        String rule = "";
-        rule += "package " + Message.class.getPackage().getName() + "\n" +
+        final String drl = "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
                  "   @role( event ) \n" +
                  "   @timestamp( startTime ) \n" +
                  "   @duration( duration )\n" +
                 "end\n";
         
-        KieBase kbase = loadKnowledgeBaseFromString( rule );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            Message msg = new Message();
-            msg.setStartTime( new Timestamp( 10000 ) );
-            msg.setDuration( 1000l );
+            final Message msg = new Message();
+            msg.setStartTime(new Timestamp(10000));
+            msg.setDuration(1000L);
 
-            EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
-            assertEquals( 10000,
-                          efh.getStartTimestamp() );
-            assertEquals( 1000,
-                          efh.getDuration() );
+            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            assertEquals(10000, efh.getStartTimestamp());
+            assertEquals(1000, efh.getDuration());
         } finally {
             ksession.dispose();
         }
@@ -186,63 +184,43 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testEventAssertion() {
-        KieBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertion.drl" );
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get("pseudo") );
-        KieSession session = createKnowledgeSession(kbase, conf);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = session.getSessionClock();
+            final SessionPseudoClock clock = session.getSessionClock();
 
             final List results = new ArrayList();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      10010 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      10100 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      11000 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 10010);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 10100);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 11000);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            clock.advanceTime( 30,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            clock.advanceTime( 20,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            clock.advanceTime(10, TimeUnit.SECONDS);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            clock.advanceTime(30, TimeUnit.SECONDS);
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            clock.advanceTime(20, TimeUnit.SECONDS);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
+            clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
 
             session.fireAllRules();
 
-            assertEquals( 2,
-                          ((List) session.getGlobal( "results" )).size() );
+            assertEquals(2, ((List) session.getGlobal("results")).size());
         } finally {
             session.dispose();
         }
@@ -250,63 +228,56 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testAnnotatedEventAssertion() {
-        KieBase kbase = loadKnowledgeBase( "test_CEP_SimpleAnnotatedEventAssertion.drl" );
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get("pseudo") );
-        KieSession session = createKnowledgeSession(kbase, conf);
 
+        final String drl = "package org.drools.compiler.test;\n" +
+                "\n" +
+                "import " + StockTickEvent.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st : StockTickEvent( company == \"ACME\" )\n" +
+                "then\n" +
+                "    results.add( $st );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = session.getSessionClock();
+            final SessionPseudoClock clock = session.getSessionClock();
 
             final List results = new ArrayList();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTickEvent( 1,
-                                                           "DROO",
-                                                           50,
-                                                           10000 );
-            StockTickInterface tick2 = new StockTickEvent( 2,
-                                                           "ACME",
-                                                           10,
-                                                           10010 );
-            StockTickInterface tick3 = new StockTickEvent( 3,
-                                                           "ACME",
-                                                           10,
-                                                           10100 );
-            StockTickInterface tick4 = new StockTickEvent( 4,
-                                                           "DROO",
-                                                           50,
-                                                           11000 );
+            final StockTick tick1 = new StockTickEvent(1, "DROO", 50, 10000);
+            final StockTick tick2 = new StockTickEvent(2, "ACME", 10, 10010);
+            final StockTick tick3 = new StockTickEvent(3, "ACME", 10, 10100);
+            final StockTick tick4 = new StockTickEvent(4, "DROO", 50, 11000);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            clock.advanceTime( 30,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            clock.advanceTime( 20,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            clock.advanceTime(10, TimeUnit.SECONDS);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            clock.advanceTime(30, TimeUnit.SECONDS);
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            clock.advanceTime(20, TimeUnit.SECONDS);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
+            clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
 
             session.fireAllRules();
 
-            assertEquals( 2,
-                          ((List) session.getGlobal( "results" )).size() );
+            assertEquals(2, ((List) session.getGlobal("results")).size());
         } finally {
             session.dispose();
         }
@@ -314,59 +285,31 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @SuppressWarnings("unchecked")
     @Test(timeout=10000)
-    public void testPackageSerializationWithEvents() throws Exception {
-        // read in the source
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
-                      ResourceType.DRL );
-
-        // get the package
-        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 2,
-                      pkgs.size() );
-
-        // serialize the package
-        byte[] serializedPkg = DroolsStreamUtils.streamOut( pkgs );
-        pkgs = (Collection<KiePackage>) DroolsStreamUtils.streamIn( serializedPkg );
-
-        // create the kbase
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( pkgs );
-
-        // create the session
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        KieSession session = createKnowledgeSession(kbase, conf);
-
+    public void testPackageSerializationWithEvents() {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
+        final KieSession session = kbase.newKieSession();
         try {
-            final List<StockTick> results = new ArrayList<StockTick>();
+            final List<StockTick> results = new ArrayList<>();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      10010 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 10010);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
 
             session.fireAllRules();
 
-            assertEquals( 1,
-                          results.size() );
-            assertEquals( tick2,
-                          results.get( 0 ) );
+            assertEquals(1, results.size());
+            assertEquals(tick2, results.get(0));
         } finally {
             session.dispose();
         }
@@ -374,80 +317,70 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testEventAssertionWithDuration() {
-        KieBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDuration.drl" );
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession session = createKnowledgeSession(kbase, conf);
+        final String drl = "package org.drools.compiler\n" +
+                "\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @duration( duration )\n" +
+                "    @timestamp( time )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st : StockTick( company == \"ACME\" )\n" +
+                "then\n" +
+                "    results.add( $st );\n" +
+                "end";
 
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List results = new ArrayList();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000,
-                                                      5 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      11000,
-                                                      10 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      12000,
-                                                      8 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      13000,
-                                                      7 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000, 5);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 11000, 10);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 12000, 8);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 13000, 7);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
 
-            EventFactHandle eh1 = (EventFactHandle) handle1;
-            EventFactHandle eh2 = (EventFactHandle) handle2;
-            EventFactHandle eh3 = (EventFactHandle) handle3;
-            EventFactHandle eh4 = (EventFactHandle) handle4;
+            final EventFactHandle eh1 = (EventFactHandle) handle1;
+            final EventFactHandle eh2 = (EventFactHandle) handle2;
+            final EventFactHandle eh3 = (EventFactHandle) handle3;
+            final EventFactHandle eh4 = (EventFactHandle) handle4;
 
-            assertEquals( tick1.getTime(),
-                          eh1.getStartTimestamp() );
-            assertEquals( tick2.getTime(),
-                          eh2.getStartTimestamp() );
-            assertEquals( tick3.getTime(),
-                          eh3.getStartTimestamp() );
-            assertEquals( tick4.getTime(),
-                          eh4.getStartTimestamp() );
+            assertEquals(tick1.getTime(), eh1.getStartTimestamp());
+            assertEquals(tick2.getTime(), eh2.getStartTimestamp());
+            assertEquals(tick3.getTime(), eh3.getStartTimestamp());
+            assertEquals(tick4.getTime(), eh4.getStartTimestamp());
 
-            assertEquals( tick1.getDuration(),
-                          eh1.getDuration() );
-            assertEquals( tick2.getDuration(),
-                          eh2.getDuration() );
-            assertEquals( tick3.getDuration(),
-                          eh3.getDuration() );
-            assertEquals( tick4.getDuration(),
-                          eh4.getDuration() );
+            assertEquals(tick1.getDuration(), eh1.getDuration());
+            assertEquals(tick2.getDuration(), eh2.getDuration());
+            assertEquals(tick3.getDuration(), eh3.getDuration());
+            assertEquals(tick4.getDuration(), eh4.getDuration());
 
             session.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
+            assertEquals(2, results.size());
         } finally {
             session.dispose();
         }
@@ -455,182 +388,199 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testEventAssertionWithDateTimestamp() {
-        KieBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" );
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession session = createKnowledgeSession(kbase, conf);
+        final String drl = "package org.drools.compiler\n" +
+                "\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @timestamp( dateTimestamp )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st : StockTick( company == \"ACME\" )\n" +
+                "then\n" +
+                "    results.add( $st );\n" +
+                "end\n";
 
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List results = new ArrayList();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000,
-                                                      5 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      11000,
-                                                      10 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      12000,
-                                                      8 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      13000,
-                                                      7 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000, 5);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 11000, 10);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 12000, 8);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 13000, 7);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
 
-            EventFactHandle eh1 = (EventFactHandle) handle1;
-            EventFactHandle eh2 = (EventFactHandle) handle2;
-            EventFactHandle eh3 = (EventFactHandle) handle3;
-            EventFactHandle eh4 = (EventFactHandle) handle4;
+            final EventFactHandle eh1 = (EventFactHandle) handle1;
+            final EventFactHandle eh2 = (EventFactHandle) handle2;
+            final EventFactHandle eh3 = (EventFactHandle) handle3;
+            final EventFactHandle eh4 = (EventFactHandle) handle4;
 
-            assertEquals( tick1.getTime(),
-                          eh1.getStartTimestamp() );
-            assertEquals( tick2.getTime(),
-                          eh2.getStartTimestamp() );
-            assertEquals( tick3.getTime(),
-                          eh3.getStartTimestamp() );
-            assertEquals( tick4.getTime(),
-                          eh4.getStartTimestamp() );
+            assertEquals(tick1.getTime(), eh1.getStartTimestamp());
+            assertEquals(tick2.getTime(), eh2.getStartTimestamp());
+            assertEquals(tick3.getTime(), eh3.getStartTimestamp());
+            assertEquals(tick4.getTime(), eh4.getStartTimestamp());
 
             session.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
+            assertEquals(2, results.size());
         } finally {
             session.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testEventExpiration() {
-        KieBase kbase = loadKnowledgeBase( "test_CEP_EventExpiration.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @timestamp( dateTimestamp )\n" +
+                "    @expires( 1h30m )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st : StockTick( company == \"ACME\" )\n" +
+                "then\n" +
+                "    results.add( $st );\n" +
+                "end\n";
 
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         // read in the source
-        TypeDeclaration factType = ((KnowledgeBaseImpl)kbase).getTypeDeclaration( StockTick.class );
-
-        assertEquals( TimeIntervalParser.parse( "1h30m" )[0],
-                      factType.getExpirationOffset() );
+        final TypeDeclaration factType = ((KnowledgeBaseImpl) kbase).getTypeDeclaration(StockTick.class);
+        assertEquals(TimeIntervalParser.parse("1h30m")[0], factType.getExpirationOffset());
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testEventExpiration2() {
-        // read in the source
-        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbc.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBase( kbc, "test_CEP_EventExpiration2.drl" );
-
-
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
-        ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
-
-        assertNotNull( node );
-
-        // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( TimeIntervalParser.parse( "10m" )[0] + 1,
-                      node.getExpirationOffset() );
+        testEventExpiration("15m", "15m");
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testEventExpiration3() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration3.drl" );
-        
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
-        ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
-
-        assertNotNull( node );
-
-        // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( TimeIntervalParser.parse( "10m" )[0] + 1,
-                      node.getExpirationOffset() );
+        testEventExpiration("5m", "5m");
     }
 
-    @Test(timeout=10000)
+    private void testEventExpiration(final String afterBoundary, final String windowTime) {
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @timestamp( dateTimestamp )\n" +
+                "    // this will override individual rule requirements\n" +
+                "    @expires( 10m )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st1 : StockTick( company == \"ACME\" )\n" +
+                "    $st2 : StockTick( company == \"RHT\", this after[0," + afterBoundary + "] $st1 )\n" +
+                "then\n" +
+                "    results.add( $st1 );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event2\"\n" +
+                "when\n" +
+                "    $st1 : StockTick( company == \"RHT\" ) over window:time( " + windowTime + " )\n" +
+                "then\n" +
+                "    results.add( $st1 );\n" +
+                "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+
+        final Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes(EntryPointId.DEFAULT);
+        final ObjectTypeNode node = objectTypeNodes.get(new ClassObjectType(StockTick.class));
+
+        assertNotNull(node);
+
+        // the expiration policy @expires(10m) should override the temporal operator usage
+        assertEquals(TimeIntervalParser.parse("10m")[0] + 1, node.getExpirationOffset());
+    }
+
+    @Test(timeout = 10000)
     public void testEventExpiration4() {
-        // read in the source
-        final KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration4.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @expires( 10s )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"TestEventReceived\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "   $st1 : StockTick( company == \"ACME\" ) over window:time( 10s ) from entry-point \"Event Stream\"\n" +
+                "then\n" +
+                "   results.add( $st1 );\n" +
+                "end\n";
 
-        final KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( "pseudo" ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, sconf);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            EntryPoint eventStream = ksession.getEntryPoint( "Event Stream" );
+            final EntryPoint eventStream = ksession.getEntryPoint("Event Stream");
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
             final List results = new ArrayList();
-            ksession.setGlobal( "results",
-                                results );
+            ksession.setGlobal("results", results);
 
-            EventFactHandle handle1 = (EventFactHandle) eventStream.insert( new StockTick( 1,
-                                                                                           "ACME",
-                                                                                           50,
-                                                                                           System.currentTimeMillis(),
-                                                                                           3 ) );
+            final EventFactHandle handle1 = (EventFactHandle) eventStream.insert(new StockTick(1, "ACME", 50, System.currentTimeMillis(), 3));
 
             ksession.fireAllRules();
 
-            clock.advanceTime( 11,
-                               TimeUnit.SECONDS );
-            /** clock.advance() will put the event expiration in the queue to be executed,
-             but it has to wait for a "thread" to do that
-             so we fire rules again here to get that
-             alternative could run fireUntilHalt() **/
+            clock.advanceTime(11, TimeUnit.SECONDS);
+//             clock.advance() will put the event expiration in the queue to be executed,
+//             but it has to wait for a "thread" to do that
+//             so we fire rules again here to get that
+//             alternative could run fireUntilHalt()
             ksession.fireAllRules();
 
-            assertTrue( results.size() == 1 );
-            assertTrue( handle1.isExpired() );
-            assertFalse( ksession.getFactHandles().contains( handle1 ) );
+            assertEquals(1, results.size());
+            assertTrue(handle1.isExpired());
+            assertFalse(ksession.getFactHandles().contains(handle1));
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTimeRelationalOperators() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_TimeRelationalOperators.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_TimeRelationalOperators.drl");
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler clock = wm.getSessionClock();
 
-            clock.setStartupTime( 1000 );
+            clock.setStartupTime(1000);
             final List results_coincides = new ArrayList();
             final List results_before = new ArrayList();
             final List results_after = new ArrayList();
@@ -645,877 +595,537 @@ public class CepEspTest extends CommonTestMethodBase {
             final List results_finishes = new ArrayList();
             final List results_finished_by = new ArrayList();
 
-            wm.setGlobal( "results_coincides",
-                          results_coincides );
-            wm.setGlobal( "results_before",
-                          results_before );
-            wm.setGlobal( "results_after",
-                          results_after );
-            wm.setGlobal( "results_meets",
-                          results_meets );
-            wm.setGlobal( "results_met_by",
-                          results_met_by );
-            wm.setGlobal( "results_overlaps",
-                          results_overlaps );
-            wm.setGlobal( "results_overlapped_by",
-                          results_overlapped_by );
-            wm.setGlobal( "results_during",
-                          results_during );
-            wm.setGlobal( "results_includes",
-                          results_includes );
-            wm.setGlobal( "results_starts",
-                          results_starts );
-            wm.setGlobal( "results_started_by",
-                          results_started_by );
-            wm.setGlobal( "results_finishes",
-                          results_finishes );
-            wm.setGlobal( "results_finished_by",
-                          results_finished_by );
+            wm.setGlobal("results_coincides", results_coincides);
+            wm.setGlobal("results_before", results_before);
+            wm.setGlobal("results_after", results_after);
+            wm.setGlobal("results_meets", results_meets);
+            wm.setGlobal("results_met_by", results_met_by);
+            wm.setGlobal("results_overlaps", results_overlaps);
+            wm.setGlobal("results_overlapped_by", results_overlapped_by);
+            wm.setGlobal("results_during", results_during);
+            wm.setGlobal("results_includes", results_includes);
+            wm.setGlobal("results_starts", results_starts);
+            wm.setGlobal("results_started_by", results_started_by);
+            wm.setGlobal("results_finishes", results_finishes);
+            wm.setGlobal("results_finished_by", results_finished_by);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      System.currentTimeMillis(),
-                                                      3 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      3 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      3 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      System.currentTimeMillis(),
-                                                      5 );
-            StockTickInterface tick5 = new StockTick( 5,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      5 );
-            StockTickInterface tick6 = new StockTick( 6,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      3 );
-            StockTickInterface tick7 = new StockTick( 7,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      5 );
-            StockTickInterface tick8 = new StockTick( 8,
-                                                      "ACME",
-                                                      10,
-                                                      System.currentTimeMillis(),
-                                                      3 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, System.currentTimeMillis(), 3);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, System.currentTimeMillis(), 5);
+            final StockTick tick5 = new StockTick(5, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick6 = new StockTick(6, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick7 = new StockTick(7, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick8 = new StockTick(8, "ACME", 10, System.currentTimeMillis(), 3);
 
-            InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
-            InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
-            clock.advanceTime( 1,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6 );
-            InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7 );
-            clock.advanceTime( 2,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8 );
+            final InternalFactHandle handle1 = (InternalFactHandle) wm.insert(tick1);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            final InternalFactHandle handle2 = (InternalFactHandle) wm.insert(tick2);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            final InternalFactHandle handle3 = (InternalFactHandle) wm.insert(tick3);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            final InternalFactHandle handle4 = (InternalFactHandle) wm.insert(tick4);
+            final InternalFactHandle handle5 = (InternalFactHandle) wm.insert(tick5);
+            clock.advanceTime(1, TimeUnit.MILLISECONDS);
+            final InternalFactHandle handle6 = (InternalFactHandle) wm.insert(tick6);
+            final InternalFactHandle handle7 = (InternalFactHandle) wm.insert(tick7);
+            clock.advanceTime(2, TimeUnit.MILLISECONDS);
+            final InternalFactHandle handle8 = (InternalFactHandle) wm.insert(tick8);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
-            assertNotNull( handle5 );
-            assertNotNull( handle6 );
-            assertNotNull( handle7 );
-            assertNotNull( handle8 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
+            assertNotNull(handle5);
+            assertNotNull(handle6);
+            assertNotNull(handle7);
+            assertNotNull(handle8);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
-            assertTrue( handle6.isEvent() );
-            assertTrue( handle7.isEvent() );
-            assertTrue( handle8.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
+            assertTrue(handle6.isEvent());
+            assertTrue(handle7.isEvent());
+            assertTrue(handle8.isEvent());
 
             wm.fireAllRules();
 
-            assertEquals( 1,
-                          results_coincides.size() );
-            assertEquals( tick5,
-                          results_coincides.get( 0 ) );
+            assertEquals(1, results_coincides.size());
+            assertEquals(tick5, results_coincides.get(0));
 
-            assertEquals( 1,
-                          results_before.size() );
-            assertEquals( tick2,
-                          results_before.get( 0 ) );
+            assertEquals(1, results_before.size());
+            assertEquals(tick2, results_before.get(0));
 
-            assertEquals( 1,
-                          results_after.size() );
-            assertEquals( tick3,
-                          results_after.get( 0 ) );
+            assertEquals(1, results_after.size());
+            assertEquals(tick3, results_after.get(0));
 
-            assertEquals( 1,
-                          results_meets.size() );
-            assertEquals( tick3,
-                          results_meets.get( 0 ) );
+            assertEquals(1, results_meets.size());
+            assertEquals(tick3, results_meets.get(0));
 
-            assertEquals( 1,
-                          results_met_by.size() );
-            assertEquals( tick2,
-                          results_met_by.get( 0 ) );
+            assertEquals(1, results_met_by.size());
+            assertEquals(tick2, results_met_by.get(0));
 
-            assertEquals( 1,
-                          results_met_by.size() );
-            assertEquals( tick2,
-                          results_met_by.get( 0 ) );
+            assertEquals(1, results_met_by.size());
+            assertEquals(tick2, results_met_by.get(0));
 
-            assertEquals( 1,
-                          results_overlaps.size() );
-            assertEquals( tick4,
-                          results_overlaps.get( 0 ) );
+            assertEquals(1, results_overlaps.size());
+            assertEquals(tick4, results_overlaps.get(0));
 
-            assertEquals( 1,
-                          results_overlapped_by.size() );
-            assertEquals( tick8,
-                          results_overlapped_by.get( 0 ) );
+            assertEquals(1, results_overlapped_by.size());
+            assertEquals(tick8, results_overlapped_by.get(0));
 
-            assertEquals( 1,
-                          results_during.size() );
-            assertEquals( tick6,
-                          results_during.get( 0 ) );
+            assertEquals(1, results_during.size());
+            assertEquals(tick6, results_during.get(0));
 
-            assertEquals( 1,
-                          results_includes.size() );
-            assertEquals( tick4,
-                          results_includes.get( 0 ) );
+            assertEquals(1, results_includes.size());
+            assertEquals(tick4, results_includes.get(0));
 
-            assertEquals( 1,
-                          results_starts.size() );
-            assertEquals( tick6,
-                          results_starts.get( 0 ) );
+            assertEquals(1, results_starts.size());
+            assertEquals(tick6, results_starts.get(0));
 
-            assertEquals( 1,
-                          results_started_by.size() );
-            assertEquals( tick7,
-                          results_started_by.get( 0 ) );
+            assertEquals(1, results_started_by.size());
+            assertEquals(tick7, results_started_by.get(0));
 
-            assertEquals( 1,
-                          results_finishes.size() );
-            assertEquals( tick8,
-                          results_finishes.get( 0 ) );
+            assertEquals(1, results_finishes.size());
+            assertEquals(tick8, results_finishes.get(0));
 
-            assertEquals( 1,
-                          results_finished_by.size() );
-            assertEquals( tick7,
-                          results_finished_by.get( 0 ) );
+            assertEquals(1, results_finished_by.size());
+            assertEquals(tick7, results_finished_by.get(0));
         } finally {
             wm.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testBeforeOperator() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperator.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_BeforeOperator.drl");
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler clock = ksession.getSessionClock();
-            clock.setStartupTime( 1000 );
+            clock.setStartupTime(1000);
 
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            StockTickInterface tick1 = new StockTick( 1, "DROO", 50, System.currentTimeMillis(), 3 );
-            StockTickInterface tick2 = new StockTick( 2, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick3 = new StockTick( 3, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick4 = new StockTick( 4, "DROO", 50, System.currentTimeMillis(), 5 );
-            StockTickInterface tick5 = new StockTick( 5, "ACME", 10, System.currentTimeMillis(), 5 );
-            StockTickInterface tick6 = new StockTick( 6, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick7 = new StockTick( 7, "ACME", 10, System.currentTimeMillis(), 5 );
-            StockTickInterface tick8 = new StockTick( 8, "ACME", 10, System.currentTimeMillis(), 3 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, System.currentTimeMillis(), 3);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, System.currentTimeMillis(), 5);
+            final StockTick tick5 = new StockTick(5, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick6 = new StockTick(6, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick7 = new StockTick(7, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick8 = new StockTick(8, "ACME", 10, System.currentTimeMillis(), 3);
 
-
-            ksession.insert( tick1 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick2 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick3 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick4 );
-            ksession.insert( tick5 );
-            clock.advanceTime( 1,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick6 );
-            ksession.insert( tick7 );
-            clock.advanceTime( 2,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick8 );
+            ksession.insert(tick1);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick2);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick3);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick4);
+            ksession.insert(tick5);
+            clock.advanceTime(1, TimeUnit.MILLISECONDS);
+            ksession.insert(tick6);
+            ksession.insert(tick7);
+            clock.advanceTime(2, TimeUnit.MILLISECONDS);
+            ksession.insert(tick8);
 
             ksession.fireAllRules();
 
-            assertEquals( 1, list.size() );
-            StockTick[] stocks = ( StockTick[] ) list.get(0);
-            assertSame( tick4, stocks[0]);
-            assertSame( tick2, stocks[1]);
+            assertEquals(1, list.size());
+            final StockTick[] stocks = (StockTick[]) list.get(0);
+            assertSame(tick4, stocks[0]);
+            assertSame(tick2, stocks[1]);
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
-    public void testComplexOperator() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_ComplexOperator.drl" );
-
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession( kbase, sconf );
-
-        try {
-            List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            final PseudoClockScheduler clock = ksession.getSessionClock();
-            clock.setStartupTime( 1000 );
-
-            AgendaEventListener ael = mock( AgendaEventListener.class );
-            ksession.addEventListener( ael );
-
-            StockTickInterface tick1 = new StockTick( 1, "DROO", 50, 0, 3 );
-            StockTickInterface tick2 = new StockTick( 2, "ACME", 10, 4, 3 );
-            StockTickInterface tick3 = new StockTick( 3, "ACME", 10, 8, 3 );
-            StockTickInterface tick4 = new StockTick( 4, "DROO", 50, 12, 5 );
-            StockTickInterface tick5 = new StockTick( 5, "ACME", 10, 12, 5 );
-            StockTickInterface tick6 = new StockTick( 6, "ACME", 10, 13, 3 );
-            StockTickInterface tick7 = new StockTick( 7, "ACME", 10, 13, 5 );
-            StockTickInterface tick8 = new StockTick( 8, "ACME", 10, 15, 3 );
-
-            ksession.insert( tick1 );
-            ksession.insert( tick2 );
-            ksession.insert( tick3 );
-            ksession.insert( tick4 );
-            ksession.insert( tick5 );
-            ksession.insert( tick6 );
-            ksession.insert( tick7 );
-            ksession.insert( tick8 );
-
-            ksession.fireAllRules();
-
-            assertEquals( 1, list.size() );
-            StockTick[] stocks = ( StockTick[] ) list.get(0);
-            assertSame( tick4, stocks[0]);
-            assertSame( tick2, stocks[1]);
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testMetByOperator() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_MetByOperator.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_MetByOperator.drl");
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler clock = ksession.getSessionClock();
-            clock.setStartupTime( 1000 );
+            clock.setStartupTime(1000);
 
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            StockTickInterface tick1 = new StockTick( 1, "DROO", 50, System.currentTimeMillis(), 3 );
-            StockTickInterface tick2 = new StockTick( 2, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick3 = new StockTick( 3, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick4 = new StockTick( 4, "DROO", 50, System.currentTimeMillis(), 5 );
-            StockTickInterface tick5 = new StockTick( 5, "ACME", 10, System.currentTimeMillis(), 5 );
-            StockTickInterface tick6 = new StockTick( 6, "ACME", 10, System.currentTimeMillis(), 3 );
-            StockTickInterface tick7 = new StockTick( 7, "ACME", 10, System.currentTimeMillis(), 5 );
-            StockTickInterface tick8 = new StockTick( 8, "ACME", 10, System.currentTimeMillis(), 3 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, System.currentTimeMillis(), 3);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, System.currentTimeMillis(), 5);
+            final StockTick tick5 = new StockTick(5, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick6 = new StockTick(6, "ACME", 10, System.currentTimeMillis(), 3);
+            final StockTick tick7 = new StockTick(7, "ACME", 10, System.currentTimeMillis(), 5);
+            final StockTick tick8 = new StockTick(8, "ACME", 10, System.currentTimeMillis(), 3);
 
-            InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( tick1 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            InternalFactHandle fh2 = (InternalFactHandle) ksession.insert( tick2 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick3 );
-            clock.advanceTime( 4,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick4 );
-            ksession.insert( tick5 );
-            clock.advanceTime( 1,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick6 );
-            ksession.insert( tick7 );
-            clock.advanceTime( 2,
-                               TimeUnit.MILLISECONDS );
-            ksession.insert( tick8 );
+            ksession.insert(tick1);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick2);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick3);
+            clock.advanceTime(4, TimeUnit.MILLISECONDS);
+            ksession.insert(tick4);
+            ksession.insert(tick5);
+            clock.advanceTime(1, TimeUnit.MILLISECONDS);
+            ksession.insert(tick6);
+            ksession.insert(tick7);
+            clock.advanceTime(2, TimeUnit.MILLISECONDS);
+            ksession.insert(tick8);
 
             ksession.fireAllRules();
 
-            assertEquals( 1, list.size() );
-            StockTick[] stocks = ( StockTick[] ) list.get(0);
-            assertSame( tick1, stocks[0]);
-            assertSame( tick2, stocks[1]);
+            assertEquals(1, list.size());
+            final StockTick[] stocks = (StockTick[]) list.get(0);
+            assertSame(tick1, stocks[0]);
+            assertSame(tick2, stocks[1]);
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
+    public void testComplexOperator() {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_ComplexOperator.drl");
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
+
+            final PseudoClockScheduler clock = ksession.getSessionClock();
+            clock.setStartupTime(1000);
+
+            final AgendaEventListener ael = mock(AgendaEventListener.class);
+            ksession.addEventListener(ael);
+
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 0, 3);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 4, 3);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 8, 3);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 12, 5);
+            final StockTick tick5 = new StockTick(5, "ACME", 10, 12, 5);
+            final StockTick tick6 = new StockTick(6, "ACME", 10, 13, 3);
+            final StockTick tick7 = new StockTick(7, "ACME", 10, 13, 5);
+            final StockTick tick8 = new StockTick(8, "ACME", 10, 15, 3);
+
+            ksession.insert(tick1);
+            ksession.insert(tick2);
+            ksession.insert(tick3);
+            ksession.insert(tick4);
+            ksession.insert(tick5);
+            ksession.insert(tick6);
+            ksession.insert(tick7);
+            ksession.insert(tick8);
+
+            ksession.fireAllRules();
+
+            assertEquals(1, list.size());
+            final StockTick[] stocks = (StockTick[]) list.get(0);
+            assertSame(tick4, stocks[0]);
+            assertSame(tick2, stocks[1]);
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test(timeout = 10000)
     public void testAfterOnArbitraryDates() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_AfterOperatorDates.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
-        try {
-            final List< ? > results = new ArrayList<Object>();
-
-            wm.setGlobal( "results",
-                          results );
-
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      100000, // arbitrary timestamp
-                                                      3 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      104000, // 4 seconds after DROO
-                                                      3 );
-
-            InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-            InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-
-
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-
-            //        wm  = SerializationHelper.serializeObject(wm);
-            wm.fireAllRules();
-
-            assertEquals( 4,
-                          results.size() );
-            assertEquals( tick1,
-                          results.get( 0 ) );
-            assertEquals( tick2,
-                          results.get( 1 ) );
-            assertEquals( tick1,
-                          results.get( 2 ) );
-            assertEquals( tick2,
-                          results.get( 3 ) );
-        } finally {
-            wm.dispose();
-        }
+        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_AfterOperatorDates.drl", 100000, 104000);
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testBeforeOnArbitraryDates() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperatorDates.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
-        try {
-            final List< ? > results = new ArrayList<Object>();
-
-            wm.setGlobal( "results",
-                          results );
-
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      104000, // arbitrary timestamp
-                                                      3 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      100000, // 4 seconds after DROO
-                                                      3 );
-
-            InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-
-            //        wm  = SerializationHelper.serializeObject(wm);
-            wm.fireAllRules();
-
-            assertEquals( 4,
-                          results.size() );
-            assertEquals( tick1,
-                          results.get( 0 ) );
-            assertEquals( tick2,
-                          results.get( 1 ) );
-            assertEquals( tick1,
-                          results.get( 2 ) );
-            assertEquals( tick2,
-                          results.get( 3 ) );
-        } finally {
-            wm.dispose();
-        }
+        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_BeforeOperatorDates.drl", 104000, 100000);
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testCoincidesOnArbitraryDates() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_CoincidesOperatorDates.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
+        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_CoincidesOperatorDates.drl", 100000, 100050);
+    }
 
+    private void testArbitraryDates(final String drlClasspathResource, final long tick1Time, final long tick2Time) {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration, drlClasspathResource);
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            final List< ? > results = new ArrayList<Object>();
+            final List<?> results = new ArrayList<>();
 
-            wm.setGlobal( "results",
-                          results );
+            wm.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      100000, // arbitrary timestamp
-                                                      3 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      100050, // 50 milliseconds after DROO
-                                                      3 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, tick1Time, 3);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, tick2Time, 3);
 
-            InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+            final InternalFactHandle handle2 = (InternalFactHandle) wm.insert(tick2);
+            final InternalFactHandle handle1 = (InternalFactHandle) wm.insert(tick1);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
 
-            //        wm  = SerializationHelper.serializeObject(wm);
             wm.fireAllRules();
 
-            assertEquals( 4,
-                          results.size() );
-            assertEquals( tick1,
-                          results.get( 0 ) );
-            assertEquals( tick2,
-                          results.get( 1 ) );
-            assertEquals( tick1,
-                          results.get( 2 ) );
-            assertEquals( tick2,
-                          results.get( 3 ) );
+            assertEquals(4, results.size());
+            assertEquals(tick1, results.get(0));
+            assertEquals(tick2, results.get(1));
+            assertEquals(tick1, results.get(2));
+            assertEquals(tick2, results.get(3));
         } finally {
             wm.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testSimpleTimeWindow() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleTimeWindow.drl");
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List results = new ArrayList();
+            final List results = new ArrayList();
 
-            wm.setGlobal( "results",
-                          results );
+            wm.setGlobal("results", results);
 
-            // how to initialize the clock?
-            // how to configure the clock?
-            SessionPseudoClock clock = wm.getSessionClock();
+            final SessionPseudoClock clock = wm.getSessionClock();
 
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS ); // 5 seconds
-            EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
-                                                                                   "customer A",
-                                                                                   70 ) );
-            assertEquals( 5000,
-                          handle1.getStartTimestamp() );
-            assertEquals( 0,
-                          handle1.getDuration() );
-
-            //        wm  = SerializationHelper.getSerialisedStatefulSession( wm );
-            //        results = (List) wm.getGlobal( "results" );
-            //        clock = (SessionPseudoClock) wm.getSessionClock();
+            clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
+            final EventFactHandle handle1 = (EventFactHandle) wm.insert(new OrderEvent("1", "customer A", 70));
+            assertEquals(5000, handle1.getStartTimestamp());
+            assertEquals(0, handle1.getDuration());
 
             wm.fireAllRules();
 
-            assertEquals( 1,
-                          results.size() );
-            assertEquals( 70,
-                          ((Number) results.get( 0 )).intValue() );
+            assertEquals(1, results.size());
+            assertEquals(70, ((Number) results.get(0)).intValue());
 
             // advance clock and assert new data
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS ); // 10 seconds
-            EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
-                                                                                   "customer A",
-                                                                                   60 ) );
-            assertEquals( 15000,
-                          handle2.getStartTimestamp() );
-            assertEquals( 0,
-                          handle2.getDuration() );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            final EventFactHandle handle2 = (EventFactHandle) wm.insert(new OrderEvent("2", "customer A", 60));
+            assertEquals(15000, handle2.getStartTimestamp());
+            assertEquals(0, handle2.getDuration());
 
             wm.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
-            assertEquals( 65,
-                          ((Number) results.get( 1 )).intValue() );
+            assertEquals(2, results.size());
+            assertEquals(65, ((Number) results.get(1)).intValue());
 
             // advance clock and assert new data
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS ); // 10 seconds
-            EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
-                                                                                   "customer A",
-                                                                                   50 ) );
-            assertEquals( 25000,
-                          handle3.getStartTimestamp() );
-            assertEquals( 0,
-                          handle3.getDuration() );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            final EventFactHandle handle3 = (EventFactHandle) wm.insert(new OrderEvent("3", "customer A", 50));
+            assertEquals(25000, handle3.getStartTimestamp());
+            assertEquals(0, handle3.getDuration());
 
             wm.fireAllRules();
 
-            assertEquals( 3,
-                          results.size() );
-            assertEquals( 60,
-                          ((Number) results.get( 2 )).intValue() );
+            assertEquals(3, results.size());
+            assertEquals(60, ((Number) results.get(2)).intValue());
 
             // advance clock and assert new data
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS ); // 10 seconds
-            EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
-                                                                                   "customer A",
-                                                                                   25 ) );
-            assertEquals( 35000,
-                          handle4.getStartTimestamp() );
-            assertEquals( 0,
-                          handle4.getDuration() );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            final EventFactHandle handle4 = (EventFactHandle) wm.insert(new OrderEvent("4", "customer A", 25));
+            assertEquals(35000, handle4.getStartTimestamp());
+            assertEquals(0, handle4.getDuration());
 
             wm.fireAllRules();
 
             // first event should have expired, making average under the rule threshold, so no additional rule fire
-            assertEquals( 3,
-                          results.size() );
+            assertEquals(3, results.size());
 
             // advance clock and assert new data
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS ); // 10 seconds
-            EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
-                                                                                   "customer A",
-                                                                                   70 ) );
-            assertEquals( 45000,
-                          handle5.getStartTimestamp() );
-            assertEquals( 0,
-                          handle5.getDuration() );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            final EventFactHandle handle5 = (EventFactHandle) wm.insert(new OrderEvent("5", "customer A", 70));
+            assertEquals(45000, handle5.getStartTimestamp());
+            assertEquals(0, handle5.getDuration());
 
-            //        wm  = SerializationHelper.serializeObject(wm);
             wm.fireAllRules();
 
             // still under the threshold, so no fire
-            assertEquals( 3,
-                          results.size() );
+            assertEquals(3, results.size());
 
             // advance clock and assert new data
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS ); // 10 seconds
-            EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
-                                                                                   "customer A",
-                                                                                   115 ) );
-            assertEquals( 55000,
-                          handle6.getStartTimestamp() );
-            assertEquals( 0,
-                          handle6.getDuration() );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            final EventFactHandle handle6 = (EventFactHandle) wm.insert(new OrderEvent("6", "customer A", 115));
+            assertEquals(55000, handle6.getStartTimestamp());
+            assertEquals(0, handle6.getDuration());
 
             wm.fireAllRules();
 
-            assertEquals( 4,
-                          results.size() );
-            assertEquals( 70,
-                          ((Number) results.get( 3 )).intValue() );
+            assertEquals(4, results.size());
+            assertEquals(70, ((Number) results.get(3)).intValue());
         } finally {
             wm.dispose();
         }
     }
 
-    @Test (timeout=10000)
+    @Test(timeout = 10000)
     public void testSimpleLengthWindow() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
-
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleLengthWindow.drl");
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List results = new ArrayList();
 
-            wm.setGlobal( "results",
-                          results );
-
-            EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
-                                                                                   "customer A",
-                                                                                   70 ) );
-
-            //        wm  = SerializationHelper.serializeObject(wm);
+            wm.setGlobal("results", results);
+            wm.insert(new OrderEvent("1", "customer A", 70));
             wm.fireAllRules();
 
-            assertEquals( 1,
-                          results.size() );
-            assertEquals( 70,
-                          ((Number) results.get( 0 )).intValue() );
+            assertEquals(1, results.size());
+            assertEquals(70, ((Number) results.get(0)).intValue());
 
             // assert new data
-            EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
-                                                                                   "customer A",
-                                                                                   60 ) );
+            wm.insert(new OrderEvent("2", "customer A", 60));
             wm.fireAllRules();
 
-            assertEquals( 2,
-                          results.size() );
-            assertEquals( 65,
-                          ((Number) results.get( 1 )).intValue() );
+            assertEquals(2, results.size());
+            assertEquals(65, ((Number) results.get(1)).intValue());
 
             // assert new data
-            EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
-                                                                                   "customer A",
-                                                                                   50 ) );
+            wm.insert(new OrderEvent("3", "customer A", 50));
             wm.fireAllRules();
 
-            assertEquals( 3,
-                          results.size() );
-            assertEquals( 60,
-                          ((Number) results.get( 2 )).intValue() );
+            assertEquals(3, results.size());
+            assertEquals(60, ((Number) results.get(2)).intValue());
 
             // assert new data
-            EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
-                                                                                   "customer A",
-                                                                                   25 ) );
+            wm.insert(new OrderEvent("4", "customer A", 25));
             wm.fireAllRules();
 
             // first event should have expired, making average under the rule threshold, so no additional rule fire
-            assertEquals( 3,
-                          results.size() );
+            assertEquals(3, results.size());
 
             // assert new data
-            EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
-                                                                                   "customer A",
-                                                                                   70 ) );
-            //        wm  = SerializationHelper.serializeObject(wm);
+            wm.insert(new OrderEvent("5", "customer A", 70));
             wm.fireAllRules();
 
             // still under the threshold, so no fire
-            assertEquals( 3,
-                          results.size() );
+            assertEquals(3, results.size());
 
             // assert new data
-            EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
-                                                                                   "customer A",
-                                                                                   115 ) );
+            wm.insert(new OrderEvent("6", "customer A", 115));
             wm.fireAllRules();
 
-            assertEquals( 4,
-                          results.size() );
-            assertEquals( 70,
-                          ((Number) results.get( 3 )).intValue() );
+            assertEquals(4, results.size());
+            assertEquals(70, ((Number) results.get(3)).intValue());
         } finally {
             wm.dispose();
         }
     }
 
-    @Test(timeout=10000)
-    public void testSimpleLengthWindowWithQueue() throws Exception {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
-
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession( kbase, sconf );
-
-        try {
-            final List results = new ArrayList();
-
-            ksession.setGlobal("results",
-                               results);
-
-            EventFactHandle handle1 = (EventFactHandle) ksession.insert( new OrderEvent( "1", "customer A", 80 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-
-
-            // assert new data
-            EventFactHandle handle2 = (EventFactHandle) ksession.insert( new OrderEvent( "2", "customer A", 70 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-
-            // assert new data
-            EventFactHandle handle3 = (EventFactHandle) ksession.insert( new OrderEvent( "3", "customer A", 60 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-
-            // assert new data
-            EventFactHandle handle4 = (EventFactHandle) ksession.insert( new OrderEvent( "4", "customer A", 50 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-
-            ksession.fireAllRules();
-
-            assertEquals( 1,
-                          results.size() );
-
-            assertEquals(60,
-                         ((Number) results.get(0)).intValue());
-
-            // assert new data
-            EventFactHandle handle5 = (EventFactHandle) ksession.insert( new OrderEvent( "5", "customer A", 10 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-            ksession.fireAllRules();
-
-            assertEquals( 1,
-                          results.size() );
-
-            EventFactHandle handle6 = (EventFactHandle) ksession.insert( new OrderEvent( "6", "customer A", 90 ) );
-            ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-            ksession.fireAllRules();
-
-            assertEquals( 2,
-                          results.size() );
-            assertEquals( 50,
-                          ((Number) results.get( 1 )).intValue() );
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-
-
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testDelayingNot() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_DelayingNot.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Delaying Not\"\n" +
+                "when\n" +
+                "    $s1: StockTick( $symbol : company, $price : price )\n" +
+                "    not( StockTick( company == $symbol, price > $price, this after[ 1s, 10s ] $s1 ) )\n" +
+                "then\n" +
+                "    results.add( $s1 );\n" +
+                "end";
         
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            final RuleImpl rule = (RuleImpl) kbase.getRule( "org.drools.compiler", "Delaying Not" );
-            assertEquals( 10000,
-                          ((DurationTimer) rule.getTimer()).getDuration() );
+            final RuleImpl rule = (RuleImpl) kbase.getRule("org.drools.compiler", "Delaying Not");
+            assertEquals(10000, ((DurationTimer) rule.getTimer()).getDuration());
 
             final List results = new ArrayList();
 
-            wm.setGlobal( "results",
-                          results );
+            wm.setGlobal("results", results);
 
-            SessionPseudoClock clock = wm.getSessionClock();
+            final SessionPseudoClock clock = wm.getSessionClock();
 
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
+            clock.advanceTime(10, TimeUnit.SECONDS);
 
-            StockTickInterface st1O = new StockTick( 1,
-                                                     "DROO",
-                                                     100,
-                                                     clock.getCurrentTime() );
-
-            EventFactHandle st1 = (EventFactHandle) wm.insert( st1O );
-
+            final StockTick st1O = new StockTick(1, "DROO", 100, clock.getCurrentTime());
+            wm.insert(st1O);
             wm.fireAllRules();
 
             // should not fire, because it must wait 10 seconds
-            assertEquals( 0,
-                          results.size() );
+            assertEquals(0, results.size());
 
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS );
-
-            EventFactHandle st2 = (EventFactHandle) wm.insert( new StockTick( 1,
-                                                                              "DROO",
-                                                                              80,
-                                                                              clock.getCurrentTime() ) );
-
+            clock.advanceTime(5, TimeUnit.SECONDS);
+            wm.insert(new StockTick(1, "DROO", 80, clock.getCurrentTime()));
             wm.fireAllRules();
 
             // should still not fire, because it must wait 5 more seconds, and st2 has lower price (80)
-            assertEquals( 0,
-                          results.size() );
+            assertEquals(0, results.size());
             // assert new data
             wm.fireAllRules();
 
-            clock.advanceTime( 6,
-                               TimeUnit.SECONDS );
+            clock.advanceTime(6, TimeUnit.SECONDS);
 
             wm.fireAllRules();
 
             // should fire, because waited for 10 seconds and no other event arrived with a price increase
-            assertEquals( 1,
-                          results.size() );
+            assertEquals(1, results.size());
 
-            assertEquals( st1O,
-                          results.get( 0 ) );
+            assertEquals(st1O, results.get(0));
         } finally {
             wm.dispose();
+        }
+    }
+
+    @Test(timeout = 10000)
+    public void testSimpleLengthWindowWithQueue() throws Exception {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleLengthWindow.drl");
+        KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+            final List results = new ArrayList();
+            ksession.setGlobal("results", results);
+
+            ksession.insert(new OrderEvent("1", "customer A", 80));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            // assert new data
+            ksession.insert(new OrderEvent("2", "customer A", 70));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            // assert new data
+            ksession.insert(new OrderEvent("3", "customer A", 60));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            // assert new data
+            ksession.insert(new OrderEvent("4", "customer A", 50));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            ksession.fireAllRules();
+
+            assertEquals(1, results.size());
+            assertEquals(60, ((Number) results.get(0)).intValue());
+
+            // assert new data
+            ksession.insert(new OrderEvent("5", "customer A", 10));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession.fireAllRules();
+
+            assertEquals(1, results.size());
+
+            ksession.insert(new OrderEvent("6", "customer A", 90));
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession.fireAllRules();
+
+            assertEquals(2, results.size());
+            assertEquals(50, ((Number) results.get(1)).intValue());
+        } finally {
+            ksession.dispose();
         }
     }
 
     @Test(timeout=10000)
     public void testDelayingNot2() {
-        String str = "package org.drools.compiler\n" +
+        final String drl = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1527,25 +1137,22 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    $a : A() and not( B( this after $a ) )\n" +
                 "then\n" +
                 "end\n";
-        
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( conf, str );
-        
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
             // rule X should not be delayed as the delay would be infinite
-            int rules = ksession.fireAllRules();
+            final int rules = ksession.fireAllRules();
             assertEquals( 2, rules );
         } finally {
             ksession.dispose();
         }
-        
+
     }
-    
+
     @Test(timeout=10000)
     public void testDelayingNotWithPreEpochClock() {
-        String str = "package org.drools.compiler\n" +
+        final String drl = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1558,234 +1165,157 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
         
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBaseFromString( conf, str );
-
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             // Getting a pre-epoch date (i.e., before 1970)
-            Calendar ts = Calendar.getInstance();
-            ts.set( 1900, 1, 1 );
+            final Calendar ts = Calendar.getInstance();
+            ts.set(1900, Calendar.FEBRUARY, 1 );
 
             // Initializing the clock to that date
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
             clock.advanceTime( ts.getTimeInMillis(), TimeUnit.MILLISECONDS );
 
             // rule X should not be delayed as the delay would be infinite
-            int rules = ksession.fireAllRules();
+            final int rules = ksession.fireAllRules();
             assertEquals( 2, rules );
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testIdleTime() {
-        // read in the source
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
-                      ResourceType.DRL );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl)createKnowledgeSession(kbase, conf);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = (SessionPseudoClock) session.getSessionClock();
+            final SessionPseudoClock clock = session.getSessionClock();
 
             final List results = new ArrayList();
 
-            session.setGlobal( "results",
-                               results );
+            session.setGlobal("results", results);
 
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      10010 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      10100 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      11000 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 10010);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 10100);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 11000);
 
-            assertEquals( 0,
-                          session.getIdleTime() );
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
-            assertEquals( 10000,
-                          session.getIdleTime() );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            assertEquals( 0,
-                          session.getIdleTime() );
-            clock.advanceTime( 15,
-                               TimeUnit.SECONDS );
-            assertEquals( 15000,
-                          session.getIdleTime() );
-            clock.advanceTime( 15,
-                               TimeUnit.SECONDS );
-            assertEquals( 30000,
-                          session.getIdleTime() );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            assertEquals( 0,
-                          session.getIdleTime() );
-            clock.advanceTime( 20,
-                               TimeUnit.SECONDS );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
-            clock.advanceTime( 10,
-                               TimeUnit.SECONDS );
+            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            clock.advanceTime(10, TimeUnit.SECONDS);
+            assertEquals(10000, ((InternalWorkingMemory) session).getIdleTime());
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            clock.advanceTime(15, TimeUnit.SECONDS);
+            assertEquals(15000, ((InternalWorkingMemory) session).getIdleTime());
+            clock.advanceTime(15, TimeUnit.SECONDS);
+            assertEquals(30000, ((InternalWorkingMemory) session).getIdleTime());
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            clock.advanceTime(20, TimeUnit.SECONDS);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
+            clock.advanceTime(10, TimeUnit.SECONDS);
 
-            assertNotNull( handle1 );
-            assertNotNull( handle2 );
-            assertNotNull( handle3 );
-            assertNotNull( handle4 );
+            assertNotNull(handle1);
+            assertNotNull(handle2);
+            assertNotNull(handle3);
+            assertNotNull(handle4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
 
-            assertEquals( 10000,
-                          session.getIdleTime() );
+            assertEquals(10000, ((InternalWorkingMemory) session).getIdleTime());
             session.fireAllRules();
-            assertEquals( 0,
-                          session.getIdleTime() );
+            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
 
-            assertEquals( 2,
-                          ((List) session.getGlobal( "results" )).size() );
+            assertEquals(2, ((List) session.getGlobal("results")).size());
         } finally {
             session.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testIdleTimeAndTimeToNextJob() {
-        // read in the source
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
-        
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl)createKnowledgeSession( kbase, sconf );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_SimpleTimeWindow.drl");
+        final StatefulKnowledgeSessionImpl wm =
+                (StatefulKnowledgeSessionImpl) kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (WorkingMemory) wm );
-            File testTmpDir = new File( "target/test-tmp/" );
+            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger((WorkingMemory) wm);
+            final File testTmpDir = new File("target/test-tmp/");
             testTmpDir.mkdirs();
-            logger.setFileName( "target/test-tmp/testIdleTimeAndTimeToNextJob-audit" );
+            logger.setFileName("target/test-tmp/testIdleTimeAndTimeToNextJob-audit");
 
             try {
-                List results = new ArrayList();
+                final List results = new ArrayList();
 
-                wm.setGlobal( "results",
-                              results );
+                wm.setGlobal("results", results);
 
                 // how to initialize the clock?
                 // how to configure the clock?
-                SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
-                clock.advanceTime( 5,
-                                   TimeUnit.SECONDS ); // 5 seconds
+                final SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
+                clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
 
                 // there is no next job, so returns -1
-                assertEquals( -1,
-                              wm.getTimeToNextJob() );
-                wm.insert( new OrderEvent( "1",
-                                           "customer A",
-                                           70 ) );
+                assertEquals(-1, wm.getTimeToNextJob());
+                wm.insert(new OrderEvent("1", "customer A", 70));
                 wm.fireAllRules();
-                assertEquals( 0,
-                              wm.getIdleTime() );
+                assertEquals(0, wm.getIdleTime());
                 // now, there is a next job in 30 seconds: expire the event
-                assertEquals( 30000,
-                              wm.getTimeToNextJob() );
+                assertEquals(30000, wm.getTimeToNextJob());
 
                 wm.fireAllRules();
-                assertEquals( 1,
-                              results.size() );
-                assertEquals( 70,
-                              ((Number) results.get( 0 )).intValue() );
+                assertEquals(1, results.size());
+                assertEquals(70, ((Number) results.get(0)).intValue());
 
                 // advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // next job is in 20 seconds: expire the event
-                assertEquals( 20000,
-                              wm.getTimeToNextJob() );
+                assertEquals(20000, wm.getTimeToNextJob());
 
-                wm.insert( new OrderEvent( "2",
-                                           "customer A",
-                                           60 ) );
+                wm.insert(new OrderEvent("2", "customer A", 60));
                 wm.fireAllRules();
 
-                assertEquals( 2,
-                              results.size() );
-                assertEquals( 65,
-                              ((Number) results.get( 1 )).intValue() );
+                assertEquals(2, results.size());
+                assertEquals(65, ((Number) results.get(1)).intValue());
 
                 // advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // next job is in 10 seconds: expire the event
-                assertEquals( 10000,
-                              wm.getTimeToNextJob() );
+                assertEquals(10000, wm.getTimeToNextJob());
 
-                wm.insert( new OrderEvent( "3",
-                                           "customer A",
-                                           50 ) );
+                wm.insert(new OrderEvent("3", "customer A", 50));
                 wm.fireAllRules();
-                assertEquals( 3,
-                              results.size() );
-                assertEquals( 60,
-                              ((Number) results.get( 2 )).intValue() );
+                assertEquals(3, results.size());
+                assertEquals(60, ((Number) results.get(2)).intValue());
 
                 // advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // advancing clock time will cause events to expire
-                assertEquals( 0,
-                              wm.getIdleTime() );
+                assertEquals(0, wm.getIdleTime());
                 // next job is in 10 seconds: expire another event
                 //assertEquals( 10000, iwm.getTimeToNextJob());
 
-                wm.insert( new OrderEvent( "4",
-                                           "customer A",
-                                           25 ) );
+                wm.insert(new OrderEvent("4", "customer A", 25));
                 wm.fireAllRules();
 
                 // first event should have expired, making average under the rule threshold, so no additional rule fire
-                assertEquals( 3,
-                              results.size() );
+                assertEquals(3, results.size());
 
                 // advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
 
-                wm.insert( new OrderEvent( "5",
-                                           "customer A",
-                                           70 ) );
-                assertEquals( 0,
-                              wm.getIdleTime() );
+                wm.insert(new OrderEvent("5", "customer A", 70));
+                assertEquals(0, wm.getIdleTime());
 
                 //        wm  = SerializationHelper.serializeObject(wm);
                 wm.fireAllRules();
 
                 // still under the threshold, so no fire
-                assertEquals( 3,
-                              results.size() );
+                assertEquals(3, results.size());
             } finally {
                 logger.writeToDisk();
             }
@@ -1794,120 +1324,77 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testCollectWithWindows() {
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBase( kbconf, "test_CEP_CollectWithWindows.drl" );
-
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_CollectWithWindows.drl");
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-            File testTmpDir = new File( "target/test-tmp/" );
+            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(ksession);
+            final File testTmpDir = new File("target/test-tmp/");
             testTmpDir.mkdirs();
-            logger.setFileName( "target/test-tmp/testCollectWithWindows-audit" );
+            logger.setFileName("target/test-tmp/testCollectWithWindows-audit");
 
-            List<Number> timeResults = new ArrayList<Number>();
-            List<Number> lengthResults = new ArrayList<Number>();
+            final List<Number> timeResults = new ArrayList<>();
+            final List<Number> lengthResults = new ArrayList<>();
 
-            ksession.setGlobal( "timeResults",
-                                timeResults );
-            ksession.setGlobal( "lengthResults",
-                                lengthResults );
+            ksession.setGlobal("timeResults", timeResults);
+            ksession.setGlobal("lengthResults", lengthResults);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
             try {
                 // First interaction
-                clock.advanceTime( 5,
-                                   TimeUnit.SECONDS ); // 5 seconds
-                ksession.insert( new OrderEvent( "1",
-                                                 "customer A",
-                                                 70 ) );
+                clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
+                ksession.insert(new OrderEvent("1", "customer A", 70));
 
                 ksession.fireAllRules();
 
-                assertEquals( 1,
-                              timeResults.size() );
-                assertEquals( 1,
-                              timeResults.get( 0 ).intValue() );
-                assertEquals( 1,
-                              lengthResults.size() );
-                assertEquals( 1,
-                              lengthResults.get( 0 ).intValue() );
+                assertEquals(1, timeResults.size());
+                assertEquals(1, timeResults.get(0).intValue());
+                assertEquals(1, lengthResults.size());
+                assertEquals(1, lengthResults.get(0).intValue());
 
                 // Second interaction: advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
-                ksession.insert( new OrderEvent( "2",
-                                                 "customer A",
-                                                 60 ) );
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+                ksession.insert(new OrderEvent("2", "customer A", 60));
                 ksession.fireAllRules();
 
-                assertEquals( 2,
-                              timeResults.size() );
-                assertEquals( 2,
-                              timeResults.get( 1 ).intValue() );
-                assertEquals( 2,
-                              lengthResults.size() );
-                assertEquals( 2,
-                              lengthResults.get( 1 ).intValue() );
+                assertEquals(2, timeResults.size());
+                assertEquals(2, timeResults.get(1).intValue());
+                assertEquals(2, lengthResults.size());
+                assertEquals(2, lengthResults.get(1).intValue());
 
                 // Third interaction: advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
-                ksession.insert( new OrderEvent( "3",
-                                                 "customer A",
-                                                 50 ) );
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+                ksession.insert(new OrderEvent("3", "customer A", 50));
                 ksession.fireAllRules();
 
-                assertEquals( 3,
-                              timeResults.size() );
-                assertEquals( 3,
-                              timeResults.get( 2 ).intValue() );
-                assertEquals( 3,
-                              lengthResults.size() );
-                assertEquals( 3,
-                              lengthResults.get( 2 ).intValue() );
+                assertEquals(3, timeResults.size());
+                assertEquals(3, timeResults.get(2).intValue());
+                assertEquals(3, lengthResults.size());
+                assertEquals(3, lengthResults.get(2).intValue());
 
                 // Fourth interaction: advance clock and assert new data
-                clock.advanceTime( 10,
-                                   TimeUnit.SECONDS ); // 10 seconds
-                ksession.insert( new OrderEvent( "4",
-                                                 "customer A",
-                                                 25 ) );
+                clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+                ksession.insert(new OrderEvent("4", "customer A", 25));
                 ksession.fireAllRules();
 
                 // first event should have expired now
-                assertEquals( 4,
-                              timeResults.size() );
-                assertEquals( 3,
-                              timeResults.get( 3 ).intValue() );
-                assertEquals( 4,
-                              lengthResults.size() );
-                assertEquals( 3,
-                              lengthResults.get( 3 ).intValue() );
+                assertEquals(4, timeResults.size());
+                assertEquals(3, timeResults.get(3).intValue());
+                assertEquals(4, lengthResults.size());
+                assertEquals(3, lengthResults.get(3).intValue());
 
                 // Fifth interaction: advance clock and assert new data
-                clock.advanceTime( 5,
-                                   TimeUnit.SECONDS ); // 10 seconds
-                ksession.insert( new OrderEvent( "5",
-                                                 "customer A",
-                                                 70 ) );
+                clock.advanceTime(5, TimeUnit.SECONDS); // 10 seconds
+                ksession.insert(new OrderEvent("5", "customer A", 70));
                 ksession.fireAllRules();
 
-                assertEquals( 5,
-                              timeResults.size() );
-                assertEquals( 4,
-                              timeResults.get( 4 ).intValue() );
-                assertEquals( 5,
-                              lengthResults.size() );
-                assertEquals( 3,
-                              lengthResults.get( 4 ).intValue() );
+                assertEquals(5, timeResults.size());
+                assertEquals(4, timeResults.get(4).intValue());
+                assertEquals(5, lengthResults.size());
+                assertEquals(3, lengthResults.get(4).intValue());
             } finally {
                 logger.writeToDisk();
             }
@@ -1916,47 +1403,35 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testPseudoSchedulerRemoveJobTest() {
-        String str = "import " + CepEspTest.class.getName() + ".A\n";
-        str += "declare A\n";
-        str += "    @role( event )\n";
-        str += "end\n";
-        str += "rule A\n";
-        str += "when\n";
-        str += "   $a : A()\n";
-        str += "   not A(this after [1s,10s] $a)\n";
-        str += "then\n";
-        str += "end";
+        final String drl = "import " + CepEspTest.class.getName() + ".A\n" +
+            "declare A\n" +
+            "    @role( event )\n" +
+            "end\n" +
+            "rule A\n" +
+            "when\n" +
+            "   $a : A()\n" +
+            "   not A(this after [1s,10s] $a)\n" +
+            "then\n" +
+            "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        knowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
-        KieSession ksession = knowledgeBase.newKieSession( sessionConfig, KieServices.get().newEnvironment() );
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            FactHandle h = ksession.insert( new A() );
-            ksession.delete( h );
+            final FactHandle h = ksession.insert(new A());
+            ksession.delete(h);
         } finally {
             ksession.dispose();
         }
     }
 
-    public static class A
-        implements
-        Serializable {
+    public static class A implements Serializable {
+
     }
 
     public static class Message {
+
         private Properties properties;
         private Timestamp timestamp;
         private Long duration;
@@ -1965,7 +1440,7 @@ public class CepEspTest extends CommonTestMethodBase {
             return properties;
         }
 
-        public void setProperties( Properties properties ) {
+        public void setProperties(final Properties properties) {
             this.properties = properties;
         }
 
@@ -1973,7 +1448,7 @@ public class CepEspTest extends CommonTestMethodBase {
             return timestamp;
         }
 
-        public void setStartTime(Timestamp timestamp) {
+        public void setStartTime(final Timestamp timestamp) {
             this.timestamp = timestamp;
         }
 
@@ -1981,59 +1456,60 @@ public class CepEspTest extends CommonTestMethodBase {
             return duration;
         }
 
-        public void setDuration(Long duration) {
+        public void setDuration(final Long duration) {
             this.duration = duration;
         }
     }
 
-    @Test(timeout=10000)
-    public void testStreamModeNoSerialization() throws IOException,
-                                               ClassNotFoundException {
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_StreamMode.drl" );
+    @Test(timeout = 10000)
+    public void testStreamModeNoSerialization() throws IOException, ClassNotFoundException {
+        final String drl = "package org.drools.compiler\n" +
+                "import " + Sensor.class.getCanonicalName() + "\n" +
+                "declare Sensor\n" +
+                "    @role (event)\n" +
+                "end\n" +
+                "\n" +
+                "rule 'dupa2'\n" +
+                "when\n" +
+                "    Number( $avg : intValue ) from accumulate(\n" +
+                "       Sensor( $v : temperature ) over window:length( 2 ),\n" +
+                "       average( $v ) )\n" +
+                "then\n" +
+                "    // noop\n" +
+                "end";
 
-        KieBase kbase2 = (KieBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ),
-                                                                           null );
+        final KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase2 = (KieBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ), null );
 
         final KieSession ksession1 = kbase1.newKieSession();
         final KieSession ksession2 = kbase2.newKieSession();
         try {
-            AgendaEventListener ael1 = mock( AgendaEventListener.class );
-            ksession1.addEventListener( ael1 );
+            final AgendaEventListener ael1 = mock(AgendaEventListener.class);
+            ksession1.addEventListener(ael1);
 
-            AgendaEventListener ael2 = mock( AgendaEventListener.class );
-            ksession2.addEventListener( ael2 );
+            final AgendaEventListener ael2 = mock(AgendaEventListener.class);
+            ksession2.addEventListener(ael2);
             try {
                 // -------------
                 // first, check the non-serialized session
                 // -------------
-                ksession1.insert( new Sensor( 10,
-                                              10 ) );
+                ksession1.insert(new Sensor(10, 10));
                 ksession1.fireAllRules();
 
-                ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-                verify( ael1,
-                        times( 1 ) ).afterMatchFired(aafe1.capture());
+                final ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+                verify(ael1, times(1)).afterMatchFired(aafe1.capture());
                 List<AfterMatchFiredEvent> events1 = aafe1.getAllValues();
-                assertThat( events1.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
-                            is(10) );
+                assertThat(events1.get(0).getMatch().getDeclarationValue("$avg"), is(10));
 
-                ksession1.insert( new Sensor( 20,
-                                              20 ) );
+                ksession1.insert(new Sensor(20, 20));
                 ksession1.fireAllRules();
-                verify( ael1,
-                        times( 2 ) ).afterMatchFired(aafe1.capture());
+                verify(ael1, times(2)).afterMatchFired(aafe1.capture());
                 events1 = aafe1.getAllValues();
-                assertThat( events1.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
-                            is(15) );
-                ksession1.insert( new Sensor( 30,
-                                              30 ) );
+                assertThat(events1.get(1).getMatch().getDeclarationValue("$avg"), is(15));
+                ksession1.insert(new Sensor(30, 30));
                 ksession1.fireAllRules();
-                verify( ael1,
-                        times( 3 ) ).afterMatchFired(aafe1.capture());
-                assertThat( events1.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
-                            is(25) );
+                verify(ael1, times(3)).afterMatchFired(aafe1.capture());
+                assertThat(events1.get(2).getMatch().getDeclarationValue("$avg"), is(25));
             } finally {
                 ksession1.dispose();
             }
@@ -2041,270 +1517,220 @@ public class CepEspTest extends CommonTestMethodBase {
             // -------------
             // now we check the serialized session
             // -------------
-            ArgumentCaptor<AfterMatchFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
+            final ArgumentCaptor<AfterMatchFiredEvent> aafe2 = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
 
-            ksession2.insert( new Sensor( 10,
-                                          10 ) );
+            ksession2.insert(new Sensor(10, 10));
             ksession2.fireAllRules();
-            verify( ael2,
-                    times( 1 ) ).afterMatchFired(aafe2.capture());
+            verify(ael2, times(1)).afterMatchFired(aafe2.capture());
             List<AfterMatchFiredEvent> events2 = aafe2.getAllValues();
-            assertThat( events2.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
-                        is(10) );
+            assertThat(events2.get(0).getMatch().getDeclarationValue("$avg"), is(10));
 
-            ksession2.insert( new Sensor( 20,
-                                          20 ) );
+            ksession2.insert(new Sensor(20, 20));
             ksession2.fireAllRules();
-            verify( ael2,
-                    times( 2 ) ).afterMatchFired(aafe2.capture());
+            verify(ael2, times(2)).afterMatchFired(aafe2.capture());
             events2 = aafe2.getAllValues();
-            assertThat( events2.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
-                        is(15) );
+            assertThat(events2.get(1).getMatch().getDeclarationValue("$avg"), is(15));
 
-            ksession2.insert( new Sensor( 30,
-                                          30 ) );
+            ksession2.insert(new Sensor(30, 30));
             ksession2.fireAllRules();
-            verify( ael2,
-                    times( 3 ) ).afterMatchFired(aafe2.capture());
-            assertThat( events2.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
-                        is(25) );
+            verify(ael2, times(3)).afterMatchFired(aafe2.capture());
+            assertThat(events2.get(2).getMatch().getDeclarationValue("$avg"), is(25));
         } finally {
             ksession2.dispose();
         }
     }
 
-    @Test(timeout=10000)
-    public void testIdentityAssertBehaviorOnEntryPoints() {
-        StockTickInterface st1 = new StockTick( 1,
-                                                "RHT",
-                                                10,
-                                                10 );
-        StockTickInterface st2 = new StockTick( 1,
-                                                "RHT",
-                                                10,
-                                                10 );
-        StockTickInterface st3 = new StockTick( 2,
-                                                "RHT",
-                                                15,
-                                                20 );
-
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( EqualityBehaviorOption.IDENTITY );
-        final KieBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
-
-        final KieSession ksession = kbase1.newKieSession();
+    @Test(timeout = 10000)
+    public void testAssertBehaviorOnEntryPoints() {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
+                                                                           "org/drools/compiler/integrationtests/test_CEP_AssertBehaviorOnEntryPoints.drl");
+        final KieSession ksession = kbase.newKieSession();
         try {
-            AgendaEventListener ael1 = mock( AgendaEventListener.class );
-            ksession.addEventListener( ael1 );
-            EntryPoint ep1 = ksession.getEntryPoint( "stocktick stream" );
+            final StockTick st1 = new StockTick(1, "RHT", 10, 10);
+            final StockTick st2 = new StockTick(1, "RHT", 10, 10);
+            final StockTick st3 = new StockTick(2, "RHT", 15, 20);
 
-            FactHandle fh1 = ep1.insert( st1 );
-            FactHandle fh1_2 = ep1.insert( st1 );
-            FactHandle fh2 = ep1.insert( st2 );
-            FactHandle fh3 = ep1.insert( st3 );
+            final AgendaEventListener ael1 = mock(AgendaEventListener.class);
+            ksession.addEventListener(ael1);
+            final EntryPoint ep1 = ksession.getEntryPoint("stocktick stream");
 
-            assertSame( fh1,
-                        fh1_2 );
-            assertNotSame( fh1,
-                           fh2 );
-            assertNotSame( fh1,
-                           fh3 );
-            assertNotSame( fh2,
-                           fh3 );
+            final FactHandle fh1 = ep1.insert(st1);
+            final FactHandle fh1_2 = ep1.insert(st1);
+            final FactHandle fh2 = ep1.insert(st2);
+            final FactHandle fh3 = ep1.insert(st3);
 
-            ksession.fireAllRules();
-            // must have fired 3 times, one for each event identity
-            verify( ael1,
-                    times( 3 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
+            if (kieBaseTestConfiguration.isIdentity()) {
+                assertSame(fh1, fh1_2);
+                assertNotSame(fh1, fh2);
+                assertNotSame(fh1, fh3);
+                assertNotSame(fh2, fh3);
+
+                ksession.fireAllRules();
+                // must have fired 3 times, one for each event identity
+                verify(ael1, times(3)).afterMatchFired(any(AfterMatchFiredEvent.class));
+            } else {
+                assertSame(fh1, fh1_2);
+                assertSame(fh1, fh2);
+                assertNotSame(fh1, fh3);
+
+                ksession.fireAllRules();
+                // must have fired 2 times, one for each event equality
+                verify(ael1, times(2)).afterMatchFired(any(AfterMatchFiredEvent.class));
+            }
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
-    public void testEqualityAssertBehaviorOnEntryPoints() {
-        StockTickInterface st1 = new StockTick( 1,
-                                                "RHT",
-                                                10,
-                                                10 );
-        StockTickInterface st2 = new StockTick( 1,
-                                                "RHT",
-                                                10,
-                                                10 );
-        StockTickInterface st3 = new StockTick( 2,
-                                                "RHT",
-                                                15,
-                                                20 );
-
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( EqualityBehaviorOption.EQUALITY );
-        final KieBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
-
-        final KieSession ksession1 = kbase1.newKieSession();
-
-        try {
-            AgendaEventListener ael1 = mock( AgendaEventListener.class );
-            ksession1.addEventListener( ael1 );
-            EntryPoint ep1 = ksession1.getEntryPoint( "stocktick stream" );
-
-            FactHandle fh1 = ep1.insert( st1 );
-            FactHandle fh1_2 = ep1.insert( st1 );
-            FactHandle fh2 = ep1.insert( st2 );
-            FactHandle fh3 = ep1.insert( st3 );
-
-            assertSame( fh1,
-                        fh1_2 );
-            assertSame( fh1,
-                        fh2 );
-            assertNotSame( fh1,
-                           fh3 );
-
-            ksession1.fireAllRules();
-            // must have fired 2 times, one for each event equality
-            verify( ael1,
-                    times( 2 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
-        } finally {
-            ksession1.dispose();
-        }
-    }
-
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testEventDeclarationForInterfaces() {
-        // read in the source
-        final KieBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl" );
-
-        KieSession session = createKnowledgeSession(kbase);
-
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @timestamp( dateTimestamp )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check event\"\n" +
+                "when\n" +
+                "    $st : StockTick( company == \"ACME\" )\n" +
+                "then\n" +
+                "    // no-op\n" +
+                "end";
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession();
         try {
-            StockTickInterface tick1 = new StockTick( 1,
-                                                      "DROO",
-                                                      50,
-                                                      10000 );
-            StockTickInterface tick2 = new StockTick( 2,
-                                                      "ACME",
-                                                      10,
-                                                      10010 );
-            StockTickInterface tick3 = new StockTick( 3,
-                                                      "ACME",
-                                                      10,
-                                                      10100 );
-            StockTickInterface tick4 = new StockTick( 4,
-                                                      "DROO",
-                                                      50,
-                                                      11000 );
+            final StockTick tick1 = new StockTick(1, "DROO", 50, 10000);
+            final StockTick tick2 = new StockTick(2, "ACME", 10, 10010);
+            final StockTick tick3 = new StockTick(3, "ACME", 10, 10100);
+            final StockTick tick4 = new StockTick(4, "DROO", 50, 11000);
 
-            InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
-            InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
-            InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
-            InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+            final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
+            final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
+            final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
+            final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertTrue( handle1.isEvent() );
-            assertTrue( handle2.isEvent() );
-            assertTrue( handle3.isEvent() );
-            assertTrue( handle4.isEvent() );
+            assertTrue(handle1.isEvent());
+            assertTrue(handle2.isEvent());
+            assertTrue(handle3.isEvent());
+            assertTrue(handle4.isEvent());
         } finally {
             session.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTemporalOperators() {
-        // read in the source
-        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
-        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "    @timestamp( time )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"2 operators\"\n" +
+                "when\n" +
+                "    $a : StockTick( company == \"A\" )\n" +
+                "    not( StockTick( company == \"B\", this after[0,20s] $a ) )\n" +
+                "    not( StockTick( company == \"C\", this after[0,20s] $a ) )\n" +
+                "then\n" +
+                "    // do something\n" +
+                "end";
 
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            ksession.insert( new StockTick( 1,
-                                            "A",
-                                            10,
-                                            1000 ) );
+            ksession.insert(new StockTick(1, "A", 10, 1000));
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTemporalOperators2() {
-        // read in the source
-        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
-        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators2.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"2 operators\"\n" +
+                "when\n" +
+                "    $a : StockTick( ) from entry-point \"X\"\n" +
+                "    $b : StockTick( this after[1s,10s] $a ) from entry-point \"X\"\n" +
+                "then\n" +
+                "    list.add( new StockTick[] { $a, $b } );\n" +
+                "end\n" +
+                "\n";
 
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, sconf);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
-            EntryPoint ep = ksession.getEntryPoint( "X" );
+            final EntryPoint ep = ksession.getEntryPoint("X");
 
-            clock.advanceTime( 1000,
-                               TimeUnit.SECONDS );
-            ep.insert( new StockTick( 1, "A", 10, clock.getCurrentTime() ) );
+            clock.advanceTime(1000, TimeUnit.SECONDS);
+            ep.insert(new StockTick(1, "A", 10, clock.getCurrentTime()));
 
-            clock.advanceTime( 8,
-                               TimeUnit.SECONDS );
-            ep.insert( new StockTick( 2, "B", 10, clock.getCurrentTime() ) );
+            clock.advanceTime(8, TimeUnit.SECONDS);
+            ep.insert(new StockTick(2, "B", 10, clock.getCurrentTime()));
 
-            clock.advanceTime( 8,
-                               TimeUnit.SECONDS );
-            ep.insert( new StockTick( 3, "B", 10, clock.getCurrentTime() ) );
+            clock.advanceTime(8, TimeUnit.SECONDS);
+            ep.insert(new StockTick(3, "B", 10, clock.getCurrentTime()));
 
-            clock.advanceTime( 8,
-                               TimeUnit.SECONDS );
+            clock.advanceTime(8, TimeUnit.SECONDS);
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTemporalOperatorsInfinity() {
-        // read in the source
-        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
-        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators3.drl" );
+        final String drl = "package org.drools.compiler\n" +
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare StockTick \n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"infinity\"\n" +
+                "when\n" +
+                "    $a : StockTick( ) from entry-point \"X\"\n" +
+                "    $b : StockTick( this after[5s,*] $a ) from entry-point \"X\"\n" +
+                "then\n" +
+                "    list.add( $a );\n" +
+                "    list.add( $b );\n" +
+                "end";
 
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = kbase.newKieSession( sconf, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
-            EntryPoint ep = ksession.getEntryPoint( "X" );
+            final EntryPoint ep = ksession.getEntryPoint("X");
 
-            clock.advanceTime( 1000, TimeUnit.SECONDS );
+            clock.advanceTime(1000, TimeUnit.SECONDS);
 
-            int rules = 0;
-            ep.insert( new StockTick( 1, "A", 10, clock.getCurrentTime() ) );
-            clock.advanceTime( 8, TimeUnit.SECONDS );
-            //int rules = ksession.fireAllRules();
-            System.out.println( list );
+            ep.insert(new StockTick(1, "A", 10, clock.getCurrentTime()));
+            clock.advanceTime(8, TimeUnit.SECONDS);
 
-            ep.insert( new StockTick( 2, "B", 10, clock.getCurrentTime() ) );
-            clock.advanceTime( 8, TimeUnit.SECONDS );
-            //rules = ksession.fireAllRules();
-            System.out.println( list );
+            ep.insert(new StockTick(2, "B", 10, clock.getCurrentTime()));
+            clock.advanceTime(8, TimeUnit.SECONDS);
 
-            ep.insert( new StockTick( 3, "B", 10, clock.getCurrentTime() ) );
-            clock.advanceTime( 8, TimeUnit.SECONDS );
-            rules = ksession.fireAllRules();
-            System.out.println( list );
-
-            assertEquals( 3,
-                          rules );
+            ep.insert(new StockTick(3, "B", 10, clock.getCurrentTime()));
+            clock.advanceTime(8, TimeUnit.SECONDS);
+            assertEquals(3, ksession.fireAllRules());
         } finally {
             ksession.dispose();
         }
@@ -2312,7 +1738,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test (timeout=10000)
     public void testMultipleSlidingWindows() {
-        String str = "declare A\n" +
+        final String drl = "declare A\n" +
                      "    @role( event )\n" +
                      "    id : int\n" +
                      "end\n" +
@@ -2344,110 +1770,33 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
                      "end";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBaseFromString( config, str );
-        KieSession ksession = createKnowledgeSession(kbase);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            AgendaEventListener ael = mock( AgendaEventListener.class );
-            ksession.addEventListener( ael );
+            final AgendaEventListener ael = mock(AgendaEventListener.class);
+            ksession.addEventListener(ael);
 
             ksession.fireAllRules();
 
-            ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-            verify( ael,
-                    times( 3 ) ).afterMatchFired(captor.capture());
+            final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+            verify(ael, times(3)).afterMatchFired(captor.capture());
 
-            List<AfterMatchFiredEvent> values = captor.getAllValues();
+            final List<AfterMatchFiredEvent> values = captor.getAllValues();
             // first rule
-            Match act = values.get( 0 ).getMatch();
-            assertThat( act.getRule().getName(),
-                        is( "launch" ) );
+            Match act = values.get(0).getMatch();
+            assertThat(act.getRule().getName(), is("launch"));
 
             // second rule
-            act = values.get( 1 ).getMatch();
-            assertThat( act.getRule().getName(),
-                        is( "ba" ) );
-            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                        is( 3 ) );
-            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                        is( 2 ) );
+            act = values.get(1).getMatch();
+            assertThat(act.getRule().getName(), is("ba"));
+            assertThat(((Number) act.getDeclarationValue("$a")).intValue(), is(3));
+            assertThat(((Number) act.getDeclarationValue("$b")).intValue(), is(2));
 
             // third rule
-            act = values.get( 2 ).getMatch();
-            assertThat( act.getRule().getName(),
-                        is( "ab" ) );
-            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                        is( 3 ) );
-            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                        is( 2 ) );
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout=10000)
-    public void testCloudModeExpiration() throws InstantiationException, IllegalAccessException, InterruptedException {
-        String str = "package org.drools.cloud\n" +
-                     "import org.drools.compiler.*\n" +
-                     "declare Event\n" +
-                     "        @role ( event )\n" +
-                     "        name : String\n" +
-                     "        value : Object\n" +
-                     "end\n" +
-                     "declare AnotherEvent\n" +
-                     "        @role ( event )\n" +
-                     "        message : String\n" +
-                     "        type : String\n" +
-                     "end\n" +
-                     "declare StockTick\n" +
-                     "        @role ( event )\n" +
-                     "end\n" +
-                     "rule \"two events\"\n" +
-                     "    when\n" +
-                     "        Event( value != null ) from entry-point X\n" +
-                     "        StockTick( company != null ) from entry-point X\n" +
-                     "    then\n" +
-                     "end";
-
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.CLOUD );
-        KieBase kbase = loadKnowledgeBaseFromString( config, str );
-        KieSession ksession = createKnowledgeSession(kbase);
-
-        try {
-            EntryPoint ep = ksession.getEntryPoint( "X" );
-
-            ep.insert( new StockTick( 1,
-                                      "RHT",
-                                      10,
-                                      1000 ) );
-            int rulesFired = ksession.fireAllRules();
-            assertEquals( 0,
-                          rulesFired );
-
-            org.kie.api.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
-                                                                            "Event" );
-            Object e1 = event.newInstance();
-            event.set( e1,
-                       "name",
-                       "someKey" );
-            event.set( e1,
-                       "value",
-                       "someValue" );
-
-            ep.insert( e1 );
-            rulesFired = ksession.fireAllRules();
-            assertEquals( 1,
-                          rulesFired );
-
-            // let some time be spent
-            Thread.sleep(1000 );
-
-            // check both events are still in memory as we are running in CLOUD mode
-            assertEquals( 2,
-                          ep.getFactCount() );
+            act = values.get(2).getMatch();
+            assertThat(act.getRule().getName(), is("ab"));
+            assertThat(((Number) act.getDeclarationValue("$a")).intValue(), is(3));
+            assertThat(((Number) act.getDeclarationValue("$b")).intValue(), is(2));
         } finally {
             ksession.dispose();
         }
@@ -2455,7 +1804,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testSalienceWithEventsPseudoClock() {
-        String str = "package org.drools.compiler\n" +
+        final String drl = "package org.drools.compiler\n" +
                      "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
@@ -2478,70 +1827,42 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    then\n" +
                      "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBaseFromString( config, str );
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = kbase.newKieSession( ksconf, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            AgendaEventListener ael = mock( AgendaEventListener.class );
-            ksession.addEventListener( ael );
+            final AgendaEventListener ael = mock(AgendaEventListener.class);
+            ksession.addEventListener(ael);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
-            clock.advanceTime( 1000000,
-                               TimeUnit.MILLISECONDS );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            clock.advanceTime(1000000, TimeUnit.MILLISECONDS);
 
-            ksession.insert( new StockTick( 1,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS );
-            ksession.insert( new StockTick( 2,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS );
-            ksession.insert( new StockTick( 3,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS );
-            ksession.insert( new StockTick( 4,
-                                            "ACME",
-                                            10,
-                                            1000 ) );
-            clock.advanceTime( 5,
-                               TimeUnit.SECONDS );
-            int rulesFired = ksession.fireAllRules();
-            assertEquals( 4,
-                          rulesFired );
+            ksession.insert(new StockTick(1, "RHT", 10, 1000));
+            clock.advanceTime(5, TimeUnit.SECONDS);
+            ksession.insert(new StockTick(2, "RHT", 10, 1000));
+            clock.advanceTime(5, TimeUnit.SECONDS);
+            ksession.insert(new StockTick(3, "RHT", 10, 1000));
+            clock.advanceTime(5, TimeUnit.SECONDS);
+            ksession.insert(new StockTick(4, "ACME", 10, 1000));
+            clock.advanceTime(5, TimeUnit.SECONDS);
+            final int rulesFired = ksession.fireAllRules();
+            assertEquals(4, rulesFired);
 
-            ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-            verify( ael,
-                    times( 4 ) ).afterMatchFired(captor.capture());
-            List<AfterMatchFiredEvent> aafe = captor.getAllValues();
+            final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+            verify(ael, times(4)).afterMatchFired(captor.capture());
+            final List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-            assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
-                        is( "R3" ) );
+            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(1).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(2).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(3).getMatch().getRule().getName(), is("R3"));
         } finally {
             ksession.dispose();
         }
     }
 
     @Test(timeout=10000)
-    public void testSalienceWithEventsRealtimeClock() throws
-            InterruptedException {
-        String str = "package org.drools.compiler\n" +
+    public void testSalienceWithEventsRealtimeClock() throws InterruptedException {
+        final String drl = "package org.drools.compiler\n" +
                      "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
@@ -2564,53 +1885,31 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    then\n" +
                      "end\n";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBaseFromString( config, str );
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
-        KieSession ksession = kbase.newKieSession( ksconf, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            AgendaEventListener ael = mock( AgendaEventListener.class );
-            ksession.addEventListener( ael );
+            final AgendaEventListener ael = mock(AgendaEventListener.class);
+            ksession.addEventListener(ael);
 
-            ksession.insert( new StockTick( 1,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
-            ksession.insert( new StockTick( 2,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
-            ksession.insert( new StockTick( 3,
-                                            "RHT",
-                                            10,
-                                            1000 ) );
+            ksession.insert(new StockTick(1, "RHT", 10, 1000));
+            ksession.insert(new StockTick(2, "RHT", 10, 1000));
+            ksession.insert(new StockTick(3, "RHT", 10, 1000));
             // sleep for 2 secs
-            Thread.sleep(2000 );
-            ksession.insert( new StockTick( 4,
-                                            "ACME",
-                                            10,
-                                            1000 ) );
+            Thread.sleep(2000);
+            ksession.insert(new StockTick(4, "ACME", 10, 1000));
             // sleep for 1 sec
-            Thread.sleep(1000 );
-            int rulesFired = ksession.fireAllRules();
-            assertEquals( 4,
-                          rulesFired );
+            Thread.sleep(1000);
+            final int rulesFired = ksession.fireAllRules();
+            assertEquals(4, rulesFired);
 
-            ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-            verify( ael,
-                    times( 4 ) ).afterMatchFired(captor.capture());
-            List<AfterMatchFiredEvent> aafe = captor.getAllValues();
+            final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+            verify(ael, times(4)).afterMatchFired(captor.capture());
+            final List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-            assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
-                        is( "R1" ) );
-            assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
-                        is( "R3" ) );
+            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(1).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(2).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(3).getMatch().getRule().getName(), is("R3"));
         } finally {
             ksession.dispose();
         }
@@ -2619,11 +1918,9 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testExpireEventOnEndTimestamp() {
         // DROOLS-40
-        String str =
+        final String drl =
                 "package org.drools.compiler;\n" +
-                "\n" +
-                "import org.drools.compiler.StockTick;\n" +
-                "\n" +
+                "import " + StockTick.class.getName() + "\n" +
                 "global java.util.List resultsAfter;\n" +
                 "\n" +
                 "declare StockTick\n" +
@@ -2639,27 +1936,19 @@ public class CepEspTest extends CommonTestMethodBase {
                 "       resultsAfter.add( $b );\n" +
                 "end";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = loadKnowledgeBaseFromString(config, str);
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = kbase.newKieSession(conf, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            List<StockTick> resultsAfter = new ArrayList<StockTick>();
+            final List<StockTick> resultsAfter = new ArrayList<>();
             ksession.setGlobal("resultsAfter", resultsAfter);
 
             // inserting new StockTick with duration 30 at time 0 => rule
             // after[60,80] should fire when ACME lasts at 100-120
             ksession.insert(new StockTick(1, "DROO", 0, 0, 30));
-
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
-
             ksession.insert(new StockTick(2, "ACME", 0, 0, 20));
-
             ksession.fireAllRules();
 
             assertEquals(1, resultsAfter.size());
@@ -2671,7 +1960,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testEventExpirationDuringAccumulate() throws Exception {
         // DROOLS-70
-        String str =
+        final String drl =
                 "package org.drools.integrationtests\n" +
                 "\n" +
                 "import java.util.List;\n" +
@@ -2692,13 +1981,8 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    // empty consequence\n" +
                 "end";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = loadKnowledgeBaseFromString(config, str);
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        final KieSession ksession = kbase.newKieSession(conf, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final StockFactory stockFactory = new StockFactory(kbase);
             final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -2710,7 +1994,6 @@ public class CepEspTest extends CommonTestMethodBase {
                     }
                     // let the engine finish its job
                     Thread.sleep(2000);
-
                 } finally {
                     ksession.halt();
                     // not to swallow possible exception
@@ -2725,7 +2008,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    private void populateSessionWithStocks(KieSession ksession, StockFactory stockFactory) {
+    private void populateSessionWithStocks(final KieSession ksession, final StockFactory stockFactory) {
         final SessionPseudoClock clock = ksession.getSessionClock();
 
         clock.advanceTime(1, TimeUnit.SECONDS);
@@ -2760,9 +2043,7 @@ public class CepEspTest extends CommonTestMethodBase {
         public Object createStock(final String name, final Double value) {
             try {
                 return this.createDRLStock(name, value);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Unable to create Stock instance defined in DRL", e);
-            } catch (InstantiationException e) {
+            } catch (final IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException("Unable to create Stock instance defined in DRL", e);
             }
         }
@@ -2783,7 +2064,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testEventExpirationInSlidingWindow() throws Exception {
         // DROOLS-70
-        String str =
+        final String drl =
                 "package org.drools.integrationtests\n" +
                 "\n" +
                 "declare Stock\n" +
@@ -2799,14 +2080,8 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    // empty consequence\n" +
                 "end";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = loadKnowledgeBaseFromString(config, str);
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        final KieSession ksession = kbase.newKieSession(conf, null);
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         final StockFactory stockFactory = new StockFactory(kbase);
 
         final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -2834,11 +2109,11 @@ public class CepEspTest extends CommonTestMethodBase {
     public void testSlidingWindowsAccumulateExternalJoin() {
         // DROOLS-106
         // The logic may not be optimal, but was used to detect a WM corruption
-        String str =
+        final String drl =
                 "package testing2;\n" +
                 "\n" +
                 "import java.util.*;\n" +
-                "import org.drools.compiler.StockTick;\n" +
+                "import " + StockTick.class.getCanonicalName() + "\n" +
                 "" +
                 "global List list;\n" +
                 "" +
@@ -2855,42 +2130,34 @@ public class CepEspTest extends CommonTestMethodBase {
                 " $num : count( $tick ) )\n" +
 
                 "then\n" +
-                " System.out.println(\"Found name: \" + $primary + \" with \" +$num );\n" +
                 " list.add( $num.intValue() ); \n" +
                 "end\n" +
                 "";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = loadKnowledgeBaseFromString(config, str);
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession ksession = kbase.newKieSession(conf, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             int seq = 0;
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            ksession.insert( new StockTick( seq++, "AAA", 10.0, 10L ) );
+            ksession.insert(new StockTick(seq++, "AAA", 10.0, 10L));
             ksession.fireAllRules();
-            assertEquals(list, Arrays.asList(1));
+            assertEquals(list, Collections.singletonList(1));
 
             ksession.insert(new StockTick(seq++, "AAA", 15.0, 10L));
             ksession.fireAllRules();
-            assertEquals( list, Arrays.asList( 1, 2 ) );
+            assertEquals(list, Arrays.asList(1, 2));
 
-            ksession.insert( new StockTick( seq++, "CCC", 10.0, 10L ) );
+            ksession.insert(new StockTick(seq++, "CCC", 10.0, 10L));
             ksession.fireAllRules();
-            assertEquals( list, Arrays.asList( 1, 2, 1 ) );
+            assertEquals(list, Arrays.asList(1, 2, 1));
 
-            System.out.println(" ___________________________________- ");
-
-            ksession.insert( new StockTick( seq++, "DDD", 13.0, 20L ) );
+            ksession.insert(new StockTick(seq++, "DDD", 13.0, 20L));
             ksession.fireAllRules();
-            assertEquals( list, Arrays.asList( 1, 2, 1, 1 ) );
+            assertEquals(list, Arrays.asList(1, 2, 1, 1));
 
-            ksession.insert( new StockTick( seq++, "AAA", 11.0, 20L ) );
+            ksession.insert(new StockTick(seq, "AAA", 11.0, 20L));
             ksession.fireAllRules();
             assertEquals(list, Arrays.asList(1, 2, 1, 1, 3));
 
@@ -2904,9 +2171,9 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test (timeout=10000)
     public void testTimeAndLengthWindowConflict() {
         // JBRULES-3671
-        String drl = "package org.drools.compiler;\n" +
-                     "\n" +
+        final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
+                     "import " + OrderEvent.class.getCanonicalName() + "\n" +
                      "\n" +
                      "global List timeResults;\n" +
                      "global List lengthResults;\n" +
@@ -2932,47 +2199,39 @@ public class CepEspTest extends CommonTestMethodBase {
                      " lengthResults.add( $avg );\n" +
                      "end\n";
 
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
-
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<Number> timeResults = new ArrayList<Number>();
-            List<Number> lengthResults = new ArrayList<Number>();
+            final List<Number> timeResults = new ArrayList<>();
+            final List<Number> lengthResults = new ArrayList<>();
 
-            ksession.setGlobal( "timeResults",
-                                timeResults );
-            ksession.setGlobal( "lengthResults",
-                                lengthResults );
+            ksession.setGlobal("timeResults", timeResults);
+            ksession.setGlobal("lengthResults", lengthResults);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
-            clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
-            ksession.insert( new OrderEvent( "1", "customer A", 70 ) );
+            clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
+            ksession.insert(new OrderEvent("1", "customer A", 70));
             ksession.fireAllRules();
-            System.out.println( lengthResults );
-            assertTrue( lengthResults.contains( 70.0 ) );
+            System.out.println(lengthResults);
+            assertTrue(lengthResults.contains(70.0));
 
-            clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
-            ksession.insert( new OrderEvent( "2", "customer A", 60 ) );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            ksession.insert(new OrderEvent("2", "customer A", 60));
             ksession.fireAllRules();
-            System.out.println( lengthResults );
-            assertTrue( lengthResults.contains( 65.0 ) );
+            System.out.println(lengthResults);
+            assertTrue(lengthResults.contains(65.0));
 
             // Third interaction: advance clock and assert new data
-            clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
-            ksession.insert( new OrderEvent( "3", "customer A", 50 ) );
+            clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
+            ksession.insert(new OrderEvent("3", "customer A", 50));
             ksession.fireAllRules();
-            System.out.println( lengthResults );
-            assertTrue( lengthResults.contains( 60.0 ) );
+            System.out.println(lengthResults);
+            assertTrue(lengthResults.contains(60.0));
 
             // Fourth interaction: advance clock and assert new data
-            clock.advanceTime( 60, TimeUnit.SECONDS ); // 60 seconds
-            ksession.insert( new OrderEvent( "4", "customer A", 25 ) );
+            clock.advanceTime(60, TimeUnit.SECONDS); // 60 seconds
+            ksession.insert(new OrderEvent("4", "customer A", 25));
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
@@ -2982,26 +2241,23 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTimeStampOnNonExistingField() {
         // BZ-985942
-        String drl = "package org.drools.compiler;\n" +
-                     "\n" +
+        final String drl = "package org.drools.compiler;\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n" +
                      "declare StockTick\n" +
                      " @role( event )\n" +
                      " @timestamp( nonExistingField ) \n" +
                      "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
-                      ResourceType.DRL );
-
-        assertTrue( kbuilder.hasErrors() );
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test (timeout=10000)
     public void testTimeWindowWithPastEvents() {
         // JBRULES-2258 
-        String drl = "package org.drools.compiler;\n" +
-                     "\n" +
+        final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n" +
                      "\n" +
                      "global List timeResults;\n" +
                      "\n" +
@@ -3017,55 +2273,46 @@ public class CepEspTest extends CommonTestMethodBase {
                      " $tot : count( $o );" +
                      " $tot > 0 )\n" +
                      "then\n" +
-                     " System.out.println( $tot ); \n" +
                      " timeResults.add( $tot );\n" +
                      "end\n";
 
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
-
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<Number> timeResults = new ArrayList<Number>();
+            final List<Number> timeResults = new ArrayList<>();
 
-            ksession.setGlobal( "timeResults",
-                                timeResults );
-            SessionPseudoClock clock = ksession.getSessionClock();
+            ksession.setGlobal("timeResults", timeResults);
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
             int count = 0;
-            StockTick tick1 = new StockTick( count++, "X", 0.0, 1 );
-            StockTick tick2 = new StockTick( count++, "X", 0.0, 3 );
-            StockTick tick3 = new StockTick( count++, "X", 0.0, 7 );
-            StockTick tick4 = new StockTick( count++, "X", 0.0, 9 );
-            StockTick tick5 = new StockTick( count++, "X", 0.0, 15 );
+            final StockTick tick1 = new StockTick(count++, "X", 0.0, 1);
+            final StockTick tick2 = new StockTick(count++, "X", 0.0, 3);
+            final StockTick tick3 = new StockTick(count++, "X", 0.0, 7);
+            final StockTick tick4 = new StockTick(count++, "X", 0.0, 9);
+            final StockTick tick5 = new StockTick(count, "X", 0.0, 15);
 
-            clock.advanceTime( 30, TimeUnit.MILLISECONDS );
+            clock.advanceTime(30, TimeUnit.MILLISECONDS);
 
-            ksession.insert( tick1 );
-            ksession.insert( tick2 );
-            ksession.insert( tick3 );
-            ksession.insert( tick4 );
-            ksession.insert( tick5 );
+            ksession.insert(tick1);
+            ksession.insert(tick2);
+            ksession.insert(tick3);
+            ksession.insert(tick4);
+            ksession.insert(tick5);
 
             ksession.fireAllRules();
-            System.out.println(timeResults);
             assertTrue(timeResults.isEmpty());
 
-            clock.advanceTime( 0, TimeUnit.MILLISECONDS );
+            clock.advanceTime(0, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue( timeResults.isEmpty() );
+            assertTrue(timeResults.isEmpty());
 
-            clock.advanceTime( 3, TimeUnit.MILLISECONDS );
+            clock.advanceTime(3, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue( timeResults.isEmpty() );
+            assertTrue(timeResults.isEmpty());
 
-            clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+            clock.advanceTime(10, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue( timeResults.isEmpty() );
+            assertTrue(timeResults.isEmpty());
         } finally {
             ksession.dispose();
         }
@@ -3076,7 +2323,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // JBRULES-3558 - DROOLS 311
         // TODO: it is still possible to get multiple insertions of the Recording object
         // if you set the @expires of Motion to 1ms, maybe because the event expires too soon
-        String drl = "package org.drools;\n" +
+        final String drl = "package org.drools;\n" +
                      "\n" +
                      "import java.util.List\n" +
                      "\n" +
@@ -3096,7 +2343,6 @@ public class CepEspTest extends CommonTestMethodBase {
                      "rule Init salience 1000 when\n" +
                      "    $l : Long() \n" +
                      "then\n" +
-                     "    System.out.println( \" Insert motion \" + $l );\n" +
                      "    insert( new Motion( $l ) ); \n" +
                      "end\n" +
                      "" +
@@ -3105,40 +2351,33 @@ public class CepEspTest extends CommonTestMethodBase {
                      "   not Recording()\n" +
                      " then\n" +
                      "   list.add( $mot ); \n " +
-                     "   System.out.println(\"Recording started\");\n" +
                      "   insert(new Recording());\n" +
                      "end\n";
 
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List<Number> list = new ArrayList<Number>();
+            final List<Number> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-            ksession.setGlobal( "list", list );
-
-            ksession.insert( new Long( 1000 ) );
-            ksession.insert( new Long( 1001 ) );
-            ksession.insert( new Long( 1002 ) );
+            ksession.insert(1000L);
+            ksession.insert(1001L);
+            ksession.insert(1002L);
 
             Thread.sleep(1000);
 
             ksession.fireAllRules();
-            assertEquals( 1, list.size() );
+            assertEquals(1, list.size());
         } finally {
             ksession.dispose();
         }
     }
 
-
     @Test(timeout=10000)
     public void testTwoWindowsInsideCEAndOut() {
-        String drl = "package org.drools.compiler;\n" +
-                     "\n" +
+        final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
+                     "import " + OrderEvent.class.getCanonicalName() + ";\n" +
                      "\n" +
                      "global List timeResults;\n" +
                      "\n" +
@@ -3152,24 +2391,18 @@ public class CepEspTest extends CommonTestMethodBase {
                      "        accumulate(  $o2 : OrderEvent() over window:length(3);\n" +
                      "                     $avg : average( $o2.getTotal() ) )\n" +
                      "then\n" +
-                     "     System.out.println( $o1.getTotal() + \":\" + $avg ); \n" +
                      "end\n";
 
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
-
-        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        KieSession wm = createKnowledgeSession( kbase, sconf );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            wm.insert( new OrderEvent( "1", "customer A", 70 ) );
-            wm.insert( new OrderEvent( "2", "customer A", 60 ) );
-            wm.insert( new OrderEvent( "3", "customer A", 50 ) );
-            wm.insert( new OrderEvent( "4", "customer A", 40 ) );
-            wm.insert( new OrderEvent( "5", "customer A", 30 ) );
-            wm.insert( new OrderEvent( "6", "customer A", 20 ) );
-            wm.insert( new OrderEvent( "7", "customer A", 10 ) );
+            wm.insert(new OrderEvent("1", "customer A", 70));
+            wm.insert(new OrderEvent("2", "customer A", 60));
+            wm.insert(new OrderEvent("3", "customer A", 50));
+            wm.insert(new OrderEvent("4", "customer A", 40));
+            wm.insert(new OrderEvent("5", "customer A", 30));
+            wm.insert(new OrderEvent("6", "customer A", 20));
+            wm.insert(new OrderEvent("7", "customer A", 10));
             wm.fireAllRules();
         } finally {
             wm.dispose();
@@ -3178,7 +2411,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testUpdateEventThroughEntryPoint() {
-        String drl = "import org.drools.compiler.integrationtests.CepEspTest.TestEvent\n" +
+        final String drl = "import " + CepEspTest.TestEvent.class.getCanonicalName() + "\n" +
                      "\n" +
                      "declare TestEvent\n" +
                      "    @role( event )\n" +
@@ -3193,30 +2426,15 @@ public class CepEspTest extends CommonTestMethodBase {
                      "        // insert( new Message( $event.getValue().toString() ) );\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        KieModuleModel kieModule = ks.newKieModuleModel();
-        kieModule.newKieBaseModel("KBase")
-                 .setDefault(true)
-                 .setEventProcessingMode(EventProcessingOption.STREAM)
-                 .newKieSessionModel("KSession")
-                 .setDefault(true);
-
-        kfs.writeKModuleXML(kieModule.toXML());
-        kfs.write("src/main/resources/lifecycle.drl", drl);
-
-        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
-        assertEquals(0, builder.getResults().getMessages().size());
-
-        KieSession kieSession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession kieSession = kbase.newKieSession();
         try {
-            EntryPoint entryPoint = kieSession.getEntryPoint("EventStream");
+            final EntryPoint entryPoint = kieSession.getEntryPoint("EventStream");
 
-            TestEvent event = new TestEvent("testEvent1");
-            FactHandle handle = entryPoint.insert(event);
+            final TestEvent event = new TestEvent("testEvent1");
+            final FactHandle handle = entryPoint.insert(event);
 
-            TestEvent event2 = new TestEvent("testEvent2");
+            final TestEvent event2 = new TestEvent("testEvent2");
             entryPoint.update(handle, event2);
 
             // make sure the event is in the entry-point
@@ -3232,7 +2450,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         private final String name;
 
-        public TestEvent(String name) {
+        public TestEvent(final String name) {
             this.name = name;
         }
 
@@ -3247,47 +2465,10 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testThrowsWhenCreatingKieBaseUsingWindowsInCloudMode() {
-        String drl =
-            "declare TestEvent\n" +
-            "    @role( event )\n" +
-            "    name : String\n" +
-            "end\n" +
-            "\n" +
-            "rule R when\n" +
-            "        TestEvent ( name == \"EventA\" ) over window:time( 1s ) from entry-point EventStream\n" +
-            "    then\n" +
-            "        // consequence\n" +
-            "end\n";
-
-        KieServices ks = KieServices.Factory.get();
-
-        KieModuleModel kieModule = ks.newKieModuleModel();
-        KieBaseModel defaultBase = kieModule.newKieBaseModel("KBase")
-                                            .setDefault(true)
-                                            .addPackage("*")
-                                            .setEventProcessingMode(EventProcessingOption.CLOUD);
-        defaultBase.newKieSessionModel("KSession")
-                   .setClockType(ClockTypeOption.get("pseudo"))
-                   .setDefault(true);
-
-        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
-
-        kfs.writeKModuleXML(kieModule.toXML());
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-
-        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
-        try {
-            kieContainer.getKieBase("KBase");
-            fail("Should throw a RuntimeException because the CLOUD kbase is trying to use features only available in STREAM mode");
-        } catch (Exception e) { }
-    }
-
-    @Test
     public void testStreamModeWithSubnetwork() {
         // BZ-1009348
 
-        String drl = "package org.drools.compiler.integrationtests\n" +
+        final String drl = "package org.drools.compiler.integrationtests\n" +
                      "\n" +
                      "declare Event\n" +
                      "  @role(event)\n" +
@@ -3308,31 +2489,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "\n" +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write("src/main/resources/notinfusion.drl", drl);
-
-        KieModuleModel kmoduleModel = ks.newKieModuleModel();
-        kmoduleModel.newKieBaseModel("KieBase")
-                    .addPackage("*")
-                    .setDefault(true)
-                    .setEventProcessingMode(EventProcessingOption.STREAM)
-                    .newKieSessionModel("KieSession")
-                    .setDefault(true);
-
-        kfs.writeKModuleXML(kmoduleModel.toXML());
-
-        KieBuilder kbuilder = ks.newKieBuilder(kfs).buildAll();
-
-        List<org.kie.api.builder.Message> res = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-
-        assertEquals(res.toString(), 0, res.size());
-
-        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            ArrayList<String> list = new ArrayList<String>();
+            final ArrayList<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
             ksession.fireAllRules();
             assertEquals(1, list.size());
@@ -3342,11 +2502,12 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     public static class Event {
+
         private int type;
         private int value;
         private long time;
 
-        public Event( int type, int value, long time ) {
+        public Event(final int type, final int value, final long time) {
             this.type = type;
             this.value = value;
             this.time = time;
@@ -3356,7 +2517,7 @@ public class CepEspTest extends CommonTestMethodBase {
             return type;
         }
 
-        public void setType( int type ) {
+        public void setType(final int type) {
             this.type = type;
         }
 
@@ -3364,7 +2525,7 @@ public class CepEspTest extends CommonTestMethodBase {
             return value;
         }
 
-        public void setValue( int value ) {
+        public void setValue(final int value) {
             this.value = value;
         }
 
@@ -3372,25 +2533,21 @@ public class CepEspTest extends CommonTestMethodBase {
             return time;
         }
 
-        public void setTime( long time ) {
+        public void setTime(final long time) {
             this.time = time;
         }
 
         @Override
         public String toString() {
-            return "Event{" +
-                   "type=" + type +
-                   ", value=" + value +
-                   ", time=" + ( ( time % 10000 ) )+
-                   '}';
+            return "Event{" + "type=" + type + ", value=" + value + ", time=" + ((time % 10000)) + '}';
         }
     }
 
     @Test
     public void testEventTimestamp() {
         // DROOLS-268
-        String drl = "\n" +
-                     "import org.drools.compiler.integrationtests.CepEspTest.Event; \n" +
+        final String drl = "\n" +
+                     "import " + CepEspTest.Event.class.getCanonicalName() + "; \n" +
                      "global java.util.List list; \n" +
                      "global org.kie.api.time.SessionPseudoClock clock; \n" +
                      "" +
@@ -3413,55 +2570,42 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            ArrayList list = new ArrayList( );
-            ksession.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
-            ksession.setGlobal( "clock", clock );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            ksession.setGlobal("clock", clock);
 
-            ksession.insert( new Event( 1, -1, clock.getCurrentTime() ) ); // 0
+            ksession.insert(new Event(1, -1, clock.getCurrentTime())); // 0
             clock.advanceTime(600, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 600
+            ksession.insert(new Event(2, 0, clock.getCurrentTime())); // 600
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 700
+            ksession.insert(new Event(2, 0, clock.getCurrentTime())); // 700
             clock.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 1000
+            ksession.insert(new Event(2, 0, clock.getCurrentTime())); // 1000
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            ksession.insert( new Event( 2, 1, clock.getCurrentTime() ) ); // 1100
+            ksession.insert(new Event(2, 1, clock.getCurrentTime())); // 1100
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 1300
+            ksession.insert(new Event(2, 0, clock.getCurrentTime())); // 1300
 
             clock.advanceTime(1000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertFalse( list.isEmpty() );
-            assertEquals( 1, list.size() );
-            Long time = (Long) list.get( 0 );
+            assertFalse(list.isEmpty());
+            assertEquals(1, list.size());
+            final Long time = (Long) list.get(0);
 
-            assertTrue( time > 1000 && time < 1500 );
+            assertTrue(time > 1000 && time < 1500);
         } finally {
             ksession.dispose();
         }
@@ -3470,8 +2614,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventTimestamp2() {
         // DROOLS-268
-        String drl = "\n" +
-                     "import org.drools.compiler.integrationtests.CepEspTest.Event; \n" +
+        final String drl = "\n" +
+                     "import " + CepEspTest.Event.class.getCanonicalName() + ";\n" +
                      "global java.util.List list; \n" +
                      "global org.kie.api.time.SessionPseudoClock clock; \n" +
                      "" +
@@ -3493,45 +2637,32 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            ArrayList list = new ArrayList( );
-            ksession.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
-            ksession.setGlobal( "clock", clock );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            ksession.setGlobal("clock", clock);
 
-            ksession.insert( new Event( 0, 0, clock.getCurrentTime() ) );
+            ksession.insert(new Event(0, 0, clock.getCurrentTime()));
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
 
-            ksession.insert( new Event( 1, 0, clock.getCurrentTime() ) );
+            ksession.insert(new Event(1, 0, clock.getCurrentTime()));
             clock.advanceTime(600, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) );
+            ksession.insert(new Event(2, 0, clock.getCurrentTime()));
             clock.advanceTime(600, TimeUnit.MILLISECONDS);
-            ksession.insert( new Event( 3, 0, clock.getCurrentTime() ) );
+            ksession.insert(new Event(3, 0, clock.getCurrentTime()));
             ksession.fireAllRules();
 
-            assertFalse( list.isEmpty() );
-            assertEquals( 1, list.size() );
-            long time = (Long) list.get( 0 );
+            assertFalse(list.isEmpty());
+            assertEquals(1, list.size());
+            final long time = (Long) list.get(0);
 
-            assertEquals( 1300, time );
+            assertEquals(1300, time);
         } finally {
             ksession.dispose();
         }
@@ -3540,8 +2671,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testModifyInStreamMode() {
         // BZ-1012933
-        String drl =
-                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+        final String drl =
+                "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "declare SimpleFact\n" +
                 "    @role( event )\n" +
@@ -3556,16 +2687,13 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    update ($f);\n" +
                 "end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, drl);
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            SimpleFact fact = new SimpleFact("id1");
+            final SimpleFact fact = new SimpleFact("id1");
             ksession.insert(fact);
             ksession.fireAllRules();
             assertEquals(1, list.size());
@@ -3578,8 +2706,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCollectAfterRetract() {
         // BZ-1015109
-        String drl =
-                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+        final String drl =
+                "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
                 "import java.util.List;\n" +
                 "global List list;\n" +
                 "\n" +
@@ -3604,13 +2732,10 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    list.add( $facts.size() );\n" +
                 "end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, drl);
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
             ksession.insert(new SimpleFact("id1"));
@@ -3627,8 +2752,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCollectAfterUpdate() {
         // DROOLS-295
-        String drl =
-                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+        final String drl =
+                "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
                 "import java.util.List;\n" +
                 "\n" +
                 "declare SimpleFact\n" +
@@ -3654,11 +2779,8 @@ public class CepEspTest extends CommonTestMethodBase {
                 "        update(event);\n" +
                 "    end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, drl);
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
             for (int i = 0; i < 4; i++) {
                 ksession.insert(new SimpleFact("id" + i));
@@ -3679,7 +2801,7 @@ public class CepEspTest extends CommonTestMethodBase {
         private String status = "NOK";
         private final String id;
 
-        public SimpleFact(String id) {
+        public SimpleFact(final String id) {
             this.id = id;
         }
 
@@ -3697,73 +2819,32 @@ public class CepEspTest extends CommonTestMethodBase {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName()+" (id="+id+", status=" + status+")";
+            return getClass().getSimpleName() + " (id=" + id + ", status=" + status + ")";
         }
     }
-
-    @Test
-    public void testTemporalQuery() {
-        // BZ-967441
-        String drl =
-                 "package org.drools.compiler.integrationtests;\n" +
-                 "\n" +
-                 "import org.drools.compiler.integrationtests.CepEspTest.TestEvent;\n" +
-                 "\n" +
-                 "declare TestEvent\n" +
-                 "    @role( event )\n" +
-                 "end\n" +
-                 "\n" +
-                 "query EventsBeforeNineSeconds\n" +
-                 "   $event : TestEvent() from entry-point EStream\n" +
-                 "   $result : TestEvent ( this after [0s, 9s] $event) from entry-point EventStream\n" +
-                 "end\n";
-
-        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        kfs.write("src/main/resources/querytest.drl", drl);
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll();
-
-        KieBase kbase = KieServices.Factory.get()
-                                   .newKieContainer(kbuilder.getKieModule().getReleaseId())
-                                   .getKieBase();
-
-        KieSessionConfiguration ksconfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconfig.setOption(ClockTypeOption.get("pseudo"));
-
-        KieSession ksession = kbase.newKieSession(ksconfig, null);
-        try {
-            SessionPseudoClock clock = ksession.getSessionClock();
-
-            EntryPoint ePoint = ksession.getEntryPoint("EStream");
-            EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
-
-            ePoint.insert(new TestEvent("zero"));
-            entryPoint.insert(new TestEvent("one"));
-            clock.advanceTime( 10, TimeUnit.SECONDS );
-            entryPoint.insert(new TestEvent("two"));
-            clock.advanceTime( 10, TimeUnit.SECONDS );
-            entryPoint.insert(new TestEvent("three"));
-            QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
-            assertEquals(1, results.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-
 
     public static class ProbeEvent {
+
         private int value = 1;
-        public int getValue() { return value; }
-        public ProbeEvent(int value) { this.value = value; }
+
+        public int getValue() {
+            return value;
+        }
+
+        public ProbeEvent(final int value) {
+            this.value = value;
+        }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
-            ProbeEvent that = (ProbeEvent) o;
+            final ProbeEvent that = (ProbeEvent) o;
 
             return value == that.value;
         }
@@ -3782,7 +2863,7 @@ public class CepEspTest extends CommonTestMethodBase {
     }
     public static class ProbeCounter {
         private long total = 0;
-        public void setTotal(long total) { this.total = total; }
+        public void setTotal(final long total) { this.total = total; }
         public long getTotal() { return total; }
         public void addValue () { total += 1; }
     }
@@ -3791,12 +2872,12 @@ public class CepEspTest extends CommonTestMethodBase {
     @Ignore
     public void testExpirationAtHighRates() {
         // DROOLS-130
-        String drl = "package droolsfusioneval\n" +
+        final String drl = "package droolsfusioneval\n" +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
-                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeEvent;\n" +
-                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeCounter;\n" +
+                     "import " + CepEspTest.ProbeEvent.class.getCanonicalName() + ";\n" +
+                     "import " + CepEspTest.ProbeCounter.class.getCanonicalName() + ";\n" +
                      "\n" +
                      "declare ProbeEvent\n" +
                      "    @role (event)\n" +
@@ -3812,46 +2893,34 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    $pc.addValue ();\n" +
                      "end";
 
-        KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconfig.setOption (EventProcessingOption.STREAM);
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder ();
-        kbuilder.add (ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            System.err.println (kbuilder.getErrors().toString());
-        }
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession session = kbase.newKieSession();
-        List list = new ArrayList( );
-        session.setGlobal( "list", list );
-        EntryPoint ep01 = session.getEntryPoint("ep01");
+        final List list = new ArrayList();
+        session.setGlobal("list", list);
+        final EntryPoint ep01 = session.getEntryPoint("ep01");
 
-
-        new Thread(session::fireUntilHalt).start ();
+        new Thread(session::fireUntilHalt).start();
         try {
-            int eventLimit = 5000;
+            final int eventLimit = 5000;
 
-            ProbeCounter pc = new ProbeCounter ();
+            final ProbeCounter pc = new ProbeCounter();
             long myTotal = 0;
 
             try {
-                FactHandle pch = session.insert(pc);
-                for ( int i = 0; i < eventLimit; i++ ) {
-                    ep01.insert ( new ProbeEvent ( i ) );
+                session.insert(pc);
+                for (int i = 0; i < eventLimit; i++) {
+                    ep01.insert(new ProbeEvent(i));
                     myTotal++;
                 }
 
-                Thread.sleep( 2500 );
-            } catch ( Throwable t ) {
-                fail( t.getMessage() );
+                Thread.sleep(2500);
+            } catch (final Throwable t) {
+                fail(t.getMessage());
             }
 
-            assertEquals( eventLimit, myTotal );
-            assertEquals( eventLimit, list.size() );
-            assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
+            assertEquals(eventLimit, myTotal);
+            assertEquals(eventLimit, list.size());
+            assertEquals(0, session.getEntryPoint("ep01").getObjects().size());
         } finally {
             session.halt();
             session.dispose();
@@ -3862,8 +2931,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void AfterOperatorInCEPQueryTest() {
 
-        String drl = "package org.drools;\n" +
-                     "import org.drools.compiler.StockTick; \n" +
+        final String drl = "package org.drools;\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n" +
                      "\n" +
                      "declare StockTick\n" +
                      "    @role( event )\n" +
@@ -3884,19 +2953,12 @@ public class CepEspTest extends CommonTestMethodBase {
                      "   $result : StockTick ( this after [0s, 100s] $event) from entry-point EventStream\n" +
                      "end\n";
 
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        final KieBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
-
-        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession ksession = createKnowledgeSession(kbase, ksconf);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
-            EntryPoint ePoint = ksession.getEntryPoint("EStream");
-            EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
-
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            final EntryPoint ePoint = ksession.getEntryPoint("EStream");
+            final EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
             ePoint.insert(new StockTick(0L, "zero", 0.0, 0));
 
@@ -3904,7 +2966,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
             clock.advanceTime(10, TimeUnit.SECONDS);
 
-            entryPoint.insert(new StockTick(2L, "two",0.0,  0));
+            entryPoint.insert(new StockTick(2L, "two", 0.0, 0));
 
             clock.advanceTime(10, TimeUnit.SECONDS);
 
@@ -3912,15 +2974,15 @@ public class CepEspTest extends CommonTestMethodBase {
 
             QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
 
-            assertEquals( 0, results.size());
+            assertEquals(0, results.size());
 
             results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
 
-            assertEquals( 0, results.size() );
+            assertEquals(0, results.size());
 
             results = ksession.getQueryResults("EventsBeforeHundredSeconds");
 
-            assertEquals( 1, results.size() );
+            assertEquals(1, results.size());
         } finally {
             ksession.dispose();
         }
@@ -3928,7 +2990,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithEvents() {
-        String drl = "\n" +
+        final String drl = "\n" +
                      "\n" +
                      "package org.drools.test\n" +
                      "global java.util.List list; \n" +
@@ -3966,13 +3028,13 @@ public class CepEspTest extends CommonTestMethodBase {
                      "list.add( 1 ); \n" +
                      "end\n";
 
-        KieBase kb = loadKnowledgeBaseFromString( drl );
-        KieSession ks = kb.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ks = kbase.newKieSession();
         try {
-            ArrayList list = new ArrayList( 1 );
-            ks.setGlobal( "list", list );
+            final ArrayList list = new ArrayList(1);
+            ks.setGlobal("list", list);
             ks.fireAllRules();
-            assertEquals( Arrays.asList( 1 ), list );
+            assertEquals(Collections.singletonList(1), list);
         } finally {
             ks.dispose();
         }
@@ -3980,8 +3042,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDeserializationWithTrackableTimerJob() throws InterruptedException {
-        String drl = "package org.drools.test;\n" +
-                     "import org.drools.compiler.StockTick; \n" +
+        final String drl = "package org.drools.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list;\n" +
                      "\n" +
                      "declare StockTick\n" +
@@ -4003,36 +3065,33 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  System.out.println( $id ); \n" +
                      "  list.add( $id );\n" +
                      "end";
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
 
-        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
-
-        KieBase kb = loadKnowledgeBaseFromString( kbconf, drl );
-        KieSession ks = kb.newKieSession( knowledgeSessionConfiguration, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_REALTIME.getKieSessionConfiguration();
+        kieSessionConfiguration.setOption(TimerJobFactoryOption.get("trackable"));
+        KieSession ks = kbase.newKieSession(kieSessionConfiguration, null);
         try {
-            ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
-            Thread.sleep( 1100 );
+            ks.insert(new StockTick(2, "BBB", 1.0, 0));
+            Thread.sleep(1100);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
-            } catch ( Exception e ) {
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
-            ks.addEventListener( new DebugAgendaEventListener(  ) );
+            ks.addEventListener(new DebugAgendaEventListener());
 
-            ArrayList list = new ArrayList();
-            ks.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ks.setGlobal("list", list);
 
             ks.fireAllRules();
 
-            ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+            ks.insert(new StockTick(3, "BBB", 1.0, 0));
             ks.fireAllRules();
 
-            assertEquals( 2, list.size() );
-            assertEquals( Arrays.asList( 2L, 3L ), list );
+            assertEquals(2, list.size());
+            assertEquals(Arrays.asList(2L, 3L), list);
         } finally {
             ks.dispose();
         }
@@ -4040,8 +3099,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDeserializationWithExpiringEventAndAccumulate() throws InterruptedException {
-        String drl = "package org.drools.test;\n" +
-                     "import org.drools.compiler.StockTick; \n" +
+        final String drl = "package org.drools.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list;\n" +
                      "\n" +
                      "declare StockTick\n" +
@@ -4057,36 +3116,31 @@ public class CepEspTest extends CommonTestMethodBase {
                      "then\n" +
                      "  list.add( $sum ); \n" +
                      "end";
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-
-        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-
-        KieBase kb = loadKnowledgeBaseFromString( kbconf, drl );
-        KieSession ks = kb.newKieSession( knowledgeSessionConfiguration, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         try {
-            ks.insert( new StockTick( 1, "BBB", 1.0, 0 ) );
-            Thread.sleep( 1000 );
+            ks.insert(new StockTick(1, "BBB", 1.0, 0));
+            Thread.sleep(1000);
             ks.insert(new StockTick(2, "BBB", 2.0, 0));
-            Thread.sleep( 100 );
+            Thread.sleep(100);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
-            } catch ( Exception e ) {
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
 
-            List<Double> list = new ArrayList<Double>();
-            ks.setGlobal( "list", list );
+            final List<Double> list = new ArrayList<>();
+            ks.setGlobal("list", list);
 
             ks.fireAllRules();
 
             ks.insert(new StockTick(3, "BBB", 3.0, 0));
             ks.fireAllRules();
 
-            assertEquals( 2, list.size() );
-            assertEquals( Arrays.asList( 2.0, 5.0 ), list );
+            assertEquals(2, list.size());
+            assertEquals(Arrays.asList(2.0, 5.0), list);
         } finally {
             ks.dispose();
         }
@@ -4094,8 +3148,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDeserializationWithCompositeTrigger() {
-        String drl = "package org.drools.test;\n" +
-                     "import org.drools.compiler.StockTick; \n" +
+        final String drl = "package org.drools.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list;\n" +
                      "\n" +
                      "declare StockTick\n" +
@@ -4111,22 +3165,18 @@ public class CepEspTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-
-        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
-
-        KieBase kb = loadKnowledgeBaseFromString( kbconf, drl );
-        KieSession ks = kb.newKieSession( knowledgeSessionConfiguration, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_REALTIME.getKieSessionConfiguration();
+        kieSessionConfiguration.setOption(TimerJobFactoryOption.get("trackable"));
+        KieSession ks = kbase.newKieSession(kieSessionConfiguration, null);
         try {
-            ks.insert( new StockTick( 2, "AAA", 1.0, 0 ) );
+            ks.insert(new StockTick(2, "AAA", 1.0, 0));
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
-            } catch ( Exception e ) {
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
         } finally {
             ks.dispose();
@@ -4135,8 +3185,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowExpireActionDeserialization() throws InterruptedException {
-        String drl = "package org.drools.test;\n" +
-                     "import org.drools.compiler.StockTick; \n" +
+        final String drl = "package org.drools.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list; \n" +
                      "\n" +
                      "declare StockTick\n" +
@@ -4151,30 +3201,29 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "";
-        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconf.setOption( EventProcessingOption.STREAM );
-        KieBase kb = loadKnowledgeBaseFromString( kbconf, drl );
-        KieSession ks = kb.newKieSession( );
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         try {
-            ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
-            Thread.sleep( 1500 );
+            ks.insert(new StockTick(2, "BBB", 1.0, 0));
+            Thread.sleep(1500);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
-            } catch ( Exception e ) {
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
-            ArrayList list = new ArrayList();
-            ks.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ks.setGlobal("list", list);
 
             ks.fireAllRules();
 
-            ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+            ks.insert(new StockTick(3, "BBB", 1.0, 0));
             ks.fireAllRules();
 
-            assertEquals( 1, list.size() );
-            assertEquals( Arrays.asList( 3L ), list );
+            assertEquals(1, list.size());
+            assertEquals(Collections.singletonList(3L), list);
         } finally {
             ks.dispose();
         }
@@ -4183,8 +3232,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDuplicateFiring1() {
 
-        String drl = "package org.test;\n" +
-                     "import org.drools.compiler.StockTick;\n " +
+        final String drl = "package org.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n " +
                      "" +
                      "global java.util.List list \n" +
                      "" +
@@ -4211,51 +3260,29 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        // Check the builder for errors
-        if (kbuilder.hasErrors()) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        //configure knowledge base
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        //init session clock
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
-            ArrayList list = new ArrayList(  );
-            ksession.setGlobal( "list", list );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
             //entry point for sensor events
-            EntryPoint sensorEventStream = ksession.getEntryPoint( "SensorEventStream" );
-
-            ksession.insert( "Go" );
-            System.out.println("1. fireAllRules()");
-
+            final EntryPoint sensorEventStream = ksession.getEntryPoint("SensorEventStream");
+            ksession.insert("Go");
             //insert events
-            for(int i=2;i<8;i++){
-                StockTick event = new StockTick( (i-1), "XXX", 1.0, 0 );
-                sensorEventStream.insert( event );
-
-                System.out.println(i + ". fireAllRules()");
+            for (int i = 2; i < 8; i++) {
+                final StockTick event = new StockTick((i - 1), "XXX", 1.0, 0);
+                sensorEventStream.insert(event);
                 ksession.fireAllRules();
-
                 clock.advanceTime(105, TimeUnit.MILLISECONDS);
             }
 
             //let thread sleep for another 1m to see if dereffered rules fire (timers, (not) after rules)
-            clock.advanceTime(100*40*1, TimeUnit.MILLISECONDS);
+            clock.advanceTime(100 * 40, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals( Arrays.asList( 1L, 2L, 3L, 3L, 3L, 3L, -1 ), list );
+            assertEquals(Arrays.asList(1L, 2L, 3L, 3L, 3L, 3L, -1), list);
         } finally {
             ksession.dispose();
         }
@@ -4264,8 +3291,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDuplicateFiring2() {
 
-        String drl = "package org.test;\n" +
-                     "import org.drools.compiler.StockTick;\n " +
+        final String drl = "package org.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n " +
                      "" +
                      "global java.util.List list \n" +
                      "" +
@@ -4282,54 +3309,37 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end" +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-
-        // Check the builder for errors
-        if (kbuilder.hasErrors()) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        //configure knowledge base
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.CLOUD );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        //init session clock
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
-        //init stateful knowledge session
-        ArrayList list = new ArrayList(  );
-        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final ArrayList list = new ArrayList();
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
-            ksession.setGlobal( "list", list );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            ksession.setGlobal("list", list);
 
             //insert events
-            for(int i=1;i<3;i++){
-                StockTick event = new StockTick( (i-1), "XXX", 1.0, 0 );
-                clock.advanceTime( 1001, TimeUnit.MILLISECONDS );
-                ksession.insert( event );
-
-                System.out.println(i + ". rule invocation");
+            for (int i = 1; i < 3; i++) {
+                final StockTick event = new StockTick((i - 1), "XXX", 1.0, 0);
+                clock.advanceTime(1001, TimeUnit.MILLISECONDS);
+                ksession.insert(event);
                 ksession.fireAllRules();
             }
 
-            clock.advanceTime( 3001, TimeUnit.MILLISECONDS );
-            StockTick event = new StockTick( 3, "XXX", 1.0, 0 );
-            System.out.println("3. rule invocation");
-            ksession.insert( event );
+            clock.advanceTime(3001, TimeUnit.MILLISECONDS);
+            final StockTick event = new StockTick(3, "XXX", 1.0, 0);
+            ksession.insert(event);
             ksession.fireAllRules();
 
-            clock.advanceTime( 3001, TimeUnit.MILLISECONDS );
-            StockTick event2 = new StockTick( 3, "XXX", 1.0, 0 );
-            System.out.println("4. rule invocation");
-            ksession.insert( event2 );
+            clock.advanceTime(3001, TimeUnit.MILLISECONDS);
+            final StockTick event2 = new StockTick(3, "XXX", 1.0, 0);
+            ksession.insert(event2);
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
-            assertEquals( Arrays.asList( 1L, 2L, 1L, 1L ), list );
+            if (kieBaseTestConfiguration.isIdentity()) {
+                assertEquals(Arrays.asList(1L, 2L, 1L, 1L), list);
+            } else {
+                assertEquals(Arrays.asList(1L, 2L, 1L), list);
+            }
         }
     }
 
@@ -4337,8 +3347,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testPastEventExipration() {
         //DROOLS-257
-        String drl = "package org.test;\n" +
-                     "import org.drools.compiler.StockTick;\n " +
+        final String drl = "package org.test;\n" +
+                     "import " + StockTick.class.getCanonicalName() + ";\n " +
                      "" +
                      "global java.util.List list; \n" +
                      "" +
@@ -4353,46 +3363,34 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end" +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
-            ArrayList list = new ArrayList(  );
-            ksession.setGlobal( "list", list );
+            final SessionPseudoClock clock = ksession.getSessionClock();
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-            long now = 0;
+            final long now = 0;
 
-            StockTick event1 = new StockTick( 1, "XXX", 1.0, now );
-            StockTick event2 = new StockTick( 2, "XXX", 1.0, now + 240 );
-            StockTick event3 = new StockTick( 2, "XXX", 1.0, now + 380 );
-            StockTick event4 = new StockTick( 2, "XXX", 1.0, now + 500 );
+            final StockTick event1 = new StockTick(1, "XXX", 1.0, now);
+            final StockTick event2 = new StockTick(2, "XXX", 1.0, now + 240);
+            final StockTick event3 = new StockTick(2, "XXX", 1.0, now + 380);
+            final StockTick event4 = new StockTick(2, "XXX", 1.0, now + 500);
 
-            ksession.insert( event1 );
-            ksession.insert( event2 );
-            ksession.insert( event3 );
-            ksession.insert( event4 );
+            ksession.insert(event1);
+            ksession.insert(event2);
+            ksession.insert(event3);
+            ksession.insert(event4);
 
-            clock.advanceTime( 220, TimeUnit.MILLISECONDS );
-
-            ksession.fireAllRules();
-
-            clock.advanceTime( 400, TimeUnit.MILLISECONDS );
+            clock.advanceTime(220, TimeUnit.MILLISECONDS);
 
             ksession.fireAllRules();
 
-            assertEquals( Arrays.asList( 3L, 1L ), list );
+            clock.advanceTime(400, TimeUnit.MILLISECONDS);
+
+            ksession.fireAllRules();
+
+            assertEquals(Arrays.asList(3L, 1L), list);
         } finally {
             ksession.dispose();
         }
@@ -4401,18 +3399,18 @@ public class CepEspTest extends CommonTestMethodBase {
 
     public static class MyEvent {
         private long timestamp;
-        public MyEvent( long timestamp ) { this.timestamp = timestamp; }
+        public MyEvent(final long timestamp ) { this.timestamp = timestamp; }
         public long getTimestamp() { return timestamp; }
-        public void setTimestamp( long timestamp ) { this.timestamp = timestamp; }
+        public void setTimestamp(final long timestamp ) { this.timestamp = timestamp; }
         public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
     }
 
     @Test
     public void testEventStreamWithEPsAndDefaultPseudo() {
         //DROOLS-286
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*;\n" +
-                     "import org.drools.compiler.integrationtests.CepEspTest.MyEvent; \n" +
+                     "import " + CepEspTest.MyEvent.class.getCanonicalName() + ";\n" +
                      "" +
                      "declare MyEvent\n" +
                      "    @role(event)\n" +
@@ -4476,52 +3474,41 @@ public class CepEspTest extends CommonTestMethodBase {
                      "        list.add( 'r6:' + $list.size() ); \n" +
                      "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
-            ArrayList list = new ArrayList( );
-            ksession.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
             list.clear();
 
-            for ( int j = 0; j < 5; j++ ) {
-                clock.advanceTime(500, TimeUnit.MILLISECONDS );
-                ksession.insert(new MyEvent(clock.getCurrentTime() ) );
-                ksession.getEntryPoint( "stream" ).insert(new MyEvent(clock.getCurrentTime() ) );
-                clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            for (int j = 0; j < 5; j++) {
+                clock.advanceTime(500, TimeUnit.MILLISECONDS);
+                ksession.insert(new MyEvent(clock.getCurrentTime()));
+                ksession.getEntryPoint("stream").insert(new MyEvent(clock.getCurrentTime()));
+                clock.advanceTime(500, TimeUnit.MILLISECONDS);
                 ksession.fireAllRules();
 
-                System.out.println( list );
-                switch ( j ) {
-                    case 0 : assertEquals( Arrays.asList( "r6:1", "r5:1", "r3:1", "r2:1" ), list );
+                System.out.println(list);
+                switch (j) {
+                    case 0:
+                        assertEquals(Arrays.asList("r6:1", "r5:1", "r3:1", "r2:1"), list);
                         break;
-                    case 1 : assertEquals( Arrays.asList( "r6:2", "r5:1", "r3:2", "r2:1" ), list );
+                    case 1:
+                        assertEquals(Arrays.asList("r6:2", "r5:1", "r3:2", "r2:1"), list);
                         break;
-                    case 2 :
-                    case 3 :
-                    case 4 : assertEquals( Arrays.asList( "r6:3", "r5:1", "r3:3", "r2:1" ), list );
+                    case 2:
+                    case 3:
+                    case 4:
+                        assertEquals(Arrays.asList("r6:3", "r5:1", "r3:3", "r2:1"), list);
                         break;
-                    default: fail();
+                    default:
+                        fail();
                 }
                 list.clear();
-
-                System.out.println( "-------------- SLEEP ------------" );
             }
         } finally {
             ksession.dispose();
@@ -4531,7 +3518,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpirationOnModification() {
         //DROOLS-374
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*;\n" +
                      "global List list; " +
 
@@ -4563,41 +3550,28 @@ public class CepEspTest extends CommonTestMethodBase {
 
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
-            ArrayList list = new ArrayList( );
-            ksession.setGlobal( "list", list );
+            final ArrayList list = new ArrayList();
+            ksession.setGlobal("list", list);
 
-            ksession.insert( "go" );
+            ksession.insert("go");
             ksession.fireAllRules();
 
-            clock.advanceTime( 100, TimeUnit.MILLISECONDS );
+            clock.advanceTime(100, TimeUnit.MILLISECONDS);
 
-            ksession.insert( "go" );
+            ksession.insert("go");
             ksession.fireAllRules();
 
-            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            clock.advanceTime(500, TimeUnit.MILLISECONDS);
 
-            ksession.insert( "go" );
+            ksession.insert("go");
             ksession.fireAllRules();
 
-            assertEquals( Arrays.asList( 1L, 2L, 1L ), list );
+            assertEquals(Arrays.asList(1L, 2L, 1L), list);
         } finally {
             ksession.dispose();
         }
@@ -4606,7 +3580,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTemporalEvaluatorsWithEventsFromNode() {
         //DROOLS-421
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*; " +
                      "global List list; " +
 
@@ -4642,34 +3616,13 @@ public class CepEspTest extends CommonTestMethodBase {
 
                      "";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        try {
-            assertNotNull( ksession );
-
-            List list = new ArrayList();
-            ksession.setGlobal( "list", list );
-
-            ksession.fireAllRules();
-
-            assertEquals( 1, list.size() );
-        } finally {
-            ksession.dispose();
-        }
+        testTemporalEvaluators(drl);
     }
 
     @Test
     public void testTemporalEvaluatorsUsingRawDateFields() {
         //DROOLS-421
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*; " +
                      "global List list; " +
 
@@ -4702,34 +3655,13 @@ public class CepEspTest extends CommonTestMethodBase {
 
                      "";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        try {
-            assertNotNull( ksession );
-
-            List list = new ArrayList();
-            ksession.setGlobal( "list", list );
-
-            ksession.fireAllRules();
-
-            assertEquals( 1, list.size() );
-        } finally {
-            ksession.dispose();
-        }
+        testTemporalEvaluators(drl);
     }
 
     @Test
     public void testTemporalEvaluatorsUsingRawDateFieldsFromFrom() {
         //DROOLS-421
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*; " +
                      "global List list; " +
 
@@ -4751,34 +3683,13 @@ public class CepEspTest extends CommonTestMethodBase {
 
                      "";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        try {
-            assertNotNull( ksession );
-
-            List list = new ArrayList();
-            ksession.setGlobal( "list", list );
-
-            ksession.fireAllRules();
-
-            assertEquals( 1, list.size() );
-        } finally {
-            ksession.dispose();
-        }
+        testTemporalEvaluators(drl);
     }
 
     @Test
     public void testTemporalEvaluatorsUsingSelfDates() {
         //DROOLS-421
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*; " +
                      "global List list; " +
 
@@ -4798,25 +3709,21 @@ public class CepEspTest extends CommonTestMethodBase {
 
                      "";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "rules.drl" ) );
+        testTemporalEvaluators(drl);
+    }
 
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+    private void testTemporalEvaluators(final String drl) {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            assertNotNull( ksession );
+            assertNotNull(ksession);
 
-            List list = new ArrayList();
-            ksession.setGlobal( "list", list );
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
 
-            assertEquals( 1, list.size() );
+            assertEquals(1, list.size());
         } finally {
             ksession.dispose();
         }
@@ -4825,7 +3732,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventOffsetExpirationOverflow() {
         // DROOLS-455
-        String drl = "\n" +
+        final String drl = "\n" +
                      "import java.util.*; " +
                      "" +
                      "declare LongLastingEvent \n" +
@@ -4850,121 +3757,29 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption(EventProcessingOption.STREAM);
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        //init stateful knowledge session
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = ksession.getSessionClock();
+            final SessionPseudoClock clock = ksession.getSessionClock();
 
             // generate the event
             ksession.fireAllRules();
 
-            // move on..
-            clock.advanceTime( 10, TimeUnit.SECONDS );
-
+            clock.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
             // The event should still be there...
-
-            assertEquals( 1, ksession.getObjects().size() );
+            assertEquals(1, ksession.getObjects().size());
         } finally {
             ksession.dispose();
         }
     }
 
-    @Test @Ignore("Cannot reproduce with pseudoclock and takes too long with system clock")
-    public void testTimedRuleWithAccumulate() {
-        // BZ-1083103
-        String drl = "import " + SynthEvent.class.getCanonicalName() + "\n" +
-                     "import java.util.Date\n" +
-                     "\n" +
-                     "declare SynthEvent\n" +
-                     "    @role( event )\n" +
-                     "    @timestamp( timestamp )\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare EventCounter\n" +
-                     "      @role( event )\n" +
-                     "      @timestamp( timestamp )\n" +
-                     "      id          : long\n" +
-                     "      key         : String\n" +
-                     "      timestamp   : Date\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"Create counter\"\n" +
-                     "when\n" +
-                     "$e : SynthEvent() from entry-point \"synth\"\n" +
-                     "then\n" +
-                     "    entryPoints[\"counters\"].insert(new EventCounter( $e.getId(), \"event\", $e.getTimestamp() ) );\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"Count epm\"\n" +
-                     "timer ( cron: 0/10 * * * * ? )\n" +
-                     //"timer ( int: 2s 1s )\n" +
-                     "when\n" +
-                     "    Number( $count : intValue ) from accumulate(\n" +
-                     "       EventCounter( key == \"event\" ) over window:time( 60s ) from entry-point \"counters\", count(1) )\n" +
-                     "then\n" +
-                     "    System.out.println(\"[\" + new Date() + \"] epm = \" + $count );\n" +
-                     "end\n " +
-                     "";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        final KieSession ksession = kbase.newKieSession();
-        EntryPoint synthEP =  ksession.getEntryPoint("synth");
-
-        new Thread(() -> {
-            System.out.println("[" + new Date() + "] start!");
-            ksession.fireUntilHalt();
-        }).start();
-
-        try {
-            long counter = 0;
-            while(true) {
-                counter++;
-                synthEP.insert(new SynthEvent(counter));
-                try {
-                    Thread.sleep(20L);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                if ((counter % 1000) == 0) {
-                    System.out.println("Total events: " + counter);
-                }
-            }
-        } finally {
-            ksession.halt();
-            ksession.dispose();
-        }
-   }
-
-
     public static class SynthEvent {
         private final long id;
         private final Date timestamp;
 
-        public SynthEvent(long id) {
+        public SynthEvent(final long id) {
             this.id = id;
             timestamp = new Date();
         }
@@ -4981,7 +3796,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpiredEventModification() {
         // BZ-1082990
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
                      "\n" +
                      "declare OtherFact\n" +
@@ -5004,25 +3819,13 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    end\n " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        final KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
             clock.setStartupTime(System.currentTimeMillis());
 
-            SimpleEvent event = new SimpleEvent("code1");
+            final SimpleEvent event = new SimpleEvent("code1");
             event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
             ksession.insert(event);
             ksession.fireAllRules();
@@ -5032,9 +3835,9 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     public static class SimpleEvent {
+
         private String code;
         private Long dateEvt;
-
 
         public SimpleEvent(final String aCode) {
             this.code = aCode;
@@ -5058,7 +3861,7 @@ public class CepEspTest extends CommonTestMethodBase {
             return dateEvt;
         }
 
-        public void setDateEvt(Long dateEvt) {
+        public void setDateEvt(final Long dateEvt) {
             this.dateEvt = dateEvt;
         }
 
@@ -5071,7 +3874,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTemporalOperatorWithConstant() {
         // BZ-1096243
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
                      "global java.util.List list" +
                      "\n" +
@@ -5088,23 +3891,13 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    end\n " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            SimpleEvent event = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
+            final SimpleEvent event = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
             ksession.insert(event);
             ksession.fireAllRules();
 
@@ -5117,7 +3910,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTemporalOperatorWithConstantAndJoin() {
         // BZ 1096243
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
                      "global java.util.List list" +
                      "\n" +
@@ -5135,25 +3928,15 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    end\n " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List list = new ArrayList();
+            final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            SimpleEvent event1 = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
+            final SimpleEvent event1 = new SimpleEvent("code1", DateUtils.parseDate("18-Mar-2014").getTime());
             ksession.insert(event1);
-            SimpleEvent event2 = new SimpleEvent("code2", DateUtils.parseDate("19-Mar-2014").getTime());
+            final SimpleEvent event2 = new SimpleEvent("code2", DateUtils.parseDate("19-Mar-2014").getTime());
             ksession.insert(event2);
             ksession.fireAllRules();
 
@@ -5166,7 +3949,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDynamicSalienceInStreamMode() {
         // DROOLS-526
-        String drl =
+        final String drl =
                 "import java.util.concurrent.atomic.AtomicInteger;\n" +
                 "\n" +
                 "global AtomicInteger salience1\n" +
@@ -5197,20 +3980,10 @@ public class CepEspTest extends CommonTestMethodBase {
                 " list.add(2);\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List<Integer> list = new ArrayList<Integer>();
+            final List<Integer> list = new ArrayList<>();
             ksession.setGlobal("list", list);
             ksession.setGlobal("salience1", new AtomicInteger(9));
             ksession.setGlobal("salience2", new AtomicInteger(10));
@@ -5229,7 +4002,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void test2NotsWithTemporalConstraints() {
         // BZ-1122738 DROOLS-479
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
                      "\n" +
                      "declare OtherFact\n" +
@@ -5252,25 +4025,13 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    end\n " +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( EventProcessingOption.STREAM );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        final KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
             clock.setStartupTime(System.currentTimeMillis());
 
-            SimpleEvent event = new SimpleEvent("code1");
+            final SimpleEvent event = new SimpleEvent("code1");
             event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
             ksession.insert(event);
             ksession.fireAllRules();
@@ -5283,8 +4044,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testRetractFromWindow() {
         // DROOLS-636
-        String drl =
-                "import org.drools.compiler.StockTick;\n " +
+        final String drl =
+                "import " + StockTick.class.getCanonicalName() + ";\n " +
                 "declare StockTick\n" +
                 " @role( event )\n" +
                 "end\n" +
@@ -5299,10 +4060,8 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert(42);
             ksession.insert(new StockTick(1L, "DROOLS", 20));
@@ -5315,7 +4074,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCEPNamedCons() {
 
-        String drl = "package org.drools " +
+        final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
 
@@ -5362,29 +4121,21 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end " +
 
                      "";
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(
-                EventProcessingOption.STREAM
-        ).newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List list = new ArrayList(  );
-            ksession.setGlobal( "list", list );
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
             ksession.insert("John");
             ksession.fireAllRules();
 
-            System.out.println("--------------------");
-            (( PseudoClockScheduler )ksession.getSessionClock()).advanceTime( 10, TimeUnit.MILLISECONDS );
-            ksession.insert( "Peter" );
+            ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(10, TimeUnit.MILLISECONDS);
+            ksession.insert("Peter");
             ksession.fireAllRules();
 
-            System.out.println( list );
-            assertTrue( list.contains( 0 ) );
-            assertTrue( list.contains( 1 ) );
+            assertTrue(list.contains(0));
+            assertTrue(list.contains(1));
             assertTrue(list.contains(2));
             assertFalse(list.contains(-1));
             assertFalse(list.contains(-2));
@@ -5396,7 +4147,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCEPNamedConsTimers() {
 
-        String drl = "package org.drools " +
+        final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
 
@@ -5424,22 +4175,18 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end " +
 
                      "";
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession( sessionConfig, null );
+        
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List list = new ArrayList(  );
-            ksession.setGlobal( "list", list );
+            final List list = new ArrayList();
+            ksession.setGlobal("list", list);
 
             ksession.insert("John");
             ksession.fireAllRules();
             assertTrue(list.isEmpty());
 
-            (( PseudoClockScheduler )ksession.getSessionClock()).advanceTime(1000, TimeUnit.MILLISECONDS);
+            ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(1000, TimeUnit.MILLISECONDS);
 
             ksession.fireAllRules();
             assertTrue(list.contains(-2));
@@ -5451,7 +4198,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void test2TimersWithNamedCons() {
-        String drl = "package org.drools " +
+        final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
 
@@ -5477,33 +4224,12 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  list.add( 1 );\n" +
                      "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
-        try {
-            List<Integer> list = new ArrayList<Integer>();
-            ksession.setGlobal("list", list);
-
-            ksession.insert("Alice");
-            ksession.fireAllRules();
-            assertTrue(list.isEmpty());
-
-            ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(150, TimeUnit.MILLISECONDS);
-
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals(1, (int) list.get(0));
-        } finally {
-            ksession.dispose();
-        }
+        test2Timers(drl);
     }
 
     @Test
     public void test2TimersWith2Rules() {
-        String drl = "package org.drools " +
+        final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
 
@@ -5533,14 +4259,14 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  list.add( 1 );\n" +
                      "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
+        test2Timers(drl);
+    }
+    
+    private void test2Timers(final String drl) {
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<Integer> list = new ArrayList<Integer>();
+            final List<Integer> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             ksession.insert("Alice");
@@ -5555,11 +4281,11 @@ public class CepEspTest extends CommonTestMethodBase {
         } finally {
             ksession.dispose();
         }
-    }
+    } 
 
     @Test
     public void testCEPWith2NamedConsAndEagerRule() {
-        String drl = "package org.drools " +
+        final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
 
@@ -5594,14 +4320,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  list.add( 2 );\n" +
                      "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<Integer> list = new ArrayList<Integer>();
+            final List<Integer> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             ksession.insert("Alice");
@@ -5622,7 +4344,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testExpireLogicalEvent() {
-        String drl = "package org.drools; " +
+        final String drl = "package org.drools; " +
                      "declare Foo " +
                      "  @role(event) " +
                      "  @expires(10ms) " +
@@ -5634,21 +4356,15 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  insertLogical( new Foo() ); " +
                      "end ";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(
-                EventProcessingOption.STREAM
-        ).newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             ksession.fireAllRules();
-            ((PseudoClockScheduler)ksession.getSessionClock()).advanceTime( 1, TimeUnit.SECONDS );
+            ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(1, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertEquals( 0, ksession.getObjects().size() );
-            assertEquals( 0, ( (NamedEntryPoint) ksession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem().getEqualityKeyMap().size() );
+            assertEquals(0, ksession.getObjects().size());
+            assertEquals(0, ((NamedEntryPoint) ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId())).getTruthMaintenanceSystem().getEqualityKeyMap().size());
         } finally {
             ksession.dispose();
         }
@@ -5657,7 +4373,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSerializationWithEventInPast() {
         // DROOLS-749
-        String drl =
+        final String drl =
                 "import " + Event1.class.getCanonicalName() + "\n" +
                 "declare Event1\n" +
                 "    @role( event )\n" +
@@ -5673,23 +4389,14 @@ public class CepEspTest extends CommonTestMethodBase {
                 "       System.out.println($evt.getCode());\n" +
                 "end";
 
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-
-        KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             ksession.insert(new Event1("id1", 0));
 
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
             clock.advanceTime(2, TimeUnit.HOURS);
             ksession.fireAllRules();
-
-            ksession = marshallAndUnmarshall(KieServices.Factory.get(), kbase, ksession, sessionConfig);
-
             ksession.insert(new Event1("id2", 0));
             ksession.fireAllRules();
         } finally {
@@ -5702,7 +4409,7 @@ public class CepEspTest extends CommonTestMethodBase {
         private final String code;
         private final long timestamp;
 
-        public Event1(String code, long timestamp) {
+        public Event1(final String code, final long timestamp) {
             this.code = code;
             this.timestamp = timestamp;
         }
@@ -5727,7 +4434,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testUseMapAsEvent() {
         // DROOLS-753
-        String drl =
+        final String drl =
                 "import java.util.Map\n " +
                 "declare Map \n"+
                 "  @role(event)\n"+
@@ -5740,15 +4447,10 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    System.out.println(\"alarm!!!!\");  \n" +
                 "end \n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            ksession.insert( new HashMap<String, Object>() );
+            ksession.insert(new HashMap<String, Object>());
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
@@ -5758,36 +4460,33 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDisconnectedEventFactHandle() {
         // DROOLS-924
-        String drl =
+        final String drl =
                 "declare String \n"+
                 "  @role(event)\n"+
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
-            DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
+            final DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert("hello");
+            final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert("goodbye");
 
-            FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
+            FactHandle key = DefaultFactHandle.createFromExternalFormat(helloHandle.toExternalForm());
             assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
-            assertEquals( "hello",
-                          ksession.getObject( key ) );
+            assertEquals("hello", ksession.getObject(key));
 
-            key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
+            key = DefaultFactHandle.createFromExternalFormat(goodbyeHandle.toExternalForm());
             assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
-            assertEquals( "goodbye",
-                          ksession.getObject( key ) );
+            assertEquals("goodbye", ksession.getObject(key));
         } finally {
             ksession.dispose();
         }
     }
 
     @Test
-    public void testEventWithShortExpiration() {
+    public void testEventWithShortExpiration() throws InterruptedException {
         // DROOLS-921
-        String drl = "declare String\n" +
+        final String drl = "declare String\n" +
                      "  @expires( 1ms )\n" +
                      "  @role( event )\n" +
                      "end\n" +
@@ -5797,21 +4496,20 @@ public class CepEspTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM )
-                                             .newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            ksession.insert( "test" );
-            assertEquals( 1, ksession.fireAllRules() );
-            waitBusy(2L);
-            assertEquals( 0, ksession.fireAllRules() );
-            waitBusy(30L);
+            ksession.insert("test");
+            assertEquals(1, ksession.fireAllRules());
+            TimeUtil.sleepMillis(2L);
+            assertEquals(0, ksession.fireAllRules());
+            TimeUtil.sleepMillis(30L);
             // Expire action is put into propagation queue by timer job, so there
             // can be a race condition where it puts it there right after previous fireAllRules
             // flushes the queue. So there needs to be another flush -> another fireAllRules
             // to flush the queue.
-            assertEquals( 0, ksession.fireAllRules() );
-            assertEquals( 0, ksession.getObjects().size() );
+            assertEquals(0, ksession.fireAllRules());
+            assertEquals(0, ksession.getObjects().size());
         } finally {
             ksession.dispose();
         }
@@ -5820,7 +4518,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDeleteExpiredEvent() {
         // BZ-1274696
-        String drl =
+        final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "declare StockTick\n" +
                 "    @role( event )\n" +
@@ -5835,25 +4533,19 @@ public class CepEspTest extends CommonTestMethodBase {
                 "  delete($st1);\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            EventFactHandle handle1 = (EventFactHandle) ksession.insert( new StockTick( 1, "ACME", 50 ) );
-
+            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new StockTick(1, "ACME", 50));
             ksession.fireAllRules();
 
-            clock.advanceTime( 2, TimeUnit.SECONDS );
+            clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertTrue( handle1.isExpired() );
-            assertFalse( ksession.getFactHandles().contains( handle1 ) );
+            assertTrue(handle1.isExpired());
+            assertFalse(ksession.getFactHandles().contains(handle1));
         } finally {
             ksession.dispose();
         }
@@ -5862,7 +4554,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDeleteExpiredEventWithTimestampAndEqualityKey() {
         // DROOLS-1017
-        String drl =
+        final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "declare StockTick\n" +
                 "    @role( event )\n" +
@@ -5877,24 +4569,19 @@ public class CepEspTest extends CommonTestMethodBase {
                 "  delete($st1);\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM, EqualityBehaviorOption.EQUALITY );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
             clock.setStartupTime(5000L);
 
-            EventFactHandle handle1 = (EventFactHandle) ksession.insert( new StockTick( 1, "ACME", 50, 0L ) );
+            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new StockTick(1, "ACME", 50, 0L));
 
-            clock.advanceTime( 2, TimeUnit.SECONDS );
+            clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertTrue( handle1.isExpired() );
-            assertFalse( ksession.getFactHandles().contains( handle1 ) );
+            assertTrue(handle1.isExpired());
+            assertFalse(ksession.getFactHandles().contains(handle1));
         } finally {
             ksession.dispose();
         }
@@ -5903,7 +4590,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSerializationWithWindowLength() {
         // DROOLS-953
-        String drl =
+        final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "declare StockTick\n" +
@@ -5916,36 +4603,29 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    list.add($e.getCompany());\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-            List<String> list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
-
-            ksession.insert( new StockTick( 1, "ACME", 50 ) );
-            ksession.insert( new StockTick( 2, "DROO", 50 ) );
-            ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+            ksession.insert(new StockTick(1, "ACME", 50));
+            ksession.insert(new StockTick(2, "DROO", 50));
+            ksession.insert(new StockTick(3, "JBPM", 50));
             ksession.fireAllRules();
 
             assertEquals(1, list.size());
             assertEquals("JBPM", list.get(0));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
-            } catch ( Exception e ) {
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
 
-            list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
+            list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
             assertEquals(0, list.size());
@@ -5957,7 +4637,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSerializationWithWindowLengthAndLiaSharing() {
         // DROOLS-953
-        String drl =
+        final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "declare StockTick\n" +
@@ -5976,36 +4656,29 @@ public class CepEspTest extends CommonTestMethodBase {
                 "   System.out.println(\"Event Insert : \" + $e);\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-            List<String> list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
-
-            ksession.insert( new StockTick( 1, "ACME", 50 ) );
-            ksession.insert( new StockTick( 2, "DROO", 50 ) );
-            ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+            ksession.insert(new StockTick(1, "ACME", 50));
+            ksession.insert(new StockTick(2, "DROO", 50));
+            ksession.insert(new StockTick(3, "JBPM", 50));
             ksession.fireAllRules();
 
             assertEquals(1, list.size());
             assertEquals("JBPM", list.get(0));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
-            } catch ( Exception e ) {
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
 
-            list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
+            list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
             assertEquals(0, list.size());
@@ -6017,7 +4690,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSerializationBeforeFireWithWindowLength() {
         // DROOLS-953
-        String drl =
+        final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "declare StockTick\n" +
@@ -6030,32 +4703,25 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    list.add($e.getCompany());\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-            List<String> list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
-
-            ksession.insert( new StockTick( 1, "ACME", 50 ) );
-            ksession.insert( new StockTick( 2, "DROO", 50 ) );
-            ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+            ksession.insert(new StockTick(1, "ACME", 50));
+            ksession.insert(new StockTick(2, "DROO", 50));
+            ksession.insert(new StockTick(3, "JBPM", 50));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
-            } catch ( Exception e ) {
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
 
-            list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
+            list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
             assertEquals(1, list.size());
@@ -6068,7 +4734,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSubclassWithLongerExpirationThanSuper() {
         // DROOLS-983
-        String drl =
+        final String drl =
                 "import " + SuperClass.class.getCanonicalName() + "\n" +
                 "import " + SubClass.class.getCanonicalName() + "\n" +
                 "\n" +
@@ -6082,28 +4748,23 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
             ksession.fireAllRules();
 
             clock.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
             assertFalse(handle1.isExpired());
-            assertEquals( 1, ksession.getObjects().size() );
+            assertEquals(1, ksession.getObjects().size());
 
             clock.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
             assertTrue(handle1.isExpired());
-            assertEquals( 0, ksession.getObjects().size() );
+            assertEquals(0, ksession.getObjects().size());
         } finally {
             ksession.dispose();
         }
@@ -6112,7 +4773,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSubclassWithLongerExpirationThanSuperWithSerialization() {
         // DROOLS-983
-        String drl =
+        final String drl =
                 "import " + SuperClass.class.getCanonicalName() + "\n" +
                 "import " + SubClass.class.getCanonicalName() + "\n" +
                 "\n" +
@@ -6126,35 +4787,30 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             PseudoClockScheduler clock = ksession.getSessionClock();
 
-            EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+            final EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
             ksession.fireAllRules();
 
             clock.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
             assertFalse(handle1.isExpired());
-            assertEquals( 1, ksession.getObjects().size() );
+            assertEquals(1, ksession.getObjects().size());
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
-            } catch ( Exception e ) {
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
 
             clock = ksession.getSessionClock();
             clock.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals( 0, ksession.getObjects().size() );
+            assertEquals(0, ksession.getObjects().size());
         } finally {
             ksession.dispose();
         }
@@ -6171,7 +4827,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTemporalOperatorWithGlobal() {
         // DROOLS-993
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
                      "global " + SimpleEvent.class.getCanonicalName() + " baseEvent;\n" +
                      "\n" +
@@ -6188,24 +4844,19 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    end\n " +
                      "";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
 
             ksession.setGlobal("baseEvent", new SimpleEvent("1", 15000L));
 
-            SimpleEvent event1 = new SimpleEvent("1", 0L);
+            final SimpleEvent event1 = new SimpleEvent("1", 0L);
             ksession.insert(event1);
             ksession.fireAllRules();
 
-            assertEquals( 1, list.size() );
+            assertEquals(1, list.size());
         } finally {
             ksession.dispose();
         }
@@ -6230,8 +4881,8 @@ public class CepEspTest extends CommonTestMethodBase {
         checkNoExpiration("SimpleEvent( )\n" );
     }
 
-    private void checkNoExpiration(String lhs) {
-        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+    private void checkNoExpiration(final String lhs) {
+        final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "declare SimpleEvent\n" +
                      "    @role( event )\n" +
                      "    @expires( -1 )\n" +
@@ -6243,28 +4894,23 @@ public class CepEspTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler clock = ksession.getSessionClock();
+            final PseudoClockScheduler clock = ksession.getSessionClock();
 
-            SimpleEvent event1 = new SimpleEvent("1", 0L);
+            final SimpleEvent event1 = new SimpleEvent("1", 0L);
             ksession.insert(event1);
             ksession.fireAllRules();
 
             //Session should only contain the fact we just inserted.
-            assertEquals( 1, ksession.getFactCount() );
+            assertEquals(1, ksession.getFactCount());
 
-            clock.advanceTime( 60000, TimeUnit.MILLISECONDS );
+            clock.advanceTime(60000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
             //We've disabled expiration, so fact should still be in WorkingMemory.
-            assertEquals( 1, ksession.getFactCount() );
+            assertEquals(1, ksession.getFactCount());
         } finally {
             ksession.dispose();
         }
@@ -6273,7 +4919,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCancelActivationWithExpiredEvent() {
         // RHBRMS-2463
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
                      "declare MyEvent\n" +
                      "    @role( event )\n" +
@@ -6293,22 +4939,17 @@ public class CepEspTest extends CommonTestMethodBase {
                      "        }\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            long now = System.currentTimeMillis();
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final long now = System.currentTimeMillis();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(now - 10000);
 
-            AtomicInteger counter = new AtomicInteger( 1 );
-            MyEvent event1 = new MyEvent(now - 8000);
-            MyEvent event2 = new MyEvent(now - 7000);
-            MyEvent event3 = new MyEvent(now - 6000);
+            final AtomicInteger counter = new AtomicInteger(1);
+            final MyEvent event1 = new MyEvent(now - 8000);
+            final MyEvent event2 = new MyEvent(now - 7000);
+            final MyEvent event3 = new MyEvent(now - 6000);
 
             ksession.insert(counter);
             ksession.insert(event1);
@@ -6330,7 +4971,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testRightTupleExpiration() {
         // RHBRMS-2463
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
                      "global AtomicInteger counter;\n" +
                      "declare MyEvent\n" +
@@ -6348,19 +4989,14 @@ public class CepEspTest extends CommonTestMethodBase {
                      "       counter.incrementAndGet();\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(0);
 
-            AtomicInteger counter = new AtomicInteger( 0 );
-            ksession.setGlobal( "counter", counter );
+            final AtomicInteger counter = new AtomicInteger(0);
+            ksession.setGlobal("counter", counter);
 
             ksession.insert("test");
             ksession.insert(true);
@@ -6371,7 +5007,7 @@ public class CepEspTest extends CommonTestMethodBase {
             assertEquals(0, counter.get());
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
-            ksession.insert( 1 );
+            ksession.insert(1);
             ksession.fireAllRules(); // MyEvent is expired
 
             assertEquals(1, counter.get());
@@ -6383,7 +5019,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testLeftTupleExpiration() {
         // RHBRMS-2463
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
                      "global AtomicInteger counter;\n" +
                      "declare MyEvent\n" +
@@ -6400,19 +5036,14 @@ public class CepEspTest extends CommonTestMethodBase {
                      "       counter.incrementAndGet();\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(0);
 
-            AtomicInteger counter = new AtomicInteger( 0 );
-            ksession.setGlobal( "counter", counter );
+            final AtomicInteger counter = new AtomicInteger(0);
+            ksession.setGlobal("counter", counter);
 
             ksession.insert(true);
             ksession.insert(new MyEvent(0));
@@ -6422,7 +5053,7 @@ public class CepEspTest extends CommonTestMethodBase {
             assertEquals(0, counter.get());
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
-            ksession.insert( 1 );
+            ksession.insert(1);
             ksession.fireAllRules(); // MyEvent is expired
 
             assertEquals(1, counter.get());
@@ -6434,7 +5065,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testLeftTupleExpirationWithNot() {
         // RHBRMS-2463
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
                      "global AtomicInteger counter;\n" +
                      "declare MyEvent\n" +
@@ -6451,22 +5082,17 @@ public class CepEspTest extends CommonTestMethodBase {
                      "       counter.incrementAndGet();\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(0);
 
-            AtomicInteger counter = new AtomicInteger( 0 );
-            ksession.setGlobal( "counter", counter );
+            final AtomicInteger counter = new AtomicInteger(0);
+            ksession.setGlobal("counter", counter);
 
             ksession.insert(true);
-            FactHandle iFh = ksession.insert( 1 );
+            final FactHandle iFh = ksession.insert(1);
             ksession.insert(new MyEvent(0));
             ksession.insert(new MyEvent(15));
 
@@ -6474,7 +5100,7 @@ public class CepEspTest extends CommonTestMethodBase {
             assertEquals(0, counter.get());
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
-            ksession.delete( iFh );
+            ksession.delete(iFh);
             ksession.fireAllRules(); // MyEvent is expired
 
             assertEquals(1, counter.get());
@@ -6486,7 +5112,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpireLogicallyInsertedEvent() {
         // RHBRMS-2515
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "declare MyEvent\n" +
                      "    @role( event )\n" +
                      "    @timestamp( timestamp )\n" +
@@ -6499,26 +5125,21 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  insertLogical($e.toString());\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(0);
 
             ksession.insert(new MyEvent(0));
-            assertEquals( 1L, ksession.getFactCount() );
+            assertEquals(1L, ksession.getFactCount());
 
             ksession.fireAllRules();
-            assertEquals( 2L, ksession.getFactCount() );
+            assertEquals(2L, ksession.getFactCount());
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals( 0L, ksession.getFactCount() );
+            assertEquals(0L, ksession.getFactCount());
         } finally {
             ksession.dispose();
         }
@@ -6526,7 +5147,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testExpiredEventWithPendingActivations() throws Exception {
-        String drl = "package org.drools.drools_usage_pZB7GRxZp64;\n" +
+        final String drl = "package org.drools.drools_usage_pZB7GRxZp64;\n" +
                      "\n" +
                      "declare time_Var\n" +
                      "    @role( event )\n" +
@@ -6580,34 +5201,26 @@ public class CepEspTest extends CommonTestMethodBase {
                      "\n" +
                      "end";
 
-        KieServices kieServices = KieServices.Factory.get();
-
-        KieBaseConfiguration kieBaseConf = KieServices.Factory.get().newKieBaseConfiguration();
-        kieBaseConf.setOption( EventProcessingOption.STREAM );
-
-        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(kieBaseConf);
-
-        KieSessionConfiguration config = kieServices.newKieSessionConfiguration();
-        config.setOption( ClockTypeOption.get("pseudo") );
-        KieSession session = kieBase.newKieSession(config, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            SessionPseudoClock clock = session.getSessionClock();
+            final SessionPseudoClock clock = session.getSessionClock();
 
-            FactType time_VarType = kieBase.getFactType( "org.drools.drools_usage_pZB7GRxZp64", "time_Var" );
+            final FactType time_VarType = kbase.getFactType("org.drools.drools_usage_pZB7GRxZp64", "time_Var");
 
             clock.advanceTime(1472057509000L, TimeUnit.MILLISECONDS);
 
-            Object time_Var = time_VarType.newInstance();
-            time_VarType.set( time_Var, "value",  1472057509000L );
+            final Object time_Var = time_VarType.newInstance();
+            time_VarType.set(time_Var, "value", 1472057509000L);
 
             session.insert(time_Var);
             session.fireAllRules();
 
-            for (int i=0; i<10; i++) {
+            for (int i = 0; i < 10; i++) {
                 clock.advanceTime(1, TimeUnit.SECONDS);
 
-                Object time_VarP1 = time_VarType.newInstance();
-                time_VarType.set( time_VarP1, "value",  clock.getCurrentTime() );
+                final Object time_VarP1 = time_VarType.newInstance();
+                time_VarType.set(time_VarP1, "value", clock.getCurrentTime());
 
                 session.insert(time_VarP1);
                 session.fireAllRules();
@@ -6617,14 +5230,14 @@ public class CepEspTest extends CommonTestMethodBase {
             session.fireAllRules();
 
             clock.advanceTime(1, TimeUnit.HOURS);
-            Object time_VarP1 = time_VarType.newInstance();
-            time_VarType.set( time_VarP1, "value",  clock.getCurrentTime() );
+            final Object time_VarP1 = time_VarType.newInstance();
+            time_VarType.set(time_VarP1, "value", clock.getCurrentTime());
             session.insert(time_VarP1);
             session.fireAllRules();
 
             clock.advanceTime(1, TimeUnit.HOURS);
-            Object time_VarP2 = time_VarType.newInstance();
-            time_VarType.set( time_VarP2, "value",  clock.getCurrentTime() );
+            final Object time_VarP2 = time_VarType.newInstance();
+            time_VarType.set(time_VarP2, "value", clock.getCurrentTime());
             session.insert(time_VarP2);
             session.fireAllRules();
 
@@ -6632,9 +5245,9 @@ public class CepEspTest extends CommonTestMethodBase {
             session.fireAllRules();
 
             // actually should be empty..
-            for ( Object o : session.getFactHandles() ) {
+            for (final Object o : session.getFactHandles()) {
                 if (o instanceof EventFactHandle) {
-                    EventFactHandle eventFactHandle = (EventFactHandle)o;
+                    final EventFactHandle eventFactHandle = (EventFactHandle) o;
                     assertFalse(eventFactHandle.isExpired());
                 }
             }
@@ -6646,7 +5259,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTimerWithMillisPrecision() {
         // RHBRMS-2627
-        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
                      "declare MyEvent\n" +
                      "    @role( event )\n" +
@@ -6666,22 +5279,17 @@ public class CepEspTest extends CommonTestMethodBase {
                      "        }\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            long now = 1000;
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final long now = 1000;
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime(now - 10);
 
-            AtomicInteger counter = new AtomicInteger( 1 );
-            MyEvent event1 = new MyEvent(now - 8);
-            MyEvent event2 = new MyEvent(now - 7);
-            MyEvent event3 = new MyEvent(now - 6);
+            final AtomicInteger counter = new AtomicInteger(1);
+            final MyEvent event1 = new MyEvent(now - 8);
+            final MyEvent event2 = new MyEvent(now - 7);
+            final MyEvent event3 = new MyEvent(now - 6);
 
             ksession.insert(counter);
             ksession.insert(event1);
@@ -6703,7 +5311,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testSerializationDeserliaizationWithRectractedExpireFact() {
         // DROOLS-1328
-        String drl =
+        final String drl =
                 "package " + TestEvent.class.getPackage().getName() + "\n" +
                 "declare " + TestEvent.class.getCanonicalName() + "\n" +
                 "   @role( event ) \n" +
@@ -6717,26 +5325,22 @@ public class CepEspTest extends CommonTestMethodBase {
                 "   delete($e);\n" +
                 "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         KieSession kieSessionDeserialized = null;
         try {
             ksession.insert(new TestEvent("test1"));
             ksession.fireAllRules();
 
             try {
-                kieSessionDeserialized = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
-            } catch ( Exception e ) {
+                kieSessionDeserialized = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            } catch (final Exception e) {
                 e.printStackTrace();
-                fail( e.getMessage() );
+                fail(e.getMessage());
             }
         } finally {
             ksession.dispose();
+            assertNotNull(kieSessionDeserialized);
             kieSessionDeserialized.insert(new TestEvent("test2"));
             kieSessionDeserialized.fireAllRules();
         }
@@ -6745,7 +5349,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testConflictingRightTuplesUpdate() {
         // DROOLS-1338
-        String drl =
+        final String drl =
                 "declare Integer @role(event) end\n" +
                 "rule R when\n" +
                 "    Integer()\n" +
@@ -6753,22 +5357,21 @@ public class CepEspTest extends CommonTestMethodBase {
                 "\n" +
                 "then end";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build( EventProcessingOption.STREAM )
-                                               .newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession kieSession = kbase.newKieSession();
         try {
-            FactHandle fhA = kieSession.insert("A");
-            FactHandle fhB = kieSession.insert("B");
-            FactHandle fh1 = kieSession.insert(1);
+            final FactHandle fhA = kieSession.insert("A");
+            final FactHandle fhB = kieSession.insert("B");
+            final FactHandle fh1 = kieSession.insert(1);
 
-            assertEquals( 0, kieSession.fireAllRules() );
+            assertEquals(0, kieSession.fireAllRules());
 
-            kieSession.delete( fh1 );
+            kieSession.delete(fh1);
             kieSession.update(fhA, "A");
             kieSession.update(fhB, "B");
-            FactHandle fh2 = kieSession.insert(2);
+            kieSession.insert(2);
 
-            assertEquals( 0, kieSession.fireAllRules() );
+            assertEquals(0, kieSession.fireAllRules());
         } finally {
             kieSession.dispose();
         }
@@ -6777,7 +5380,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testModifyEventOverWindow() {
         // DROOLS-1346
-        String drl =
+        final String drl =
                 "import " + AtomicBoolean.class.getCanonicalName() + "\n" +
                 "declare AtomicBoolean @role(event) end\n" +
                 "global java.util.List list;\n" +
@@ -6798,18 +5401,17 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    list.add(\"R2\");\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                          .build( EventProcessingOption.STREAM )
-                                          .newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            List<String> list = new ArrayList<String>();
-            ksession.setGlobal( "list", list );
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-            ksession.insert(new AtomicBoolean( false ));
+            ksession.insert(new AtomicBoolean(false));
             ksession.fireAllRules();
 
-            assertEquals( 1, list.size() );
-            assertEquals( "R2", list.get(0) );
+            assertEquals(1, list.size());
+            assertEquals("R2", list.get(0));
         } finally {
             ksession.dispose();
         }
@@ -6818,7 +5420,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpirationOnAfter() {
         // DROOLS-1227
-        String drl = "declare String @role( event ) end\n" +
+        final String drl = "declare String @role( event ) end\n" +
                      "declare Integer @role( event ) end\n" +
                      "\n" +
                      "rule R when\n" +
@@ -6828,15 +5430,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    System.out.println(\"fired\");\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
 
             ksession.insert("test");
             ksession.insert(1);
@@ -6856,7 +5453,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpirationOnBefore() {
         // DROOLS-1227
-        String drl = "declare String @role( event ) end\n" +
+        final String drl = "declare String @role( event ) end\n" +
                      "declare Integer @role( event ) end\n" +
                      "\n" +
                      "rule R when\n" +
@@ -6866,15 +5463,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    System.out.println(\"fired\");\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
 
             ksession.insert(1);
 
@@ -6893,7 +5485,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testFireExpiredEventOnInactiveGroup() {
         // DROOLS-1523
-        String DRL = "global java.util.List list;\n" +
+        final String drl = "global java.util.List list;\n" +
                      "declare String  @role(event) @expires( 6d ) end\n" +
                      "declare Integer @role(event) @expires( 3d ) end\n" +
                      "\n" +
@@ -6918,42 +5510,37 @@ public class CepEspTest extends CommonTestMethodBase {
                      "      list.add(\"RG_2\");\n" +
                      "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( DRL, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession kieSession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession kieSession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             kieSession.addEventListener(new DefaultAgendaEventListener() {
-                public void agendaGroupPopped(AgendaGroupPoppedEvent event ) {
+                public void agendaGroupPopped(final AgendaGroupPoppedEvent event) {
                     if (event.getAgendaGroup().getName().equals("rf-grp0")) {
                         event.getKieRuntime().getAgenda().getAgendaGroup("rf-grp1").setFocus();
                     }
                 }
             });
 
-            List<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             kieSession.setGlobal("list", list);
 
-            PseudoClockScheduler sessionClock = kieSession.getSessionClock();
+            final PseudoClockScheduler sessionClock = kieSession.getSessionClock();
 
             kieSession.insert("DummyEvent");
             kieSession.insert(1); //<- OtherDummyEvent
-            kieSession.getAgenda().getAgendaGroup( "rf-grp0" ).setFocus();
+            kieSession.getAgenda().getAgendaGroup("rf-grp0").setFocus();
             kieSession.fireAllRules(); // OK nothing happens
 
             assertEquals(2, kieSession.getFactCount());
 
             sessionClock.advanceTime(145, TimeUnit.HOURS);
-            kieSession.getAgenda().getAgendaGroup( "rf-grp0" ).setFocus();
+            kieSession.getAgenda().getAgendaGroup("rf-grp0").setFocus();
             kieSession.fireAllRules();
 
             assertEquals("Expiration occured => no more fact in WM", 0, kieSession.getFactCount());
 
-            assertEquals("RG_1 should fire once", 1, list.stream().filter(r->r.equals("RG_1")).count());
-            assertEquals("RG_2 should fire once", 1, list.stream().filter(r->r.equals("RG_2")).count());
+            assertEquals("RG_1 should fire once", 1, list.stream().filter(r -> r.equals("RG_1")).count());
+            assertEquals("RG_2 should fire once", 1, list.stream().filter(r -> r.equals("RG_2")).count());
         } finally {
             kieSession.dispose();
         }
@@ -6962,22 +5549,16 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpireUnusedDeclaredTypeEvent() {
         // DROOLS-1524
-        String drl = "declare String @role( event ) @expires( 1s ) end\n" +
+        final String drl = "declare String @role( event ) @expires( 1s ) end\n" +
                      "\n" +
                      "rule R when\n" +
                      "then\n" +
-                     "    System.out.println(\"fired\");\n" +
                      "end";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
 
             ksession.insert("test");
 
@@ -6996,27 +5577,21 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpireUnusedDeclaredTypeClass() {
         // DROOLS-1524
-        String drl = "rule R when\n"
+        final String drl = "rule R when\n"
                      + "then\n"
                      + "  System.out.println(\"fired\");\n"
                      + "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
 
             ksession.insert(new EventWithoutRule());
             ksession.fireAllRules();
             sessionClock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
             assertEquals(0, ksession.getFactCount());
-
         } finally {
             ksession.dispose();
         }
@@ -7031,7 +5606,7 @@ public class CepEspTest extends CommonTestMethodBase {
         private final int value;
         private final Date timestamp;
 
-        public EventA(String time, int value) {
+        public EventA(final String time, final int value) {
             this.time = time;
             this.value = value;
             this.timestamp = parseDate(time);
@@ -7051,11 +5626,11 @@ public class CepEspTest extends CommonTestMethodBase {
         }
 
         private static final DateFormat dateFormatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-        private static Date parseDate(String input) {
+        private static Date parseDate(final String input) {
             Date d = null;
             try {
                 d = dateFormatter.parse(input);
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 e.printStackTrace();
             }
             return d;
@@ -7065,7 +5640,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDeleteOfDeserializedJob() {
         // DROOLS-1660
-        String drl =
+        final String drl =
                 "import " + EventA.class.getCanonicalName() + "\n" +
                 "import java.util.Date\n" +
                 "global java.util.List list\n" +
@@ -7081,17 +5656,12 @@ public class CepEspTest extends CommonTestMethodBase {
                 "   list.add(\"Fired \"+ $event);\n" +
                 "end\n";
 
-
-        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get("pseudo"));
-
-        KieSession ksession = kieBase.newKieSession(sessionConfig, null);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kieBase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            List<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
 
-            List<EventA> events = new ArrayList<>();
+            final List<EventA> events = new ArrayList<>();
             events.add(new EventA("2010-01-01 02:00:00", 0));
             events.add(new EventA("2010-01-01 03:00:00", 1));
             events.add(new EventA("2010-01-01 03:01:00", 0));
@@ -7109,35 +5679,35 @@ public class CepEspTest extends CommonTestMethodBase {
             byte[] serializedSession = null;
 
             try {
-                Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 marshaller.marshall(baos, ksession);
 
                 serializedSession = baos.toByteArray();
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
                 e2.printStackTrace();
             }
 
-            for (EventA current : events) {
+            for (final EventA current : events) {
 
                 KieSession ksession2 = null;
 
-                Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller( kieBase );
+                final Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
 
                 try {
-                    ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession);
-                    ksession2 = marshaller.unmarshall(bais, sessionConfig, null);
-                    ksession2.setGlobal( "list", list );
+                    assertNotNull(serializedSession);
+                    final ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession);
+                    ksession2 = marshaller.unmarshall(bais, ksession.getSessionConfiguration(), null);
+                    ksession2.setGlobal("list", list);
                     clock = ksession2.getSessionClock();
                     bais.close();
-                } catch (ClassNotFoundException e) {
+                } catch (final ClassNotFoundException | IOException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    fail(e.getMessage());
                 }
 
                 long currTime = clock.getCurrentTime();
-                long nextTime = current.getTimestamp().getTime();
+                final long nextTime = current.getTimestamp().getTime();
 
                 while (currTime <= (nextTime - 1000)) {
                     clock.advanceTime(1000, TimeUnit.MILLISECONDS);
@@ -7145,7 +5715,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     currTime += 1000;
                 }
 
-                long diff = nextTime - currTime;
+                final long diff = nextTime - currTime;
                 if (diff > 0) {
                     clock.advanceTime(diff, TimeUnit.MILLISECONDS);
                 }
@@ -7158,14 +5728,15 @@ public class CepEspTest extends CommonTestMethodBase {
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     marshaller.marshall(baos, ksession2);
                     serializedSession = baos.toByteArray();
-                } catch (IOException e2) {
+                } catch (final IOException e2) {
                     e2.printStackTrace();
+                    fail(e2.getMessage());
                 }
                 ksession2.dispose();
             }
 
-            assertEquals( 1, list.size() );
-            assertEquals( "Fired EventA at 2010-01-01 03:02:00", list.get(0) );
+            assertEquals(1, list.size());
+            assertEquals("Fired EventA at 2010-01-01 03:02:00", list.get(0));
         } finally {
             ksession.dispose();
         }
@@ -7174,7 +5745,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testInvalidWindowPredicate() {
         // DROOLS-1723
-        String str = "declare A\n" +
+        final String drl = "declare A\n" +
                      "    @role( event )\n" +
                      "    id : int\n" +
                      "end\n" +
@@ -7184,7 +5755,8 @@ public class CepEspTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        assertDrlHasCompilationError( str, 1 );
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Role(Role.Type.EVENT)
@@ -7193,22 +5765,23 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testInsertLogicalNoExpires() {
         // DROOLS-2182
-        String drl = "import " + ExpiringEventD.class.getCanonicalName() + "\n" +
+        final String drl = "import " + ExpiringEventD.class.getCanonicalName() + "\n" +
                 "rule Insert when then " +
                 "   insertLogical( new ExpiringEventD() ); end ";
 
-        final KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL ).build(  ).newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            kieSession.fireAllRules();
+            ksession.fireAllRules();
         } finally {
-            kieSession.dispose();
+            ksession.dispose();
         }
     }
 
     @Test
     public void testPropertyReactiveWithDurationOnRule() {
         // DROOLS-2238
-        String drl = "package org.drools.test " +
+        final String drl = "package org.drools.test " +
                 " " +
                 "declare Bean " +
                 "   @PropertyReactive " +
@@ -7234,18 +5807,14 @@ public class CepEspTest extends CommonTestMethodBase {
                 "end" +
                 " " ;
 
-        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get("pseudo"));
-
-        KieSession ksession = kieBase.newKieSession(sessionConfig, null);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            assertEquals( 1, ksession.fireAllRules( ) );
+            assertEquals(1, ksession.fireAllRules());
 
-            ((SessionPseudoClock ) ksession.getSessionClock() ).advanceTime( 200, TimeUnit.MILLISECONDS );
+            ((SessionPseudoClock) ksession.getSessionClock()).advanceTime(200, TimeUnit.MILLISECONDS);
 
-            assertEquals( 1, ksession.fireAllRules( 10 ) );
+            assertEquals(1, ksession.fireAllRules(10));
         } finally {
             ksession.dispose();
         }
@@ -7254,7 +5823,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testNPERiaPathMemWithEvent() {
         // DROOLS-2241
-        String drl =
+        final String drl =
                 "package org.drools  " +
                 "declare  Reading  " +
                 "    @role( event ) " +
@@ -7271,10 +5840,10 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then[viol] " +
                 "end ";
 
-        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
-        KieSession ksession = kieBase.newKieSession();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
         try {
-            assertEquals( 1, ksession.fireAllRules() );
+            assertEquals(1, ksession.fireAllRules());
         } finally {
             ksession.dispose();
         }

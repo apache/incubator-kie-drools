@@ -15,28 +15,21 @@
 
 package org.drools.compiler
 
-import org.drools.compiler.StockTick;
+import org.drools.testcoverage.common.model.StockTick;
 
-global java.util.List results;
+global java.util.List list;
 
 declare StockTick 
     @role( event )
-    @timestamp( dateTimestamp )
-    // this will override individual rule requirements
-    @expires( 10m )
+    @timestamp( time )
+    @duration( duration )
 end
 
-rule "Check event"
+rule "before"
 when
-    $st1 : StockTick( company == "ACME" )
-    $st2 : StockTick( company == "RHT", this after[0,5m] $st1 )
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company != $a.company, this before[5,8] $a.time || after[20,22] $a )
 then
-    results.add( $st1 );
+    list.add( new StockTick[] { $a, $b } );
 end
 
-rule "Check event2"
-when
-    $st1 : StockTick( company == "RHT" ) over window:time( 5m )
-then
-    results.add( $st1 );
-end

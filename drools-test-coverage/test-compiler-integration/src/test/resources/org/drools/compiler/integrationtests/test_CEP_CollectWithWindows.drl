@@ -15,16 +15,29 @@
 
 package org.drools.compiler
 
-declare Sensor
-    @role (event)
+import java.util.List
+import org.drools.testcoverage.common.model.OrderEvent;
+
+global List timeResults;
+global List lengthResults;
+
+declare OrderEvent
+    @role( event )
+    @expires( 2m )
 end
 
-rule 'dupa2'
+rule "collect with time window"
 when
-Number( $avg : intValue ) from accumulate(
-        Sensor( $v : temperature ) over window:length( 2 ),
-        average( $v ) )
+    $list : List( empty == false ) from collect(
+              $o : OrderEvent() over window:time(30s) )
 then
-    // noop
+    timeResults.add( $list.size() );
 end
 
+rule "collect with length window"
+when
+    $list : List( empty == false ) from collect(
+              $o : OrderEvent() over window:length(3) )
+then
+    lengthResults.add( $list.size() );
+end

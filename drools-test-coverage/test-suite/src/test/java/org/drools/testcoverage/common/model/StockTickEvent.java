@@ -16,7 +16,6 @@
 
 package org.drools.testcoverage.common.model;
 
-import org.drools.compiler.StockTick;
 import org.kie.api.definition.type.Role;
 
 @Role(Role.Type.EVENT)

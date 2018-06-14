@@ -13,11 +13,22 @@
  * limitations under the License.
 */
 
-package org.drools.compiler;
+package org.drools.compiler
 
-public enum MailType {
-	WORK,
-	HOME,
-	OTHER;
-}
+import org.drools.testcoverage.common.model.StockTick;
+
+global java.util.List list;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
+
+rule "before"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this before[5,8] $a )
+then
+    list.add( new StockTick[] { $a, $b } );
+end
 

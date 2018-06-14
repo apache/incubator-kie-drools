@@ -15,13 +15,17 @@
 
 package org.drools.compiler.test;
 
-import org.drools.compiler.StockTickEvent;
+import org.drools.testcoverage.common.model.StockTick;
+
+declare StockTick 
+    @role( event )
+end
 
 global java.util.List results;
 
 rule "Check event"
 when
-    $st : StockTickEvent( company == "ACME" )
+    $st : StockTick( company == "ACME" )
 then
     results.add( $st );
 end

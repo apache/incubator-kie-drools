@@ -15,8 +15,16 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.util.TimerUtils;
-import org.kie.api.time.SessionPseudoClock;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import org.drools.testcoverage.common.util.TimeUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -26,15 +34,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,9 +51,9 @@ public class CepFireUntilHaltTimerTest {
     private SessionPseudoClock clock;
 
     public void init() {
-        String drl = "package org.drools.compiler.integrationtests\n" +
+        final String drl = "package org.drools.compiler.integrationtests\n" +
                      "\n" +
-                     "import org.drools.compiler.integrationtests.CepFireUntilHaltTimerTest.MetadataEvent;\n" +
+                     "import " + CepFireUntilHaltTimerTest.MetadataEvent.class.getCanonicalName() + ";\n" +
                      "import java.util.List;\n" +
                      "\n" +
                      "global List countResult;\n" +
@@ -76,11 +76,11 @@ public class CepFireUntilHaltTimerTest {
                      "    countResult.add($count);\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
+        final KieServices ks = KieServices.Factory.get();
 
-        KieModuleModel module = ks.newKieModuleModel();
+        final KieModuleModel module = ks.newKieModuleModel();
 
-        KieBaseModel defaultBase = module.newKieBaseModel("defaultKBase")
+        final KieBaseModel defaultBase = module.newKieBaseModel("defaultKBase")
                                          .setDefault(true)
                                          .addPackage("*")
                                          .setEventProcessingMode(EventProcessingOption.STREAM);
@@ -88,7 +88,7 @@ public class CepFireUntilHaltTimerTest {
                    .setDefault(true)
                    .setClockType(ClockTypeOption.get("pseudo"));
 
-        KieFileSystem kfs = ks.newKieFileSystem()
+        final KieFileSystem kfs = ks.newKieFileSystem()
                               .write("src/main/resources/r1.drl", drl);
         kfs.writeKModuleXML(module.toXML());
         ks.newKieBuilder(kfs).buildAll();
@@ -133,12 +133,12 @@ public class CepFireUntilHaltTimerTest {
             ksession.insert( "events_inserted" );
 
             // give time to fireUntilHalt to process the insertions
-            TimerUtils.sleepMillis(500);
+            TimeUtil.sleepMillis(500);
 
             for (int count=0; count < 40; count++) {
                 clock.advanceTime( 1, TimeUnit.SECONDS);
             }
-            TimerUtils.sleepMillis(500);
+            TimeUtil.sleepMillis(500);
 
             assertTrue( "The result does not contain at least 2 elements", result.size() >= 2);
             assertEquals(ITEMS, (long) result.get(0));
@@ -162,12 +162,12 @@ public class CepFireUntilHaltTimerTest {
         public MetadataEvent() {
         }
 
-        public MetadataEvent(Date timestamp, Long duration) {
+        public MetadataEvent(final Date timestamp, final Long duration) {
             metadataTimestamp = timestamp;
             metadataDuration = duration;
         }
 
-        public MetadataEvent(String name, Date timestamp, Long duration) {
+        public MetadataEvent(final String name, final Date timestamp, final Long duration) {
             this.name = name;
             metadataTimestamp = timestamp;
             metadataDuration = duration;
@@ -177,7 +177,7 @@ public class CepFireUntilHaltTimerTest {
             return metadataTimestamp != null ? (Date) metadataTimestamp.clone() : null;
         }
 
-        public void setMetadataTimestamp(Date metadataTimestamp) {
+        public void setMetadataTimestamp(final Date metadataTimestamp) {
             this.metadataTimestamp = metadataTimestamp != null
                                      ? (Date) metadataTimestamp.clone() : null;
         }
@@ -186,7 +186,7 @@ public class CepFireUntilHaltTimerTest {
             return metadataDuration;
         }
 
-        public void setMetadataDuration(Long metadataDuration) {
+        public void setMetadataDuration(final Long metadataDuration) {
             this.metadataDuration = metadataDuration;
         }
 
@@ -194,7 +194,7 @@ public class CepFireUntilHaltTimerTest {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 

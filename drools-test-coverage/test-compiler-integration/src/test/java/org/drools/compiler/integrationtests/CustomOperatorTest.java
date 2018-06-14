@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,13 +11,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.Address;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
@@ -29,61 +31,70 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.testcoverage.common.model.Address;
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.EvaluatorOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.utils.KieHelper;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
-public class CustomOperatorTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class CustomOperatorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public CustomOperatorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testCustomOperatorCombiningConstraints() {
         // JBRULES-3517
-        String str =
+        final String drl =
                 "declare GN\n" +
-                "   gNo : Double\n" +
-                "end\n" +
-                "\n" +
-                "declare t547147\n" +
-                "   c547148 : String\n" +
-                "   c547149 : String\n" +
-                "end\n" +
-                "\n" +
-                "declare Tra48\n" +
-                "   gNo : Double\n" +
-                "   postCode : String\n" +
-                "   name : String\n" +
-                "   cnt : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"r548695.1\"\n" +
-                "no-loop true\n" +
-                "dialect \"mvel\"\n" +
-                "when\n" +
-                "   gnId : GN()\n" +
-                "   la : t547147( )\n" +
-                "   v1717 : Tra48( gnId.gNo == gNo, name F_str[startsWith] la.c547148 || postCode F_str[contains] la.c547149 )\n" +
-                "then\n" +
-                "   System.out.println(\"Rule r548695.1 fired\");\n" +
-                "end\n";
+                        "   gNo : Double\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare t547147\n" +
+                        "   c547148 : String\n" +
+                        "   c547149 : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare Tra48\n" +
+                        "   gNo : Double\n" +
+                        "   postCode : String\n" +
+                        "   name : String\n" +
+                        "   cnt : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"r548695.1\"\n" +
+                        "no-loop true\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "   gnId : GN()\n" +
+                        "   la : t547147( )\n" +
+                        "   v1717 : Tra48( gnId.gNo == gNo, name F_str[startsWith] la.c547148 || postCode F_str[contains] la.c547149 )\n" +
+                        "then\n" +
+                        "end\n";
 
-        KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        builderConf.setOption(EvaluatorOption.get("str", new F_StrEvaluatorDefinition()));
-
-        KieBase kbase = loadKnowledgeBaseFromString(builderConf, str);
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        try {
+            KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
+        } finally {
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+        }
     }
 
     public static class F_StrEvaluatorDefinition implements EvaluatorDefinition {
@@ -94,7 +105,11 @@ public class CustomOperatorTest extends CommonTestMethodBase {
 
         public enum Operations {
 
-            startsWith, endsWith, length, contains, bidicontains;
+            startsWith,
+            endsWith,
+            length,
+            contains,
+            bidicontains;
         }
 
         private Evaluator[] evaluator;
@@ -107,25 +122,25 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             return true;
         }
 
-        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget) {
-            F_StrEvaluator evaluatorLocal = new F_StrEvaluator(type, isNegated);
+        public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText, final Target leftTarget, final Target rightTarget) {
+            final F_StrEvaluator evaluatorLocal = new F_StrEvaluator(type, isNegated);
             evaluatorLocal.setParameterText(parameterText);
             return evaluatorLocal;
         }
 
-        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText) {
+        public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText) {
             return getEvaluator(type, operatorId, isNegated, parameterText, Target.FACT, Target.FACT);
         }
 
-        public Evaluator getEvaluator(ValueType type, Operator operator, String parameterText) {
+        public Evaluator getEvaluator(final ValueType type, final Operator operator, final String parameterText) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), parameterText);
         }
 
-        public Evaluator getEvaluator(ValueType type, Operator operator) {
+        public Evaluator getEvaluator(final ValueType type, final Operator operator) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), null);
         }
 
-        public boolean supportsType(ValueType vt) {
+        public boolean supportsType(final ValueType vt) {
             return true;
         }
 
@@ -133,11 +148,11 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             return Target.FACT;
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
+        public void writeExternal(final ObjectOutput out) throws IOException {
             out.writeObject(evaluator);
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
             evaluator = (Evaluator[]) in.readObject();
         }
     }
@@ -146,7 +161,7 @@ public class CustomOperatorTest extends CommonTestMethodBase {
 
         private F_StrEvaluatorDefinition.Operations parameter;
 
-        public void setParameterText(String parameterText) {
+        public void setParameterText(final String parameterText) {
             this.parameter = F_StrEvaluatorDefinition.Operations.valueOf(parameterText);
         }
 
@@ -158,27 +173,27 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             super(type, isNegated ? F_StrEvaluatorDefinition.NOT_STR_COMPARE : F_StrEvaluatorDefinition.STR_COMPARE);
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+        public boolean evaluate(final InternalWorkingMemory workingMemory, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
             final Object objectValue = extractor.getValue(workingMemory, factHandle);
-            String objectValueString = (String) objectValue;
+            final String objectValueString = (String) objectValue;
             return evaluateAll((String) value.getValue(), objectValueString);
         }
 
-        public boolean evaluate(InternalWorkingMemory iwm, InternalReadAccessor ira, InternalFactHandle left, InternalReadAccessor ira1, InternalFactHandle right) {
+        public boolean evaluate(final InternalWorkingMemory iwm, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
             return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle right) {
+        public boolean evaluateCachedLeft(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle right) {
             final Object valRight = context.extractor.getValue(workingMemory, right);
             return evaluateAll((String) ((ObjectVariableContextEntry) context).left, (String) valRight);
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle left) {
+        public boolean evaluateCachedRight(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left);
             return evaluateAll((String) varLeft, (String) ((ObjectVariableContextEntry) context).right);
         }
 
-        public boolean evaluateAll(String leftString, String rightString) {
+        public boolean evaluateAll(final String leftString, final String rightString) {
             boolean result = ((leftString != null) && (rightString != null));
 
             if (result) {
@@ -197,31 +212,36 @@ public class CustomOperatorTest extends CommonTestMethodBase {
 
     @Test
     public void testCustomOperatorUsingCollections() {
-        String str =
-                "import org.drools.compiler.Person\n" +
-                "import org.drools.compiler.Address\n" +
-                "rule R when\n" +
-                "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
-                "then\n" +
-                "end\n";
+        final String drl =
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "    $alice : Person(name == \"Alice\")\n" +
+                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                        "then\n" +
+                        "end\n";
 
-        KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        builderConf.setOption(EvaluatorOption.get("supersetOf", new SupersetOfEvaluatorDefinition()));
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", SupersetOfEvaluatorDefinition.class.getName());
+        try {
+            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
+            final KieSession ksession = kbase.newKieSession();
+            try {
+                final Person alice = new Person("Alice", 30);
+                alice.addAddress(new Address("Large Street", "BigTown", "12345"));
+                final Person bob = new Person("Bob", 30);
+                bob.addAddress(new Address("Large Street", "BigTown", "12345"));
+                bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
 
-        KieBase kbase = loadKnowledgeBaseFromString(builderConf, str);
-        KieSession ksession = kbase.newKieSession();
+                ksession.insert(alice);
+                ksession.insert(bob);
 
-        Person alice = new Person("Alice", 30);
-        alice.addAddress(new Address("Large Street", "BigTown", "12345"));
-        Person bob = new Person("Bob", 30);
-        bob.addAddress(new Address("Large Street", "BigTown", "12345"));
-        bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
-
-        ksession.insert(alice);
-        ksession.insert(bob);
-
-        assertEquals(1, ksession.fireAllRules());
+                assertEquals(1, ksession.fireAllRules());
+            } finally {
+                ksession.dispose();
+            }
+        } finally {
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf");
+        }
     }
 
     public static class SupersetOfEvaluatorDefinition implements EvaluatorDefinition {
@@ -240,24 +260,23 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             return true;
         }
 
-        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget) {
-            SupersetOfEvaluator evaluatorLocal = new SupersetOfEvaluator(type, isNegated);
-            return evaluatorLocal;
+        public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText, final Target leftTarget, final Target rightTarget) {
+            return new SupersetOfEvaluator(type, isNegated);
         }
 
-        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText) {
+        public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText) {
             return getEvaluator(type, operatorId, isNegated, parameterText, Target.FACT, Target.FACT);
         }
 
-        public Evaluator getEvaluator(ValueType type, Operator operator, String parameterText) {
+        public Evaluator getEvaluator(final ValueType type, final Operator operator, final String parameterText) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), parameterText);
         }
 
-        public Evaluator getEvaluator(ValueType type, Operator operator) {
+        public Evaluator getEvaluator(final ValueType type, final Operator operator) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), null);
         }
 
-        public boolean supportsType(ValueType vt) {
+        public boolean supportsType(final ValueType vt) {
             return true;
         }
 
@@ -265,11 +284,11 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             return Target.FACT;
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
+        public void writeExternal(final ObjectOutput out) throws IOException {
             out.writeObject(evaluator);
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
             evaluator = (Evaluator[]) in.readObject();
         }
     }
@@ -280,59 +299,60 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             super(type, isNegated ? SupersetOfEvaluatorDefinition.NOT_SUPERSET_OF : SupersetOfEvaluatorDefinition.SUPERSET_OF);
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+        public boolean evaluate(final InternalWorkingMemory workingMemory, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
             final Object objectValue = extractor.getValue(workingMemory, factHandle);
             return evaluateAll((Collection) value.getValue(), (Collection) objectValue);
         }
 
-        public boolean evaluate(InternalWorkingMemory iwm, InternalReadAccessor ira, InternalFactHandle left, InternalReadAccessor ira1, InternalFactHandle right) {
+        public boolean evaluate(final InternalWorkingMemory iwm, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
             return evaluateAll((Collection) left.getObject(), (Collection) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle right) {
+        public boolean evaluateCachedLeft(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle right) {
             final Object valRight = context.extractor.getValue(workingMemory, right.getObject());
             return evaluateAll((Collection) ((ObjectVariableContextEntry) context).left, (Collection) valRight);
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle left) {
+        public boolean evaluateCachedRight(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left);
             return evaluateAll((Collection) varLeft, (Collection) ((ObjectVariableContextEntry) context).right);
         }
 
-        public boolean evaluateAll(Collection leftCollection, Collection rightCollection) {
+        public boolean evaluateAll(final Collection leftCollection, final Collection rightCollection) {
             return rightCollection.containsAll(leftCollection);
         }
     }
 
     @Test
     public void testCustomOperatorOnKieModule() {
-        String str =
-                "import org.drools.compiler.Person\n" +
-                "import org.drools.compiler.Address\n" +
+        final String drl = "import " + Address.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "    $alice : Person(name == \"Alice\")\n" +
                 "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
                 "then\n" +
                 "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieSession ksession = new KieHelper()
-                .setKieModuleModel(ks.newKieModuleModel()
-                                     .setConfigurationProperty("drools.evaluator.supersetOf",
-                                                               SupersetOfEvaluatorDefinition.class.getName()))
-                .addContent(str, ResourceType.DRL)
-                .build()
-                .newKieSession();
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", SupersetOfEvaluatorDefinition.class.getName());
+        try {
+            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
+            final KieSession ksession = kbase.newKieSession();
+            try {
+                final Person alice = new Person("Alice", 30);
+                alice.addAddress(new Address("Large Street", "BigTown", "12345"));
+                final Person bob = new Person("Bob", 30);
+                bob.addAddress(new Address("Large Street", "BigTown", "12345"));
+                bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
 
-        Person alice = new Person("Alice", 30);
-        alice.addAddress(new Address("Large Street", "BigTown", "12345"));
-        Person bob = new Person("Bob", 30);
-        bob.addAddress(new Address("Large Street", "BigTown", "12345"));
-        bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
+                ksession.insert(alice);
+                ksession.insert(bob);
 
-        ksession.insert(alice);
-        ksession.insert(bob);
-
-        assertEquals(1, ksession.fireAllRules());
+                assertEquals(1, ksession.fireAllRules());
+            } finally {
+                ksession.dispose();
+            }
+        } finally {
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf");
+        }
     }
 }

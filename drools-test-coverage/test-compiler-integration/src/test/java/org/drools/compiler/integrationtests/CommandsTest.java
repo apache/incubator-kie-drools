@@ -16,48 +16,58 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.compiler.Cheese;
-import org.drools.core.ClockType;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class CommandsTest {
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public CommandsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
+
     @Test
-    public void testSessionTimeCommands() throws Exception {
-        String str = "";
-        str += "package org.drools.compiler.integrationtests \n";
-        str += "import " + Cheese.class.getCanonicalName() + " \n";
-        str += "rule StringRule \n";
-        str += " when \n";
-        str += " $c : Cheese() \n";
-        str += " then \n";
-        str += " System.out.println($c); \n";
-        str += "end \n";
+    public void testSessionTimeCommands() {
+        final String drl =
+            "package org.drools.compiler.integrationtests \n" +
+            "import " + Cheese.class.getCanonicalName() + " \n" +
+            "rule StringRule \n" +
+            "when \n" +
+            "    $c : Cheese() \n" +
+            "then \n" +
+            "end \n";
 
-        KieServices ks = KieServices.get();
-        KieCommands kieCommands = ks.getCommands();
-
-        KieSessionConfiguration sessionConfig = ks.newKieSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieSession kSession = new KieHelper().addContent( str, ResourceType.DRL )
-                                             .build().newKieSession( sessionConfig, null );
-
-        assertEquals(0L, (long) kSession.execute( kieCommands.newGetSessionTime() ) );
-        assertEquals(2000L, (long) kSession.execute( kieCommands.newAdvanceSessionTime( 2, TimeUnit.SECONDS ) ) );
-        assertEquals(2000L, (long) kSession.execute( kieCommands.newGetSessionTime() ) );
-
-        kSession.dispose();
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
+        final KieSession kSession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+            final KieCommands kieCommands = KieServices.get().getCommands();
+            assertEquals(0L, (long) kSession.execute(kieCommands.newGetSessionTime()));
+            assertEquals(2000L, (long) kSession.execute(kieCommands.newAdvanceSessionTime(2, TimeUnit.SECONDS)));
+            assertEquals(2000L, (long) kSession.execute(kieCommands.newGetSessionTime()));
+        } finally {
+            kSession.dispose();
+        }
     }
 }

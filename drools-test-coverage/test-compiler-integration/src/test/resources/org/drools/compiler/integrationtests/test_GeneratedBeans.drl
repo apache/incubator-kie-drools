@@ -13,21 +13,35 @@
  * limitations under the License.
 */
 
-package org.drools.compiler
+package org.drools.generatedbeans;
 
-global java.util.List results;
+global java.util.List list;
+global Cheese cg;
 
-declare OrderEvent
-    @role( event )
+
+declare Cheese
+    type: String
 end
 
-rule "average over threshold"
-when
-    Number( $avg : intValue >= 50 ) from accumulate(
-              OrderEvent( $amt : total ) over window:length(3),
-              average( $amt ) )
-then
-    //System.out.println( "Over threshold: "+$avg );
-    results.add( $avg );
+declare Person
+    name : String
+    age: int
+    likes: Cheese
 end
 
+rule "simple rule"
+    when
+        Cheese( type == "stilton" )
+    then
+        list.add( new Integer(5) );
+        cg.setType("nothing");
+end
+
+rule "another"
+    dialect "mvel"
+    when
+        $cheese : Cheese( type == "stilton" )
+         $person : Person( age== 7, likes == $cheese )
+    then
+        list.add( $person );
+end
