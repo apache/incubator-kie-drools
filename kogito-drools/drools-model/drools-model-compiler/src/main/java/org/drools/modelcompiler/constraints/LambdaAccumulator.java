@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
-import org.drools.model.Binding;
 
 public abstract class LambdaAccumulator implements Accumulator {
 
@@ -43,10 +43,10 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.accumulate((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle.getObject() ));
+        accumulateFunction.accumulate((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle, leftTuple, ( InternalWorkingMemory ) workingMemory ));
     }
 
-    protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, Object accumulateObject );
+    protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
 
     @Override
     public boolean supportsReverse() {
@@ -55,7 +55,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle.getObject() ));
+        accumulateFunction.reverse((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle, leftTuple, ( InternalWorkingMemory ) workingMemory ));
     }
 
     @Override
@@ -64,15 +64,16 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     public static class BindingAcc extends LambdaAccumulator {
-        private final Binding binding;
+        private final BindingEvaluator binding;
 
-        public BindingAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables, Binding binding) {
+        public BindingAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
             super(accumulateFunction, sourceVariables);
             this.binding = binding;
         }
 
         @Override
-        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, Object accumulateObject ) {
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+            Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple ) {
                 Object[] args = new Object[ sourceVariables.size() ];
                 for (int i = 0; i < sourceVariables.size(); i++) {
@@ -83,9 +84,9 @@ public abstract class LambdaAccumulator implements Accumulator {
                         }
                     }
                 }
-                return binding.eval(args);
+                return binding.evaluate(args);
             } else {
-                return binding.eval(accumulateObject);
+                return binding.evaluate(handle, tuple, wm);
             }
         }
     }
@@ -97,7 +98,8 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
 
         @Override
-        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, Object accumulateObject ) {
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+            Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple) {
                 return (((SubnetworkTuple) accumulateObject)).getObject(declarations[0]);
             } else {
