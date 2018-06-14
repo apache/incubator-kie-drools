@@ -421,6 +421,7 @@ public abstract class AccumulateVisitor {
 
     void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
         for (Statement stmt : actionBlock.getStatements()) {
+            final ExpressionStmt convertedExpressionStatement = new ExpressionStmt();
             for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {
                 final Expression expressionUntyped = eStmt.getExpression();
                 final String parameterName = accumulateMethod.getParameter(1).getNameAsString();
@@ -433,8 +434,9 @@ public abstract class AccumulateVisitor {
 
                 forceCastForName(parameterName, singleAccumulateType, expression);
                 rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, expression);
+                convertedExpressionStatement.setExpression(expression);
             }
-            accumulateMethod.getBody().get().addStatement(stmt);
+            accumulateMethod.getBody().get().addStatement(convertedExpressionStatement);
         }
     }
 
