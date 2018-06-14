@@ -146,7 +146,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations ) ) {
-            indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, leftType));
+            indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         } else {
             addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
         }

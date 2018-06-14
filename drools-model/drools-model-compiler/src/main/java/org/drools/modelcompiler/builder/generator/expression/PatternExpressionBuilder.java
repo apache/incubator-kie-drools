@@ -137,7 +137,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
         if ( isAlphaIndex( usedDeclarations )) {
-            indexedByDSL.addArgument(narrowExpressionWithBigDecimal(right, left.getType()));
+            indexedByDSL.addArgument( narrowExpressionToType(right, left.getType()));
         } else if (usedDeclarations.size() == 1) {
             addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType);
         }

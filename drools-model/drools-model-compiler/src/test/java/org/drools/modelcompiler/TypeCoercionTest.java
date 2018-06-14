@@ -124,4 +124,84 @@ public class TypeCoercionTest extends BaseModelTest {
 
         assertEquals(1, list.size());
         assertEquals("0", list.get(0));
-    }}
+    }
+
+
+    public static class DoubleHolder {
+        public Double getValue() {
+            return 80.0;
+        }
+    }
+
+    public static class LongHolder {
+        public Long getValue() {
+            return 80l;
+        }
+    }
+
+    @Test
+    public void testDoubleToInt() {
+        final String drl1 =
+                "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    DoubleHolder( value == 80 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert(new DoubleHolder());
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testLongToInt() {
+        final String drl1 =
+                "import " + LongHolder.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    LongHolder( value == 80 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert(new LongHolder());
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testJoinLongToDouble() {
+        final String drl1 =
+                "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
+                "import " + LongHolder.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    LongHolder( $l : value )\n" +
+                "    DoubleHolder( value >= $l )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert(new LongHolder());
+        ksession.insert(new DoubleHolder());
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testJoinDoubleToLong() {
+        final String drl1 =
+                "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
+                "import " + LongHolder.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    DoubleHolder( $d : value )\n" +
+                "    LongHolder( value >= $d )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert(new LongHolder());
+        ksession.insert(new DoubleHolder());
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+}
