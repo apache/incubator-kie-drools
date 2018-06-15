@@ -29,7 +29,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.junit.Assert.*;
 
-public class ToTypedExpressionTest {
+public class ExpressionTyperTest {
 
     private HashSet<String> imports;
     private PackageModel packageModel;
@@ -102,6 +102,31 @@ public class ToTypedExpressionTest {
         final TypedExpression expected = typedResult("_this.getAge() == 18", int.class);
         final TypedExpression actual = toTypedExpression("age == 18", Person.class);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAssignment() {
+        final TypedExpression expected = typedResult("total = total + $cheese.getPrice()", Integer.class);
+        final TypedExpression actual = toTypedExpression("total = total + $cheese.price", Object.class,
+                                                         new DeclarationSpec("$cheese", Cheese.class),
+                                                         new DeclarationSpec("total", Integer.class));
+        assertEquals(expected, actual);
+    }
+
+    public static class Cheese {
+        private Integer price;
+
+        public Integer getPrice() {
+            return price;
+        }
+    }
+
+
+    @Test
+    public void testAssignment2() {
+        TypedExpression actual = toTypedExpression("name.length", Person.class);
+        assertEquals(typedResult("_this.getName().length()", int.class), actual);
+
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {

@@ -75,4 +75,12 @@ public class DeclarationSpec {
     public org.drools.javaparser.ast.type.Type getType() {
         return DrlxParseUtil.classToReferenceType(getDeclarationClass());
     }
+
+    @Override
+    public String toString() {
+        return "DeclarationSpec{" +
+                "bindingId='" + bindingId + '\'' +
+                ", declarationClass=" + declarationClass +
+                '}';
+    }
 }
