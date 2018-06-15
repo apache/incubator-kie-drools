@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Objects;
+
 /**
  * For modifying a field on a bound LHS variable or a global. Modify here means
  * that users can call methods that modify the object. If setting a field on a
@@ -42,8 +44,8 @@ public class ActionCallMethod extends ActionSetField {
 
     private String methodName;
 
-    public ActionCallMethod( final String itemText ) {
-        super( itemText );
+    public ActionCallMethod(final String itemText) {
+        super(itemText);
     }
 
     public ActionCallMethod() {
@@ -58,39 +60,45 @@ public class ActionCallMethod extends ActionSetField {
         return methodName;
     }
 
-    public void setState( int state ) {
+    public void setState(int state) {
         this.state = state;
     }
 
-    public void setMethodName( String methodName ) {
+    public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
 
-    public ActionFieldFunction getFieldValue( int i ) {
-        return (ActionFieldFunction) this.getFieldValues()[ i ];
+    public ActionFieldFunction getFieldValue(int i) {
+        return (ActionFieldFunction) this.getFieldValues()[i];
     }
 
-    public void addFieldValue( final ActionFieldValue val ) {
-        if ( val instanceof ActionFieldFunction ) {
-            super.addFieldValue( val );
+    public void addFieldValue(final ActionFieldValue val) {
+        if (val instanceof ActionFieldFunction) {
+            super.addFieldValue(val);
         } else {
             throw new IllegalArgumentException(
-                    "Cannot assign field values of types other than ActionFieldFunction." );
+                    "Cannot assign field values of types other than ActionFieldFunction.");
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ActionCallMethod)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ActionCallMethod)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         ActionCallMethod that = (ActionCallMethod) o;
 
-        if (state != that.state) return false;
-        if (!methodName.equals(that.methodName)) return false;
-
-        return true;
+        if (state != that.state) {
+            return false;
+        }
+        return Objects.equals(methodName, that.methodName);
     }
 
     @Override
