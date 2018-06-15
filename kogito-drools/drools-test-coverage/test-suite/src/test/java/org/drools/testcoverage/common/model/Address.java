@@ -25,6 +25,8 @@ public class Address implements Serializable {
     private String street;
     private int number;
     private String city;
+    private String suburb;
+    private String zipCode;
 
     public Address(final String street) {
         this.street = street;
@@ -39,6 +41,12 @@ public class Address implements Serializable {
         this.street = street;
         this.number = number;
         this.city = city;
+    }
+
+    public Address(final String street, final String suburb, final String zipCode) {
+        this.street = street;
+        this.suburb = suburb;
+        this.zipCode = zipCode;
     }
 
     public String getStreet() {
@@ -65,6 +73,22 @@ public class Address implements Serializable {
         this.city = city;
     }
 
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(final String suburb) {
+        this.suburb = suburb;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(final String zipCode) {
+        this.zipCode = zipCode;
+    }
+
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -74,7 +98,7 @@ public class Address implements Serializable {
         return result;
     }
 
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
