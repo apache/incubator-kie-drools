@@ -132,6 +132,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                 for ( Argument arg : query.getArguments()) {
                     if (arg instanceof Variable) {
                         ctx.usedVars.add( ( (Variable) arg ));
+                        ctx.boundVars.add( ( (Variable) arg ));
                     }
                 }
                 conditions.add( new QueryCallPattern( query ) );

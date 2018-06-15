@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -850,16 +851,23 @@ public class QueryTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         ksession.insert( new Person("Mario", 44) );
+        ksession.insert( new Person("Mark", 40) );
+        ksession.insert( new Person("Edson", 37) );
 
-        final List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         QueryResults results = ksession.getQueryResults( "peeps", Variable.v );
+        for (final QueryResultsRow result : results) {
+            list.add((String) result.get("name"));
+        }
+        assertEquals(3, list.size());
+        assertTrue(list.containsAll( Arrays.asList("Mario", "Edson", "Mark") ));
+
+        list.clear();
+        results = ksession.getQueryResults( "peeps", "Mario" );
         for (final QueryResultsRow result : results) {
             list.add((String) result.get("name"));
         }
         assertEquals(1, list.size());
         assertEquals("Mario", list.get(0));
-
     }
-
-
 }

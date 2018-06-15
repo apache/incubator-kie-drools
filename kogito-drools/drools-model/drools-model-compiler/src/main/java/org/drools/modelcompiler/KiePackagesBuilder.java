@@ -500,7 +500,6 @@ public class KiePackagesBuilder {
                                        ClassObjectType.ObjectArray_ObjectType,
                                        null );
 
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
         QueryArgument[] arguments = new QueryArgument[queryPattern.getArguments().length];
         List<Integer> varIndexList = new ArrayList<>();
         List<Declaration> requiredDeclarations = new ArrayList<>();
@@ -514,10 +513,12 @@ public class KiePackagesBuilder {
                     requiredDeclarations.add( decl );
                     arguments[i] = new QueryArgument.Declr(decl);
                 } else {
-                    ArrayElementReader reader = new ArrayElementReader( arrayReader,
+                    ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader( Object[].class ),
                                                                         i,
                                                                         arg.getType() );
-                    pattern.addDeclaration( var.getName() ).setReadAccessor( reader );
+                    Declaration varDeclaration = pattern.addDeclaration( var.getName() );
+                    varDeclaration.setReadAccessor( reader );
+                    ctx.addInnerDeclaration( var, varDeclaration );
                     arguments[i] = QueryArgument.VAR;
                     varIndexList.add( i );
                 }
