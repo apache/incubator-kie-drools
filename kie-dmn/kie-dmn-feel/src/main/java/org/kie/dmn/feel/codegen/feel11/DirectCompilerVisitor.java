@@ -60,7 +60,6 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
@@ -98,6 +97,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     private static final org.drools.javaparser.ast.type.Type TYPE_COMPARABLE =
             JavaParser.parseType(Comparable.class.getCanonicalName());
+    private static final org.drools.javaparser.ast.type.Type TYPE_LIST =
+            JavaParser.parseType(List.class.getCanonicalName());
 
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
@@ -435,11 +436,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult start = visit(ctx.start);
         DirectCompilerResult end = visit(ctx.end);
         MethodCallExpr betweenCall = new MethodCallExpr(null, "between");
+        betweenCall.addArgument(new NameExpr("feelExprCtx"));
         betweenCall.addArgument(value.getExpression());
         betweenCall.addArgument(start.getExpression());
         betweenCall.addArgument(end.getExpression());
-        Expression result = groundToNullIfAnyIsNull(betweenCall, value.getExpression(), start.getExpression(), end.getExpression());
-        return DirectCompilerResult.of(result, BuiltInType.BOOLEAN).withFD(value).withFD(start).withFD(end);
+        return DirectCompilerResult.of(betweenCall, BuiltInType.BOOLEAN).withFD(value).withFD(start).withFD(end);
     }
 
     /**
@@ -483,10 +484,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult value = visit(ctx.val);
         DirectCompilerResult list = visit(ctx.expressionList());
 
-        MethodCallExpr expression = new MethodCallExpr(
-                list.getExpression(),
-                "contains",
-                new NodeList<>(value.getExpression()));
+        MethodCallExpr expression =
+                new MethodCallExpr(
+                        list.getExpression(),
+                        "contains",
+                        new NodeList<>(value.getExpression()));
 
         return DirectCompilerResult.of(
                 expression,
@@ -700,17 +702,23 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult value = visit(ctx.val);
         DirectCompilerResult expr = visit(ctx.expression());
 
-        MethodCallExpr expression;
+        Expression expression;
         if (expr.resultType.equals(BuiltInType.LIST)) {
             expression = new MethodCallExpr(
-                    expr.getExpression(),
+                    new EnclosedExpr(
+                            new CastExpr(
+                                TYPE_LIST,
+                                expr.getExpression())),
                     "contains",
                     new NodeList<>(value.getExpression()));
         } else {
             expression = new MethodCallExpr(
-                    expr.getExpression(),
-                    "equals",
-                    new NodeList<>(value.getExpression()));
+                                null,
+                                "includes",
+                                new NodeList<>(
+                                        new NameExpr("feelExprCtx"),
+                                        expr.getExpression(),
+                                        value.getExpression()));
         }
 
         return DirectCompilerResult.of(
