@@ -324,7 +324,7 @@ public abstract class AccumulateVisitor {
                             templateContextClass.addField(type, variableName, Modifier.PUBLIC);
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
-                            accumulateDeclarations.add(new DeclarationSpec(variableName, Object.class));
+                            accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), type.asString())));
                         }
 
                     }
