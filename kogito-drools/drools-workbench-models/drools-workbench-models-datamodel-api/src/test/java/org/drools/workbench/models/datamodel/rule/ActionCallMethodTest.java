@@ -22,47 +22,57 @@ import org.junit.Test;
 public class ActionCallMethodTest {
 
     @Test
-    public void testEquals_BothNamesNull() {
+    public void testBothNamesNull() {
         final ActionCallMethod action1 = new ActionCallMethod();
         final ActionCallMethod action2 = new ActionCallMethod();
 
         Assertions.assertThat(action1).isEqualTo(action2);
         Assertions.assertThat(action2).isEqualTo(action1);
+        Assertions.assertThat(action1.hashCode()).isEqualTo(action2.hashCode());
+        Assertions.assertThat(action2.hashCode()).isEqualTo(action1.hashCode());
     }
 
     @Test
-    public void testEquals_FirstNameIsNull() {
+    public void testFirstNameIsNull() {
         final ActionCallMethod action1 = new ActionCallMethod();
         final ActionCallMethod action2 = new ActionCallMethod("invokedMethod");
 
         Assertions.assertThat(action1).isNotEqualTo(action2);
         Assertions.assertThat(action2).isNotEqualTo(action1);
+        Assertions.assertThat(action1.hashCode()).isNotEqualTo(action2.hashCode());
+        Assertions.assertThat(action2.hashCode()).isNotEqualTo(action1.hashCode());
     }
 
     @Test
-    public void testEquals_SecondNameIsNull() {
+    public void testSecondNameIsNull() {
         final ActionCallMethod action1 = new ActionCallMethod("invokedMethod");
         final ActionCallMethod action2 = new ActionCallMethod();
 
         Assertions.assertThat(action1).isNotEqualTo(action2);
         Assertions.assertThat(action2).isNotEqualTo(action1);
+        Assertions.assertThat(action1.hashCode()).isNotEqualTo(action2.hashCode());
+        Assertions.assertThat(action2.hashCode()).isNotEqualTo(action1.hashCode());
     }
 
     @Test
-    public void testEquals_NamesAreDifferent() {
+    public void testNamesAreDifferent() {
         final ActionCallMethod action1 = new ActionCallMethod("invokedMethod1");
         final ActionCallMethod action2 = new ActionCallMethod("invokedMethod2");
 
         Assertions.assertThat(action1).isNotEqualTo(action2);
         Assertions.assertThat(action2).isNotEqualTo(action1);
+        Assertions.assertThat(action1.hashCode()).isNotEqualTo(action2.hashCode());
+        Assertions.assertThat(action2.hashCode()).isNotEqualTo(action1.hashCode());
     }
 
     @Test
-    public void testEquals_BothNamesAreSame() {
+    public void testBothNamesAreSame() {
         final ActionCallMethod action1 = new ActionCallMethod("invokedMethod");
         final ActionCallMethod action2 = new ActionCallMethod("invokedMethod");
 
         Assertions.assertThat(action1).isEqualTo(action2);
         Assertions.assertThat(action2).isEqualTo(action1);
+        Assertions.assertThat(action1.hashCode()).isEqualTo(action2.hashCode());
+        Assertions.assertThat(action2.hashCode()).isEqualTo(action1.hashCode());
     }
 }
