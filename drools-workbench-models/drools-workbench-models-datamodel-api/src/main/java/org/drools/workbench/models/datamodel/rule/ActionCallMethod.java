@@ -103,12 +103,6 @@ public class ActionCallMethod extends ActionSetField {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = ~~result;
-        result = 31 * result + state;
-        result = ~~result;
-        result = 31 * result + methodName.hashCode();
-        result = ~~result;
-        return result;
+        return ~~Objects.hash(super.hashCode(), state, methodName);
     }
 }
