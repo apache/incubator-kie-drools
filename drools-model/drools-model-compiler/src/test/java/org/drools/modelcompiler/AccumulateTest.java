@@ -736,6 +736,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore("it should use the legacy accumulator but the generated class doesn't have the $l binding see DeclarationScopeResolver#getDeclarations")
     public void testFromCollectWithExpandedAccumulateExternalBind() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +

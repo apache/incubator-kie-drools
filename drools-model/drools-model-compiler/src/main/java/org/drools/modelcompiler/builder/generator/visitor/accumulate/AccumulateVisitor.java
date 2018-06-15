@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -299,6 +301,17 @@ public abstract class AccumulateVisitor {
                     final Optional<Expression> optInitializer = vd.getInitializer();
                     final Optional<Statement> initializer = createInitializer(variableName, optInitializer);
                     initializer.ifPresent(initMethodBody::addStatement);
+                    if(initializer.isPresent()) {
+                        final Statement statement = initializer.get();
+                        final List<String> declarations = statement.findAll(NameExpr.class).stream().map(n -> n.toString()).collect(Collectors.toList());
+
+                        // We don't support accumulate with init method using external bindings
+                        if(context2.getDeclarations().stream().anyMatch(d -> declarations.contains(d.getBindingId()))) {
+                            new LegacyAccumulate(context, descr, basePattern).build();
+                            return;
+                        }
+
+                    }
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), vd.getType().asString()) ));
                 }
             } else {
