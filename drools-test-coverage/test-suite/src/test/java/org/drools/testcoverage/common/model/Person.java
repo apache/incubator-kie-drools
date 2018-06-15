@@ -34,6 +34,7 @@ public class Person implements Serializable {
     private boolean alive;
     private boolean happy;
     private Cheese cheese;
+    private String hair;
 
     private Object object;
 
@@ -151,6 +152,14 @@ public class Person implements Serializable {
 
     public void setCheese(final Cheese cheese) {
         this.cheese = cheese;
+    }
+
+    public String getHair() {
+        return hair;
+    }
+
+    public void setHair(final String hair) {
+        this.hair = hair;
     }
 
     @Override
