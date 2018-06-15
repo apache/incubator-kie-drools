@@ -84,9 +84,9 @@ public class DrlxParseUtilTest {
             DrlxParseUtil.forceCastForName("$my", JavaParser.parseType("Integer"), expr);
             return expr.toString();
         };
-        assertEquals("ciao += (Integer) $my", c.apply("ciao += $my"));
-        assertEquals("ciao.add((Integer) $my)", c.apply("ciao.add($my)"));
-        assertEquals("ciao.asd.add((Integer) $my)", c.apply("ciao.asd.add($my)"));
+        assertEquals("ciao += ((Integer) $my)", c.apply("ciao += $my"));
+        assertEquals("ciao.add(((Integer) $my))", c.apply("ciao.add($my)"));
+        assertEquals("ciao.asd.add(((Integer) $my))", c.apply("ciao.asd.add($my)"));
     }
 
     @Test

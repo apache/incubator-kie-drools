@@ -122,6 +122,8 @@ public class DrlxParseUtil {
             return findLeftLeafOfMethodCall(be.getLeft());
         } else if(expression instanceof MethodCallExpr) {
             return expression;
+        } else if(expression instanceof FieldAccessExpr) {
+            return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
@@ -545,7 +547,7 @@ public class DrlxParseUtil {
     public static void forceCastForName(String nameRef, Type type, Expression expression) {
         List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
         for (NameExpr n : allNameExprForName) {
-            n.getParentNode().get().replace(n, new CastExpr(type, n));
+            n.getParentNode().get().replace(n, new EnclosedExpr(new CastExpr(type, n)));
         }
     }
 

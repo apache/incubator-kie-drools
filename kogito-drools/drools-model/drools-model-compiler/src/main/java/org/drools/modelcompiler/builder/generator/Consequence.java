@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
@@ -137,11 +139,18 @@ public class Consequence {
         }
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(consequenceString::contains).collect(toSet());
+            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
         }
 
         Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
         return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+    }
+
+    public static boolean containsWord(String word, String body) {
+        final String withoutSpecialCharacters = word.replace("$", "");
+        Pattern p = Pattern.compile("\\b" + withoutSpecialCharacters + "\\b");
+        Matcher m = p.matcher(body);
+        return m.find();
     }
 
     private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
