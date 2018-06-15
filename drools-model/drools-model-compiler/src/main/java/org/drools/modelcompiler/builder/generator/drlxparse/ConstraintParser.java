@@ -129,8 +129,8 @@ public class ConstraintParser {
             TypedExpression right;
             if (constraint.isNameClashingUnification()) {
                 String name = constraint.getUnificationField();
-                String unificationVariable = context.getOrCreateUnificationId( name );
-                right = new TypedExpression( unificationVariable, patternType, name );
+                right = new TypedExpression( new NameExpr( name ), left.getType() );
+                expressionTyperContext.addUsedDeclarations( name );
             } else {
                 TypedExpressionResult rightExpressionResult = expressionTyper.toTypedExpression( binaryExpr.getRight() );
                 Optional<TypedExpression> optRight = rightExpressionResult.getTypedExpression();

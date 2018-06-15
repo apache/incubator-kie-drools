@@ -44,7 +44,7 @@ public class ConstraintExpression {
 
             ConstraintExpression constraintExpression = new ConstraintExpression( expression );
             constraintExpression.unificationField = unificationField;
-            constraintExpression.nameClashingUnification = unificationField.equalsIgnoreCase( unifiedProp );
+            constraintExpression.nameClashingUnification = unificationField.equals( unifiedProp );
             return constraintExpression;
         }
 
@@ -65,6 +65,9 @@ public class ConstraintExpression {
             if (p != null && p.value() == position) {
                 return field.getName();
             }
+        }
+        if (patternType.getSuperclass() != null && patternType.getSuperclass() != Object.class) {
+            return getFieldAtPosition(patternType.getSuperclass(), position);
         }
         throw new RuntimeException("Cannot find field in position " + position + " for " + patternType);
     }
