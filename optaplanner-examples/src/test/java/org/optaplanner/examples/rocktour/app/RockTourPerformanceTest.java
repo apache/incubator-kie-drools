@@ -36,13 +36,13 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
 
     @Test(timeout = 600000)
     public void solveModel() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/48shows.xlsx");
+        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725670medium/-6208480soft");
     }
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/48shows.xlsx");
+        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);
     }
 
