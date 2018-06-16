@@ -940,7 +940,7 @@ public class FromTest {
     public void testMultipleFroms() {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
-                "import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
                 "import " + Cheesery.class.getCanonicalName() + ";\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global Cheesery cheesery;\n" +
@@ -949,8 +949,8 @@ public class FromTest {
                 "rule MyRule\n" +
                 "    dialect \"java\"\n" +
                 "when\n" +
-                "    $i : ArrayList() from collect(Cheese() from cheesery.getCheeses())\n" +
-                "    $k : ArrayList() from collect(Cheese() from cheesery.getCheeses())\n" +
+                "    $i : List() from collect(Cheese() from cheesery.getCheeses())\n" +
+                "    $k : List() from collect(Cheese() from cheesery.getCheeses())\n" +
                 "then\n" +
                 "    results.add( $i );\n" +
                 "    results.add( $k );\n" +

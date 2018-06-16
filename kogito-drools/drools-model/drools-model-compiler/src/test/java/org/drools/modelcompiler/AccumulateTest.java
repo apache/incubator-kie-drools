@@ -761,4 +761,28 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results, hasItem(112));
 
     }
+
+    @Test
+    public void testTypedResultOnAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  $max : Integer() from accumulate ( String( $l : length ); \n" +
+                "                max($l)  \n" +
+                "              ) \n" +
+                "then\n" +
+                "  insert(new Person(\"test\", $max));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert("xyz");
+
+        ksession.fireAllRules();
+
+        Collection<Person> results = getObjectsIntoList(ksession, Person.class);
+        assertEquals(1, results.size());
+        assertEquals(3, results.iterator().next().getAge());
+    }
 }

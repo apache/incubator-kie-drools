@@ -35,6 +35,8 @@ import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
+import org.drools.model.functions.Predicate6;
+import org.drools.model.functions.Predicate7;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
@@ -76,6 +78,8 @@ import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
+import org.drools.model.view.Expr6ViewItemImpl;
+import org.drools.model.view.Expr7ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
 import org.drools.model.view.ViewItem;
@@ -298,6 +302,22 @@ public class DSL {
 
     public static <A, B, C, D, E> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Predicate5<A, B, C, D, E> predicate) {
         return new Expr5ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, new Predicate5.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Predicate6<A, B, C, D, E, F> predicate) {
+        return new Expr6ViewItemImpl<>(var1, var2, var3, var4, var5, var6, new Predicate6.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Predicate6<A, B, C, D, E, F> predicate) {
+        return new Expr6ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, new Predicate6.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
+        return new Expr7ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, new Predicate7.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
+        return new Expr7ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, new Predicate7.Impl<>(predicate));
     }
 
     public static FixedValueItem expr( boolean value ) {

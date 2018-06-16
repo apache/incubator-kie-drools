@@ -166,7 +166,7 @@ public class RuleContext {
     public void addDeclaration(DeclarationSpec d) {
         // It would be probably be better to avoid putting the same declaration multiple times
         // instead of using Set semantic here
-        if(!getDeclarationById(d.getBindingId()).isPresent()) {
+        if (!getDeclarationById(d.getBindingId()).isPresent()) {
             this.declarations.add(d);
         }
     }
@@ -176,7 +176,10 @@ public class RuleContext {
         // instead of using Set semantic here
         final String bindingId = d.getBindingId();
         final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
-        if(declarationById.isPresent()) {
+        if (declarationById.isPresent()) {
+            if ( d.getDeclarationClass().isAssignableFrom( declarationById.get().getDeclarationClass() )) {
+                return;
+            }
             removeDeclarationById(bindingId);
         }
         this.declarations.add(d);

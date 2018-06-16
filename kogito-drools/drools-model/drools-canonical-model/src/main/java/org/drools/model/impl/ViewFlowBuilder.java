@@ -33,6 +33,8 @@ import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.SingleConstraint4;
 import org.drools.model.constraints.SingleConstraint5;
+import org.drools.model.constraints.SingleConstraint6;
+import org.drools.model.constraints.SingleConstraint7;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.patterns.AccumulatePatternImpl;
@@ -50,6 +52,8 @@ import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
+import org.drools.model.view.Expr6ViewItemImpl;
+import org.drools.model.view.Expr7ViewItemImpl;
 import org.drools.model.view.ExprNViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
@@ -284,6 +288,12 @@ public class ViewFlowBuilder implements ViewBuilder {
         }
         if (expr instanceof Expr5ViewItemImpl ) {
             return new SingleConstraint5( (Expr5ViewItemImpl) expr );
+        }
+        if (expr instanceof Expr6ViewItemImpl ) {
+            return new SingleConstraint6( (Expr6ViewItemImpl) expr );
+        }
+        if (expr instanceof Expr7ViewItemImpl ) {
+            return new SingleConstraint7( (Expr7ViewItemImpl) expr );
         }
         return null;
     }
