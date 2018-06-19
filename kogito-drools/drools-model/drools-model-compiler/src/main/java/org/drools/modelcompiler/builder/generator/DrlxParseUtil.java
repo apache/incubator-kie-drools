@@ -57,6 +57,7 @@ import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
+import org.drools.javaparser.ast.expr.ConditionalExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
@@ -192,6 +193,13 @@ public class DrlxParseUtil {
             return context.getDeclarationById( name ).map( DeclarationSpec::getDeclarationClass ).get();
         }
 
+        if (expr instanceof BinaryExpr) {
+            BinaryExpr binaryExpr = ( BinaryExpr ) expr;
+            java.lang.reflect.Type leftType = getExpressionType( context, typeResolver, binaryExpr.getLeft(), usedDeclarations );
+            java.lang.reflect.Type rightType = getExpressionType( context, typeResolver, binaryExpr.getRight(), usedDeclarations );
+            return boolean.class;
+        }
+
         if (expr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = ( MethodCallExpr ) expr;
             java.lang.reflect.Type scopeType = getExpressionType(context, typeResolver, methodCallExpr.getScope().get(), usedDeclarations);
@@ -211,6 +219,27 @@ public class DrlxParseUtil {
                 context.addCompilationError( new InvalidExpressionErrorResult( "Unknown type in cast expression: " + typeName ) );
                 throw new RuntimeException( "Unknown type in cast expression: " + typeName );
             }
+        }
+
+        if (expr instanceof ConditionalExpr) {
+            ConditionalExpr ternaryExpr = (( ConditionalExpr ) expr);
+            java.lang.reflect.Type conditionType = getExpressionType( context, typeResolver, ternaryExpr.getCondition(), usedDeclarations );
+            if (conditionType != Boolean.class && conditionType != boolean.class) {
+                context.addCompilationError( new InvalidExpressionErrorResult( "Condtion used in ternary expression '" + expr + "' isn't boolean" ) );
+                return Object.class;
+            }
+
+            java.lang.reflect.Type leftType = getExpressionType( context, typeResolver, ternaryExpr.getThenExpr(), usedDeclarations );
+            java.lang.reflect.Type rightType = getExpressionType( context, typeResolver, ternaryExpr.getElseExpr(), usedDeclarations );
+            Class<?> leftClass = toRawClass( leftType );
+            Class<?> rightClass = toRawClass( rightType );
+            if (leftClass.isAssignableFrom( rightClass )) {
+                return leftType;
+            }
+            if (rightClass.isAssignableFrom( leftClass )) {
+                return rightType;
+            }
+            return Object.class;
         }
 
         throw new RuntimeException("Unknown expression type: " + expr);

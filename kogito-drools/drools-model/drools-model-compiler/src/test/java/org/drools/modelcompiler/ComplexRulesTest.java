@@ -355,6 +355,28 @@ public class ComplexRulesTest extends BaseModelTest {
     }
 
     @Test
+    public void testConstraintWithTernaryOperator() {
+        String str =
+                "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
+                "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
+                "global BusinessFunctions functions;\n" +
+                "rule R when\n" +
+                "    $s : String()\n" +
+                "    $childFactWithObject : ChildFactWithObject ( id == 5\n" +
+                "      , !functions.arrayContainsInstanceWithParameters((Object[])this.getObjectValue(),\n" +
+                "                                                       new Object[]{\"getMessageId\", ($s != null ? $s : \"42103\")})\n" +
+                "    )\n" +
+                "  then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.setGlobal( "functions", new BusinessFunctions() );
+        ksession.insert( "test" );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
     public void testCastInConstraint() {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
