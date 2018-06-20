@@ -214,8 +214,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertDSLEscaping(newDrl);
 
         Assertions.assertThat(newDrl)
-                  .contains(">java.lang.Number( ) from accumulate ( $p : Person( ),\n")
-                  .contains(">\t\t\tcount($p))");
+                .contains(">java.lang.Number( ) from accumulate ( $p : Person( ),\n")
+                .contains(">\t\t\tcount($p))");
     }
 
     private void assertDSLEscaping(final String drl) {
@@ -3343,6 +3343,45 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
         checkMarshalling(expected,
                          m);
+    }
+
+    @Test
+    public void testFromAccumulateFromCollection() {
+        final RuleModel model = new RuleModel();
+        model.name = "r1";
+
+        final SingleFieldConstraint orderLineQuantity = new SingleFieldConstraint("quantity");
+        orderLineQuantity.setFactType(DataType.TYPE_NUMERIC_INTEGER);
+        orderLineQuantity.setFieldBinding("$q");
+        orderLineQuantity.setOperator(">");
+        orderLineQuantity.setValue("0");
+
+        final FactPattern orderLine = new FactPattern("OrderLine");
+        orderLine.addConstraint(orderLineQuantity);
+
+        final ExpressionFormLine accumulateSourceExpression = new ExpressionFormLine();
+        accumulateSourceExpression.appendPart(new ExpressionText("$o.lines"));
+
+        final FromCompositeFactPattern accumulateSource = new FromCompositeFactPattern();
+        accumulateSource.setFactPattern(orderLine);
+        accumulateSource.setExpression(accumulateSourceExpression);
+
+        final FromAccumulateCompositeFactPattern accumulate = new FromAccumulateCompositeFactPattern();
+        accumulate.setSourcePattern(accumulateSource);
+        accumulate.setFactPattern(new FactPattern("java.util.Number"));
+        accumulate.setFunction("sum($q)");
+
+        model.addLhsItem(accumulate);
+
+        final String expected = "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "java.util.Number( ) from accumulate ( OrderLine( $q : quantity > 0 ) from $o.lines, \n"
+                + "sum($q))\n"
+                + "then\n"
+                + "end";
+
+        checkMarshalling(expected, model);
     }
 
     @Test
