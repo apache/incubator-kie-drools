@@ -771,22 +771,27 @@ public class RuleModelDRLPersistenceImpl
 
                 buf.append(" from accumulate ( ");
                 if (pattern.getSourcePattern() != null) {
+
+                    // https://issues.jboss.org/browse/DROOLS-2643
+                    final boolean isFunctionUsed = pattern.getFunction() != null && !pattern.getFunction().isEmpty();
+                    final boolean isSubPatternOrIsFunctionUsed = isSubPattern || isFunctionUsed;
+
                     if (pattern.getSourcePattern() instanceof FactPattern) {
                         final LHSGeneratorContext soucrceGctx = generatorContextFactory.newGeneratorContext();
                         generateFactPattern((FactPattern) pattern.getSourcePattern(),
                                             soucrceGctx);
                     } else if (pattern.getSourcePattern() instanceof FromAccumulateCompositeFactPattern) {
                         visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) pattern.getSourcePattern(),
-                                                                isSubPattern);
+                                                                isSubPatternOrIsFunctionUsed);
                     } else if (pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern) {
                         visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) pattern.getSourcePattern(),
-                                                             isSubPattern);
+                                                             isSubPatternOrIsFunctionUsed);
                     } else if (pattern.getSourcePattern() instanceof FromEntryPointFactPattern) {
                         visitFromEntryPointFactPattern((FromEntryPointFactPattern) pattern.getSourcePattern(),
-                                                       isSubPattern);
+                                                       isSubPatternOrIsFunctionUsed);
                     } else if (pattern.getSourcePattern() instanceof FromCompositeFactPattern) {
                         visitFromCompositeFactPattern((FromCompositeFactPattern) pattern.getSourcePattern(),
-                                                      isSubPattern);
+                                                      isSubPatternOrIsFunctionUsed);
                     } else {
                         throw new IllegalArgumentException("Unsupported pattern " + pattern.getSourcePattern() + " for FROM ACCUMULATE");
                     }
