@@ -3399,7 +3399,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "$d : Data( )\n" +
-                "(Person( ) from $d)\n" +
+                "Person( ) from $d\n" +
                 "\n" +
                 "then\n" +
                 "end\n";
