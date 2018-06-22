@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
@@ -30,6 +32,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -91,8 +94,16 @@ public class DMNInvocationEvaluator
         result.setContext( dmnContext );
         Object invocationResult = null;
 
+        boolean walkedIntoScope = false;
+        String[] fnameParts = functionName.split("\\.");
+        if (fnameParts.length > 1) {
+            QName importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(fnameParts[0]);
+            dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
+            walkedIntoScope = true;
+        }
+        
         try {
-            FEELFunction function = this.functionLocator.apply( previousContext, functionName );
+            FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? fnameParts[1] : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
                 Object r = null;
@@ -157,6 +168,10 @@ public class DMNInvocationEvaluator
 
             EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
             invocationResult = function.invokeReflectively( ctx, namedParams );
+
+            if (walkedIntoScope) {
+                dmnContext.popScope();
+            }
 
             boolean hasErrors = hasErrors( events, eventManager, result );
             return new EvaluatorResultImpl( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
