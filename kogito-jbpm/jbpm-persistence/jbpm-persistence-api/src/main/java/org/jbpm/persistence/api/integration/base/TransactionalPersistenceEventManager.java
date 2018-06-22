@@ -40,7 +40,7 @@ public class TransactionalPersistenceEventManager implements PersistenceEventMan
     private static final Logger logger = LoggerFactory.getLogger(TransactionalPersistenceEventManager.class);
     private static final String EVENT_COLLECTION = "org.jbpm.integration.events";
     
-    private TransactionManager tm;
+    protected TransactionManager tm;
     private EventEmitter emitter;
     
     

@@ -32,8 +32,10 @@ import javax.transaction.UserTransaction;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
+import org.jbpm.persistence.api.integration.EventManagerProvider;
 import org.jbpm.persistence.api.integration.InstanceView;
 import org.jbpm.persistence.processinstance.objects.TestEventEmitter;
+import org.jbpm.persistence.processinstance.objects.TestTransactionalPersistenceEventManager;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -656,6 +658,8 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
 
     @Test
     public void testIntegrationWithEventManager3() {
+        // Because of MapBasedPersistenceTest we have to be sure that we register TX sync on the right transaction manager
+        ((TestTransactionalPersistenceEventManager) EventManagerProvider.getInstance().get()).resetTransactionManager();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( "WorkItemsProcess.rf" ),
                       ResourceType.DRF );
