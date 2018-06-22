@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,7 +74,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
         return usedDeclarationsOnLeft != null ? usedDeclarationsOnLeft : usedDeclarations;
     }
 
-    public DrlxParseSuccess setUsedDeclarations( List<String> usedDeclarations ) {
+    public DrlxParseSuccess setUsedDeclarations( Collection<String> usedDeclarations ) {
         this.usedDeclarations = new LinkedHashSet<>(usedDeclarations);
         skipThisAsParam = usedDeclarations.contains( patternBinding );
         return this;
@@ -303,5 +302,35 @@ public class DrlxParseSuccess implements DrlxParseResult {
     @Override
     public boolean isSuccess() {
         return true;
+    }
+
+    @Override
+    public DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator ) {
+        if (!other.isSuccess()) {
+            return other;
+        }
+
+        DrlxParseSuccess otherDrlx = ( DrlxParseSuccess ) other;
+
+        Collection<String> usedDeclarations = new LinkedHashSet<>();
+        usedDeclarations.addAll( this.usedDeclarations );
+        usedDeclarations.addAll( otherDrlx.usedDeclarations );
+
+        Collection<String> usedDeclarationsOnLeft = null;
+        if (this.usedDeclarationsOnLeft != null && otherDrlx.usedDeclarationsOnLeft != null) {
+            usedDeclarationsOnLeft = new LinkedHashSet<>();
+            usedDeclarationsOnLeft.addAll( this.usedDeclarationsOnLeft );
+            usedDeclarationsOnLeft.addAll( otherDrlx.usedDeclarationsOnLeft );
+        }
+
+        Set<String> reactOnProperties = new HashSet<>();
+        reactOnProperties.addAll( this.reactOnProperties );
+        reactOnProperties.addAll( otherDrlx.reactOnProperties );
+
+        return new DrlxParseSuccess(patternType, exprId, patternBinding, new BinaryExpr( expr, otherDrlx.expr, operator), exprType)
+                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( usedDeclarations ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft )
+                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( reactOnProperties ).setBetaNode(isBetaNode)
+                .setLeft( new TypedExpression( this.expr, boolean.class ) )
+                .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
     }
 }

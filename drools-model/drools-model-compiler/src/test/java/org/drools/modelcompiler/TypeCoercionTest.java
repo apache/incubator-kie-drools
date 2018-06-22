@@ -214,10 +214,8 @@ public class TypeCoercionTest extends BaseModelTest {
                 "declare Flight departuretime : java.util.Date end\n" +
                 "rule Init when then insert(new Flight(new Date(1L))); end\n" +
                 "rule R when\n" +
-                "\n" +
-                //"    Flight( departuretime >= \"01-Jan-1970\" )\n" +
                 "    Flight( departuretime >= \"01-Jan-1970\" && departuretime <= \"01-Jan-2018\" )\n" +
-                "  then\n" +
+                "then\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( str );
