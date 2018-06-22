@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_4stiAC9sEeOaG4BBbqOFwA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_ageItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_yearsOfServiceItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_vacationDaysItem" structureRef="java.math.BigDecimal"/>
+  <bpmn2:itemDefinition id="__B837821D-9CA0-431E-8D4C-8065C3493CE7_ageinInputItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__B837821D-9CA0-431E-8D4C-8065C3493CE7_yearsOfServiceinInputItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__B837821D-9CA0-431E-8D4C-8065C3493CE7_vacationDaysOutputItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInputItem" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="__B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInputItem" structureRef="java.lang.String"/>
+  <bpmn2:process id="BPMN2-BusinessRuleTask" drools:packageName="org.jbpm.bpmn2.objects" drools:version="1.0" name="withrules" isExecutable="true">
+    <bpmn2:property id="age" itemSubjectRef="_ageItem"/>
+    <bpmn2:property id="yearsOfService" itemSubjectRef="_yearsOfServiceItem"/>
+    <bpmn2:property id="vacationDays" itemSubjectRef="_vacationDaysItem"/>
+    <bpmn2:startEvent id="processStartEvent" drools:bgcolor="#9acd32" drools:selectable="true" name="">
+      <bpmn2:outgoing>_DE49B781-CAB0-4C7E-81AE-1A4EA34648CA</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:businessRuleTask id="_B837821D-9CA0-431E-8D4C-8065C3493CE7" name="Evaluate rule" implementation="http://www.jboss.org/drools/dmn">
+      <bpmn2:incoming>_DE49B781-CAB0-4C7E-81AE-1A4EA34648CA</bpmn2:incoming>
+      <bpmn2:outgoing>_CDF5A14A-D296-42A4-9EAF-2F0910A4BC10</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_4suJEC9sEeOaG4BBbqOFwA">
+        <bpmn2:dataInput id="_B837821D-9CA0-431E-8D4C-8065C3493CE7_ageinInput" drools:dtype="java.lang.Integer" itemSubjectRef="__B837821D-9CA0-431E-8D4C-8065C3493CE7_ageinInputItem" name="Age"/>
+        <bpmn2:dataInput id="_B837821D-9CA0-431E-8D4C-8065C3493CE7_yearsOfServiceinInput" drools:dtype="java.lang.Integer" itemSubjectRef="__B837821D-9CA0-431E-8D4C-8065C3493CE7_yearsOfServiceinInputItem" name="Years of Service"/>
+        <bpmn2:dataInput id="_B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInput" drools:dtype="java.lang.String" itemSubjectRef="__B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInputItem" name="namespace"/>
+        <bpmn2:dataInput id="_B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInput" drools:dtype="java.lang.String" itemSubjectRef="__B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInputItem" name="model"/>
+        <bpmn2:dataOutput id="_B837821D-9CA0-431E-8D4C-8065C3493CE7_vacationDaysoutOutput" drools:dtype="java.math.BigDecimal" itemSubjectRef="__B837821D-9CA0-431E-8D4C-8065C3493CE7_vacationDaysOutputItem" name="Total Vacation Days"/>
+        <bpmn2:inputSet id="_4suJES9sEeOaG4BBbqOFwA">
+          <bpmn2:dataInputRefs>_B837821D-9CA0-431E-8D4C-8065C3493CE7_ageinInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_B837821D-9CA0-431E-8D4C-8065C3493CE7_yearsOfServiceinInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_4suJEi9sEeOaG4BBbqOFwA">
+          <bpmn2:dataOutputRefs>_B837821D-9CA0-431E-8D4C-8065C3493CE7_vacationDaysoutOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_4suJEy9sEeOaG4BBbqOFwA">
+        <bpmn2:sourceRef>age</bpmn2:sourceRef>
+        <bpmn2:targetRef>_B837821D-9CA0-431E-8D4C-8065C3493CE7_ageinInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_4suJEy9sEeOaG4BBbqOFwB">
+        <bpmn2:sourceRef>yearsOfService</bpmn2:sourceRef>
+        <bpmn2:targetRef>_B837821D-9CA0-431E-8D4C-8065C3493CE7_yearsOfServiceinInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_OJ4c8mYDEeavbo3IsNuQ2g">
+        <bpmn2:targetRef>_B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_OJ4c82YDEeavbo3IsNuQ1g">
+          <bpmn2:from xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn2:tFormalExpression" id="_OJ4c9GYDEeavbo3IsNuQ1g"><![CDATA[https://www.drools.org/kie-dmn]]></bpmn2:from>
+          <bpmn2:to xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn2:tFormalExpression" id="_OJ4c9WYDEeavbo3IsNuQ1g">_B837821D-9CA0-431E-8D4C-8065C3493CE7_namespaceInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_OJ4c8mYDEeavbo3IsNuQ3g">
+        <bpmn2:targetRef>_B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_OJ4c82YDEeavbo3IsNuQ5g">
+          <bpmn2:from xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn2:tFormalExpression" id="_OJ4c9GYDEeavbo3IsNuQ3g"><![CDATA[_0020_vacation_days]]></bpmn2:from>
+          <bpmn2:to xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn2:tFormalExpression" id="_OJ4c9WYDEeavbo3IsNuQ3g">_B837821D-9CA0-431E-8D4C-8065C3493CE7_modelInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_4suJFC9sEeOaG4BBbqOFwA">
+        <bpmn2:sourceRef>_B837821D-9CA0-431E-8D4C-8065C3493CE7_vacationDaysoutOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>vacationDays</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:businessRuleTask>
+    <bpmn2:sequenceFlow id="_DE49B781-CAB0-4C7E-81AE-1A4EA34648CA" drools:bgcolor="#000000" drools:selectable="true" sourceRef="processStartEvent" targetRef="_B837821D-9CA0-431E-8D4C-8065C3493CE7"/>
+    <bpmn2:scriptTask id="_93BD2C60-4B4B-4AF6-A393-B75C3999135F" drools:selectable="true" name="Printout" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_CDF5A14A-D296-42A4-9EAF-2F0910A4BC10</bpmn2:incoming>
+      <bpmn2:outgoing>_00D2A1E8-F343-478F-B301-B11C551F1037</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("Vacation days  " + vacationDays);]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_CDF5A14A-D296-42A4-9EAF-2F0910A4BC10" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_B837821D-9CA0-431E-8D4C-8065C3493CE7" targetRef="_93BD2C60-4B4B-4AF6-A393-B75C3999135F"/>
+    <bpmn2:endEvent id="_5D14605E-F34F-475C-A3A3-A3F3F09ACB21" drools:bgcolor="#ff6347" drools:selectable="true" name="">
+      <bpmn2:incoming>_00D2A1E8-F343-478F-B301-B11C551F1037</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_00D2A1E8-F343-478F-B301-B11C551F1037" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_93BD2C60-4B4B-4AF6-A393-B75C3999135F" targetRef="_5D14605E-F34F-475C-A3A3-A3F3F09ACB21"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_4suJFS9sEeOaG4BBbqOFwA">
+    <bpmndi:BPMNPlane id="_4suJFi9sEeOaG4BBbqOFwA" bpmnElement="BPMN2-BusinessRuleTask">
+      <bpmndi:BPMNShape id="_4suJFy9sEeOaG4BBbqOFwA" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_4suJGC9sEeOaG4BBbqOFwA" bpmnElement="_B837821D-9CA0-431E-8D4C-8065C3493CE7">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_4suJGS9sEeOaG4BBbqOFwA" bpmnElement="_DE49B781-CAB0-4C7E-81AE-1A4EA34648CA">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_4suJGi9sEeOaG4BBbqOFwA" bpmnElement="_93BD2C60-4B4B-4AF6-A393-B75C3999135F">
+        <dc:Bounds height="80.0" width="100.0" x="340.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_4suJGy9sEeOaG4BBbqOFwA" bpmnElement="_CDF5A14A-D296-42A4-9EAF-2F0910A4BC10">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_4suJHC9sEeOaG4BBbqOFwA" bpmnElement="_5D14605E-F34F-475C-A3A3-A3F3F09ACB21">
+        <dc:Bounds height="28.0" width="28.0" x="481.0" y="162.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_4suJHS9sEeOaG4BBbqOFwA" bpmnElement="_00D2A1E8-F343-478F-B301-B11C551F1037">
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="495.0" y="176.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_4suJHi9sEeOaG4BBbqOFwA" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_B837821D-9CA0-431E-8D4C-8065C3493CE7" id="_4suJHy9sEeOaG4BBbqOFwA">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:CostParameters xsi:type="bpsim:CostParameters">
+              <bpsim:UnitCost xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="0.0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_93BD2C60-4B4B-4AF6-A393-B75C3999135F" id="_4suwIC9sEeOaG4BBbqOFwA">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:CostParameters xsi:type="bpsim:CostParameters">
+              <bpsim:UnitCost xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="0.0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_00D2A1E8-F343-478F-B301-B11C551F1037" id="_4suwIS9sEeOaG4BBbqOFwA">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="processStartEvent" id="_4suwIi9sEeOaG4BBbqOFwA">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:WaitTime xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="0.0"/>
+              </bpsim:WaitTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_5D14605E-F34F-475C-A3A3-A3F3F09ACB21" id="_4suwIy9sEeOaG4BBbqOFwA">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_CDF5A14A-D296-42A4-9EAF-2F0910A4BC10" id="_4suwJC9sEeOaG4BBbqOFwA">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_DE49B781-CAB0-4C7E-81AE-1A4EA34648CA" id="_4suwJS9sEeOaG4BBbqOFwA">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_4stiAC9sEeOaG4BBbqOFwA</bpmn2:source>
+    <bpmn2:target>_4stiAC9sEeOaG4BBbqOFwA</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

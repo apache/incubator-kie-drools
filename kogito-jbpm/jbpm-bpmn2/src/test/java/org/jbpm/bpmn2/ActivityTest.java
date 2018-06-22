@@ -1971,6 +1971,42 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
     
     @Test
+    public void testDMNBusinessRuleTaskModelById()throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "dmn/BPMN2-BusinessRuleTaskDMNModelById.bpmn2", "dmn/0020-vacation-days.dmn");
+        ksession = createKnowledgeSession(kbase);
+        // first run 16, 1 and expected days is 27
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("age", 16);
+        params.put("yearsOfService", 1);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(27), vacationDays);
+        
+        // second run 44, 20 and expected days is 24
+        params = new HashMap<String, Object>();
+        params.put("age", 44);
+        params.put("yearsOfService", 20);
+        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(24), vacationDays);
+        
+        // second run 50, 30 and expected days is 30
+        params = new HashMap<String, Object>();
+        params.put("age", 50);
+        params.put("yearsOfService", 30);
+        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(30), vacationDays);
+    }
+    
+    @Test
     @RequirePersistence
     public void testCallActivitySkipAbortParent() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivitySkipAbortParent.bpmn2",

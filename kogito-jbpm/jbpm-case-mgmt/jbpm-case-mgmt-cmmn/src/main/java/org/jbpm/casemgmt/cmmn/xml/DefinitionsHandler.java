@@ -18,13 +18,19 @@ package org.jbpm.casemgmt.cmmn.xml;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
+import org.jbpm.casemgmt.cmmn.core.Decision;
 import org.jbpm.casemgmt.cmmn.core.Definitions;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -58,13 +64,17 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         Definitions definitions = (Definitions) parser.getCurrent();
         String id = element.getAttribute("id");
         String namespace = element.getAttribute("targetNamespace");
-
+        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
 
+        String namespaceN1 = (String) parser.getNamespaceURI("ns2");
+        
+        
+        
         for (Process process : processes) {
             RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) process;
             ruleFlowProcess.setMetaData("TargetNamespace", namespace);
-
+            postProcessNodes(ruleFlowProcess, ruleFlowProcess, buildData, parser);
         }
         definitions.setId(id);
         definitions.setTargetNamespace(namespace);
@@ -73,6 +83,35 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 
     public Class<?> generateNodeFor() {
         return Definitions.class;
+    }
+    
+    private void postProcessNodes(RuleFlowProcess process, NodeContainer container, ProcessBuildData buildData, ExtensibleXmlParser parser) {
+        for (Node node : container.getNodes()) {
+
+            if (node instanceof SubProcessNode) {
+                Map<String, String> processes = (Map<String, String>) buildData.getMetaData("ProcessElements");
+                if (processes != null) {
+
+                    SubProcessNode subprocessNode = (SubProcessNode) node;
+                    subprocessNode.setProcessId(processes.getOrDefault(subprocessNode.getProcessId(), subprocessNode.getProcessId()));    
+                }
+            } else if (node instanceof RuleSetNode) {
+                Map<String, Decision> decisions = (Map<String, Decision>) buildData.getMetaData("DecisionElements");
+                RuleSetNode ruleSetNode = (RuleSetNode) node;
+                if (decisions != null && decisions.containsKey(ruleSetNode.getRuleFlowGroup())) {
+                    Decision decision = decisions.get(ruleSetNode.getRuleFlowGroup());
+                    ruleSetNode.setRuleFlowGroup(null);
+                    ruleSetNode.setLanguage(RuleSetNode.DMN_LANG);
+                    ruleSetNode.setNamespace((String) parser.getNamespaceURI(decision.getNamespace()));
+                    ruleSetNode.setModel(decision.getModel());
+                    ruleSetNode.setDecision(decision.getDecision());
+                }
+            }
+
+            if (node instanceof NodeContainer) {                
+                postProcessNodes(process, (NodeContainer) node, buildData, parser);
+            }
+        }
     }
 
 }

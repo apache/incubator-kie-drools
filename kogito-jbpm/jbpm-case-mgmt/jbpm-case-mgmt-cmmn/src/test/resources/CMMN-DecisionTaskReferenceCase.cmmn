@@ -1,0 +1,56 @@
+<semantic:definitions xmlns:ns1="http://www.trisotech.com/definitions/_7916c4e8-1f3b-4667-b331-0a350aa34bd6" xmlns:ns2="http://www.trisotech.com/definitions/_0020_vacation_days" xmlns:semantic="http://www.omg.org/spec/CMMN/20151109/MODEL"     xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI"  xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI"  xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC"  xmlns:trisocmmn="http://www.trisotech.com/2014/triso/cmmn"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:rss="http://purl.org/rss/2.0/" xmlns="http://www.trisotech.com/cmmn/definitions/_56462878-c4d8-4f5f-9477-efd7158c564b" id="_56462878-c4d8-4f5f-9477-efd7158c564b" name="case" targetNamespace="http://www.trisotech.com/cmmn/definitions/_56462878-c4d8-4f5f-9477-efd7158c564b" exporter="CMMN Modeler" exporterVersion="6.0.9.201806121905">
+    <semantic:case id="Case_636d4bea-4d52-46fb-b1ad-9ceeddf1be69" name="ProcessAndDecisionTaskCase">
+        <semantic:casePlanModel id="_636d4bea-4d52-46fb-b1ad-9ceeddf1be69">
+            <semantic:planItem id="_2f81399d-02eb-4645-a412-27dc59b89998" definitionRef="PID__2f81399d-02eb-4645-a412-27dc59b89998"/>
+            <semantic:planItem id="_37b292f2-acbe-4641-8500-e6c0cb9a4d00" definitionRef="PID__37b292f2-acbe-4641-8500-e6c0cb9a4d00"/>
+            <semantic:processTask id="PID__2f81399d-02eb-4645-a412-27dc59b89998" name="call my process" processRef="_6de1797f9ad878a4e965a370e4b89c8a">
+                <semantic:extensionElements>
+                    <triso:interrelationship fileId="eyJmIjp7InBhdGgiOiIvIiwic2t1IjoiMTg3NzA4OWEtYTgyMy00OTA5LTg3YTItOWY5YzNjNzQ0NzYyIiwibmFtZSI6InByb2Nlc3MiLCJtaW1ldHlwZSI6ImFwcGxpY2F0aW9uL2JwbW4tMi0wK3htbCJ9LCJyIjp7Im5hbWUiOiJNYWNpZWogU3dpZGVyc2tpIiwiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiIsInVybCI6Imh0dHBzOi8vdGVzdC1yZWRoYXQudHJpc290ZWNoLmNvbS9wdWJsaWNhcGkiLCJyZXBvc2l0b3J5SWQiOiJ8cGVyc29uYWx8In0sInQiOiJwdWJsaWNhcGkifQ==" pageId="_ec4a4052-8f80-411b-ba70-6fb49a947751" elementId="_4e0c5178-c886-4a14-ab6b-6ec6c940194b" uri="http://www.trisotech.com/definitions/_7916c4e8-1f3b-4667-b331-0a350aa34bd6#_4e0c5178-c886-4a14-ab6b-6ec6c940194b" name="Page 1" mimeType="application/bpmn-2-0+xml"/>
+                </semantic:extensionElements>
+            </semantic:processTask>
+            <semantic:decisionTask id="PID__37b292f2-acbe-4641-8500-e6c0cb9a4d00" name="call my decision" decisionRef="_773b659dca18681a142c63973a5045e5">
+                <semantic:extensionElements>
+                    <triso:interrelationship fileId="eyJmIjp7InNrdSI6IjU0ZGE1ZDk4LWZmYTEtNDgzZi1hN2M4LWUwZTNiNGIyMWUwMCIsIm5hbWUiOiIwMDIwLXZhY2F0aW9uLWRheXMiLCJtaW1ldHlwZSI6ImFwcGxpY2F0aW9uL3ZuZC50cmlzby1kbW4ranNvbiJ9LCJyIjp7ImFwaWtleSI6IjI5MjAwM2Y2OTg0MGU3MTIifX0=" pageId="_0020_vacation_days_D1" elementId="_0020_vacation_days_s3" uri="http://www.trisotech.com/definitions/_0020_vacation_days#_0020_vacation_days_s3" name="Total Vacation Days" mimeType="application/vnd.triso-dmn+json"/>
+                </semantic:extensionElements>
+            </semantic:decisionTask>
+        </semantic:casePlanModel>
+    </semantic:case>
+    <semantic:process id="_6de1797f9ad878a4e965a370e4b89c8a" externalRef="ns1:_4e0c5178-c886-4a14-ab6b-6ec6c940194b" implementationType="http://www.omg.org/spec/CMMN/ProcessType/BPMN20" name="Page 1"/>
+    <semantic:decision id="_773b659dca18681a142c63973a5045e5" externalRef="ns2:_0020_vacation_days" implementationType="http://www.omg.org/spec/CMMN/DecisionType/DMN1" name="Total Vacation Days"/>
+    <cmmndi:CMMNDI>
+        <cmmndi:CMMNDiagram id="_0e5b1684-4235-4d65-a966-54441a08271b" name="Page 1" cmmnElementRef="_a7c8ba0c-a3e7-47d0-8253-9f866b162a25">
+            <cmmndi:Size width="1485" height="1050"/>
+            <cmmndi:CMMNShape id="_a7c8ba0c-a3e7-47d0-8253-9f866b162a25" cmmnElementRef="_636d4bea-4d52-46fb-b1ad-9ceeddf1be69">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="77.5" y="49" width="800" height="600"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_c12b4fdd-99c4-4a27-9102-7924ecc456de" cmmnElementRef="_2f81399d-02eb-4645-a412-27dc59b89998">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="174" y="183" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="68" x="189" y="207.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_46d0321c-fa10-4ea2-b896-24699cdfc071" cmmnElementRef="_37b292f2-acbe-4641-8500-e6c0cb9a4d00">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="363" y="183" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="68" x="378" y="207.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+        </cmmndi:CMMNDiagram>
+    </cmmndi:CMMNDI>
+</semantic:definitions>

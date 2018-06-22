@@ -364,6 +364,7 @@ public class CaseTest extends AbstractCmmnBaseTest {
         assertThat(humanTaskOne.getOutAssociations().get(0).getTarget()).isEqualTo("caseFile_invoice");
         
         RuleSetNode decisionTask = (RuleSetNode) nodes[3];
+        assertThat(decisionTask.getLanguage()).isEqualTo(RuleSetNode.DRL_LANG);
         assertThat(decisionTask.getName()).isEqualTo("Make a decision");
         assertThat(decisionTask.getRuleFlowGroup()).isEqualTo("decisionName");
         
@@ -414,5 +415,70 @@ public class CaseTest extends AbstractCmmnBaseTest {
         
         List<Variable> variables = caseProcess.getVariableScope().getVariables();
         assertThat(variables).hasSize(7);
+    }
+    
+    @Test
+    public void testLoadProcessTaskReferenceCase() throws Exception {
+        
+        KieBase kbase = createKnowledgeBase("CMMN-ProcessTaskReferenceCase.cmmn");
+        assertThat(kbase).isNotNull();
+        
+        Process process = kbase.getProcess("Case_636d4bea-4d52-46fb-b1ad-9ceeddf1be69");
+        assertThat(process).isNotNull();
+        assertThat(process).isInstanceOf(RuleFlowProcess.class);
+        RuleFlowProcess caseProcess = (RuleFlowProcess) process;
+        assertThat(caseProcess.isDynamic()).isTrue();
+        assertThat(caseProcess.getId()).isEqualTo("Case_636d4bea-4d52-46fb-b1ad-9ceeddf1be69");
+        assertThat(caseProcess.getName()).isEqualTo("ProcessTaskCase");
+        
+        Node[] nodes = caseProcess.getNodes();
+        assertThat(nodes).hasSize(1);
+    
+        SubProcessNode processNode = (SubProcessNode) nodes[0];
+        assertThat(processNode.getName()).isEqualTo("call my process");
+        assertThat(processNode.getProcessId()).isEqualTo("_4e0c5178-c886-4a14-ab6b-6ec6c940194b");
+        assertThat(processNode.isWaitForCompletion()).isTrue();
+        assertThat(processNode.isIndependent()).isFalse();
+        assertThat(processNode.getInAssociations()).hasSize(0);        
+        assertThat(processNode.getOutAssociations()).hasSize(0);
+        
+        
+    }
+    
+    @Test
+    public void testLoadProcessAndDecisionTaskReferenceCase() throws Exception {
+        
+        KieBase kbase = createKnowledgeBase("CMMN-DecisionTaskReferenceCase.cmmn");
+        assertThat(kbase).isNotNull();
+        
+        Process process = kbase.getProcess("Case_636d4bea-4d52-46fb-b1ad-9ceeddf1be69");
+        assertThat(process).isNotNull();
+        assertThat(process).isInstanceOf(RuleFlowProcess.class);
+        RuleFlowProcess caseProcess = (RuleFlowProcess) process;
+        assertThat(caseProcess.isDynamic()).isTrue();
+        assertThat(caseProcess.getId()).isEqualTo("Case_636d4bea-4d52-46fb-b1ad-9ceeddf1be69");
+        assertThat(caseProcess.getName()).isEqualTo("ProcessAndDecisionTaskCase");
+        
+        Node[] nodes = caseProcess.getNodes();
+        assertThat(nodes).hasSize(2);
+    
+        SubProcessNode processNode = (SubProcessNode) nodes[0];
+        assertThat(processNode.getName()).isEqualTo("call my process");
+        assertThat(processNode.getProcessId()).isEqualTo("_4e0c5178-c886-4a14-ab6b-6ec6c940194b");
+        assertThat(processNode.isWaitForCompletion()).isTrue();
+        assertThat(processNode.isIndependent()).isFalse();
+        assertThat(processNode.getInAssociations()).hasSize(0);        
+        assertThat(processNode.getOutAssociations()).hasSize(0);
+        
+        RuleSetNode decisionTask = (RuleSetNode) nodes[1];
+        assertThat(decisionTask.getName()).isEqualTo("call my decision");
+        assertThat(decisionTask.getLanguage()).isEqualTo(RuleSetNode.DMN_LANG);
+        assertThat(decisionTask.getRuleFlowGroup()).isNull();
+        assertThat(decisionTask.getNamespace()).isEqualTo("http://www.trisotech.com/definitions/_0020_vacation_days");
+        assertThat(decisionTask.getModel()).isEqualTo("_0020_vacation_days");
+        assertThat(decisionTask.getDecision()).isEqualTo("Total Vacation Days");
+        
+        assertThat(decisionTask.getInAssociations()).hasSize(0);        
+        assertThat(decisionTask.getOutAssociations()).hasSize(0);        
     }
 }

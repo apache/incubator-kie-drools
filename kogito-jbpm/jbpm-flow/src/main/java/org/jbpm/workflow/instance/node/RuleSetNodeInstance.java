@@ -112,6 +112,11 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 DMNRuntime runtime = ((KieSession) kruntime).getKieRuntime(DMNRuntime.class);
                 DMNModel dmnModel = runtime.getModel(namespace, model);
                 if (dmnModel == null) {
+                    // if was not found by name try to look it up by id
+                    dmnModel = runtime.getModelById(namespace, model);
+                }
+                
+                if (dmnModel == null) {
                     throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
                 }
                 DMNResult dmnResult = null;

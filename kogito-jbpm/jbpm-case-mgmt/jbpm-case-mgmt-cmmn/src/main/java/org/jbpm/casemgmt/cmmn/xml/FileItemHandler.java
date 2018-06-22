@@ -105,7 +105,8 @@ public class FileItemHandler extends BaseAbstractHandler implements Handler {
                 if ("java.lang.Boolean".equals(structureRef) || "Boolean".equalsIgnoreCase(structureRef)) {
                     dataType = new BooleanDataType();
 
-                } else if ("java.lang.Integer".equals(structureRef) || "Integer".equalsIgnoreCase(structureRef)) {
+                } else if ("java.lang.Integer".equals(structureRef) || "Integer".equalsIgnoreCase(structureRef) 
+                        || "java.lang.Number".equals(structureRef) || "Number".equalsIgnoreCase(structureRef)) {
                     dataType = new IntegerDataType();
 
                 } else if ("java.lang.Float".equals(structureRef) || "Float".equalsIgnoreCase(structureRef)) {

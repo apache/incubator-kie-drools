@@ -40,5 +40,7 @@ public class CMMNSemanticModule extends DefaultSemanticModule implements Semanti
         addHandler("caseTask", new CaseTaskHandler());
         addHandler("decisionTask", new DecisionTaskHandler());
 
+        addHandler("process", new ProcessElementHandler());
+        addHandler("decision", new DecisionElementHandler());
     }
 }

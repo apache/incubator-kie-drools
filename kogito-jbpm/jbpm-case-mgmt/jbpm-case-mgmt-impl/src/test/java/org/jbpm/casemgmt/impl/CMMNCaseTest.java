@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +57,8 @@ public class CMMNCaseTest extends AbstractCaseServicesBaseTest {
     protected static final String CMMN_CASE_DATA_ID = "CMMN-DataInputsAndOutputsCase";
     protected static final String CMMN_CASE_RULE_SENTRY_ID = "CMMN-HumanTaskMilestoneRuleSentries";
     protected static final String CMMN_CASE_RULE_HT_ID = "CMMN-StageWithActivationByTaskCase";
-    
+    protected static final String CMMN_CASE_DMN_DECISION_ID = "CMMN-DecisionTaskWithDMNCase";
+    protected static final String CMMN_CASE_DMN_DECISION_APPROVAL_ID = "CMMN-DecisionTaskWithDMNApprovalCase";
 
     @Rule
     public TestName name = new TestName();
@@ -69,6 +71,9 @@ public class CMMNCaseTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/cmmn/CMMN-DataInputsAndOutputsCase.cmmn");
         processes.add("cases/cmmn/CMMN-HumanTaskMilestoneRuleSentries.cmmn");
         processes.add("cases/cmmn/CMMN-StageWithActivationByTaskCase.cmmn");
+        processes.add("cases/cmmn/CMMN-DecisionTaskWithDMNCase.cmmn");
+        processes.add("cases/cmmn/CMMN-DecisionTaskWithDMNApprovalCase.cmmn");
+        processes.add("dmn/0020-vacation-days.dmn");
         return processes;
     }
     
@@ -335,5 +340,125 @@ public class CMMNCaseTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    
+    @Test
+    public void testStartDMNDecisionTaskCase() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();        
+        
+        Map<String, Object> data = new HashMap<>();        
+        data.put("age", 16);
+        data.put("yearsOfService", 1);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            Object vacationDays = cInstance.getCaseFile().getData("vacationDays");
+            assertThat(vacationDays).isNotNull();
+            assertThat(vacationDays).isInstanceOf(BigDecimal.class);
+            assertThat(vacationDays).isEqualTo(BigDecimal.valueOf(5));
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
    
+    @Test
+    public void testStartDMNDecisionTaskCaseApprovalRequired() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();        
+        roleAssignments.put("owner", new UserImpl("john"));
+        
+        Map<String, Object> data = new HashMap<>();        
+        data.put("age", 16);
+        data.put("yearsOfService", 1);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_APPROVAL_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_APPROVAL_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            Object vacationDays = cInstance.getCaseFile().getData("vacationDays");
+            assertThat(vacationDays).isNotNull();
+            assertThat(vacationDays).isInstanceOf(BigDecimal.class);
+            assertThat(vacationDays).isEqualTo(BigDecimal.valueOf(27));
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            assertThat(tasks).hasSize(1);
+            
+            TaskSummary task = tasks.get(0);
+            assertThat(task).isNotNull();
+            assertThat(task.getName()).isEqualTo("More than 25 days requires approval");
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartDMNDecisionTaskCaseNoApprovalRequired() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();        
+        roleAssignments.put("owner", new UserImpl("john"));
+        
+        Map<String, Object> data = new HashMap<>();        
+        data.put("age", 44);
+        data.put("yearsOfService", 20);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_APPROVAL_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), CMMN_CASE_DMN_DECISION_APPROVAL_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            Object vacationDays = cInstance.getCaseFile().getData("vacationDays");
+            assertThat(vacationDays).isNotNull();
+            assertThat(vacationDays).isInstanceOf(BigDecimal.class);
+            assertThat(vacationDays).isEqualTo(BigDecimal.valueOf(24));
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            assertThat(tasks).hasSize(1);
+            
+            TaskSummary task = tasks.get(0);
+            assertThat(task).isNotNull();
+            assertThat(task.getName()).isEqualTo("Less than 25 days you're good to go");
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 }
