@@ -836,7 +836,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, QueryFilter filter) {
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);        
-        params.put("groupIds", getCallbackUserRoles(userGroupCallback, userId));
+        params.put("groupIds", mergeLists(groupIds, getCallbackUserRoles(userGroupCallback, userId)));
         
         applyQueryContext(params, filter);
         applyQueryFilter(params, filter);
@@ -847,7 +847,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);        
-        params.put("groupIds", adoptList(groupIds, getCallbackUserRoles(userGroupCallback, userId)));
+        params.put("groupIds", mergeLists(groupIds, getCallbackUserRoles(userGroupCallback, userId)));
         params.put("status", adoptList(status, allActiveStatus));  
         
         applyQueryContext(params, filter);
@@ -1337,12 +1337,22 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
              for (Object value : values) {
                  data.add(value);
              }
-             
              return data;
          }
+         
          return source;
      }
      
+     protected List<?> mergeLists(List<?> source, List<?> values) {
+         List<Object> data = new ArrayList<Object>();  
+         data.addAll(values);
+        
+         if (source != null) {
+             data.addAll(source);
+         }
+         
+         return data;
+     }
      
 
 }

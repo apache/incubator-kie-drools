@@ -172,6 +172,30 @@ public class RuntimeDataServiceImplTaskLookupTest extends AbstractKieServicesBas
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
     }
+    
+    @Test
+    public void testGetTasksAssignedAsPotentialOwnerWithGroupsAndWrongUserId() {
+        asssertProcessInstance();
+        
+        List<String> managerList = Arrays.asList("managers");
+        
+        List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("mcivantos", fakeGroupIds, new QueryFilter());
+        assertNotNull(taskSummaries);
+        assertEquals(0, taskSummaries.size());
+
+        taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("mcivantos", managerList, new QueryFilter());
+        assertNotNull(taskSummaries);
+        assertEquals(1, taskSummaries.size());
+
+        List<String> groupsList = Arrays.asList("managers", "admins");
+        
+        taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("mcivantos", groupsList, new QueryFilter());
+        assertNotNull(taskSummaries);
+        assertEquals(2, taskSummaries.size());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+    }
 
     @Test
     public void testGetTasksAssignedAsPotentialOwnerWithGroupsAndStatus() {
@@ -191,7 +215,7 @@ public class RuntimeDataServiceImplTaskLookupTest extends AbstractKieServicesBas
 
         taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("maciej", fakeGroupIds, readyStatusOnly, new QueryFilter());
         assertNotNull(taskSummaries);
-        assertEquals(0, taskSummaries.size());
+        assertEquals(1, taskSummaries.size());
 
         taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("maciej", null, suspendedStatusOnly, new QueryFilter());
         assertNotNull(taskSummaries);
