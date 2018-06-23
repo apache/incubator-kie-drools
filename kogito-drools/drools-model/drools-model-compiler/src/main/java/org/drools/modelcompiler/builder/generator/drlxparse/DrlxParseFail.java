@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 
 public class DrlxParseFail implements DrlxParseResult {
 
@@ -27,6 +28,11 @@ public class DrlxParseFail implements DrlxParseResult {
     @Override
     public boolean isSuccess() {
         return false;
+    }
+
+    @Override
+    public DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator ) {
+        return this;
     }
 
     public DroolsError getError() {

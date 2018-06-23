@@ -552,7 +552,7 @@ public class ExpressionTyper {
 
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
-        Method m = ClassUtil.findMethod( rawClassCursor, methodName, argsType );
+        Method m = rawClassCursor != null ? ClassUtil.findMethod( rawClassCursor, methodName, argsType ) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType( methodName );
             if (functionType.isPresent()) {

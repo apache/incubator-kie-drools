@@ -14,6 +14,7 @@ import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
+import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
@@ -112,6 +113,12 @@ public class ConstraintParser {
             BinaryExpr binaryExpr = (BinaryExpr) drlxExpr;
             BinaryExpr.Operator operator = binaryExpr.getOperator();
 
+            if ((operator == BinaryExpr.Operator.AND || operator == BinaryExpr.Operator.OR) && !(binaryExpr.getRight() instanceof HalfPointFreeExpr) && !(binaryExpr.getRight() instanceof HalfBinaryExpr)) {
+                DrlxParseResult leftResult = getDrlxParseResult(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
+                DrlxParseResult rightResult = getDrlxParseResult(patternType, bindingId, constraint, binaryExpr.getRight(), hasBind, isPositional );
+                return leftResult.combineWith( rightResult, operator );
+            }
+
             IndexUtil.ConstraintType decodeConstraintType = DrlxParseUtil.toConstraintType(operator );
 
             final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
@@ -177,7 +184,6 @@ public class ConstraintParser {
             if (isEnclosed) {
                 combo = new EnclosedExpr( combo );
             }
-
 
             boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
             return new DrlxParseSuccess(patternType, exprId, bindingId, combo, left.getType()).setDecodeConstraintType( decodeConstraintType )
@@ -296,7 +302,17 @@ public class ConstraintParser {
             return new DrlxParseSuccess(patternType, exprId, bindingId, left.getExpression(), left.getType())
                     .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
         } else {
-            return new DrlxParseSuccess(patternType, exprId, bindingId, drlxExpr, null);
+            final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
+
+            TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(drlxExpr);
+            Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
+            if ( !optLeft.isPresent() ) {
+                return new DrlxParseFail( new InvalidExpressionErrorResult( "Unable to parse left part of expression: " + expression ) );
+            }
+
+            TypedExpression left = optLeft.get();
+            return new DrlxParseSuccess(patternType, exprId, bindingId, drlxExpr, left.getType()).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
         }
     }
 

@@ -58,6 +58,30 @@ public class EvalTest extends BaseModelTest {
     }
 
     @Test
+    public void testEvalWithMethodInvocation() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person()\n" +
+                "  eval( $p.getName().startsWith(\"E\") )\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Edson", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testEvalTrue() {
         String str =
                 "rule R when\n" +

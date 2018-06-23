@@ -160,9 +160,13 @@ public class POJOGenerator {
         TypeFieldDescr[] typeFields = typeFieldsSortedByPosition(typeDeclaration);
 
         if (!inheritedFields.isEmpty() || !typeDeclaration.getFields().isEmpty()) {
-            if (typeFields.length < 65) {
-                ConstructorDeclaration fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
-                NodeList<Statement> ctorFieldStatement = NodeList.nodeList();
+            boolean createFullArgsConstructor = typeFields.length < 65;
+            ConstructorDeclaration fullArgumentsCtor = null;
+            NodeList<Statement> ctorFieldStatement = null;
+
+            if (createFullArgsConstructor) {
+                fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                ctorFieldStatement = NodeList.nodeList();
 
                 MethodCallExpr superCall = new MethodCallExpr( null, "super" );
                 for (TypeFieldDescr typeFieldDescr : inheritedFields) {
@@ -174,48 +178,53 @@ public class POJOGenerator {
                     }
                 }
                 ctorFieldStatement.add( new ExpressionStmt( superCall ) );
+            }
 
-                int position = inheritedFields.size();
-                for (TypeFieldDescr typeFieldDescr : typeFields) {
-                    String fieldName = typeFieldDescr.getFieldName();
-                    Type returnType = addCtorArg( fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName );
-
-                    FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
-                            generatedClass.addField( returnType, fieldName, Modifier.PRIVATE ) :
-                            generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
-                    field.createSetter();
-                    MethodDeclaration getter = field.createGetter();
-
+            int position = inheritedFields.size();
+            for (TypeFieldDescr typeFieldDescr : typeFields) {
+                String fieldName = typeFieldDescr.getFieldName();
+                Type returnType = JavaParser.parseType( typeFieldDescr.getPattern().getObjectType() );
+                if (createFullArgsConstructor) {
+                    addCtorArg( fullArgumentsCtor, returnType, fieldName );
                     ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
-                    toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+                }
 
-                    boolean hasPositionAnnotation = false;
-                    for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-                        if (ann.getName().equalsIgnoreCase( "key" )) {
-                            keyFields.add( typeFieldDescr );
-                            field.addAnnotation( Key.class.getName() );
-                            equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
-                            hashCodeFieldStatement.add( generateHashCodeForField( getter, fieldName ) );
-                        } else if (ann.getName().equalsIgnoreCase( "position" )) {
-                            field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + ann.getValue() );
-                            hasPositionAnnotation = true;
-                            position++;
-                        } else if (ann.getName().equalsIgnoreCase( "duration" ) || ann.getName().equalsIgnoreCase( "expires" ) || ann.getName().equalsIgnoreCase( "timestamp" )) {
-                            Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName().toLowerCase() );
-                            String annFqn = annotationClass.getCanonicalName();
-                            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
-                            annExpr.addPair( "value", quote(fieldName) );
-                        } else {
-                            processAnnotation( builder, typeResolver, field, ann, null );
-                        }
-                    }
+                FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
+                        generatedClass.addField( returnType, fieldName, Modifier.PRIVATE ) :
+                        generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
+                field.createSetter();
+                MethodDeclaration getter = field.createGetter();
 
-                    if (!hasPositionAnnotation) {
-                        field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
+                toStringFieldStatement.add( format( "+ {0}+{1}", quote( fieldName + "=" ), fieldName ) );
+
+                boolean hasPositionAnnotation = false;
+                for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+                    if (ann.getName().equalsIgnoreCase( "key" )) {
+                        keyFields.add( typeFieldDescr );
+                        field.addAnnotation( Key.class.getName() );
+                        equalsFieldStatement.add( generateEqualsForField( getter, fieldName ) );
+                        hashCodeFieldStatement.add( generateHashCodeForField( getter, fieldName ) );
+                    } else if (ann.getName().equalsIgnoreCase( "position" )) {
+                        field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + ann.getValue() );
+                        hasPositionAnnotation = true;
+                        position++;
+                    } else if (ann.getName().equalsIgnoreCase( "duration" ) || ann.getName().equalsIgnoreCase( "expires" ) || ann.getName().equalsIgnoreCase( "timestamp" )) {
+                        Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName().toLowerCase() );
+                        String annFqn = annotationClass.getCanonicalName();
+                        NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
+                        annExpr.addPair( "value", quote(fieldName) );
+                    } else {
+                        processAnnotation( builder, typeResolver, field, ann, null );
                     }
                 }
 
-                fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
+                if (!hasPositionAnnotation) {
+                    field.addAndGetAnnotation( Position.class.getName() ).addPair( "value", "" + position++ );
+                }
+
+                if (createFullArgsConstructor) {
+                    fullArgumentsCtor.setBody( new BlockStmt( ctorFieldStatement ) );
+                }
             }
 
             if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.length) {
@@ -305,8 +314,12 @@ public class POJOGenerator {
 
     private static Type addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
         Type returnType = JavaParser.parseType( typeName );
-        fullArgumentsCtor.addParameter( returnType, fieldName );
+        addCtorArg( fullArgumentsCtor, returnType, fieldName );
         return returnType;
+    }
+
+    private static void addCtorArg( ConstructorDeclaration fullArgumentsCtor, Type fieldType, String fieldName ) {
+        fullArgumentsCtor.addParameter( fieldType, fieldName );
     }
 
     private static List<TypeFieldDescr> findInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
