@@ -17,8 +17,10 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -203,5 +205,21 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(new LongHolder());
         ksession.insert(new DoubleHolder());
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testStringToDateComparison() {
+        String str =
+                "import " + Date.class.getCanonicalName() + ";\n" +
+                "declare Flight departuretime : java.util.Date end\n" +
+                "rule Init when then insert(new Flight(new Date(1L))); end\n" +
+                "rule R when\n" +
+                "    Flight( departuretime >= \"01-Jan-1970\" && departuretime <= \"01-Jan-2018\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
+        assertEquals(2, ksession.fireAllRules());
     }
 }
