@@ -17,7 +17,6 @@ package org.drools.workbench.models.guided.template.backend;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -31,7 +30,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for incremental compilation of templates
  */
-public class RuleTemplateModelIncrementalCompilationTests {
+public class RuleTemplateModelIncrementalCompilationTest {
 
     @Test
     public void testRuleTemplateInvalidFullBuild() throws Exception {
