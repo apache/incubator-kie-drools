@@ -16,24 +16,21 @@
 package org.drools.compiler.integrationtests;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
-public class QueryTest3 {
+import static org.junit.Assert.*;
+
+public class Query3Test {
 
     private InternalKnowledgeBase knowledgeBase;
 
@@ -44,9 +41,9 @@ public class QueryTest3 {
     public void setUp() throws Exception {
         String text = "";
         text += "package org.drools.integrationtests\n";
-        text += "import " + QueryTest3.Bar.class.getCanonicalName() + "\n";
-        text += "import " + QueryTest3.Foo.class.getCanonicalName() + "\n";
-        text += "import " + QueryTest3.Foo2.class.getCanonicalName() + "\n";
+        text += "import " + Query3Test.Bar.class.getCanonicalName() + "\n";
+        text += "import " + Query3Test.Foo.class.getCanonicalName() + "\n";
+        text += "import " + Query3Test.Foo2.class.getCanonicalName() + "\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";

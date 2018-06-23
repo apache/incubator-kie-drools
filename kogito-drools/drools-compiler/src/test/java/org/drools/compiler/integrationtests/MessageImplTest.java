@@ -15,7 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -29,7 +28,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for MessageImpl
  */
-public class MessageImplTests {
+public class MessageImplTest {
 
     @Test
     //See DROOLS-193 (KnowledgeBuilderResult does not always contain a Resource)

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests for PortableParameterDefinitions
  */
-public class PortableParameterDefinitionTests {
+public class PortableParameterDefinitionTest {
 
     @Test
     public void testClassNames() {

@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.fail;
 
-public class QueryTest2 extends CommonTestMethodBase {
+public class Query2Test extends CommonTestMethodBase {
     
     @Test
     public void testEvalRewrite() throws Exception {

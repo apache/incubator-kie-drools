@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SingleFieldConstraintEBLeftSideTests {
+public class SingleFieldConstraintEBLeftSideTest {
 
     @Test
     public void testHashCode() {
