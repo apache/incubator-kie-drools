@@ -15,6 +15,8 @@
 
 package org.drools.compiler
 
+import org.drools.testcoverage.common.model.StockTick;
+
 global java.util.List results;
 
 declare StockTick
@@ -23,17 +25,23 @@ end
 
 rule "Test entry point 1"
 when
-    $st : StockTick( company == "ACME", price > 10 && < 100 ) from entry-point "stream1"
+    $st : StockTick( company == "ACME", price > 10 ) from entry-point "stream1"
 then
-    results.add( Double.valueOf( $st.getPrice() ) );
-    modify( $st ) { setPrice( 110 ) }
+    drools.getEntryPoint("stream2").insert( $st );
 end
 
 rule "Test entry point 2"
+    dialect "mvel"
 when
-    $st : StockTick( company == "ACME", price > 100 ) from entry-point "stream1"
+    $st : StockTick( company == "ACME", price > 20 ) from entry-point "stream2"
 then
-    results.add( Double.valueOf( $st.getPrice() ) );
-    delete( $st );
+    drools.getEntryPoint("stream3").insert( $st );
+end
+
+rule "Test entry point 3"
+when
+    $st : StockTick( ) from entry-point "stream3"
+then
+    results.add( $st );
 end
 

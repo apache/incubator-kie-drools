@@ -1,41 +1,43 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.integrationtests;
 
-import org.kie.api.time.SessionPseudoClock;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
-
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,22 +46,32 @@ import static org.junit.Assert.assertEquals;
  * inserted through one or more entry points.
  * BZ-978979
  */
+@RunWith(Parameterized.class)
 public class NegativePatternsTest {
 
     private static final int LOOPS = 300;
     private static final int SHORT_SLEEP_TIME = 20;
     private static final int LONG_SLEEP_TIME = 30;
 
-    private static final String DEFAULT_SESSION_NAME = "defaultKSession";
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     private KieSession ksession;
     private TrackingAgendaEventListener firedRulesListener;
 
+    public NegativePatternsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
+
     @Before
     public void prepareKieSession() {
-        String drl = "package org.drools.compiler.integrationtests\n" +
+        final String drl = "package org.drools.compiler.integrationtests\n" +
                      "\n" +
-                     "import org.drools.compiler.integrationtests.NegativePatternsTest.TestEvent\n" +
+                     "import " + NegativePatternsTest.TestEvent.class.getCanonicalName() + "\n" +
                      "\n" +
                      "declare TestEvent\n" +
                      "    @role( event )\n" +
@@ -104,24 +116,8 @@ public class NegativePatternsTest {
                      "        // consequence\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-
-        KieModuleModel kieModule = ks.newKieModuleModel();
-        KieBaseModel defaultBase = kieModule.newKieBaseModel("defaultKBase")
-                                            .setDefault(true)
-                                            .addPackage("*")
-                                            .setEventProcessingMode(EventProcessingOption.STREAM);
-        defaultBase.newKieSessionModel(DEFAULT_SESSION_NAME)
-                   .setClockType(ClockTypeOption.get("pseudo"))
-                   .setDefault(true);
-
-        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
-
-        kfs.writeKModuleXML(kieModule.toXML());
-        KieModule builtModule = ks.newKieBuilder(kfs).buildAll().getKieModule();
-        ks.getRepository().addKieModule(builtModule);
-
-        ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession(DEFAULT_SESSION_NAME);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("subnetwork-test", kieBaseTestConfiguration, drl);
+        ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         firedRulesListener = new TrackingAgendaEventListener();
         ksession.addEventListener(firedRulesListener);
     }
@@ -134,8 +130,8 @@ public class NegativePatternsTest {
     }
 
     @Test
-    public void testSingleEvent() throws InterruptedException {
-        EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
+    public void testSingleEvent() {
+        final EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
         int count = 0;
 
@@ -151,7 +147,7 @@ public class NegativePatternsTest {
         ksession.fireAllRules();
         assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
 
-        FactHandle event = entryPoint.insert(new TestEvent(0, "EventA"));
+        final FactHandle event = entryPoint.insert(new TestEvent(0, "EventA"));
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
@@ -172,8 +168,8 @@ public class NegativePatternsTest {
     }
 
     @Test
-    public void testConstrainedAbsence() throws InterruptedException {
-        EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
+    public void testConstrainedAbsence() {
+        final EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
         int count = 0;
 
@@ -201,8 +197,8 @@ public class NegativePatternsTest {
     }
 
     @Test
-    public void testMultipleEvents() throws InterruptedException {
-        EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
+    public void testMultipleEvents() {
+        final EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
         int count = 0;
 
@@ -216,7 +212,7 @@ public class NegativePatternsTest {
         assertEquals(count, firedRulesListener.ruleFiredCount("MultipleEvents"));
 
         entryPoint.insert(new TestEvent(count, "EventA"));
-        FactHandle handle = entryPoint.insert(new TestEvent(-1, "EventB"));
+        final FactHandle handle = entryPoint.insert(new TestEvent(-1, "EventB"));
         advanceTime(SHORT_SLEEP_TIME);
         ksession.fireAllRules();
 
@@ -240,10 +236,10 @@ public class NegativePatternsTest {
     }
 
     @Test
-    public void testMultipleEntryPoints() throws InterruptedException {
-        EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
+    public void testMultipleEntryPoints() {
+        final EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
-        EntryPoint otherStream = ksession.getEntryPoint("OtherStream");
+        final EntryPoint otherStream = ksession.getEntryPoint("OtherStream");
         int count = 0;
 
         count++;
@@ -281,7 +277,7 @@ public class NegativePatternsTest {
     }
 
     private void advanceTime(final long amount) {
-        SessionPseudoClock clock = ksession.getSessionClock();
+        final SessionPseudoClock clock = ksession.getSessionClock();
         clock.advanceTime(amount, TimeUnit.MILLISECONDS);
     }
 
@@ -294,7 +290,7 @@ public class NegativePatternsTest {
         private final Integer id;
         private final String name;
 
-        public TestEvent(Integer id, String name) {
+        public TestEvent(final Integer id, final String name) {
             this.id = id;
             this.name = name;
         }
@@ -318,11 +314,11 @@ public class NegativePatternsTest {
      */
     public static class TrackingAgendaEventListener extends DefaultAgendaEventListener {
 
-        private Map<String, Integer> rulesFired = new HashMap<String, Integer>();
+        private final Map<String, Integer> rulesFired = new HashMap<String, Integer>();
 
         @Override
-        public void afterMatchFired(AfterMatchFiredEvent event) {
-            String rule = event.getMatch().getRule().getName();
+        public void afterMatchFired(final AfterMatchFiredEvent event) {
+            final String rule = event.getMatch().getRule().getName();
             if (isRuleFired(rule)) {
                 rulesFired.put(rule, rulesFired.get(rule) + 1);
             } else {
@@ -336,7 +332,7 @@ public class NegativePatternsTest {
          * @param rule - name of the rule
          * @return true if the rule was fired
          */
-        public boolean isRuleFired(String rule) {
+        public boolean isRuleFired(final String rule) {
             return rulesFired.containsKey(rule);
         }
 
@@ -346,7 +342,7 @@ public class NegativePatternsTest {
          * @param rule - name of the rule
          * @return number how many times rule was fired, 0 if rule wasn't fired
          */
-        public int ruleFiredCount(String rule) {
+        public int ruleFiredCount(final String rule) {
             if (isRuleFired(rule)) {
                 return rulesFired.get(rule);
             } else {
