@@ -74,6 +74,33 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(77, results.iterator().next().getValue());
     }
 
+
+    @Test
+    public void testAccumulateWithoutParameters() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $count : count()  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($count));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(2l, results.iterator().next().getValue());
+    }
+
     @Test
     public void testAccumulateConstrainingValue() {
         String str =
