@@ -7,6 +7,9 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
@@ -82,5 +85,11 @@ public class DeclarationSpec {
                 "bindingId='" + bindingId + '\'' +
                 ", declarationClass=" + declarationClass +
                 '}';
+    }
+
+    public Declaration asDeclaration() {
+        Declaration decl = new Declaration( bindingId, new PatternExtractor( new ClassObjectType( declarationClass ) ), null );
+        decl.setDeclarationClass( declarationClass );
+        return decl;
     }
 }

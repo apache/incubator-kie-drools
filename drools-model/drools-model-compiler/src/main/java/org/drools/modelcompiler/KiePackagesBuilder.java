@@ -385,7 +385,7 @@ public class KiePackagesBuilder {
                 AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
                 Pattern pattern = null;
                 if (accumulatePattern.getAccumulateFunctions().length == 1) {
-                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getVariable() );
+                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getResult() );
                 }
                 boolean existingPattern = pattern != null;
                 if (!existingPattern) {
@@ -580,14 +580,7 @@ public class KiePackagesBuilder {
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
-
-            Declaration[] bindingDeclaration;
-            if(binding == null && accFunctions[0].getSource() != null) {
-                bindingDeclaration = new Declaration[]{ctx.getPattern(accFunctions[0].getSource()).getDeclaration()};
-            } else {
-                bindingDeclaration = new Declaration[0];
-            }
-            accumulate = new SingleAccumulate(source, bindingDeclaration, accumulator);
+            accumulate = new SingleAccumulate(source, getRequiredDeclarationsForAccumulate( ctx, binding, accFunctions[0] ), accumulator);
 
         } else {
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
@@ -613,6 +606,22 @@ public class KiePackagesBuilder {
         }
 
         return accumulate;
+    }
+
+    private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, Binding binding, AccumulateFunction accFunction ) {
+        if (binding != null || accFunction.getSource() == null) {
+            if (accFunction.getExternalVars() != null) {
+                Variable[] extVars = accFunction.getExternalVars();
+                Declaration[] bindingDeclaration = new Declaration[extVars.length];
+                for (int i = 0; i < extVars.length; i++) {
+                    bindingDeclaration[i] = ctx.getDeclaration( extVars[i] );
+                }
+                return bindingDeclaration;
+            } else {
+                return new Declaration[0];
+            }
+        }
+        return new Declaration[] { ctx.getPattern( accFunction.getSource() ).getDeclaration() };
     }
 
     private BindingEvaluator createBindingEvaluator(RuleContext ctx, Binding binding) {

@@ -3,7 +3,9 @@ package org.drools.model.functions.accumulate;
 import org.drools.model.Variable;
 
 public class AccumulateFunction {
-    private Variable var;
+    private Variable result;
+    private Variable[] externalVars;
+
     protected final Variable source;
     protected final Class<?> functionClass;
 
@@ -20,12 +22,21 @@ public class AccumulateFunction {
         return functionClass;
     }
 
-    public Variable getVariable() {
-        return var;
+    public Variable getResult() {
+        return result;
     }
 
-    public AccumulateFunction as(Variable var) {
-        this.var = var;
+    public AccumulateFunction as(Variable result) {
+        this.result = result;
+        return this;
+    }
+
+    public Variable[] getExternalVars() {
+        return externalVars;
+    }
+
+    public AccumulateFunction with(Variable... externalVars) {
+        this.externalVars = externalVars;
         return this;
     }
 }
