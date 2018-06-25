@@ -58,7 +58,10 @@ public class FEELParser {
 
         ParserHelper parserHelper = new ParserHelper(eventsManager);
         additionalFunctions.forEach(f -> parserHelper.getSymbolTable().getBuiltInScope().define(f.getSymbol()));
-        profiles.stream().filter(KieExtendedFEELProfile.class::isInstance).forEach(dc -> parserHelper.setFeatDMN12EnhancedForLoopEnabled(true));
+        profiles.stream().filter(KieExtendedFEELProfile.class::isInstance).forEach(dc -> {
+            parserHelper.setFeatDMN12EnhancedForLoopEnabled(true);
+            parserHelper.setFeatDMN12weekday(true);
+        });
 
         parser.setHelper(parserHelper);
         parser.setErrorHandler( new FEELErrorHandler() );
