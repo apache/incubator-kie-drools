@@ -34,6 +34,7 @@ import static org.junit.Assert.*;
 public class PartitionQueueTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PartitionQueueTest.class);
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     @After
