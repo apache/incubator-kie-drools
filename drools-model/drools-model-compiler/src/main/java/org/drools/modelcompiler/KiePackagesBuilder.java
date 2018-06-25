@@ -581,7 +581,12 @@ public class KiePackagesBuilder {
                                                             true);
             pattern.addDeclaration(declaration);
 
-            Declaration[] bindingDeclaration = binding != null ? new Declaration[0] : new Declaration[] { ctx.getPattern( accFunctions[0].getSource() ).getDeclaration() };
+            Declaration[] bindingDeclaration;
+            if(binding == null && accFunctions[0].getSource() != null) {
+                bindingDeclaration = new Declaration[]{ctx.getPattern(accFunctions[0].getSource()).getDeclaration()};
+            } else {
+                bindingDeclaration = new Declaration[0];
+            }
             accumulate = new SingleAccumulate(source, bindingDeclaration, accumulator);
 
         } else {
