@@ -23,7 +23,7 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         this.accumulateFunctions = accumulateFunctions;
         boundVariables = new Variable[accumulateFunctions.length];
         for (int i = 0; i < accumulateFunctions.length; i++) {
-            boundVariables[i] = accumulateFunctions[i].getVariable();
+            boundVariables[i] = accumulateFunctions[i].getResult();
         }
         this.pattern = findPatternImplSource();
     }

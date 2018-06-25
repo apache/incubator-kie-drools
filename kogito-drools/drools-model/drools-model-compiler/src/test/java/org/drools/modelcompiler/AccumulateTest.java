@@ -32,7 +32,6 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -73,7 +72,6 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
     }
-
 
     @Test
     public void testAccumulateWithoutParameters() {
@@ -763,13 +761,38 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("it should use the legacy accumulator but the generated class doesn't have the $l binding see DeclarationScopeResolver#getDeclarations")
-    public void testFromCollectWithExpandedAccumulateExternalBind() {
+    public void testFromCollectWithExpandedAccumulateExternalBindInInit() {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  String( $l : length )" +
                 "  $sum : Integer() from accumulate (\n" +
-                "            Person( age > 18, $age : age ), init( int sum = (0 * $l); ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                "            Person( age > 18, $age : age ), init( int sum = 0 * $l; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(112));
+
+    }
+
+    @Test
+    public void testFromCollectWithExpandedAccumulateExternalBindInAction() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  String( $l : length )" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += ($age * $l); ), reverse( sum -= $age; ), result( sum )\n" +
                 "         )" +
                 "then\n" +
                 "  insert($sum);\n" +

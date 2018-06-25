@@ -335,7 +335,7 @@ public class ViewFlowBuilder implements ViewBuilder {
             AccumulateExprViewItem acc = (AccumulateExprViewItem)viewItem;
 
             for ( AccumulateFunction accFunc : acc.getAccumulateFunctions()) {
-                ctx.usedVars.add(accFunc.getVariable());
+                ctx.usedVars.add(accFunc.getResult());
             }
 
             Condition newCondition;

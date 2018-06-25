@@ -55,6 +55,7 @@ public class DslMethodNames {
     public static final String FORALL_CALL = "D.forall";
     public static final String ACCUMULATE_CALL = "D.accumulate";
     public static final String ACC_FUNCTION_CALL = "D.accFunction";
+    public static final String ACC_WITH_EXTERNAL_DECLRS_CALL = "with";
     public static final String EVAL_CALL = "D.eval";
 
     // indexing
