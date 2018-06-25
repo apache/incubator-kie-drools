@@ -134,15 +134,15 @@ public abstract class AccumulateVisitor {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
 
-        final String expression = function.getParams()[0];
-        final Expression expr = DrlxParseUtil.parseExpression(expression).getExpr();
+        final String accumulateFunctionParameterStr = function.getParams()[0];
+        final Expression accumulateFunctionParameter = DrlxParseUtil.parseExpression(accumulateFunctionParameterStr).getExpr();
         final String bindingId = Optional.ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
 
         Optional<AccumulateVisitorPatternDSL.NewBinding> newBinding = Optional.empty();
 
-        if (expr instanceof BinaryExpr) {
+        if (accumulateFunctionParameter instanceof BinaryExpr) {
 
-            final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, expression);
+            final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
 
             newBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<AccumulateVisitorPatternDSL.NewBinding>>() {
                 @Override
@@ -168,9 +168,9 @@ public abstract class AccumulateVisitor {
                     return Optional.empty();
                 }
             });
-        } else if (expr instanceof MethodCallExpr) {
+        } else if (accumulateFunctionParameter instanceof MethodCallExpr) {
 
-            final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(expr);
+            final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(accumulateFunctionParameter);
 
             final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
@@ -195,13 +195,13 @@ public abstract class AccumulateVisitor {
             functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
 
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-        } else if (expr instanceof NameExpr) {
+        } else if (accumulateFunctionParameter instanceof NameExpr) {
             final Class<?> declarationClass = context
-                    .getDeclarationById(expr.toString())
+                    .getDeclarationById(accumulateFunctionParameter.toString())
                     .orElseThrow(RuntimeException::new)
                     .getDeclarationClass();
 
-            final String nameExpr = ((NameExpr) expr).getName().asString();
+            final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
             final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
@@ -214,7 +214,7 @@ public abstract class AccumulateVisitor {
                 context.addDeclarationReplacing( new DeclarationSpec( bindingId, accumulateFunctionResultType ) );
             }
         } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + expression));
+            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + accumulateFunctionParameterStr));
             return Optional.empty();
         }
 
