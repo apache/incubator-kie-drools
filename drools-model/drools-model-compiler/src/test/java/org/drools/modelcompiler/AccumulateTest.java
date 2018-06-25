@@ -835,4 +835,21 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(3, results.iterator().next().getAge());
     }
+
+    @Test
+    public void testNoBinding() {
+
+        final String str = "rule foo\n" +
+                "when\n" +
+                "Object() from accumulate( Object(),\n" +
+                "init( Object res = 2; )\n" +
+                "action( res = 2; )\n" +
+                "result( res ) )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert("xyz");
+        ksession.fireAllRules();
+    }
 }

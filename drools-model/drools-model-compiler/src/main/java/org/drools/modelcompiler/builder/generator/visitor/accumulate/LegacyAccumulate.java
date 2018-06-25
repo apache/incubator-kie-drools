@@ -30,6 +30,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.javaparser.ast.NodeList.nodeList;
@@ -77,7 +78,8 @@ public class LegacyAccumulate {
         GeneratedClassWithPackage invokerGenerated = createInvokerClass(imports, packageName);
         packageModel.addGeneratedAccumulateClasses(invokerGenerated);
 
-        String typeWithPackage = String.format("%s.%s", packageName, invokerGenerated.getGeneratedClass().getName().asString());
+        final String generatedClassName = invokerGenerated.getGeneratedClass().getName().asString();
+        String typeWithPackage = String.format("%s.%s", packageName, generatedClassName);
         ClassExpr accFunctionName = new ClassExpr(JavaParser.parseType(typeWithPackage));
         MethodCallExpr accFunctionCall = new MethodCallExpr(null, ACC_FUNCTION_CALL, nodeList(accFunctionName));
 
@@ -88,7 +90,15 @@ public class LegacyAccumulate {
             }
         }
 
-        NameExpr bindingVariable = new NameExpr(toVar(basePattern.getIdentifier()));
+        final String identifier;
+        if(basePattern.getIdentifier() != null) {
+            identifier = basePattern.getIdentifier();
+        } else {
+            // As we don't have a bind we need a unique name. Let's use the same as the generated invoker
+            identifier = generatedClassName;
+            context.addDeclaration(new DeclarationSpec(generatedClassName, Object.class));
+        }
+        final NameExpr bindingVariable = new NameExpr(toVar(identifier));
         accFunctionCall = new MethodCallExpr(accFunctionCall, BIND_AS_CALL, nodeList(bindingVariable));
 
         context.addExpression(accFunctionCall);
