@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -59,15 +60,23 @@ import org.drools.javaparser.ast.stmt.Statement;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1BaseVisitor;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.ContextEntryContext;
@@ -99,6 +108,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             JavaParser.parseType(Comparable.class.getCanonicalName());
     private static final org.drools.javaparser.ast.type.Type TYPE_LIST =
             JavaParser.parseType(List.class.getCanonicalName());
+    public static final ClassOrInterfaceType TYPE_CUSTOM_FEEL_FUNCTION =
+            JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
 
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
@@ -883,20 +894,65 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
-        DirectCompilerResult parameters = null;
-        if (ctx.formalParameters() != null) {
-            parameters = visit(ctx.formalParameters());
-        }
+
         boolean external = ctx.external != null;
-        if (external) {
-            throw new UnsupportedOperationException("TODO"); // TODO
-        }
         DirectCompilerResult body = visit(ctx.body);
+        return external ?
+                declareExternalFunction(ctx) :
+                declareInternalFunction(ctx.body, ctx.formalParameters());
+    }
+
+    private DirectCompilerResult declareExternalFunction(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
+        ASTBuilderVisitor evaluatingVisitor = new ASTBuilderVisitor(Collections.emptyMap());
+        EvaluationContextImpl emptyEvalCtx =
+                new EvaluationContextImpl(this.getClass().getClassLoader(), new FEELEventListenersManager());
+
+        List<String> params = null;
+        if ( ctx.formalParameters() != null ) {
+            ListNode listNode = (ListNode)
+                    evaluatingVisitor.visit(ctx.formalParameters());
+            params = listNode.getElements().stream().map(n -> n.getText()).collect(Collectors.toList());
+        }
+
+        BaseNode evaluatedBody = evaluatingVisitor.visit( ctx.body );
+        Map<String, Object> conf = (Map<String, Object>) evaluatedBody.evaluate(emptyEvalCtx);
+        Map<String, String> java = (Map<String, String>) conf.get( "java" );
+
+        if (java != null) {
+
+            String className = java.get("class");
+            String methodSignature = java.get("method signature");
+            if (className == null || methodSignature == null) {
+                throw new IllegalArgumentException("Invalid class name or method signature: " + className + "::" + methodSignature);
+            }
+            Expression methodCallExpr = FunctionDefs.asMethodCall(className, methodSignature, params);
+            DirectCompilerResult parameters = visit(ctx.formalParameters());
+
+            ObjectCreationExpr functionDefExpr = new ObjectCreationExpr();
+            functionDefExpr.setType(TYPE_CUSTOM_FEEL_FUNCTION);
+            functionDefExpr.addArgument(ANONYMOUS_STRING_LITERAL);
+            functionDefExpr.addArgument((parameters != null) ? parameters.getExpression() : EMPTY_LIST);
+            functionDefExpr.addArgument(anonFunctionEvaluationContext2Object(methodCallExpr));
+            functionDefExpr.addArgument(new MethodCallExpr(new NameExpr("feelExprCtx"), "current"));
+            DirectCompilerResult result = DirectCompilerResult.of(functionDefExpr, BuiltInType.FUNCTION);
+            return result;
+
+        } else {
+            throw new IllegalArgumentException("Invalid external declaration");
+        }
+
+    }
+
+    private DirectCompilerResult declareInternalFunction(ExpressionContext bodyCtx, FEEL_1_1Parser.FormalParametersContext parametersCtx) {
+        DirectCompilerResult body = visit(bodyCtx);
+        DirectCompilerResult parameters =
+            parametersCtx == null? null : visit(parametersCtx);
         ObjectCreationExpr functionDefExpr = new ObjectCreationExpr();
-        functionDefExpr.setType(JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName()));
+        functionDefExpr.setType(TYPE_CUSTOM_FEEL_FUNCTION);
         functionDefExpr.addArgument(ANONYMOUS_STRING_LITERAL);
         functionDefExpr.addArgument((parameters != null) ? parameters.getExpression() : EMPTY_LIST);
         functionDefExpr.addArgument(anonFunctionEvaluationContext2Object(body.getExpression()));
+        functionDefExpr.addArgument(new MethodCallExpr(new NameExpr("feelExprCtx"), "current"));
         DirectCompilerResult result = DirectCompilerResult.of(functionDefExpr, BuiltInType.FUNCTION).withFD(body);
         if (parameters != null) {
             result.withFD(parameters);
