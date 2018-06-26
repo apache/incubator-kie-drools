@@ -30,37 +30,37 @@ public class LHSGeneratorContextFactory {
 
     public LHSGeneratorContext newGeneratorContext() {
         final LHSGeneratorContext gc = new LHSGeneratorContext();
-        contexts.add( gc );
+        contexts.add(gc);
         return gc;
     }
 
-    public LHSGeneratorContext newChildGeneratorContext( final LHSGeneratorContext parent,
-                                                         final IPattern pattern ) {
-        final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
-                                                                pattern,
-                                                                getMaximumDepth() + 1,
-                                                                0 );
-        contexts.add( gc );
+    public LHSGeneratorContext newChildGeneratorContext(final LHSGeneratorContext parent,
+                                                        final IPattern pattern) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext(parent,
+                                                               pattern,
+                                                               getMaximumDepth() + 1,
+                                                               0);
+        contexts.add(gc);
         return gc;
     }
 
-    public LHSGeneratorContext newChildGeneratorContext( final LHSGeneratorContext parent,
-                                                         final FieldConstraint fieldConstraint ) {
-        final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
-                                                                fieldConstraint,
-                                                                getMaximumDepth() + 1,
-                                                                0 );
-        contexts.add( gc );
+    public LHSGeneratorContext newChildGeneratorContext(final LHSGeneratorContext parent,
+                                                        final FieldConstraint fieldConstraint) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext(parent,
+                                                               fieldConstraint,
+                                                               getMaximumDepth() + 1,
+                                                               0);
+        contexts.add(gc);
         return gc;
     }
 
-    public LHSGeneratorContext newPeerGeneratorContext( final LHSGeneratorContext peer,
-                                                        final FieldConstraint fieldConstraint ) {
-        final LHSGeneratorContext gc = new LHSGeneratorContext( peer.getParent(),
-                                                                fieldConstraint,
-                                                                peer.getDepth(),
-                                                                peer.getOffset() + 1 );
-        contexts.add( gc );
+    public LHSGeneratorContext newPeerGeneratorContext(final LHSGeneratorContext peer,
+                                                       final FieldConstraint fieldConstraint) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext(peer.getParent(),
+                                                               fieldConstraint,
+                                                               peer.getDepth(),
+                                                               peer.getOffset() + 1);
+        contexts.add(gc);
         return gc;
     }
 
@@ -68,24 +68,23 @@ public class LHSGeneratorContextFactory {
         return contexts;
     }
 
-    private int getMaximumDepth() {
+    public int getMaximumDepth() {
         int depth = 0;
-        for ( LHSGeneratorContext gctx : contexts ) {
-            depth = Math.max( depth,
-                              gctx.getDepth() );
+        for (LHSGeneratorContext gctx : contexts) {
+            depth = Math.max(depth,
+                             gctx.getDepth());
         }
         return depth;
     }
 
-    public List<LHSGeneratorContext> getPeers( final LHSGeneratorContext peer ) {
+    public List<LHSGeneratorContext> getPeers(final LHSGeneratorContext peer) {
         final List<LHSGeneratorContext> peers = new ArrayList<LHSGeneratorContext>();
-        for ( LHSGeneratorContext c : contexts ) {
-            if ( c.getDepth() == peer.getDepth() ) {
-                peers.add( c );
+        for (LHSGeneratorContext c : contexts) {
+            if (c.getDepth() == peer.getDepth()) {
+                peers.add(c);
             }
         }
-        peers.remove( peer );
+        peers.remove(peer);
         return peers;
     }
-
 }
