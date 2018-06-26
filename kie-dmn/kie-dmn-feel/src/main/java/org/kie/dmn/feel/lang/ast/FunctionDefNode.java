@@ -37,8 +37,8 @@ public class FunctionDefNode
         extends BaseNode {
 
     private static final String ANONYMOUS = "<anonymous>";
-    private final Pattern METHOD_PARSER = Pattern.compile( "(.+)\\((.*)\\)" );
-    private final Pattern PARAMETER_PARSER = Pattern.compile( "([^, ]+)" );
+    private static final Pattern METHOD_PARSER = Pattern.compile( "(.+)\\((.*)\\)" );
+    private static final Pattern PARAMETER_PARSER = Pattern.compile( "([^, ]+)" );
 
 
     private List<NameDefNode> formalParameters;
@@ -128,7 +128,7 @@ public class FunctionDefNode
         }
     }
 
-    private Class<?> getType(String typeName)
+    public static Class<?> getType(String typeName)
             throws ClassNotFoundException {
         // first check if it is primitive
         Class<?> type = convertPrimitiveNameToType( typeName );
@@ -140,7 +140,7 @@ public class FunctionDefNode
         return type;
     }
 
-    public String[] parseMethod(String signature ) {
+    public static String[] parseMethod(String signature ) {
         Matcher m = METHOD_PARSER.matcher( signature );
         if( m.matches() ) {
             String[] result = new String[2];
@@ -152,7 +152,7 @@ public class FunctionDefNode
     }
 
 
-    public String[] parseParams(String params) {
+    public static String[] parseParams(String params) {
         List<String> ps = new ArrayList<>(  );
         if( params.trim().length() > 0 ) {
             Matcher m = PARAMETER_PARSER.matcher( params.trim() );
@@ -163,7 +163,7 @@ public class FunctionDefNode
         return ps.toArray( new String[ps.size()] );
     }
 
-    public static Class<?> convertPrimitiveNameToType( String typeName ) {
+    private static Class<?> convertPrimitiveNameToType( String typeName ) {
         if (typeName.equals( "int" )) {
             return int.class;
         }
