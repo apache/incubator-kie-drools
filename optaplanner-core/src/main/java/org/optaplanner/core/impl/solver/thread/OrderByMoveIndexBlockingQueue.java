@@ -48,6 +48,14 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
                         + ") cannot be the same as the stepIndex (" + stepIndex + ")");
             }
             filterStepIndex = stepIndex;
+            MoveResult<Solution_> exceptionResult = innerQueue.stream().filter(MoveResult::hasThrownException)
+                    .findFirst().orElse(null);
+            if (exceptionResult != null) {
+                throw new IllegalStateException("The move thread with moveThreadIndex ("
+                        + exceptionResult.getMoveThreadIndex() + ") has thrown an exception."
+                        + " Relayed here in the parent thread.",
+                        exceptionResult.getThrowable());
+            }
             innerQueue.clear();
         }
         nextMoveIndex = 0;
@@ -125,6 +133,8 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
         }
         while (true) {
             MoveResult<Solution_> result = innerQueue.take();
+            // If 2 exceptions are added from different threads concurrently, either one could end up first.
+            // This is a known deviation from 100% reproducibility, that never occurs in a success scenario.
             if (result.hasThrownException()) {
                 throw new IllegalStateException("The move thread with moveThreadIndex ("
                         + result.getMoveThreadIndex() + ") has thrown an exception."

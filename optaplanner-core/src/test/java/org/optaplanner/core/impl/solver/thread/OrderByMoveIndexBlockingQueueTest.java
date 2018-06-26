@@ -145,6 +145,30 @@ public class OrderByMoveIndexBlockingQueueTest {
         }
     }
 
+    @Test
+    public void addExceptionIsNotEatenIfNextStepStartsBeforeTaken() throws InterruptedException {
+        // Capacity: 4 moves in circulation + 2 exception handling results
+        OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
+
+        queue.startNextStep(0);
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.valueOf(0)));
+        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-2)));
+        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
+        IllegalArgumentException exception = new IllegalArgumentException();
+        executorService.submit(() -> queue.addExceptionThrown(1, exception));
+        assertResult("a0", 0, queue.take());
+        assertResult("a1", -1, queue.take());
+        assertResult("a2", -2, queue.take());
+
+        try {
+            queue.startNextStep(1);
+            fail("There was no RuntimeException thrown.");
+        } catch (RuntimeException e) {
+            assertSame(exception, e.getCause());
+        }
+    }
+
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
         assertEquals(SimpleScore.valueOf(score), result.getScore());
