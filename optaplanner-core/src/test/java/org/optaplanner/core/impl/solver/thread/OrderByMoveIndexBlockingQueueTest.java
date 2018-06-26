@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.fail;
 
 public class OrderByMoveIndexBlockingQueueTest {
 
@@ -90,9 +92,67 @@ public class OrderByMoveIndexBlockingQueueTest {
         assertResult("c2", -2, queue.take());
     }
 
+    @Test
+    public void addUndoableMove() throws InterruptedException {
+        // Capacity: 4 moves in circulation + 2 exception handling results
+        OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
+
+        queue.startNextStep(0);
+        executorService.submit(() -> queue.addUndoableMove(0, 0, 0, new DummyMove("a0")));
+        executorService.submit(() -> queue.addUndoableMove(1, 0, 3, new DummyMove("a3")));
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addUndoableMove(1, 0, 2, new DummyMove("a2")));
+        assertResult("a0", false, queue.take());
+        assertResult("a1", -1, queue.take());
+        assertResult("a2", false, queue.take());
+
+        queue.startNextStep(1);
+        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
+        executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
+        assertResult("b0", false, queue.take());
+        assertResult("b1", -1, queue.take());
+    }
+
+    @Test
+    public void addExceptionThrown() throws InterruptedException {
+        // Capacity: 4 moves in circulation + 2 exception handling results
+        OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
+
+        queue.startNextStep(0);
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.valueOf(0)));
+        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-2)));
+        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
+        assertResult("a0", 0, queue.take());
+        assertResult("a1", -1, queue.take());
+        assertResult("a2", -2, queue.take());
+
+        queue.startNextStep(1);
+        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
+        executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
+        IllegalArgumentException exception = new IllegalArgumentException();
+        executorService.submit(() -> queue.addExceptionThrown(1, exception));
+        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.valueOf(-2)));
+        assertResult("b0", false, queue.take());
+        assertResult("b1", -1, queue.take());
+        try {
+            queue.take();
+            fail("There was no RuntimeException thrown.");
+        } catch (RuntimeException e) {
+            assertSame(exception, e.getCause());
+        }
+    }
+
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
         assertEquals(SimpleScore.valueOf(score), result.getScore());
+    }
+
+    private void assertResult(String moveCode, boolean doable, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
+        assertCode(moveCode, result.getMove());
+        assertEquals(doable, result.isMoveDoable());
     }
 
 }
