@@ -376,19 +376,33 @@ public class CompiledFEELSupport {
             return null;
         }
         if (function instanceof FEELFunction) {
-            Object[] invocationParams = null;
-            if (params instanceof List) {
-                invocationParams = ((List) params).toArray(new Object[]{});
-            } else if (params instanceof Object[]) {
-                invocationParams = (Object[]) params;
-            } else {
-                invocationParams = new Object[]{params};
+            Object[] invocationParams = toFunctionParams(params);
+
+            FEELFunction f = (FEELFunction) function;
+
+            if (function instanceof CompiledCustomFEELFunction) {
+                CompiledCustomFEELFunction ff = (CompiledCustomFEELFunction) function;
+                if (ff.isProperClosure()) {
+                    return ff.invokeReflectively(ff.getEvaluationContext(), invocationParams);
+                }
             }
-            return ((FEELFunction) function).invokeReflectively(feelExprCtx, invocationParams);
+
+            return f.invokeReflectively(feelExprCtx, invocationParams);
         } else if (function instanceof UnaryTest) {
             throw new UnsupportedOperationException("TODO"); // TODO
         }
         return null;
     }
 
+    private static Object[] toFunctionParams(Object params) {
+        Object[] invocationParams = null;
+        if (params instanceof List) {
+            invocationParams = ((List) params).toArray(new Object[]{});
+        } else if (params instanceof Object[]) {
+            invocationParams = (Object[]) params;
+        } else {
+            invocationParams = new Object[]{params};
+        }
+        return invocationParams;
+    }
 }

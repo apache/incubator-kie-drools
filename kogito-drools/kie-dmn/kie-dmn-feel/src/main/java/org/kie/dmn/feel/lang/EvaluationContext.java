@@ -30,6 +30,8 @@ public interface EvaluationContext {
 
     void exitFrame();
 
+    EvaluationContext current();
+
     void setValue(String name, Object value );
 
     Object getValue(String name );

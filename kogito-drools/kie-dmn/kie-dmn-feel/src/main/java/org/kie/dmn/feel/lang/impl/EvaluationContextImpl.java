@@ -38,10 +38,14 @@ public class EvaluationContextImpl implements EvaluationContext {
     private boolean performRuntimeTypeCheck = false;
     private ClassLoader rootClassLoader;
 
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager) {
+    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack) {
         this.eventsManager = eventsManager;
         this.rootClassLoader = cl;
-        this.stack = new ArrayDeque<>();
+        this.stack = new ArrayDeque<>(stack);
+    }
+
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager) {
+        this(cl, eventsManager, new ArrayDeque<>());
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
@@ -53,6 +57,11 @@ public class EvaluationContextImpl implements EvaluationContext {
     public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime) {
         this(dmnRuntime.getRootClassLoader(), eventsManager);
         this.dmnRuntime = dmnRuntime;
+    }
+
+    @Override
+    public EvaluationContext current() {
+        return new EvaluationContextImpl(rootClassLoader, eventsManager, new ArrayDeque<>(stack));
     }
 
     public void push(ExecutionFrame obj) {

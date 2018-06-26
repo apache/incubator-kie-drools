@@ -51,6 +51,11 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     }
 
     @Override
+    public EvaluationContext current() {
+        return new SilentWrappingEvaluationContextImpl(wrapped.current());
+    }
+
+    @Override
     public void setValue(String name, Object value) {
         wrapped.setValue(name, value);
     }

@@ -18,6 +18,7 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,16 +34,30 @@ public class CompiledCustomFEELFunction extends BaseFEELFunction {
 
     private final List<String> parameters;
     private final Function<EvaluationContext, Object> body;
+    private final EvaluationContext ctx;
 
     public CompiledCustomFEELFunction(String name, List<String> parameters, Function<EvaluationContext, Object> body) {
+        this(name, parameters, body, null);
+    }
+
+    public CompiledCustomFEELFunction(String name, List<String> parameters, Function<EvaluationContext, Object> body, EvaluationContext ctx) {
         super( name );
         this.parameters = parameters;
         this.body = body;
+        this.ctx = ctx;
     }
 
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList( parameters );
+    }
+
+    public boolean isProperClosure() {
+        return ctx != null;
+    }
+
+    public EvaluationContext getEvaluationContext() {
+        return ctx;
     }
 
     @Override

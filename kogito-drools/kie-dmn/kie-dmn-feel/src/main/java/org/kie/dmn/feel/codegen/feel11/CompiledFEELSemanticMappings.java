@@ -107,6 +107,42 @@ public class CompiledFEELSemanticMappings {
         }
     }
     
+    public static <T> T coerceTo(Class<?> paramType, Object value) {
+        Object actual;
+        if( paramType.isAssignableFrom( value.getClass() ) ) {
+            actual = value;
+        } else {
+            // try to coerce
+            if( value instanceof Number ) {
+                if( paramType == byte.class || paramType == Byte.class ) {
+                    actual = ((Number)value).byteValue();
+                } else if( paramType == short.class || paramType == Short.class ) {
+                    actual = ((Number) value).shortValue();
+                } else if( paramType == int.class || paramType == Integer.class ) {
+                    actual = ((Number) value).intValue();
+                } else if( paramType == long.class || paramType == Long.class ) {
+                    actual = ((Number) value).longValue();
+                } else if( paramType == float.class || paramType == Float.class ) {
+                    actual = ((Number) value).floatValue();
+                } else if( paramType == double.class || paramType == Double.class ) {
+                    actual = ((Number) value).doubleValue();
+                } else {
+                    throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
+                }
+            } else if ( value instanceof String
+                    && ((String) value).length() == 1
+                    && (paramType == char.class || paramType == Character.class) ) {
+                actual = ((String) value).charAt(0);
+            } else if ( value instanceof Boolean && paramType == boolean.class ) {
+                // Because Boolean can be also null, boolean.class is not assignable from Boolean.class. So we must coerce this.
+                actual = value;
+            } else {
+                throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
+            }
+        }
+        return (T) actual;
+    }
+    
     /**
      * Represent a [e1, e2, e3] construct.
      */
