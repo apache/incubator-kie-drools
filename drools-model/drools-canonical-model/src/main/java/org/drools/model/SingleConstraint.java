@@ -7,6 +7,8 @@ import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.SingleConstraint4;
 import org.drools.model.constraints.SingleConstraint5;
+import org.drools.model.constraints.SingleConstraint6;
+import org.drools.model.constraints.SingleConstraint7;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr1ViewItemImpl;
@@ -14,6 +16,8 @@ import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
+import org.drools.model.view.Expr6ViewItemImpl;
+import org.drools.model.view.Expr7ViewItemImpl;
 import org.drools.model.view.ExprNViewItem;
 
 public interface SingleConstraint extends Constraint {
@@ -95,6 +99,12 @@ public interface SingleConstraint extends Constraint {
         }
         if ( expr instanceof Expr5ViewItemImpl ) {
             return new SingleConstraint5( ( Expr5ViewItemImpl ) expr );
+        }
+        if ( expr instanceof Expr6ViewItemImpl ) {
+            return new SingleConstraint6( ( Expr6ViewItemImpl ) expr );
+        }
+        if ( expr instanceof Expr7ViewItemImpl ) {
+            return new SingleConstraint7( ( Expr7ViewItemImpl ) expr );
         }
         throw new UnsupportedOperationException( "Unknow expr type: " + expr.getClass() );
     }
