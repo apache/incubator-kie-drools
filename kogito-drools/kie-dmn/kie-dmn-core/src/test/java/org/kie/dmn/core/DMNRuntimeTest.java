@@ -61,6 +61,8 @@ import org.kie.dmn.model.v1_1.Decision;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -83,6 +85,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNRuntimeTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTest.class);
 
     @Test
     public void testSimpleItemDefinition() {
@@ -2032,6 +2036,27 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
+    }
+
+    @Test
+    public void testWeekdayOnDateDMN12() {
+        // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("weekday-on-date.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_55a2dafd-ab4d-4154-bace-826d426da251", "weekday on date");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        for (int i = 0; i < 7; i++) {
+            DMNContext context = DMNFactory.newContext();
+            context.set("Run Date", LocalDate.of(2018, 6, 25).plusDays(i));
+
+            DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+            LOG.debug("{}", dmnResult);
+            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+            DMNContext result = dmnResult.getContext();
+            assertThat(result.get("Weekday"), is(new BigDecimal(i + 1)));
+        }
     }
 }
 
