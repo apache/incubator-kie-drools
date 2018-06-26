@@ -7591,8 +7591,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                 "dialect \"java\"\n" +
                 "when\n" +
                 "  $father: Father()\n" +
-                "  ($kid: Kid() from $father.kids)\n" +
-                "  ($toy: Toy(name == null) from $kid.toys)\n" +
+                "  $kid: Kid() from $father.kids\n" +
+                "  $toy: Toy(name == null) from $kid.toys\n" +
                 "then\n" +
                 "  System.out.println(\"blabla\");\n" +
                 "end";
@@ -8114,7 +8114,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                 "when\n" +
                 "  var : NotImported( )\n" +
                 "  OtherType( field != var.field )\n" +
-                "  (MyType( ) from var.collectionField)\n" +
+                "  MyType( ) from var.collectionField\n" +
                 "then\n" +
                 "end";
 
