@@ -61,6 +61,7 @@ public class ParserHelper {
     private Stack<String> currentName  = new Stack<>();
     private int dynamicResolution = 0;
     private boolean featDMN12EnhancedForLoopEnabled = false; // DROOLS-2307 DMN enhanced for loop
+    private boolean featDMN12weekday = false; // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
 
     public ParserHelper() {
         this( null );
@@ -137,6 +138,10 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        if (isFeatDMN12weekday()) {
+                            // Table 60 spec DMN v1.2
+                            this.currentScope.define(new VariableSymbol("weekday", BuiltInType.NUMBER));
+                        }
                         break;
                     case TIME:
                         this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
@@ -149,6 +154,10 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        if (isFeatDMN12weekday()) {
+                            // Table 60 spec DMN v1.2
+                            this.currentScope.define(new VariableSymbol("weekday", BuiltInType.NUMBER));
+                        }
                         this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "minute", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
@@ -299,4 +308,13 @@ public class ParserHelper {
     public void setFeatDMN12EnhancedForLoopEnabled(boolean featDMN12EnhancedForLoopEnabled) {
         this.featDMN12EnhancedForLoopEnabled = featDMN12EnhancedForLoopEnabled;
     }
+
+    public boolean isFeatDMN12weekday() {
+        return featDMN12weekday;
+    }
+
+    public void setFeatDMN12weekday(boolean featDMN12weekday) {
+        this.featDMN12weekday = featDMN12weekday;
+    }
+
 }
