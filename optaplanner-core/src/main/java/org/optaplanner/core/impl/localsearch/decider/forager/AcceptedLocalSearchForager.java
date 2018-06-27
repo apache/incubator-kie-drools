@@ -41,7 +41,6 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
 
     protected long selectedMoveCount;
     protected long acceptedMoveCount;
-
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
     public AcceptedLocalSearchForager(FinalistPodium finalistPodium,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver.thread;
+package org.optaplanner.core.impl.heuristic.thread;
 
 import java.util.HashMap;
 import java.util.Map;

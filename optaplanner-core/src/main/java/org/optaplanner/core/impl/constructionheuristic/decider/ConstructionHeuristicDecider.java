@@ -92,7 +92,7 @@ public class ConstructionHeuristicDecider<Solution_> {
 
     public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement placement) {
         int moveIndex = 0;
-        for (Move move : placement) {
+        for (Move<Solution_> move : placement) {
             ConstructionHeuristicMoveScope<Solution_> moveScope = new ConstructionHeuristicMoveScope<>(stepScope, moveIndex, move);
             moveIndex++;
             // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
@@ -106,8 +106,11 @@ public class ConstructionHeuristicDecider<Solution_> {
                 break;
             }
         }
-        stepScope.setSelectedMoveCount((long) moveIndex);
-        ConstructionHeuristicMoveScope pickedMoveScope = forager.pickMove(stepScope);
+        pickMove(stepScope);
+    }
+
+    protected void pickMove(ConstructionHeuristicStepScope<Solution_> stepScope) {
+        ConstructionHeuristicMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move<Solution_> step = pickedMoveScope.getMove();
             stepScope.setStep(step);

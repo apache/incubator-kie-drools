@@ -42,9 +42,9 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
+import org.optaplanner.core.impl.localsearch.decider.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
-import org.optaplanner.core.impl.localsearch.decider.multithreaded.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -138,8 +138,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     + ") does not support it.\n"
                     + "Maybe configure the <forager> with an <acceptedCountLimit>.");
         }
-        LocalSearchDecider decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
+        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
+        LocalSearchDecider decider;
         if (moveThreadCount == null) {
             decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
                     termination, moveSelector, acceptor, forager);
@@ -153,10 +154,18 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
             }
             ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
             int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
-            decider = new MultiThreadedLocalSearchDecider(configPolicy.getLogIndentation(),
-                    termination, moveSelector, acceptor, forager, threadFactory, moveThreadCount, selectedMoveBufferSize);
+            MultiThreadedLocalSearchDecider multiThreadedDecider = new MultiThreadedLocalSearchDecider(
+                    configPolicy.getLogIndentation(), termination, moveSelector, acceptor, forager,
+                    threadFactory, moveThreadCount, selectedMoveBufferSize);
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
+                multiThreadedDecider.setAssertStepScoreFromScratch(true);
+            }
+            if (environmentMode.isIntrusiveFastAsserted()) {
+                multiThreadedDecider.setAssertExpectedStepScore(true);
+                multiThreadedDecider.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            }
+            decider = multiThreadedDecider;
         }
-        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
         }

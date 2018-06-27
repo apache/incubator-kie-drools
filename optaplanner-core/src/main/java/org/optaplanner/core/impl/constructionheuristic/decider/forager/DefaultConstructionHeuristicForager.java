@@ -31,6 +31,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     protected Comparator<Score> scoreComparator;
 
+    protected long selectedMoveCount;
     protected ConstructionHeuristicMoveScope earlyPickedMoveScope;
     protected ConstructionHeuristicMoveScope maxScoreMoveScope;
 
@@ -46,6 +47,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
     @Override
     public void stepStarted(ConstructionHeuristicStepScope stepScope) {
         super.stepStarted(stepScope);
+        selectedMoveCount = 0L;
         earlyPickedMoveScope = null;
         maxScoreMoveScope = null;
     }
@@ -59,6 +61,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     @Override
     public void addMove(ConstructionHeuristicMoveScope moveScope) {
+        selectedMoveCount++;
         checkPickEarly(moveScope);
         if (maxScoreMoveScope == null
                 || scoreComparator.compare(moveScope.getScore(), maxScoreMoveScope.getScore()) > 0) {
@@ -103,6 +106,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     @Override
     public ConstructionHeuristicMoveScope pickMove(ConstructionHeuristicStepScope stepScope) {
+        stepScope.setSelectedMoveCount(selectedMoveCount);
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         } else {

@@ -18,6 +18,7 @@ package org.optaplanner.core.config.constructionheuristic;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -38,8 +39,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicPhase;
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicPhase;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
+import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -177,9 +180,34 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         ConstructionHeuristicForagerConfig foragerConfig_ = foragerConfig == null
                 ? new ConstructionHeuristicForagerConfig() : foragerConfig;
         ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
-        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(
-                configPolicy.getLogIndentation(), termination, forager);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
+        ConstructionHeuristicDecider decider;
+        Integer moveThreadCount = configPolicy.getMoveThreadCount();
+        if (moveThreadCount == null) {
+            decider = new ConstructionHeuristicDecider(
+                    configPolicy.getLogIndentation(), termination, forager);
+        } else {
+            Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
+            if (moveThreadBufferSize == null) {
+                // TODO Verify this is a good default by more meticulous benchmarking on multiple machines and JDK's
+                // If it's too low, move threads will need to wait on the buffer, which hurts performance
+                // If it's too high, more moves are selected that aren't foraged
+                moveThreadBufferSize = 10;
+            }
+            ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
+            int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
+            MultiThreadedConstructionHeuristicDecider multiThreadedDecider = new MultiThreadedConstructionHeuristicDecider(
+                    configPolicy.getLogIndentation(), termination, forager,
+                    threadFactory, moveThreadCount, selectedMoveBufferSize);
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
+                multiThreadedDecider.setAssertStepScoreFromScratch(true);
+            }
+            if (environmentMode.isIntrusiveFastAsserted()) {
+                multiThreadedDecider.setAssertExpectedStepScore(true);
+                multiThreadedDecider.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            }
+            decider = multiThreadedDecider;
+        }
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
         }

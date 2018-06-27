@@ -16,14 +16,17 @@
 
 package org.optaplanner.core.impl.solver.thread;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
+import org.optaplanner.core.impl.heuristic.thread.OrderByMoveIndexBlockingQueue;
 import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueueTest;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
@@ -115,7 +118,7 @@ public class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addExceptionThrown() throws InterruptedException {
+    public void addExceptionThrown() throws InterruptedException, ExecutionException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
@@ -133,10 +136,11 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
         executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
         IllegalArgumentException exception = new IllegalArgumentException();
-        executorService.submit(() -> queue.addExceptionThrown(1, exception));
+        Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.valueOf(-2)));
         assertResult("b0", false, queue.take());
         assertResult("b1", -1, queue.take());
+        exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
         try {
             queue.take();
             fail("There was no RuntimeException thrown.");
@@ -146,7 +150,7 @@ public class OrderByMoveIndexBlockingQueueTest {
     }
 
     @Test
-    public void addExceptionIsNotEatenIfNextStepStartsBeforeTaken() throws InterruptedException {
+    public void addExceptionIsNotEatenIfNextStepStartsBeforeTaken() throws InterruptedException, ExecutionException {
         // Capacity: 4 moves in circulation + 2 exception handling results
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
@@ -156,11 +160,12 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-2)));
         executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
         IllegalArgumentException exception = new IllegalArgumentException();
-        executorService.submit(() -> queue.addExceptionThrown(1, exception));
+        Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         assertResult("a0", 0, queue.take());
         assertResult("a1", -1, queue.take());
         assertResult("a2", -2, queue.take());
 
+        exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
         try {
             queue.startNextStep(1);
             fail("There was no RuntimeException thrown.");
