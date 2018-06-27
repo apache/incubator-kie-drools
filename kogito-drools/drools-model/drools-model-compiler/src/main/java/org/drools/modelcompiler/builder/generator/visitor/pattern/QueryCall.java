@@ -14,7 +14,6 @@ import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
 
 class QueryCall implements DSLNode {
@@ -47,7 +46,7 @@ class QueryCall implements DSLNode {
             }
             Optional<String> unificationId = context.getUnificationId(variableName);
             int queryIndex = i + 1;
-            Expression parameterCall = unificationId.map(name -> (Expression) new NameExpr(toVar(name)))
+            Expression parameterCall = unificationId.map(name -> context.getVarExpr(name))
                     .orElseGet(() -> new MethodCallExpr(new NameExpr(queryName), QueryGenerator.toQueryArg(queryIndex)));
             callMethod.addArgument(parameterCall);
         }

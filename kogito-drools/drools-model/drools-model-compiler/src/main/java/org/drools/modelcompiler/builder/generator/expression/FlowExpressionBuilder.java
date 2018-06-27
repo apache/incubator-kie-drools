@@ -20,7 +20,6 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -54,7 +53,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
         } else {
             if (drlxParseResult.getPatternBinding() != null) {
-                exprDSL.addArgument(new NameExpr(toVar(drlxParseResult.getPatternBinding())));
+                exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
             }
         }
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
@@ -71,13 +70,13 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     public MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if(drlxParseResult.hasUnificationVariable()) {
-            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
+            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
         } else {
-            bindDSL.addArgument( new NameExpr(toVar(drlxParseResult.getExprBinding())) );
+            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
         }
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        bindAsDSL.addArgument( new NameExpr(toVar(drlxParseResult.getPatternBinding())) );
+        bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }

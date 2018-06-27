@@ -26,15 +26,13 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.javaparser.ast.NodeList.nodeList;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_WITH_EXTERNAL_DECLRS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
@@ -86,7 +84,7 @@ public class LegacyAccumulate {
         if (!externalDeclrs.isEmpty()) {
             accFunctionCall = new MethodCallExpr(accFunctionCall, ACC_WITH_EXTERNAL_DECLRS_CALL);
             for (String externalDeclr : externalDeclrs) {
-                accFunctionCall.addArgument( toVar(externalDeclr) );
+                accFunctionCall.addArgument( context.getVar(externalDeclr) );
             }
         }
 
@@ -96,9 +94,9 @@ public class LegacyAccumulate {
         } else {
             // As we don't have a bind we need a unique name. Let's use the same as the generated invoker
             identifier = generatedClassName;
-            context.addDeclaration(new DeclarationSpec(generatedClassName, Object.class));
+            context.addDeclaration(generatedClassName, Object.class);
         }
-        final NameExpr bindingVariable = new NameExpr(toVar(identifier));
+        Expression bindingVariable = context.getVarExpr(identifier);
         accFunctionCall = new MethodCallExpr(accFunctionCall, BIND_AS_CALL, nodeList(bindingVariable));
 
         context.addExpression(accFunctionCall);

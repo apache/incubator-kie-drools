@@ -68,7 +68,6 @@ import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ATTRIBUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.DECLARATION_OF_CALL;
@@ -185,7 +184,7 @@ public class ModelGenerator {
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createUnitData( ruleUnitDescr, ruleVariablesBlock );
+        createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
         createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
@@ -337,20 +336,20 @@ public class ModelGenerator {
         return result;
     }
 
-    private static void createUnitData( RuleUnitDescr ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
+    private static void createUnitData( RuleContext context, RuleUnitDescr ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
         if (ruleUnitDescr != null) {
             for (String unitVar : ruleUnitDescr.getUnitVars()) {
-                addUnitData(unitVar, ruleUnitDescr.getVarType( unitVar ).get(), ruleVariablesBlock);
+                addUnitData(context, unitVar, ruleUnitDescr.getVarType( unitVar ).get(), ruleVariablesBlock);
             }
         }
     }
 
-    private static void addUnitData(String unitVar, Class<?> type, BlockStmt ruleBlock) {
+    private static void addUnitData(RuleContext context, String unitVar, Class<?> type, BlockStmt ruleBlock) {
         Type declType = classToReferenceType( type );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(unitVar), Modifier.FINAL);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar), Modifier.FINAL);
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
@@ -362,14 +361,14 @@ public class ModelGenerator {
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
-        for (DeclarationSpec decl : context.getDeclarations()) {
+        for (DeclarationSpec decl : context.getAllDeclarations()) {
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
-                addVariable(kbuilder, block, decl);
+                addVariable(kbuilder, block, decl, context);
             }
         }
     }
 
-    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl) {
+    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl, RuleContext context) {
         if (decl.getDeclarationClass() == null) {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
@@ -378,7 +377,7 @@ public class ModelGenerator {
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(Variable.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, toVar(decl.getBindingId()), Modifier.FINAL);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(decl.getBindingId()), Modifier.FINAL);
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 

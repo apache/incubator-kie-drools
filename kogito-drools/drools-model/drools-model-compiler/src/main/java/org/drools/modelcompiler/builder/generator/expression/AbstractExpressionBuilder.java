@@ -37,7 +37,6 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -74,10 +73,7 @@ public abstract class AbstractExpressionBuilder {
 
     private Expression buildUnificationExpression(DrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
-        context.addDeclaration(new DeclarationSpec(drlxParseResult.getUnificationVariable(),
-                drlxParseResult.getUnificationVariableType(),
-                drlxParseResult.getUnificationName()
-        ));
+        context.addDeclaration(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType(), drlxParseResult.getUnificationName());
         return exprDSL;
     }
 

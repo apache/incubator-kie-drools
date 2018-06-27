@@ -8,7 +8,6 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -81,7 +80,7 @@ class Query implements DSLNode {
             valueOfMethod.addArgument( new NameExpr( itemText ) );
             queryArgs[i] = valueOfMethod;
         } else {
-            context.addDeclaration( new DeclarationSpec( itemText, queryParams.get( i ).getType() ) );
+            context.addDeclaration( itemText, queryParams.get( i ).getType() );
             queryArgs[i] = context.getVarExpr( itemText );
         }
     }

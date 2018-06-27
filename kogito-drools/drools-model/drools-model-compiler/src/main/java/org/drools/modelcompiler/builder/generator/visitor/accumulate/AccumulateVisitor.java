@@ -54,12 +54,10 @@ import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
@@ -86,7 +84,7 @@ public abstract class AccumulateVisitor {
 
         context.pushExprPointer(accumulateExprs::addArgument);
 
-        Set<String> externalDeclrs = new HashSet<>( context.getDeclarations().stream().map( DeclarationSpec::getBindingId ).collect( toSet() ) );
+        Set<String> externalDeclrs = new HashSet<>( context.getAvailableBindings() );
         BaseDescr input = descr.getInputPattern() == null ? descr.getInput() : descr.getInputPattern();
         input.accept(modelGeneratorVisitor);
 
@@ -167,7 +165,7 @@ public abstract class AccumulateVisitor {
                         functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                         final MethodCallExpr newBindingFromBinary = AccumulateVisitor.this.buildBinding(bindExpressionVariable, drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr());
                         context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, exprRawClass));
-                        functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
+                        functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
                         return Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.empty(), newBindingFromBinary));
                     }
 
@@ -200,7 +198,7 @@ public abstract class AccumulateVisitor {
                 final MethodCallExpr binding = expressionBuilder.buildBinding(result);
                 newBinding = Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.of(result.getPatternBinding()), binding));
                 context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
-                functionDSL.addArgument(new NameExpr(toVar(bindExpressionVariable)));
+                functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
                 context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
             } else if (accumulateFunctionParameter instanceof NameExpr) {
@@ -212,7 +210,7 @@ public abstract class AccumulateVisitor {
                 final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
                 final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-                functionDSL.addArgument(new NameExpr(toVar(nameExpr)));
+                functionDSL.addArgument(context.getVarExpr(nameExpr));
 
                 if (bindingId != null) {
                     Class accumulateFunctionResultType = accumulateFunction.getResultType();
@@ -367,7 +365,7 @@ public abstract class AccumulateVisitor {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
         functionDSL.addArgument(new ClassExpr(JavaParser.parseType(targetClassName)));
-        functionDSL.addArgument(new NameExpr(toVar(inputDescr.getIdentifier())));
+        functionDSL.addArgument(context.getVarExpr(inputDescr.getIdentifier()));
 
         final String bindingId = basePattern.getIdentifier();
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);

@@ -18,11 +18,13 @@ public class ConditionalElementVisitor {
     public void visit(ConditionalElementDescr descr, String methodName) {
         final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
         this.context.addExpression(ceDSL);
+        this.context.pushScope();
         this.context.pushExprPointer(ceDSL::addArgument );
         for (BaseDescr subDescr : descr.getDescrs()) {
             subDescr.accept(visitor);
         }
         this.context.popExprPointer();
+        this.context.popScope();
     }
 
 }

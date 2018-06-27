@@ -37,7 +37,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -132,7 +131,7 @@ public class Consequence {
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
-        existingDecls.addAll(context.getDeclarations().stream().map(DeclarationSpec::getBindingId).collect(toList()));
+        existingDecls.addAll(context.getAvailableBindings());
         existingDecls.addAll(packageModel.getGlobals().keySet());
         if (context.getRuleUnitDescr() != null) {
             existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
@@ -201,12 +200,12 @@ public class Consequence {
         return appendCall;
     }
 
-    private static MethodCallExpr onCall(Collection<String> usedArguments) {
+    private MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
             onCall = new MethodCallExpr(null, ON_CALL);
-            usedArguments.stream().map(DrlxParseUtil::toVar).forEach(onCall::addArgument);
+            usedArguments.stream().map(context::getVar).forEach(onCall::addArgument);
         }
         return onCall;
     }

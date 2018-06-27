@@ -17,7 +17,6 @@ import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuild
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
@@ -32,9 +31,9 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
-        bindDSL.addArgument(toVar(bindingName));
+        bindDSL.addArgument(context.getVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
-        usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindAsDSL::addArgument);
+        usedDeclaration.stream().map(d -> context.getVarExpr(d)).forEach(bindAsDSL::addArgument);
         bindAsDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindAsDSL;
     }
