@@ -384,10 +384,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static String toVar(String key) {
-        return "var_" + key;
-    }
-
     public static String fromVar(String key) {
         return key.substring( "var_".length() );
     }
@@ -634,11 +630,11 @@ public class DrlxParseUtil {
                         .collect( Collectors.toList() );
     }
 
-    public static Optional<MethodCallExpr> findPatternWithBinding(String patternBinding, List<Expression> expressions) {
+    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, String patternBinding, List<Expression> expressions) {
         return expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
                 final boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
-                final boolean hasBindingHasArgument = expr.getArguments().contains(new NameExpr(toVar(patternBinding)));
+                final boolean hasBindingHasArgument = expr.getArguments().contains(context.getVarExpr(patternBinding));
                 return isPatternExpr && hasBindingHasArgument;
             });
             return pattern.map(Stream::of).orElse(Stream.empty());
@@ -687,5 +683,9 @@ public class DrlxParseUtil {
     public static Expression toNewBigDecimalExpr(Expression initExpression) {
         return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
                                       NodeList.nodeList(initExpression));
+    }
+
+    public static String toVar(String key) {
+        return "var_" + key;
     }
 }

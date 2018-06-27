@@ -23,19 +23,15 @@ public class DeclarationSpec {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName));
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
         this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty());
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
-        this(bindingId, declarationClass, pattern, declarationSource, Optional.empty());
-    }
-
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = pattern;

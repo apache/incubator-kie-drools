@@ -109,7 +109,7 @@ public class QueryGenerator {
         for (int i = 0; i < descr.getParameters().length; i++) {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
-            context.addDeclaration(new DeclarationSpec(argument, getClassFromContext(context.getTypeResolver(), type)));
+            context.addDeclaration(argument, getClassFromContext(context.getTypeResolver(), type));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type));
             context.getQueryParameters().add(queryParameter);
             packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);

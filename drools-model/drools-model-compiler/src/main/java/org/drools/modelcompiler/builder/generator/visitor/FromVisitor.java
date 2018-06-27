@@ -35,17 +35,16 @@ import static java.util.Optional.of;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
 
-    private final RuleContext ruleContext;
+    private final RuleContext context;
     private final PackageModel packageModel;
     private final Class<?> patternType;
 
     public FromVisitor(RuleContext context, PackageModel packageModel, Class<?> patternType) {
-        this.ruleContext = context;
+        this.context = context;
         this.packageModel = packageModel;
         this.patternType = patternType;
     }
@@ -93,10 +92,10 @@ public class FromVisitor {
         Collection<String> usedDeclarations = new ArrayList<>();
 
         for (String expr : expressions.split( "," )) {
-            Optional<DeclarationSpec> optContainsBinding = ruleContext.getDeclarationById( expr );
+            Optional<DeclarationSpec> optContainsBinding = context.getDeclarationById( expr );
             if (optContainsBinding.isPresent()) {
                 String bindingId = optContainsBinding.get().getBindingId();
-                fromCall.addArgument(ruleContext.getVarExpr(bindingId));
+                fromCall.addArgument( context.getVarExpr(bindingId));
                 usedDeclarations.add( expr );
             }
             asListCall.addArgument(expr);
@@ -117,9 +116,9 @@ public class FromVisitor {
 
         for (Expression argument : parsedExpression.getArguments()) {
             final String argumentName = argument.toString();
-            if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
-                fromCall.addArgument(ruleContext.getVarExpr(argumentName));
+                fromCall.addArgument( context.getVarExpr(argumentName));
             }
         }
 
@@ -136,13 +135,13 @@ public class FromVisitor {
         final Expression parsedExpression = drlxExpression.getExpr();
         Optional<TypedExpression> staticField = Optional.empty();
         if (parsedExpression instanceof FieldAccessExpr) {
-            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, ruleContext.getTypeResolver());
+            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver());
         }
 
         Expression fromCall;
         if (staticField.isPresent()) {
             fromCall = createSupplier(parsedExpression);
-        } else if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+        } else if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
             fromCall = createFromCall(expression, optContainsBinding, bindingId);
         } else {
             fromCall = createUnitDataCall(optContainsBinding, bindingId);
@@ -166,11 +165,11 @@ public class FromVisitor {
 
         for (Expression argument : methodCallExpr.getArguments()) {
             final String argumentName = argument.toString();
-            if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 if (bindingId == null) {
                     bindingId = argumentName;
                 }
-                fromCall.addArgument(ruleContext.getVarExpr(argumentName));
+                fromCall.addArgument( context.getVarExpr(argumentName));
             }
         }
 
@@ -181,7 +180,7 @@ public class FromVisitor {
         final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
             if(e instanceof NameExpr) {
                 final String name = ((NameExpr) e).getName().toString();
-                return ruleContext.hasDeclaration(name) || packageModel.hasDeclaration(name);
+                return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
             }
             return false;
         });
@@ -195,7 +194,7 @@ public class FromVisitor {
 
     private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
-        fromCall.addArgument(ruleContext.getVarExpr(bindingId));
+        fromCall.addArgument( context.getVarExpr(bindingId));
         return addLambdaToFromExpression( expression, optContainsBinding, bindingId, fromCall );
     }
 
@@ -209,15 +208,15 @@ public class FromVisitor {
 
     private Expression createArg( String expression, Optional<String> optContainsBinding, String bindingId ) {
         return optContainsBinding.map( containsBinding -> {
-            DeclarationSpec declarationSpec = ruleContext.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
+            DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = new ConstraintParser( ruleContext, packageModel ).drlxParse( clazz, bindingId, expression );
+            DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getRawClass() ) ) {
-                    ruleContext.addCompilationError( new InvalidExpressionErrorResult(
-                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + ruleContext.getRuleDescr().getName() +
+                    context.addCompilationError( new InvalidExpressionErrorResult(
+                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleDescr().getName() +
                                     "' is not compatible with type " + drlxParseSuccess.getLeft().getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
@@ -227,6 +226,6 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( Optional<String> optContainsBinding, String bindingId ) {
-        return JavaParser.parseExpression(toVar(bindingId));
+        return JavaParser.parseExpression(context.getVar(bindingId));
     }
 }

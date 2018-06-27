@@ -24,7 +24,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static java.util.Optional.of;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 
@@ -79,9 +78,9 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     public MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if (drlxParseResult.hasUnificationVariable()) {
-            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getUnificationVariable())));
+            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
         } else {
-            bindDSL.addArgument(new NameExpr(toVar(drlxParseResult.getExprBinding())));
+            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
         }
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         bindDSL.addArgument(constraintExpression);
