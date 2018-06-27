@@ -20,25 +20,19 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1_1.DRGElement;
+import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.FunctionDefinition;
 
-public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
-    @Override
-    public boolean accept(DRGElement de) {
-        return de instanceof BusinessKnowledgeModel;
-    }
-    @Override
-    public void compileNode(DRGElement de, DMNCompilerImpl compiler, DMNModelImpl model) {
-        BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) de;
-        BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
+public class DecisionServiceCompiler {
+
+    public void compileNode(DecisionService drge, DMNCompilerImpl compiler, DMNModelImpl model) {
+        DecisionService bkm = (DecisionService) drge;
         DMNType type = null;
         if ( bkm.getVariable() == null ) {
-            DMNCompilerHelper.reportMissingVariable( model, de, bkm, Msg.MISSING_VARIABLE_FOR_BKM );
+            DMNCompilerHelper.reportMissingVariable(model, drge, bkm, Msg.MISSING_VARIABLE_FOR_BKM);
             return;
         }
         DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
@@ -48,31 +42,27 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
             // for now the call bellow will return type UNKNOWN
             type = compiler.resolveTypeRef(model, bkm, bkm, null);
         }
-        bkmn.setResultType( type );
-        model.addBusinessKnowledgeModel( bkmn );
+        DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(bkm, type);
+        model.addDecisionService(bkmn);
     }
-    @Override
-    public boolean accept(DMNNode node) {
-        return node instanceof BusinessKnowledgeModelNodeImpl;
-    }
-    @Override
+
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
-        BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) node;
-        compiler.linkRequirements( model, bkmi );
+        DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
+        compiler.linkRequirements(model, ni);
 
         ctx.enterFrame();
         try {
-            for( DMNNode dep : bkmi.getDependencies().values() ) {
+            for (DMNNode dep : ni.getDependencies().values()) {
                 if( dep instanceof BusinessKnowledgeModelNode ) {
                     // might need to create a DMNType for "functions" and replace the type here by that
                     ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
                 }
             }
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
-            ctx.setVariable(bkmi.getName(), bkmi.getResultType());
-            FunctionDefinition funcDef = bkmi.getBusinessKnowledModel().getEncapsulatedLogic();
-            DMNExpressionEvaluator exprEvaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, bkmi, bkmi.getName(), funcDef );
-            bkmi.setEvaluator( exprEvaluator );
+            ctx.setVariable(ni.getName(), ni.getResultType());
+            FunctionDefinition funcDef = ni.getBusinessKnowledModel().getEncapsulatedLogic();
+            DMNExpressionEvaluator exprEvaluator = compiler.getEvaluatorCompiler().compileExpression(ctx, model, ni, ni.getName(), funcDef);
+            ni.setEvaluator(exprEvaluator);
         } finally {
             ctx.exitFrame();
         }

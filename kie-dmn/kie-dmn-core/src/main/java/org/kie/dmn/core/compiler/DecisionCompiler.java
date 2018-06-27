@@ -50,9 +50,9 @@ public class DecisionCompiler implements DRGElementCompiler {
         }
         DMNCompilerHelper.checkVariableName( model, decision, decision.getName() );
         if ( decision.getVariable() != null && decision.getVariable().getTypeRef() != null ) {
-            type = compiler.resolveTypeRef( model, dn, decision, decision.getVariable(), decision.getVariable().getTypeRef() );
+            type = compiler.resolveTypeRef(model, decision, decision.getVariable(), decision.getVariable().getTypeRef());
         } else {
-            type = compiler.resolveTypeRef( model, dn, decision, decision, null );
+            type = compiler.resolveTypeRef(model, decision, decision, null);
         }
         dn.setResultType( type );
         model.addDecision( dn );

@@ -17,13 +17,28 @@ package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DecisionService extends NamedElement {
 
+    private InformationItem variable;
     private List<DMNElementReference> outputDecision;
     private List<DMNElementReference> encapsulatedDecision;
     private List<DMNElementReference> inputDecision;
     private List<DMNElementReference> inputData;
+
+    public InformationItem getVariable() {
+        if (variable == null) {
+            variable = new InformationItem(); // compatibility with DMN v1.1
+            variable.setId(UUID.randomUUID().toString());
+            variable.setName(this.getName());
+        }
+        return variable;
+    }
+
+    public void setVariable(InformationItem variable) {
+        this.variable = variable;
+    }
 
     public List<DMNElementReference> getOutputDecision() {
         if ( outputDecision == null ) {

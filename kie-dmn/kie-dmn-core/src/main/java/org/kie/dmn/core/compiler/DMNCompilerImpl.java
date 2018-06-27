@@ -377,7 +377,7 @@ public class DMNCompilerImpl
         BaseDMNTypeImpl type = null;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
-            type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef, itemDef.getTypeRef() );
+            type = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, itemDef.getTypeRef());
             if ( type != null ) {
                 UnaryTests allowedValuesStr = itemDef.getAllowedValues();
 
@@ -457,7 +457,7 @@ public class DMNCompilerImpl
         return type;
     }
 
-    public DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
+    public DMNType resolveTypeRef(DMNModelImpl dmnModel, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
 
@@ -469,13 +469,13 @@ public class DMNCompilerImpl
                         // implicitly define a type for the decision table result
                         CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), model.getName()+"_Type", model.getId(), dt.getHitPolicy().isMultiHit() );
                         for ( OutputClause oc : dt.getOutput() ) {
-                            DMNType fieldType = resolveTypeRef( dmnModel, node, model, oc, oc.getTypeRef() );
+                            DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
                             compType.addField( oc.getName(), fieldType );
                         }
                         dmnModel.getTypeRegistry().registerType( compType );
                         return compType;
                     } else if ( dt.getOutput().size() == 1 ) {
-                        return resolveTypeRef( dmnModel, node, model, dt.getOutput().get( 0 ), dt.getOutput().get( 0 ).getTypeRef() );
+                        return resolveTypeRef(dmnModel, model, dt.getOutput().get(0), dt.getOutput().get(0).getTypeRef());
                     }
                 }
             } else if( type == null ) {
