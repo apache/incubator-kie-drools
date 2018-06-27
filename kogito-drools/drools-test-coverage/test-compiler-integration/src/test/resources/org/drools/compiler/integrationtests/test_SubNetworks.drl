@@ -13,17 +13,22 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.test;
+package org.drools.compiler
 
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Person;
+import java.awt.Dimension;
 
-global java.util.List list;
-
-rule delayed
-    duration 100
+rule "A"
     when
-        cheese : Cheese( )
+      exists(x : Dimension(x_height : height) and
+             y : Dimension(this!=x, height!=x_height))
+           
     then
-        list.add( cheese );
-end   
+end
+
+rule "B"
+    when
+      not(exists(x : Dimension(x_height : height) and
+                 y : Dimension(this!=x, height!=x_height)))
+           
+    then
+end

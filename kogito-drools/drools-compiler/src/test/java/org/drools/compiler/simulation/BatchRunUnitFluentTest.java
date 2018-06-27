@@ -16,9 +16,10 @@
 
 package org.drools.compiler.simulation;
 
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.compiler.integrationtests.RuleUnitTest;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
@@ -28,14 +29,15 @@ import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.junit.Assert.assertEquals;
 
 public class BatchRunUnitFluentTest extends CommonTestMethodBase {
 
     String drlUnit =
             "import " + Person.class.getCanonicalName() + "\n" +
-                    "import " + RuleUnitTest.AdultUnit.class.getCanonicalName() + "\n" +
-                    "import " + RuleUnitTest.NotAdultUnit.class.getCanonicalName() + "\n" +
+                    "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                    "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
                     "rule Adult @Unit( AdultUnit.class ) when\n" +
                     "    Person(age >= 18, $name : name) from persons\n" +
                     "then\n" +
@@ -71,7 +73,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .insert(new Person("Mark", 40))
                 .buildDataSource()
 
-                .run(RuleUnitTest.AdultUnit.class)
+                .run(AdultUnit.class)
                 .out("firedRules")
                 .dispose();
 
@@ -96,7 +98,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .insert(new Person("Mark", 90))
                 .buildDataSource()
 
-                .run(RuleUnitTest.AdultUnit.class)
+                .run(AdultUnit.class)
                 .out("firedRules1")
                 .run(AdultUnitDifferentDataSourceName.class)
                 .out("firedRules2")
@@ -123,7 +125,7 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
                 .insert(new Person("Mark", 40))
                 .buildDataSource()
 
-                .run(RuleUnitTest.AdultUnit.class)
+                .run(AdultUnit.class)
                 .out("firedRulesNoBinding")
                 .dispose();
 
@@ -195,6 +197,104 @@ public class BatchRunUnitFluentTest extends CommonTestMethodBase {
 
         public DataSource<Person> getPeople() {
             return people;
+        }
+    }
+
+    public static class AdultUnit implements RuleUnit {
+
+        private final int adultAge = 0;
+        private DataSource<Person> persons;
+        private List<String> log;
+        private List<String> results;
+
+        public AdultUnit() {
+        }
+
+        public AdultUnit(final DataSource<Person> persons) {
+            this.persons = persons;
+        }
+
+        public DataSource<Person> getPersons() {
+            return persons;
+        }
+
+        public int getAdultAge() {
+            return adultAge;
+        }
+
+        public List<String> getResults() {
+            return results;
+        }
+
+        @Override
+        public void onStart() {
+            if (log != null) {
+                log.add(getUnitName(this) + " started.");
+            } else {
+                System.out.println(getUnitName(this) + " started.");
+            }
+        }
+
+        @Override
+        public void onEnd() {
+            if (log != null) {
+                log.add(getUnitName(this) + " ended.");
+            } else {
+                System.out.println(getUnitName(this) + " ended.");
+            }
+        }
+
+        @Override
+        public void onYield(final RuleUnit other) {
+            if (log != null) {
+                log.add(getUnitName(this) + " yielded to " + getUnitName(other));
+            } else {
+                System.out.println(getUnitName(this) + " yielded to " + getUnitName(other));
+            }
+        }
+    }
+
+    public static class NotAdultUnit implements RuleUnit {
+
+        private DataSource<Person> persons;
+        private List<String> log;
+
+        public NotAdultUnit() {
+        }
+
+        public NotAdultUnit(final DataSource<Person> persons) {
+            this.persons = persons;
+        }
+
+        public DataSource<Person> getPersons() {
+            return persons;
+        }
+
+        @Override
+        public void onStart() {
+            if (log != null) {
+                log.add(getUnitName(this) + " started.");
+            } else {
+                System.out.println(getUnitName(this) + " started.");
+            }
+        }
+
+        @Override
+        public void onEnd() {
+            if (log != null) {
+                log.add(getUnitName(this) + " ended.");
+            } else {
+                System.out.println(getUnitName(this) + " ended.");
+            }
+        }
+
+        @Override
+        public void onYield(final RuleUnit other) {
+            if (log != null) {
+                log.add(getUnitName(this) + " yielded to " + getUnitName(other));
+            } else {
+                System.out.println(getUnitName(this) + " yielded to " + getUnitName(other));
+            }
         }
     }
 }

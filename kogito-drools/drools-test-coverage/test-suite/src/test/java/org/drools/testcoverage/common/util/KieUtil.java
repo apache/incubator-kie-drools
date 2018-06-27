@@ -46,6 +46,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +65,15 @@ public final class KieUtil {
 
     public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                              final ReleaseId releaseId, final KieModuleModel kieModuleModel, final Resource... resources) {
-        final KieServices kieServices = KieServices.Factory.get();
         final KieFileSystem fileSystem = getKieFileSystemWithKieModule(kieModuleModel, releaseId, resources);
-        final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fileSystem, true);
+        return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, kieModuleModel, fileSystem);
+    }
+
+    public static KieModule buildAndInstallKieModuleIntoRepo(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                             final ReleaseId releaseId, final KieModuleModel kieModuleModel,
+                                                             final KieFileSystem kieFileSystem) {
+        final KieServices kieServices = KieServices.Factory.get();
+        final KieBuilder builder = getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kieFileSystem, true);
         KieModule kieModule = builder.getKieModule();
         if (kieBaseTestConfiguration.useCanonicalModel()) {
             final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, ((InternalKieModule) kieModule).getBytes(), ".jar");
@@ -190,6 +197,20 @@ public final class KieUtil {
         return new Resource[]{drlResource};
     }
 
+    public static KieContainer getKieContainerFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration, final String... drls) {
+        return getKieContainerFromDrls(kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME, drls);
+    }
+
+    public static KieContainer getKieContainerFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                       final KieSessionTestConfiguration kieSessionTestConfiguration,
+                                                       final String... drls) {
+        final KieServices kieServices = KieServices.get();
+        final ReleaseId releaseId = kieServices.newReleaseId(UUID.randomUUID().toString(), "test-artifact", "1.0");
+        final KieModule kieModule = getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, kieSessionTestConfiguration,
+                                                         new HashMap<>(), drls);
+        return kieServices.newKieContainer(kieModule.getReleaseId());
+    }
+
     public static KieModule getKieModuleFromDrls(final String moduleGroupId,
                                                  final KieBaseTestConfiguration kieBaseTestConfiguration, final String... drls) {
         return getKieModuleFromDrls(generateReleaseId(moduleGroupId), kieBaseTestConfiguration, drls);
@@ -227,11 +248,19 @@ public final class KieUtil {
                                                       final KieSessionTestConfiguration kieSessionTestConfiguration,
                                                       final Map<String, String> kieModuleConfigurationProperties,
                                                       final Resource... resources) {
+        final KieModuleModel kieModuleModel =
+                getKieModuleModel(kieBaseTestConfiguration, kieSessionTestConfiguration, kieModuleConfigurationProperties);
+        return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, kieModuleModel, resources);
+    }
+
+    public static KieModuleModel getKieModuleModel(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                   final KieSessionTestConfiguration kieSessionTestConfiguration,
+                                                   final Map<String, String> kieModuleConfigurationProperties) {
         final KieModuleModel module = createKieModuleModel();
         kieModuleConfigurationProperties.forEach(module::setConfigurationProperty);
         final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
-        return buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, module, resources);
+        return module;
     }
 
     public static List<Resource> getResourcesFromDrls(final String... drls) {

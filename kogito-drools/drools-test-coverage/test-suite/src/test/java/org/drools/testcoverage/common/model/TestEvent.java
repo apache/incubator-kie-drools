@@ -26,7 +26,7 @@ public class TestEvent implements Serializable {
     private final String name;
     private Serializable value;
 
-    public TestEvent(Integer id, String name, Serializable value) {
+    public TestEvent(final Integer id, final String name, final Serializable value) {
         this.id = id;
         this.name = name;
         this.value = value;
@@ -44,7 +44,7 @@ public class TestEvent implements Serializable {
         return value;
     }
 
-    public void setValue(Serializable value) {
+    public void setValue(final Serializable value) {
         this.value = value;
     }
 

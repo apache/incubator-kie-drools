@@ -94,6 +94,10 @@ public class Person implements Serializable {
         return age;
     }
 
+    public int getDoubleAge() {
+        return this.age * 2;
+    }
+
     public void setLikes(final String likes) {
         this.likes = likes;
     }

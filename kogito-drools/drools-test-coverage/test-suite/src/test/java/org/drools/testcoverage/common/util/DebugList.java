@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.common.model;
+package org.drools.testcoverage.common.util;
 
-public class LongAddress extends Address {
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
-    private String country;
+public class DebugList<T> extends ArrayList<T> {
+    public Consumer<DebugList<T>> onItemAdded;
 
-    public LongAddress(final String country) {
-        this.country = country;
-    }
-
-    public LongAddress(final String street,
-                       final String suburb,
-                       final String zipCode,
-                       final String country) {
-        super(street, suburb, zipCode);
-        this.country = country;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(final String country) {
-        this.country = country;
+    @Override
+    public synchronized boolean add( T t ) {
+        System.out.println( Thread.currentThread() + " adding " + t );
+        boolean result = super.add( t );
+        if (onItemAdded != null) {
+            onItemAdded.accept( this );
+        }
+        return result;
     }
 }
