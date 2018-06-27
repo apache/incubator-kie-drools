@@ -978,7 +978,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 classesMap.put(name, trgMfs.getBytes(name));
             }
             if (!classesMap.isEmpty()) {
-                ((ProjectClassLoader)rootClassLoader).storeClasses(classesMap);
+                ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
+                projectClassLoader.reinitTypes();
+                projectClassLoader.storeClasses(classesMap);
             }
         }
     }
