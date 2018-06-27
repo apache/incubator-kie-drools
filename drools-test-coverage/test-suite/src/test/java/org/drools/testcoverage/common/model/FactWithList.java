@@ -16,27 +16,22 @@
 
 package org.drools.testcoverage.common.model;
 
-public class LongAddress extends Address {
+import java.util.ArrayList;
+import java.util.List;
 
-    private String country;
+public class FactWithList {
 
-    public LongAddress(final String country) {
-        this.country = country;
+    private List<String> items = new ArrayList<>();
+
+    public FactWithList(final String factString) {
+        this.items.add(factString);
     }
 
-    public LongAddress(final String street,
-                       final String suburb,
-                       final String zipCode,
-                       final String country) {
-        super(street, suburb, zipCode);
-        this.country = country;
+    public List<String> getItems() {
+        return items;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(final String country) {
-        this.country = country;
+    public void setItems(final List<String> items) {
+        this.items = items;
     }
 }

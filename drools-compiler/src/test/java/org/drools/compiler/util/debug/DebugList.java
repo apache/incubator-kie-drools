@@ -23,9 +23,8 @@ public class DebugList<T> extends ArrayList<T> {
     public Consumer<DebugList<T>> onItemAdded;
 
     @Override
-    public synchronized boolean add( T t ) {
-        System.out.println( Thread.currentThread() + " adding " + t );
-        boolean result = super.add( t );
+    public synchronized boolean add(final T t ) {
+        final boolean result = super.add(t );
         if (onItemAdded != null) {
             onItemAdded.accept( this );
         }
