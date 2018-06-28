@@ -813,6 +813,32 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testUseAccumulateFunctionWithOperationInBinding() {
+
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate (\n" +
+                "       $p : Person(), $result : sum( $p.getAge() * 1) "+
+                "         )" +
+                "then\n" +
+                "  insert($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, results.size());
+        assertEquals(112, results.get(0).intValue());
+
+    }
+
+    @Test
     public void testTypedResultOnAccumulate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

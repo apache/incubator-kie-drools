@@ -73,6 +73,7 @@ import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
@@ -582,6 +583,14 @@ public class DrlxParseUtil {
      * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
      */
     public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
+
+        if (e instanceof NodeWithArguments) {
+            NodeWithArguments<?> arguments = (NodeWithArguments) e;
+            for (Expression argument : arguments.getArguments()) {
+                rescopeNamesToNewScope(newScope, names, argument);
+            }
+        }
+
         if (e instanceof AssignExpr) {
             AssignExpr assignExpr = (AssignExpr) e;
             rescopeNamesToNewScope(newScope, names, assignExpr.getTarget());
