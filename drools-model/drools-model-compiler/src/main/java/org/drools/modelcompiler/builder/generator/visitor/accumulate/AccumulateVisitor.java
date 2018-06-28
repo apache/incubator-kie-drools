@@ -139,7 +139,12 @@ public abstract class AccumulateVisitor {
         Optional<AccumulateVisitorPatternDSL.NewBinding> newBinding = Optional.empty();
 
         if(function.getParams().length == 0) {
-            final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, Object.class);
+            final Optional<AccumulateFunction> optAccumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, Object.class);
+            if(!optAccumulateFunction.isPresent()) {
+                addNonExistingFunctionError(context, function);
+                return Optional.empty();
+            }
+            final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
@@ -158,8 +163,13 @@ public abstract class AccumulateVisitor {
                     @Override
                     public Optional<AccumulateVisitorPatternDSL.NewBinding> onSuccess(DrlxParseSuccess drlxParseResult) {
                         Class<?> exprRawClass = drlxParseResult.getExprRawClass();
-                        final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
+                        final Optional<AccumulateFunction> optAccumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
+                        if(!optAccumulateFunction.isPresent()) {
+                            addNonExistingFunctionError(context, function);
+                            return Optional.empty();
+                        }
 
+                        final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                         final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
                         drlxParseResult.setExprBinding(bindExpressionVariable);
@@ -187,8 +197,13 @@ public abstract class AccumulateVisitor {
                 final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
                 final Class<?> methodCallExprType = typedExpression.getRawClass();
 
-                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, methodCallExprType);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
+                }
 
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 final Class accumulateFunctionResultType = accumulateFunction.getResultType();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
 
@@ -212,7 +227,12 @@ public abstract class AccumulateVisitor {
                         .getDeclarationClass();
 
                 final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
-                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
+                }
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(context.getVarExpr(nameExpr));
 
@@ -220,7 +240,13 @@ public abstract class AccumulateVisitor {
             } else if (accumulateFunctionParameter instanceof LiteralExpr) {
                 final Class<?> declarationClass = getLiteralExpressionType((LiteralExpr) accumulateFunctionParameter);
 
-                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
+                }
+
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
@@ -241,6 +267,10 @@ public abstract class AccumulateVisitor {
         return newBinding;
     }
 
+    private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {
+        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName())));
+    }
+
     private void addBindingAsDeclaration(RuleContext context, String bindingId, Class<?> declarationClass, AccumulateFunction accumulateFunction) {
         if (bindingId != null) {
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
@@ -251,15 +281,14 @@ public abstract class AccumulateVisitor {
         }
     }
 
-    protected AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
+    protected Optional<AccumulateFunction> getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
         final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
         final Optional<AccumulateFunction> bundledAccumulateFunction = Optional.ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
         final Optional<AccumulateFunction> importedAccumulateFunction = Optional.ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
 
         return bundledAccumulateFunction
                 .map(Optional::of)
-                .orElse(importedAccumulateFunction)
-                .orElseThrow(RuntimeException::new);
+                .orElse(importedAccumulateFunction);
     }
 
     protected String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {
