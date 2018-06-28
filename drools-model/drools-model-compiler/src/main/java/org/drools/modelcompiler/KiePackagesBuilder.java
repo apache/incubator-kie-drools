@@ -621,7 +621,14 @@ public class KiePackagesBuilder {
                 return new Declaration[0];
             }
         }
-        return new Declaration[] { ctx.getPattern( accFunction.getSource() ).getDeclaration() };
+
+        if(accFunction.getSource() instanceof Variable) {
+            return new Declaration[] { ctx.getPattern((Variable) accFunction.getSource()).getDeclaration() };
+        } else {
+            return new Declaration[0];
+        }
+
+
     }
 
     private BindingEvaluator createBindingEvaluator(RuleContext ctx, Binding binding) {

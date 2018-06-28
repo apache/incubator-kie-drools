@@ -1,20 +1,21 @@
 package org.drools.model.functions.accumulate;
 
+import org.drools.model.Argument;
 import org.drools.model.Variable;
 
 public class AccumulateFunction {
     private Variable result;
     private Variable[] externalVars;
 
-    protected final Variable source;
+    protected final Argument source;
     protected final Class<?> functionClass;
 
-    public AccumulateFunction(Variable source, Class<?> functionClass) {
+    public AccumulateFunction(Argument source, Class<?> functionClass) {
         this.source = source;
         this.functionClass = functionClass;
     }
 
-    public Variable getSource() {
+    public Argument getSource() {
         return source;
     }
 

@@ -26,6 +26,7 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
@@ -56,6 +57,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
@@ -201,7 +203,7 @@ public abstract class AccumulateVisitor {
                 functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
                 context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-            } else if (accumulateFunctionParameter instanceof NameExpr) {
+            } else if (accumulateFunctionParameter instanceof NameExpr ) {
                 final Class<?> declarationClass = context
                         .getDeclarationById(accumulateFunctionParameter.toString())
                         .orElseThrow(RuntimeException::new)
@@ -212,13 +214,15 @@ public abstract class AccumulateVisitor {
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(context.getVarExpr(nameExpr));
 
-                if (bindingId != null) {
-                    Class accumulateFunctionResultType = accumulateFunction.getResultType();
-                    if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
-                        accumulateFunctionResultType = declarationClass;
-                    }
-                    context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-                }
+                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
+            } else if (accumulateFunctionParameter instanceof LiteralExpr) {
+                final Class<?> declarationClass = getLiteralExpressionType((LiteralExpr) accumulateFunctionParameter);
+
+                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
+                functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
+                functionDSL.addArgument(accumulateFunctionParameter);
+
+                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
             } else {
                 context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + accumulateFunctionParameterStr));
                 return Optional.empty();
@@ -233,6 +237,16 @@ public abstract class AccumulateVisitor {
 
         context.popExprPointer();
         return newBinding;
+    }
+
+    private void addBindingAsDeclaration(RuleContext context, String bindingId, Class<?> declarationClass, AccumulateFunction accumulateFunction) {
+        if (bindingId != null) {
+            Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
+                accumulateFunctionResultType = declarationClass;
+            }
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+        }
     }
 
     protected AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
