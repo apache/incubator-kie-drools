@@ -584,9 +584,9 @@ public class DrlxParseUtil {
      */
     public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
 
-        if(e instanceof NodeWithArguments) {
-            NodeWithArguments<?> arguments = (NodeWithArguments)e;
-            for(Expression argument : arguments.getArguments()) {
+        if (e instanceof NodeWithArguments) {
+            NodeWithArguments<?> arguments = (NodeWithArguments) e;
+            for (Expression argument : arguments.getArguments()) {
                 rescopeNamesToNewScope(newScope, names, argument);
             }
         }
