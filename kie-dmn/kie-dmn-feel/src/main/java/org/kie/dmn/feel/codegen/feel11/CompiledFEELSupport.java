@@ -32,6 +32,7 @@ import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
+import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
@@ -85,6 +86,13 @@ public class CompiledFEELSupport {
             }
             List list = value instanceof List ? (List) value : Arrays.asList(value);
 
+            Object f = filterExpression.apply(
+                    new SilentWrappingEvaluationContextImpl(ctx)); // I need to try evaluate filter first, ignoring errors; only if evaluation fails, or is not a Number, it delegates to try `evaluateExpressionsInContext`
+
+            if (f instanceof Number) {
+                return withIndex(f);
+            }
+
             List results = new ArrayList();
             for (Object v : list) {
                 try {
@@ -98,7 +106,7 @@ public class CompiledFEELSupport {
                     ctx.setRootObject(v);
 
                     Object r = filterExpression.apply(ctx);
-                    if (r instanceof Boolean && ((Boolean) r) == Boolean.TRUE) {
+                    if (r instanceof Boolean && r == Boolean.TRUE) {
                         results.add(v);
                     }
                 } catch (Exception e) {
@@ -111,7 +119,7 @@ public class CompiledFEELSupport {
             return results;
         }
 
-        public Object with(Object filterIndex) {
+        private Object withIndex(Object filterIndex) {
             if (value == null) {
                 return null;
             }
@@ -127,6 +135,8 @@ public class CompiledFEELSupport {
                     ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND), null));
                     return null;
                 }
+            } else if (filterIndex == null) {
+                return Collections.emptyList();
             } else {
                 // TODO this differs behavior from evaluation mode because should actually throw an error as it's doing here.
                 // TODO report error.
