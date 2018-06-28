@@ -350,6 +350,11 @@ public class NamedEntryPoint
                 handle = this.objectStore.reconnect( handle );
             }
 
+            if (object == null) {
+                // We cannot assert a null object
+                return handle;
+            }
+
             final Object originalObject = handle.getObject();
 
             if ( handle.getEntryPoint() != this ) {
@@ -359,7 +364,7 @@ public class NamedEntryPoint
             final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
 
 
-            if ( handle.getId() == -1 || object == null || handle.isExpired() ) {
+            if ( handle.getId() == -1 || handle.isExpired() ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return handle;
             }
