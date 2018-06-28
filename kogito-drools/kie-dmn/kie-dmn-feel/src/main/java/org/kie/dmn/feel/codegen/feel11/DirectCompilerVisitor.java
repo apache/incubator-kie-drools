@@ -89,6 +89,7 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
@@ -921,7 +922,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             String className = java.get("class");
             String methodSignature = java.get("method signature");
             if (className == null || methodSignature == null) {
-                throw new IllegalArgumentException("Invalid class name or method signature: " + className + "::" + methodSignature);
+                throw new FEELCompilationError(Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, methodSignature));
             }
             Expression methodCallExpr = FunctionDefs.asMethodCall(className, methodSignature, params);
             DirectCompilerResult parameters = visit(ctx.formalParameters());
@@ -936,7 +937,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             return result;
 
         } else {
-            throw new IllegalArgumentException("Invalid external declaration");
+            throw new FEELCompilationError(Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, null));
         }
 
     }

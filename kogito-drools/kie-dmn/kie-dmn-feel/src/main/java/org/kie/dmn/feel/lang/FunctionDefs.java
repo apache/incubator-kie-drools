@@ -1,10 +1,7 @@
 package org.kie.dmn.feel.lang;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.NodeList;
@@ -13,10 +10,11 @@ import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.type.Type;
+import org.kie.dmn.feel.codegen.feel11.FEELCompilationError;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
+import org.kie.dmn.feel.util.Msg;
 
 public class FunctionDefs {
 
@@ -61,7 +59,8 @@ public class FunctionDefs {
                         methodName,
                         new NodeList<>(paramExprs));
             } else {
-                return new NullLiteralExpr();
+                throw new FEELCompilationError(
+                        Msg.createMessage(Msg.ERROR_RESOLVING_EXTERNAL_FUNCTION_AS_DEFINED_BY, methodSignature));
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

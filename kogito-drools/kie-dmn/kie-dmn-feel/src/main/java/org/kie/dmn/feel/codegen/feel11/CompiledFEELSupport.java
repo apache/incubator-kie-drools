@@ -415,4 +415,9 @@ public class CompiledFEELSupport {
         }
         return invocationParams;
     }
+
+    public static Object notifyCompilationError(EvaluationContext feelExprCtx, String message) {
+        feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, message, null));
+        return null;
+    }
 }
