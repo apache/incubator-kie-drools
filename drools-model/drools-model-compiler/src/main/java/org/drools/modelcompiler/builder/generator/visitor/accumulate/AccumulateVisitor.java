@@ -15,6 +15,7 @@ import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
@@ -64,6 +65,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULA
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 
 public abstract class AccumulateVisitor {
 
@@ -220,7 +222,7 @@ public abstract class AccumulateVisitor {
 
                 final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
-                functionDSL.addArgument(accumulateFunctionParameter);
+                functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
                 addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
             } else {
