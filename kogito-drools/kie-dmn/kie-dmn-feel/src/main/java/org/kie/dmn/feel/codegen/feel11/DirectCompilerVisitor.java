@@ -513,13 +513,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult end = visit(ctx.end);
 
         Expression lowBoundary = expressionBoundaryOf(
-                RangeNode.IntervalBoundary.fromString(
-                        ctx.low.getText()));
+                RangeNode.IntervalBoundary.low(ctx.low.getText()));
         Expression lowEndPoint = start.getExpression();
         Expression highEndPoint = end.getExpression();
         Expression highBoundary = expressionBoundaryOf(
-                RangeNode.IntervalBoundary.fromString(
-                        ctx.up.getText()));
+                RangeNode.IntervalBoundary.high(ctx.up.getText()));
 
         // if this is a range of type i..j with i,j numbers:
         // then we make it a constant; otherwise we fallback
@@ -1247,10 +1245,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             filterCall.addArgument(new NameExpr("feelExprCtx"));
             filterCall.addArgument(expr.getExpression());
             MethodCallExpr filterWithCall = new MethodCallExpr(filterCall, "with");
-            if (filter.resultType != BuiltInType.BOOLEAN) {
-                // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and e2 is an integer (0 scale number)
-                filterWithCall.addArgument(filter.getExpression());
-            } else {
+//            if (filter.resultType != BuiltInType.BOOLEAN) {
+//                // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and e2 is an integer (0 scale number)
+//                filterWithCall.addArgument(filter.getExpression());
+//            } else
+                {
                 // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and type(FEEL(e2 , s')) is boolean
                 Expression anonFunctionClass = anonFunctionEvaluationContext2Object(filter.getExpression());
                 filterWithCall.addArgument(anonFunctionClass);

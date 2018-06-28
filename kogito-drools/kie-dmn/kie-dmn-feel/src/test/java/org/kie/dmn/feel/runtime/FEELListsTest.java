@@ -67,6 +67,7 @@ public class FEELListsTest extends BaseFEELTest {
                     }
                 } ), null },
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 0]", Collections.emptyList(), null },
+                {"{x:false, l:[ {x:1, y:2}, {x:2, y:3} ],r:l[x] }.r", Collections.emptyList(), null },
 
                 // Other filtering
                 {"[\"a\", \"b\", \"c\"][a]", Collections.emptyList(), null }, // DROOLS-1679

@@ -250,7 +250,7 @@ public class DirectCompilerTest {
         Object result = nameRef.apply(context);
         System.out.println(result);
 
-        assertThat(result, nullValue());
+        assertThat(result, is(Collections.emptyList()));
     }
 
     @Test
