@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
@@ -105,6 +106,21 @@ public abstract class LambdaAccumulator implements Accumulator {
             } else {
                 return accumulateObject;
             }
+        }
+    }
+
+    public static class FixedValueAcc extends LambdaAccumulator {
+
+        private final Object value;
+
+        public FixedValueAcc(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, Object value) {
+            super(accumulateFunction, Collections.emptyList());
+            this.value = value;
+        }
+
+        @Override
+        protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
+            return value;
         }
     }
 }

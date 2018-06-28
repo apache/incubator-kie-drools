@@ -1,6 +1,7 @@
 package org.drools.model.functions.accumulate;
 
 import org.drools.model.Argument;
+import org.drools.model.Value;
 import org.drools.model.Variable;
 
 public class AccumulateFunction {
@@ -39,5 +40,9 @@ public class AccumulateFunction {
     public AccumulateFunction with(Variable... externalVars) {
         this.externalVars = externalVars;
         return this;
+    }
+
+    public boolean isFixedValue() {
+        return source instanceof Value;
     }
 }
