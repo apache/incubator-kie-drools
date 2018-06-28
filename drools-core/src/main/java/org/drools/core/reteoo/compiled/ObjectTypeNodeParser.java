@@ -21,7 +21,6 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSinkNode;
@@ -106,14 +105,6 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traverseSinkLisk(LeftTupleSink[] sinks, NetworkHandler handler) {
-        if (sinks != null) {
-            for (int sinkIndex = 0; sinkIndex < sinks.length; ++sinkIndex) {
-                traverseSink(sinks[sinkIndex], handler);
-            }
-        }
-    }
-
     private void traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
         if (hashedAlphaNodes != null && hashedAlphaNodes.size() > 0) {
             AlphaNode firstAlpha = getFirstAlphaNode(hashedAlphaNodes);
@@ -161,10 +152,6 @@ public class ObjectTypeNodeParser {
             // todo traverse lia
             handler.endLeftInputAdapterNode(leftInputAdapterNode);
         }
-    }
-
-    private void traverseSink(LeftTupleSink sink, NetworkHandler handler) {
-        // todo traverse sink's propagator
     }
 
     /**
