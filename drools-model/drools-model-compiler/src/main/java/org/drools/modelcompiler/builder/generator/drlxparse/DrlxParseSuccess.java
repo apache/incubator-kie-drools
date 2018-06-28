@@ -45,6 +45,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     private TypedExpression left;
     private TypedExpression right;
+    private Object rightLiteral;
     private boolean isStatic;
     private boolean isValidExpression;
     private boolean skipThisAsParam;
@@ -126,6 +127,11 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public DrlxParseSuccess setRight(TypedExpression right ) {
         this.right = right;
+        return this;
+    }
+
+    public DrlxParseSuccess setRightLiteral(Object rightLiteral ) {
+        this.rightLiteral = rightLiteral;
         return this;
     }
 
@@ -223,6 +229,10 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public TypedExpression getRight() {
         return right;
+    }
+
+    public Object getRightLiteral() {
+        return rightLiteral;
     }
 
     public boolean isStatic() {

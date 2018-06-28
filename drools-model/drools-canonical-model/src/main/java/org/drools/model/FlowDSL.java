@@ -20,9 +20,11 @@ import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.FixedTemporalExprViewItem;
 import org.drools.model.view.InputViewItem;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.TemporalExprViewItem;
+import org.drools.model.view.VariableTemporalExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
 
@@ -144,7 +146,11 @@ public class FlowDSL extends DSL {
     // -- Temporal Constraints --
 
     public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Variable<?> var2, TemporalPredicate temporalPredicate ) {
-        return new TemporalExprViewItem<>( exprId, var1, var2, temporalPredicate);
+        return new VariableTemporalExprViewItem<>( exprId, var1, var2, temporalPredicate);
+    }
+
+    public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, long value, TemporalPredicate temporalPredicate ) {
+        return new FixedTemporalExprViewItem<>( exprId, var1, value, temporalPredicate);
     }
 
     // -- Conditional Named Consequnce --

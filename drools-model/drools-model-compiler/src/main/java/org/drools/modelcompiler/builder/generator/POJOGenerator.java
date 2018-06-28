@@ -486,7 +486,8 @@ public class POJOGenerator {
             } else {
                 throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
             }
-        } else if (annotationName.equals(org.kie.api.definition.type.Duration.class.getCanonicalName())) {
+        } else if (annotationName.equals(org.kie.api.definition.type.Duration.class.getCanonicalName()) ||
+                annotationName.equals(org.kie.api.definition.type.Timestamp.class.getCanonicalName())) {
             if ( "value".equals( valueName ) ) {
                 return quote(value);
             }

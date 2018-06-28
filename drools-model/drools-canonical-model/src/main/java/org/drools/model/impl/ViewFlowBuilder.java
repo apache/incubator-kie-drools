@@ -327,7 +327,7 @@ public class ViewFlowBuilder implements ViewBuilder {
 
         if (viewItem instanceof TemporalExprViewItem) {
             TemporalExprViewItem expr = (TemporalExprViewItem)viewItem;
-            ( (PatternImpl) condition ).addConstraint( new TemporalConstraint( expr ) );
+            ( (PatternImpl) condition ).addConstraint( TemporalConstraint.createTemporalConstraint( expr ) );
             return condition;
         }
 

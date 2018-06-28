@@ -45,7 +45,14 @@ public class TypeDeclarationUtil {
         TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
         typeDeclaration.setTypeClassDef( new ClassDefinitionForModel( typeClass ) );
 
-        for (Map.Entry<String, AnnotationValue[]> ann :  metaType.getAnnotations().entrySet()) {
+        wireClassAnnotations( typeClass, typeDeclaration );
+        wireMetaTypeAnnotations( metaType, typeDeclaration );
+
+        return typeDeclaration;
+    }
+
+    private static void wireMetaTypeAnnotations( TypeMetaData metaType, TypeDeclaration typeDeclaration ) {
+        for (Map.Entry<String, AnnotationValue[]> ann : metaType.getAnnotations().entrySet()) {
             switch (ann.getKey()) {
                 case "role":
                     for (AnnotationValue annVal : ann.getValue()) {
@@ -88,7 +95,18 @@ public class TypeDeclarationUtil {
                     throw new UnsupportedOperationException("Unknown annotation: " + ann.getKey());
             }
         }
-        return typeDeclaration;
+    }
+
+    private static void wireClassAnnotations( Class<?> typeClass, TypeDeclaration typeDeclaration ) {
+        Duration duration = typeClass.getAnnotation( Duration.class );
+        if (duration != null) {
+            wireDurationAccessor( duration.value(), typeDeclaration );
+        }
+
+        Timestamp timestamp = typeClass.getAnnotation( Timestamp.class );
+        if (timestamp != null) {
+            wireTimestampAccessor( timestamp.value(), typeDeclaration );
+        }
     }
 
     public static TypeDeclaration createTypeDeclaration(Class<?> cls) {
