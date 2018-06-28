@@ -323,7 +323,7 @@ public class LinkedList<T extends LinkedListNode<T>>
             return true;
         }
 
-        if ( !(object instanceof LinkedList) ) {
+        if ( !(LinkedList.class.isAssignableFrom(object.getClass())) ) {
             return false;
         }
 
