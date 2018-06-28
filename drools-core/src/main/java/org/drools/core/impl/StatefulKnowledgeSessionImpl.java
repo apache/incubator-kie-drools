@@ -2255,7 +2255,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return result;
     }
 
-    private class EntryPointObjects {
+    private static class EntryPointObjects {
         private String name;
         private List   objects;
 
