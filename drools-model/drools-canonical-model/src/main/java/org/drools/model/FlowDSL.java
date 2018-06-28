@@ -6,6 +6,7 @@ import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.temporal.TemporalPredicate;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
 import org.drools.model.impl.Query1DefImpl;
 import org.drools.model.impl.Query2DefImpl;
@@ -36,6 +37,11 @@ public class FlowDSL extends DSL {
     }
 
     public static <T> InputViewItem<T> input( Variable<T> var ) {
+        return new InputViewItemImpl<>( var );
+    }
+
+    public static <T> InputViewItem<T> input(Variable<T> var, DeclarationSource source) {
+        (( DeclarationImpl<T> ) var).setSource( source );
         return new InputViewItemImpl<>( var );
     }
 

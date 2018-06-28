@@ -136,6 +136,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                 for ( Argument arg : query.getArguments()) {
                     if (arg instanceof Variable) {
                         ctx.usedVars.add( ( (Variable) arg ));
+                        ctx.boundVars.add( ( (Variable) arg ));
                     }
                 }
                 conditions.add( new QueryCallPattern( query ) );
@@ -334,7 +335,7 @@ public class ViewFlowBuilder implements ViewBuilder {
             AccumulateExprViewItem acc = (AccumulateExprViewItem)viewItem;
 
             for ( AccumulateFunction accFunc : acc.getAccumulateFunctions()) {
-                ctx.usedVars.add(accFunc.getVariable());
+                ctx.usedVars.add(accFunc.getResult());
             }
 
             Condition newCondition;

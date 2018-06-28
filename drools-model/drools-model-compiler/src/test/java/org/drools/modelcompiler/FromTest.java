@@ -23,6 +23,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -180,4 +181,54 @@ public class FromTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder("received long message: Hello!");
     }
 
+    @Test
+    public void testFromConstant() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $s : String() from \"test\"\n" +
+                "then\n" +
+                "   list.add( $s );\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "test", list.get(0) );
+    }
+
+    @Test
+    public void testFromConstructor() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "    $i : Integer()\n" +
+                "    $p : Person() from new Person($s, $i)\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( "Mario" );
+        ksession.insert( 44 );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( new Person("Mario", 44), list.get(0) );
+    }
 }

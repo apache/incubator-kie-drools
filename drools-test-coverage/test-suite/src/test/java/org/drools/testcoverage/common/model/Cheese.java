@@ -44,12 +44,22 @@ public class Cheese implements Serializable {
         this.price = price;
     }
 
+    public Cheese(final String type, final int price, final int oldPrice) {
+        this.type = type;
+        this.price = price;
+        this.oldPrice = oldPrice;
+    }
+
     public int getPrice() {
         return price;
     }
 
     public String getType() {
         return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
     }
 
     public void setPrice(final int price) {

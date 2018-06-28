@@ -74,6 +74,32 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithoutParameters() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $count : count()  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($count));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(2l, results.iterator().next().getValue());
+    }
+
+    @Test
     public void testAccumulateConstrainingValue() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -265,13 +291,13 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateWithAnd() {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
-                "import " + Child.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge()) )\n" +
-                "then\n" +
-                "  insert(new Result($parentAge));\n" +
-                "end";
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -290,13 +316,13 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateWithAnd2() {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
-                "import " + Child.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge() + $c.getAge()) )\n" +
-                "then\n" +
-                "  insert(new Result($parentAge));\n" +
-                "end";
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : sum($a.getAge() + $c.getAge()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -316,13 +342,13 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateWithAnd3() {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
-                "import " + Child.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  accumulate( $x : Child( age < 10 ) and $y : Adult( name == $x.parent ), $parentAge : sum($x.getAge() + $y.getAge()) )\n" +
-                "then\n" +
-                "  insert(new Result($parentAge));\n" +
-                "end";
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $x : Child( age < 10 ) and $y : Adult( name == $x.parent ), $parentAge : sum($x.getAge() + $y.getAge()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -342,14 +368,14 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateWithCustomImport() {
         String str =
                 "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n" +
-                "import " + Adult.class.getCanonicalName() + ";\n" +
-                "import " + Child.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : f($a.getAge()) )\n" +
-                "then\n" +
-                "  insert(new Result($parentAge));\n" +
-                "end";
+                        "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : f($a.getAge()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -410,14 +436,14 @@ public class AccumulateTest extends BaseModelTest {
     public void testFromAccumulate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( age > 10, name.startsWith(\"M\") ); \n" +
-                "                sum($p.getAge())  \n" +
-                "              )\n" +
-                "then\n" +
-                "  insert(new Result($sum));\n" +
-                "end";
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  $sum : Number( intValue() > 0 ) from accumulate ( $p: Person ( age > 10, name.startsWith(\"M\") ); \n" +
+                        "                sum($p.getAge())  \n" +
+                        "              )\n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -436,16 +462,16 @@ public class AccumulateTest extends BaseModelTest {
     public void testFromCollect() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
-                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
-                "import " + List.class.getCanonicalName() + ";\n" +
-                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
-                "  $customer : Customer( $code : code )\n" +
-                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
-                "  List(size > 1) from collect ( TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1) )\n" +
-                "then\n" +
-                "  $target.setCoefficient(0);\n" +
-                "  update($target);\n" +
-                "end";
+                        "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                        "import " + List.class.getCanonicalName() + ";\n" +
+                        "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                        "  $customer : Customer( $code : code )\n" +
+                        "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                        "  List(size > 1) from collect ( TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1) )\n" +
+                        "then\n" +
+                        "  $target.setCoefficient(0);\n" +
+                        "  update($target);\n" +
+                        "end";
 
         checkCollect( str );
     }
@@ -454,39 +480,39 @@ public class AccumulateTest extends BaseModelTest {
     public void testFromCollectWithAccumulate() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
-                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
-                "import " + List.class.getCanonicalName() + ";\n" +
-                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
-                "  $customer : Customer( $code : code )\n" +
-                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
-                "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); collectList( $tp ) )\n" +
-                "then\n" +
-                "  $target.setCoefficient(0);\n" +
-                "  update($target);\n" +
-                "end";
+                        "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                        "import " + List.class.getCanonicalName() + ";\n" +
+                        "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                        "  $customer : Customer( $code : code )\n" +
+                        "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                        "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); collectList( $tp ) )\n" +
+                        "then\n" +
+                        "  $target.setCoefficient(0);\n" +
+                        "  update($target);\n" +
+                        "end";
 
         checkCollect( str );
     }
 
-    @Test 
+    @Test
     public void testFromCollectWithExpandedAccumulate() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
-                "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
-                "import " + List.class.getCanonicalName() + ";\n" +
-                "import " + ArrayList.class.getCanonicalName() + ";\n" +
-                "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
-                "  $customer : Customer( $code : code )\n" +
-                "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
-                "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); " +
-                "            init( ArrayList myList = new ArrayList(); ),\n" +
-                "            action( myList.add($tp); ),\n" +
-                "            reverse( myList.remove($tp); ),\n" +
-                "            result( myList ) )\n" +
-                "then\n" +
-                "  $target.setCoefficient(0);\n" +
-                "  update($target);\n" +
-                "end";
+                        "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
+                        "import " + List.class.getCanonicalName() + ";\n" +
+                        "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                        "rule \"Customer can only have one Target Policy for Product p1 with coefficient 1\" when\n" +
+                        "  $customer : Customer( $code : code )\n" +
+                        "  $target : TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1 )\n" +
+                        "  List(size > 1) from accumulate ( $tp: TargetPolicy( customerCode == $code, productCode == \"p1\", coefficient == 1); " +
+                        "            init( ArrayList myList = new ArrayList(); ),\n" +
+                        "            action( myList.add($tp); ),\n" +
+                        "            reverse( myList.remove($tp); ),\n" +
+                        "            result( myList ) )\n" +
+                        "then\n" +
+                        "  $target.setCoefficient(0);\n" +
+                        "  update($target);\n" +
+                        "end";
 
         checkCollect( str );
     }
@@ -532,13 +558,13 @@ public class AccumulateTest extends BaseModelTest {
 
     public void testFromCollectWithExpandedAccumulate2(boolean performReverse) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
-                     "rule R when\n" +
-                     "  $sum : Integer() from accumulate (\n" +
-                     "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
-                     "         )" +
-                     "then\n" +
-                     "  insert($sum);\n" +
-                     "end";
+                "rule R when\n" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -633,14 +659,14 @@ public class AccumulateTest extends BaseModelTest {
     public void testExpandedAccumulateWith3Args() {
         String str =
                 "rule \"TestAccumulate2\" when\n" +
-                "    $dx : Number () from accumulate ( $d : Double (),\n" +
-                "                init   ( double ex = 0; double ex2 = 0; int count = 0; ),\n" +
-                "                action ( count++; ex += $d; ex2 += $d * $d; ),\n" +
-                "                reverse( count--; ex -= $d; ex2 -= $d * $d; ),\n" +
-                "                result ( (ex / count) * (ex / count) + (ex2 / count) ) )\n" +
-                "then\n" +
-                "   insert($dx.intValue());\n" +
-                "end";
+                        "    $dx : Number () from accumulate ( $d : Double (),\n" +
+                        "                init   ( double ex = 0; double ex2 = 0; int count = 0; ),\n" +
+                        "                action ( count++; ex += $d; ex2 += $d * $d; ),\n" +
+                        "                reverse( count--; ex -= $d; ex2 -= $d * $d; ),\n" +
+                        "                result ( (ex / count) * (ex / count) + (ex2 / count) ) )\n" +
+                        "then\n" +
+                        "   insert($dx.intValue());\n" +
+                        "end";
 
         KieSession ksession = getKieSession(str);
 
@@ -658,15 +684,15 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateFromWithConstraint() {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
-                "import " + org.drools.modelcompiler.oopathdtables.Person.class.getCanonicalName() + ";" +
-                "import " + org.drools.modelcompiler.oopathdtables.Address.class.getCanonicalName() + ";" +
-                "import " + org.drools.modelcompiler.oopathdtables.InternationalAddress.class.getCanonicalName() + ";" +
-                "rule listSafeCities when\n" +
-                "  $a : InternationalAddress()\n" +
-                "  $cities : List(size > 0) from accumulate ($city : String() from $a.city, collectList($city))\n" +
-                "then\n" +
-                "   insert($cities.get(0));\n" +
-                "end";
+                        "import " + org.drools.modelcompiler.oopathdtables.Person.class.getCanonicalName() + ";" +
+                        "import " + org.drools.modelcompiler.oopathdtables.Address.class.getCanonicalName() + ";" +
+                        "import " + org.drools.modelcompiler.oopathdtables.InternationalAddress.class.getCanonicalName() + ";" +
+                        "rule listSafeCities when\n" +
+                        "  $a : InternationalAddress()\n" +
+                        "  $cities : List(size > 0) from accumulate ($city : String() from $a.city, collectList($city))\n" +
+                        "then\n" +
+                        "   insert($cities.get(0));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -704,6 +730,111 @@ public class AccumulateTest extends BaseModelTest {
         List<Integer> results = getObjectsIntoList(ksession, Integer.class);
 
         assertThat(results, hasItem(4));
+    }
+
+    @Test
+    public void testAccumulateWithExternalBind() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  String( $l : length )" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "                $sum : sum($p.getAge() * $l)  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert("x");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
+    }
+
+    @Test
+    public void testFromCollectWithExpandedAccumulateExternalBindInInit() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  String( $l : length )" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ), init( int sum = 0 * $l; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(112));
+
+    }
+
+    @Test
+    public void testFromCollectWithExpandedAccumulateExternalBindInAction() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  String( $l : length )" +
+                "  $sum : Integer() from accumulate (\n" +
+                "            Person( age > 18, $age : age ), init( int sum = 0; ), action( sum += ($age * $l); ), reverse( sum -= $age; ), result( sum )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(112));
+
+    }
+
+    @Test
+    public void testUseAccumulateFunctionWithOperationInBinding() {
+
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate (\n" +
+                "       $p : Person(), $result : sum( $p.getAge() * 1) "+
+                "         )" +
+                "then\n" +
+                "  insert($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, results.size());
+        assertEquals(112, results.get(0).intValue());
 
     }
 
@@ -711,14 +842,14 @@ public class AccumulateTest extends BaseModelTest {
     public void testTypedResultOnAccumulate() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "import " + Result.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                "  $max : Integer() from accumulate ( String( $l : length ); \n" +
-                "                max($l)  \n" +
-                "              ) \n" +
-                "then\n" +
-                "  insert(new Person(\"test\", $max));\n" +
-                "end";
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  $max : Integer() from accumulate ( String( $l : length ); \n" +
+                        "                max($l)  \n" +
+                        "              ) \n" +
+                        "then\n" +
+                        "  insert(new Person(\"test\", $max));\n" +
+                        "end";
 
         KieSession ksession = getKieSession( str );
 
@@ -729,5 +860,22 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Person> results = getObjectsIntoList(ksession, Person.class);
         assertEquals(1, results.size());
         assertEquals(3, results.iterator().next().getAge());
+    }
+
+    @Test
+    public void testNoBinding() {
+
+        final String str = "rule foo\n" +
+                "when\n" +
+                "Object() from accumulate( Object(),\n" +
+                "init( Object res = 2; )\n" +
+                "action( res = 2; )\n" +
+                "result( res ) )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert("xyz");
+        ksession.fireAllRules();
     }
 }

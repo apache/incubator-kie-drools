@@ -7,6 +7,9 @@ import java.util.Optional;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.PatternExtractor;
 import org.drools.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
@@ -20,19 +23,15 @@ public class DeclarationSpec {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName));
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
         this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty());
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
-        this(bindingId, declarationClass, pattern, declarationSource, Optional.empty());
-    }
-
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = pattern;
@@ -74,5 +73,19 @@ public class DeclarationSpec {
 
     public org.drools.javaparser.ast.type.Type getType() {
         return DrlxParseUtil.classToReferenceType(getDeclarationClass());
+    }
+
+    @Override
+    public String toString() {
+        return "DeclarationSpec{" +
+                "bindingId='" + bindingId + '\'' +
+                ", declarationClass=" + declarationClass +
+                '}';
+    }
+
+    public Declaration asDeclaration() {
+        Declaration decl = new Declaration( bindingId, new PatternExtractor( new ClassObjectType( declarationClass ) ), null );
+        decl.setDeclarationClass( declarationClass );
+        return decl;
     }
 }

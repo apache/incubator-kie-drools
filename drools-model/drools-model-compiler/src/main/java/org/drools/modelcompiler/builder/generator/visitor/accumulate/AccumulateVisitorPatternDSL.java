@@ -17,7 +17,6 @@ import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBu
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
@@ -29,8 +28,8 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, PatternExpressionBuilder.BIND_CALL);
-        bindDSL.addArgument(toVar(bindingName));
-        usedDeclaration.stream().map(d -> new NameExpr(toVar(d))).forEach(bindDSL::addArgument);
+        bindDSL.addArgument(context.getVar(bindingName));
+        usedDeclaration.stream().map(d -> context.getVarExpr(d)).forEach(bindDSL::addArgument);
         bindDSL.addArgument(buildConstraintExpression(expression, usedDeclaration));
         return bindDSL;
     }
@@ -42,7 +41,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
             if (patterBinding.isPresent()) {
-                final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(patterBinding.get(), allExpressions);
+                final Optional<MethodCallExpr> optPattern = DrlxParseUtil.findPatternWithBinding(context, patterBinding.get(), allExpressions);
                 optPattern.ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)
@@ -54,10 +53,9 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     private void addBindAsLastChainCall(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        final Expression newScope = (Expression) pattern.getParentNode().orElse(pattern);
-        final Optional<Node> optParent = newScope.getParentNode();
-        newBindingExpression.setScope(newScope);
-        optParent.ifPresent(parent -> parent.replace(newScope, newBindingExpression));
+        final Optional<Node> optParent = pattern.getParentNode();
+        newBindingExpression.setScope(pattern);
+        optParent.ifPresent(parent -> parent.replace(pattern, newBindingExpression));
     }
 
     private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {

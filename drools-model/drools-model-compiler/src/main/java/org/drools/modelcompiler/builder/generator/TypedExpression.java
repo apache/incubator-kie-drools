@@ -50,7 +50,7 @@ public class TypedExpression {
         this.fieldName = fieldName;
     }
 
-    public TypedExpression( String unificationVariable, Class<?> type, String name) {
+    public TypedExpression( String unificationVariable, Type type, String name) {
         this.unificationVariable = Optional.of(unificationVariable);
         this.type = type;
         this.unificationName = Optional.of(name);

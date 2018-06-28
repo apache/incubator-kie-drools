@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -13,8 +14,11 @@ import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -31,17 +35,16 @@ import static java.util.Optional.of;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
 
-    private final RuleContext ruleContext;
+    private final RuleContext context;
     private final PackageModel packageModel;
     private final Class<?> patternType;
 
     public FromVisitor(RuleContext context, PackageModel packageModel, Class<?> patternType) {
-        this.ruleContext = context;
+        this.context = context;
         this.packageModel = packageModel;
         this.patternType = patternType;
     }
@@ -70,6 +73,16 @@ public class FromVisitor {
             return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
         }
 
+        if (parsedExpression instanceof ObjectCreationExpr ) {
+            return fromConstructorExpr(expression, (ObjectCreationExpr) parsedExpression);
+        }
+
+        if (parsedExpression instanceof LiteralExpr ) {
+            MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+            fromCall.addArgument( parsedExpression );
+            return of(fromCall);
+        }
+
         return Optional.empty();
     }
 
@@ -79,16 +92,13 @@ public class FromVisitor {
         Collection<String> usedDeclarations = new ArrayList<>();
 
         for (String expr : expressions.split( "," )) {
-            Optional<String> optContainsBinding = DrlxParseUtil.findBindingIdFromDotExpression(expr);
-            String bindingId = optContainsBinding.orElse(expr);
-            fromCall.addArgument(new NameExpr(toVar(bindingId)));
-            Expression exprArg = createArg( expr, optContainsBinding, bindingId );
-            if (exprArg != null) {
-                asListCall.addArgument( exprArg );
-            } else {
-                asListCall.addArgument( expr );
+            Optional<DeclarationSpec> optContainsBinding = context.getDeclarationById( expr );
+            if (optContainsBinding.isPresent()) {
+                String bindingId = optContainsBinding.get().getBindingId();
+                fromCall.addArgument( context.getVarExpr(bindingId));
                 usedDeclarations.add( expr );
             }
+            asListCall.addArgument(expr);
         }
 
         fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true ) );
@@ -96,11 +106,24 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromMethodExpr(String expression, MethodCallExpr parsedExpression) {
+        return fromExpressionViaScope(expression, parsedExpression).map(Optional::of)
+                .orElseGet(() -> fromExpressionUsingArguments(expression, parsedExpression));
+    }
 
-        final Optional<Expression> fromScope = fromExpressionViaScope(expression, parsedExpression);
-        final Optional<Expression> fromCall = fromExpressionUsingArguments(expression, parsedExpression);
+    private Optional<Expression> fromConstructorExpr(String expression, ObjectCreationExpr parsedExpression) {
+        MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
+        List<String> bindingIds = new ArrayList<>();
 
-        return fromScope.map(Optional::of).orElse(fromCall);
+        for (Expression argument : parsedExpression.getArguments()) {
+            final String argumentName = argument.toString();
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+                bindingIds.add(argumentName);
+                fromCall.addArgument( context.getVarExpr(argumentName));
+            }
+        }
+
+        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true ) );
+        return of( fromCall );
     }
 
     private Optional<Expression> fromFieldOrName(String expression) {
@@ -112,13 +135,13 @@ public class FromVisitor {
         final Expression parsedExpression = drlxExpression.getExpr();
         Optional<TypedExpression> staticField = Optional.empty();
         if (parsedExpression instanceof FieldAccessExpr) {
-            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, ruleContext.getTypeResolver());
+            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver());
         }
 
         Expression fromCall;
         if (staticField.isPresent()) {
             fromCall = createSupplier(parsedExpression);
-        } else if (ruleContext.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+        } else if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
             fromCall = createFromCall(expression, optContainsBinding, bindingId);
         } else {
             fromCall = createUnitDataCall(optContainsBinding, bindingId);
@@ -136,28 +159,28 @@ public class FromVisitor {
         return fromCall;
     }
 
-    private Optional<Expression> fromExpressionUsingArguments(String expression, MethodCallExpr methodCallExpr) {
+    private Optional<Expression> fromExpressionUsingArguments(String expression, NodeWithArguments<?> methodCallExpr) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         String bindingId = null;
 
         for (Expression argument : methodCallExpr.getArguments()) {
             final String argumentName = argument.toString();
-            if (ruleContext.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 if (bindingId == null) {
                     bindingId = argumentName;
                 }
-                fromCall.addArgument(new NameExpr(toVar(argumentName)));
+                fromCall.addArgument( context.getVarExpr(argumentName));
             }
         }
 
         return bindingId != null ? of(addLambdaToFromExpression( expression, of(bindingId), bindingId, fromCall )) : Optional.empty();
     }
 
-    private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {
+    private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
         final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
             if(e instanceof NameExpr) {
                 final String name = ((NameExpr) e).getName().toString();
-                return ruleContext.hasDeclaration(name) || packageModel.hasDeclaration(name);
+                return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
             }
             return false;
         });
@@ -171,7 +194,7 @@ public class FromVisitor {
 
     private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
-        fromCall.addArgument(new NameExpr(toVar(bindingId)));
+        fromCall.addArgument( context.getVarExpr(bindingId));
         return addLambdaToFromExpression( expression, optContainsBinding, bindingId, fromCall );
     }
 
@@ -185,15 +208,15 @@ public class FromVisitor {
 
     private Expression createArg( String expression, Optional<String> optContainsBinding, String bindingId ) {
         return optContainsBinding.map( containsBinding -> {
-            DeclarationSpec declarationSpec = ruleContext.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
+            DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = new ConstraintParser( ruleContext, packageModel ).drlxParse( clazz, bindingId, expression );
+            DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getRawClass() ) ) {
-                    ruleContext.addCompilationError( new InvalidExpressionErrorResult(
-                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + ruleContext.getRuleDescr().getName() +
+                    context.addCompilationError( new InvalidExpressionErrorResult(
+                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleDescr().getName() +
                                     "' is not compatible with type " + drlxParseSuccess.getLeft().getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
@@ -203,6 +226,6 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( Optional<String> optContainsBinding, String bindingId ) {
-        return JavaParser.parseExpression(toVar(bindingId));
+        return JavaParser.parseExpression(context.getVar(bindingId));
     }
 }

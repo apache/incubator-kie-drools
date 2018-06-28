@@ -50,6 +50,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private boolean skipThisAsParam;
     private boolean isBetaNode;
     private boolean requiresSplit;
+    private boolean unification;
 
     public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
@@ -287,6 +288,15 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public boolean isRequiresSplit() {
         return requiresSplit;
+    }
+
+    public DrlxParseSuccess setUnification(boolean unification) {
+        this.unification = unification;
+        return this;
+    }
+
+    public boolean isUnification() {
+        return unification;
     }
 
     @Override

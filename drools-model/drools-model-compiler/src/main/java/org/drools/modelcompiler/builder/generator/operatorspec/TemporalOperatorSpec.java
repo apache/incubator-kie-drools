@@ -34,7 +34,7 @@ public class TemporalOperatorSpec implements OperatorSpec {
     public static void addArgumentToMethodCall(Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr) {
             TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
-            final TemporalLiteralChunkExpr firstTemporalExpression = tempExpr1.getChunks().iterator().next();
+            final TemporalLiteralChunkExpr firstTemporalExpression = (TemporalLiteralChunkExpr) tempExpr1.getChunks().iterator().next();
             methodCallExpr.addArgument("" + firstTemporalExpression.getValue() );
             methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + firstTemporalExpression.getTimeUnit() );
         } else {

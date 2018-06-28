@@ -219,4 +219,23 @@ public class ExisistentialTest extends BaseModelTest {
         KieSession ksession = getKieSession( getCepKieModuleModel(), str );
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+
+    @Test
+    public void testDuplicateBindingNameInDifferentScope() {
+        final String drl1 =
+                "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    exists( $fact : String( length == 4 ) and String( this == $fact ) )\n" +
+                "    exists( $fact : Person( age == 18 ) and Person( this == $fact ) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( "test" );
+        ksession.insert( new Person("test", 18) );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

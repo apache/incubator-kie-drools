@@ -144,7 +144,7 @@ public class WindowReferenceGenerator {
 
     public static TemporalLiteralChunkExpr parseDuration(String duration) {
         TemporalLiteralExpr te = DrlxParser.parseTemporalLiteral(duration);
-        return te.getChunks().iterator().next();
+        return (TemporalLiteralChunkExpr) te.getChunks().iterator().next();
     }
 
 }

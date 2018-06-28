@@ -23,7 +23,6 @@ import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionB
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
@@ -79,11 +78,10 @@ public class OOPathExprGenerator {
                                                                               prepend(new NameExpr("_this"), callExpr.getExpression()));
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
-            reactiveFrom.addArgument(new NameExpr(toVar(previousBind)));
+            reactiveFrom.addArgument(context.getVarExpr(previousBind));
             reactiveFrom.addArgument(accessorLambda);
 
-            DeclarationSpec newDeclaration = new DeclarationSpec(bindingId, fieldType, reactiveFrom);
-            context.addDeclaration(newDeclaration);
+            DeclarationSpec newDeclaration = context.addDeclaration(bindingId, fieldType, reactiveFrom);
             context.addOOPathDeclaration(newDeclaration);
 
             final List<Expression> conditions = chunk.getConditions();
@@ -111,7 +109,7 @@ public class OOPathExprGenerator {
 
     private void toPatternExpr(String bindingId, List<DrlxParseResult> list) {
         MethodCallExpr patternExpr = new MethodCallExpr( null, PATTERN_CALL );
-        patternExpr.addArgument( toVar( bindingId ) );
+        patternExpr.addArgument( context.getVar( bindingId ) );
 
         for (DrlxParseResult drlx : list) {
             if (drlx.isSuccess()) {

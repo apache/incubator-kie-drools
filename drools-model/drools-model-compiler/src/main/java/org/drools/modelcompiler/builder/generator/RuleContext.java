@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +19,13 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
@@ -33,7 +37,8 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
+
+import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 
 public class RuleContext {
 
@@ -46,7 +51,8 @@ public class RuleContext {
     private final RuleDescr descr;
     private final boolean generatePatternDSL;
 
-    private List<DeclarationSpec> declarations = new ArrayList<>();
+    private List<DeclarationSpec> allDeclarations = new ArrayList<>();
+    private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
     private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
     private List<Expression> expressions = new ArrayList<>();
@@ -65,6 +71,11 @@ public class RuleContext {
     private Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
+
+    private Scope currentScope = new Scope("");
+    private Deque<Scope> scopesStack = new LinkedList<>();
+    private Map<String, String> definedVars = new HashMap<>();
+
     public enum RuleDialect {
         JAVA,
         MVEL;
@@ -131,44 +142,62 @@ public class RuleContext {
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
-        return declarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
+        return Optional.ofNullable( scopedDeclarations.get( getDeclarationKey( id )) );
+    }
+
+    private String getDeclarationKey( String id ) {
+        String var = definedVars.get(id);
+        return var != null ? var : id;
     }
 
     public void removeDeclarationById(String id) {
-        final Optional<DeclarationSpec> declarationById = getDeclarationById(id);
-        declarationById.map(declarations::remove).orElseThrow(() -> new RuntimeException("Cannot find id: " + id));
+        scopedDeclarations.remove( getDeclarationKey( id ) );
     }
 
-
     public boolean hasDeclaration(String id) {
-        return getDeclarationById(id).isPresent();
+        return scopedDeclarations.get( getDeclarationKey( id )) != null;
     }
 
     public void addGlobalDeclarations(Map<String, Class<?>> globals) {
         for(Map.Entry<String, Class<?>> ks : globals.entrySet()) {
+            definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue()));
         }
-    }
-
-    public Collection<String> getAvailableBindings() {
-        return declarations.stream().map( DeclarationSpec::getBindingId ).collect( toList() );
     }
 
     public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {
         return ooPathDeclarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
     }
 
-    public void addDeclaration(DeclarationSpec d) {
-        // It would be probably be better to avoid putting the same declaration multiple times
-        // instead of using Set semantic here
-        if (!getDeclarationById(d.getBindingId()).isPresent()) {
-            this.declarations.add(d);
-        }
+    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {
+        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass));
+    }
+
+    public DeclarationSpec addDeclaration( String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
+        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, pattern, declarationSource, Optional.empty()));
+    }
+
+    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, String variableName) {
+        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, variableName));
+    }
+
+    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, Expression declarationSource) {
+        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, declarationSource));
+    }
+
+    private String defineVar(String var) {
+        String bindingId = currentScope.id + var;
+        definedVars.put(var, bindingId);
+        currentScope.vars.add(var);
+        return bindingId;
+    }
+
+    public DeclarationSpec addDeclaration(DeclarationSpec d) {
+        scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        return d;
     }
 
     public void addDeclarationReplacing(DeclarationSpec d) {
-        // It would be probably be better to avoid putting the same declaration multiple times
-        // instead of using Set semantic here
         final String bindingId = d.getBindingId();
         final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
         if (declarationById.isPresent()) {
@@ -177,7 +206,7 @@ public class RuleContext {
             }
             removeDeclarationById(bindingId);
         }
-        this.declarations.add(d);
+        this.scopedDeclarations.put(d.getBindingId(), d);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -186,8 +215,17 @@ public class RuleContext {
         }
     }
 
-    public List<DeclarationSpec> getDeclarations() {
-        return declarations;
+    public Collection<DeclarationSpec> getAllDeclarations() {
+        if (allDeclarations.isEmpty()) {
+            return scopedDeclarations.values();
+        }
+        List declrs = new ArrayList( scopedDeclarations.values() );
+        declrs.addAll( allDeclarations );
+        return declrs;
+    }
+
+    public Collection<String> getAvailableBindings() {
+        return scopedDeclarations.keySet();
     }
 
     public List<DeclarationSpec> getOOPathDeclarations() {
@@ -197,12 +235,15 @@ public class RuleContext {
     public void addExpression(Expression e) {
         exprPointer.peek().accept(e);
     }
+
     public void pushExprPointer(Consumer<Expression> p) {
         exprPointer.push(p);
     }
+
     public Consumer<Expression> popExprPointer() {
         return exprPointer.pop();
     }
+
     public int getExprPointerLevel() {
         return exprPointer.size();
     }
@@ -263,6 +304,10 @@ public class RuleContext {
         this.queryName = queryName;
     }
 
+    public boolean isQuery() {
+        return queryName.isPresent();
+    }
+
     public Map<String, String> getNamedConsequences() {
         return namedConsequences;
     }
@@ -319,6 +364,58 @@ public class RuleContext {
 
     public Set<String> getUnusableOrBinding() {
         return unusableOrBinding;
+    }
+
+    public Expression getVarExpr(String x) {
+        if (!isQuery()) {
+            new NameExpr( getVar( x ) );
+        }
+
+        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals(x));
+        return optQueryParameter.map(qp -> {
+
+            final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
+
+            final int queryParameterIndex = getQueryParameters().indexOf(qp) + 1;
+            return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
+
+        }).orElse(new NameExpr( getVar( x ) ));
+    }
+
+    public String getVar( String x ) {
+        String var = x.startsWith( "sCoPe" ) ? x : definedVars.get(x);
+        return DrlxParseUtil.toVar(var != null ? var : currentScope.id + x);
+    }
+
+    public void pushScope() {
+        scopesStack.addLast( currentScope );
+        currentScope = new Scope();
+    }
+
+    public void popScope() {
+        currentScope.clear();
+        currentScope = scopesStack.removeLast();
+    }
+
+    private static int scopeCounter = 1;
+    private class Scope {
+        private final String id;
+        private List<String> vars = new ArrayList<>();
+
+        private Scope() {
+            this("sCoPe" + scopeCounter++ + "_");
+        }
+
+        private Scope( String id ) {
+            this.id = id;
+        }
+
+        private void clear() {
+            vars.forEach( v -> {
+                definedVars.remove(v);
+                allDeclarations.add( scopedDeclarations.remove( id + v ) );
+            } );
+        }
     }
 }
 
