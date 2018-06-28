@@ -176,15 +176,26 @@ public class ConstraintEvaluator {
     }
 
     public ConstraintEvaluator clone() {
+        return pattern == null ?
+                new ConstraintEvaluator( getClonedDeclarations(), constraint ) :
+                new ConstraintEvaluator( getClonedDeclarations(), pattern, constraint );
+    }
+
+    protected Declaration[] getClonedDeclarations() {
         Declaration[] clonedDeclarations = new Declaration[declarations.length];
         for (int i = 0; i < declarations.length; i++) {
             clonedDeclarations[i] = declarations[i].clone();
         }
-        return pattern == null ?
-                new ConstraintEvaluator( clonedDeclarations, constraint ) :
-                new ConstraintEvaluator( clonedDeclarations, pattern, constraint );
+        return clonedDeclarations;
     }
 
+    protected Declaration[] getDeclarations() {
+        return declarations;
+    }
+
+    protected Pattern getPattern() {
+        return pattern;
+    }
 
     public boolean isTemporal() {
         return false;

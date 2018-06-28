@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.core.util.DateUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
@@ -37,6 +38,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
@@ -202,19 +204,24 @@ public class ConstraintParser {
 
         if ( drlxExpr instanceof PointFreeExpr ) {
             PointFreeExpr pointFreeExpr = (PointFreeExpr) drlxExpr;
-
             TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(pointFreeExpr);
-            final Optional<TypedExpression> optTypedExpression = typedExpressionResult.getTypedExpression();
 
-            return optTypedExpression.<DrlxParseResult>map(typedExpression -> {
-                final Expression returnExpression = typedExpression.getExpression();
-                final java.lang.reflect.Type returnType = typedExpression.getType();
+            return typedExpressionResult.getTypedExpression().<DrlxParseResult>map(typedExpression -> {
+                Object rightLiteral = null;
+                if (ModelGenerator.temporalOperators.contains(pointFreeExpr.getOperator().asString()) && pointFreeExpr.getRight().size() == 1) {
+                    Expression rightExpr = pointFreeExpr.getRight().get(0);
+                    if (rightExpr instanceof StringLiteralExpr) {
+                        String value = (( StringLiteralExpr ) rightExpr).getValue();
+                        rightLiteral = DateUtils.parseDate(value).getTime() + "L";
+                    }
+                }
 
-                return new DrlxParseSuccess(patternType, exprId, bindingId, returnExpression, returnType)
+                return new DrlxParseSuccess(patternType, exprId, bindingId, typedExpression.getExpression(), typedExpression.getType())
                         .setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
                         .setUsedDeclarationsOnLeft(Collections.emptyList())
                         .setReactOnProperties(typedExpressionResult.getReactOnProperties())
                         .setLeft(typedExpression.getLeft())
+                        .setRightLiteral(rightLiteral)
                         .setStatic(typedExpression.isStatic())
                         .setValidExpression(true);
             }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(pointFreeExpr) ));

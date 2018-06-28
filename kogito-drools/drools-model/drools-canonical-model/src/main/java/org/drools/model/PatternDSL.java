@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
+import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
@@ -27,7 +28,7 @@ import org.drools.model.constraints.SingleConstraint4;
 import org.drools.model.constraints.SingleConstraint5;
 import org.drools.model.constraints.SingleConstraint6;
 import org.drools.model.constraints.SingleConstraint7;
-import org.drools.model.constraints.TemporalConstraint;
+import org.drools.model.constraints.VariableTemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
@@ -109,6 +110,7 @@ public class PatternDSL extends DSL {
         <A, B, C, D, E, F> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7, Predicate7<T, A, B, C, D, E, F> predicate, ReactOn reactOn );
 
         <U> PatternDef<T> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate );
+        PatternDef<T> expr( String exprId, long value, TemporalPredicate temporalPredicate );
 
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f );
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f, ReactOn reactOn );
@@ -273,6 +275,12 @@ public class PatternDSL extends DSL {
         @Override
         public <U> PatternDef<T> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate ) {
             items.add( new TemporalPatternExpr<>( exprId, var1, temporalPredicate) );
+            return this;
+        }
+
+        @Override
+        public PatternDef<T> expr( String exprId, long value, TemporalPredicate temporalPredicate ) {
+            items.add( new FixedTemporalPatternExpr<>( exprId, value, temporalPredicate) );
             return this;
         }
 
@@ -584,7 +592,27 @@ public class PatternDSL extends DSL {
 
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
-            return new TemporalConstraint(getExprId(), patternDef.getFirstVariable(), var2, temporalPredicate);
+            return new VariableTemporalConstraint(getExprId(), patternDef.getFirstVariable(), var2, temporalPredicate);
+        }
+    }
+
+    public static class FixedTemporalPatternExpr<T> extends PatternExprImpl<T> {
+        private final long value;
+        private final TemporalPredicate temporalPredicate;
+
+        public FixedTemporalPatternExpr(long value, TemporalPredicate temporalPredicate) {
+            this(randomUUID().toString(), value, temporalPredicate);
+        }
+
+        public FixedTemporalPatternExpr( String exprId, long value, TemporalPredicate temporalPredicate) {
+            super( exprId, null );
+            this.value = value;
+            this.temporalPredicate = temporalPredicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            return new FixedTemporalConstraint(getExprId(), patternDef.getFirstVariable(), value, temporalPredicate);
         }
     }
 

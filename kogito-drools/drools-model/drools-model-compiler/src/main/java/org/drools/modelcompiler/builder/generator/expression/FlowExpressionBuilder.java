@@ -61,6 +61,9 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
+        if (drlxParseResult.getRightLiteral() != null) {
+            exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
+        }
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
         return exprDSL;
     }

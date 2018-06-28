@@ -24,6 +24,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 import org.drools.model.SingleConstraint;
+import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.temporal.TemporalPredicate;
 
@@ -55,7 +56,18 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
     @Override
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-        throw new UnsupportedOperationException();
+        long start1 = ( (EventFactHandle) handle ).getStartTimestamp();
+        long duration1 = ( (EventFactHandle) handle ).getDuration();
+        long end1 = start1 + duration1;
+        long start2 = (( FixedTemporalConstraint ) constraint).getValue();
+        long duration2 = 0;
+        long end2 = start2 + duration2;
+        return getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+    }
+
+    @Override
+    public TemporalConstraintEvaluator clone() {
+        return new TemporalConstraintEvaluator( getDeclarations(), getPattern(), constraint );
     }
 
     @Override

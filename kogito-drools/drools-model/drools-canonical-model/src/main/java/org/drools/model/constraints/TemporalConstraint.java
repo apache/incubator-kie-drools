@@ -19,29 +19,19 @@ package org.drools.model.constraints;
 import org.drools.model.Variable;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.ModelComponent;
+import org.drools.model.view.FixedTemporalExprViewItem;
 import org.drools.model.view.TemporalExprViewItem;
+import org.drools.model.view.VariableTemporalExprViewItem;
 
-public class TemporalConstraint<A> extends AbstractSingleConstraint {
+public abstract class TemporalConstraint<A> extends AbstractSingleConstraint {
 
-    private final Variable<A> var1;
-    private final Variable<?> var2;
-    private final TemporalPredicate temporalPredicate;
+    protected final Variable<A> var1;
+    protected final TemporalPredicate temporalPredicate;
 
-    public TemporalConstraint(String exprId, Variable<A> var1, Variable<?> var2, TemporalPredicate temporalPredicate ) {
+    public TemporalConstraint( String exprId, Variable<A> var1, TemporalPredicate temporalPredicate ) {
         super(exprId);
         this.var1 = var1;
-        this.var2 = var2;
         this.temporalPredicate = temporalPredicate;
-    }
-
-    public TemporalConstraint(TemporalExprViewItem<A> expr ) {
-        this( expr.getExprId(), expr.getFirstVariable(), expr.getSecondVariable(), expr.getTemporalPredicate() );
-    }
-
-    @Override
-    public Variable[] getVariables() {
-        return new Variable[] { var1, var2 };
     }
 
     @Override
@@ -58,16 +48,13 @@ public class TemporalConstraint<A> extends AbstractSingleConstraint {
         return temporalPredicate;
     }
 
-
-    @Override
-    public boolean isEqualTo( ModelComponent o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-
-        TemporalConstraint<?> that = ( TemporalConstraint<?> ) o;
-
-        if ( !ModelComponent.areEqualInModel( var1, that.var1 ) ) return false;
-        if ( !ModelComponent.areEqualInModel( var2, that.var2 ) ) return false;
-        return temporalPredicate.equals( that.temporalPredicate );
+    public static <A> TemporalConstraint<A> createTemporalConstraint( TemporalExprViewItem<A> expr ) {
+        if (expr instanceof FixedTemporalExprViewItem) {
+            return new FixedTemporalConstraint<A>( (( FixedTemporalExprViewItem<A> ) expr) );
+        }
+        if (expr instanceof VariableTemporalExprViewItem ) {
+            return new VariableTemporalConstraint<A>( (( VariableTemporalExprViewItem<A> ) expr) );
+        }
+        throw new UnsupportedOperationException("Unknown expression " + expr);
     }
 }
