@@ -615,10 +615,8 @@ public class NamedEntryPoint
     }
 
     protected void removePropertyChangeListener(final FactHandle handle, final boolean removeFromSet ) {
-        Object object = null;
+        Object object = ((InternalFactHandle) handle).getObject();
         try {
-            object = ((InternalFactHandle) handle).getObject();
-
             if ( dynamicFacts != null && removeFromSet ) {
                 dynamicFacts.remove( object );
             }

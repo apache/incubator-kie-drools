@@ -561,7 +561,7 @@ public class Pattern
         return returnType == null ||
                 returnType == Object.class ||
                 ( returnType == Number.class && patternType != null && Number.class.isAssignableFrom( patternType ) ||
-                patternType.isAssignableFrom( convertFromPrimitiveType(returnType) ) );
+                        (patternType != null && patternType.isAssignableFrom( convertFromPrimitiveType(returnType) )) );
     }
 
     public static boolean isCompatibleWithFromReturnType( Class<?> patternType, Class<?> returnType ) {

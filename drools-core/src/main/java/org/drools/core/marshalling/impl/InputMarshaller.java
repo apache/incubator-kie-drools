@@ -59,7 +59,6 @@ public class InputMarshaller {
         }
 
         int strategyIndex = context.stream.readInt();
-        Object object = null;
         ObjectMarshallingStrategy strategy = null;
         // This is the old way of de/serializing strategy objects
         if (strategyIndex >= 0) {
@@ -77,6 +76,7 @@ public class InputMarshaller {
         }
 
         // If either way retrieves a strategy, use it
+        Object object = null;
         if (strategy != null) {
             object = strategy.read( context.stream );
         }
@@ -162,12 +162,14 @@ public class InputMarshaller {
                         String strategyClassName = stream.readUTF();
                         // fix for backwards compatibility (5.x -> 6.x)
                         if ("org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy".equals(strategyClassName)) {
-                        	strategyClassName = "org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy";
+                            strategyClassName = "org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy";
                         }
                         strategy = context.resolverStrategyFactory.getStrategyObject( strategyClassName );
                         if (strategy == null) {
                             throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
                         }
+                    } else {
+                        throw new IllegalStateException( "Wrong index of strategy field read: " + index + "!");
                     }
 
                     Object value = strategy.read( stream );
