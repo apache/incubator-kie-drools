@@ -28,8 +28,8 @@ public class LogicalMapCore<K> extends MapCore {
 
         TraitFieldTMS tms = _getFieldTMS();
         Map<String,Object> props = _getDynamicProperties();
-        for ( String key : props.keySet() ) {
-            tms.registerField( Map.class, key, Object.class, props.get( key ), null );
+        for ( Entry<String,Object> propEntry : props.entrySet() ) {
+            tms.registerField( Map.class, propEntry.getKey(), Object.class, propEntry.getValue(), null );
         }
     }
 }

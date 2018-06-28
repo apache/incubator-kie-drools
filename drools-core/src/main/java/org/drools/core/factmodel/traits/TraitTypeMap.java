@@ -192,12 +192,12 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     @Override
     public String toString() {
         StringBuilder bldr = new StringBuilder();
-        bldr.append( "TraitTypeMap{" );
-        for ( String trt : innerMap.keySet() ) {
-        	Object proxy = innerMap.get( trt );
-        	bldr.append( trt ).append( " : " ).append( proxy.getClass().getName() ).append( "@" ).append( System.identityHashCode( proxy ) ).append( "; " );
+        bldr.append("TraitTypeMap{");
+        for (Entry<String,K> trtEntry : innerMap.entrySet()) {
+            Object proxy = trtEntry.getValue();
+            bldr.append(trtEntry.getKey()).append(" : ").append(proxy.getClass().getName()).append("@").append(System.identityHashCode(proxy)).append("; ");
         }
-	    bldr.append( "}" );
+        bldr.append("}");
         return bldr.toString();
     }
 

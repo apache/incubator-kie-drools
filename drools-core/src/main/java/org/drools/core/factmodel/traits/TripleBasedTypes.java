@@ -120,8 +120,8 @@ public class TripleBasedTypes extends TripleBasedStruct {
 
 
     public void putAll(Map<? extends String, ? extends Object> m) {
-        for ( String k : m.keySet() ) {
-            put( k, m.get( k ) );
+        for ( Entry<? extends String, ? extends Object> kEntry : m.entrySet() ) {
+            put( kEntry.getKey(), kEntry.getValue() );
         }
     }
 
