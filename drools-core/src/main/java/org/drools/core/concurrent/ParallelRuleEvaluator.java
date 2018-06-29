@@ -124,7 +124,9 @@ public class ParallelRuleEvaluator extends AbstractRuleEvaluator implements Rule
         }
 
         private void enqueue(RuleAgendaItem item) {
-            queue.offer( item );
+            if (!queue.offer( item )) {
+                throw new IllegalStateException("Cannot insert item into the queue! There is no space left in the queue.");
+            }
         }
     }
 }
