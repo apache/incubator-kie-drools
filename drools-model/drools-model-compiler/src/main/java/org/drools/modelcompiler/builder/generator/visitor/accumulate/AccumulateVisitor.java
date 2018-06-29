@@ -61,6 +61,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCast
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
@@ -100,6 +101,19 @@ public abstract class AccumulateVisitor {
 
         if (!descr.getFunctions().isEmpty()) {
             boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr) input).getConstraint().getDescrs().isEmpty());
+
+            final List<String> allBindings = descr
+                    .getFunctions()
+                    .stream()
+                    .map(f -> f.getBind())
+                    .collect(toList());
+
+            final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(allBindings);
+            invalidExpressionErrorResult.ifPresent(context::addCompilationError);
+            if(invalidExpressionErrorResult.isPresent()) {
+                return;
+            }
+
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
                 processNewBinding(optNewBinding);

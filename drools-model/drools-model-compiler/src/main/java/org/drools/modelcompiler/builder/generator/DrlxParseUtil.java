@@ -705,7 +705,7 @@ public class DrlxParseUtil {
         for(String b : allBindings) {
             Boolean alreadyExisted = duplicates.add(b);
             if(alreadyExisted) {
-                return Optional.of(new InvalidExpressionErrorResult("Duplicated binding:" + b));
+                return Optional.of(new InvalidExpressionErrorResult("Duplicated binding: " + b));
             }
         }
         return Optional.empty();
