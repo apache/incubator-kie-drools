@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -172,5 +174,22 @@ public abstract class PatternDSL implements DSLNode {
         }
     }
 
-    protected abstract DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern );
+    @Override
+    public void buildPattern() {
+        DeclarationSpec declarationSpec = initPattern();
+
+        if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
+            context.addExpression(input(declarationSpec));
+        } else {
+            if (!context.hasErrors()) {
+                buildPattern(declarationSpec);
+            }
+        }
+    }
+
+    protected abstract void buildPattern(DeclarationSpec declarationSpec);
+
+    protected abstract MethodCallExpr input(DeclarationSpec declarationSpec);
+
+    protected abstract DSLNode createSimpleConstraint(DrlxParseSuccess drlxParseResult, PatternDescr pattern );
 }
