@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -28,6 +29,7 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 
 public abstract class PatternDSL implements DSLNode {
 
@@ -185,6 +187,12 @@ public abstract class PatternDSL implements DSLNode {
             System.out.println("declarationSpec = " + declarationSpec);
 
             final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+            final List<String> allBindings = patternConstraintParseResults
+                    .stream()
+                    .map(p -> p.getDrlxParseResult().acceptWithReturnValue(s -> s.getExprBinding()))
+                    .collect(Collectors.toList());
+
+            validateDuplicateBindings(allBindings).ifPresent(context::addCompilationError);
 
             if (!context.hasErrors()) {
                 buildPattern(declarationSpec, patternConstraintParseResults);

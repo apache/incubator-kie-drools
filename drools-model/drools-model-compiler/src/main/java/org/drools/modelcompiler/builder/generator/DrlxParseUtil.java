@@ -26,9 +26,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -696,5 +698,16 @@ public class DrlxParseUtil {
 
     public static String toVar(String key) {
         return "var_" + key;
+    }
+
+    public static Optional<InvalidExpressionErrorResult> validateDuplicateBindings(List<String> allBindings) {
+        final Set<String> duplicates = new HashSet<>();
+        for(String b : allBindings) {
+            Boolean alreadyExisted = duplicates.add(b);
+            if(alreadyExisted) {
+                return Optional.of(new InvalidExpressionErrorResult("Duplicated binding:" + b));
+            }
+        }
+        return Optional.empty();
     }
 }
