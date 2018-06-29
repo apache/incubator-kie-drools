@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -106,6 +107,7 @@ public abstract class AccumulateVisitor {
                     .getFunctions()
                     .stream()
                     .map(f -> f.getBind())
+                    .filter(Objects::nonNull)
                     .collect(toList());
 
             final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(context.getRuleName(), allBindings);

@@ -703,8 +703,8 @@ public class DrlxParseUtil {
     public static Optional<InvalidExpressionErrorResult> validateDuplicateBindings(String ruleName, List<String> allBindings) {
         final Set<String> duplicates = new HashSet<>();
         for(String b : allBindings) {
-            Boolean alreadyExisted = duplicates.add(b);
-            if(alreadyExisted) {
+            Boolean notExisting = duplicates.add(b);
+            if(!notExisting) {
                 return Optional.of(new InvalidExpressionErrorResult(String.format("Duplicate declaration for variable '%s' in the rule '%s'", b, ruleName)));
             }
         }

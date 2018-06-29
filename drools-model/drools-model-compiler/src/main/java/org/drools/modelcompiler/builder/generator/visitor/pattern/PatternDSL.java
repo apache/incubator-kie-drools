@@ -187,6 +187,7 @@ public abstract class PatternDSL implements DSLNode {
             final List<String> allBindings = patternConstraintParseResults
                     .stream()
                     .map(p -> p.getDrlxParseResult().acceptWithReturnValue(s -> s.getExprBinding()))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
             validateDuplicateBindings(context.getRuleName(), allBindings).ifPresent(context::addCompilationError);
