@@ -108,7 +108,7 @@ public abstract class AccumulateVisitor {
                     .map(f -> f.getBind())
                     .collect(toList());
 
-            final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(allBindings);
+            final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(context.getRuleName(), allBindings);
             invalidExpressionErrorResult.ifPresent(context::addCompilationError);
             if(invalidExpressionErrorResult.isPresent()) {
                 return;

@@ -700,12 +700,12 @@ public class DrlxParseUtil {
         return "var_" + key;
     }
 
-    public static Optional<InvalidExpressionErrorResult> validateDuplicateBindings(List<String> allBindings) {
+    public static Optional<InvalidExpressionErrorResult> validateDuplicateBindings(String ruleName, List<String> allBindings) {
         final Set<String> duplicates = new HashSet<>();
         for(String b : allBindings) {
             Boolean alreadyExisted = duplicates.add(b);
             if(alreadyExisted) {
-                return Optional.of(new InvalidExpressionErrorResult("Duplicated binding: " + b));
+                return Optional.of(new InvalidExpressionErrorResult(String.format("Duplicate declaration for variable '%s' in the rule '%s'", b, ruleName)));
             }
         }
         return Optional.empty();
