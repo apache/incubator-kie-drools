@@ -29,8 +29,7 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     @Override
-    protected void buildPattern(DeclarationSpec declarationSpec) {
-        final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+    protected void buildPattern(DeclarationSpec declarationSpec, List<PatternConstraintParseResult> patternConstraintParseResults) {
         MethodCallExpr patternExpression = createPatternExpression(pattern, declarationSpec);
 
         List<Expression> exprs = new ArrayList<>();

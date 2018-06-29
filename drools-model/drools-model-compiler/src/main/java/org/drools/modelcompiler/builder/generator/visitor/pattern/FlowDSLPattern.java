@@ -31,8 +31,7 @@ class FlowDSLPattern extends PatternDSL {
     }
 
     @Override
-    protected void buildPattern(DeclarationSpec declarationSpec) {
-        final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+    protected void buildPattern(DeclarationSpec declarationSpec, List<PatternConstraintParseResult> patternConstraintParseResults) {
         if(shouldAddInputPattern(patternConstraintParseResults)) {
             context.addExpression(input(declarationSpec));
         }

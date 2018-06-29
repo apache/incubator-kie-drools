@@ -181,13 +181,18 @@ public abstract class PatternDSL implements DSLNode {
         if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
             context.addExpression(input(declarationSpec));
         } else {
+            // Validate duplicate bindings here
+            System.out.println("declarationSpec = " + declarationSpec);
+
+            final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+
             if (!context.hasErrors()) {
-                buildPattern(declarationSpec);
+                buildPattern(declarationSpec, patternConstraintParseResults);
             }
         }
     }
 
-    protected abstract void buildPattern(DeclarationSpec declarationSpec);
+    protected abstract void buildPattern(DeclarationSpec declarationSpec, List<PatternConstraintParseResult> patternConstraintParseResults);
 
     protected abstract MethodCallExpr input(DeclarationSpec declarationSpec);
 
