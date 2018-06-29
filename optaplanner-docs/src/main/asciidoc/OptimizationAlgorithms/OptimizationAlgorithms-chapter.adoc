@@ -774,6 +774,7 @@ There are several ways of doing multithreaded solving:
 ** Configure a <<partitionedSearch,Partitioned Search>>.
 * *Multithreaded incremental solving*: solve 1 dataset with multiple threads without sacrificing <<incrementalScoreCalculation, incremental score calculation>>.
 ** Donate a portion of your CPU cores to Planner to scale up the score calculation speed and get the same results in fraction of the time.
+** Configure <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
 
 image::OptimizationAlgorithms/multiThreadingStrategies.png[align="center"]
 
@@ -809,15 +810,13 @@ Enable multithreaded incremental solving by configuring a `moveThreadCount`:
 [source,xml,options="nowrap"]
 ----
 <solver>
-  <moveThreadCount>4</moveThreadCount>
+  <moveThreadCount>AUTO</moveThreadCount>
   ...
 </solver>
 ----
 
 That one extra line heavily improves the score calculation speed,
 presuming that your machine has enough free CPU cores.
-It <<sizingHardwareAndSoftware,saturates 5 CPU cores>>:
-the 4 move threads fill up 4 CPU cores and the solver thread itself takes another CPU core.
 
 Advanced configuration:
 
@@ -831,11 +830,15 @@ Advanced configuration:
 </solver>
 ----
 
+A `moveThreadCount` of `4` <<sizingHardwareAndSoftware,saturates almost 5 CPU cores>>:
+the 4 move threads fill up 4 CPU cores completely
+and the solver thread uses most of another CPU core.
+
 The following ``moveThreadCount``s are supported:
 
 * `NONE` (default): Don't run any move threads. Use the single threaded code.
 * ``AUTO``: Let Planner decide how many move threads to run in parallel.
-On machines or containers with little or no CPUs, this can fall back to the single threaded code.
+On machines or containers with little or no CPUs, this falls back to the single threaded code.
 * Static number: The number of move threads to run in parallel.
 +
 [source,xml,options="nowrap"]
@@ -843,7 +846,8 @@ On machines or containers with little or no CPUs, this can fall back to the sing
 <moveThreadCount>4</moveThreadCount>
 ----
 +
-This can be `1` to enforce running the multithreaded code with only 1 move thread.
+This can be `1` to enforce running the multithreaded code with only 1 move thread
+(which is less efficient than `NONE`).
 * JavaScript formula: Formula for the number of move threads to run in parallel. It can use the variable ``availableProcessorCount``. For example:
 +
 [source,xml,options="nowrap"]
@@ -851,7 +855,8 @@ This can be `1` to enforce running the multithreaded code with only 1 move threa
 <moveThreadCount>(availableProcessorCount / 2) + 1</moveThreadCount>
 ----
 
-It is counter-effective to set a moveThreadCount that is higher than the number of available CPU cores,
+It is counter-effective to set a `moveThreadCount`
+that is higher than the number of available CPU cores,
 as that will slow down the score calculation speed.
 One good reason to do it anyway, is to reproduce a bug of a high-end production machine.
 
@@ -862,8 +867,8 @@ A run of the same solver configuration on 2 machines with a different number of 
 is still reproducible, unless the `moveThreadCount` is set to `AUTO` or a function of `availableProcessorCount`.
 ====
 
-The `moveThreadBufferSize` can be used to power tweak the number of moves that are selected but won't be foraged.
-Setting it too low will reduce performance, setting it too high might too.
+The `moveThreadBufferSize` power tweaks the number of moves that are selected but won't be foraged.
+Setting it too low reduces performance, but setting it too high too.
 Unless you're deeply familiar with the inner workings of multithreaded solving, don't configure this parameter.
 
 To run in an environment that doesn't like arbitrary thread creation,
