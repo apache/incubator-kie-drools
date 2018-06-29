@@ -250,9 +250,9 @@ public class ClassGenerator {
     }
 
     public String toTypeDescriptor(String className) {
-        String arrayPrefix = "";
+        final StringBuilder arrayPrefix = new StringBuilder();
         while (className.endsWith("[]")) {
-            arrayPrefix += "[";
+            arrayPrefix.append("[");
             className = className.substring(0, className.length() - 2);
         }
         String typeDescriptor;
@@ -261,7 +261,7 @@ public class ClassGenerator {
         } catch (ClassNotFoundException e) {
             typeDescriptor = "L" + className.replace('.', '/') + ";";
         }
-        return arrayPrefix + typeDescriptor;
+        return arrayPrefix.toString() + typeDescriptor;
     }
 
     public String toInteralName(Class<?> clazz) {
@@ -269,9 +269,9 @@ public class ClassGenerator {
     }
 
     public String toInteralName(String className) {
-        String arrayPrefix = "";
+        final StringBuilder arrayPrefix = new StringBuilder();
         while (className.endsWith("[]")) {
-            arrayPrefix += "[";
+            arrayPrefix.append("[");
             className = className.substring(0, className.length() - 2);
         }
         String typeDescriptor;
@@ -284,7 +284,7 @@ public class ClassGenerator {
             typeDescriptor = className.replace('.', '/');
         }
         if (!isPrimitive && arrayPrefix.length() > 0) typeDescriptor = "L" + typeDescriptor + ";";
-        return arrayPrefix + typeDescriptor;
+        return arrayPrefix.toString() + typeDescriptor;
     }
 
     public String getClassName() {
