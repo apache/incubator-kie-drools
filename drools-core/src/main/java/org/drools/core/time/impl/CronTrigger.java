@@ -28,6 +28,7 @@ public class CronTrigger
     Trigger {
 
     protected static final int YEAR_TO_GIVEUP_SCHEDULING_AT = 2299;
+    private static final long serialVersionUID = -332085070627193383L;
 
     private CronExpression     cronEx                       = null;
     private Date               startTime                    = null;
