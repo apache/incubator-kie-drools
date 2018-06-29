@@ -42,7 +42,7 @@ public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Short( getShortValue( workingMemory, object ) );
+        return getShortValue( workingMemory, object );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

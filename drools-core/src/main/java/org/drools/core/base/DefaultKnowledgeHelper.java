@@ -545,7 +545,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                     NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
                     for (int i = 0; i < nodeInstanceIds.length; i++) {
                         for (NodeInstance subNodeInstance: container.getNodeInstances()) {
-                            if (subNodeInstance.getId() == new Long(nodeInstanceIds[i])) {
+                            if (subNodeInstance.getId() == Long.parseLong(nodeInstanceIds[i])) {
                                 if (i == nodeInstanceIds.length - 1) {
                                     context.setNodeInstance(subNodeInstance);
                                     break;
