@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -143,51 +144,28 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     public void decideNextStep(LocalSearchStepScope<Solution_> stepScope) {
         int stepIndex = stepScope.getStepIndex();
         resultQueue.startNextStep(stepIndex);
+
         int selectingMoveIndex = 0;
-        for (Move<Solution_> selectingMove : moveSelector) {
-            operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectingMoveIndex, selectingMove));
-            selectingMoveIndex++; // Increment required before if check
-            if (selectingMoveIndex < selectedMoveBufferSize) {
-                // Fill the buffer so move evaluation can run freely in parallel
-                // For reproducibility, the selectedMoveBufferSize always need to be selected,
-                // even if some of those moves won't be evaluated or foraged
-                continue;
-            }
-            OrderByMoveIndexBlockingQueue.MoveResult<Solution_> result;
-            try {
-                result = resultQueue.take();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-            if (stepIndex != result.getStepIndex()) {
-                throw new IllegalStateException("Impossible situation: the solverThread's stepIndex (" + stepIndex
-                        + ") differs from the result's stepIndex (" + result.getStepIndex() + ").");
-            }
-            Move<Solution_> foragingMove = result.getMove().rebase(stepScope.getScoreDirector());
-            int foragingMoveIndex = result.getMoveIndex();
-            LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, foragingMoveIndex, foragingMove);
-            if (!result.isMoveDoable()) {
-                logger.trace("{}        Move index ({}) not doable, ignoring move ({}).",
-                        logIndentation, foragingMoveIndex, foragingMove);
-            } else {
-                moveScope.setScore(result.getScore());
-                boolean accepted = acceptor.isAccepted(moveScope);
-                moveScope.setAccepted(accepted);
-                logger.trace("{}        Move index ({}), score ({}), accepted ({}), move ({}).",
-                        logIndentation,
-                        foragingMoveIndex, moveScope.getScore(), moveScope.getAccepted(),
-                        foragingMove);
-                forager.addMove(moveScope);
-                if (forager.isQuitEarly()) {
+        int foragingMoveIndex = 0;
+        Iterator<Move> moveIterator = moveSelector.iterator();
+        do  {
+            boolean moveIteratorEmpty = !moveIterator.hasNext();
+            // First fill the buffer so move evaluation can run freely in parallel
+            // For reproducibility, the selectedMoveBufferSize always need to be entirely selected,
+            // even if some of those moves won't end up being evaluated or foraged
+            if (selectingMoveIndex >= selectedMoveBufferSize || moveIteratorEmpty) {
+                if (forageResult(stepScope, stepIndex)) {
                     break;
                 }
+                foragingMoveIndex++;
             }
-            stepScope.getPhaseScope().getSolverScope().checkYielding();
-            if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
-                break;
+            if (!moveIteratorEmpty) {
+                Move<Solution_> selectingMove = moveIterator.next();
+                operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectingMoveIndex, selectingMove));
+                selectingMoveIndex++;
             }
-        }
+        } while (foragingMoveIndex < selectingMoveIndex);
+
         // Do not evaluate the remaining selected moves for this step that haven't started evaluation yet
         operationQueue.clear();
         pickMove(stepScope);
@@ -201,6 +179,44 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
             }
         }
         // TODO latch barrier
+    }
+
+    private boolean forageResult(LocalSearchStepScope<Solution_> stepScope, int stepIndex) {
+        OrderByMoveIndexBlockingQueue.MoveResult<Solution_> result;
+        try {
+            result = resultQueue.take();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return true;
+        }
+        if (stepIndex != result.getStepIndex()) {
+            throw new IllegalStateException("Impossible situation: the solverThread's stepIndex (" + stepIndex
+                    + ") differs from the result's stepIndex (" + result.getStepIndex() + ").");
+        }
+        Move<Solution_> foragingMove = result.getMove().rebase(stepScope.getScoreDirector());
+        int foragingMoveIndex = result.getMoveIndex();
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, foragingMoveIndex, foragingMove);
+        if (!result.isMoveDoable()) {
+            logger.trace("{}        Move index ({}) not doable, ignoring move ({}).",
+                    logIndentation, foragingMoveIndex, foragingMove);
+        } else {
+            moveScope.setScore(result.getScore());
+            boolean accepted = acceptor.isAccepted(moveScope);
+            moveScope.setAccepted(accepted);
+            logger.trace("{}        Move index ({}), score ({}), accepted ({}), move ({}).",
+                    logIndentation,
+                    foragingMoveIndex, moveScope.getScore(), moveScope.getAccepted(),
+                    foragingMove);
+            forager.addMove(moveScope);
+            if (forager.isQuitEarly()) {
+                return true;
+            }
+        }
+        stepScope.getPhaseScope().getSolverScope().checkYielding();
+        if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
+            return true;
+        }
+        return false;
     }
 
 }

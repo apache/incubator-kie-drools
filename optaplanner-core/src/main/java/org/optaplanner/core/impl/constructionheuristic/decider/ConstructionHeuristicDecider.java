@@ -90,7 +90,7 @@ public class ConstructionHeuristicDecider<Solution_> {
         forager.solvingEnded(solverScope);
     }
 
-    public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement placement) {
+    public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement<Solution_> placement) {
         int moveIndex = 0;
         for (Move<Solution_> move : placement) {
             ConstructionHeuristicMoveScope<Solution_> moveScope = new ConstructionHeuristicMoveScope<>(stepScope, moveIndex, move);
