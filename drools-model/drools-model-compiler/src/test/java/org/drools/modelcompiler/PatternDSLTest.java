@@ -278,6 +278,31 @@ public class PatternDSLTest {
     }
 
     @Test
+    public void testAccumulateConstant() {
+        Result result = new Result();
+        Variable<Person> person = declarationOf(Person.class);
+        Variable<Integer> resultSum = declarationOf(Integer.class);
+        Variable<Integer> constant = declarationOf(Integer.class);
+
+        Rule rule = D.rule("X").build(D.accumulate(D.pattern(person).expr((_this) -> _this.getName().startsWith("M")),
+                                                   D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+                                                                 valueOf(2)).as(resultSum)),
+                                      D.on(resultSum).execute((drools, $sum) -> result.setValue("total = " + $sum)));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+        assertEquals("total = 4", result.getValue());
+    }
+
+    @Test
     public void testAccumuluateWithAnd2() {
         Variable<Object> var_$pattern_Object$1$ = declarationOf(Object.class, "$pattern_Object$1$");
         Variable<Child> var_$c = declarationOf(Child.class, "$c");

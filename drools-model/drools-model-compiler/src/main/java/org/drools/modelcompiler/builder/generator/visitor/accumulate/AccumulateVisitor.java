@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
@@ -26,6 +28,7 @@ import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
@@ -56,12 +59,15 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 
 public abstract class AccumulateVisitor {
 
@@ -96,6 +102,20 @@ public abstract class AccumulateVisitor {
 
         if (!descr.getFunctions().isEmpty()) {
             boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr) input).getConstraint().getDescrs().isEmpty());
+
+            final List<String> allBindings = descr
+                    .getFunctions()
+                    .stream()
+                    .map(f -> f.getBind())
+                    .filter(Objects::nonNull)
+                    .collect(toList());
+
+            final Optional<InvalidExpressionErrorResult> invalidExpressionErrorResult = validateDuplicateBindings(context.getRuleName(), allBindings);
+            invalidExpressionErrorResult.ifPresent(context::addCompilationError);
+            if(invalidExpressionErrorResult.isPresent()) {
+                return;
+            }
+
             for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
                 final Optional<NewBinding> optNewBinding = visit(context, function, accumulateDSL, basePattern, inputPatternHasConstraints);
                 processNewBinding(optNewBinding);
@@ -135,7 +155,12 @@ public abstract class AccumulateVisitor {
         Optional<AccumulateVisitorPatternDSL.NewBinding> newBinding = Optional.empty();
 
         if(function.getParams().length == 0) {
-            final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, Object.class);
+            final Optional<AccumulateFunction> optAccumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, Object.class);
+            if(!optAccumulateFunction.isPresent()) {
+                addNonExistingFunctionError(context, function);
+                return Optional.empty();
+            }
+            final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
@@ -154,8 +179,13 @@ public abstract class AccumulateVisitor {
                     @Override
                     public Optional<AccumulateVisitorPatternDSL.NewBinding> onSuccess(DrlxParseSuccess drlxParseResult) {
                         Class<?> exprRawClass = drlxParseResult.getExprRawClass();
-                        final AccumulateFunction accumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
+                        final Optional<AccumulateFunction> optAccumulateFunction = AccumulateVisitor.this.getAccumulateFunction(function, exprRawClass);
+                        if(!optAccumulateFunction.isPresent()) {
+                            addNonExistingFunctionError(context, function);
+                            return Optional.empty();
+                        }
 
+                        final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                         final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
                         drlxParseResult.setExprBinding(bindExpressionVariable);
@@ -183,8 +213,13 @@ public abstract class AccumulateVisitor {
                 final TypedExpression typedExpression = parseMethodCallType(context, rootNodeName, methodCallWithoutRootNode.getWithoutRootNode());
                 final Class<?> methodCallExprType = typedExpression.getRawClass();
 
-                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, methodCallExprType);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
+                }
 
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 final Class accumulateFunctionResultType = accumulateFunction.getResultType();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
 
@@ -201,24 +236,37 @@ public abstract class AccumulateVisitor {
                 functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
                 context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-            } else if (accumulateFunctionParameter instanceof NameExpr) {
+            } else if (accumulateFunctionParameter instanceof NameExpr ) {
                 final Class<?> declarationClass = context
                         .getDeclarationById(accumulateFunctionParameter.toString())
                         .orElseThrow(RuntimeException::new)
                         .getDeclarationClass();
 
                 final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
-                final AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
+                }
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(context.getVarExpr(nameExpr));
 
-                if (bindingId != null) {
-                    Class accumulateFunctionResultType = accumulateFunction.getResultType();
-                    if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
-                        accumulateFunctionResultType = declarationClass;
-                    }
-                    context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
+            } else if (accumulateFunctionParameter instanceof LiteralExpr) {
+                final Class<?> declarationClass = getLiteralExpressionType((LiteralExpr) accumulateFunctionParameter);
+
+                final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
+                if(!optAccumulateFunction.isPresent()) {
+                    addNonExistingFunctionError(context, function);
+                    return Optional.empty();
                 }
+
+                final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+                functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
+                functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
+
+                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
             } else {
                 context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + accumulateFunctionParameterStr));
                 return Optional.empty();
@@ -235,15 +283,28 @@ public abstract class AccumulateVisitor {
         return newBinding;
     }
 
-    protected AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
+    private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {
+        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName())));
+    }
+
+    private void addBindingAsDeclaration(RuleContext context, String bindingId, Class<?> declarationClass, AccumulateFunction accumulateFunction) {
+        if (bindingId != null) {
+            Class accumulateFunctionResultType = accumulateFunction.getResultType();
+            if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
+                accumulateFunctionResultType = declarationClass;
+            }
+            context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+        }
+    }
+
+    protected Optional<AccumulateFunction> getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
         final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
         final Optional<AccumulateFunction> bundledAccumulateFunction = Optional.ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
         final Optional<AccumulateFunction> importedAccumulateFunction = Optional.ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
 
         return bundledAccumulateFunction
                 .map(Optional::of)
-                .orElse(importedAccumulateFunction)
-                .orElseThrow(RuntimeException::new);
+                .orElse(importedAccumulateFunction);
     }
 
     protected String getRootNodeName(DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode) {

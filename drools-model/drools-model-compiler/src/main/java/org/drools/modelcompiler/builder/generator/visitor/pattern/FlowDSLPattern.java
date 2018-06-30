@@ -31,20 +31,16 @@ class FlowDSLPattern extends PatternDSL {
     }
 
     @Override
-    public void buildPattern() {
-        DeclarationSpec declarationSpec = initPattern();
-
-        if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression(createInputExpression(pattern, declarationSpec));
-        } else {
-            if (!context.hasErrors()) {
-                final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-                if(shouldAddInputPattern(patternConstraintParseResults)) {
-                    context.addExpression(createInputExpression(pattern, declarationSpec));
-                }
-                buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
-            }
+    protected void buildPattern(DeclarationSpec declarationSpec, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        if(shouldAddInputPattern(patternConstraintParseResults)) {
+            context.addExpression(input(declarationSpec));
         }
+        buildConstraints(pattern, patternType, patternConstraintParseResults, allConstraintsPositional);
+    }
+
+    @Override
+    public MethodCallExpr input(DeclarationSpec declarationSpec) {
+        return createInputExpression(pattern, declarationSpec);
     }
 
     private boolean shouldAddInputPattern(List<PatternConstraintParseResult> parseResults) {

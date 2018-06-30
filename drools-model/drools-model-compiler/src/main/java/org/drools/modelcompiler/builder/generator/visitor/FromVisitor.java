@@ -216,7 +216,7 @@ public class FromVisitor {
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getRawClass() ) ) {
                     context.addCompilationError( new InvalidExpressionErrorResult(
-                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleDescr().getName() +
+                            "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleName() +
                                     "' is not compatible with type " + drlxParseSuccess.getLeft().getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();

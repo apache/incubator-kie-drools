@@ -3,6 +3,7 @@ package org.drools.model.patterns;
 import java.util.Collection;
 
 import org.drools.model.AccumulatePattern;
+import org.drools.model.Argument;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Constraint;
@@ -37,7 +38,7 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
             return null;
         }
 
-        final Variable source = accumulateFunctions[0].getSource();
+        final Argument source = accumulateFunctions[0].getSource();
 
         for (Condition subCondition : condition.getSubConditions()) {
             if (subCondition instanceof PatternImpl) {

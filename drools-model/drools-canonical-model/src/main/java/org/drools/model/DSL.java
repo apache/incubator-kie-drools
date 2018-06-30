@@ -353,7 +353,7 @@ public class DSL {
         return new AccumulateFunction(null, accFunctionClass);
     }
 
-    public static AccumulateFunction accFunction( Class<?> accFunctionClass, Variable source) {
+    public static AccumulateFunction accFunction( Class<?> accFunctionClass, Argument source) {
         return new AccumulateFunction(source, accFunctionClass);
     }
 
