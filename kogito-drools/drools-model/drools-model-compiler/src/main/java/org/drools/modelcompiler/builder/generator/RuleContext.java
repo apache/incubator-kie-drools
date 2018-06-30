@@ -276,6 +276,10 @@ public class RuleContext {
         return descr;
     }
 
+    public String getRuleName() {
+        return descr.getName();
+    }
+
     public RuleDialect getRuleDialect() {
         return ruleDialect;
     }

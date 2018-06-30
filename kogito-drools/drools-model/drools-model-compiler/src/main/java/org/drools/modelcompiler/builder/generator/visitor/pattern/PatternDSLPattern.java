@@ -24,42 +24,38 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CA
 
 class PatternDSLPattern extends PatternDSL {
 
-    public PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
+    protected PatternDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
         super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
     }
 
     @Override
-    public void buildPattern() {
-        DeclarationSpec declarationSpec = initPattern();
+    protected void buildPattern(DeclarationSpec declarationSpec, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        MethodCallExpr patternExpression = createPatternExpression(pattern, declarationSpec);
 
-        if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression( addWatchToPattern( createPatternExpression(pattern, declarationSpec) ) );
-        } else {
-            if (!context.hasErrors()) {
-                final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-                MethodCallExpr patternExpression = createPatternExpression(pattern, declarationSpec);
+        List<Expression> exprs = new ArrayList<>();
+        context.pushExprPointer(exprs::add);
+        buildConstraints(pattern, patternType, patternConstraintParseResults);
+        context.popExprPointer();
 
-                List<Expression> exprs = new ArrayList<>();
-                context.pushExprPointer(exprs::add);
-                buildConstraints(pattern, patternType, patternConstraintParseResults);
-                context.popExprPointer();
-
-                List<Expression> additionalPatterns = new ArrayList<>();
-                for (Expression expr : exprs) {
-                    Optional<Expression> rootScope = findRootNodeViaScope( expr );
-                    if ( rootScope.isPresent() && (( MethodCallExpr ) rootScope.get()).getNameAsString().equals( PATTERN_CALL ) ) {
-                        additionalPatterns.add( expr );
-                    } else {
-                        MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
-                        (( MethodCallExpr ) expr).setScope( patternExpression );
-                        patternExpression = currentExpr;
-                    }
-                }
-
-                context.addExpression( addWatchToPattern( patternExpression ) );
-                additionalPatterns.forEach( context::addExpression );
+        List<Expression> additionalPatterns = new ArrayList<>();
+        for (Expression expr : exprs) {
+            Optional<Expression> rootScope = findRootNodeViaScope(expr );
+            if ( rootScope.isPresent() && (( MethodCallExpr ) rootScope.get()).getNameAsString().equals( PATTERN_CALL ) ) {
+                additionalPatterns.add( expr );
+            } else {
+                MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
+                (( MethodCallExpr ) expr).setScope( patternExpression );
+                patternExpression = currentExpr;
             }
         }
+
+        context.addExpression( addWatchToPattern( patternExpression ) );
+        additionalPatterns.forEach( context::addExpression );
+    }
+
+    @Override
+    public MethodCallExpr input(DeclarationSpec declarationSpec) {
+        return addWatchToPattern( createPatternExpression(pattern, declarationSpec) );
     }
 
     private MethodCallExpr addWatchToPattern( MethodCallExpr patternExpression ) {
