@@ -499,9 +499,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         MethodCallExpr expression =
                 new MethodCallExpr(
-                        list.getExpression(),
-                        "contains",
-                        new NodeList<>(value.getExpression()));
+                        null,
+                        "exists",
+                        new NodeList<>(
+                                new NameExpr("feelExprCtx"),
+                                list.getExpression(),
+                                value.getExpression()));
 
         return DirectCompilerResult.of(
                 expression,
@@ -672,9 +675,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             }
                 break;
             case NOT: {
-                MethodCallExpr expression = new MethodCallExpr(null, "not");
-                expression.addArgument(new NameExpr("left"));
+                MethodCallExpr expression = new MethodCallExpr(null, "notExists");
+                expression.addArgument(new NameExpr("feelExprCtx"));
                 expression.addArgument(endpoint.getExpression());
+                expression.addArgument(new NameExpr("left"));
                 lambdaBody = new ExpressionStmt(expression);
             }
                 break;
@@ -698,10 +702,28 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return directCompilerResult;
     }
 
-//    @Override
-//    public DirectCompilerResult visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
+    @Override
+    public DirectCompilerResult visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
+        List<DirectCompilerResult> tests =
+                Stream.concat(
+                        ctx.primary().stream(),
+                        ctx.simpleUnaryTest().stream())
+                        .map(this::visit)
+                        .collect(Collectors.toList());
+
+        MethodCallExpr testList = new MethodCallExpr(
+                null,
+                "list",
+                new NodeList<>(
+                    tests.stream()
+                            .map(DirectCompilerResult::getExpression)
+                            .collect(Collectors.toList())));
+
+        return DirectCompilerResult.of(
+                testList,
+                BuiltInType.LIST,
+                mergeFDs(tests));
+    }
 //
 //    @Override
 //    public DirectCompilerResult visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
@@ -722,10 +744,18 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                                 expr.getExpression())),
                     "contains",
                     new NodeList<>(value.getExpression()));
-        } else {
+        } else if (expr.resultType.equals(BuiltInType.RANGE)){
             expression = new MethodCallExpr(
                                 null,
                                 "includes",
+                                new NodeList<>(
+                                        new NameExpr("feelExprCtx"),
+                                        expr.getExpression(),
+                                        value.getExpression()));
+        } else {
+            expression = new MethodCallExpr(
+                                null,
+                                "exists",
                                 new NodeList<>(
                                         new NameExpr("feelExprCtx"),
                                         expr.getExpression(),
@@ -740,7 +770,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
-        throw new UnsupportedOperationException("TODO"); // TODO
+        return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN);
     }
 
     @Override
@@ -1318,6 +1348,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
         FEEL_1_1Parser.SimpleUnaryTestsContext child = (FEEL_1_1Parser.SimpleUnaryTestsContext) ctx.getChild(2);
-        return createUnaryTestExpression(ctx, child.accept(this), UnaryOperator.NOT);
+        DirectCompilerResult result = visit(child);
+        return createUnaryTestExpression(ctx, result, UnaryOperator.NOT);
     }
 }

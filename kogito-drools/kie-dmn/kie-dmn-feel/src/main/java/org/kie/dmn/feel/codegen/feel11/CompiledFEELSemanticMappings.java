@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -86,6 +87,62 @@ public class CompiledFEELSemanticMappings {
         } else {
             return list(range).contains(param);
         }
+    }
+
+    /**
+     * Returns true when at least one of the elements of the list matches the target.
+     * The list may contain both objects (equals) and UnaryTests (apply)
+     */
+    public static Boolean exists(
+            EvaluationContext ctx,
+            Object tests,
+            Object target) {
+
+        if (!(tests instanceof List)) {
+            if (tests == null) {
+                ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null) );
+                return null;
+            }
+            return applyUnaryTest(ctx, tests, target);
+        }
+
+        for (Object test : (List) tests) {
+            Boolean r = applyUnaryTest(ctx, test, target);
+            if (Boolean.TRUE.equals(r)) return true;
+        }
+
+        return false;
+    }
+
+    private static Boolean applyUnaryTest(EvaluationContext ctx, Object test, Object target) {
+        if (test instanceof UnaryTest) {
+            Boolean result = ((UnaryTest) test).apply(ctx, target);
+            return result != null && result;
+        } else if (test == null) {
+            return target == null? true : null;
+        } else {
+            return Objects.equals(test, target);
+        }
+    }
+
+    /**
+     * Implements a negated exists.
+     *
+     * Returns <strong>false</strong> when at least one of the elements of the list
+     * <strong>matches</strong> the target.
+     * The list may contain both objects (equals) and UnaryTests (apply)
+     */
+    public static Boolean notExists(
+            EvaluationContext ctx,
+            List tests,
+            Object target) {
+
+        for (Object test : tests) {
+            Boolean r = applyUnaryTest(ctx, test, target);
+            if (r == null || r) return false;
+        }
+
+        return true;
     }
 
     private static boolean compatible(Comparable left, Comparable right) {
