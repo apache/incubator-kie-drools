@@ -54,6 +54,12 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
     }
 
     @Override
+    public BedChangeMove rebase(ScoreDirector<PatientAdmissionSchedule> destinationScoreDirector) {
+        return new BedChangeMove(destinationScoreDirector.lookUpWorkingObject(bedDesignation),
+                destinationScoreDirector.lookUpWorkingObject(toBed));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(bedDesignation);
     }

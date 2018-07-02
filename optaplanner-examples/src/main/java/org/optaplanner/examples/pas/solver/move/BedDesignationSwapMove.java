@@ -57,6 +57,12 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
     }
 
     @Override
+    public BedDesignationSwapMove rebase(ScoreDirector<PatientAdmissionSchedule> destinationScoreDirector) {
+        return new BedDesignationSwapMove(destinationScoreDirector.lookUpWorkingObject(leftBedDesignation),
+                destinationScoreDirector.lookUpWorkingObject(rightBedDesignation));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.<BedDesignation>asList(leftBedDesignation, rightBedDesignation);
     }

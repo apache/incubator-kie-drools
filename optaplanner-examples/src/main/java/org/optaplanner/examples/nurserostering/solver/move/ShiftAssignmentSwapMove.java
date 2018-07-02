@@ -57,6 +57,12 @@ public class ShiftAssignmentSwapMove extends AbstractMove<NurseRoster> {
     }
 
     @Override
+    public ShiftAssignmentSwapMove rebase(ScoreDirector<NurseRoster> destinationScoreDirector) {
+        return new ShiftAssignmentSwapMove(destinationScoreDirector.lookUpWorkingObject(leftShiftAssignment),
+                destinationScoreDirector.lookUpWorkingObject(rightShiftAssignment));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftShiftAssignment, rightShiftAssignment);
     }

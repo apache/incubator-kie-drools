@@ -76,6 +76,12 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
     }
 
     @Override
+    public MatchChainRotationsMove rebase(ScoreDirector<TravelingTournament> destinationScoreDirector) {
+        return new MatchChainRotationsMove(rebaseList(firstMatchList, destinationScoreDirector),
+                rebaseList(secondMatchList, destinationScoreDirector));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         List<Match> entities = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
         entities.addAll(firstMatchList);

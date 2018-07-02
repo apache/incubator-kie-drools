@@ -64,6 +64,13 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
     }
 
     @Override
+    public EmployeeMultipleChangeMove rebase(ScoreDirector<NurseRoster> destinationScoreDirector) {
+        return new EmployeeMultipleChangeMove(destinationScoreDirector.lookUpWorkingObject(fromEmployee),
+                rebaseList(shiftAssignmentList, destinationScoreDirector),
+                destinationScoreDirector.lookUpWorkingObject(toEmployee));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(shiftAssignmentList);
     }

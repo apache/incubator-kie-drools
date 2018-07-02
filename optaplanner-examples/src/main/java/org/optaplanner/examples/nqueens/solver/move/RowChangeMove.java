@@ -56,6 +56,12 @@ public class RowChangeMove extends AbstractMove<NQueens> {
     }
 
     @Override
+    public RowChangeMove rebase(ScoreDirector<NQueens> destinationScoreDirector) {
+        return new RowChangeMove(destinationScoreDirector.lookUpWorkingObject(queen),
+                destinationScoreDirector.lookUpWorkingObject(toRow));
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(queen);
     }

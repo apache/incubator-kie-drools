@@ -56,6 +56,11 @@ public class CheapTimePillarSlideMove extends AbstractMove<CheapTimeSolution> {
     }
 
     @Override
+    public CheapTimePillarSlideMove rebase(ScoreDirector<CheapTimeSolution> destinationScoreDirector) {
+        return new CheapTimePillarSlideMove(rebaseList(pillar, destinationScoreDirector), startPeriodDiff);
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(pillar);
     }

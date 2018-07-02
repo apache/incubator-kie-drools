@@ -58,6 +58,14 @@ public class InvestmentQuantityTransferMove extends AbstractMove<InvestmentSolut
     }
 
     @Override
+    public InvestmentQuantityTransferMove rebase(ScoreDirector<InvestmentSolution> destinationScoreDirector) {
+        return new InvestmentQuantityTransferMove(
+                destinationScoreDirector.lookUpWorkingObject(fromAssetClassAllocation),
+                destinationScoreDirector.lookUpWorkingObject(toAssetClassAllocation),
+                transferMillis);
+    }
+
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(fromAssetClassAllocation, toAssetClassAllocation);
     }
