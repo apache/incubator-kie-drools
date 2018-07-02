@@ -2,9 +2,9 @@ package org.drools.model.view;
 
 import org.drools.model.Condition.Type;
 import org.drools.model.Variable;
-import org.drools.model.functions.Predicate7;
+import org.drools.model.functions.Predicate8;
 
-public class Expr7ViewItemImpl<A, B, C, D, E, F, G> extends AbstractExprViewItem<A> implements ExprNViewItem<A> {
+public class Expr8ViewItemImpl<A, B, C, D, E, F, G, H> extends AbstractExprViewItem<A> implements ExprNViewItem<A> {
 
     private final Variable<B> var2;
     private final Variable<C> var3;
@@ -12,11 +12,12 @@ public class Expr7ViewItemImpl<A, B, C, D, E, F, G> extends AbstractExprViewItem
     private final Variable<E> var5;
     private final Variable<F> var6;
     private final Variable<G> var7;
-    private final Predicate7<A, B, C, D, E, F, G> predicate;
+    private final Variable<H> var8;
+    private final Predicate8<A, B, C, D, E, F, G, H> predicate;
 
-    // with 3 elements we don't implement INDEXes
-
-    public Expr7ViewItemImpl( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
+    public Expr8ViewItemImpl( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                              Variable<H> var8,
+                              Predicate8<A, B, C, D, E, F, G, H> predicate) {
         super(predicate.toString(), var1);
         this.var2 = var2;
         this.var3 = var3;
@@ -24,10 +25,13 @@ public class Expr7ViewItemImpl<A, B, C, D, E, F, G> extends AbstractExprViewItem
         this.var5 = var5;
         this.var6 = var6;
         this.var7 = var7;
+        this.var8 = var8;
         this.predicate = predicate;
     }
 
-    public Expr7ViewItemImpl( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
+    public Expr8ViewItemImpl( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                              Variable<H> var8,
+                              Predicate8<A, B, C, D, E, F, G, H> predicate) {
         super(exprId, var1);
         this.var2 = var2;
         this.var3 = var3;
@@ -35,10 +39,11 @@ public class Expr7ViewItemImpl<A, B, C, D, E, F, G> extends AbstractExprViewItem
         this.var5 = var5;
         this.var6 = var6;
         this.var7 = var7;
+        this.var8 = var8;
         this.predicate = predicate;
     }
 
-    public Predicate7<A, B, C, D, E, F, G> getPredicate() {
+    public Predicate8<A, B, C, D, E, F, G, H> getPredicate() {
         return predicate;
     }
 
@@ -66,9 +71,13 @@ public class Expr7ViewItemImpl<A, B, C, D, E, F, G> extends AbstractExprViewItem
         return var7;
     }
 
+    public Variable<H> getVar8() {
+        return var8;
+    }
+
     @Override
     public Variable<?>[] getVariables() {
-        return new Variable[]{getFirstVariable(), getVar2(), getVar3(), getVar4(), getVar5(), getVar6(), getVar7()};
+        return new Variable[]{getFirstVariable(), getVar2(), getVar3(), getVar4(), getVar5(), getVar6(), getVar7(), getVar8()};
     }
 
     @Override
