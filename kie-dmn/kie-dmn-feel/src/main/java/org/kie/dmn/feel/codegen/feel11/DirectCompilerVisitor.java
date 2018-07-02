@@ -238,7 +238,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         StringLiteralExpr expr = new StringLiteralExpr();
         String actualStringContent = ParserHelper.getOriginalText(ctx);
         actualStringContent = actualStringContent.substring(1, actualStringContent.length() - 1); // remove start/end " from the FEEL text expression.
-        expr.setValue(actualStringContent);
+        String unescaped = EvalHelper.unescapeString(actualStringContent); // unescapes String, FEEL-style
+        expr.setString(unescaped); // setString escapes the contents Java-style
         return DirectCompilerResult.of(expr, BuiltInType.STRING);
     }
 
