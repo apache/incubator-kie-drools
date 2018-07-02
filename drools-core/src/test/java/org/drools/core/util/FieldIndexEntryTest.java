@@ -23,6 +23,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.test.model.Cheese;
@@ -32,7 +33,9 @@ import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class FieldIndexEntryTest {
 
@@ -50,7 +53,7 @@ public class FieldIndexEntryTest {
                                                                   "type" );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      null,
+                                                      new Declaration("id", extractor, null) ,
                                                       MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
@@ -94,7 +97,7 @@ public class FieldIndexEntryTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      null,
+                                                      new Declaration("id", extractor, null) ,
                                                       MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
@@ -149,7 +152,7 @@ public class FieldIndexEntryTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      null,
+                                                      new Declaration("id", extractor, null) ,
                                                       MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
