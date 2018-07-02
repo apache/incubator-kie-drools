@@ -295,7 +295,7 @@ public abstract class AccumulateVisitor {
         final Class actualResultType = accumulateFunction.getResultType();
         // Do not type check on mvel
         // No type is Object.class so no need to enforce that, also Number.class has strange assignment rules so it's ignored
-        if(context.getRuleDialect().equals(RuleContext.RuleDialect.JAVA) && !Pattern.isCompatibleWithFromReturnType(expectedResultType, actualResultType)) {
+        if(context.getRuleDialect().equals(RuleContext.RuleDialect.JAVA) && !Pattern.isCompatibleWithAccumulateReturnType(expectedResultType, actualResultType)) {
             context.addCompilationError(new InvalidExpressionErrorResult(
                     String.format(
                             "Pattern of type: '[ClassObjectType class=%s]' " +
