@@ -161,12 +161,12 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
-        assertResult("a0", 0, queue.take());
-        assertResult("a1", -1, queue.take());
-        assertResult("a2", -2, queue.take());
-
-        exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
         try {
+            assertResult("a0", 0, queue.take());
+            assertResult("a1", -1, queue.take());
+            assertResult("a2", -2, queue.take());
+
+            exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
             queue.startNextStep(1);
             fail("There was no RuntimeException thrown.");
         } catch (RuntimeException e) {
