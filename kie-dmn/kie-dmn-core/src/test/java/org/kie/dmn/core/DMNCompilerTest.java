@@ -31,6 +31,7 @@ import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
@@ -70,7 +71,8 @@ public class DMNCompilerTest {
         SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
         EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
-        assertThat( feelType.getFeelType(), is( BuiltInType.STRING ) );
+        assertThat(feelType.getFeelType(), is(instanceOf(AliasFEELType.class)));
+        assertThat(((AliasFEELType) feelType.getFeelType()).getName(), is("tEmploymentStatus"));
         assertThat( feelType.getAllowedValuesFEEL().size(), is( 4 ) );
         assertThat( feelType.getAllowedValuesFEEL().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
         assertThat( feelType.getAllowedValuesFEEL().get( 1 ).apply( ctx, "EMPLOYED" ), is( true )   );

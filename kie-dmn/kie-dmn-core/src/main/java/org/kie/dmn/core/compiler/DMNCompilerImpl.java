@@ -58,6 +58,8 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
@@ -390,6 +392,12 @@ public class DMNCompilerImpl
                     type.setBaseType( baseType );
                     type.setNamespace( dmnModel.getNamespace() );
                     type.setName( itemDef.getName() );
+
+                    Type baseFEELType = type.getFeelType();
+                    if (baseFEELType instanceof BuiltInType) { // Then it is an ItemDefinition in place for "aliasing" a base FEEL type, for having type(itemDefname) I need to define its SimpleType.
+                        type.setFeelType(new AliasFEELType(itemDef.getName(), (BuiltInType) baseFEELType));
+                    }
+
                     type.setAllowedValues(null);
                     if ( allowedValuesStr != null ) {
                         List<UnaryTest> av = feel.evaluateUnaryTests(

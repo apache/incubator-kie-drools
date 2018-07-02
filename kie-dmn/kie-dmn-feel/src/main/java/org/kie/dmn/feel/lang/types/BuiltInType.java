@@ -16,21 +16,28 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.SimpleType;
-import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.functions.*;
-
-import java.time.*;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 public enum BuiltInType implements SimpleType {
 
@@ -49,11 +56,11 @@ public enum BuiltInType implements SimpleType {
     UNARY_TEST("unary test");
 
     private final String[] names;
-    private final BuiltInTypeSymbol symbol;
+    private final Collection<BuiltInTypeSymbol> symbols;
 
     BuiltInType(String... names) {
         this.names = names;
-        this.symbol = new BuiltInTypeSymbol( names[0], this );
+        this.symbols = Arrays.asList(names).stream().map(n -> new BuiltInTypeSymbol(n, this)).collect(Collectors.toList());
     }
 
     public String getName() {
@@ -77,7 +84,9 @@ public enum BuiltInType implements SimpleType {
         return t -> null;
     }
 
-    public Symbol getSymbol() { return symbol; }
+    public Collection<BuiltInTypeSymbol> getSymbols() {
+        return symbols;
+    }
 
     @Override
     public String toString() {
