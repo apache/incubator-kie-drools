@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+  <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
+
   <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
   <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
 
@@ -9,12 +11,7 @@
   </scoreDirectorFactory>
 
   <termination>
-    <!--
-      Official benchmark secondsSpentLimit allowed on:
-      - ge0ffrey's main pc: sprint 11, medium 700, long 42000
-    -->
-    <secondsSpentLimit>700</secondsSpentLimit>
-    <!--<bestScoreLimit>-0hard/-999999soft</bestScoreLimit>-->
+    <minutesSpentLimit>5</minutesSpentLimit>
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>

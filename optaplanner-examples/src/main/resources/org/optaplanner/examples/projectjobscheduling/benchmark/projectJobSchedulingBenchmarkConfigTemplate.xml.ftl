@@ -36,7 +36,7 @@
         <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
       <termination>
-        <secondsSpentLimit>290</secondsSpentLimit>
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
   </inheritedSolverBenchmark>

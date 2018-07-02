@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+  <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
+
   <solutionClass>org.optaplanner.examples.scrabble.domain.ScrabbleSolution</solutionClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment</entityClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleCell</entityClass>
@@ -10,16 +12,4 @@
     <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
-
-  <!--<constructionHeuristic>-->
-    <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
-  <!--</constructionHeuristic>-->
-  <!--<localSearch>-->
-    <!--<acceptor>-->
-      <!--<lateAcceptanceSize>1000</lateAcceptanceSize>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--<acceptedCountLimit>1</acceptedCountLimit>-->
-    <!--</forager>-->
-  <!--</localSearch>-->
 </solver>

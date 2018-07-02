@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+  <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <!-- Domain model configuration -->
   <scanAnnotatedClasses>
@@ -21,7 +22,7 @@
 
   <!-- Optimization algorithms configuration -->
   <termination>
-    <secondsSpentLimit>120</secondsSpentLimit>
+    <minutesSpentLimit>2</minutesSpentLimit>
   </termination>
 
   <!-- Power tweaked optimization algorithms configuration -->
