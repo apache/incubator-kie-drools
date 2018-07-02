@@ -22,22 +22,34 @@ import java.util.List;
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.constraints.SingleConstraint10;
+import org.drools.model.constraints.SingleConstraint11;
+import org.drools.model.constraints.SingleConstraint12;
+import org.drools.model.constraints.SingleConstraint13;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.SingleConstraint3;
 import org.drools.model.constraints.SingleConstraint4;
 import org.drools.model.constraints.SingleConstraint5;
 import org.drools.model.constraints.SingleConstraint6;
 import org.drools.model.constraints.SingleConstraint7;
+import org.drools.model.constraints.SingleConstraint8;
+import org.drools.model.constraints.SingleConstraint9;
 import org.drools.model.constraints.VariableTemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate10;
+import org.drools.model.functions.Predicate11;
+import org.drools.model.functions.Predicate12;
+import org.drools.model.functions.Predicate13;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.Predicate6;
 import org.drools.model.functions.Predicate7;
+import org.drools.model.functions.Predicate8;
+import org.drools.model.functions.Predicate9;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Query0DefImpl;
@@ -108,6 +120,54 @@ public class PatternDSL extends DSL {
 
         <A, B, C, D, E, F> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7, Predicate7<T, A, B, C, D, E, F> predicate );
         <A, B, C, D, E, F> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7, Predicate7<T, A, B, C, D, E, F> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                    Variable<G> var8,
+                                                    Predicate8<T, A, B, C, D, E, F, G> predicate );
+
+        <A, B, C, D, E, F, G> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                    Variable<G> var8,
+                                                    Predicate8<T, A, B, C, D, E, F, G> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G, H> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                       Variable<G> var8, Variable<H> var9,
+                                                       Predicate9<T, A, B, C, D, E, F, G, H> predicate );
+
+        <A, B, C, D, E, F, G, H> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                       Variable<G> var8, Variable<H> var9,
+                                                       Predicate9<T, A, B, C, D, E, F, G, H> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G, H, I> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                          Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                                                          Predicate10<T, A, B, C, D, E, F, G, H, I> predicate );
+
+        <A, B, C, D, E, F, G, H, I> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                          Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                                                          Predicate10<T, A, B, C, D, E, F, G, H, I> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G, H, I, J> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                                                             Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate );
+
+        <A, B, C, D, E, F, G, H, I, J> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                                                             Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G, H, I, J, K> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                                                                Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate );
+
+        <A, B, C, D, E, F, G, H, I, J, K> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                                                                Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate, ReactOn reactOn );
+
+        <A, B, C, D, E, F, G, H, I, J, K, L> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                                                                Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate );
+
+        <A, B, C, D, E, F, G, H, I, J, K, L> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                                                                Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate, ReactOn reactOn );
 
         <U> PatternDef<T> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate );
         PatternDef<T> expr( String exprId, long value, TemporalPredicate temporalPredicate );
@@ -269,6 +329,102 @@ public class PatternDSL extends DSL {
         @Override
         public <A, B, C, D, E, F> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7, Predicate7<T, A, B, C, D, E, F> predicate, ReactOn reactOn ) {
             items.add( new PatternExpr7<>( exprId, var2, var3, var4, var5, var6, var7, new Predicate7.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                           Variable<G> var8,
+                                                           Predicate8<T, A, B, C, D, E, F, G> predicate ) {
+            items.add( new PatternExpr8<>( exprId, var2, var3, var4, var5, var6, var7, var8, new Predicate8.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                           Variable<G> var8,
+                                                           Predicate8<T, A, B, C, D, E, F, G> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr8<>( exprId, var2, var3, var4, var5, var6, var7, var8, new Predicate8.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                              Variable<G> var8, Variable<H> var9,
+                                                              Predicate9<T, A, B, C, D, E, F, G, H> predicate ) {
+            items.add( new PatternExpr9<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, new Predicate9.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                              Variable<G> var8, Variable<H> var9,
+                                                              Predicate9<T, A, B, C, D, E, F, G, H> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr9<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, new Predicate9.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                 Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                                                                 Predicate10<T, A, B, C, D, E, F, G, H, I> predicate ) {
+            items.add( new PatternExpr10<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, new Predicate10.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                 Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                                                                 Predicate10<T, A, B, C, D, E, F, G, H, I> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr10<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, new Predicate10.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                    Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                                                                    Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate ) {
+            items.add( new PatternExpr11<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, new Predicate11.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                    Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                                                                    Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr11<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, new Predicate11.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J, K> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                       Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                                                                       Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate ) {
+            items.add( new PatternExpr12<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, new Predicate12.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J, K> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                       Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                                                                       Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr12<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, new Predicate12.Impl<>(predicate), reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J, K, L> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                       Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                                                                       Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate ) {
+            items.add( new PatternExpr13<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, new Predicate13.Impl<>(predicate), null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C, D, E, F, G, H, I, J, K, L> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                                                                       Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                                                                       Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate, ReactOn reactOn ) {
+            items.add( new PatternExpr13<>( exprId, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, new Predicate13.Impl<>(predicate), reactOn ) );
             return this;
         }
 
@@ -571,6 +727,288 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint7 constraint = new SingleConstraint7(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr8<T, A, B, C, D, E, F, G, H> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Predicate8<T, A, B, C, D, E, F, G> predicate;
+
+        public PatternExpr8( Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                              Variable<G> var8,
+                              Predicate8<T, A, B, C, D, E, F, G> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, predicate, reactOn);
+        }
+
+        public PatternExpr8( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8,
+                             Predicate8<T, A, B, C, D, E, F, G> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.predicate = predicate;
+        }
+
+        public Predicate8<T, A, B, C, D, E, F, G> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint8 constraint = new SingleConstraint8(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr9<T, A, B, C, D, E, F, G, H> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Variable<H> var9;
+        private final Predicate9<T, A, B, C, D, E, F, G, H> predicate;
+
+        public PatternExpr9( Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                              Variable<G> var8, Variable<H> var9,
+                              Predicate9<T, A, B, C, D, E, F, G, H> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, var9, predicate, reactOn);
+        }
+
+        public PatternExpr9( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9,
+                             Predicate9<T, A, B, C, D, E, F, G, H> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.var9 = var9;
+            this.predicate = predicate;
+        }
+
+        public Predicate9<T, A, B, C, D, E, F, G, H> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint9 constraint = new SingleConstraint9(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr10<T, A, B, C, D, E, F, G, H, I> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Variable<H> var9;
+        private final Variable<I> var10;
+        private final Predicate10<T, A, B, C, D, E, F, G, H, I> predicate;
+
+        public PatternExpr10( Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                              Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                              Predicate10<T, A, B, C, D, E, F, G, H, I> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, var9, var10, predicate, reactOn);
+        }
+
+        public PatternExpr10( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10,
+                             Predicate10<T, A, B, C, D, E, F, G, H, I> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.var9 = var9;
+            this.var10 = var10;
+            this.predicate = predicate;
+        }
+
+        public Predicate10<T, A, B, C, D, E, F, G, H, I> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint10 constraint = new SingleConstraint10(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr11<T, A, B, C, D, E, F, G, H, I, J> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Variable<H> var9;
+        private final Variable<I> var10;
+        private final Variable<J> var11;
+        private final Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate;
+
+        public PatternExpr11(Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                             Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, predicate, reactOn);
+        }
+
+        public PatternExpr11( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11,
+                             Predicate11<T, A, B, C, D, E, F, G, H, I, J> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.var9 = var9;
+            this.var10 = var10;
+            this.var11 = var11;
+            this.predicate = predicate;
+        }
+
+        public Predicate11<T, A, B, C, D, E, F, G, H, I, J> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint11 constraint = new SingleConstraint11(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr12<T, A, B, C, D, E, F, G, H, I, J, K> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Variable<H> var9;
+        private final Variable<I> var10;
+        private final Variable<J> var11;
+        private final Variable<K> var12;
+        private final Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate;
+
+        public PatternExpr12(Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                             Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, predicate, reactOn);
+        }
+
+        public PatternExpr12( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12,
+                             Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.var9 = var9;
+            this.var10 = var10;
+            this.var11 = var11;
+            this.var12 = var12;
+            this.predicate = predicate;
+        }
+
+        public Predicate12<T, A, B, C, D, E, F, G, H, I, J, K> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint12 constraint = new SingleConstraint12(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, getPredicate());
+            constraint.setReactiveProps( getReactOn() );
+            return constraint;
+        }
+    }
+
+    public static class PatternExpr13<T, A, B, C, D, E, F, G, H, I, J, K, L> extends PatternExprImpl<T> {
+        private final Variable<A> var2;
+        private final Variable<B> var3;
+        private final Variable<C> var4;
+        private final Variable<D> var5;
+        private final Variable<E> var6;
+        private final Variable<F> var7;
+        private final Variable<G> var8;
+        private final Variable<H> var9;
+        private final Variable<I> var10;
+        private final Variable<J> var11;
+        private final Variable<K> var12;
+        private final Variable<L> var13;
+        private final Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate;
+
+        public PatternExpr13(Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                             Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate, ReactOn reactOn) {
+            this(randomUUID().toString(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, predicate, reactOn);
+        }
+
+        public PatternExpr13( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Variable<F> var7,
+                             Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
+                             Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate, ReactOn reactOn ) {
+            super( exprId, reactOn );
+            this.var2 = var2;
+            this.var3 = var3;
+            this.var4 = var4;
+            this.var5 = var5;
+            this.var6 = var6;
+            this.var7 = var7;
+            this.var8 = var8;
+            this.var9 = var9;
+            this.var10 = var10;
+            this.var11 = var11;
+            this.var12 = var12;
+            this.var13 = var13;
+            this.predicate = predicate;
+        }
+
+        public Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> getPredicate() {
+            return predicate;
+        }
+
+        @Override
+        public Constraint asConstraint(PatternDefImpl patternDef) {
+            SingleConstraint13 constraint = new SingleConstraint13(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, getPredicate());
             constraint.setReactiveProps( getReactOn() );
             return constraint;
         }

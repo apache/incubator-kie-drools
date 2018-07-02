@@ -32,13 +32,13 @@ public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements 
         return predicate;
     }
 
-    public Variable<U> getSecondVariable() {
+    public Variable<U> getVar2() {
         return var2;
     }
 
     @Override
     public Variable<?>[] getVariables() {
-        return new Variable[] { getFirstVariable(), getSecondVariable() };
+        return new Variable[] { getFirstVariable(), getVar2() };
     }
 
     @Override

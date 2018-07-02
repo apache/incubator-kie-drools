@@ -37,7 +37,7 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
     }
 
     public SingleConstraint5( Expr5ViewItemImpl<A, B, C, D, E> expr) {
-        this(expr.getExprId(), expr.getFirstVariable(), expr.getSecondVariable(), expr.getThirdVariable(), expr.getForthVariable(), expr.getFifthVariable(), expr.getPredicate());
+        this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getPredicate());
         setReactiveProps( expr.getReactiveProps() );
     }
 
@@ -63,7 +63,6 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
         if ( !ModelComponent.areEqualInModel( var1, that.var1 ) ) return false;
         if ( !ModelComponent.areEqualInModel( var2, that.var2 ) ) return false;
         if ( !ModelComponent.areEqualInModel( var3, that.var3 ) ) return false;
-        if ( !ModelComponent.areEqualInModel( var4, that.var4 ) ) return false;
         if ( !ModelComponent.areEqualInModel( var4, that.var4 ) ) return false;
         if ( !ModelComponent.areEqualInModel( var5, that.var5 ) ) return false;
         return predicate.equals( that.predicate );

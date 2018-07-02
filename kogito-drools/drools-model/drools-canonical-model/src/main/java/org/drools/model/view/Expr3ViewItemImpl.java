@@ -31,17 +31,17 @@ public class Expr3ViewItemImpl<A, B, C> extends AbstractExprViewItem<A> implemen
         return predicate;
     }
 
-    public Variable<B> getSecondVariable() {
+    public Variable<B> getVar2() {
         return var2;
     }
 
-    public Variable<C> getThirdVariable() {
+    public Variable<C> getVar3() {
         return var3;
     }
 
     @Override
     public Variable<?>[] getVariables() {
-        return new Variable[]{getFirstVariable(), getSecondVariable(), getThirdVariable()};
+        return new Variable[]{getFirstVariable(), getVar2(), getVar3()};
     }
 
     @Override
