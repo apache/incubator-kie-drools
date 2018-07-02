@@ -62,9 +62,7 @@ import org.drools.javaparser.ast.type.UnknownType;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
 import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
@@ -1085,24 +1083,6 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult c = visit( ctx.c );
         DirectCompilerResult t = visit( ctx.t );
         DirectCompilerResult e = visit( ctx.e );
-
-//        String snippet = "(e1 instanceof Boolean) ? ((boolean) e1 ? e2 : e3 ) : e3 // notice how if e1 is not a Boolean, simply e3 is returned with no errors.
-//
-//        Expression parsed = JavaParser.parseExpression(snippet);
-//        for ( NameExpr ne : parsed.getChildNodesByType(NameExpr.class) ) {
-//            switch (ne.getNameAsString()) {
-//                case "e1":
-//                    ne.replace(ne, c.expression);
-//                    break;
-//                case "e2":
-//                    ne.replace(ne, t.expression);
-//                    break;
-//                case "e3":
-//                    ne.replace(ne, e.expression);
-//                    break;
-//            }
-//        }
-//        return DirectCompilerResult.of(parsed, BuiltInType.UNKNOWN);
 
         // Instead of using Java operator `instanceof` and `cast` directly, safer to use this method-based version, to avoid issue with primitives (eg: true instanceof Boolean does not compile) 
         MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
