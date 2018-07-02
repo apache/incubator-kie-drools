@@ -34,7 +34,7 @@ public class SingleConstraint4<A, B, C, D> extends AbstractSingleConstraint {
     }
 
     public SingleConstraint4( Expr4ViewItemImpl<A, B, C, D> expr) {
-        this(expr.getExprId(), expr.getFirstVariable(), expr.getSecondVariable(), expr.getThirdVariable(), expr.getForthVariable(), expr.getPredicate());
+        this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getPredicate());
         setReactiveProps( expr.getReactiveProps() );
     }
 

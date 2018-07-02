@@ -36,25 +36,25 @@ public class Expr5ViewItemImpl<A, B, C, D, E> extends AbstractExprViewItem<A> im
         return predicate;
     }
 
-    public Variable<B> getSecondVariable() {
+    public Variable<B> getVar2() {
         return var2;
     }
 
-    public Variable<C> getThirdVariable() {
+    public Variable<C> getVar3() {
         return var3;
     }
 
-    public Variable<D> getForthVariable() {
+    public Variable<D> getVar4() {
         return var4;
     }
 
-    public Variable<E> getFifthVariable() {
+    public Variable<E> getVar5() {
         return var5;
     }
 
     @Override
     public Variable<?>[] getVariables() {
-        return new Variable[]{getFirstVariable(), getSecondVariable(), getThirdVariable(), getForthVariable(), getFifthVariable()};
+        return new Variable[]{getFirstVariable(), getVar2(), getVar3(), getVar4(), getVar5()};
     }
 
     @Override
