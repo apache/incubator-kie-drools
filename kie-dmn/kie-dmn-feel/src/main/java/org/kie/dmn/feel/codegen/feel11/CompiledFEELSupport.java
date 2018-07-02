@@ -399,7 +399,7 @@ public class CompiledFEELSupport {
 
             return f.invokeReflectively(feelExprCtx, invocationParams);
         } else if (function instanceof UnaryTest) {
-            throw new UnsupportedOperationException("TODO"); // TODO
+            return ((UnaryTest) function).apply(feelExprCtx, params);
         }
         return null;
     }
