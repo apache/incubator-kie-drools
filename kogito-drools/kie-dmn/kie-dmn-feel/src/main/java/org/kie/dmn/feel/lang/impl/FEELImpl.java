@@ -116,7 +116,6 @@ public class FEELImpl
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-
         Set<FEELEventListener> listeners = new HashSet<>(ctx.getListeners());
         // add listener to syntax errors, and save them
         CompilerErrorListener errorListener = new CompilerErrorListener();
@@ -124,26 +123,23 @@ public class FEELImpl
 
         FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(listeners), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
         ParseTree tree = parser.compilation_unit();
-        if (!doCompile) {
-            ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
-            BaseNode expr = v.visit(tree);
-            CompiledExpression ce = new CompiledExpressionImpl(expr);
-            return ce;
-        } else {
+        if (doCompile) { // Use JavaParser to translate FEEL to Java:
             if (errorListener.evt != null) {
                 return compiledError(expression, errorListener.evt.getMessage());
             }
-
             try {
                 DirectCompilerVisitor v = new DirectCompilerVisitor(ctx.getInputVariableTypes());
                 DirectCompilerResult directResult = v.visit(tree);
                 Expression expr = directResult.getExpression();
-                return new CompilerBytecodeLoader()
-                        .makeFromJPExpression(expression, expr, directResult.getFieldDeclarations());
+                return new CompilerBytecodeLoader().makeFromJPExpression(expression, expr, directResult.getFieldDeclarations());
             } catch (FEELCompilationError e) {
                 return compiledError(expression, e.getMessage());
             }
-
+        } else { // "legacy" interpreted AST compilation:
+            ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
+            BaseNode expr = v.visit(tree);
+            CompiledExpression ce = new CompiledExpressionImpl(expr);
+            return ce;
         }
     }
 
