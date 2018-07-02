@@ -37,6 +37,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.types.BuiltInTypeSymbol;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -116,6 +117,9 @@ public class FEELParser {
     private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
         inputVariableTypes.forEach( (name, type) -> {
             parser.getHelper().defineVariable( name, type );
+            if (type.getName() != null) {
+                parser.getHelper().getSymbolTable().getGlobalScope().define(new BuiltInTypeSymbol(type.getName(), type));
+            }
         } );
         
         inputVariables.forEach( (name, value) -> {

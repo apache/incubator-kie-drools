@@ -19,6 +19,7 @@ package org.kie.dmn.core;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
@@ -2057,6 +2058,31 @@ public class DMNRuntimeTest {
             DMNContext result = dmnResult.getContext();
             assertThat(result.get("Weekday"), is(new BigDecimal(i + 1)));
         }
+    }
+
+    @Test
+    public void testDMN_Vs_FEEL_instanceof_interaction() {
+        // DROOLS-2665
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Instance_of.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836", "Instance of");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("input year month duration", Duration.parse("P12D"));
+        context.set("input day time duration", Duration.parse("P1DT2H"));
+        context.set("input date time", LocalDateTime.of(2018, 6, 28, 12, 34));
+        context.set("input myType", LocalDate.of(2018, 6, 28));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision Logic 1"), is(true));
+        assertThat(result.get("Decision Logic 2"), is(true));
+        assertThat(result.get("Decision Logic 3"), is(true));
+        assertThat(result.get("Decision Logic 4"), is(true));
     }
 }
 

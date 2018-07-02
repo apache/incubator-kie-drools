@@ -16,10 +16,10 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import java.util.stream.Stream;
+
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
-
-import java.util.stream.Stream;
 
 public class SymbolTable {
     private Scope builtInScope = new ScopeImpl( Scope.BUILT_IN, null );
@@ -34,7 +34,7 @@ public class SymbolTable {
 
         // pre-loads all the built in functions and types
         Stream.of( BuiltInFunctions.getFunctions() ).forEach( f -> builtInScope.define( f.getSymbol() ) );
-        Stream.of( BuiltInType.values() ).forEach( t -> builtInScope.define( t.getSymbol() ) );
+        Stream.of(BuiltInType.values()).flatMap(b -> b.getSymbols().stream()).forEach(t -> builtInScope.define(t));
     }
 
     public Scope getBuiltInScope() {
