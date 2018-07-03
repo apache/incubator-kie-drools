@@ -339,7 +339,7 @@ public abstract class AbstractHashTable
         public int hashCodeOf(Tuple tuple, boolean left) {
             return left ?
                     ( requiresCoercion ?
-                           Objects.hashCode( extractor.getValueType().coerce( tuple.getObject( declaration ) ) ) :
+                           Objects.hashCode( extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) ) :
                            declaration.getHashCode( null, tuple.getObject( declaration ) ) ) :
                    extractor.getHashCode( null, tuple.getFactHandle().getObject() );
         }
@@ -347,7 +347,7 @@ public abstract class AbstractHashTable
         public Object indexedValueOf(Tuple tuple, boolean left) {
             return left ?
                     ( requiresCoercion ?
-                            Objects.hashCode( extractor.getValueType().coerce( tuple.getObject( declaration ) ) ) :
+                            extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) :
                             declaration.getValue( null, tuple.getObject( declaration ) ) ) :
                    extractor.getValue( null, tuple.getFactHandle().getObject() );
         }
