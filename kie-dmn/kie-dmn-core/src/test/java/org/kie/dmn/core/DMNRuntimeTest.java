@@ -1945,6 +1945,26 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testEmbeddedTestSimpleType() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "embedded.dmn", this.getClass() );
+        DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_e3369804-6379-4519-ac12-5a1a7df7c7b9", "Drawing 1" );
+        assertThat( model, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
+        DMNResult result = runtime.testAll( model );
+        assertFalse( result.hasErrors() );
+    }
+
+    @Test
+    public void testEmbeddedTestComponentType() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
+        DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );
+        assertThat( model, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
+        DMNResult result = runtime.testAll( model );
+        assertFalse( result.hasErrors() );
+    }
+
+    @Test
     public void testProductFunction() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
         DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );
@@ -2029,7 +2049,7 @@ public class DMNRuntimeTest {
         assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("85")).findFirst().isPresent());
         assertTrue(((List) bruce.get("six")).stream().filter(e -> ((Map<String, Object>) e).get("Title").equals("66")).findFirst().isPresent());
     }
-    
+
     @Test
     public void testModelById() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "simple-item-def.dmn", this.getClass() );

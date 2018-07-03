@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_e3369804-6379-4519-ac12-5a1a7df7c7b9" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.7.2" id="_e3369804-6379-4519-ac12-5a1a7df7c7b9" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_e3369804-6379-4519-ac12-5a1a7df7c7b9" triso:logoChoice="default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+    <dmn11:extensionElements>
+        <tc:testCases>
+            <tc:testCase id="_d8d25930-9fc4-4e89-92b9-671e0a86cd81" name="Test case &quot;Hello Matteo&quot;">
+                <tc:inputNode name="a Person">
+                    <tc:value xsi:type="xsd:string">Matteo</tc:value>
+                </tc:inputNode>
+                <tc:resultNode name="Greet Person">
+                    <tc:expected>
+                        <tc:value>Hello, Matteo</tc:value>
+                    </tc:expected>
+                </tc:resultNode>
+            </tc:testCase>
+        </tc:testCases>
+    </dmn11:extensionElements>
+    <dmn11:inputData id="_99082317-47d9-48d8-b4ce-cbaa67f834d5" name="a Person">
+        <dmn11:variable id="_179a7d00-141c-484e-a818-6ab455f304ff" name="a Person" typeRef="feel:string"/>
+    </dmn11:inputData>
+    <dmn11:decision id="_11e44c47-87b1-4549-8cf1-56002e5fc63b" name="Greet Person">
+        <dmn11:variable id="_db55ee88-e1a5-4dec-b79a-f82c8a072341" name="Greet Person"/>
+        <dmn11:informationRequirement>
+            <dmn11:requiredInput href="#_99082317-47d9-48d8-b4ce-cbaa67f834d5"/>
+        </dmn11:informationRequirement>
+        <dmn11:literalExpression id="_38c4f318-5548-4e4e-8027-482a08b1366d">
+            <dmn11:text>"Hello, "+a Person</dmn11:text>
+        </dmn11:literalExpression>
+    </dmn11:decision>
+</dmn11:definitions>
