@@ -115,6 +115,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             JavaParser.parseType(List.class.getCanonicalName());
     public static final ClassOrInterfaceType TYPE_CUSTOM_FEEL_FUNCTION =
             JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
+    private static final org.drools.javaparser.ast.type.Type TYPE_BIG_DECIMAL =
+            JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
 
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
@@ -348,7 +350,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             }
         } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
             MethodCallExpr addCall = new MethodCallExpr(left.getExpression(), "add");
-            addCall.addArgument(right.getExpression());
+            addCall.addArgument(new CastExpr(TYPE_BIG_DECIMAL, new EnclosedExpr(right.getExpression())));
             addCall.addArgument(DECIMAL_128);
             Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));

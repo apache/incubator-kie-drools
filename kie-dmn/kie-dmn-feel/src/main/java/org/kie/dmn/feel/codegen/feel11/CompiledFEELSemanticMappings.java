@@ -73,7 +73,18 @@ public class CompiledFEELSemanticMappings {
             Object range,
             Object param) {
         if (range instanceof Range) {
-            return ((Range) range).includes(param);
+            try {
+                return ((Range) range).includes(param);
+            } catch (ClassCastException e) {
+                // e.g. java.base/java.time.Duration cannot be cast to java.base/java.time.Period
+                ctx.notifyEvt( () -> new ASTEventBase(
+                        FEELEvent.Severity.ERROR,
+                        Msg.createMessage(
+                                Msg.INCOMPATIBLE_TYPE_FOR_RANGE,
+                                param.getClass()),
+                        null));
+                return null;
+            }
         } else if (range instanceof List) {
             return ((List) range).contains(param);
         } else if (range == null){
@@ -183,6 +194,8 @@ public class CompiledFEELSemanticMappings {
                     actual = ((Number) value).floatValue();
                 } else if( paramType == double.class || paramType == Double.class ) {
                     actual = ((Number) value).doubleValue();
+                } else if (paramType == Object[].class) {
+                    actual = new Object[]{ value };
                 } else {
                     throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
                 }
