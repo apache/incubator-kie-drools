@@ -48,6 +48,8 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNode;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -207,6 +209,175 @@ public class DMNRuntimeImpl
             result.addDecisionResult(new DMNDecisionResultImpl(decision.getId(), decision.getName()));
         }
         return result;
+    }
+
+    private boolean evaluateDecisionService(DMNContext context, DMNResultImpl result, DecisionServiceNode d, boolean typeCheck) {
+        DecisionServiceNodeImpl ds = (DecisionServiceNodeImpl) d;
+        String decisionId = ds.getModelNamespace().equals(result.getModel().getNamespace()) ? ds.getId() : ds.getModelNamespace() + "#" + ds.getId();
+        if (isNodeValueDefined(result, ds, ds)) {
+            // already resolved
+            return true;
+        } else {
+            // check if the decision was already evaluated before and returned error
+            DMNDecisionResult.DecisionEvaluationStatus status = Optional.ofNullable(result.getDecisionResultById(decisionId))
+                                                                        .map(DMNDecisionResult::getEvaluationStatus)
+                                                                        .orElse(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED); // it might be an imported Decision.
+            if (FAILED == status || SKIPPED == status || EVALUATING == status) {
+                return false;
+            }
+        }
+        try {
+            //            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision(eventManager, decision, result);
+            boolean missingInput = false;
+            DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
+            if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
+                dr = new DMNDecisionResultImpl(decisionId, ds.getName());
+                result.addDecisionResult(dr);
+            }
+            dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
+            for (DMNNode dep : ds.getDependencies().values()) {
+                try {
+                    if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
+                        missingInput = true;
+                        DMNMessage message = MsgUtil.reportMessage(logger,
+                                                                   DMNMessage.Severity.ERROR,
+                                                                   ((DMNBaseNode) dep).getSource(),
+                                                                   result,
+                                                                   null,
+                                                                   null,
+                                                                   Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                                                                   getIdentifier(ds),
+                                                                   getIdentifier(dep),
+                                                                   MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
+                                                                   ((DMNBaseNode) dep).getType());
+                        reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED);
+                    }
+                } catch (Exception e) {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          ((DMNBaseNode) dep).getSource(),
+                                          result,
+                                          e,
+                                          null,
+                                          Msg.ERROR_CHECKING_ALLOWED_VALUES,
+                                          getIdentifier(dep),
+                                          e.getMessage());
+                }
+                if (!isNodeValueDefined(result, ds, dep)) {
+                    boolean walkingIntoScope = walkIntoImportScope(result, ds, dep);
+                    if (dep instanceof DecisionNode) {
+                        if (!evaluateDecision(context, result, (DecisionNode) dep, typeCheck)) {
+                            missingInput = true;
+                            DMNMessage message = MsgUtil.reportMessage(logger,
+                                                                       DMNMessage.Severity.ERROR,
+                                                                       ds.getSource(),
+                                                                       result,
+                                                                       null,
+                                                                       null,
+                                                                       Msg.UNABLE_TO_EVALUATE_DECISION_REQ_DEP,
+                                                                       getIdentifier(ds),
+                                                                       getIdentifier(dep));
+                            reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED);
+                        }
+                    } else if (dep instanceof BusinessKnowledgeModelNode) {
+                        evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
+                    } else {
+                        missingInput = true;
+                        DMNMessage message = MsgUtil.reportMessage(logger,
+                                                                   DMNMessage.Severity.ERROR,
+                                                                   ds.getSource(),
+                                                                   result,
+                                                                   null,
+                                                                   null,
+                                                                   Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
+                                                                   getIdentifier(dep),
+                                                                   getIdentifier(ds));
+                        reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED);
+                    }
+                    if (walkingIntoScope) {
+                        result.getContext().popScope();
+                    }
+                }
+            }
+            if (missingInput) {
+                return false;
+            }
+            //            if (decision.getEvaluator() == null) {
+            //                DMNMessage message = MsgUtil.reportMessage(logger,
+            //                                                           DMNMessage.Severity.WARN,
+            //                                                           decision.getSource(),
+            //                                                           result,
+            //                                                           null,
+            //                                                           null,
+            //                                                           Msg.MISSING_EXPRESSION_FOR_DECISION,
+            //                                                           getIdentifier(decision));
+            //
+            //                reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED);
+            //                return false;
+            //            }
+            //            try {
+            //                EvaluatorResult er = decision.getEvaluator().evaluate(this, result);
+            //                if (er.getResultType() == EvaluatorResult.ResultType.SUCCESS) {
+            //                    Object value = er.getResult();
+            //                    if (!decision.getResultType().isCollection() && value instanceof Collection &&
+            //                        ((Collection) value).size() == 1) {
+            //                        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+            //                        // and vice-versa
+            //                        value = ((Collection) value).toArray()[0];
+            //                    }
+            //
+            //                    try {
+            //                        if (typeCheck && !d.getResultType().isAssignableValue(value)) {
+            //                            DMNMessage message = MsgUtil.reportMessage(logger,
+            //                                                                       DMNMessage.Severity.ERROR,
+            //                                                                       decision.getSource(),
+            //                                                                       result,
+            //                                                                       null,
+            //                                                                       null,
+            //                                                                       Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+            //                                                                       getIdentifier(decision),
+            //                                                                       decision.getResultType(),
+            //                                                                       value);
+            //                            reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+            //                            return false;
+            //                        }
+            //                    } catch (Exception e) {
+            //                        MsgUtil.reportMessage(logger,
+            //                                              DMNMessage.Severity.ERROR,
+            //                                              decision.getSource(),
+            //                                              result,
+            //                                              e,
+            //                                              null,
+            //                                              Msg.ERROR_CHECKING_ALLOWED_VALUES,
+            //                                              getIdentifier(decision),
+            //                                              e.getMessage());
+            //                        return false;
+            //                    }
+            //
+            //                    result.getContext().set(decision.getDecision().getVariable().getName(), value);
+            //                    dr.setResult(value);
+            //                    dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+            //                } else {
+            //                    dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+            //                    return false;
+            //                }
+            //            } catch (Throwable t) {
+            //                DMNMessage message = MsgUtil.reportMessage(logger,
+            //                                                           DMNMessage.Severity.ERROR,
+            //                                                           ds.getSource(),
+            //                                                           result,
+            //                                                           t,
+            //                                                           null,
+            //                                                           Msg.ERROR_EVAL_DECISION_NODE,
+            //                                                           getIdentifier(ds),
+            //                                                           t.getMessage());
+            //
+            //                reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+            //            }
+            return true;
+        } finally {
+            //            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, ds, result);
+        }
     }
 
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b, boolean typeCheck) {

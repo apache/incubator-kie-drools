@@ -17,14 +17,11 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
 
 public class DecisionServiceCompiler {
 
@@ -49,22 +46,5 @@ public class DecisionServiceCompiler {
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
         compiler.linkRequirements(model, ni);
-
-        ctx.enterFrame();
-        try {
-            for (DMNNode dep : ni.getDependencies().values()) {
-                if( dep instanceof BusinessKnowledgeModelNode ) {
-                    // might need to create a DMNType for "functions" and replace the type here by that
-                    ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
-                }
-            }
-            // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
-            ctx.setVariable(ni.getName(), ni.getResultType());
-            FunctionDefinition funcDef = ni.getBusinessKnowledModel().getEncapsulatedLogic();
-            DMNExpressionEvaluator exprEvaluator = compiler.getEvaluatorCompiler().compileExpression(ctx, model, ni, ni.getName(), funcDef);
-            ni.setEvaluator(exprEvaluator);
-        } finally {
-            ctx.exitFrame();
-        }
     }
 }
