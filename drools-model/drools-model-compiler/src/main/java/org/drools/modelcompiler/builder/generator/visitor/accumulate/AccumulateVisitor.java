@@ -13,6 +13,9 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.core.base.accumulators.CollectAccumulator;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.Pattern;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
@@ -293,9 +296,14 @@ public abstract class AccumulateVisitor {
         final String expectedResultTypeString = basePattern.getObjectType();
         final Class<?> expectedResultType = DrlxParseUtil.getClassFromType(context.getTypeResolver(), DrlxParseUtil.toClassOrInterfaceType(expectedResultTypeString));
         final Class actualResultType = accumulateFunction.getResultType();
-        // Do not type check on mvel
-        // No type is Object.class so no need to enforce that, also Number.class has strange assignment rules so it's ignored
-        if(!context.isQuery() && context.getRuleDialect().equals(RuleContext.RuleDialect.JAVA) && !Pattern.isCompatibleWithAccumulateReturnType(expectedResultType, actualResultType)) {
+
+        final boolean isJavaDialect = context.getRuleDialect().equals(RuleContext.RuleDialect.JAVA);
+        final boolean isQuery = context.isQuery();
+        final boolean isCollectFunction = isCollectFunction(accumulateFunction);
+        final boolean isInsideAccumulate = ((AccumulateDescr)basePattern.getSource()).getInput() instanceof AndDescr;
+        final boolean checkCollect = !isCollectFunction || isInsideAccumulate;
+
+        if( !isQuery && checkCollect && isJavaDialect && !Pattern.isCompatibleWithAccumulateReturnType(expectedResultType, actualResultType)) {
             context.addCompilationError(new InvalidExpressionErrorResult(
                     String.format(
                             "Pattern of type: '[ClassObjectType class=%s]' " +
@@ -303,6 +311,12 @@ public abstract class AccumulateVisitor {
                                     "is not compatible with type %s returned by accumulate function."
                                     , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName())));
         }
+    }
+
+    private boolean isCollectFunction(AccumulateFunction accumulateFunction) {
+        return accumulateFunction instanceof CollectListAccumulateFunction ||
+                accumulateFunction instanceof CollectSetAccumulateFunction ||
+                accumulateFunction instanceof CollectAccumulator;
     }
 
     private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {
