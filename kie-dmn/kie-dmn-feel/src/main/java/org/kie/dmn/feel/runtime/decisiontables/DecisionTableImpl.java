@@ -342,6 +342,10 @@ public class DecisionTableImpl {
         return outputs;
     }
 
+    public List<DTInputClause> getInputs() {
+        return inputs;
+    }
+
     public List<String> getParameterNames() {
         return parameterNames;
     }

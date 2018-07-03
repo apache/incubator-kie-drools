@@ -26,7 +26,7 @@ import org.kie.dmn.model.v1_1.Definitions;
 public interface DMNValidator {
 
     enum Validation {
-        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION
+        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION, VALIDATE_DECISION_TABLES
     }
 
     /**

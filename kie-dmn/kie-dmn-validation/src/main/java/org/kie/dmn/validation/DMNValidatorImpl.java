@@ -43,9 +43,13 @@ import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
+import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNMessageImpl;
@@ -53,8 +57,14 @@ import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.Expression;
+import org.kie.dmn.model.v1_1.HitPolicy;
+import org.kie.dmn.model.v1_1.InputClause;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +72,7 @@ import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_DECISION_TABLES;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
@@ -236,8 +247,10 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_MODEL ) ) {
             results.addAll( validateModel( dmnModel ) );
         }
-        if( flags.contains( VALIDATE_COMPILATION ) ) {
-            results.addAll( validateCompilation( dmnModel, results ) );
+        if ( flags.contains( VALIDATE_DECISION_TABLES ) ) {
+            results.addAll( validateCompilation( dmnModel, results, true ) );
+        } else if( flags.contains( VALIDATE_COMPILATION ) ) {
+            results.addAll( validateCompilation( dmnModel, results, false ) );
         }
     }
 
@@ -276,10 +289,13 @@ public class DMNValidatorImpl implements DMNValidator {
         return reporter.getMessages().getMessages();
     }
 
-    private List<DMNMessage> validateCompilation(Definitions dmnModel, DMNMessageManager results) {
+    private List<DMNMessage> validateCompilation(Definitions dmnModel, DMNMessageManager results, boolean validateDT) {
         if( dmnModel != null ) {
             DMNCompiler compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile( dmnModel );
+            if ( validateDT ) {
+                validateDecisionTables( model, results );
+            }
             if( model != null ) {
                 return model.getMessages();
             } else {
@@ -293,6 +309,29 @@ public class DMNValidatorImpl implements DMNValidator {
             }
         }
         return Collections.emptyList();
+    }
+
+    private void validateDecisionTables(DMNModel model, DMNMessageManager results) {
+        for ( DecisionNode decisionNode: model.getDecisions() ) {
+            final Expression expression = decisionNode.getDecision().getExpression();
+            if ( expression instanceof DecisionTable ) {
+                final DecisionTable table = ( DecisionTable ) expression;
+                final HitPolicy hitPolicy = table.getHitPolicy();
+                if ( HitPolicy.UNIQUE.equals( hitPolicy ) || HitPolicy.ANY.equals( hitPolicy ) || HitPolicy.PRIORITY.equals( hitPolicy ) ) {
+                    for ( InputDataNode req : model.getRequiredInputsForDecisionId( decisionNode.getId() ) ) {
+                        for ( InputClause inputClause : table.getInput() ) {
+                            if ( inputClause.getInputValues() != null && inputClause.getInputExpression().getText().equals( req.getName() ) ) {
+                                final DMNDTExpressionEvaluator evaluator = ( DMNDTExpressionEvaluator ) ( ( DecisionNodeImpl ) decisionNode ).getEvaluator();
+                                final DecisionTableImpl impl = evaluator.getDt().getDecisionTable();
+                                for ( DTInputClause in : impl.getInputs() ) {
+                                    // TODO continue from here
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static Stream<DMNModelInstrumentedBase> allChildren(DMNModelInstrumentedBase root) {
