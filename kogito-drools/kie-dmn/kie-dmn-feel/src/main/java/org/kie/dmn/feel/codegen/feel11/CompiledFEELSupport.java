@@ -399,7 +399,7 @@ public class CompiledFEELSupport {
 
             return f.invokeReflectively(feelExprCtx, invocationParams);
         } else if (function instanceof UnaryTest) {
-            return ((UnaryTest) function).apply(feelExprCtx, params);
+            return ((UnaryTest) function).apply(feelExprCtx, ((List)params).get(0));
         }
         return null;
     }

@@ -360,6 +360,30 @@ public class CompiledFEELSemanticMappings {
         return not(EvalHelper.isEqual(left, right, null));
     }
 
+    public static Object negateTest( Object param ) {
+        if( param instanceof Boolean) {
+            return param.equals(Boolean.FALSE);
+        } else if ( param instanceof UnaryTest ) {
+            UnaryTest orig = (UnaryTest) param;
+            UnaryTest t = negatedUnaryTest(orig);
+            return t;
+        } else if ( param instanceof Range ) {
+            UnaryTest t = (c, left) -> not(includes(c, param, left));
+            return t;
+        } else {
+            UnaryTest t = (c, left) -> not(eq(left, param));
+            return t;
+        }
+    }
+
+    private static UnaryTest negatedUnaryTest(UnaryTest orig) {
+        return (c, left) -> {
+            Boolean r = orig.apply(c, left);
+            if (r == null) return null;
+            return r.equals(Boolean.FALSE);
+        };
+    }
+
     public static Boolean not(Object arg, UnaryTest test) {
         return not(test.apply(null, arg));
     }
