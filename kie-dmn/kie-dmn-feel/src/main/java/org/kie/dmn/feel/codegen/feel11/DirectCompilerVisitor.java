@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
@@ -64,9 +65,14 @@ import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
+import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -1203,12 +1209,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         String originalTextOfName = ParserHelper.getOriginalText(ctx.qualifiedName());
         DirectCompilerResult name = visit(ctx.qualifiedName());
         if (ctx.parameters() != null) {
-            DirectCompilerResult params = visit( ctx.parameters() );
-            if ("not".equals(originalTextOfName)) {
-                return buildNotCall(ctx, name, params);
-            } else {
-                return buildFunctionCall(ctx, name, params);
-            }
+            return buildFunctionCall(ctx, name, ctx.parameters());
         } else {
             return name;
         }
@@ -1218,16 +1219,44 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     //        throw new UnsupportedOperationException(); // REUSED AS STATIC METHOD ON THE ORIGINAL VISITOR
     //    }
 
-    private DirectCompilerResult buildFunctionCall(ParserRuleContext ctx, DirectCompilerResult name, DirectCompilerResult params) {
-        MethodCallExpr invokeCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "invoke");
-        invokeCall.addArgument(new NameExpr("feelExprCtx"));
-        invokeCall.addArgument(name.getExpression());
-        invokeCall.addArgument(params.getExpression());
-        return DirectCompilerResult.of(invokeCall, name.resultType).withFD(name).withFD(params);
+    private DirectCompilerResult buildFunctionCall(ParserRuleContext ctx, DirectCompilerResult name, ParseTree params) {
+        String functionName = getFunctionName(name);
+        if ("not".equals(functionName)) {
+            return buildNotCall(ctx, name, params);
+        } else {
+            DirectCompilerResult parameters = visit(params);
+            MethodCallExpr invokeCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "invoke");
+            invokeCall.addArgument(new NameExpr("feelExprCtx"));
+            invokeCall.addArgument(name.getExpression());
+            invokeCall.addArgument(parameters.getExpression());
+            return DirectCompilerResult.of(invokeCall, name.resultType).withFD(name).withFD(parameters);
+        }
     }
 
-    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, DirectCompilerResult params) {
-        throw new UnsupportedOperationException("TODO"); // TODO
+    private String getFunctionName(DirectCompilerResult name) {
+        Expression expression = name.getExpression();
+        if (expression.toString().contains("not")) {
+            return ((NameExpr)expression).getName().asString();
+        }
+        return null;
+    }
+
+
+    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, ParseTree params) {
+        if (params.getChildCount() == 1) {
+            DirectCompilerResult parameter = visit(params.getChild(0));
+            // this is an ambiguous call: defer choice to runtime
+            MethodCallExpr expr = new MethodCallExpr(
+                    null,
+                    "negateTest",
+                    new NodeList<>(
+                            parameter.getExpression()));
+            return DirectCompilerResult.of(expr, BuiltInType.UNARY_TEST, parameter.getFieldDeclarations());
+        } else {
+            DirectCompilerResult parameters = visit(params);
+            // if childcount != 1 assume not expression
+            return createUnaryTestExpression(ctx, parameters, UnaryOperator.NOT);
+        }
     }
 
     @Override
@@ -1328,7 +1357,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
         FEEL_1_1Parser.SimpleUnaryTestsContext child = (FEEL_1_1Parser.SimpleUnaryTestsContext) ctx.getChild(2);
-        DirectCompilerResult result = visit(child);
-        return createUnaryTestExpression(ctx, result, UnaryOperator.NOT);
+        DirectCompilerResult notExpr = DirectCompilerResult.of(new NameExpr("not"), BuiltInType.BOOLEAN);
+        return buildFunctionCall(ctx, notExpr, child);
     }
 }
