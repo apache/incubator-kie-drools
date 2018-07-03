@@ -275,4 +275,39 @@ public class TypeCoercionTest extends CommonTestMethodBase {
         kieSession.insert(new Person("Mario", 11));
         assertEquals(2, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testCoercionInJoin() {
+        // DROOLS-2695
+        final String drl =
+                " rule R1 when\n" +
+                "     Integer($i : intValue)\n" +
+                "     String(this == $i)\n" +
+                " then end\n";
+
+        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(2);
+        kieSession.insert("2");
+        assertEquals(1, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testCoercionInJoinOnField() {
+        // DROOLS-2695
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                " rule R1 when\n" +
+                "     Integer($i : intValue)\n" +
+                "     Person(name == $i)\n" +
+                " then end\n";
+
+        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(2);
+        kieSession.insert(new Person("2", 11));
+        assertEquals(1, kieSession.fireAllRules());
+    }
 }

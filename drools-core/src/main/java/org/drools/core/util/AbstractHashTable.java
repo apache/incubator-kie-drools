@@ -16,17 +16,18 @@
 
 package org.drools.core.util;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Objects;
+
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.TupleList;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public abstract class AbstractHashTable
     implements
@@ -289,6 +290,7 @@ public abstract class AbstractHashTable
         private InternalReadAccessor    extractor;
         private Declaration             declaration;
         private IndexEvaluator          evaluator;
+        private boolean                 requiresCoercion;
 
         public FieldIndex() {
 
@@ -301,6 +303,11 @@ public abstract class AbstractHashTable
             this.extractor = extractor;
             this.declaration = declaration;
             this.evaluator = evaluator;
+            this.requiresCoercion = isCoercionRequired( extractor, declaration );
+        }
+
+        private boolean isCoercionRequired( InternalReadAccessor extractor, Declaration declaration ) {
+            return extractor.getValueType() != declaration.getExtractor().getValueType();
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -308,6 +315,7 @@ public abstract class AbstractHashTable
             extractor = (InternalReadAccessor) in.readObject();
             declaration = (Declaration) in.readObject();
             evaluator = (IndexEvaluator) in.readObject();
+            requiresCoercion = isCoercionRequired( extractor, declaration );
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -330,13 +338,17 @@ public abstract class AbstractHashTable
 
         public int hashCodeOf(Tuple tuple, boolean left) {
             return left ?
-                   declaration.getHashCode( null, tuple.getObject( declaration ) ) :
+                    ( requiresCoercion ?
+                           Objects.hashCode( extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) ) :
+                           declaration.getHashCode( null, tuple.getObject( declaration ) ) ) :
                    extractor.getHashCode( null, tuple.getFactHandle().getObject() );
         }
 
         public Object indexedValueOf(Tuple tuple, boolean left) {
             return left ?
-                   declaration.getValue( null, tuple.getObject( declaration ) ) :
+                    ( requiresCoercion ?
+                            extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) :
+                            declaration.getValue( null, tuple.getObject( declaration ) ) ) :
                    extractor.getValue( null, tuple.getFactHandle().getObject() );
         }
     }
