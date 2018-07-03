@@ -38,6 +38,8 @@ import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.comments.JavadocComment;
+import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
 import org.slf4j.Logger;
@@ -100,7 +102,13 @@ public class CompilerBytecodeLoader {
             throw new RuntimeException("Something unexpected changed in the template.");
         }
         ReturnStmt returnStmt = lookupReturnList.get(0);
-        returnStmt.setExpression(theExpression);
+        Expression expr;
+        if (clazz.equals(CompiledFEELUnaryTests.class)) {
+            expr = new CastExpr(JavaParser.parseType("java.util.List"), new EnclosedExpr(theExpression));
+        } else {
+            expr = theExpression;
+        }
+        returnStmt.setExpression(expr);
 
         List<ClassOrInterfaceDeclaration> classDecls = cu.getChildNodesByType(ClassOrInterfaceDeclaration.class);
         if (classDecls.size() != 1) {
