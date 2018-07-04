@@ -13,6 +13,10 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.core.base.accumulators.CollectAccumulator;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.core.rule.Pattern;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.Modifier;
@@ -161,6 +165,7 @@ public abstract class AccumulateVisitor {
                 return Optional.empty();
             }
             final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+            validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
             functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
@@ -186,6 +191,7 @@ public abstract class AccumulateVisitor {
                         }
 
                         final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+                        validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                         final String bindExpressionVariable = context.getExprId(accumulateFunction.getResultType(), drlxParseResult.getLeft().toString());
 
                         drlxParseResult.setExprBinding(bindExpressionVariable);
@@ -220,6 +226,7 @@ public abstract class AccumulateVisitor {
                 }
 
                 final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+                validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                 final Class accumulateFunctionResultType = accumulateFunction.getResultType();
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
 
@@ -249,6 +256,7 @@ public abstract class AccumulateVisitor {
                     return Optional.empty();
                 }
                 final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+                validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(context.getVarExpr(nameExpr));
 
@@ -263,6 +271,7 @@ public abstract class AccumulateVisitor {
                 }
 
                 final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
+                validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
                 functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
@@ -281,6 +290,33 @@ public abstract class AccumulateVisitor {
 
         context.popExprPointer();
         return newBinding;
+    }
+
+    private void validateAccFunctionTypeAgainstPatternType(RuleContext context, PatternDescr basePattern, AccumulateFunction accumulateFunction) {
+        final String expectedResultTypeString = basePattern.getObjectType();
+        final Class<?> expectedResultType = DrlxParseUtil.getClassFromType(context.getTypeResolver(), DrlxParseUtil.toClassOrInterfaceType(expectedResultTypeString));
+        final Class actualResultType = accumulateFunction.getResultType();
+
+        final boolean isJavaDialect = context.getRuleDialect().equals(RuleContext.RuleDialect.JAVA);
+        final boolean isQuery = context.isQuery();
+        final boolean isCollectFunction = isCollectFunction(accumulateFunction);
+        final boolean isInsideAccumulate = ((AccumulateDescr)basePattern.getSource()).getInput() instanceof AndDescr;
+        final boolean checkCollect = !isCollectFunction || isInsideAccumulate;
+
+        if( !isQuery && checkCollect && isJavaDialect && !Pattern.isCompatibleWithAccumulateReturnType(expectedResultType, actualResultType)) {
+            context.addCompilationError(new InvalidExpressionErrorResult(
+                    String.format(
+                            "Pattern of type: '[ClassObjectType class=%s]' " +
+                                    "on rule '%s' " +
+                                    "is not compatible with type %s returned by accumulate function."
+                                    , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName())));
+        }
+    }
+
+    private boolean isCollectFunction(AccumulateFunction accumulateFunction) {
+        return accumulateFunction instanceof CollectListAccumulateFunction ||
+                accumulateFunction instanceof CollectSetAccumulateFunction ||
+                accumulateFunction instanceof CollectAccumulator;
     }
 
     private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {

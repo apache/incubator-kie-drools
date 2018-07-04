@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -151,6 +152,8 @@ public class ModelGenerator {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
+        setDialectFromRuleDescr(context, ruleDescr);
+
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), toClassOrInterfaceType( Rule.class ), ruleMethodName);
@@ -171,7 +174,7 @@ public class ModelGenerator {
                 new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
                 ruleCall;
 
-        for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
+        for (MethodCallExpr attributeExpr : ruleAttributes(ruleDescr)) {
             attributeExpr.setScope( buildCallScope );
             buildCallScope = attributeExpr;
         }
@@ -215,21 +218,16 @@ public class ModelGenerator {
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
      */
-    private static List<MethodCallExpr> ruleAttributes(RuleContext context, RuleDescr ruleDescr) {
-        List<MethodCallExpr> ruleAttributes = new ArrayList<>();
-        for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
-            // dialect=mvel is not an attribute of DSL expr(), so we check it before.
-            if (as.getKey().equals( "dialect" )) {
-                if (as.getValue().getValue().equals("mvel")) {
-                    context.setRuleDialect(RuleDialect.MVEL);
-                }
-                continue;
-            }
+    private static List<MethodCallExpr> ruleAttributes(RuleDescr ruleDescr) {
+        final List<MethodCallExpr> ruleAttributes = new ArrayList<>();
+        final Set<Entry<String, AttributeDescr>> excludingDialect =
+                ruleDescr.getAttributes().entrySet()
+                        .stream().filter(r -> !r.getKey().equals("dialect"))
+                        .collect(Collectors.toSet());
+        for (Entry<String, AttributeDescr> as : excludingDialect) {
             MethodCallExpr attributeCall = new MethodCallExpr(null, ATTRIBUTE_CALL);
             attributeCall.addArgument(attributesMap.get(as.getKey()));
             switch (as.getKey()) {
-                case "dialect":
-                    throw new RuntimeException("should not have reached this part of the code");
                 case "no-loop":
                 case "salience":
                 case "enabled":
@@ -262,6 +260,17 @@ public class ModelGenerator {
             ruleAttributes.add(attributeCall);
         }
         return ruleAttributes;
+    }
+
+    public static void setDialectFromRuleDescr(RuleContext context, RuleDescr ruleDescr) {
+        for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
+            if (as.getKey().equals("dialect")) {
+                if (as.getValue().getValue().equals("mvel")) {
+                    context.setRuleDialect(RuleDialect.MVEL);
+                }
+                return;
+            }
+        }
     }
 
     /**
