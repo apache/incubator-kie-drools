@@ -4,9 +4,9 @@
 #toc {
   resize: horizontal;
 }
-#toctreeexpand {
+#tocTreeExpandAll {
   margin: 2px;
 }
-#toctreecollapse {
+#tocTreeCollapseAll {
   margin: 2px;
 }
