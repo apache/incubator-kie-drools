@@ -16,6 +16,13 @@
 
 package org.drools.core.base.evaluators;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
@@ -23,11 +30,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.VariableRestriction;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Date;
 
 public abstract class PointInTimeEvaluator extends BaseEvaluator {
     protected long              initRange;
@@ -89,8 +91,18 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         if (obj instanceof Long) {
             return (Long)obj;
         }
+        return getTimestampFromDate( obj );
+    }
+
+    public static long getTimestampFromDate( Object obj ) {
         if (obj instanceof Date ) {
             return ( (Date) obj ).getTime();
+        }
+        if (obj instanceof LocalDate ) {
+            return (( LocalDate ) obj).atStartOfDay().atZone( java.time.ZoneId.systemDefault() ).toInstant().toEpochMilli();
+        }
+        if (obj instanceof LocalDateTime ) {
+            return (( LocalDateTime ) obj).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
         }
         throw new RuntimeException("Cannot extract timestamp from " + obj);
     }

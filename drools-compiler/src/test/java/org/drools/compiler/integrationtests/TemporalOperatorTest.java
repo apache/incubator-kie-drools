@@ -16,12 +16,16 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -104,6 +108,10 @@ public class TemporalOperatorTest {
             return localDateTime;
         }
 
+        public LocalDate getLocalDate() {
+            return localDateTime.toLocalDate();
+        }
+
         public ZonedDateTime getZonedDateTime() {
             return localDateTime.atZone( ZoneId.systemDefault() );
         }
@@ -130,6 +138,42 @@ public class TemporalOperatorTest {
         checkConstantTemporalConstraint( "localDateTime == null || localDateTime after \"1-Jan-1970\"" );
     }
 
+    @Test
+    public void testAfterWithLocalDateTimeWithLiteral() {
+        // RHBRMS-2799
+        checkConstantTemporalConstraint( "localDateTime after \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testDateAfterWithLiteral() {
+        checkConstantTemporalConstraint( "date after \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testAfterWithLocalDateWithLiteral() {
+        checkConstantTemporalConstraint( "localDate after \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testComparisonWithLocalDateTimeAndLiteral() {
+        checkConstantTemporalConstraint( "localDate > \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testComparisonWithLocalDate() {
+        checkConstantTemporalConstraint( "localDate > org.drools.compiler.integrationtests.TemporalOperatorTest.parseDateAsLocal(\"1-Jan-1970\")" );
+    }
+
+    @Test
+    public void testComparisonWithLocalDateAndLiteral() {
+        checkConstantTemporalConstraint( "localDateTime > \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testComparisonWithLocalDateTime() {
+        checkConstantTemporalConstraint( "localDateTime > org.drools.compiler.integrationtests.TemporalOperatorTest.parseTimeAsLocal(\"1-Jan-1970\")" );
+    }
+
     public void checkConstantTemporalConstraint(String constraint) {
         String str = "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
                      "global java.util.List list;\n" +
@@ -154,6 +198,32 @@ public class TemporalOperatorTest {
             assertEquals(t1.getName(), list.get(0));
         } finally {
             ksession.dispose();
+        }
+    }
+
+    public static LocalDate parseDateAsLocal( String droolsDate ) {
+        if (droolsDate == null) {
+            return null;
+        }
+        try {
+            return (new SimpleDateFormat("dd-MMM-yyyy", Locale.UK).parse(droolsDate))
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static LocalDateTime parseTimeAsLocal( String droolsDate ) {
+        if (droolsDate == null) {
+            return null;
+        }
+        try {
+            return (new SimpleDateFormat("dd-MMM-yyyy", Locale.UK).parse(droolsDate))
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault()).toLocalDateTime();
+        } catch (ParseException e) {
+            return null;
         }
     }
 }
