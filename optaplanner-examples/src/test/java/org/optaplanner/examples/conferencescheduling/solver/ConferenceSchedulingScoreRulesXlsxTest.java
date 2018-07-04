@@ -21,9 +21,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
@@ -34,6 +45,10 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.domain.Room;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
+import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
+import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
 public class ConferenceSchedulingScoreRulesXlsxTest {
@@ -42,23 +57,23 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     private String currentPackage;
     private String currentConstraint;
     private int expectedHardScore, expectedSoftScore;
-    private final String testFileName = "org/optaplanner/examples/conferencescheduling/testConferenceSchedulingScoreRules.xlsx";
+
+    private final String testFileName = "testConferenceSchedulingScoreRules.xlsx";
     private HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
     private testConferenceSchedulingScoreRulesReader testFileReader;
 
     @Before
     public void setup() {
-        try (InputStream in = new BufferedInputStream(new FileInputStream(testFileName))) {
+        File testFile = new File(getClass().getResource(testFileName).getFile());
+        try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
+            this.currentSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
             this.testFileReader = new testConferenceSchedulingScoreRulesReader(workbook);
-            this.currentSolution = testFileReader.read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
                                                     + testFileName + ").", e);
         }
-        this.expectedHardScore = currentSolution.getScore().getHardScore();
-        this.expectedSoftScore = currentSolution.getScore().getSoftScore();
     }
 
     @Test
@@ -71,34 +86,53 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
 
     private class testConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXslxReader<ConferenceSolution> {
 
-        private int numberOfSheets, currentSheetIndex;
-        Map<Integer, String> cellColumnIndexToDateStringMap;
-        Map<Integer, String> cellColumnIndexToTimeStringMap;
+        private int numberOfSheets, currentTestSheetIndex;
+        private Map<String, Room> roomMap;
+        private Map<String, Talk> talkMap;
+        private Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> timeslotMap;
+        private Map<Integer, LocalDate> columnIndexToDateMap;
+        private Map<Integer, LocalTime> columnIndexToStartTimeMap;
+        private Map<Integer, LocalTime> columnIndexToEndTimeMap;
+
         private final FieldAccessingSolutionCloner<ConferenceSolution> solutionCloner = new FieldAccessingSolutionCloner<>(new SolutionDescriptor<>(ConferenceSolution.class));
+        private final Pattern VALID_SCORE_PATTERN = Pattern.compile("-?\\d+ hard/-?\\d+ soft");
+        private final String ONLY_DIGITS_AND_SPACES_REGEX = "[^\\d\\s-]";
+
+        final DateTimeFormatter DAY_FORMATTER
+                = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+        final DateTimeFormatter TIME_FORMATTER
+                = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
         public testConferenceSchedulingScoreRulesReader(XSSFWorkbook workbook) {
             super(workbook);
             this.numberOfSheets = workbook.getNumberOfSheets();
-            this.currentSheetIndex = 0;
+            this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;
+            roomMap = currentSolution.getRoomList().stream().collect(
+                    Collectors.toMap(Room::getName, Function.identity()));
+            talkMap = currentSolution.getTalkList().stream().collect(
+                    Collectors.toMap(Talk::getCode, Function.identity()));
+            timeslotMap = currentSolution.getTimeslotList().stream().collect(
+                    Collectors.toMap(timeslot -> Pair.of(timeslot.getStartDateTime(), timeslot.getEndDateTime()),
+                                     Function.identity()));
+            this.columnIndexToDateMap = new HashMap<>(timeslotMap.size());
+            this.columnIndexToStartTimeMap = new HashMap<>(timeslotMap.size());
+            this.columnIndexToEndTimeMap = new HashMap<>(timeslotMap.size());
         }
 
         @Override
         public ConferenceSolution read() {
-            return solution;
+            return currentSolution;
         }
 
         public ConferenceSolution nextSolution() {
-            if (currentSheetIndex >= numberOfSheets) {
+            if (currentTestSheetIndex >= numberOfSheets) {
                 return null;
             }
-            nextSheet(workbook.getSheetName(currentSheetIndex++));
+            nextSheet(workbook.getSheetName(currentTestSheetIndex++));
 
-            ConferenceSolution nextSheetSolution = null;
-            try {
-                nextSheetSolution = (ConferenceSolution) clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(currentSolution);
+            talkMap = nextSheetSolution.getTalkList().stream().collect(
+                    Collectors.toMap(Talk::getCode, Function.identity()));
 
             nextRow(false);
             readHeaderCell("Constraint package");
@@ -108,43 +142,89 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             currentConstraint = nextStringCell().getStringCellValue();
             nextRow(false);
             readHeaderCell("Score");
-            String[] scoresAsString = nextStringCell().getStringCellValue().split("/");
-            expectedHardScore = Integer.parseInt(scoresAsString[0]);
-            expectedSoftScore = Integer.parseInt(scoresAsString[1]);
+            String scoreAsString = nextStringCell().getStringCellValue();
+            if (!VALID_SCORE_PATTERN.matcher(scoreAsString).matches()) {
+                throw new IllegalStateException(currentPosition() + ": The score (" + scoreAsString
+                                                        + ") must match to the regular expression (" + VALID_SCORE_PATTERN + ").");
+            }
+            String[] scoresStringArray = scoreAsString.replaceAll(ONLY_DIGITS_AND_SPACES_REGEX, "").split(" +");
+            expectedHardScore = Integer.parseInt(scoresStringArray[0]);
+            expectedSoftScore = Integer.parseInt(scoresStringArray[1]);
 
             nextRow();
-            cellColumnIndexToDateStringMap = readTimeslotDays();
+            readTimeslotDays();
             nextRow(false);
             readHeaderCell("Room");
-            cellColumnIndexToTimeStringMap = readTiemslotHours();
+            readTiemslotHours();
             while (nextRow()) {
+                String roomName = nextStringCell().getStringCellValue();
+                Room room = roomMap.get(roomName);
+                if (room == null) {
+                    throw new IllegalStateException(currentPosition() + ": The room (" + roomName
+                                                            + ") does not exist in the room list.");
+                }
+                for (int i = 0; i < columnIndexToStartTimeMap.size(); i++) {
+                    String talkCode = nextCell().getStringCellValue();
+                    if (!talkCode.isEmpty()) {
+                        Talk talk = talkMap.get(talkCode);
+                        if (talk == null) {
+                            throw new IllegalStateException(currentPosition() + ": Talk (" + talkCode
+                                                                    + ") does not exist in the talk list.");
+                        }
 
+                        LocalDateTime startDateTime = LocalDateTime.of(columnIndexToDateMap.get(currentColumnNumber), columnIndexToStartTimeMap.get(currentColumnNumber));
+                        LocalDateTime endDateTime = LocalDateTime.of(columnIndexToDateMap.get(currentColumnNumber), columnIndexToEndTimeMap.get(currentColumnNumber));
+
+                        Timeslot timeslot = timeslotMap.get(Pair.of(startDateTime, endDateTime));
+                        if (timeslot == null) {
+                            throw new IllegalStateException(currentPosition() + ": The timeslot with date (" + startDateTime.toLocalDate().toString()
+                                                                    + "), startTime (" + startDateTime.toLocalTime().toString() + ") and endTime (" + endDateTime.toLocalTime().toString()
+                                                                    + ") that doesn't exist in the other sheet (Timeslots).");
+                        }
+                        talk.setRoom(room);
+                        talk.setTimeslot(timeslot);
+                    }
+                }
             }
 
             return nextSheetSolution;
         }
 
-        private Map<Integer, String> readTimeslotDays() {
-            Map<Integer, String> cellIndexToDateStringMap = new HashMap<>();
-            XSSFCell cell;
-            while ((cell = currentRow == null ? null : nextStringCell()) != null) {
-                if (cell != null) {
-
-                    cellIndexToDateStringMap.put(cell.getColumnIndex(), cell.getStringCellValue());
+        private void readTimeslotDays() {
+            String previousDateString = null;
+            for (int i = 0; i < currentRow.getLastCellNum(); i++) {
+                XSSFCell cell = currentRow.getCell(i);
+                if (cell.getStringCellValue().isEmpty() && previousDateString == null) {
+                    continue;
+                } else {
+                    if ((!cell.getStringCellValue().isEmpty())) {
+                        previousDateString = cell.getStringCellValue();
+                    }
+                    try {
+                        columnIndexToDateMap.put(i, LocalDate.parse(previousDateString, DAY_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        throw new IllegalStateException(currentPosition() + ": The date (" + cell.getStringCellValue()
+                                                                + "does not parse as a date.");
+                    }
                 }
             }
-            return cellIndexToDateStringMap;
         }
 
-        private Map<Integer, String> readTiemslotHours() {
-            Map<Integer, String> cellIndexToTimeStringMap = new HashMap<>();
-            XSSFCell cell;
-            while ((cell = currentRow == null ? null : nextStringCell()) != null) {
-                if (cell != null) {
-                    cellIndexToTimeStringMap.put(cell.getColumnIndex(), cell.getStringCellValue());
-                }
-            }
-            return cellIndexToTimeStringMap;
+        private void readTiemslotHours() {
+            StreamSupport.stream(currentRow.spliterator(), false)
+                    .forEach(cell -> {
+                        if (!cell.getStringCellValue().isEmpty() && !cell.getStringCellValue().equals("Room")) {
+                            String[] startAndEndTimeStringArray = cell.getStringCellValue().split("-");
+                            try {
+                                columnIndexToStartTimeMap.put(cell.getColumnIndex(), LocalTime.parse(startAndEndTimeStringArray[0], TIME_FORMATTER));
+                                columnIndexToEndTimeMap.put(cell.getColumnIndex(), LocalTime.parse(startAndEndTimeStringArray[1], TIME_FORMATTER));
+                            } catch (DateTimeParseException e) {
+                                throw new IllegalStateException(currentPosition() + ": The startTime (" + startAndEndTimeStringArray[0]
+                                                                        + ") or endTime (" + startAndEndTimeStringArray[1]
+                                                                        + ") doesn't parse as a  time.", e);
+                            }
+                        }
+                    });
         }
     }
 }
