@@ -83,6 +83,7 @@ public class QueryGenerator {
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
         context.addGlobalDeclarations(packageModel.getGlobals());
 
+        ModelGenerator.setDialectFromRuleDescr(context, queryDescr);
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
