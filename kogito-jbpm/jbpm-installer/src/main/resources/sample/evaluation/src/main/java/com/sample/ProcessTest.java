@@ -15,6 +15,8 @@
 
 package com.sample;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
