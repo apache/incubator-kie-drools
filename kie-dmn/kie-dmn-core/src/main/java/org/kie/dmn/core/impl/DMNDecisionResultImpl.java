@@ -90,4 +90,22 @@ public class DMNDecisionResultImpl
     public boolean hasErrors() {
         return messages != null && messages.stream().anyMatch( m -> m.getSeverity() == DMNMessage.Severity.ERROR );
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DMNDecisionResultImpl [decisionId=");
+        builder.append(decisionId);
+        builder.append(", decisionName=");
+        builder.append(decisionName);
+        builder.append(", result=");
+        builder.append(result);
+        builder.append(", messages=");
+        builder.append(messages);
+        builder.append(", status=");
+        builder.append(status);
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

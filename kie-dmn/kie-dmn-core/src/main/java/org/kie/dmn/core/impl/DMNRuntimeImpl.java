@@ -211,6 +211,17 @@ public class DMNRuntimeImpl
         return result;
     }
 
+    public DMNResult evaluateDecisionServices(DMNModel model, DMNContext context) {
+        boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
+        DMNResultImpl result = createResult(model, context);
+        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
+        Set<DecisionServiceNode> decisionServices = ((DMNModelImpl) model).getDecisionServices().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
+        for (DecisionServiceNode ds : decisionServices) {
+            evaluateDecisionService(context, result, ds, performRuntimeTypeCheck);
+        }
+        return result;
+    }
+
     private boolean evaluateDecisionService(DMNContext context, DMNResultImpl result, DecisionServiceNode d, boolean typeCheck) {
         DecisionServiceNodeImpl ds = (DecisionServiceNodeImpl) d;
         String decisionId = ds.getModelNamespace().equals(result.getModel().getNamespace()) ? ds.getId() : ds.getModelNamespace() + "#" + ds.getId();

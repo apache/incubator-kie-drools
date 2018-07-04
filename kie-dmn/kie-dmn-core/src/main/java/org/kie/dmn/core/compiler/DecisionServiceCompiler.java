@@ -16,14 +16,23 @@
 
 package org.kie.dmn.core.compiler;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DecisionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionServiceCompiler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DecisionServiceCompiler.class);
 
     public void compileNode(DecisionService drge, DMNCompilerImpl compiler, DMNModelImpl model) {
         DecisionService bkm = (DecisionService) drge;
@@ -45,6 +54,58 @@ public class DecisionServiceCompiler {
 
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
-        compiler.linkRequirements(model, ni);
+
+        // compiler.linkRequirements(model, ni); doing manually here:
+        for (DMNElementReference er : ni.getDecisionService().getInputData()) {
+            String id = DMNCompilerImpl.getId(er);
+            InputDataNode input = model.getInputById(id);
+            if (input != null) {
+                ni.addDependency(input.getName(), input);
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
+        for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
+            String id = DMNCompilerImpl.getId(er);
+            DecisionNode input = model.getDecisionById(id);
+            if (input != null) {
+                ni.addDependency(input.getName(), input);
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
+        for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
+            String id = DMNCompilerImpl.getId(er);
+            DecisionNode input = model.getDecisionById(id);
+            if (input != null) {
+                ni.addDependency(input.getName(), input);
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -51,6 +52,8 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNode;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -67,6 +70,7 @@ import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.DRGElement;
 import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.Import;
@@ -76,6 +80,7 @@ import org.kie.dmn.model.v1_1.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.NamedElement;
 import org.kie.dmn.model.v1_1.OutputClause;
 import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -269,6 +274,22 @@ public class DMNCompilerImpl
             }
         }
         detectCycles( model );
+
+        // in DMN v1.1 the DecisionService is not on the DRGElement but as an extension
+        if (dmndefs.getExtensionElements() != null) {
+            DecisionServiceCompiler compiler = new DecisionServiceCompiler();
+            List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
+            for (DecisionServices dss : decisionServices) {
+                for (DecisionService ds : dss.getDecisionService()) {
+                    compiler.compileNode(ds, this, model);
+                }
+            }
+            for (DecisionServiceNode ds : model.getDecisionServices()) {
+                DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
+                dsi.addModelImportAliases(model.getImportAliasesForNS());
+                compiler.compileEvaluator(dsi, this, ctx, model);
+            }
+        }
     }
 
     private void detectCycles( DMNModelImpl model ) {
@@ -368,7 +389,7 @@ public class DMNCompilerImpl
      *  - namespace#id (an imported DRGElement ID)
      * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
      */
-    private String getId(DMNElementReference er) {
+    public static String getId(DMNElementReference er) {
         String href = er.getHref();
         return href.startsWith("#") ? href.substring(1) : href;
     }
