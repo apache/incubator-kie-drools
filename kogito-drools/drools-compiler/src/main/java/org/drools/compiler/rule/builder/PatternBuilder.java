@@ -65,12 +65,13 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
-import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -124,7 +125,9 @@ import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.*;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.getNormalizeDate;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeEmptyKeyword;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeStringOperator;
 import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
@@ -1016,11 +1019,12 @@ public class PatternBuilder
         String leftValue = findLeftExpressionValue(subDescr);
         String operator = subDescr.getOperator();
 
-        if (isDateType(context, pattern, leftValue)) {
+        ValueType valueType = getValueType(context, pattern, leftValue);
+        if (valueType != null && valueType.getSimpleType() == SimpleValueType.DATE) {
             String rightValue = findRightExpressionValue(subDescr);
-            FieldValue fieldValue = getFieldValue(context, ValueType.DATE_TYPE, rightValue);
+            FieldValue fieldValue = getFieldValue(context, valueType, rightValue);
             if (fieldValue != null) {
-                subExpr = subExpr.replace(rightValue, getNormalizeDate(fieldValue));
+                subExpr = subExpr.replace(rightValue, getNormalizeDate(valueType, fieldValue));
             }
             return subExpr;
         }
@@ -1038,19 +1042,19 @@ public class PatternBuilder
         return normalizeEmptyKeyword(subExpr, operator);
     }
 
-    private boolean isDateType(RuleBuildContext context, Pattern pattern, String leftValue) {
+    private ValueType getValueType(RuleBuildContext context, Pattern pattern, String leftValue) {
         Declaration declaration = pattern.getDeclarations().get(leftValue);
         if (declaration != null && declaration.getExtractor() != null) {
-            return declaration.getValueType() == ValueType.DATE_TYPE;
+            return declaration.getValueType();
         }
 
         if (pattern.getObjectType() instanceof FactTemplateObjectType) {
-            return ((FactTemplateObjectType) pattern.getObjectType()).getFactTemplate().getFieldTemplate(leftValue).getValueType() == ValueType.DATE_TYPE;
+            return ((FactTemplateObjectType) pattern.getObjectType()).getFactTemplate().getFieldTemplate(leftValue).getValueType();
         }
 
         Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
         Class<?> fieldType = context.getPkg().getClassFieldAccessorStore().getFieldType(clazz, leftValue);
-        return fieldType != null && ValueType.isDateType(fieldType);
+        return fieldType != null ? ValueType.determineValueType(fieldType) : null;
     }
 
     protected Constraint buildRelationalExpression(final RuleBuildContext context,

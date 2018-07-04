@@ -22,6 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Date;
 
@@ -94,7 +96,7 @@ public class ValueType<T>
    
     public static final ValueType  NUMBER_TYPE         = new ValueType( "Number",
                                                                         Number.class,
-                                                                        SimpleValueType.DATE );
+                                                                        SimpleValueType.NUMBER );
    
     public static final ValueType  BIG_DECIMAL_TYPE  = new BigDecimalValueType();
 
@@ -105,6 +107,15 @@ public class ValueType<T>
     public static final ValueType  DATE_TYPE         = new ValueType( "Date",
                                                                       Date.class,
                                                                       SimpleValueType.DATE );
+
+    public static final ValueType  LOCAL_DATE_TYPE   = new ValueType( "LocalDate",
+                                                                      LocalDate.class,
+                                                                      SimpleValueType.DATE );
+
+    public static final ValueType  LOCAL_TIME_TYPE   = new ValueType( "LocalTime",
+                                                                      LocalDateTime.class,
+                                                                      SimpleValueType.DATE );
+
     public static final ValueType  ARRAY_TYPE        = new ValueType( "Array",
                                                                       Object[].class,
                                                                       SimpleValueType.LIST );
@@ -240,8 +251,12 @@ public class ValueType<T>
         
         
         // Other Object types
-        if ( isDateType( clazz ) ) {
+        if ( Date.class.isAssignableFrom( clazz ) ) {
             return ValueType.DATE_TYPE;
+        } else if ( clazz == LocalDate.class ) {
+            return ValueType.LOCAL_DATE_TYPE;
+        } else if ( clazz == LocalDateTime.class ) {
+            return ValueType.LOCAL_TIME_TYPE;
         } else if ( clazz.isArray() ) {
             return ValueType.ARRAY_TYPE;
         } else if ( clazz == String.class ) {
@@ -289,10 +304,6 @@ public class ValueType<T>
         return ((this.classType == Boolean.class) || (this.classType == Boolean.TYPE));
     }
     
-    public boolean isDate() {
-        return this.classType == Date.class;
-    }    
-
     /* (non-Javadoc)
      * @see org.kie.base.ValueTypeInterface#isNumber()
      */
