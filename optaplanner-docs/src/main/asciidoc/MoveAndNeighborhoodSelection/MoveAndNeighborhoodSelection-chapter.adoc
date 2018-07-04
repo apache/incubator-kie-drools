@@ -1,5 +1,5 @@
 [[moveAndNeighborhoodSelection]]
-= `Move` and Neighborhood Selection
+= Move and Neighborhood Selection
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[moveAndNeighborhoodSelectionIntroduction]]
-== `Move` and Neighborhood Introduction
+== Move and Neighborhood Introduction
 
 
 [[whatIsAMove]]

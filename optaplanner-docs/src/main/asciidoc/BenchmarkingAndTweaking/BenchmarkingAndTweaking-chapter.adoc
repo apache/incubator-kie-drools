@@ -1,5 +1,5 @@
 [[benchmarker]]
-= Benchmarking And Tweaking
+= Benchmarking and Tweaking
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -9,7 +9,7 @@
 
 
 [[findTheBestSolverConfiguration]]
-== Find The Best `Solver` Configuration
+== Find the Best `Solver` Configuration
 
 Planner supports several optimization algorithms, so you're probably wondering which is the best one?
 Although some optimization algorithms generally perform better than others, it really depends on your problem domain.
