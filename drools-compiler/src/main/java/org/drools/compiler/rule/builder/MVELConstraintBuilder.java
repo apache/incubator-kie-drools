@@ -36,6 +36,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
@@ -55,8 +56,12 @@ import org.mvel2.DataConversion;
 import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
 
-import static org.drools.compiler.rule.builder.PatternBuilder.*;
+import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
+import static org.drools.compiler.rule.builder.PatternBuilder.buildOperators;
+import static org.drools.compiler.rule.builder.PatternBuilder.getOperators;
+import static org.drools.compiler.rule.builder.PatternBuilder.getUsedDeclarations;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class MVELConstraintBuilder implements ConstraintBuilder {
@@ -216,8 +221,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            String operator,
                                                            String rightValue,
                                                            LiteralRestrictionDescr restrictionDescr) {
-        if (vtype == ValueType.DATE_TYPE) {
-            return leftValue + " " + operator + getNormalizeDate( field );
+        if (vtype.getSimpleType() == SimpleValueType.DATE) {
+            return leftValue + " " + operator + getNormalizeDate( vtype, field );
         }
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
@@ -226,9 +231,24 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return normalizeEmptyKeyword( expr, operator );
     }
 
-    protected static String getNormalizeDate( FieldValue field ) {
-        Date date = (Date)field.getValue();
-        return date != null ? " new java.util.Date(" + date.getTime() + ")" : " null";
+    protected static String getNormalizeDate( ValueType vtype, FieldValue field ) {
+        Object value = field.getValue();
+        if (value == null) {
+            return "null";
+        }
+
+        long lvalue = getTimestampFromDate( value );
+        if (vtype == ValueType.DATE_TYPE) {
+            return " new java.util.Date(" + lvalue + ")";
+        }
+        if (vtype == ValueType.LOCAL_DATE_TYPE) {
+            return " java.time.Instant.ofEpochMilli(" + lvalue + ").atZone(java.time.ZoneId.systemDefault()).toLocalDate()";
+        }
+        if (vtype == ValueType.LOCAL_TIME_TYPE) {
+            return " java.time.Instant.ofEpochMilli(" + lvalue + ").atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()";
+        }
+
+        throw new IllegalArgumentException( "Unsupported type " + vtype );
     }
 
     protected static String normalizeStringOperator( String leftValue, String rightValue, LiteralRestrictionDescr restrictionDescr ) {
