@@ -112,6 +112,10 @@ public class ViewFlowBuilder implements ViewBuilder {
             Map<Variable<?>, InputViewItemImpl<?>> scopedInputs = type.createsScope() ? new LinkedHashMap<>( ctx.inputs ) : ctx.inputs;
             RuleItem ruleItem = ruleItemIterator.next();
 
+            if ( topLevel && ruleItem instanceof AbstractExprViewItem && ( (AbstractExprViewItem) ruleItem ).isQueryExpression() ) {
+                ctx.isQuery = true;
+            }
+
             if (ruleItem instanceof FixedValueItem) {
                 conditions.add( new EvalImpl( (( FixedValueItem ) ruleItem).isValue() ) );
                 continue;
@@ -188,7 +192,7 @@ public class ViewFlowBuilder implements ViewBuilder {
 
             if ( viewItem instanceof ExistentialExprViewItem ) {
                 ExistentialExprViewItem existential = ( (ExistentialExprViewItem) viewItem );
-                if (patterVariable != null && !existential.isQueryExpression()) {
+                if (patterVariable != null && !ctx.isQuery) {
                     registerInputsFromViewItem( existential.getExpression(), conditionMap, scopedInputs, patterVariable );
                 }
                 Condition condition = new PatternImpl( patterVariable, SingleConstraint.TRUE, ctx.bindings.get(patterVariable) );
@@ -219,7 +223,9 @@ public class ViewFlowBuilder implements ViewBuilder {
             }
 
             addInputFromVariableSource( scopedInputs, patterVariable );
-            registerInputsFromViewItem( viewItem, conditionMap, scopedInputs, null );
+            if (!ctx.isQuery) {
+                registerInputsFromViewItem( viewItem, conditionMap, scopedInputs, null );
+            }
 
             Condition modifiedPattern = viewItem2Condition( viewItem, condition, new BuildContext( ctx, scopedInputs ) );
             conditions.set( conditions.indexOf( condition ), modifiedPattern );
@@ -233,11 +239,9 @@ public class ViewFlowBuilder implements ViewBuilder {
     }
 
     private static void registerInputsFromViewItem( ViewItem viewItem, Map<Variable<?>, Condition> conditionMap, Map<Variable<?>, InputViewItemImpl<?>> scopedInputs, Variable<?> existentialVar ) {
-        if ( viewItem instanceof AbstractExprViewItem && !( (AbstractExprViewItem) viewItem ).isQueryExpression() ) {
-            for (Variable var : viewItem.getVariables()) {
-                if (var.isFact() && !conditionMap.containsKey( var ) && var != existentialVar) {
-                    scopedInputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
-                }
+        for (Variable var : viewItem.getVariables()) {
+            if (var.isFact() && !conditionMap.containsKey( var ) && var != existentialVar) {
+                scopedInputs.putIfAbsent( var, (InputViewItemImpl) input( var ) );
             }
         }
     }
@@ -431,30 +435,33 @@ public class ViewFlowBuilder implements ViewBuilder {
         final Set<Variable<?>> boundVars;
         final Map<Variable<?>, List<Binding>> bindings;
 
+        boolean isQuery = false;
+
         BuildContext( RuleItemBuilder<?>[] viewItemBuilders ) {
             this( Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() ), new LinkedHashMap<>(),
-                    new HashSet<>(), new HashSet<>(), new HashMap<>() );
+                    new HashSet<>(), new HashSet<>(), new HashMap<>(), false );
         }
 
         BuildContext( BuildContext orignalContext, ViewItem[] view ) {
-            this( Arrays.asList( view ), orignalContext.inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
+            this( Arrays.asList( view ), orignalContext.inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings, orignalContext.isQuery );
         }
 
         BuildContext( BuildContext orignalContext, Map<Variable<?>, InputViewItemImpl<?>> inputs ) {
-            this( orignalContext.ruleItems, inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
+            this( orignalContext.ruleItems, inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings, orignalContext.isQuery );
         }
 
         BuildContext( BuildContext orignalContext, ViewItem[] view, Map<Variable<?>, InputViewItemImpl<?>> inputs ) {
-            this( Arrays.asList( view ), inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings );
+            this( Arrays.asList( view ), inputs, orignalContext.usedVars, orignalContext.boundVars, orignalContext.bindings, orignalContext.isQuery );
         }
 
         BuildContext( List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs, Set<Variable<?>> usedVars,
-                      Set<Variable<?>> boundVars, Map<Variable<?>, List<Binding>> bindings ) {
+                      Set<Variable<?>> boundVars, Map<Variable<?>, List<Binding>> bindings, boolean isQuery ) {
             this.ruleItems = ruleItems;
             this.inputs = inputs;
             this.usedVars = usedVars;
             this.boundVars = boundVars;
             this.bindings = bindings;
+            this.isQuery = isQuery;
         }
 
         void addBinding(Binding bindViewItem) {

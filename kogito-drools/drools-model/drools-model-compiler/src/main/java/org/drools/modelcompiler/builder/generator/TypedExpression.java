@@ -34,8 +34,6 @@ public class TypedExpression {
     private Boolean staticExpr;
     private TypedExpression left;
 
-    public TypedExpression() { }
-
     public TypedExpression( Expression expression ) {
         this(expression, null);
     }
@@ -64,18 +62,9 @@ public class TypedExpression {
         return expression;
     }
 
-    public TypedExpression setExpression( Expression expression ) {
-        this.expression = expression;
-        return this;
-    }
-
     public TypedExpression setType( Type type ) {
         this.type = type;
         return this;
-    }
-
-    public String getExpressionAsString() {
-        return expression.toString();
     }
 
     public Type getType() {

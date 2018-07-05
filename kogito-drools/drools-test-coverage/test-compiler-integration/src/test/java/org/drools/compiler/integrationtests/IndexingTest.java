@@ -39,8 +39,8 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
@@ -80,7 +80,7 @@ public class IndexingTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test()
@@ -181,11 +181,8 @@ public class IndexingTest {
                         "   $p3 : Person(name == $p1.name)\n" + //indexed
                         "   $p4 : Person(address.street == $p1.address.street)\n" + //not indexed
                         "   $p5 : Person(address.street == $p1.name)\n" + // indexed
-                        "   $p7 : Person(addresses[\"key\"].street == $p1.name)\n" +  // indexed
-                        "   $p8 : Person(addresses[0].street == $p1.name)\n" +  // indexed
-                        "   $p9 : Person(name == $p1.address.street)\n" + //not indexed
-                        "   $p10 : Person(addresses[0].street + 'xx' == $p1.name)\n" +  // indexed
-                        "   $p11 : Person(addresses[$p1].street == $p1.name)\n" +  // not indexed
+                        "   $p6 : Person(addresses[0].street == $p1.name)\n" +  // indexed
+                        "   $p7 : Person(name == $p1.address.street)\n" + //not indexed
                         "then\n" +
                         "end\n";
 
@@ -195,76 +192,46 @@ public class IndexingTest {
             final ObjectTypeNode node = KieUtil.getObjectTypeNode(kbase, Person.class);
             assertNotNull(node);
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
-            final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0]; // $p2
-            final JoinNode j3 = (JoinNode) j2.getSinkPropagator().getSinks()[0];  // $p3
-            final JoinNode j4 = (JoinNode) j3.getSinkPropagator().getSinks()[0];  // $p4
-            final JoinNode j5 = (JoinNode) j4.getSinkPropagator().getSinks()[0];  // $p5
-            final JoinNode j7 = (JoinNode) j5.getSinkPropagator().getSinks()[0];  // $p7
-            final JoinNode j8 = (JoinNode) j7.getSinkPropagator().getSinks()[0];  // $p8
-            final JoinNode j9 = (JoinNode) j8.getSinkPropagator().getSinks()[0];  // $p9
-            final JoinNode j10 = (JoinNode) j9.getSinkPropagator().getSinks()[0];  // $p10
-            final JoinNode j11 = (JoinNode) j10.getSinkPropagator().getSinks()[0];  // $p11
+            final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];
+            final JoinNode j3 = (JoinNode) j2.getSinkPropagator().getSinks()[0];
+            final JoinNode j4 = (JoinNode) j3.getSinkPropagator().getSinks()[0];
+            final JoinNode j5 = (JoinNode) j4.getSinkPropagator().getSinks()[0];
+            final JoinNode j6 = (JoinNode) j5.getSinkPropagator().getSinks()[0];
+            final JoinNode j7 = (JoinNode) j6.getSinkPropagator().getSinks()[0];
 
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
-            assertEquals("$name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
             assertTrue(c.isIndexed());
             BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
             assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
 
             c = (SingleBetaConstraints) j3.getRawConstraints();
-            assertEquals("name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
             assertTrue(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j3);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
             assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
 
             c = (SingleBetaConstraints) j4.getRawConstraints();
-            assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
             assertFalse(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j4);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
             assertTrue(bm.getRightTupleMemory() instanceof TupleList);
 
             c = (SingleBetaConstraints) j5.getRawConstraints();
-            assertEquals("name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
             assertTrue(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j5);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
             assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
 
+            c = (SingleBetaConstraints) j6.getRawConstraints();
+            assertTrue(c.isIndexed());
+            bm = (BetaMemory) wm.getNodeMemory(j6);
+            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
+            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+
             c = (SingleBetaConstraints) j7.getRawConstraints();
-            assertEquals("name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
-            assertTrue(c.isIndexed());
+            assertFalse(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j7);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
-
-            c = (SingleBetaConstraints) j8.getRawConstraints();
-            assertEquals("name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
-            assertTrue(c.isIndexed());
-            bm = (BetaMemory) wm.getNodeMemory(j8);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
-
-            c = (SingleBetaConstraints) j9.getRawConstraints();
-            assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
-            assertFalse(c.isIndexed());
-            bm = (BetaMemory) wm.getNodeMemory(j9);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
-
-            c = (SingleBetaConstraints) j10.getRawConstraints();
-            assertEquals("name", ((IndexableConstraint) c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
-            assertTrue(c.isIndexed());
-            bm = (BetaMemory) wm.getNodeMemory(j10);
-            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
-            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
-
-            c = (SingleBetaConstraints) j11.getRawConstraints();
-            assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
-            assertFalse(c.isIndexed());
-            bm = (BetaMemory) wm.getNodeMemory(j11);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
             assertTrue(bm.getRightTupleMemory() instanceof TupleList);
         } finally {
@@ -319,6 +286,7 @@ public class IndexingTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
         final StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
+        ReteDumper.dumpRete( wm );
         try {
             final List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl) kbase).getRete().getObjectTypeNodes();
             ObjectTypeNode node = null;
@@ -627,7 +595,7 @@ public class IndexingTest {
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age, $doubleAge : doubleAge )\n" +
-                "   not Cheese( this.price > $age && < $doubleAge )\n" +
+                "   not Cheese( price > $age && < $doubleAge )\n" +
                 "then\n" +
                 "end\n" +
                 "rule R3 salience 5 when\n" +
@@ -737,12 +705,12 @@ public class IndexingTest {
             session.fireAllRules();
             assertFalse(check.contains("A"));         // A should be blocked by B.
 
-            c.setvBoolean(true);
-            c.setvString("x");
+            c.setVBoolean(true);
+            c.setVString("x");
             session.update(fh_c, c);
 
-            b.setvBoolean(false);
-            b.setvString("y");
+            b.setVBoolean(false);
+            b.setVString("y");
             session.update(fh_b, b);
 
             session.fireAllRules();
@@ -770,27 +738,27 @@ public class IndexingTest {
             return name;
         }
 
-        public boolean isvBoolean() {
+        public boolean isVBoolean() {
             return vBoolean;
         }
 
-        public String getvString() {
+        public String getVString() {
             return vString;
         }
 
-        public long getvLong() {
+        public long getVLong() {
             return vLong;
         }
 
-        public void setvBoolean(final boolean vBoolean) {
+        public void setVBoolean(final boolean vBoolean) {
             this.vBoolean = vBoolean;
         }
 
-        public void setvString(final String vString) {
+        public void setVString(final String vString) {
             this.vString = vString;
         }
 
-        public void setvLong(final long vLong) {
+        public void setVLong(final long vLong) {
             this.vLong = vLong;
         }
 
