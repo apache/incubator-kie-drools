@@ -1945,6 +1945,15 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testFor() {
+        // DROOLS-2317
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Dynamic composition.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529", "Dynamic composition");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+    }
+
+    @Test
     public void testProductFunction() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
         DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );

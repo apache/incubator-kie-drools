@@ -35,6 +35,8 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.types.BuiltInTypeSymbol;
@@ -78,8 +80,23 @@ public class FEELParser {
     /**
      * Either namePart is a string of digits, or it must be a valid name itself 
      */
-    public static boolean isVariableNamePartValid( String namePart ) {
-        return DIGITS_PATTERN.matcher(namePart).matches() || isVariableNameValid(namePart);
+    public static boolean isVariableNamePartValid( String namePart, Scope scope ) {
+        if ( DIGITS_PATTERN.matcher(namePart).matches() ) {
+            return true;
+        }
+        if ( REUSABLE_KEYWORDS.contains(namePart) ) {
+            Scope cursor = scope;
+            while ( !Scope.BUILT_IN.equals( cursor.getName() ) ) {
+                for ( Map.Entry<String, Symbol> e : cursor.getSymbols().entrySet() ) {
+                    if ( e.getKey().contains( namePart ) ) {
+                        return e.getValue().getType() != null;
+                    }
+                }
+                cursor = cursor.getParentScope();
+            }
+            return false;
+        }
+        return isVariableNameValid(namePart);
     }
 
     public static boolean isVariableNameValid( String source ) {

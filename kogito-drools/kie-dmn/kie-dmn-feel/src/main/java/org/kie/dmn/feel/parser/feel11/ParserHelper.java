@@ -245,7 +245,7 @@ public class ParserHelper {
     }
 
     public boolean followUp(Token t, boolean isPredict) {
-        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText() ) ) || this.currentScope.followUp( t.getText(), isPredict );
+        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText(), currentScope ) ) || this.currentScope.followUp( t.getText(), isPredict );
         return follow;
     }
 
