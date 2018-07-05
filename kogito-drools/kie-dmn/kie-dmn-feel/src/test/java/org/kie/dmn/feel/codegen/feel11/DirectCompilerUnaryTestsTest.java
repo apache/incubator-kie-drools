@@ -30,20 +30,24 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class DirectCompilerUnaryTestsTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerUnaryTestsTest.class);
     
     private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
         Object left = EvalHelper.coerceNumber(l);
         CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression);
-        System.out.println(compiledUnaryTests);
+        LOG.debug("{}", compiledUnaryTests);
         
         EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         List<Boolean> result = compiledUnaryTests.getUnaryTests().stream().map(ut -> ut.apply(emptyContext, left)).collect(Collectors.toList());
-        System.out.println(result);
+        LOG.debug("{}", result);
         return result;
     }
 

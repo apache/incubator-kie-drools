@@ -20,8 +20,16 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ManualContextTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(ManualContextTest.class);
     
     public class ManualContext implements CompiledFEELExpression {
 
@@ -50,12 +58,14 @@ public class ManualContextTest {
     @Test
     public void testManualContext() {
         CompiledFEELExpression compiledExpression = new ManualContext();
-        System.out.println(compiledExpression);
+        LOG.debug("{}", compiledExpression);
 
         EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
-        System.out.println(result);
+        LOG.debug("{}", result);
 
+        assertThat(result, is(instanceOf(Map.class)));
+        assertThat(((Map) result).get("street"), is("broadway st"));
     }
 
 }
