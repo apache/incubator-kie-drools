@@ -261,7 +261,7 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
     }
 
     @Test
-    public void testGetProcessesSortByProcessName() {
+    public void testGetProcessesSortByProcessNameForAsc() {
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessName", true));
     	assertNotNull(definitions);
 
@@ -270,9 +270,33 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
 
     	expectedProcessIds.add("AdHoc SubProcess");
     	expectedProcessIds.add("HumanTask");
-    	expectedProcessIds.add("User Task");
-    	expectedProcessIds.add("humanTaskSample");
+	expectedProcessIds.add("humanTaskSample");
         expectedProcessIds.add("humanTaskSample");
+    	expectedProcessIds.add("User Task");
+
+
+    	int index = 0;
+    	for (ProcessDefinition def : definitions) {
+    		assertEquals(def.getName(), expectedProcessIds.get(index));
+
+    		index++;
+    	}
+    }
+
+    @Test
+    public void testGetProcessesSortByProcessNameForDesc() {
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessName", false));
+    	assertNotNull(definitions);
+
+    	assertEquals(5, definitions.size());
+    	List<String> expectedProcessIds = new ArrayList<String>();
+
+	expectedProcessIds.add("User Task");
+	expectedProcessIds.add("humanTaskSample");
+	expectedProcessIds.add("humanTaskSample");
+	expectedProcessIds.add("HumanTask");
+	expectedProcessIds.add("AdHoc SubProcess");
+
 
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
