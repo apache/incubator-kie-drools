@@ -245,7 +245,14 @@ public class ParserHelper {
     }
 
     public boolean followUp(Token t, boolean isPredict) {
-        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText(), currentScope ) ) || this.currentScope.followUp( t.getText(), isPredict );
+        boolean dynamicResolutionResult = isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText(), currentScope );
+        boolean follow = dynamicResolutionResult || this.currentScope.followUp( t.getText(), isPredict );
+        // in case isPredict == false, will need to followUp in the currentScope, so that the TokenTree currentNode is updated as per expectations,
+        // this is because the `follow` variable above, in the case of short-circuited on `dynamicResolutionResult`,
+        // would skip performing any necessary update in the second part of the || predicate
+        if (dynamicResolutionResult && !isPredict) {
+            this.currentScope.followUp(t.getText(), isPredict);
+        }
         return follow;
     }
 
