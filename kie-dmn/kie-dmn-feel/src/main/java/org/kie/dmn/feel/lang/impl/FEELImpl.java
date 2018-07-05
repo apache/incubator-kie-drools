@@ -116,14 +116,14 @@ public class FEELImpl
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        Set<FEELEventListener> listeners = new HashSet<>(ctx.getListeners());
-        // add listener to syntax errors, and save them
-        CompilerErrorListener errorListener = new CompilerErrorListener();
-        listeners.add(errorListener);
-
-        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(listeners), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
-        ParseTree tree = parser.compilation_unit();
-        if (doCompile) { // Use JavaParser to translate FEEL to Java:
+        if (doCompile) {
+            // Use JavaParser to translate FEEL to Java:
+            Set<FEELEventListener> listeners = new HashSet<>(ctx.getListeners());
+            // add listener to syntax errors, and save them
+            CompilerErrorListener errorListener = new CompilerErrorListener();
+            listeners.add(errorListener);
+            FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(listeners), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
+            ParseTree tree = parser.compilation_unit();
             if (errorListener.evt != null) {
                 return compiledError(expression, errorListener.evt.getMessage());
             }
@@ -136,6 +136,8 @@ public class FEELImpl
                 return compiledError(expression, e.getMessage());
             }
         } else { // "legacy" interpreted AST compilation:
+            FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
+            ParseTree tree = parser.compilation_unit();
             ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
             BaseNode expr = v.visit(tree);
             CompiledExpression ce = new CompiledExpressionImpl(expr);

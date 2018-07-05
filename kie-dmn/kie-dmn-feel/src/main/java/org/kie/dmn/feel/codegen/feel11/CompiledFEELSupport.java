@@ -110,7 +110,8 @@ public class CompiledFEELSupport {
                         results.add(v);
                     }
                 } catch (Exception e) {
-                    // TODO report error.
+                    ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.ERROR_EXECUTING_LIST_FILTER, filterExpression), null, e));
+                    return null;
                 } finally {
                     ctx.exitFrame();
                 }                
@@ -138,8 +139,7 @@ public class CompiledFEELSupport {
             } else if (filterIndex == null) {
                 return Collections.emptyList();
             } else {
-                // TODO this differs behavior from evaluation mode because should actually throw an error as it's doing here.
-                // TODO report error.
+                ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.ERROR_EXECUTING_LIST_FILTER, filterIndex), null));
                 return null;
             }
         }
@@ -182,7 +182,7 @@ public class CompiledFEELSupport {
                 result = EvalHelper.getDefinedValue(result, nr)
                                    .getValueResult()
                                    .cata(err -> {
-                                       //TODO report error in ctx.
+                                       // no need to report error here, eg: [ {x:1, y:2}, {x:2} ].y results in [2] with no errors.
                                        return null;
                                    }, Function.identity());
             }
@@ -250,7 +250,7 @@ public class CompiledFEELSupport {
 
         private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextCompiled icn) {
             ForIteration fi = null;
-            String name = (String) icn.getName().apply(ctx); // TODO revise
+            String name = (String) icn.getName().apply(ctx);
             Object result = icn.getExpression().apply(ctx);
             Object rangeEnd = icn.getRangeEndExpr().apply(ctx);
             if (rangeEnd == null) {
@@ -335,7 +335,7 @@ public class CompiledFEELSupport {
             if (quantOp == Quantifier.SOME || quantOp == Quantifier.EVERY) {
                 return iterateContexts(ctx, iterationContexts, expression, quantOp);
             }
-            // TODO can never happen?
+            // can never happen, but anyway:
             ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Quantifier"), null));
             return null;
         }
@@ -372,7 +372,7 @@ public class CompiledFEELSupport {
         }
 
         private QEIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextCompiled icn) {
-            String name = (String) icn.getName().apply(ctx); // TODO revise
+            String name = (String) icn.getName().apply(ctx);
             Object result = icn.getExpression().apply(ctx);
             Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
             QEIteration qei = new QEIteration(name, values);

@@ -170,8 +170,7 @@ public class CompiledFEELSemanticMappings {
             // period has special semantics
             return new RangeNode.ComparablePeriod((Period) s);
         } else {
-            // FIXME report error
-            return null;
+            throw new IllegalArgumentException("Unable to transform s " + s + "as Comparable");
         }
     }
     

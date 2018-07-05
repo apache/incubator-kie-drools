@@ -65,14 +65,9 @@ import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
-import org.kie.dmn.feel.lang.ast.InstanceOfNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
-import org.kie.dmn.feel.lang.ast.NameRefNode;
-import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
-import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -118,8 +113,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final org.drools.javaparser.ast.type.Type TYPE_BIG_DECIMAL =
             JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
 
-    // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
-    private ScopeHelper scopeHelper;
+    private ScopeHelper scopeHelper; // as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but presently keeping the same strategy as interpreted-AST-visitor
     private boolean replaceEqualForUnaryTest = false;
 
     private static class ScopeHelper {
@@ -261,7 +255,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult unary = visit(ctx.unaryExpression());
 
         // FEEL spec Table 39: Semantics of negation
-        // TODO this is actually not delegated to the builtin FEEL function not(), but not sure is really a problem for visitLogicalNegation.
+        // this is actually not delegated to the builtin FEEL function not(), but doesn't look like a problem for visitLogicalNegation.
         if (unary.resultType == BuiltInType.BOOLEAN) {
             return DirectCompilerResult.of(new UnaryExpr(unary.getExpression(), UnaryExpr.Operator.LOGICAL_COMPLEMENT), BuiltInType.BOOLEAN, unary.getFieldDeclarations());
         } else {
@@ -355,7 +349,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
-            // TODO temporary support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#add
+            // fallback support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#add
             MethodCallExpr addCall = new MethodCallExpr(null, "add");
             addCall.addArgument(left.getExpression());
             addCall.addArgument(right.getExpression());
@@ -371,7 +365,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
             // DMN spec Table 45
             // Subtraction is undefined.
-            // TODO incosistent when FEEL is in evaluation mode (in contrast to this compilation mode),
+            // incosistent when FEEL is in evaluation mode (in contrast to this compilation mode),
             // for now is more important to check the actual java code produced
             BinaryExpr postFixMinus = new BinaryExpr(left.getExpression(), new StringLiteralExpr("-"), BinaryExpr.Operator.PLUS);
             BinaryExpr plusCall = new BinaryExpr(postFixMinus, right.getExpression(), BinaryExpr.Operator.PLUS);
@@ -384,7 +378,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(subtractCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
-            // TODO temporary support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#sub
+            // fallback support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#sub
             MethodCallExpr addCall = new MethodCallExpr(null, "sub");
             addCall.addArgument(left.getExpression());
             addCall.addArgument(right.getExpression());
@@ -404,7 +398,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
-            // TODO temporary support strategy:
+            // fallback support strategy:
             MethodCallExpr addCall = new MethodCallExpr(null, "mult");
             addCall.addArgument(left.getExpression());
             addCall.addArgument(right.getExpression());
@@ -425,7 +419,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else {
-            // TODO temporary support strategy:
+            // fallback support strategy:
             MethodCallExpr addCall = new MethodCallExpr(null, "div");
             addCall.addArgument(left.getExpression());
             addCall.addArgument(right.getExpression());
@@ -592,7 +586,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     }
 
     private boolean isNumericConstant(DirectCompilerResult r) {
-        // FIXME: this is a bit arbitrary, maybe we should turn this into a flag in `r`
+        // might a bit arbitrary, if necessary we should turn this into a flag in `r`
         return r.getExpression().isNameExpr() &&
                 r.resultType.equals(BuiltInType.NUMBER) &&
                 r.getFieldDeclarations().size() > 0;
@@ -730,10 +724,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 BuiltInType.LIST,
                 mergeFDs(tests));
     }
-//
+
+    // <<the following code is deliberately unnecessary for the DirectCompilerVisitor
 //    @Override
 //    public DirectCompilerResult visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
+//        throw new UnsupportedOperationException("not implemented"); 
 //    }
 
     @Override
@@ -857,10 +852,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         StringLiteralExpr expr = new StringLiteralExpr(EvalHelper.normalizeVariableName(ParserHelper.getOriginalText(ctx)));
         return DirectCompilerResult.of(expr, BuiltInType.STRING);
     }
-//
+
+    // <<the following code is deliberately unnecessary for the DirectCompilerVisitor
 //    @Override
 //    public DirectCompilerResult visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO I don't think this will be needed for this visitor.
+//  throw new UnsupportedOperationException("not implemented");
 //    }
 
     @Override
@@ -996,14 +992,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return result;
     }
 
+    // <<the following code is deliberately unnecessary for the DirectCompilerVisitor
 //    @Override
 //    public DirectCompilerResult visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
-    //        throw new UnsupportedOperationException("TODO"); // TODO won't be needed
+//  throw new UnsupportedOperationException("not implemented");
 //    }
 //
 //    @Override
 //    public DirectCompilerResult visitIterationContexts(FEEL_1_1Parser.IterationContextsContext ctx) {
-    //        throw new UnsupportedOperationException("TODO"); // TODO won't be needed
+//  throw new UnsupportedOperationException("not implemented");
 //    }
 
     @Override
@@ -1217,6 +1214,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
     }
 
+    // <<the following code is deliberately unnecessary for the DirectCompilerVisitor
     //    private String getFunctionName(DirectCompilerResult name) {
     //        throw new UnsupportedOperationException(); // REUSED AS STATIC METHOD ON THE ORIGINAL VISITOR
     //    }
@@ -1292,11 +1290,13 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //                // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and e2 is an integer (0 scale number)
 //                filterWithCall.addArgument(filter.getExpression());
 //            } else
-                {
+//                {
                 // Then is the case Table 54: Semantics of lists, ROW: e1 is a list and type(FEEL(e2 , s')) is boolean
+
+            // currently delegated to runtime instead:
                 Expression anonFunctionClass = anonFunctionEvaluationContext2Object(filter.getExpression());
                 filterWithCall.addArgument(anonFunctionClass);
-            }
+//            }
             return DirectCompilerResult.of(filterWithCall, BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
         } else if (ctx.qualifiedName() != null) {
             DirectCompilerResult expr = visit(ctx.filterPathExpression());
@@ -1347,7 +1347,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         for (String n : names) {
             filterPathCall.addArgument(new StringLiteralExpr(n));
         }
-        // TODO here I could still try to infer the result type.
+        // here I could still try to infer the result type, but presently use ANY
         return DirectCompilerResult.of(filterPathCall, BuiltInType.UNKNOWN).withFD(scopeExpr);
     }
 
