@@ -108,8 +108,7 @@ public class CoercedExpression {
         } else {
             coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(expression.toString()));
         }
-        coercedExpression.setType(String.class);
-        return coercedExpression;
+        return coercedExpression.setType(String.class);
     }
 
     private static TypedExpression coerceToDate(TypedExpression typedExpression) {

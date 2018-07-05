@@ -49,36 +49,33 @@ public class ExpressionTyperTest {
 
     @Test
     public void toTypedExpressionTest() {
-        assertEquals(typedResult("$mark.getAge()", int.class), toTypedExpression("$mark.age", null, aPersonDecl("$mark")));
-        assertEquals(typedResult("$p.getName()", String.class), toTypedExpression("$p.name", null, aPersonDecl("$p")));
+        assertEquals("$mark.getAge()", toTypedExpression("$mark.age", null, aPersonDecl("$mark")).getExpression().toString());
+        assertEquals("$p.getName()", toTypedExpression("$p.name", null, aPersonDecl("$p")).getExpression().toString());
 
-        TypedExpression actual = toTypedExpression("name.length", Person.class);
-        assertEquals(typedResult("_this.getName().length()", int.class), actual);
+        assertEquals("_this.getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
 
-
-        assertEquals(typedResult("_this.method(5,9,\"x\")", int.class), toTypedExpression("method(5,9,\"x\")", Overloaded.class));
-        assertEquals(typedResult("_this.getAddress().getCity().length()", int.class), toTypedExpression("address.getCity().length", Person.class));
-
+        assertEquals("_this.method(5, 9, \"x\")", toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString());
+        assertEquals("_this.getAddress().getCity().length()", toTypedExpression("address.getCity().length", Person.class).getExpression().toString());
     }
 
     @Test
     public void inlineCastTest() {
-        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.domain.Person) _this).getName()", String.class);
-        assertEquals(inlineCastResult, toTypedExpression("this#Person.name", Object.class));
+        String result = "((org.drools.modelcompiler.domain.Person) _this).getName()";
+        assertEquals(result, toTypedExpression("this#Person.name", Object.class).getExpression().toString());
     }
 
     @Test
     public void inlineCastTest2() {
         addInlineCastImport();
-        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.inlinecast.ICC)((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).getSomeC()).onlyConcrete()", String.class);
-        assertEquals(inlineCastResult, toTypedExpression("someB#ICB.someC#ICC.onlyConcrete() ", ICA.class));
+        String result = "((org.drools.modelcompiler.inlinecast.ICC) ((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).getSomeC()).onlyConcrete()";
+        assertEquals(result, toTypedExpression("someB#ICB.someC#ICC.onlyConcrete() ", ICA.class).getExpression().toString());
     }
 
     @Test
     public void inlineCastTest3() {
         addInlineCastImport();
-        TypedExpression inlineCastResult = typedResult("((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).onlyConcrete()", String.class);
-        assertEquals(inlineCastResult, toTypedExpression("someB#ICB.onlyConcrete()", ICA.class));
+        String result = "((org.drools.modelcompiler.inlinecast.ICB) _this.getSomeB()).onlyConcrete()";
+        assertEquals(result, toTypedExpression("someB#ICB.onlyConcrete()", ICA.class).getExpression().toString());
     }
 
     @Test
@@ -124,8 +121,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void testAssignment2() {
-        TypedExpression actual = toTypedExpression("name.length", Person.class);
-        assertEquals(typedResult("_this.getName().length()", int.class), actual);
+        assertEquals("_this.getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
 
     }
 

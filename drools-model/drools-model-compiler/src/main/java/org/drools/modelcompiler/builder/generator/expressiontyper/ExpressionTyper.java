@@ -230,7 +230,7 @@ public class ExpressionTyper {
             return toTypedExpressionRec(rightSide)
                     .map(e -> {
                         final AssignExpr newExpression = new AssignExpr(assignExpr.getTarget(), e.getExpression(), assignExpr.getOperator());
-                        return new TypedExpression(newExpression).setType(e.getType());
+                        return new TypedExpression(newExpression, e.getType());
                     });
 
         }
@@ -382,7 +382,7 @@ public class ExpressionTyper {
             }
         }
 
-        return new TypedExpressionResult(of(new TypedExpression().setExpression(previous).setType(typeCursor)), context);
+        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, drlxExpr.toString())), context);
     }
 
     public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {

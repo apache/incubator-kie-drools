@@ -119,17 +119,19 @@ public abstract class AbstractExpressionBuilder {
 
     private boolean isBetaIndex( Collection<String> usedDeclarations, TypedExpression right ) {
         // a Beta node should NOT create the index when the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-        return usedDeclarations.size() == 1 && context.getDeclarationById( getExpressionSymbol( right.getExpression() ) ).isPresent();
+        return usedDeclarations.size() == 1 && context.getDeclarationById( getExpressionSymbolForBetaIndex( right.getExpression() ) ).isPresent();
     }
 
-    public static String getExpressionSymbol(Expression expr) {
+    private static String getExpressionSymbolForBetaIndex(Expression expr) {
+        Expression scope;
         if (expr instanceof MethodCallExpr && (( MethodCallExpr ) expr).getScope().isPresent()) {
-            return getExpressionSymbol( (( MethodCallExpr ) expr).getScope().get() );
+            scope = (( MethodCallExpr ) expr).getScope().get();
+        } else if (expr instanceof FieldAccessExpr ) {
+            scope = (( FieldAccessExpr ) expr).getScope();
+        } else {
+            scope = expr;
         }
-        if (expr instanceof FieldAccessExpr ) {
-            return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
-        }
-        return expr.toString();
+        return scope instanceof NameExpr ? (( NameExpr ) scope).getNameAsString() : null;
     }
 
     private boolean isThisExpression( Expression leftExpr ) {

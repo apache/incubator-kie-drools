@@ -54,7 +54,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLitera
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
-import static org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder.getExpressionSymbol;
 
 public class ConstraintParser {
 
@@ -323,6 +322,16 @@ public class ConstraintParser {
             TypedExpression left = optLeft.get();
             return new DrlxParseSuccess(patternType, exprId, bindingId, drlxExpr, left.getType()).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
         }
+    }
+
+    private static String getExpressionSymbol(Expression expr) {
+        if (expr instanceof MethodCallExpr && (( MethodCallExpr ) expr).getScope().isPresent()) {
+            return getExpressionSymbol( (( MethodCallExpr ) expr).getScope().get() );
+        }
+        if (expr instanceof FieldAccessExpr ) {
+            return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
+        }
+        return expr.toString();
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
