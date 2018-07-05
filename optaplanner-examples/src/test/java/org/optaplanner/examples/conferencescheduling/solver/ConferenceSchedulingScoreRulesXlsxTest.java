@@ -36,6 +36,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     private ConferenceSolution currentSolution;
     private String currentPackage;
     private String currentConstraint;
+    private String currentSheetName;
     private int expectedHardScore, expectedSoftScore;
 
     private final String testFileName = "testConferenceSchedulingScoreRules.xlsx";
@@ -79,8 +81,10 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     @Test
     public void testRules() {
         while ((currentSolution = testFileReader.nextSolution()) != null) {
+            //TODO: give a clue which test sheet is failing
+            System.out.println(currentSheetName);
             scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedHardScore, currentSolution);
-            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedSoftScore, currentSolution);
+            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedSoftScore, currentSolution);
         }
     }
 
@@ -129,6 +133,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                 return null;
             }
             nextSheet(workbook.getSheetName(currentTestSheetIndex++));
+            currentSheetName = currentSheet.getSheetName();
 
             ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(currentSolution);
             talkMap = nextSheetSolution.getTalkList().stream().collect(
@@ -191,6 +196,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         }
 
         private void readTimeslotDays() {
+            columnIndexToDateMap.clear();
             String previousDateString = null;
             for (int i = 0; i < currentRow.getLastCellNum(); i++) {
                 XSSFCell cell = currentRow.getCell(i);
@@ -211,6 +217,8 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         }
 
         private void readTiemslotHours() {
+            columnIndexToStartTimeMap.clear();
+            columnIndexToEndTimeMap.clear();
             StreamSupport.stream(currentRow.spliterator(), false)
                     .forEach(cell -> {
                         if (!cell.getStringCellValue().isEmpty() && !cell.getStringCellValue().equals("Room")) {
