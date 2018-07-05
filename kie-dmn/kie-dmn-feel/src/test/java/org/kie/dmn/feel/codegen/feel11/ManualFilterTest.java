@@ -16,13 +16,21 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gt;
 
 public class ManualFilterTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(ManualFilterTest.class);
     
     public static class ManualFilterExpression implements CompiledFEELExpression {
 
@@ -51,12 +59,13 @@ public class ManualFilterTest {
     @Test
     public void testManualContext() {
         CompiledFEELExpression compiledExpression = new ManualFilterExpression();
-        System.out.println(compiledExpression);
+        LOG.debug("{}", compiledExpression);
 
         EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
-        System.out.println(result);
+        LOG.debug("{}", result);
 
+        assertThat(result, is(Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))));
     }
 
 }

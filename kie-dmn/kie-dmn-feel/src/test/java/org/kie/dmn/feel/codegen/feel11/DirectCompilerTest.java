@@ -37,6 +37,8 @@ import org.kie.dmn.feel.parser.feel11.FEELParserTest;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -46,14 +48,16 @@ import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class DirectCompilerTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerTest.class);
     
     private Object parseCompileEvaluate(String feelLiteralExpression) {
         CompiledFEELExpression compiledExpression = parse( feelLiteralExpression );
-        System.out.println(compiledExpression);
+        LOG.debug("{}", compiledExpression);
         
         EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
-        System.out.println(result);
+        LOG.debug("{}", result);
         return result;
     }
 
@@ -230,12 +234,12 @@ public class DirectCompilerTest {
     @Test
     public void test_filterPath_tricky1() {
         CompiledFEELExpression nameRef = parse( "[ {x:1, y:2}, {x:2, y:3} ][x]");
-        System.out.println(nameRef);
+        LOG.debug("{}", nameRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("x", 2);
         Object result = nameRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
         
         assertThat(result, is(mapOf(entry("x", new BigDecimal(2)), entry("y", new BigDecimal(3)))));
     }
@@ -243,12 +247,12 @@ public class DirectCompilerTest {
     @Test
     public void test_filterPath_tricky2() {
         CompiledFEELExpression nameRef = parse("[ {x:1, y:2}, {x:2, y:3} ][x]");
-        System.out.println(nameRef);
+        LOG.debug("{}", nameRef);
 
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("x", false);
         Object result = nameRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
 
         assertThat(result, is(Collections.emptyList()));
     }
@@ -395,12 +399,12 @@ public class DirectCompilerTest {
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
-        System.out.println(nameRef);
+        LOG.debug("{}", nameRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("someSimpleName", 123L);
         Object result = nameRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
         
         assertThat(result, is( BigDecimal.valueOf(123) ));
     }
@@ -410,12 +414,12 @@ public class DirectCompilerTest {
         String inputExpression = "My Person.Full Name";
         Type personType = new MapBackedType("Person", mapOf( entry("Full Name", BuiltInType.STRING), entry("Age", BuiltInType.NUMBER) ) );
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
-        System.out.println(qualRef);
+        LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
         Object result = qualRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
         
         assertThat(result, is( "John Doe" ));
     }
@@ -431,12 +435,12 @@ public class DirectCompilerTest {
         String inputExpression = "My Person.Full Name";
         Type personType = JavaBackedType.of(MyPerson.class);
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
-        System.out.println(qualRef);
+        LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", new MyPerson());
         Object result = qualRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
         
         assertThat(result, is( "John Doe" ));
     }
@@ -446,12 +450,12 @@ public class DirectCompilerTest {
         String inputExpression = "a date.year";
         Type dateType = BuiltInType.DATE;
         CompiledFEELExpression qualRef = parse(inputExpression, mapOf(entry("a date", dateType)));
-        System.out.println(qualRef);
+        LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
         context.setValue("a date", LocalDate.of(2016, 8, 2));
         Object result = qualRef.apply(context);
-        System.out.println(result);
+        LOG.debug("{}", result);
         
         assertThat(result, is(BigDecimal.valueOf(2016)));
     }
