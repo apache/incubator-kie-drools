@@ -184,7 +184,7 @@
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/neon/2/eclipse-java-neon-2-${download.type}.${download.extension}"
+    <get src="http://archive.eclipse.org/technology/epp/downloads/release/neon/2/eclipse-java-neon-2-${download.type}.${download.extension}"
          dest="${install.home}/lib/eclipse-java-neon-2-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
