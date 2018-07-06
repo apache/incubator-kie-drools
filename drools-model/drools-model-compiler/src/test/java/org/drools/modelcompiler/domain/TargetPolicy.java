@@ -47,5 +47,14 @@ public class TargetPolicy {
     public void setCoefficient(int coefficient) {
         this.coefficient = coefficient;
     }
+
+    @Override
+    public String toString() {
+        return "TargetPolicy{" +
+                "customerCode='" + customerCode + '\'' +
+                ", productCode='" + productCode + '\'' +
+                ", coefficient=" + coefficient +
+                '}';
+    }
 }
 
