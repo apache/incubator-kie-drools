@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
@@ -49,7 +50,9 @@ import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.io.ResourceType;
@@ -1199,8 +1202,77 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNull(processInstance);
 
     }
-    
-    
+
+    @Test(timeout=10000)
+    public void testAsyncModeWithInclusiveGateway() throws Exception {
+        // JBPM-7414
+        final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("EndProcess", 1);
+        final NodeTriggerCountListener triggerListener = new NodeTriggerCountListener("ScriptTask-4");
+
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-AsyncInclusiveGateway.bpmn2"), ResourceType.BPMN2)
+                .addEnvironmentEntry("ExecutorService", executorService)
+                .addEnvironmentEntry("AsyncMode", "true")
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("Rest", new SystemOutWorkItemHandler());
+                        return handlers;
+                    }
+
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        listeners.add(triggerListener);
+                        return listeners;
+                    }
+                })
+                .get();
+
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        assertNotNull(manager);
+
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("Var1", "AAA");
+        ProcessInstance processInstance = ksession.startProcess("TestProject.DemoProcess", params);
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
+
+        countDownListener.waitTillCompleted();
+
+        processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
+        assertNull(processInstance);
+
+        assertEquals(1, triggerListener.getCount().intValue());
+    }
+
+    private static class NodeTriggerCountListener extends DefaultProcessEventListener {
+        private AtomicInteger count = new AtomicInteger(0);
+        private String nodeName;
+
+        private NodeTriggerCountListener(String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+            if (event.getNodeInstance().getNodeName().equals(nodeName)) {
+                count.getAndIncrement();
+            }
+        }
+
+        public AtomicInteger getCount() {
+            return count;
+        }
+    };
+
     private boolean waitForAllJobsToComplete() throws Exception {
         int attempts = 10;
         do {

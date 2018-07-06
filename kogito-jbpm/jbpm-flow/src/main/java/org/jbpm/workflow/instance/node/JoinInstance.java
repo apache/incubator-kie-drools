@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
@@ -200,6 +201,9 @@ public class JoinInstance extends NodeInstanceImpl {
     	    // for dynamic/ad hoc task there is no node 
     	    return false;
     	}
+        if (currentNode instanceof AsyncEventNode) {
+            currentNode = ((AsyncEventNode) currentNode).getActualNode();
+        }
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         // special handling for XOR split as it usually is used for arbitrary loops
         if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {
