@@ -16,7 +16,6 @@
 
 package org.drools.core.ruleunit;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -90,12 +89,16 @@ public class RuleUnitRegistry {
     }
 
     public Optional<RuleUnitDescr> getRuleUnitFor(RuleImpl rule) {
-        String unitClassName = rule.getRuleUnitClassName();
-        state = state.hasUnit(unitClassName != null);
-        return Optional.ofNullable(unitClassName)
-                .map(name -> ruleUnits.computeIfAbsent(name, this::findRuleUnitDescr));
+        return getRuleUnitFor( rule.getRuleUnitClassName() );
     }
-    
+
+    public Optional<RuleUnitDescr> getRuleUnitFor( String unitClassName ) {
+        Optional<RuleUnitDescr> result = Optional.ofNullable(unitClassName)
+                .map(name -> ruleUnits.computeIfAbsent(name, this::findRuleUnitDescr));
+        state = state.hasUnit(result.isPresent());
+        return result;
+    }
+
     public Optional<RuleUnitDescr> getNamedRuleUnit(String ruleUnitName) {
     	return ruleUnits != null ? Optional.of(ruleUnits.get(ruleUnitName)) : Optional.empty();
     }

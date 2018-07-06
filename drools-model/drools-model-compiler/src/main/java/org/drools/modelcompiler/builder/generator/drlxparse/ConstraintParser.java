@@ -278,8 +278,8 @@ public class ConstraintParser {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, null, converted.getType() )
                         .setLeft( new TypedExpression( withThis, converted.getType() ) )
                         .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
-            } else if (context.hasDeclaration( "b" )) {
-                return new DrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr( drlxExpr.toString() ), Boolean.class );
+            } else if (context.hasDeclaration( expression )) {
+                return new DrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr( drlxExpr.toString() ), context.getDeclarationById( expression ).get().getDeclarationClass() );
             } else {
                 return new DrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType() )
                         .addReactOnProperty( nameExpr.getNameAsString() );

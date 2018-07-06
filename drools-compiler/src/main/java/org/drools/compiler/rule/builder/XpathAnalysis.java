@@ -42,7 +42,11 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         return parts.iterator();
     }
 
-    public XpathPart getPart(int i) {
+    public List<XpathPart> getParts() {
+        return parts;
+    }
+
+    public XpathPart getPart( int i) {
         return parts.get( i );
     }
 

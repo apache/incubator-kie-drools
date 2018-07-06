@@ -22,14 +22,15 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownRuleUnitError;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -41,8 +42,6 @@ import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 
 public class RuleContext {
-
-    private static final Map<Class<? extends RuleUnit>, RuleUnitDescr> ruleUnitDescrCache = new HashMap<>();
 
     private final KnowledgeBuilderImpl kbuilder;
     private final PackageModel packageModel;
@@ -62,6 +61,7 @@ public class RuleContext {
     private Optional<String> queryName = empty();
 
     private RuleUnitDescr ruleUnitDescr;
+    private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
 
@@ -99,6 +99,7 @@ public class RuleContext {
             return;
         }
 
+        boolean useNamingConvention = false;
         String unitName = null;
         AnnotationDescr unitAnn = descr.getAnnotation( "Unit" );
         if (unitAnn != null) {
@@ -106,15 +107,23 @@ public class RuleContext {
             unitName = unitName.substring( 0, unitName.length() - ".class".length() );
         } else if (descr.getUnit() != null) {
             unitName = descr.getUnit().getTarget();
+        } else {
+            if (descr.getResource() == null) {
+                return;
+            }
+            String drlFile = descr.getResource().getSourcePath();
+            if (drlFile != null) {
+                unitName = drlFile.substring( 0, drlFile.length() - ".drl".length() ).replaceAll( "/", "." );
+                useNamingConvention = true;
+            }
         }
 
-        if (unitName != null) {
-            try {
-                Class<? extends RuleUnit> unitClass = ( Class<? extends RuleUnit> ) getTypeResolver().resolveType( unitName );
-                ruleUnitDescr = ruleUnitDescrCache.computeIfAbsent( unitClass, RuleUnitDescr::new );
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
-            }
+        RuleUnitRegistry ruleUnitRegistry = kbuilder.getPackageRegistry( packageModel.getName() ).getPackage().getRuleUnitRegistry();
+        Optional<RuleUnitDescr> ruDescr = ruleUnitRegistry.getRuleUnitFor( unitName );
+        if (ruDescr.isPresent()) {
+            ruleUnitDescr = ruDescr.get();
+        } else if (!useNamingConvention) {
+            addCompilationError( new UnknownRuleUnitError( unitName ) );
         }
     }
 
@@ -142,7 +151,14 @@ public class RuleContext {
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
-        return Optional.ofNullable( scopedDeclarations.get( getDeclarationKey( id )) );
+        DeclarationSpec spec = scopedDeclarations.get( getDeclarationKey( id ));
+        if (spec == null) {
+            Class<?> unitVarType = ruleUnitVars.get( id );
+            if (unitVarType != null) {
+                spec = new DeclarationSpec( id, unitVarType );
+            }
+        }
+        return Optional.ofNullable( spec );
     }
 
     private String getDeclarationKey( String id ) {
@@ -167,6 +183,14 @@ public class RuleContext {
 
     public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {
         return ooPathDeclarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
+    }
+
+    public void addRuleUnitVar(String name, Class<?> type) {
+        ruleUnitVars.put( name, type );
+    }
+
+    public Class<?> getRuleUnitVarType(String name) {
+        return ruleUnitVars.get( name );
     }
 
     public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {

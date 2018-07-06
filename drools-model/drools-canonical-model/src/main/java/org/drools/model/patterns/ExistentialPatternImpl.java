@@ -45,7 +45,7 @@ public class ExistentialPatternImpl implements Condition, ModelComponent {
 
     @Override
     public Variable<?>[] getBoundVariables() {
-        throw new UnsupportedOperationException();
+        return new Variable<?>[0];
     }
 
     @Override
