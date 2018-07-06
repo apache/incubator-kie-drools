@@ -18,7 +18,6 @@ package org.drools.core.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -43,8 +42,8 @@ import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
-import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -278,8 +277,8 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         factHandlesMap.computeIfAbsent( ruleUnit.getClass(), x -> session.getEntryPoint( RULE_UNIT_ENTRY_POINT ).insert( ruleUnit ) );
 
         RuleUnitDescr ruDescr = session.kBase.getRuleUnitRegistry().getRuleUnitDescr( ruleUnit );
-        ruDescr.bindDataSources( session, ruleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( new RuleUnitGlobals( ruDescr, ruleUnit ) );
+        ruDescr.bindDataSources( session, ruleUnit );
 
         InternalAgendaGroup unitGroup = (InternalAgendaGroup)session.getAgenda().getAgendaGroup(ruleUnit.getClass().getName());
         unitGroup.setAutoDeactivate( false );

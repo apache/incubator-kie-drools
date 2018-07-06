@@ -81,6 +81,10 @@ public class RuleUnitDescr {
         return varAccessors.keySet();
     }
 
+    public Map<String, Method> getUnitVarAccessors() {
+        return varAccessors;
+    }
+
     public boolean hasDataSource( String name ) {
         return datasources.containsKey( name );
     }

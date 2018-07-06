@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -78,6 +80,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.RULE_CAL
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
@@ -154,6 +157,10 @@ public class ModelGenerator {
 
         setDialectFromRuleDescr(context, ruleDescr);
 
+        RuleUnitDescr ruleUnitDescr = context.getRuleUnitDescr();
+        BlockStmt ruleVariablesBlock = new BlockStmt();
+        createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
+
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), toClassOrInterfaceType( Rule.class ), ruleMethodName);
@@ -167,8 +174,6 @@ public class ModelGenerator {
             ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getNamespace() ) );
         }
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
-
-        RuleUnitDescr ruleUnitDescr = context.getRuleUnitDescr();
 
         MethodCallExpr buildCallScope = ruleUnitDescr != null ?
                 new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
@@ -186,8 +191,6 @@ public class ModelGenerator {
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
-        BlockStmt ruleVariablesBlock = new BlockStmt();
-        createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
         createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
@@ -347,14 +350,17 @@ public class ModelGenerator {
 
     private static void createUnitData( RuleContext context, RuleUnitDescr ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
         if (ruleUnitDescr != null) {
-            for (String unitVar : ruleUnitDescr.getUnitVars()) {
-                addUnitData(context, unitVar, ruleUnitDescr.getVarType( unitVar ).get(), ruleVariablesBlock);
+            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
+                addUnitData(context, unitVar.getKey(), unitVar.getValue().getGenericReturnType(), ruleVariablesBlock);
             }
         }
     }
 
-    private static void addUnitData(RuleContext context, String unitVar, Class<?> type, BlockStmt ruleBlock) {
-        Type declType = classToReferenceType( type );
+    private static void addUnitData(RuleContext context, String unitVar, java.lang.reflect.Type type, BlockStmt ruleBlock) {
+        Class<?> rawClass = toRawClass(type);
+        Type declType = classToReferenceType( toRawClass(type) );
+
+        context.addRuleUnitVar( unitVar, getClassForUnitData( type, rawClass ) );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
@@ -367,6 +373,16 @@ public class ModelGenerator {
 
         AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
+    }
+
+    private static Class<?> getClassForUnitData( java.lang.reflect.Type type, Class<?> rawClass ) {
+        if (Iterable.class.isAssignableFrom( rawClass ) && type instanceof ParameterizedType) {
+            return toRawClass( (( ParameterizedType ) type).getActualTypeArguments()[0] );
+        }
+        if (rawClass.isArray()) {
+            return rawClass.getComponentType();
+        }
+        return rawClass;
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {

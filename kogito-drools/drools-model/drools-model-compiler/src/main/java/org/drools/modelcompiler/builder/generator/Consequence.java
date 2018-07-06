@@ -72,6 +72,8 @@ public class Consequence {
         knowledgeHelperMethods.add("getKnowledgeRuntime");
         knowledgeHelperMethods.add("getKieRuntime");
         knowledgeHelperMethods.add("insertLogical");
+        knowledgeHelperMethods.add("run");
+        knowledgeHelperMethods.add("guard");
     }
 
     private final RuleContext context;

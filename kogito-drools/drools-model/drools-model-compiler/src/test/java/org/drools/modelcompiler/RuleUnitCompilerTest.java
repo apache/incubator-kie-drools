@@ -87,6 +87,30 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
     }
 
+    @Test
+    public void testRuleUnitWithOOPath() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $p : /persons[age >= adultAge]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        KieContainer kieContainer = getKieContainer( null, str );
+        RuleUnitExecutor executor = kieContainer.newRuleUnitExecutor();
+
+        DataSource<Person> persons = DataSource.create( new Person( "Mario", 42 ),
+                                                        new Person( "Marilena", 44 ),
+                                                        new Person( "Sofia", 4 ) );
+
+        AdultUnit unit = new AdultUnit(persons);
+        assertEquals(2, executor.run( unit ) );
+
+        assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
+    }
+
     public static class PositiveNegativeDTUnit implements RuleUnit {
 
         private BigDecimal a_number;

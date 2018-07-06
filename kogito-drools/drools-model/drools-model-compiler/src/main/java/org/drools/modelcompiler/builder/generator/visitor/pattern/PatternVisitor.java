@@ -5,7 +5,10 @@ import java.util.List;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.rule.builder.XpathAnalysis;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -26,27 +29,35 @@ public class PatternVisitor {
 
     public DSLNode visit(PatternDescr pattern) {
         String className = pattern.getObjectType();
-        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
-        String queryName = "query_" + pattern.getObjectType();
-        final MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName);
-        // Expression is a query, get bindings from query parameter type
-        if (queryMethod != null) {
-            return new Query(context, packageModel, pattern, constraintDescrs, queryName);
-        }
+        if (className != null) {
+            List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
-        String queryDef = toQueryDef(pattern.getObjectType());
-        if (packageModel.getQueryDefWithType().containsKey(queryDef)) {
-            return new QueryCall(context, packageModel, pattern, queryDef);
-        }
-
-        if (pattern.getIdentifier() == null && pattern.getObjectType().equals("Object") && pattern.getSource() instanceof AccumulateDescr) {
-            if (context.isPatternDSL()) {
-                return new PatternAccumulateConstraint(context, packageModel, pattern, ((AccumulateDescr) pattern.getSource()), constraintDescrs);
-            } else {
-                return new FlowAccumulateConstraint(context, packageModel, pattern, ((AccumulateDescr) pattern.getSource()), constraintDescrs);
+            String queryName = "query_" + className;
+            final MethodDeclaration queryMethod = packageModel.getQueryMethod( queryName );
+            // Expression is a query, get bindings from query parameter type
+            if ( queryMethod != null ) {
+                return new Query( context, packageModel, pattern, constraintDescrs, queryName );
             }
+
+            String queryDef = toQueryDef( className );
+            if ( packageModel.getQueryDefWithType().containsKey( queryDef ) ) {
+                return new QueryCall( context, packageModel, pattern, queryDef );
+            }
+
+            if ( pattern.getIdentifier() == null && className.equals( "Object" ) && pattern.getSource() instanceof AccumulateDescr ) {
+                if ( context.isPatternDSL() ) {
+                    return new PatternAccumulateConstraint( context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
+                } else {
+                    return new FlowAccumulateConstraint( context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
+                }
+            }
+        } else {
+            pattern = normalizeOOPathPattern( pattern );
+            className = pattern.getObjectType();
         }
+
+        List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
         Class<?> patternType = null;
         try {
@@ -62,6 +73,37 @@ public class PatternVisitor {
         } else {
             return new FlowDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
         }
+    }
+
+    private PatternDescr normalizeOOPathPattern(PatternDescr pattern) {
+        String oopathExpr = pattern.getDescrs().get(0).getText();
+        XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(oopathExpr);
+        XpathAnalysis.XpathPart firstPart = xpathAnalysis.getPart( 0 );
+        String patternType = firstPart.getInlineCast() != null ?
+                firstPart.getInlineCast() :
+                context.getRuleUnitVarType( firstPart.getField() ).getSimpleName();
+
+        PatternDescr normalizedPattern = new PatternDescr();
+        normalizedPattern.setObjectType( patternType );
+        firstPart.getConstraints().stream().map( ExprConstraintDescr::new ).forEach( normalizedPattern::addConstraint );
+
+        if (xpathAnalysis.getParts().size() == 1) {
+            normalizedPattern.setIdentifier( pattern.getIdentifier() );
+        } else {
+            StringBuilder sb = new StringBuilder();
+            if (pattern.getIdentifier() != null) {
+                sb.append( pattern.getIdentifier() ).append( ": " );
+            }
+            for (int i = 1; i < xpathAnalysis.getParts().size(); i++) {
+                sb.append( "/" ).append( xpathAnalysis.getPart( i ) );
+            }
+            normalizedPattern.addConstraint( new ExprConstraintDescr( sb.toString() ) );
+        }
+
+        FromDescr source = new FromDescr();
+        source.setDataSource(new MVELExprDescr( firstPart.getField() ));
+        normalizedPattern.setSource( source );
+        return normalizedPattern;
     }
 
     private boolean areAllConstraintsPositional(List<? extends BaseDescr> constraintDescrs) {

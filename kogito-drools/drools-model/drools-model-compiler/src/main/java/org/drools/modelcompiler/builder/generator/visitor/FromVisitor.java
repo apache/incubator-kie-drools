@@ -226,6 +226,6 @@ public class FromVisitor {
     }
 
     private Expression createUnitDataCall( Optional<String> optContainsBinding, String bindingId ) {
-        return JavaParser.parseExpression(context.getVar(bindingId));
+        return JavaParser.parseExpression(DrlxParseUtil.toVar(bindingId));
     }
 }
