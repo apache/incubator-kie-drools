@@ -71,8 +71,11 @@ public class Forall extends ConditionalElement {
      * @see org.kie.rule.ConditionalElement#clone()
      */
     public Forall clone() {
-        return new Forall( this.basePattern,
-                           new ArrayList<Pattern>( this.remainingPatterns ) );
+        List<Pattern> clonedPatterns = new ArrayList<>();
+        for (Pattern remainingPattern : remainingPatterns) {
+            clonedPatterns.add(remainingPattern.clone());
+        }
+        return new Forall( basePattern.clone(), clonedPatterns );
     }
 
     /**
