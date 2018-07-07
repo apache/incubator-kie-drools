@@ -16,11 +16,16 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator;
+import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -50,17 +55,40 @@ public class DecisionServiceCompiler {
         }
         DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(bkm, type);
         model.addDecisionService(bkmn);
+
+        // TODO this actually requires build a complextype for the DecisionService
     }
 
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
 
+        List<FormalParameter> parameters = new ArrayList<>();
+        
         // compiler.linkRequirements(model, ni); doing manually here:
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
             if (input != null) {
                 ni.addDependency(input.getName(), input);
+                parameters.add(new FormalParameter(input.getName(), input.getType()));
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
+        for (DMNElementReference er : ni.getDecisionService().getInputDecision()) {
+            String id = DMNCompilerImpl.getId(er);
+            DecisionNode input = model.getDecisionById(id);
+            if (input != null) {
+                ni.addDependency(input.getName(), input);
+                parameters.add(new FormalParameter(input.getName(), input.getResultType()));
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -107,5 +135,8 @@ public class DecisionServiceCompiler {
                                       node.getName());
             }
         }
+
+        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni.getDecisionService(), parameters);
+        ni.setEvaluator(exprEvaluator);
     }
 }

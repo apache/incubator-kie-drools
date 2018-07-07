@@ -47,6 +47,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
@@ -213,13 +214,14 @@ public class DMNRuntimeImpl
 
     public DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        DMNResultImpl result = createResult(model, context);
+        DMNResultImpl result = new DMNResultImpl(model);
+        result.setContext(context.clone());
         // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
         DecisionServiceNode decisionService = ((DMNModelImpl) model).getDecisionServices().stream()
                                                                     .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
                                                                     .filter(ds -> ds.getName().equals(decisionServiceName))
                                                                     .findFirst().get();
-        evaluateDecisionService(context, result, decisionService, performRuntimeTypeCheck);
+        EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService.getDecisionService(), true).evaluate(this, result);
         return result;
     }
 
@@ -480,6 +482,8 @@ public class DMNRuntimeImpl
                         }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
+                    } else if (dep instanceof DecisionServiceNode) {
+                        evaluateDecisionService(context, result, (DecisionServiceNode) dep, typeCheck);
                     } else {
                         missingInput = true;
                         DMNMessage message = MsgUtil.reportMessage( logger,

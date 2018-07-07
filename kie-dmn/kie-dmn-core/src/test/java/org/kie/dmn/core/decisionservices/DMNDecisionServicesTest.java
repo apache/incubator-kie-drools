@@ -48,7 +48,27 @@ public class DMNDecisionServicesTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionServices(dmnModel, context);
+        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "A only as output knowing D and E");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Yearly Salary"), is(new BigDecimal("12000")));
+    }
+
+    @Test
+    public void testDSInLiteralExpression() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpression.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("D", "d");
+        context.set("E", "e");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));

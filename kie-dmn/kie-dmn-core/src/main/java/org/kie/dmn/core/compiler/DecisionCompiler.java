@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -93,6 +94,18 @@ public class DecisionCompiler implements DRGElementCompiler {
                         if (alias.isPresent()) {
                             CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
                             importedComposite.addField(dep.getName(), ((BusinessKnowledgeModelNode) dep).getResultType());
+                        }
+                    }
+                } else if (dep instanceof DecisionServiceNode) {
+                    if (dep.getModelNamespace().equals(model.getNamespace())) {
+                        // might need to create a DMNType for "functions" and replace the type here by that
+                        ctx.setVariable(dep.getName(), ((DecisionServiceNode) dep).getResultType());
+                    } else {
+                        // then the BKM dependency is an imported BKM.
+                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
+                        if (alias.isPresent()) {
+                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
+                            importedComposite.addField(dep.getName(), ((DecisionServiceNode) dep).getResultType());
                         }
                     }
                 }

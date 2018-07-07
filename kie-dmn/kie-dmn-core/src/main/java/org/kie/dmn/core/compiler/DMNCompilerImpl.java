@@ -254,6 +254,22 @@ public class DMNCompilerImpl
             }
         }
 
+        // in DMN v1.1 the DecisionService is not on the DRGElement but as an extension
+        if (dmndefs.getExtensionElements() != null) {
+            DecisionServiceCompiler compiler = new DecisionServiceCompiler();
+            List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
+            for (DecisionServices dss : decisionServices) {
+                for (DecisionService ds : dss.getDecisionService()) {
+                    compiler.compileNode(ds, this, model);
+                }
+            }
+            for (DecisionServiceNode ds : model.getDecisionServices()) {
+                DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
+                dsi.addModelImportAliases(model.getImportAliasesForNS());
+                compiler.compileEvaluator(dsi, this, ctx, model);
+            }
+        }
+
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
             bkmi.addModelImportAliases(model.getImportAliasesForNS());
@@ -275,21 +291,7 @@ public class DMNCompilerImpl
         }
         detectCycles( model );
 
-        // in DMN v1.1 the DecisionService is not on the DRGElement but as an extension
-        if (dmndefs.getExtensionElements() != null) {
-            DecisionServiceCompiler compiler = new DecisionServiceCompiler();
-            List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
-            for (DecisionServices dss : decisionServices) {
-                for (DecisionService ds : dss.getDecisionService()) {
-                    compiler.compileNode(ds, this, model);
-                }
-            }
-            for (DecisionServiceNode ds : model.getDecisionServices()) {
-                DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
-                dsi.addModelImportAliases(model.getImportAliasesForNS());
-                compiler.compileEvaluator(dsi, this, ctx, model);
-            }
-        }
+
     }
 
     private void detectCycles( DMNModelImpl model ) {
@@ -366,8 +368,11 @@ public class DMNCompilerImpl
             if ( kr.getRequiredKnowledge() != null ) {
                 String id = getId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
+                DecisionServiceNode dsn = model.getDecisionServiceById(id);
                 if ( bkmn != null ) {
                     node.addDependency( bkmn.getName(), bkmn );
+                } else if (dsn != null) {
+                    node.addDependency(dsn.getName(), dsn);
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -375,7 +380,7 @@ public class DMNCompilerImpl
                                            model,
                                            null,
                                            null,
-                                           Msg.REQ_BKM_NOT_FOUND_FOR_NODE,
+                                          Msg.REQ_BKM_NOT_FOUND_FOR_NODE, // TODO or a DS ?
                                            id,
                                            node.getName() );
                 }

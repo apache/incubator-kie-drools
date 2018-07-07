@@ -90,7 +90,7 @@ public class DMNFunctionDefinitionEvaluator
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
-    private static class FormalParameter {
+    public static class FormalParameter {
         final String name;
         final DMNType type;
 

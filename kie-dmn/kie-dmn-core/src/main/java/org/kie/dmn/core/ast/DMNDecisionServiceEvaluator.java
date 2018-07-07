@@ -1,0 +1,77 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.dmn.core.ast;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.model.v1_1.DecisionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceEvaluator.class);
+    private DecisionService ds;
+    private boolean transferResult;
+
+    public DMNDecisionServiceEvaluator(DecisionService ds, boolean transferResult) {
+        this.ds = ds;
+        this.transferResult = transferResult;
+    }
+
+    @Override
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult result) {
+        DMNRuntime dmnRuntime = eventManager.getRuntime();
+        DMNModel dmnModel = ((DMNResultImpl) result).getModel();
+        List<String> decisionIDs = ds.getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
+        Map<String, Object> ctx = new HashMap<String, Object>();
+        for (String id : decisionIDs) {
+            DMNDecisionResult decisionResultById = evaluateById.getDecisionResultById(id);
+            if (decisionResultById.getEvaluationStatus() == DecisionEvaluationStatus.SUCCEEDED) {
+                DecisionNode decisionNode = dmnModel.getDecisionById(id);
+                String decisionName = decisionNode.getName();
+                ctx.put(decisionName, decisionResultById.getResult());
+                result.getContext().set(decisionName, decisionResultById.getResult());
+            }
+            if (transferResult) {
+                ((DMNResultImpl) result).addDecisionResult(decisionResultById);
+            }
+        }
+        for (DMNMessage m : evaluateById.getMessages()) {
+            ((DMNResultImpl) result).addMessage(m);
+        }
+        return new EvaluatorResultImpl(ctx, ResultType.SUCCESS);
+    }
+
+}
