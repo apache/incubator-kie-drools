@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -46,7 +47,7 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
         if (solutionImporter.isInputFileDirectory()) {
             // Non recursively
             fileList = new ArrayList<>(Arrays.asList(
-                    importDir.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)));
+                    Objects.requireNonNull(importDir.listFiles((FileFilter) DirectoryFileFilter.INSTANCE))));
         } else {
             // recursively
             fileList = new ArrayList<>(
@@ -79,5 +80,4 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
     public void readSolution() {
         solutionImporter.readSolution(importFile);
     }
-
 }

@@ -13,6 +13,8 @@ Hard constraints:
 
 * Room conflict: two meetings must not use the same room at the same time.
 * Required attendance: A person cannot have two required meetings at the same time.
+* Required room capacity: A meeting must not be in a room that doesn't fit all of the meeting's attendees.
+* Start and end on same day: A meeting shouldn't be scheduled over multiple days.
 
 Medium constraints:
 
@@ -21,6 +23,11 @@ Medium constraints:
 Soft constraints:
 
 * Sooner rather than later: Schedule all meetings as soon as possible.
+* A break between meetings: Any two meetings should have at least one time grain break between them.
+* Overlapping meetings: To minimize the number of meetings in parallel so people don't have to choose one meeting over the other.
+* Assign larger rooms first: If a larger room is available any meeting should be assigned to that room in order to accommodate as many people as possible
+    even if they haven't signed up to that meeting.
+* Room stability: If a person has two consecutive meetings with two or less time grains break between them they better be in the same room.
 
 
 [[meetingSchedulingProblemSize]]
@@ -30,4 +37,7 @@ Soft constraints:
 ----
 50meetings-160timegrains-5rooms  has  50 meetings, 160 timeGrains and 5 rooms with a search space of 10^145.
 100meetings-320timegrains-5rooms has 100 meetings, 320 timeGrains and 5 rooms with a search space of 10^320.
+200meetings-640timegrains-5rooms has 200 meetings, 640 timeGrains and 5 rooms with a search space of 10^701.
+400meetings-1280timegrains-5rooms has 400 meetings, 1280 timeGrains and 5 rooms with a search space of 10^1522.
+800meetings-2560timegrains-5rooms has 800 meetings, 2560 timeGrains and 5 rooms with a search space of 10^3285.
 ----

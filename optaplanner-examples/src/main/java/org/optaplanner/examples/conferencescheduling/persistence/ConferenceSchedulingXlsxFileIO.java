@@ -72,20 +72,20 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
     public ConferenceSolution read(File inputSolutionFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputSolutionFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            return new ConferenceSchedulingXslxReader(workbook).read();
+            return new ConferenceSchedulingXlsxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
                     + inputSolutionFile + ").", e);
         }
     }
 
-    private static class ConferenceSchedulingXslxReader extends AbstractXslxReader<ConferenceSolution> {
+    private static class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
 
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
 
-        public ConferenceSchedulingXslxReader(XSSFWorkbook workbook) {
+        public ConferenceSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook);
         }
 

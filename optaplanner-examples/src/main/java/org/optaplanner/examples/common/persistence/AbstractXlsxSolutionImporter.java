@@ -41,13 +41,13 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract XslxInputBuilder<Solution_> createXslxInputBuilder();
+    public abstract XlsxInputBuilder<Solution_> createXlsxInputBuilder();
 
     @Override
     public Solution_ readSolution(File inputFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            XslxInputBuilder<Solution_> xlsxInputBuilder = createXslxInputBuilder();
+            XlsxInputBuilder<Solution_> xlsxInputBuilder = createXlsxInputBuilder();
             xlsxInputBuilder.setInputFile(inputFile);
             xlsxInputBuilder.setWorkbook(workbook);
             try {
@@ -62,7 +62,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         }
     }
 
-    public static abstract class XslxInputBuilder<Solution_> extends InputBuilder {
+    public static abstract class XlsxInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected XSSFWorkbook workbook;
@@ -89,7 +89,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
             XSSFSheet sheet = workbook.getSheetAt(index);
             if (!sheet.getSheetName().equals(name)) {
                 throw new IllegalArgumentException("The sheet (" + sheet.getSheetName() + ") at index (" + index
-                        + ") is expected to have another name (" + name + ")");
+                                                           + ") is expected to have another name (" + name + ")");
             }
             return sheet;
         }
@@ -97,8 +97,8 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         protected void assertCellConstant(Cell cell, String constant) {
             if (!constant.equals(cell.getStringCellValue())) {
                 throw new IllegalArgumentException("The cell (" + cell.getRow().getRowNum() + ","
-                        + cell.getColumnIndex() + ") with value (" + cell.getStringCellValue()
-                        + ") is expected to have the constant (" + constant + ")");
+                                                           + cell.getColumnIndex() + ") with value (" + cell.getStringCellValue()
+                                                           + ") is expected to have the constant (" + constant + ")");
             }
         }
 
@@ -107,7 +107,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
             long l = (long) d;
             if (d - (double) l != 0.0) {
                 throw new IllegalArgumentException("The keyCell (" + cell.getRow().getRowNum() + ","
-                        + cell.getColumnIndex() + ") with value (" + d + ") is expected to be a long.");
+                                                           + cell.getColumnIndex() + ") with value (" + d + ") is expected to be a long.");
             }
             return l;
         }
@@ -124,8 +124,8 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
             Cell keyCell = row.getCell(0);
             if (!key.equals(keyCell.getStringCellValue())) {
                 throw new IllegalArgumentException("The keyCell (" + keyCell.getRow().getRowNum() + ","
-                        + keyCell.getColumnIndex() + ") with value (" + keyCell.getStringCellValue()
-                        + ") is expected to have the key (" + key + ")");
+                                                           + keyCell.getColumnIndex() + ") with value (" + keyCell.getStringCellValue()
+                                                           + ") is expected to have the key (" + key + ")");
             }
             Cell valueCell = row.getCell(1);
             return valueCell.getStringCellValue();
@@ -135,13 +135,11 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
             Cell keyCell = row.getCell(0);
             if (!key.equals(keyCell.getStringCellValue())) {
                 throw new IllegalArgumentException("The keyCell (" + keyCell.getRow().getRowNum() + ","
-                        + keyCell.getColumnIndex() + ") with value (" + keyCell.getStringCellValue()
-                        + ") is expected to have the key (" + key + ")");
+                                                           + keyCell.getColumnIndex() + ") with value (" + keyCell.getStringCellValue()
+                                                           + ") is expected to have the key (" + key + ")");
             }
             Cell valueCell = row.getCell(1);
             return valueCell.getNumericCellValue();
         }
-
     }
-
 }

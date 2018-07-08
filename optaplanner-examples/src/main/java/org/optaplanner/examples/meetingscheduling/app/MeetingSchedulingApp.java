@@ -18,6 +18,7 @@ package org.optaplanner.examples.meetingscheduling.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO;
 import org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -48,7 +49,7 @@ public class MeetingSchedulingApp extends CommonApp<MeetingSchedule> {
 
     @Override
     public SolutionFileIO<MeetingSchedule> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(MeetingSchedule.class);
+        return new MeetingSchedulingXlsxFileIO();
     }
 
 }

@@ -31,6 +31,7 @@ import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingParametrization;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
@@ -38,7 +39,6 @@ import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
 
@@ -46,9 +46,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         MeetingSchedulingGenerator generator = new MeetingSchedulingGenerator();
         generator.writeMeetingSchedule(50, 5);
         generator.writeMeetingSchedule(100, 5);
-//        generator.writeMeetingSchedule(200, 5);
-//        generator.writeMeetingSchedule(400, 5);
-//        generator.writeMeetingSchedule(800, 5);
+        generator.writeMeetingSchedule(200, 5);
+        generator.writeMeetingSchedule(400, 5);
+        generator.writeMeetingSchedule(800, 5);
     }
 
     private final StringDataGenerator topicGenerator = new StringDataGenerator()
@@ -169,14 +169,14 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     protected Random random;
 
     public MeetingSchedulingGenerator() {
-        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
+        solutionFileIO = new MeetingSchedulingXlsxFileIO();
         outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {
         int timeGrainListSize = meetingListSize * durationInGrainsOptions[durationInGrainsOptions.length - 1] / roomListSize;
         String fileName = determineFileName(meetingListSize, timeGrainListSize, roomListSize);
-        File outputFile = new File(outputDir, fileName + ".xml");
+        File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         MeetingSchedule meetingSchedule = createMeetingSchedule(fileName, meetingListSize, timeGrainListSize, roomListSize);
         solutionFileIO.write(meetingSchedule, outputFile);
         logger.info("Saved: {}", outputFile);
@@ -190,6 +190,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         random = new Random(37);
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
+        MeetingParametrization parametrization = new MeetingParametrization();
+        parametrization.setId(0L);
+        meetingSchedule.setParametrization(parametrization);
 
         createMeetingListAndAttendanceList(meetingSchedule, meetingListSize);
         createTimeGrainList(meetingSchedule, timeGrainListSize);

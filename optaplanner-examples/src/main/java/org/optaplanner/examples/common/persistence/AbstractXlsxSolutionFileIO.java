@@ -69,6 +69,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
     protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
     protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
+    protected static final XSSFColor MEDIUM_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_3);
     protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
 
     @Override
@@ -76,7 +77,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         return "xlsx";
     }
 
-    public static abstract class AbstractXslxReader<Solution_> {
+    public static abstract class AbstractXlsxReader<Solution_> {
 
         protected final XSSFWorkbook workbook;
 
@@ -88,7 +89,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected int currentRowNumber;
         protected int currentColumnNumber;
 
-        public AbstractXslxReader(XSSFWorkbook workbook) {
+        public AbstractXlsxReader(XSSFWorkbook workbook) {
             this.workbook = workbook;
         }
 
@@ -101,21 +102,21 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             if (consumer != null) {
                 if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
+                                                               + weightCell.getStringCellValue()
+                                                               + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
                 if (((double) ((int) value)) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
-                            + ") for constraint (" + name + ") must be an integer.");
+                                                               + ") for constraint (" + name + ") must be an integer.");
                 }
                 consumer.accept((int) value);
             } else {
                 if (weightCell.getCellTypeEnum() == CellType.NUMERIC
                         || !weightCell.getStringCellValue().equals("n/a")) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be an n/a.");
+                                                               + weightCell.getStringCellValue()
+                                                               + ") for constraint (" + name + ") must be an n/a.");
                 }
             }
             readHeaderCell(constraintdescription);
@@ -128,21 +129,21 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             if (consumer != null) {
                 if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
+                                                               + weightCell.getStringCellValue()
+                                                               + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
                 if (((double) ((long) value)) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
-                            + ") for constraint (" + name + ") must be a (long) integer.");
+                                                               + ") for constraint (" + name + ") must be a (long) integer.");
                 }
                 consumer.accept((long) value);
             } else {
                 if (weightCell.getCellTypeEnum() == CellType.NUMERIC
                         || !weightCell.getStringCellValue().equals("n/a")) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
-                            + weightCell.getStringCellValue()
-                            + ") for constraint (" + name + ") must be an n/a.");
+                                                               + weightCell.getStringCellValue()
+                                                               + ") for constraint (" + name + ") must be an n/a.");
                 }
             }
             readHeaderCell(constraintdescription);
@@ -161,7 +162,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             currentSheet = workbook.getSheet(sheetName);
             if (currentSheet == null) {
                 throw new IllegalStateException("The workbook does not contain a sheet with name ("
-                        + sheetName + ").");
+                                                        + sheetName + ").");
             }
             currentRowIterator = currentSheet.rowIterator();
             if (currentRowIterator == null) {
@@ -194,7 +195,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                     currentRowNumber++;
                 } else {
                     throw new IllegalStateException(currentPosition() + ": The next row (" + currentRow.getRowNum()
-                            + ") has a gap of more than 1 empty line with the previous.");
+                                                            + ") has a gap of more than 1 empty line with the previous.");
                 }
             }
             return true;
@@ -220,7 +221,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             XSSFCell cell = currentRow == null ? null : nextStringCell();
             if (cell == null || !cell.getStringCellValue().equals(value)) {
                 throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
-                        + value + ").");
+                                                        + value + ").");
             }
         }
 
@@ -228,7 +229,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             XSSFCell cell = currentRow == null ? null : nextNumericCell();
             if (cell == null || cell.getNumericCellValue() != value) {
                 throw new IllegalStateException(currentPosition() + ": The cell does not contain the expected value ("
-                        + value + ").");
+                                                        + value + ").");
             }
         }
 
@@ -236,7 +237,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             XSSFCell cell = nextCell();
             if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getNumericCellValue() + ") has a numeric type but should be a string.");
+                                                        + cell.getNumericCellValue() + ") has a numeric type but should be a string.");
             }
             return cell;
         }
@@ -245,7 +246,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             XSSFCell cell = nextCell();
             if (cell.getCellTypeEnum() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getStringCellValue() + ") has a string type but should be numeric.");
+                                                        + cell.getStringCellValue() + ") has a string type but should be numeric.");
             }
             return cell;
         }
@@ -254,11 +255,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             XSSFCell cell = nextCell();
             if (cell.getCellTypeEnum() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getStringCellValue() + ") has a string type but should be boolean.");
+                                                        + cell.getStringCellValue() + ") has a string type but should be boolean.");
             }
             if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
-                        + cell.getNumericCellValue() + ") has a numeric type but should be a boolean.");
+                                                        + cell.getNumericCellValue() + ") has a numeric type but should be a boolean.");
             }
             return cell;
         }
@@ -282,8 +283,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             }
             if (fillPattern != FillPatternType.SOLID_FOREGROUND) {
                 throw new IllegalStateException(currentPosition() + ": The fill pattern (" + fillPattern
-                        + ") should be either " + FillPatternType.NO_FILL
-                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
+                                                        + ") should be either " + FillPatternType.NO_FILL
+                                                        + " or " + FillPatternType.SOLID_FOREGROUND + ".");
             }
             XSSFColor color = cellStyle.getFillForegroundColorColor();
             for (XSSFColor acceptableColor : acceptableColors) {
@@ -292,9 +293,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 }
             }
             throw new IllegalStateException(currentPosition() + ": The fill color (" + color
-                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
+                                                    + ") is not one of the acceptableColors (" + Arrays.toString(acceptableColors) + ").");
         }
-
     }
 
     public static abstract class AbstractXlsxWriter<Solution_> {
@@ -311,6 +311,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected XSSFCellStyle unavailableStyle;
         protected XSSFCellStyle pinnedStyle;
         protected XSSFCellStyle hardPenaltyStyle;
+        protected XSSFCellStyle mediumPenaltyStyle;
         protected XSSFCellStyle softPenaltyStyle;
         protected XSSFCellStyle wrappedStyle;
 
@@ -352,6 +353,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             unavailableStyle = createStyle(UNAVAILABLE_COLOR);
             pinnedStyle = createStyle(PINNED_COLOR);
             hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
+            mediumPenaltyStyle = createStyle(MEDIUM_PENALTY_COLOR);
             softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
             wrappedStyle = createStyle(null);
         }
@@ -429,12 +431,33 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             return cell;
         }
 
+        protected void nextHeaderCellVertically(String value) {
+            nextCellVertically(headerStyle).setCellValue(value);
+            headerCellCount++;
+        }
+
+        protected XSSFCell nextCellVertically() {
+            return nextCellVertically(defaultStyle);
+        }
+
+        protected XSSFCell nextCellVertically(XSSFCellStyle cellStyle) {
+            currentRowNumber++;
+            currentRow = currentSheet.getRow(currentRowNumber);
+            XSSFCell cell = currentRow.createCell(currentColumnNumber);
+            cell.setCellStyle(cellStyle);
+            return cell;
+        }
+
         protected void autoSizeColumnsWithHeader() {
             for (int i = 0; i < headerCellCount; i++) {
                 currentSheet.autoSizeColumn(i);
             }
         }
 
+        protected void setColumnsWidthHeader(int width) {
+            for (int i = 0; i < headerCellCount; i++) {
+                currentSheet.setColumnWidth(i, width);
+            }
+        }
     }
-
 }

@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -32,6 +33,9 @@ import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoft.Hard
 @PlanningSolution
 @XStreamAlias("MsMeetingSchedule")
 public class MeetingSchedule extends AbstractPersistable {
+
+    @ProblemFactProperty
+    private MeetingParametrization parametrization;
 
     private List<Meeting> meetingList;
     private List<Day> dayList;
@@ -44,6 +48,14 @@ public class MeetingSchedule extends AbstractPersistable {
 
     @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
+
+    public MeetingParametrization getParametrization() {
+        return parametrization;
+    }
+
+    public void setParametrization(MeetingParametrization parametrization) {
+        this.parametrization = parametrization;
+    }
 
     @ProblemFactCollectionProperty
     public List<Meeting> getMeetingList() {
@@ -122,5 +134,4 @@ public class MeetingSchedule extends AbstractPersistable {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
 }

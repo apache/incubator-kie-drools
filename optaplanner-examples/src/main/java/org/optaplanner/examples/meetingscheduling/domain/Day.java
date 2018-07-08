@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
@@ -24,6 +28,8 @@ import org.optaplanner.examples.common.swingui.components.Labeled;
 public class Day extends AbstractPersistable implements Labeled {
 
     private int dayOfYear;
+    private static final DateTimeFormatter DAY_FORMATTER
+            = DateTimeFormatter.ofPattern("E", Locale.ENGLISH);
 
     public int getDayOfYear() {
         return dayOfYear;
@@ -34,7 +40,7 @@ public class Day extends AbstractPersistable implements Labeled {
     }
 
     public String getDateString() {
-        return dayOfYear + "-JAN";
+        return DAY_FORMATTER.format(LocalDate.ofYearDay(LocalDate.now().getYear(), dayOfYear));
     }
 
     @Override
@@ -46,5 +52,4 @@ public class Day extends AbstractPersistable implements Labeled {
     public String toString() {
         return getDateString();
     }
-
 }

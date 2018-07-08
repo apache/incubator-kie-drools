@@ -77,5 +77,4 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
     public String toString() {
         return grainIndex + "(" + getDateTimeString() + ")";
     }
-
 }

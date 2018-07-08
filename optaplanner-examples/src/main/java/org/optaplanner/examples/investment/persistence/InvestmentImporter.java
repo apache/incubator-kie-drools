@@ -48,11 +48,11 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
     }
 
     @Override
-    public XslxInputBuilder<InvestmentSolution> createXslxInputBuilder() {
+    public XlsxInputBuilder<InvestmentSolution> createXlsxInputBuilder() {
         return new InvestmentAllocationInputBuilder();
     }
 
-    public static class InvestmentAllocationInputBuilder extends XslxInputBuilder<InvestmentSolution> {
+    public static class InvestmentAllocationInputBuilder extends XlsxInputBuilder<InvestmentSolution> {
 
         private InvestmentSolution solution;
 

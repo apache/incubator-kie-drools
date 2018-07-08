@@ -59,16 +59,16 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
     public RockTourSolution read(File inputSolutionFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputSolutionFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            return new RockTourXslxReader(workbook).read();
+            return new RockTourXlsxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
                     + inputSolutionFile + ").", e);
         }
     }
 
-    private static class RockTourXslxReader extends AbstractXslxReader<RockTourSolution> {
+    private static class RockTourXlsxReader extends AbstractXlsxReader<RockTourSolution> {
 
-        public RockTourXslxReader(XSSFWorkbook workbook) {
+        public RockTourXlsxReader(XSSFWorkbook workbook) {
             super(workbook);
         }
 

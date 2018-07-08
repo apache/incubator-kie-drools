@@ -25,6 +25,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Meeting extends AbstractPersistable {
 
     private String topic;
+    private List<Person> speakerList;
+    private String content;
+    private boolean entireGroupMeeting;
     /**
      * Multiply by {@link TimeGrain#GRAIN_LENGTH_IN_MINUTES} to get duration in minutes.
      */
@@ -39,6 +42,30 @@ public class Meeting extends AbstractPersistable {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public List<Person> getSpeakerList() {
+        return speakerList;
+    }
+
+    public void setSpeakerList(List<Person> speakerList) {
+        this.speakerList = speakerList;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isEntireGroupMeeting() {
+        return entireGroupMeeting;
+    }
+
+    public void setEntireGroupMeeting(boolean entireGroupMeeting) {
+        this.entireGroupMeeting = entireGroupMeeting;
     }
 
     public int getDurationInGrains() {
@@ -85,5 +112,4 @@ public class Meeting extends AbstractPersistable {
     public String toString() {
         return topic;
     }
-
 }
