@@ -272,7 +272,7 @@ public class MyEasyScoreCalculator extends EasyScoreCalculator<MySolution> {
 }
 ----
 
-Most value types are supported (including `boolean`, `int`, `double` and `String`).
+Most value types are supported (including `boolean`, `int`, `double`, `BigDecimal`, `String` and enums).
 
 
 [[modelAPlanningProblem]]

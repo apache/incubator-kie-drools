@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -97,6 +98,10 @@ public class ConfigUtils {
                     typedValue = Float.parseFloat(valueString);
                 } else if (propertyType.equals(Double.TYPE) || propertyType.equals(Double.class)) {
                     typedValue = Double.parseDouble(valueString);
+                } else if (propertyType.equals(BigDecimal.class)) {
+                    typedValue = new BigDecimal(valueString);
+                } else if (propertyType.isEnum()) {
+                    typedValue = Enum.valueOf((Class<? extends Enum>) propertyType, valueString);
                 } else {
                     throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
                             + ") in the " + customPropertiesPropertyName

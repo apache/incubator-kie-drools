@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.util;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +86,6 @@ public class ConfigUtilsTest {
     @Test
     public void applyCustomProperties() {
         Map<String, String> customProperties = new HashMap<>();
-        customProperties.put("string", "This is a sentence.");
         customProperties.put("primitiveBoolean", "true");
         customProperties.put("objectBoolean", "true");
         customProperties.put("primitiveInt", "1");
@@ -96,6 +96,9 @@ public class ConfigUtilsTest {
         customProperties.put("objectFloat", "6.6");
         customProperties.put("primitiveDouble", "7.7");
         customProperties.put("objectDouble", "8.8");
+        customProperties.put("bigDecimal", "9.9");
+        customProperties.put("string", "This is a sentence.");
+        customProperties.put("configUtilsTestBeanEnum", "BETA");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
         ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
         assertEquals(true, bean.primitiveBoolean);
@@ -108,7 +111,9 @@ public class ConfigUtilsTest {
         assertEquals(Float.valueOf(6.6F), bean.objectFloat);
         assertEquals(7.7, bean.primitiveDouble, 0.0);
         assertEquals(Double.valueOf(8.8), bean.objectDouble);
+        assertEquals(new BigDecimal("9.9"), bean.bigDecimal);
         assertEquals("This is a sentence.", bean.string);
+        assertEquals(ConfigUtilsTestBeanEnum.BETA, bean.configUtilsTestBeanEnum);
     }
 
     @Test
@@ -140,7 +145,9 @@ public class ConfigUtilsTest {
         private Float objectFloat;
         private double primitiveDouble;
         private Double objectDouble;
+        private BigDecimal bigDecimal;
         private String string;
+        private ConfigUtilsTestBeanEnum configUtilsTestBeanEnum;
 
         public void setPrimitiveBoolean(boolean primitiveBoolean) {
             this.primitiveBoolean = primitiveBoolean;
@@ -182,10 +189,24 @@ public class ConfigUtilsTest {
             this.objectDouble = objectDouble;
         }
 
+        public void setBigDecimal(BigDecimal bigDecimal) {
+            this.bigDecimal = bigDecimal;
+        }
+
         public void setString(String string) {
             this.string = string;
         }
 
+        public void setConfigUtilsTestBeanEnum(ConfigUtilsTestBeanEnum configUtilsTestBeanEnum) {
+            this.configUtilsTestBeanEnum = configUtilsTestBeanEnum;
+        }
+
+    }
+
+    private enum ConfigUtilsTestBeanEnum {
+        ALPHA,
+        BETA,
+        GAMMA
     }
 
     @Test
