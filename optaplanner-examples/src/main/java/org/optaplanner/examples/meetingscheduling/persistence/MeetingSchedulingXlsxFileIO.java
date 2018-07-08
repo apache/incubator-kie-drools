@@ -46,9 +46,7 @@ import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.meetingscheduling.domain.MeetingParametrization.*;
 
 public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<MeetingSchedule> {
@@ -489,7 +487,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
                                 .collect(joining(", ")));
             }
-            setColumnsWidthHeader(5000);
+            setSizeColumnsWithHeader(5000);
         }
 
         private void writeDays() {
@@ -620,7 +618,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextHeaderCellVertically(room.getName());
                 writeMeetingAssignmentListVertically(roomMeetingAssignmentList);
             }
-            setColumnsWidthHeader(6000);
+            setSizeColumnsWithHeader(6000);
         }
 
         private void writeMeetingAssignmentListVertically(List<MeetingAssignment> roomMeetingAssignmentList) {
