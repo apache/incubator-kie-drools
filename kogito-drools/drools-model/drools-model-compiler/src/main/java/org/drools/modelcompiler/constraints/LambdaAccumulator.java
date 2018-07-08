@@ -2,7 +2,9 @@ package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -16,6 +18,8 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
     protected final List<String> sourceVariables;
+    private Map<Integer, Object> reverseSupport;
+
 
     protected LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables) {
         this.accumulateFunction = accumulateFunction;
@@ -40,11 +44,18 @@ public abstract class LambdaAccumulator implements Accumulator {
     @Override
     public void init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
         accumulateFunction.init((Serializable) context);
+        if(supportsReverse()) {
+            reverseSupport = new HashMap<>();
+        }
     }
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.accumulate((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle, leftTuple, ( InternalWorkingMemory ) workingMemory ));
+        final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
+        if (supportsReverse()) {
+            reverseSupport.put(handle.getId(), accumulatedObject);
+        }
+        accumulateFunction.accumulate((Serializable) context, accumulatedObject);
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -56,7 +67,13 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse((Serializable) context, getAccumulatedObject( declarations, innerDeclarations, handle, leftTuple, ( InternalWorkingMemory ) workingMemory ));
+        final Object accumulatedObject = reverseSupport.remove(handle.getId());
+        if(accumulatedObject == null) {
+            final Object accumulatedObject2 = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
+            accumulateFunction.reverse((Serializable) context, accumulatedObject2);
+        } else {
+            accumulateFunction.reverse((Serializable) context, accumulatedObject);
+        }
     }
 
     @Override
