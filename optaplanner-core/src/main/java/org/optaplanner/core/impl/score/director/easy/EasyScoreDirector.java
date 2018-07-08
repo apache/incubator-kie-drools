@@ -46,6 +46,10 @@ public class EasyScoreDirector<Solution_>
         this.easyScoreCalculator = easyScoreCalculator;
     }
 
+    public EasyScoreCalculator<Solution_> getEasyScoreCalculator() {
+        return easyScoreCalculator;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************

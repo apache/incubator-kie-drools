@@ -180,7 +180,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
             SolutionPartitioner<?> solutionPartitioner = ConfigUtils.newInstance(this,
                     "solutionPartitionerClass", solutionPartitionerClass);
             ConfigUtils.applyCustomProperties(solutionPartitioner, "solutionPartitionerClass",
-                    solutionPartitionerCustomProperties);
+                    solutionPartitionerCustomProperties, "solutionPartitionerCustomProperties");
             return solutionPartitioner;
         } else {
             if (solutionPartitionerCustomProperties != null) {

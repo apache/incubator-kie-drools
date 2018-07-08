@@ -34,10 +34,6 @@ public class EasyScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFa
         this.easyScoreCalculator = easyScoreCalculator;
     }
 
-    public EasyScoreCalculator<Solution_> getEasyScoreCalculator() {
-        return easyScoreCalculator;
-    }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************

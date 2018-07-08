@@ -97,7 +97,7 @@ public class ConfigUtilsTest {
         customProperties.put("primitiveDouble", "7.7");
         customProperties.put("objectDouble", "8.8");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
-        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+        ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
         assertEquals(true, bean.primitiveBoolean);
         assertEquals(Boolean.TRUE, bean.objectBoolean);
         assertEquals(1, bean.primitiveInt);
@@ -116,7 +116,7 @@ public class ConfigUtilsTest {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("string", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
-        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+        ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
         assertEquals("This is a sentence.", bean.string);
     }
 
@@ -125,7 +125,7 @@ public class ConfigUtilsTest {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("doesNotExist", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
-        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+        ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
     }
 
     private static class ConfigUtilsTestBean {

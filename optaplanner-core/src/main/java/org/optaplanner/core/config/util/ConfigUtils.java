@@ -64,8 +64,8 @@ public class ConfigUtils {
         }
     }
 
-    public static void applyCustomProperties(Object bean, String wrappingPropertyName,
-            Map<String, String> customProperties) {
+    public static void applyCustomProperties(Object bean, String beanClassPropertyName,
+            Map<String, String> customProperties, String customPropertiesPropertyName) {
         if (customProperties == null) {
             return;
         }
@@ -73,12 +73,14 @@ public class ConfigUtils {
         customProperties.forEach((propertyName, valueString) -> {
             Method setterMethod = ReflectionHelper.getSetterMethod(beanClass, propertyName);
             if (setterMethod == null) {
-                throw new IllegalStateException("The customProperty (" + propertyName
-                        + ") with value (" + valueString
-                        + ") cannot be set on class (" + beanClass
-                        + ") because it has no public setter for that property.\n"
-                        + "Maybe add a public setter for that customProperty (" + propertyName
-                        + ") on that class (" + beanClass.getSimpleName() + ").");
+                throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
+                        + ") in the " + customPropertiesPropertyName
+                        + " cannot be set on the " + beanClassPropertyName + " (" + beanClass
+                        + ") because that class has no public setter for that property.\n"
+                        + "Maybe add a public setter for that custom property (" + propertyName
+                        + ") on that class (" + beanClass.getSimpleName() + ").\n"
+                        + "Maybe don't configure that custom property " + propertyName + " (" + valueString
+                        + ") in the " + customPropertiesPropertyName + ".");
             }
             Class<?> propertyType = setterMethod.getParameterTypes()[0];
             Object typedValue;
@@ -96,24 +98,28 @@ public class ConfigUtils {
                 } else if (propertyType.equals(Double.TYPE) || propertyType.equals(Double.class)) {
                     typedValue = Double.parseDouble(valueString);
                 } else {
-                    throw new IllegalStateException("The customProperty (" + propertyName + ") of class (" + beanClass
-                            + ") has an unsupported propertyType (" + propertyType + ") for value (" + valueString + ").");
+                    throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
+                            + ") in the " + customPropertiesPropertyName
+                            + " has an unsupported propertyType (" + propertyType + ") for value (" + valueString + ").");
                 }
             } catch (NumberFormatException e) {
-                throw new IllegalStateException("The customProperty (" + propertyName + ")'s value (" + valueString
-                        + ") cannot be parsed to the propertyType (" + propertyType
+                throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
+                        + ") in the " + customPropertiesPropertyName
+                        + " cannot be parsed to the propertyType (" + propertyType
                         + ") of the setterMethod (" + setterMethod + ").");
             }
             try {
                 setterMethod.invoke(bean, typedValue);
             } catch (IllegalAccessException e) {
-                throw new IllegalStateException("Cannot call property (" + propertyName
-                        + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
-                        + ") for value (" + typedValue + ").", e);
+                throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
+                        + ") in the " + customPropertiesPropertyName
+                        + " has a setterMethod (" + setterMethod + ") on the beanClass (" + beanClass
+                        + ") that cannot be called for the typedValue (" + typedValue + ").", e);
             } catch (InvocationTargetException e) {
-                throw new IllegalStateException("The property (" + propertyName
-                        + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
-                        + ") throws an exception for value (" + typedValue + ").",
+                throw new IllegalStateException("The custom property " + propertyName + " (" + valueString
+                        + ") in the " + customPropertiesPropertyName
+                        + " has a setterMethod (" + setterMethod + ") on the beanClass (" + beanClass
+                        + ") that throws an exception for the typedValue (" + typedValue + ").",
                         e.getCause());
             }
         });

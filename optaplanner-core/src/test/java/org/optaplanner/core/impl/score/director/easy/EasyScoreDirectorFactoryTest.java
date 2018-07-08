@@ -29,13 +29,6 @@ import static org.mockito.Mockito.*;
 public class EasyScoreDirectorFactoryTest {
 
     @Test
-    public void getEasyScoreCalculator() {
-        EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
-        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(scoreCalculator);
-        assertSame(scoreCalculator, directorFactory.getEasyScoreCalculator());
-    }
-
-    @Test
     public void buildScoreDirector() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);

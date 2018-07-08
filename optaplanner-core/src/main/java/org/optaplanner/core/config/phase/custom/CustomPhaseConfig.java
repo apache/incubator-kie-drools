@@ -94,7 +94,8 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {
             CustomPhaseCommand customPhaseCommand = ConfigUtils.newInstance(this,
                     "customPhaseCommandClass", customPhaseCommandClass);
-            ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass", customProperties);
+            ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass",
+                    customProperties, "customProperties");
             customPhaseCommandList.add(customPhaseCommand);
         }
         phase.setCustomPhaseCommandList(customPhaseCommandList);

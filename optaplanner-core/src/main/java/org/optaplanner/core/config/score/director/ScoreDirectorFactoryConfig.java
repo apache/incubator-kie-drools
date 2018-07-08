@@ -86,8 +86,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Deprecated protected Integer bendableSoftLevelsSize = null;
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> easyScoreCalculatorCustomProperties = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> incrementalScoreCalculatorCustomProperties = null;
 
     protected String ksessionName = null;
     @XStreamOmitField
@@ -98,13 +102,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<File> scoreDrlFileList = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
+    protected Boolean generateDroolsTestOnError = null;
 
     protected String initializingScoreTrend = null;
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
-
-    protected Boolean generateDroolsTestOnError = null;
 
     /**
      * @return sometimes null
@@ -178,12 +181,28 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.easyScoreCalculatorClass = easyScoreCalculatorClass;
     }
 
+    public Map<String, String> getEasyScoreCalculatorCustomProperties() {
+        return easyScoreCalculatorCustomProperties;
+    }
+
+    public void setEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
+        this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
+    }
+
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
         return incrementalScoreCalculatorClass;
     }
 
     public void setIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
+    }
+
+    public Map<String, String> getIncrementalScoreCalculatorCustomProperties() {
+        return incrementalScoreCalculatorCustomProperties;
+    }
+
+    public void setIncrementalScoreCalculatorCustomProperties(Map<String, String> incrementalScoreCalculatorCustomProperties) {
+        this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
     }
 
     public String getKsessionName() {
@@ -393,10 +412,22 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     protected <Solution_> AbstractScoreDirectorFactory<Solution_> buildEasyScoreDirectorFactory() {
         if (easyScoreCalculatorClass != null) {
+            if (!EasyScoreCalculator.class.isAssignableFrom(easyScoreCalculatorClass)) {
+                throw new IllegalArgumentException(
+                        "The easyScoreCalculatorClass (" + easyScoreCalculatorClass
+                                + ") does not implement " + EasyScoreCalculator.class.getSimpleName() + ".");
+            }
             EasyScoreCalculator<Solution_> easyScoreCalculator = ConfigUtils.newInstance(this,
                     "easyScoreCalculatorClass", easyScoreCalculatorClass);
+            ConfigUtils.applyCustomProperties(easyScoreCalculator, "easyScoreCalculatorClass",
+                    easyScoreCalculatorCustomProperties, "easyScoreCalculatorCustomProperties");
             return new EasyScoreDirectorFactory<>(easyScoreCalculator);
         } else {
+            if (easyScoreCalculatorCustomProperties != null) {
+                throw new IllegalStateException("If there is no easyScoreCalculatorClass (" + easyScoreCalculatorClass
+                        + "), then there can be no easyScoreCalculatorCustomProperties ("
+                        + easyScoreCalculatorCustomProperties + ") either.");
+            }
             return null;
         }
     }
@@ -408,8 +439,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         "The incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
                         + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
             }
-            return new IncrementalScoreDirectorFactory<>(incrementalScoreCalculatorClass);
+            return new IncrementalScoreDirectorFactory<>(incrementalScoreCalculatorClass,
+                    incrementalScoreCalculatorCustomProperties);
         } else {
+            if (incrementalScoreCalculatorCustomProperties != null) {
+                throw new IllegalStateException("If there is no incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
+                        + "), then there can be no incrementalScoreCalculatorCustomProperties ("
+                        + incrementalScoreCalculatorCustomProperties + ") either.");
+            }
             return null;
         }
     }
@@ -546,8 +583,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
         easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
+        easyScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                easyScoreCalculatorCustomProperties, inheritedConfig.getEasyScoreCalculatorCustomProperties());
         incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
+        incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                incrementalScoreCalculatorCustomProperties, inheritedConfig.getIncrementalScoreCalculatorCustomProperties());
         ksessionName = ConfigUtils.inheritOverwritableProperty(
                 ksessionName, inheritedConfig.getKsessionName());
         kieBase = ConfigUtils.inheritOverwritableProperty(
