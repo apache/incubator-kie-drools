@@ -199,41 +199,18 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
 ----
 
 To configure values of a `SolutionPartitioner` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters), use the `solutionPartitionerCustomProperties` element:
+(so the <<benchmarker,Benchmarker>> can tweak those parameters),
+add the `solutionPartitionerCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
 
 [source,xml,options="nowrap"]
 ----
   <partitionedSearch>
     <solutionPartitionerClass>...CloudBalancePartitioner</solutionPartitionerClass>
     <solutionPartitionerCustomProperties>
-      <partCount>8</partCount>
-      <minimumProcessListSize>100</minimumProcessListSize>
+      <myPartCount>8</myPartCount>
+      <myMinimumProcessListSize>100</myMinimumProcessListSize>
     </solutionPartitionerCustomProperties>
   </partitionedSearch>
-----
-
-Then add a public setter for each custom property, which is called when a `Solver` is built.
-Most value types are supported (including boolean, integers, doubles and strings).
-
-[source,java,options="nowrap"]
-----
-public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
-
-    private int partCount = 4;
-    private int minimumProcessListSize = 25;
-
-    @SuppressWarnings("unused")
-    public void setPartCount(int partCount) {
-        this.partCount = partCount;
-    }
-
-    @SuppressWarnings("unused")
-    public void setMinimumProcessListSize(int minimumProcessListSize) {
-        this.minimumProcessListSize = minimumProcessListSize;
-    }
-
-    ...
-}
 ----
 
 

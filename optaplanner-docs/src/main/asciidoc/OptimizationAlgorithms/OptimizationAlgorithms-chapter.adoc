@@ -667,14 +667,14 @@ public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCom
 Any change on the planning entities in a `CustomPhaseCommand` must be notified to the ``ScoreDirector``.
 ====
 
-[WARNING]
+[NOTE]
 ====
 Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
 To do that, read about <<repeatedPlanning,repeated planning>> and do it with a <<problemFactChange,ProblemFactChange>> instead.
 ====
 
-`CustomPhaseCommand` can be configured using the following:
+Configure the `CustomPhaseCommand` in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -713,41 +713,25 @@ The built-in solver phases do not have this issue.
 ====
 
 To configure values of a `CustomPhaseCommand` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters), add the `customProperties` element:
+(so the <<benchmarker,Benchmarker>> can tweak those parameters),
+add the `customProperties` element and use <<customPropertiesConfiguration,custom properties>>:
 
 [source,xml,options="nowrap"]
 ----
   <customPhase>
+    <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
     <customProperties>
       <mySelectionSize>5</mySelectionSize>
     </customProperties>
   </customPhase>
 ----
 
-Then add a public setter for each custom property, which is called when a `Solver` is build.
-Most value types are supported (including boolean, integers, doubles and strings).
-
-[source,java,options="nowrap"]
-----
-public class MyCustomPhase extends AbstractCustomPhaseCommand<MySolution> {
-
-    private int mySelectionSize = 10;
-
-    @SuppressWarnings("unused")
-    public void setMySelectionSize(int mySelectionSize) {
-        this.mySelectionSize = mySelectionSize;
-    }
-
-    ...
-}
-----
-
 
 [[noChangeSolverPhase]]
 == No Change Solver Phase
 
-In rare cases, it can be useful to configure that no solver phase should be run.
-But by default, configuring no phase will trigger the use of the default phases.
+In rare cases, it's useful not to run any solver phases.
+But by default, configuring no phase will trigger running the default phases.
 To avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]

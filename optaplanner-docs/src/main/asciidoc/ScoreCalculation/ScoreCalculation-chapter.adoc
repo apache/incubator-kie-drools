@@ -393,7 +393,9 @@ Then hook your custom `ScoreDefinition` in the domain:
     private MyCustomScore score;
 ----
 
-To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>, <<integrationWithXStream,XStream>>, ..., you'll need to write some glue code.
+To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>,
+<<integrationWithXStream,XStream>>, <<integrationWithJackson,Jackson>>, ...,
+you'll need to write custom glue code too.
 
 
 [[calculateTheScore]]
@@ -435,10 +437,10 @@ An easy way to implement your score calculation in Java.
 ** Plain old Java: no learning curve
 ** Opportunity to delegate score calculation to an existing code base or legacy system
 * Disadvantages:
-** Slower and less scalable
-*** Because there is no <<incrementalScoreCalculation,incremental score calculation>>
+** Slower
+** Does not scalable because there is no <<incrementalScoreCalculation,incremental score calculation>>
 
-Just implement one method of the interface ``EasyScoreCalculator``:
+Implement the one method of the interface ``EasyScoreCalculator``:
 
 [source,java,options="nowrap"]
 ----
@@ -483,7 +485,7 @@ public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> 
 }
 ----
 
-Configure it in your solver configuration:
+Configure it in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -492,11 +494,18 @@ Configure it in your solver configuration:
   </scoreDirectorFactory>
 ----
 
-Alternatively, build a `EasyScoreCalculator` instance at runtime and set it with the programmatic API:
+To configure values of an `EasyScoreCalculator` dynamically in the solver configuration
+(so the <<benchmarker,Benchmarker>> can tweak those parameters),
+add the `easyScoreCalculatorCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
 
-[source,java,options="nowrap"]
+[source,xml,options="nowrap"]
 ----
-    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig().setEasyScoreCalculator(easyScoreCalculator);
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>...MyEasyScoreCalculator</easyScoreCalculatorClass>
+    <easyScoreCalculatorCustomProperties>
+      <myCacheSize>1000</myCacheSize>
+    </easyScoreCalculatorCustomProperties>
+  </scoreDirectorFactory>
 ----
 
 
@@ -515,7 +524,8 @@ A way to implement your score calculation incrementally in Java.
 ** Hard to read
 *** Regular score constraint changes can lead to a high maintenance cost
 
-Implement all the methods of the interface `IncrementalScoreCalculator` and extend the class ``AbstractIncrementalScoreCalculator``:
+Implement all the methods of the interface `IncrementalScoreCalculator`
+and extend the class ``AbstractIncrementalScoreCalculator``:
 
 [source,java,options="nowrap"]
 ----
@@ -636,7 +646,7 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
 }
 ----
 
-Configure it in your solver configuration:
+Configure it in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -645,11 +655,26 @@ Configure it in your solver configuration:
   </scoreDirectorFactory>
 ----
 
-[NOTE]
+[IMPORTANT]
 ====
 A piece of incremental score calculator code can be difficult to write and to review.
-Assert its correctness by using <<invalidScoreDetection,an ``EasyScoreCalculator`` to do the assertions triggered by the ``environmentMode``>>.
+<<invalidScoreDetection,Assert its correctness>> by using an ``EasyScoreCalculator`` to fulfill
+the assertions triggered by the ``environmentMode``.
 ====
+
+To configure values of an `IncrementalScoreCalculator` dynamically in the solver configuration
+(so the <<benchmarker,Benchmarker>> can tweak those parameters),
+add the `incrementalScoreCalculatorCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <incrementalScoreCalculatorClass>...MyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <incrementalScoreCalculatorCustomProperties>
+      <myCacheSize>1000</myCacheSize>
+    </incrementalScoreCalculatorCustomProperties>
+  </scoreDirectorFactory>
+----
 
 
 [[constraintMatchAwareIncrementalScoreCalculator]]
