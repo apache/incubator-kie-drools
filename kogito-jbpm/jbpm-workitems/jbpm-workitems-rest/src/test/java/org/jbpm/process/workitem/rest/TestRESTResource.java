@@ -16,6 +16,9 @@
 
 package org.jbpm.process.workitem.rest;
 
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -25,6 +28,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 
 @Path("/test")
 public class TestRESTResource {
@@ -114,5 +119,14 @@ public class TestRESTResource {
     public String getJsonWithCharset() {
 
         return "{\"name\":\"Person Json\"}";
+    }
+    
+    @GET
+    @Path("/header/{headerKey}")
+    @Produces("text/plain")
+    public String getHeaderValue(@PathParam("headerKey") String headerKey, 
+    		@Context HttpHeaders headers) {
+    	return headers.getRequestHeaders().getOrDefault(headerKey, Collections.emptyList())
+    			.stream().collect(Collectors.joining(","));
     }
 }

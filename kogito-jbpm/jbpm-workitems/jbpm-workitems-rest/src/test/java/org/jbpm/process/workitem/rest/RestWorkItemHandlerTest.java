@@ -19,6 +19,7 @@ package org.jbpm.process.workitem.rest;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.apache.cxf.endpoint.Server;
@@ -44,6 +45,7 @@ import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_READ_TIME
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_RESULT;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_STATUS;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_STATUS_MSG;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_HEADERS;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -912,7 +914,6 @@ public class RestWorkItemHandlerTest {
     }
 
     @Test
-
     public void testPUTOperationWithCharsetSpecified() {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         String nonAsciiData = "\u0418\u0432\u0430\u043d";
@@ -948,4 +949,103 @@ public class RestWorkItemHandlerTest {
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
     }
+    
+    @Test
+    public void testHeadersNull() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String headerKey = "headerKey";
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/header/" + headerKey);
+        workItem.setParameter("Method",
+                              "GET");
+        workItem.setParameter(PARAM_HEADERS, headerKey + "=");
+        
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertTrue(result.trim().isEmpty());
+    }
+    
+    @Test
+    public void testHeadersSingleValue() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String headerKey = "headerKey";
+        String headerValue = "headerValue";
+        String headers = headerKey + "=" + headerValue;
+         
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/header/" + headerKey);
+        workItem.setParameter("Method",
+                              "GET");
+        workItem.setParameter(PARAM_HEADERS, headers);
+        
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertEquals(result, headerValue);
+    }
+    
+    @Test
+    public void testHeadersMultipleValues() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String headerKey = "headerKey";
+        String headerValues = "headerValue,headerValue2,headerValue3";
+        String headers = headerKey + "=" + headerValues;
+         
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/header/" + headerKey);
+        workItem.setParameter("Method",
+                              "GET");
+        workItem.setParameter(PARAM_HEADERS, headers);
+        
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertEquals(result, headerValues);
+    }    
+    
+    @Test
+    public void testHeadersMultipleHeaders() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String headerKey1 = "headerKey";
+        String headerValues1 = "headerValue,headerValue2,headerValue3";
+        String headerKey2 = "headerKey2";
+        String headerValues2 = "headerValue2,headerValue22,headerValue23";
+        String headers = headerKey1 + "=" + headerValues1 + ";" 
+                           + headerKey2 + "=" + headerValues2;
+           
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                                serverURL + "/header/" + headerKey1);
+        workItem.setParameter("Method",
+                                "GET");
+        workItem.setParameter(PARAM_HEADERS, headers);
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                  manager);
+        
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertEquals(result, headerValues1);
+        workItem.setParameter("Url",
+                                serverURL + "/header/" + headerKey2);
+        workItem.setParameter("Method",
+                        "GET");
+        workItem.setParameter(PARAM_HEADERS, headers);
+        handler.executeWorkItem(workItem,
+                          manager);
+        results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        result = (String) results.get(PARAM_RESULT);
+        assertEquals(result, headerValues2);
+    }     
 }

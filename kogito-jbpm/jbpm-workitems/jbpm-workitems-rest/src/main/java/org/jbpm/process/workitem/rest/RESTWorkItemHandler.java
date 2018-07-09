@@ -23,9 +23,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import javax.xml.bind.JAXBContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,6 +102,7 @@ import org.slf4j.LoggerFactory;
  * <li>ResultClass - fully qualified class name of the class that response should be transformed to,
  * if not given string format will be returned</li>
  * <li>AcceptHeader - accept header value</li>
+ * <li>Headers - additional HTTP Headers in format: header1=val1;header2=val2</li>
  * </ul>
  */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
@@ -112,6 +115,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
     public static final String PARAM_CONNECT_TIMEOUT = "ConnectTimeout";
     public static final String PARAM_READ_TIMEOUT = "ReadTimeout";
     public static final String PARAM_CONTENT_TYPE = "ContentType";
+    public static final String PARAM_HEADERS = "Headers";
     public static final String PARAM_CONTENT = "Content";
     public static final String PARAM_CONTENT_DATA = "ContentData";
     public static final String PARAM_USERNAME = "Username";
@@ -491,6 +495,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         String handleExceptionStr = (String) workItem.getParameter("HandleResponseErrors");
         String resultClass = (String) workItem.getParameter("ResultClass");
         String acceptHeader = (String) workItem.getParameter("AcceptHeader");
+        String headers = (String) workItem.getParameter(PARAM_HEADERS);
 
         if (urlStr == null) {
             throw new IllegalArgumentException("Url is a required parameter");
@@ -518,6 +523,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         if (readTimeout == null) {
             readTimeout = 60000;
         }
+        if(headers == null) {
+            headers = "";
+        }
 
         HttpClient httpClient = getHttpClient(readTimeout,
                                               connectTimeout);
@@ -525,7 +533,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         Object methodObject = configureRequest(method,
                                                urlStr,
                                                params,
-                                               acceptHeader);
+                                               acceptHeader,
+                                               headers);
         try {
             HttpResponse response = doRequestWithAuthorization(httpClient,
                                                                methodObject,
@@ -613,6 +622,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         }
     }
 
+    protected void addCustomHeaders(String headers,
+            BiConsumer<String, String> consumer) {
+        for(String h : headers.split(";")) {
+             String[] headerParts = h.split("=");
+             if(headerParts.length == 2) {
+                 consumer.accept(headerParts[0], headerParts[1]);
+             } 
+        }
+    } 
+    
     protected void setBody(RequestBuilder builder,
                            Map<String, Object> params) {
         // backwards compat to "Content" parameter
@@ -1062,7 +1081,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
     protected Object configureRequest(String method,
                                       String urlStr,
                                       Map<String, Object> params,
-                                      String acceptHeaderValue) {
+                                      String acceptHeaderValue,
+                                      String httpHeaders) {
 
         if (HTTP_CLIENT_API_43) {
             RequestBuilder builder = null;
@@ -1087,7 +1107,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             } else {
                 throw new IllegalArgumentException("Method " + method + " is not supported");
             }
-
+            addCustomHeaders(httpHeaders, builder::addHeader);
             return builder;
         } else {
             HttpRequestBase theMethod = null;
@@ -1112,7 +1132,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             } else {
                 throw new IllegalArgumentException("Method " + method + " is not supported");
             }
-
+            addCustomHeaders(httpHeaders, theMethod::addHeader);
             return theMethod;
         }
     }
