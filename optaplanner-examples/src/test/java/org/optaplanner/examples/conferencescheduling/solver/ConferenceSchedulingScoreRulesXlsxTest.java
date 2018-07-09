@@ -54,7 +54,7 @@ import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFi
 
 public class ConferenceSchedulingScoreRulesXlsxTest {
 
-    private ConferenceSolution currentSolution;
+    private ConferenceSolution initialSolution;
     private String currentPackage;
     private String currentConstraint;
     private String currentSheetName;
@@ -69,7 +69,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         File testFile = new File(getClass().getResource("testConferenceSchedulingScoreRules.xlsx").getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            this.currentSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
+            this.initialSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
             this.testFileReader = new testConferenceSchedulingScoreRulesReader(workbook);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
@@ -79,11 +79,12 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
 
     @Test
     public void testRules() {
-        while ((currentSolution = testFileReader.nextSolution()) != null) {
+        ConferenceSolution currentSheetSolution;
+        while ((currentSheetSolution = testFileReader.nextSolution()) != null) {
             //TODO: give a clue which test sheet is failing
             System.out.println(currentSheetName);
-            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedScore.getHardScore(), currentSolution);
-            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedScore.getSoftScore(), currentSolution);
+            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedScore.getHardScore(), currentSheetSolution);
+            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedScore.getSoftScore(), currentSheetSolution);
         }
     }
 
@@ -103,11 +104,11 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             super(workbook);
             this.numberOfSheets = workbook.getNumberOfSheets();
             this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;
-            roomMap = currentSolution.getRoomList().stream().collect(
+            roomMap = initialSolution.getRoomList().stream().collect(
                     Collectors.toMap(Room::getName, Function.identity()));
-            talkMap = currentSolution.getTalkList().stream().collect(
+            talkMap = initialSolution.getTalkList().stream().collect(
                     Collectors.toMap(Talk::getCode, Function.identity()));
-            timeslotMap = currentSolution.getTimeslotList().stream().collect(
+            timeslotMap = initialSolution.getTimeslotList().stream().collect(
                     Collectors.toMap(timeslot -> Pair.of(timeslot.getStartDateTime(), timeslot.getEndDateTime()),
                                      Function.identity()));
             this.columnIndexToDateMap = new HashMap<>(timeslotMap.size());
@@ -117,7 +118,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
 
         @Override
         public ConferenceSolution read() {
-            return currentSolution;
+            return initialSolution;
         }
 
         private ConferenceSolution nextSolution() {
@@ -127,7 +128,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             nextSheet(workbook.getSheetName(currentTestSheetIndex++));
             currentSheetName = currentSheet.getSheetName();
 
-            ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(currentSolution);
+            ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(initialSolution);
             talkMap = nextSheetSolution.getTalkList().stream().collect(
                     Collectors.toMap(Talk::getCode, Function.identity()));
 
