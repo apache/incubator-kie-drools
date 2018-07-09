@@ -90,11 +90,11 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
 
     private class testConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXslxReader<ConferenceSolution> {
 
-        private final SolutionCloner<ConferenceSolution> solutionCloner = SolutionDescriptor.buildSolutionDescriptor(ConferenceSolution.class, Talk.class).getSolutionCloner();
+        private final SolutionCloner<ConferenceSolution> solutionCloner =
+                SolutionDescriptor.buildSolutionDescriptor(ConferenceSolution.class, Talk.class).getSolutionCloner();
 
         private int numberOfSheets, currentTestSheetIndex;
         private Map<String, Room> roomMap;
-        private Map<String, Talk> talkMap;
         private Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> timeslotMap;
         private Map<Integer, LocalDate> columnIndexToDateMap;
         private Map<Integer, LocalTime> columnIndexToStartTimeMap;
@@ -106,8 +106,6 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;
             roomMap = initialSolution.getRoomList().stream().collect(
                     Collectors.toMap(Room::getName, Function.identity()));
-            talkMap = initialSolution.getTalkList().stream().collect(
-                    Collectors.toMap(Talk::getCode, Function.identity()));
             timeslotMap = initialSolution.getTimeslotList().stream().collect(
                     Collectors.toMap(timeslot -> Pair.of(timeslot.getStartDateTime(), timeslot.getEndDateTime()),
                                      Function.identity()));
@@ -122,15 +120,13 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         }
 
         private ConferenceSolution nextSolution() {
+
             if (currentTestSheetIndex >= numberOfSheets) {
                 return null;
             }
+
             nextSheet(workbook.getSheetName(currentTestSheetIndex++));
             currentSheetName = currentSheet.getSheetName();
-
-            ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(initialSolution);
-            talkMap = nextSheetSolution.getTalkList().stream().collect(
-                    Collectors.toMap(Talk::getCode, Function.identity()));
 
             nextRow(false);
             readHeaderCell("Constraint package");
@@ -141,6 +137,10 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             nextRow(false);
             readHeaderCell("Score");
             expectedScore = HardSoftScore.parseScore(nextStringCell().getStringCellValue());
+
+            ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(initialSolution);
+            Map<String, Talk> talkMap = nextSheetSolution.getTalkList().stream().collect(
+                    Collectors.toMap(Talk::getCode, Function.identity()));
 
             nextRow();
             readTimeslotDays();
