@@ -24,24 +24,21 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
@@ -52,29 +49,31 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
+
 public class ConferenceSchedulingScoreRulesXlsxTest {
 
     private ConferenceSolution currentSolution;
     private String currentPackage;
     private String currentConstraint;
     private String currentSheetName;
-    private int expectedHardScore, expectedSoftScore;
+    private HardSoftScore expectedScore;
 
-    private final String testFileName = "testConferenceSchedulingScoreRules.xlsx";
     private HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
     private testConferenceSchedulingScoreRulesReader testFileReader;
 
     @Before
     public void setup() {
-        File testFile = new File(getClass().getResource(testFileName).getFile());
+        File testFile = new File(getClass().getResource("testConferenceSchedulingScoreRules.xlsx").getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
             this.currentSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
             this.testFileReader = new testConferenceSchedulingScoreRulesReader(workbook);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
-                                                    + testFileName + ").", e);
+                                                    + testFile.getName() + ").", e);
         }
     }
 
@@ -83,12 +82,14 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         while ((currentSolution = testFileReader.nextSolution()) != null) {
             //TODO: give a clue which test sheet is failing
             System.out.println(currentSheetName);
-            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedHardScore, currentSolution);
-            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedSoftScore, currentSolution);
+            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedScore.getHardScore(), currentSolution);
+            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedScore.getSoftScore(), currentSolution);
         }
     }
 
     private class testConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXslxReader<ConferenceSolution> {
+
+        private final SolutionCloner<ConferenceSolution> solutionCloner = SolutionDescriptor.buildSolutionDescriptor(ConferenceSolution.class, Talk.class).getSolutionCloner();
 
         private int numberOfSheets, currentTestSheetIndex;
         private Map<String, Room> roomMap;
@@ -98,16 +99,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         private Map<Integer, LocalTime> columnIndexToStartTimeMap;
         private Map<Integer, LocalTime> columnIndexToEndTimeMap;
 
-        private final FieldAccessingSolutionCloner<ConferenceSolution> solutionCloner = new FieldAccessingSolutionCloner<>(new SolutionDescriptor<>(ConferenceSolution.class));
-        private final Pattern VALID_SCORE_PATTERN = Pattern.compile("-?\\d+ hard/-?\\d+ soft");
-        private final String ONLY_DIGITS_AND_SPACES_REGEX = "[^\\d\\s-]";
-
-        final DateTimeFormatter DAY_FORMATTER
-                = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
-        final DateTimeFormatter TIME_FORMATTER
-                = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
-
-        public testConferenceSchedulingScoreRulesReader(XSSFWorkbook workbook) {
+        private testConferenceSchedulingScoreRulesReader(XSSFWorkbook workbook) {
             super(workbook);
             this.numberOfSheets = workbook.getNumberOfSheets();
             this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;
@@ -128,7 +120,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             return currentSolution;
         }
 
-        public ConferenceSolution nextSolution() {
+        private ConferenceSolution nextSolution() {
             if (currentTestSheetIndex >= numberOfSheets) {
                 return null;
             }
@@ -147,20 +139,13 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             currentConstraint = nextStringCell().getStringCellValue();
             nextRow(false);
             readHeaderCell("Score");
-            String scoreAsString = nextStringCell().getStringCellValue();
-            if (!VALID_SCORE_PATTERN.matcher(scoreAsString).matches()) {
-                throw new IllegalStateException(currentPosition() + ": The score (" + scoreAsString
-                                                        + ") must match to the regular expression (" + VALID_SCORE_PATTERN + ").");
-            }
-            String[] scoresStringArray = scoreAsString.replaceAll(ONLY_DIGITS_AND_SPACES_REGEX, "").split(" +");
-            expectedHardScore = Integer.parseInt(scoresStringArray[0]);
-            expectedSoftScore = Integer.parseInt(scoresStringArray[1]);
+            expectedScore = HardSoftScore.parseScore(nextStringCell().getStringCellValue());
 
             nextRow();
             readTimeslotDays();
             nextRow(false);
             readHeaderCell("Room");
-            readTiemslotHours();
+            readTimeslotHours();
             while (nextRow()) {
                 String roomName = nextStringCell().getStringCellValue();
                 Room room = roomMap.get(roomName);
@@ -200,23 +185,21 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             String previousDateString = null;
             for (int i = 0; i < currentRow.getLastCellNum(); i++) {
                 XSSFCell cell = currentRow.getCell(i);
-                if (cell.getStringCellValue().isEmpty() && previousDateString == null) {
-                    continue;
-                } else {
-                    if ((!cell.getStringCellValue().isEmpty())) {
+                if (!cell.getStringCellValue().isEmpty() || previousDateString != null) {
+                    if (!cell.getStringCellValue().isEmpty()) {
                         previousDateString = cell.getStringCellValue();
                     }
                     try {
                         columnIndexToDateMap.put(i, LocalDate.parse(previousDateString, DAY_FORMATTER));
                     } catch (DateTimeParseException e) {
                         throw new IllegalStateException(currentPosition() + ": The date (" + cell.getStringCellValue()
-                                                                + "does not parse as a date.");
+                                                                + ") does not parse as a date.");
                     }
                 }
             }
         }
 
-        private void readTiemslotHours() {
+        private void readTimeslotHours() {
             columnIndexToStartTimeMap.clear();
             columnIndexToEndTimeMap.clear();
             StreamSupport.stream(currentRow.spliterator(), false)
