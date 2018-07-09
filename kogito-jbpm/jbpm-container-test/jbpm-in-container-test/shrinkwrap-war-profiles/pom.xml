@@ -149,6 +149,11 @@
               <groupId>xml-apis</groupId>
               <artifactId>xml-apis</artifactId>
             </exclusion>
+            <!-- conflicts on WAS -->
+            <exclusion>
+              <groupId>org.jboss.spec.javax.xml.bind</groupId>
+              <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+            </exclusion>
           </exclusions>
         </dependency>
       </dependencies>
