@@ -623,10 +623,18 @@ public class MigrationManager {
     protected void updateBasedOnTrigger(TimerInstance timerInstance) {
         Trigger trigger = ((DefaultJobHandle)timerInstance.getJobHandle()).getTimerJobInstance().getTrigger();
         if (trigger instanceof IntervalTrigger && timerInstance.getPeriod() > 0) {
+            IntervalTrigger intervalTrigger = (IntervalTrigger) trigger;
             if (timerInstance.getRepeatLimit() > 0) {
-                timerInstance.setRepeatLimit(((IntervalTrigger) trigger).getRepeatLimit() - ((IntervalTrigger) trigger).getRepeatCount());
+                timerInstance.setRepeatLimit(intervalTrigger.getRepeatLimit() - intervalTrigger.getRepeatCount() + 1); // +1 because repeatCount contains also one last scheduled, but cancelled trigger
             }
-            long delay = timerInstance.getPeriod() - (System.currentTimeMillis() - ((IntervalTrigger) trigger).getLastFireTime().getTime());
+
+            long delay;
+            if (intervalTrigger.getLastFireTime() != null) {
+                // it is already fired calculate the new delay using the period instead of the delay
+                delay = timerInstance.getPeriod() - (System.currentTimeMillis() - intervalTrigger.getLastFireTime().getTime());
+            } else {
+                delay = timerInstance.getDelay() - (System.currentTimeMillis() - intervalTrigger.getCreatedTime().getTime());
+            }
             timerInstance.setDelay(delay);
         }
     }

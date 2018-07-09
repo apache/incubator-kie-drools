@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_LIZPIGM7Eei8YLxtX8FKjA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_stringItem" structureRef="java.lang.String"/>
   <bpmn2:signal id="_c2be141c-40e3-3374-8eb6-eb5048b2a167" name="endMe"/>
   <bpmn2:process id="CycleTimer-V1" drools:packageName="org.jbpm" drools:version="1.0" name="OtherProcess" isExecutable="true">
+    <bpmn2:property id="startTime" itemSubjectRef="_stringItem"/>
     <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
@@ -19,7 +21,7 @@
       <bpmn2:incoming>_5298B5D7-94A7-4790-957D-37C1C58CF046</bpmn2:incoming>
       <bpmn2:outgoing>_BADE78F9-619F-4BCA-9EA8-3A81025B167C</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_LIadQGM7Eei8YLxtX8FKjA">
-        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_LIadQWM7Eei8YLxtX8FKjA">R3/PT3S</bpmn2:timeCycle>
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_LIadQWM7Eei8YLxtX8FKjA">R3/#{startTime}/PT3S</bpmn2:timeCycle>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:sequenceFlow id="_5298B5D7-94A7-4790-957D-37C1C58CF046" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_5B8836F1-096A-48AA-8427-1A7B43AE11D2"/>
