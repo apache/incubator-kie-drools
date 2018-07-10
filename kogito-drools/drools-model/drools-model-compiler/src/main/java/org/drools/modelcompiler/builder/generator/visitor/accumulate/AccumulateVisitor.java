@@ -326,7 +326,8 @@ public abstract class AccumulateVisitor {
     private void addBindingAsDeclaration(RuleContext context, String bindingId, Class<?> declarationClass, AccumulateFunction accumulateFunction) {
         if (bindingId != null) {
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
-            if (accumulateFunctionResultType == Comparable.class && (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
+            if ((accumulateFunctionResultType == Comparable.class || accumulateFunctionResultType == Number.class) &&
+                    (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
                 accumulateFunctionResultType = declarationClass;
             }
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
