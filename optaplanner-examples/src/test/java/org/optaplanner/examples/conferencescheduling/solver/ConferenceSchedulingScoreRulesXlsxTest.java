@@ -48,11 +48,16 @@ import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
 import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
 
 public class ConferenceSchedulingScoreRulesXlsxTest {
+
+    private final HardSoftScore unassignedScore = HardSoftScore.ZERO;
+    private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private ConferenceSolution initialSolution;
     private String currentPackage;
@@ -82,7 +87,6 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         ConferenceSolution currentSheetSolution;
         while ((currentSheetSolution = testFileReader.nextSolution()) != null) {
             //TODO: give a clue which test sheet is failing
-            System.out.println(currentSheetName);
             scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedScore.getHardScore(), currentSheetSolution);
             scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedScore.getSoftScore(), currentSheetSolution);
         }
@@ -141,6 +145,10 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             ConferenceSolution nextSheetSolution = solutionCloner.cloneSolution(initialSolution);
             Map<String, Talk> talkMap = nextSheetSolution.getTalkList().stream().collect(
                     Collectors.toMap(Talk::getCode, Function.identity()));
+
+            logger.info(currentSheetName);
+            scoreVerifier.assertHardWeight(currentPackage, currentConstraint, unassignedScore.getHardScore(), nextSheetSolution);
+            scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, unassignedScore.getSoftScore(), nextSheetSolution);
 
             nextRow();
             readTimeslotDays();
