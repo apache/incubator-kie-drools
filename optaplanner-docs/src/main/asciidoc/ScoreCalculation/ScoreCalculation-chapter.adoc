@@ -438,7 +438,7 @@ An easy way to implement your score calculation in Java.
 ** Opportunity to delegate score calculation to an existing code base or legacy system
 * Disadvantages:
 ** Slower
-** Does not scalable because there is no <<incrementalScoreCalculation,incremental score calculation>>
+** Does not scale because there is no <<incrementalScoreCalculation,incremental score calculation>>
 
 Implement the one method of the interface ``EasyScoreCalculator``:
 
