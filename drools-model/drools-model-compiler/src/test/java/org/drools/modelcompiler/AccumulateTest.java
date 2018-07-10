@@ -904,4 +904,26 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert("xyz");
         ksession.fireAllRules();
     }
+
+    public static class ShortValue {
+        public Short getValue() {
+            return 1;
+        }
+    }
+
+    @Test
+    public void testImplicitCastInAccumulateFunction() {
+        String str =
+                "import " + ShortValue.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  $max : Double(doubleValue != Double.MAX_VALUE) from accumulate ( ShortValue( $v : value ); max($v) ) \n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new ShortValue());
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
