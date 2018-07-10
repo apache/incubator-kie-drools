@@ -88,7 +88,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         }
     }
 
-    private class testConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXslxReader<ConferenceSolution> {
+    private class testConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
 
         private final SolutionCloner<ConferenceSolution> solutionCloner =
                 SolutionDescriptor.buildSolutionDescriptor(ConferenceSolution.class, Talk.class).getSolutionCloner();
