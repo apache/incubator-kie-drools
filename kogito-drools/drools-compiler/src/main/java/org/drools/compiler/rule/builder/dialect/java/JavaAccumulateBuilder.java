@@ -16,8 +16,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,6 +102,9 @@ public class JavaAccumulateBuilder
         final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(context, accumDescr, source);
         
         Map<String, Declaration> declsInScope = context.getDeclarationResolver().getDeclarations( context.getRule() );
+        if (prefixPattern != null && prefixPattern.getDeclaration() != null) {
+            declsInScope.remove( prefixPattern.getDeclaration().getIdentifier() );
+        }
         Map<String, Class< ? >> declCls = DeclarationScopeResolver.getDeclarationClasses( declsInScope );
 
         Accumulate accumulate;

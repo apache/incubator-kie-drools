@@ -4012,4 +4012,23 @@ public class AccumulateTest {
             kieSession.dispose();
         }
     }
+
+    @Test
+    public void testAccumlateResultCannotBeUsedInFunctions() {
+        String drl =
+                "import java.util.*;" +
+                        "rule \"Rule X\" when\n" +
+                        "    openAlarms: Collection( ) from accumulate (\n" +
+                        "            $s : String(),\n" +
+                        "            init( Map map = new HashMap(); ),\n" +
+                        "            action( map.put($s, openAlarms); ),\n" +
+                        "            result( map.values() ) )\n" +
+                        "then\n" +
+                        "end";
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText)
+                .anySatisfy(text -> Assertions.assertThat(text).contains("openAlarms"));
+    }
 }
