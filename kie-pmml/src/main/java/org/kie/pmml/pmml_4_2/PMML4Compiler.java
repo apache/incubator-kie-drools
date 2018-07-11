@@ -50,8 +50,6 @@ import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
 import org.dmg.pmml.pmml_4_2.descr.TreeModel;
-import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLResource;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
@@ -80,7 +78,7 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.xml.sax.SAXException;
 
-public class PMML4Compiler implements PMMLCompiler {
+public class PMML4Compiler {
 
     public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_2";
     public static final String PMML_DROOLS = "org.kie.pmml.pmml_4_2";
@@ -509,7 +507,7 @@ public class PMML4Compiler implements PMMLCompiler {
         return is;
     }
 
-    @Override
+    
     public Map<String, String> getJavaClasses(String fileName) {
         InputStream is = getInputStreamByFileName(fileName);
         if (is != null) {
@@ -518,7 +516,7 @@ public class PMML4Compiler implements PMMLCompiler {
         return new HashMap<>();
     }
 
-    @Override
+    
     public Map<String, String> getJavaClasses(InputStream stream) {
         Map<String, String> javaClasses = new HashMap<>();
         PMML pmml = loadModel(PMML, stream);
@@ -710,7 +708,7 @@ public class PMML4Compiler implements PMMLCompiler {
         return combinedResults;
     }
 
-    @Override
+    
     public void clearResults() {
         this.results.clear();
     }
@@ -785,9 +783,5 @@ public class PMML4Compiler implements PMMLCompiler {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public String getCompilerVersion() {
-        return "KIE PMML v2";
-    }
+    
 }

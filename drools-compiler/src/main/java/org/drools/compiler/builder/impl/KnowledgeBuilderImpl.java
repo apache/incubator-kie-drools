@@ -45,13 +45,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-import org.drools.compiler.builder.impl.errors.SrcError;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -60,7 +53,6 @@ import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.compiler.DescrBuildWarning;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
@@ -77,9 +69,6 @@ import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
-import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PMMLResource;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -92,9 +81,7 @@ import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -124,7 +111,6 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
@@ -151,8 +137,6 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -175,6 +159,7 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,7 +199,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private PMMLCompiler pmmlCompiler;
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
@@ -326,13 +310,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         typeBuilder = new TypeDeclarationBuilder(this);
     }
 
-    private PMMLCompiler getPMMLCompiler() {
-        if (this.pmmlCompiler == null) {
-            this.pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
-        }
-        return this.pmmlCompiler;
-    }
-
     Resource getCurrentResource() {
         return resource;
     }
@@ -434,43 +411,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return conversionResultToPackageDescr(resource, conversionResult);
     }
 
-    private List<PackageDescr> generatedResourcesToPackageDescr(Resource resource, List<PMMLResource> resources) throws DroolsParserException {
-        List<PackageDescr> pkgDescrs = new ArrayList<>();
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        for (PMMLResource res : resources) {
-            for (Map.Entry<String, String> entry: res.getRules().entrySet()) {
-                String key = entry.getKey();
-                String src = entry.getValue();
-                PackageDescr descr = null;
-                descr = parser.parse(false, src);
-                if (descr != null) {
-                    descr.setResource(resource);
-                    pkgDescrs.add(descr);
-                    dumpGeneratedRule(descr,key,src);
-                } else {
-                    addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-                }
-            }
-        }
-        return pkgDescrs;
-    }
-
-    private void dumpGeneratedRule(PackageDescr descr, String resName, String src) {
-        File dumpDir = this.configuration.getDumpDir();
-        if (dumpDir != null) {
-            try {
-                String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
-                String outputPath = dirName + resName + ".drl";
-                try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-                    fos.write(src.getBytes());
-                } catch (IOException iox) {
-                    this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to write generated rules the dump directory: "+outputPath));
-                }
-            } catch (IOException e) {
-                this.addBuilderResult(new DescrBuildWarning(null, descr, descr.getResource(), "Unable to access the dump directory"));
-            }
-        }
-    }
 
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
@@ -547,7 +487,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         final Resource res = ResourceFactory.newByteArrayResource(pmmlString.getBytes());
 
         try {
-            addPackageFromKiePMML(getPMMLCompiler(), res, ResourceType.PMML, null);
+            ResourceWithConfiguration resCon = new ResourceWithConfigurationImpl(res, null, null, null);
+            addPackageForExternalType(ResourceType.PMML,Arrays.asList(resCon));
         } catch (Exception e) {
             throw new DroolsParserException(e);
         }
@@ -837,8 +778,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, (JaxbConfigurationImpl) configuration);
-            } else if (ResourceType.PMML.equals(type)) {
-                addPackageFromPMML(resource, type, configuration);
             } else if (ResourceType.SCARD.equals(type)) {
                 addPackageFromScoreCard(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -888,193 +827,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             throw new RuntimeException("Unknown resource type: " + type);
         }
     }
-
-    public void addPackageFromPMML(Resource resource,
-            ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
-        PMMLCompiler compiler = getPMMLCompiler();
-        if ("KIE PMML v2".equals(compiler.getCompilerVersion())) {
-            addPackageFromKiePMML(compiler,resource,type,configuration);
-        } else {
-            addPackageFromDroolsPMML(compiler,resource,type,configuration);
-        }
-    }
-
-    private void addPackageFromDroolsPMML(PMMLCompiler compiler, Resource resource,
-                        ResourceType type, ResourceConfiguration configuration) throws Exception {
-        if (compiler != null) {
-            if (compiler.getResults().isEmpty()) {
-                this.resource = resource;
-                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
-                if (descr != null) {
-                    addPackage(descr);
-                }
-                this.resource = null;
-            } else {
-                this.results.addAll(compiler.getResults());
-            }
-            compiler.clearResults();
-        } else {
-            addPackageForExternalType(resource, type, configuration);
-        }
-    }
-
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler, Resource resource)
-            throws DroolsParserException, IOException {
-        String theory = compiler.compile(resource.getInputStream(), rootClassLoader);
-
-        if (!compiler.getResults().isEmpty()) {
-            this.results.addAll(compiler.getResults());
-            return null;
-        }
-
-        return generatedDrlToPackageDescr(resource, theory);
-    }
-
-    private void addPackageFromKiePMML(PMMLCompiler compiler, Resource resource,
-                                   ResourceType type,
-                                   ResourceConfiguration configuration) throws Exception {
-        if (compiler != null) {
-            if (compiler.getResults().isEmpty()) {
-                this.resource = resource;
-                addPMMLPojos(compiler,resource);
-                if (compiler.getResults().isEmpty()) {
-                    List<PackageDescr> descrs = pmmlModelToKiePackageDescr(compiler, resource);
-                    if (descrs != null && !descrs.isEmpty()) {
-                        for (PackageDescr descr: descrs) {
-                            addPackage(descr);
-                        }
-                    }
-                }
-                this.resource = null;
-            }
-            if (!compiler.getResults().isEmpty()) {
-                this.results.addAll(compiler.getResults());
-            }
-            compiler.clearResults();
-        } else {
-            addPackageForExternalType(resource, type, configuration);
-        }
-    }
-
-    List<PackageDescr> pmmlModelToKiePackageDescr(PMMLCompiler compiler,
-                                         Resource resource) throws DroolsParserException,
-            IOException {
-        List<PMMLResource> resources = compiler.precompile(resource.getInputStream(), null, null);
-        if (resources != null && !resources.isEmpty()) {
-            return generatedResourcesToPackageDescr(resource,resources);
-        } else if (!compiler.getResults().isEmpty()) {
-            this.results.addAll(compiler.getResults());
-        }
-        return null;
-    }
-
-    private void addPMMLPojos(PMMLCompiler compiler, Resource resource) {
-        KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
-        Map<String,String> javaSources = new HashMap<>();
-        Map<String,String> modelSources = null;
-        try {
-            modelSources = compiler.getJavaClasses(resource.getInputStream());
-        } catch (IOException e) {
-            results.add(new SrcError(resource, e.getMessage()));
-        }
-        if (compiler.getResults().isEmpty()) {
-            if (modelSources != null && !modelSources.isEmpty()) {
-                javaSources.putAll(modelSources);
-            }
-
-            for (Map.Entry<String, String> entry: javaSources.entrySet()) {
-                String key = entry.getKey();
-                String javaCode = entry.getValue();
-                if (javaCode != null && !javaCode.trim().isEmpty()) {
-                    Resource res = ResourceFactory.newByteArrayResource(javaCode.getBytes()).setResourceType(ResourceType.JAVA);
-                    String sourcePath = key.replaceAll("\\.", "/")+".java";
-                    res.setSourcePath(sourcePath);
-                    javaSource.write(res);
-                }
-            }
-
-            ResourceReader src = ((KieFileSystemImpl)javaSource).asMemoryFileSystem();
-            List<String> javaFileNames = getJavaFileNames(src);
-            if (javaFileNames != null && !javaFileNames.isEmpty()) {
-                ClassLoader classLoader = rootClassLoader;
-                KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
-                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
-                MemoryFileSystem trgMfs = new MemoryFileSystem();
-                compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
-                Map<String, byte[]> classesMap = new HashMap<>();
-
-                for (String name: trgMfs.getFileNames()) {
-                    classesMap.put(name, trgMfs.getBytes(name));
-                }
-                if (!classesMap.isEmpty()) {
-                    ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
-                    projectClassLoader.reinitTypes();
-                    projectClassLoader.storeClasses(classesMap);
-                }
-            }
-        }
-    }
-
-    private List<String> getJavaFileNames(ResourceReader src) {
-        List<String> javaFileNames = new ArrayList<>();
-        for (String fname: src.getFileNames()) {
-            if (fname.endsWith(".java")) {
-                javaFileNames.add(fname);
-            }
-        }
-        return javaFileNames;
-    }
-
-    private void compileJavaClasses(JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
-            String rootFolder, ResourceReader source, MemoryFileSystem trgMfs ) {
-        if (!javaFiles.isEmpty()) {
-            String[] sourceFiles = javaFiles.toArray(new String[javaFiles.size()]);
-            File dumpDir = javaConf.getPackageBuilderConfiguration().getDumpDir();
-            if (dumpDir != null) {
-                String dumpDirName;
-                try {
-                    dumpDirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath()
-                            : dumpDir.getCanonicalPath() + "/";
-                    for (String srcFile : sourceFiles) {
-                        String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length())
-                                : srcFile).replaceAll("/", ".");
-
-                        String fname = dumpDirName + baseName;
-                        byte[] srcData = source.getBytes(srcFile);
-                        try (FileOutputStream fos = new FileOutputStream(fname)) {
-                            fos.write(srcData);
-                        } catch (IOException iox) {
-                            results.add(new SrcError(fname, iox.getMessage()));
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            JavaCompiler javaCompiler = createCompiler(javaConf, rootFolder);
-            CompilationResult res = javaCompiler.compile(sourceFiles, source, trgMfs, classLoader);
-
-            for (CompilationProblem problem : res.getErrors()) {
-                results.add(new SrcError(problem.getFileName(), problem.getMessage()));
-            }
-            for (CompilationProblem problem : res.getWarnings()) {
-                results.add(new SrcError(problem.getFileName(), problem.getMessage()));
-            }
-        }
-    }
-
-
-    private JavaCompiler createCompiler(JavaDialectConfiguration javaConf, String prefix) {
-        JavaCompilerFactory compilerFactory = new JavaCompilerFactory();
-        JavaCompiler javaCompiler = compilerFactory.loadCompiler(javaConf);
-        if (javaCompiler instanceof EclipseJavaCompiler) {
-            ((EclipseJavaCompiler) javaCompiler).setPrefix(prefix);
-        }
-        return javaCompiler;
-    }
-
 
     void addPackageFromXSD(Resource resource,
                            JaxbConfigurationImpl configuration) throws IOException {
