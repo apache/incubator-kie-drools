@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
@@ -66,6 +67,8 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                 if( dep instanceof BusinessKnowledgeModelNode ) {
                     // might need to create a DMNType for "functions" and replace the type here by that
                     ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
+                } else if (dep instanceof DecisionServiceNode) {
+                    ctx.setVariable(dep.getName(), ((DecisionServiceNode) dep).getResultType());
                 }
             }
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
