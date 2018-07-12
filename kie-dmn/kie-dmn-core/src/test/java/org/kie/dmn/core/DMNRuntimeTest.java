@@ -2110,5 +2110,23 @@ public class DMNRuntimeTest {
         assertThat(result.get("Decision Logic 3"), is(true));
         assertThat(result.get("Decision Logic 4"), is(true));
     }
+
+    @Test
+    public void testInvokingAFunctionOnALiteralContext() {
+        // DROOLS-2732 FEEL invoking a function on a literal context
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invokingAFunctionOnALiteralContext.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_781968dd-64dc-4231-9cd0-2ce590881f2c", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("invoking a function on a literal context"), is(new BigDecimal(3)));
+    }
 }
 

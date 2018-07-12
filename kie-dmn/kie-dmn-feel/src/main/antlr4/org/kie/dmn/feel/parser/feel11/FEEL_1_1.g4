@@ -249,7 +249,7 @@ unaryExpression
 unaryExpressionNotPlusMinus
 	:   not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
 	|	not_key unaryExpression           #logicalNegation
-	|   primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
+	|   primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary

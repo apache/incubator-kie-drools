@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
@@ -28,7 +29,9 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // function definition and invocation
-                {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null },
+                {"{ hello : function() \"Hello World!\"}.hello()", "Hello World!", null},
+                {"{ hello : function(n) \"Hello \"+n+\"!\"}.hello(\"John\")", "Hello John!", null},
+                {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null},
                 {"{ functioncontext: { innercontext: {hello world : function() \"Hello World!\"}}, " +
                         " message : functioncontext.innercontext.hello world() }.message", "Hello World!", null },
                 {"{ hello world : function() \"Hello World!\", message : helloWorld() }.message", null, FEELEvent.Severity.ERROR },
