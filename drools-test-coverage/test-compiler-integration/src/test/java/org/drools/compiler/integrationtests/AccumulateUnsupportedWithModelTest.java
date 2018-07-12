@@ -33,11 +33,11 @@ import org.kie.api.runtime.KieSession;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class AccumulateUnsupportedTest {
+public class AccumulateUnsupportedWithModelTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public AccumulateUnsupportedTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public AccumulateUnsupportedWithModelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
