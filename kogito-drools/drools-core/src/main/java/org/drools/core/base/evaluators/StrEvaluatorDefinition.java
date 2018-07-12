@@ -160,6 +160,8 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
             return parameter;
         }
 
+        public StrEvaluator() { }
+        
         public StrEvaluator(final ValueType type, final boolean isNegated) {
             super(type, isNegated ? NOT_STR_COMPARE : STR_COMPARE);
         }
