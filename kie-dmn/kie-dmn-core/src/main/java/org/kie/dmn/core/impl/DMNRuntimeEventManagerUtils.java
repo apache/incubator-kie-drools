@@ -22,11 +22,14 @@ import java.util.function.Consumer;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -45,6 +48,16 @@ public final class DMNRuntimeEventManagerUtils {
     public static void fireAfterEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
         AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl( decision, result );
         notifyListeners( eventManager, l -> l.afterEvaluateDecision( event ) );
+    }
+
+    public static void fireBeforeEvaluateDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
+        BeforeEvaluateDecisionServiceEvent event = new BeforeEvaluateDecisionServiceEventImpl(decision, result);
+        notifyListeners(eventManager, l -> l.beforeEvaluateDecisionService(event));
+    }
+
+    public static void fireAfterEvaluateDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
+        AfterEvaluateDecisionServiceEvent event = new AfterEvaluateDecisionServiceEventImpl(decision, result);
+        notifyListeners(eventManager, l -> l.afterEvaluateDecisionService(event));
     }
 
     public static void fireBeforeEvaluateBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {

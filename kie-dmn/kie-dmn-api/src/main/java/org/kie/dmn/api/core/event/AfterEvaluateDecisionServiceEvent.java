@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.ast;
+package org.kie.dmn.api.core.event;
 
-import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 
-public interface DecisionServiceNode extends DMNNode {
-    
-    DMNType getResultType();
-    
-    DecisionService getDecisionService();
+public interface AfterEvaluateDecisionServiceEvent extends DMNEvent {
+
+    DecisionServiceNode getDecisionService();
 
 }
