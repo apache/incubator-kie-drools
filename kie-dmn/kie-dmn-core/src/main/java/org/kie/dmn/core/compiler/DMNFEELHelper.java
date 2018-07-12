@@ -1,6 +1,7 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
@@ -19,12 +21,19 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
+import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -33,6 +42,8 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 public class DMNFEELHelper {
 
@@ -239,6 +250,41 @@ public class DMNFEELHelper {
         }
     }
 
+    public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx) {
+        Map<String, Type> variableTypes = new HashMap<>();
+        for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
+            variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
+        }
 
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
+        ParseTree tree = parser.expressionList();
+        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
+        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, v.visit(tree));
+    }
 
+    public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+        return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables);
+    }
+
+    public Object evaluate(String expression) {
+        return feel.evaluate( expression );
+    }
+
+    public Object evaluate(String expression, EvaluationContext ctx) {
+        return feel.evaluate( expression, ctx );
+    }
+
+    public List<UnaryTest> evaluateUnaryTests(String expression) {
+        return feel.evaluateUnaryTests( expression );
+    }
+
+    public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {
+        return feel.evaluateUnaryTests( expression, variableTypes );
+    }
+
+    public List<CompiledFEELExpression> getFeelExpressionsForInputs( DMNCompilerContext ctx, List<String> exprs ) {
+        CompilerContext feelctx = feel.newCompilerContext();
+        ctx.getVariables().forEach( (k, v) -> feelctx.addInputVariableType( k, ((BaseDMNTypeImpl ) v).getFeelType() ) );
+        return exprs.stream().map( n -> (CompiledFEELExpression) feel.compile( n, feelctx ) ).collect( toList() );
+    }
 }

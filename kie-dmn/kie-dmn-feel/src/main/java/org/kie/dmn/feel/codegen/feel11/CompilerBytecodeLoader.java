@@ -75,20 +75,58 @@ public class CompilerBytecodeLoader {
     }
 
     public CompiledFEELExpression makeFromJPExpression(String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        return internal_makefromJP(CompiledFEELExpression.class, "/TemplateCompiledFEELExpression.java", feelExpression, theExpression, fieldDeclarations);
+        return internal_makefromJP(CompiledFEELExpression.class, "/TemplateCompiledFEELExpression.java", generateRandomPackage(), "TemplateCompiledFEELExpression", feelExpression, theExpression, fieldDeclarations);
     }
 
     public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", feelExpression, theExpression, fieldDeclarations);
+        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", generateRandomPackage(), "TemplateCompiledFEELUnaryTests", feelExpression, theExpression, fieldDeclarations);
     }
 
-    public <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+    public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
+    }
+
+    private <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+        CompilationUnit cu = getCompilationUnitForUnaryTests( clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations );
+
+        try {
+            MemoryResourceReader pReader = new MemoryResourceReader();
+            pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
+            JavaCompiler compiler = new JavaCompilerFactory().loadCompiler(CompilerType.ECLIPSE, "1.8");
+            MemoryFileSystem pStore = new MemoryFileSystem();
+            CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
+                                                                   pReader,
+                                                                   pStore,
+                                                                   this.getClass().getClassLoader());
+            LOG.debug("{}", Arrays.asList(compilationResult.getErrors()));
+            LOG.debug("{}", Arrays.asList(compilationResult.getWarnings()));
+
+            String fqnClassName = cuPackage + "." + cuClass;
+            Class<T> loaded = (Class<T>) new TemplateLoader(this.getClass().getClassLoader()).load(pStore, fqnClassName);
+
+            return loaded.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, DirectCompilerResult directResult) {
+        return getSourceForUnaryTest(packageName, className, feelExpression, directResult.getExpression(), directResult.getFieldDeclarations());
+    }
+
+    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+        CompilationUnit cu = getCompilationUnitForUnaryTests( CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations );
+        ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).get();
+        classSource.setStatic( true );
+        return classSource.toString();
+    }
+
+    private <T> CompilationUnit getCompilationUnitForUnaryTests( Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations ) {
         CompilationUnit cu = JavaParser.parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
-
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        String cuPackage = this.getClass().getPackage().getName() + ".gen" + uuid;
-
         cu.setPackageDeclaration(cuPackage);
+        ClassOrInterfaceDeclaration classSource = cu.getClassByName( templateResourcePath.substring( 1, templateResourcePath.length()-5 ) ).get();
+        classSource.setName( cuClass );
 
         List<MethodDeclaration> lookupMethodList = cu.getChildNodesByType(MethodDeclaration.class);
         if (lookupMethodList.size() != 1) {
@@ -119,27 +157,12 @@ public class CompilerBytecodeLoader {
         fieldDeclarations.stream().sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
         LOG.debug("{}", cu);
+        return cu;
+    }
 
-        try {
-            MemoryResourceReader pReader = new MemoryResourceReader();
-            pReader.add(cuPackage.replaceAll("\\.", "/") + templateResourcePath, cu.toString().getBytes());
-            JavaCompiler compiler = new JavaCompilerFactory().loadCompiler(CompilerType.ECLIPSE, "1.8");
-            MemoryFileSystem pStore = new MemoryFileSystem();
-            CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + templateResourcePath},
-                                                                   pReader,
-                                                                   pStore,
-                                                                   this.getClass().getClassLoader());
-            LOG.debug("{}", Arrays.asList(compilationResult.getErrors()));
-            LOG.debug("{}", Arrays.asList(compilationResult.getWarnings()));
-
-            String fqnClassName = cuPackage + templateResourcePath.replace("/", ".").replace(".java", "");
-            Class<T> loaded = (Class<T>) new TemplateLoader(this.getClass().getClassLoader()).load(pStore, fqnClassName);
-
-            return loaded.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    private String generateRandomPackage() {
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        return this.getClass().getPackage().getName() + ".gen" + uuid;
     }
 
     private static class SortFieldDeclarationStrategy implements Comparator<FieldDeclaration> {

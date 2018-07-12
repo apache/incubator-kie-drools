@@ -93,14 +93,14 @@ public class DMNDTExpressionEvaluator
             // but still wanted to match the enter/exit frame for future maintainability purposes
             ctx.exitFrame();
 
-            r = processEvents( events, dmrem, result );
+            r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 
-    private EventResults processEvents(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public static EventResults processEvents(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResultImpl result, DMNNode node) {
         EventResults r = new EventResults();
         for ( FEELEvent e : events ) {
             if ( e instanceof DecisionTableRulesMatchedEvent ) {
