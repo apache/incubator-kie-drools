@@ -93,7 +93,7 @@ public class AccumulateTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test(timeout = 10000)
@@ -205,40 +205,6 @@ public class AccumulateTest {
 
             assertEquals(5,
                          results.size());
-
-            assertEquals(165, results.get(0));
-            assertEquals(10, results.get(1));
-            assertEquals(150, results.get(2));
-            assertEquals(10, results.get(3));
-            assertEquals(210, results.get(4));
-        } finally {
-            wm.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testMVELAccumulate() {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
-                                                                           "org/drools/compiler/integrationtests/test_AccumulateMVEL.drl");
-        final KieSession wm = kbase.newKieSession();
-        try {
-            final List<?> results = new ArrayList<>();
-            wm.setGlobal("results",
-                         results);
-
-            wm.insert(new Person("Bob",
-                                 "stilton",
-                                 20));
-            wm.insert(new Person("Mark",
-                                 "provolone"));
-            wm.insert(new Cheese("stilton",
-                                 10));
-            wm.insert(new Cheese("brie",
-                                 5));
-            wm.insert(new Cheese("provolone",
-                                 150));
-
-            wm.fireAllRules();
 
             assertEquals(165, results.get(0));
             assertEquals(10, results.get(1));
