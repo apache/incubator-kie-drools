@@ -43,7 +43,7 @@ public class AccumulateUnsupportedWithModelTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     // See https://issues.jboss.org/browse/DROOLS-2733
