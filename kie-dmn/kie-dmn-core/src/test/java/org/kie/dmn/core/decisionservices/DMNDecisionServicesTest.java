@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class DMNDecisionServicesTest {
@@ -73,15 +74,15 @@ public class DMNDecisionServicesTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
-        assertThat(result.get("A"), is("de"));
+        assertThat(result.get("A"), nullValue()); // because B and C are not defined in input.
     }
 
     private void checkDSwithInputDecision2(DMNRuntime runtime, DMNModel dmnModel) {
         DMNContext context = DMNFactory.newContext();
         context.set("D", "d");
         context.set("E", "e");
-        context.set("B", "overrideB");
-        context.set("C", "overrideC");
+        context.set("B", "inB");
+        context.set("C", "inC");
 
         DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
@@ -89,7 +90,7 @@ public class DMNDecisionServicesTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         DMNContext result = dmnResult.getContext();
-        assertThat(result.get("A"), is("overrideBoverrideC"));
+        assertThat(result.get("A"), is("inBinC"));
     }
 
     @Test

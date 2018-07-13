@@ -252,35 +252,16 @@ public class DMNRuntimeImpl
                                           e.getMessage());
                 }
                 if (!isNodeValueDefined(result, decisionService, dep)) {
-                    boolean walkingIntoScope = walkIntoImportScope(result, decisionService, dep);
-                    if (dep instanceof DecisionNode) {
-                        if (!evaluateDecision(context, result, (DecisionNode) dep, typeCheck)) {
-                            missingInput = true;
-                            DMNMessage message = MsgUtil.reportMessage(logger,
-                                                                       DMNMessage.Severity.ERROR,
-                                                                       decisionService.getSource(),
-                                                                       result,
-                                                                       null,
-                                                                       null,
-                                                                       Msg.UNABLE_TO_EVALUATE_DECISION_REQ_DEP,
-                                                                       getIdentifier(decisionService),
-                                                                       getIdentifier(dep));
-                        }
-                    } else {
-                        missingInput = true;
-                        DMNMessage message = MsgUtil.reportMessage(logger,
-                                                                   DMNMessage.Severity.ERROR,
-                                                                   decisionService.getSource(),
-                                                                   result,
-                                                                   null,
-                                                                   null,
-                                                                   Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
-                                                                   getIdentifier(dep),
-                                                                   getIdentifier(decisionService));
-                    }
-                    if (walkingIntoScope) {
-                        result.getContext().popScope();
-                    }
+                    DMNMessage message = MsgUtil.reportMessage(logger,
+                                                               DMNMessage.Severity.WARN,
+                                                               decisionService.getSource(),
+                                                               result,
+                                                               null,
+                                                               null,
+                                                               Msg.REQ_INPUT_NOT_FOUND_FOR_DS,
+                                                               dep.getName(),
+                                                               getIdentifier(decisionService));
+                    result.getContext().set(dep.getName(), null);
                 }
             }
             if (missingInput) {

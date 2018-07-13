@@ -55,8 +55,6 @@ public class DecisionServiceCompiler {
         }
         DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(ds, type);
         model.addDecisionService(bkmn);
-
-        // TODO this actually requires build a complextype for the DecisionService
     }
 
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {

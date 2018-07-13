@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,6 +75,7 @@ import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.Import;
+import org.kie.dmn.model.v1_1.InformationItem;
 import org.kie.dmn.model.v1_1.InformationRequirement;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.kie.dmn.model.v1_1.KnowledgeRequirement;
@@ -260,6 +262,52 @@ public class DMNCompilerImpl
             List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
             for (DecisionServices dss : decisionServices) {
                 for (DecisionService ds : dss.getDecisionService()) {
+                    // compatibility with DMN v1.1, create Decision Service's variable:
+                    if (ds.getVariable() == null) {
+                        InformationItem variable = new InformationItem();
+                        variable.setId(UUID.randomUUID().toString());
+                        variable.setName(ds.getName());
+                        variable.setParent(ds);
+
+                        ItemDefinition itemDefDS = new ItemDefinition();
+                        String idID = UUID.randomUUID().toString();
+                        itemDefDS.setName("t" + ds.getName() + "-" + idID);
+                        itemDefDS.setId(idID);
+                        itemDefDS.setParent(dmndefs);
+                        for (DMNElementReference er : ds.getOutputDecision()) {
+                            String id = DMNCompilerImpl.getId(er);
+                            DecisionNode inputDecision = model.getDecisionById(id);
+                            if (inputDecision != null) {
+                                ItemDefinition outCompo = new ItemDefinition();
+                                outCompo.setName(inputDecision.getName());
+                                outCompo.setId(UUID.randomUUID().toString());
+                                DMNType inputDecisionType = inputDecision.getResultType();
+                                outCompo.setTypeRef(new QName(inputDecisionType.getNamespace(), inputDecisionType.getName(), dmndefs.getPrefixForNamespaceURI(inputDecisionType.getNamespace()).orElse("feel")));
+                                itemDefDS.getItemComponent().add(outCompo);
+                                outCompo.setParent(itemDefDS);
+                            } else {
+                                MsgUtil.reportMessage(logger,
+                                                      DMNMessage.Severity.ERROR,
+                                                      ds,
+                                                      model,
+                                                      null,
+                                                      null,
+                                                      Msg.REQ_DECISION_NOT_FOUND_FOR_NODE,
+                                                      id,
+                                                      ds.getName());
+                            }
+                        }
+                        ItemDefNodeImpl idn = new ItemDefNodeImpl( itemDefDS );
+                        DMNType type = buildTypeDef( ctx, feel, model, idn, itemDefDS, true );
+                        idn.setType( type );
+                        model.addItemDefinition( idn );
+                        
+                        variable.setTypeRef(new QName(model.getNamespace(), itemDefDS.getName(), dmndefs.getPrefixForNamespaceURI(model.getNamespace()).orElse("")));
+                        
+                        ds.setVariable(variable);
+                    }
+                    
+                    // continuing with normal compilation of Decision Service:
                     compiler.compileNode(ds, this, model);
                 }
             }
