@@ -40,20 +40,20 @@ public class DecisionServiceCompiler {
     private static final Logger LOG = LoggerFactory.getLogger(DecisionServiceCompiler.class);
 
     public void compileNode(DecisionService drge, DMNCompilerImpl compiler, DMNModelImpl model) {
-        DecisionService bkm = (DecisionService) drge;
+        DecisionService ds = (DecisionService) drge;
         DMNType type = null;
-        if ( bkm.getVariable() == null ) {
-            DMNCompilerHelper.reportMissingVariable(model, drge, bkm, Msg.MISSING_VARIABLE_FOR_BKM);
+        if (ds.getVariable() == null) {
+            DMNCompilerHelper.reportMissingVariable(model, drge, ds, Msg.MISSING_VARIABLE_FOR_BKM);
             return;
         }
-        DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
-        if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
-            type = compiler.resolveTypeRef(model, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef());
+        DMNCompilerHelper.checkVariableName(model, ds, ds.getName());
+        if (ds.getVariable() != null && ds.getVariable().getTypeRef() != null) {
+            type = compiler.resolveTypeRef(model, ds, ds.getVariable(), ds.getVariable().getTypeRef());
         } else {
             // for now the call bellow will return type UNKNOWN
-            type = compiler.resolveTypeRef(model, bkm, bkm, null);
+            type = compiler.resolveTypeRef(model, ds, ds, null);
         }
-        DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(bkm, type);
+        DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(ds, type);
         model.addDecisionService(bkmn);
 
         // TODO this actually requires build a complextype for the DecisionService
@@ -100,7 +100,7 @@ public class DecisionServiceCompiler {
             }
         }
 
-        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni.getDecisionService(), parameters);
+        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters);
         ni.setEvaluator(exprEvaluator);
     }
 }

@@ -24,6 +24,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -34,25 +35,24 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.model.v1_1.DecisionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpressionEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceFunctionDefinitionEvaluator.class);
-    private DecisionService ds;
+    private DecisionServiceNode dsNode;
     private List<FormalParameter> parameters;
 
-    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionService ds, List<FormalParameter> parameters) {
-        this.ds = ds;
+    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionServiceNode dsNode, List<FormalParameter> parameters) {
+        this.dsNode = dsNode;
         this.parameters = parameters;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
-        DMNDSFunction function = new DMNDSFunction(ds.getName(), parameters, new DMNDecisionServiceEvaluator(ds, false), eventManager, result);
+        DMNDSFunction function = new DMNDSFunction(dsNode.getName(), parameters, new DMNDecisionServiceEvaluator(dsNode, false), eventManager, result);
         return new EvaluatorResultImpl(function, ResultType.SUCCESS);
     }
 

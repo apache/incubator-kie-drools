@@ -217,11 +217,23 @@ public class DMNRuntimeImpl
         DMNResultImpl result = new DMNResultImpl(model);
         result.setContext(context.clone());
         // the engine should evaluate all belonging to the "local" model namespace, not imported decision explicitly.
-        DecisionServiceNode decisionService = ((DMNModelImpl) model).getDecisionServices().stream()
+        Optional<DecisionServiceNode> lookupDS = ((DMNModelImpl) model).getDecisionServices().stream()
                                                                     .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
                                                                     .filter(ds -> ds.getName().equals(decisionServiceName))
-                                                                    .findFirst().get();
-        EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService.getDecisionService(), true).evaluate(this, result);
+                                                                    .findFirst();
+        if (lookupDS.isPresent()) {
+            DecisionServiceNode decisionService = lookupDS.get();
+            EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true).evaluate(this, result);
+        } else {
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  null,
+                                  result,
+                                  null,
+                                  null,
+                                  Msg.DECISION_SERVICE_NOT_FOUND_FOR_NAME,
+                                  decisionServiceName);
+        }
         return result;
     }
 
@@ -233,8 +245,6 @@ public class DMNRuntimeImpl
         }
         // Note: a Decision Service is expected to always have an evaluator, it does not depend on an xml expression, it is done always by the compiler.
         try {
-            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionService(eventManager, ds, result);
-
             // a Decision Service has no dependencies.
 
             EvaluatorResult er = ds.getEvaluator().evaluate(this, result);
@@ -252,8 +262,6 @@ public class DMNRuntimeImpl
                                   Msg.ERROR_EVAL_DS_NODE,
                                   getIdentifier(ds),
                                   t.getMessage());
-        } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, ds, result);
         }
     }
 

@@ -28,32 +28,35 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceEvaluator.class);
-    private DecisionService ds;
+    private DecisionServiceNode dsNode;
     private boolean transferResult;
 
-    public DMNDecisionServiceEvaluator(DecisionService ds, boolean transferResult) {
-        this.ds = ds;
+
+    public DMNDecisionServiceEvaluator(DecisionServiceNode dsNode, boolean transferResult) {
+        this.dsNode = dsNode;
         this.transferResult = transferResult;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult result) {
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionService(eventManager, dsNode, result);
         DMNRuntime dmnRuntime = eventManager.getRuntime();
         DMNModel dmnModel = ((DMNResultImpl) result).getModel();
-        List<String> decisionIDs = ds.getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
         Map<String, Object> ctx = new HashMap<String, Object>();
         for (String id : decisionIDs) {
@@ -71,6 +74,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         for (DMNMessage m : evaluateById.getMessages()) {
             ((DMNResultImpl) result).addMessage(m);
         }
+        DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, dsNode, result);
         return new EvaluatorResultImpl(ctx, ResultType.SUCCESS);
     }
 
