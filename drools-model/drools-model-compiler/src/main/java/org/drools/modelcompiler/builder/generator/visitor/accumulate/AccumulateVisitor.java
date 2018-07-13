@@ -235,7 +235,7 @@ public abstract class AccumulateVisitor {
                 final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
                 Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
 
-                final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, "$c.convert($length)");
+                final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, accumulateFunctionParameterStr);
                 final DrlxParseSuccess result = (DrlxParseSuccess) drlxParseResult;
                 result.setExprBinding(bindExpressionVariable);
                 final MethodCallExpr binding = expressionBuilder.buildBinding(result);
