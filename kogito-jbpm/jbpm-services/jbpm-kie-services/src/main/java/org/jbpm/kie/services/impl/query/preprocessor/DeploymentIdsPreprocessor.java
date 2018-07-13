@@ -15,6 +15,7 @@
  */
 package org.jbpm.kie.services.impl.query.preprocessor;
 
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
 import static org.dashbuilder.dataset.filter.FilterFactory.in;
 
 import java.util.List;
@@ -35,11 +36,16 @@ public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
     private DeploymentRolesManager deploymentRolesManager;
     private IdentityProvider identityProvider;
     private String columnId;
+    private String impossibleConditionColumnId;
 
-    public DeploymentIdsPreprocessor(DeploymentRolesManager deploymentRolesManager, IdentityProvider identityProvider, String columnId) {
+    public DeploymentIdsPreprocessor(DeploymentRolesManager deploymentRolesManager,
+                                     IdentityProvider identityProvider,
+                                     String columnId,
+                                     String impossibleConditionColumnId) {
         this.deploymentRolesManager = deploymentRolesManager;
         this.identityProvider = identityProvider;
         this.columnId = columnId;
+        this.impossibleConditionColumnId = impossibleConditionColumnId;
     }
 
     @Override
@@ -49,7 +55,13 @@ public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
         }
 
         final List<String> deploymentIds = deploymentRolesManager.getDeploymentsForUser(identityProvider);
-        final ColumnFilter columnFilter = in(columnId, deploymentIds);
+        ColumnFilter columnFilter;
+        if(deploymentIds != null  && !deploymentIds.isEmpty()){
+            columnFilter = in(columnId, deploymentIds);
+        }  else {
+            columnFilter = equalsTo(impossibleConditionColumnId,-1);
+        }
+
         LOGGER.debug("Adding column filter: {}", columnFilter);
 
         if (lookup.getFirstFilterOp() != null) {
