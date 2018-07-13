@@ -234,9 +234,10 @@ public abstract class AccumulateVisitor {
                 // Then the accumulate function will have that binding expression as a source
                 final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
                 Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
-                DrlxParseSuccess result = new DrlxParseSuccess(accumulateFunctionResultType, "", rootNodeName, withThis, accumulateFunctionResultType)
-                        .setLeft(typedExpression)
-                        .setExprBinding(bindExpressionVariable);
+
+                final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, "$c.convert($length)");
+                final DrlxParseSuccess result = (DrlxParseSuccess) drlxParseResult;
+                result.setExprBinding(bindExpressionVariable);
                 final MethodCallExpr binding = expressionBuilder.buildBinding(result);
                 newBinding = Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.of(result.getPatternBinding()), binding));
                 context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
