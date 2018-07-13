@@ -33,6 +33,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -49,7 +50,15 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
 @Entity
-@Table(name="Task")
+@Table(name="Task",
+       indexes = {@Index(name = "IDX_Task_Initiator",  columnList="taskInitiator_id"),
+                  @Index(name = "IDX_Task_ActualOwner",  columnList="actualOwner_id"),
+                  @Index(name = "IDX_Task_CreatedBy",  columnList="createdBy_id"),
+                  @Index(name = "IDX_Task_processInstanceId",  columnList="processInstanceId"),
+                  @Index(name = "IDX_Task_processId",  columnList="processId"),
+                  @Index(name = "IDX_Task_status",  columnList="status"),
+                  @Index(name = "IDX_Task_archived",  columnList="archived"),
+                  @Index(name = "IDX_Task_workItemId", columnList="workItemId")})
 @SequenceGenerator(name="taskIdSeq", sequenceName="TASK_ID_SEQ", allocationSize=1)
 public class TaskImpl implements InternalTask {
     /**

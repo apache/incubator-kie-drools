@@ -33,6 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
@@ -82,7 +83,10 @@ public class ProcessInstanceInfo implements PersistentProcessInstance {
     byte[]                                    processInstanceByteArray;
 
     @ElementCollection
-    @CollectionTable(name="EventTypes", joinColumns=@JoinColumn(name="InstanceId"))
+    @CollectionTable(name="EventTypes", joinColumns=@JoinColumn(name="InstanceId"),
+       indexes = {@Index(name = "IDX_EventTypes_Id",  columnList="InstanceId"),
+                  @Index(name = "IDX_EventTypes_element", columnList="element")})
+
     @Column(name="element")
     private Set<String>                       eventTypes         = new HashSet<String>();
     

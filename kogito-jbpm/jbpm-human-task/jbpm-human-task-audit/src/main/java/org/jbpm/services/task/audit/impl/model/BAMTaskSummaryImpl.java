@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -30,7 +31,17 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="BAMTaskSummary")
+@Table(name="BAMTaskSummary",
+       indexes = {@Index(name = "IDX_BAMTaskSumm_createdDate",  columnList="createdDate"),
+                  @Index(name = "IDX_BAMTaskSumm_duration",  columnList="duration"),
+                  @Index(name = "IDX_BAMTaskSumm_endDate",  columnList="endDate"),
+                  @Index(name = "IDX_BAMTaskSumm_pInstId",  columnList="processInstanceId"),
+                  @Index(name = "IDX_BAMTaskSumm_startDate",  columnList="startDate"),
+                  @Index(name = "IDX_BAMTaskSumm_status",  columnList="status"),
+                  @Index(name = "IDX_BAMTaskSumm_taskId",  columnList="taskId"),
+                  @Index(name = "IDX_BAMTaskSumm_taskName",  columnList="taskName"),
+                  @Index(name = "IDX_BAMTaskSumm_userId", columnList="userId")})
+
 @SequenceGenerator(name="bamTaskIdSeq", sequenceName="BAM_TASK_ID_SEQ")
 public class BAMTaskSummaryImpl implements Serializable {
 

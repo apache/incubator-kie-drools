@@ -22,13 +22,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.kie.internal.process.CorrelationProperty;
 
 @Entity
+@Table(name = "CorrelationPropertyInfo", indexes = {@Index(name = "IDX_CorrPropInfo_Id", columnList = "correlationKey_keyId")})
 @SequenceGenerator(name="correlationPropertyInfoIdSeq", sequenceName="CORRELATION_PROP_ID_SEQ")
 public class CorrelationPropertyInfo implements CorrelationProperty<String>, Serializable {
 

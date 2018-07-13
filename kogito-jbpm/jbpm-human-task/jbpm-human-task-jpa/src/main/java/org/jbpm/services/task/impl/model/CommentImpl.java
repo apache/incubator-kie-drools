@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -36,7 +37,9 @@ import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.InternalComment;
 
 @Entity
-@Table(name = "task_comment")
+@Table(name = "task_comment",
+       indexes = {@Index(name = "IDX_TaskComments_CreatedBy",  columnList="addedBy_id"),
+                  @Index(name = "IDX_TaskComments_Id", columnList="TaskData_Comments_Id")})
 @SequenceGenerator(name="commentIdSeq", sequenceName="COMMENT_ID_SEQ", allocationSize=1)
 public class CommentImpl implements InternalComment  {
     

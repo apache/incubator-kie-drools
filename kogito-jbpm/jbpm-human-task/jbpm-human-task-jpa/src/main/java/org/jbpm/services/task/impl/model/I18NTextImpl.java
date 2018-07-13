@@ -26,6 +26,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -33,7 +34,16 @@ import javax.persistence.Table;
 import org.kie.internal.task.api.model.InternalI18NText;
 
 @Entity
-@Table(name="I18NText")
+@Table(name="I18NText",
+       indexes = {@Index(name = "IDX_I18NText_SubjId",  columnList="Task_Subjects_Id"),
+                  @Index(name = "IDX_I18NText_NameId",  columnList="Task_Names_Id"),
+                  @Index(name = "IDX_I18NText_DescrId",  columnList="Task_Descriptions_Id"),
+                  @Index(name = "IDX_I18NText_ReassignId",  columnList="Reassignment_Documentation_Id"),
+                  @Index(name = "IDX_I18NText_NotSubjId",  columnList="Notification_Subjects_Id"),
+                  @Index(name = "IDX_I18NText_NotNamId",  columnList="Notification_Names_Id"),
+                  @Index(name = "IDX_I18NText_NotDocId",  columnList="Notification_Documentation_Id"),
+                  @Index(name = "IDX_I18NText_NotDescrId",  columnList="Notification_Descriptions_Id"),
+                  @Index(name = "IDX_I18NText_DeadDocId", columnList="Deadline_Documentation_Id")})
 @SequenceGenerator(name="i18nTextIdSeq", sequenceName="I18NTEXT_ID_SEQ", allocationSize=1)
 public class I18NTextImpl implements InternalI18NText {
     

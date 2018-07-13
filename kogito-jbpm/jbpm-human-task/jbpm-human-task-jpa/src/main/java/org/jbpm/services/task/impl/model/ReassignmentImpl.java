@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -39,7 +40,8 @@ import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 
 @Entity
-@Table(name="Reassignment")
+@Table(name="Reassignment",
+       indexes = {@Index(name = "IDX_Reassign_Esc",  columnList="Escalation_Reassignments_Id")})
 @SequenceGenerator(name="reassignmentIdSeq", sequenceName="REASSIGNMENT_ID_SEQ", allocationSize=1)
 public class ReassignmentImpl implements org.kie.internal.task.api.model.Reassignment {
     
@@ -52,7 +54,9 @@ public class ReassignmentImpl implements org.kie.internal.task.api.model.Reassig
     private List<I18NText>             documentation = Collections.emptyList();
     
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "Reassignment_potentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
+    @JoinTable(name = "Reassignment_potentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_ReassignPO_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_ReassignPO_Task", columnList="task_id")})
     private List<OrganizationalEntity> potentialOwners = Collections.emptyList();
 
     public void writeExternal(ObjectOutput out) throws IOException {

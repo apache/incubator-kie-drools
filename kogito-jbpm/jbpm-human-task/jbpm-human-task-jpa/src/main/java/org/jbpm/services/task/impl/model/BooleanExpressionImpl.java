@@ -25,12 +25,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="BooleanExpression")
+@Table(name="BooleanExpression",
+       indexes = {@Index(name = "IDX_BoolExpr_Id",  columnList="Escalation_Constraints_Id")})
 @SequenceGenerator(name="booleanExprIdSeq", sequenceName="BOOLEANEXPR_ID_SEQ", allocationSize=1)
 public class BooleanExpressionImpl implements org.kie.internal.task.api.model.BooleanExpression {
     

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -45,23 +46,33 @@ public class PeopleAssignmentsImpl implements InternalPeopleAssignments {
     private UserImpl                       taskInitiator;
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "PeopleAssignments_PotOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_PotOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_PAsPot_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_PAsPot_Task", columnList="task_id")})
     private List<OrganizationalEntity> potentialOwners        = Collections.emptyList();
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "PeopleAssignments_ExclOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_ExclOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_PAsExcl_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_PAsExcl_Task", columnList="task_id")})
     private List<OrganizationalEntity> excludedOwners         = Collections.emptyList();
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "PeopleAssignments_Stakeholders", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_Stakeholders", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_PAsStake_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_PAsStake_Task", columnList="task_id")})
     private List<OrganizationalEntity> taskStakeholders       = Collections.emptyList();
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "PeopleAssignments_BAs", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_BAs", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_PAsBAs_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_PAsBAs_Task", columnList="task_id")})
     private List<OrganizationalEntity> businessAdministrators = Collections.emptyList();
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "PeopleAssignments_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_PAsRecip_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_PAsRecip_Task", columnList="task_id")})
     private List<OrganizationalEntity> recipients             = Collections.emptyList();
 
     public PeopleAssignmentsImpl() {

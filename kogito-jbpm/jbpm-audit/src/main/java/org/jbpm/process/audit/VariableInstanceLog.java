@@ -24,7 +24,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -34,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
+@Table(name = "VariableInstanceLog", indexes = {@Index(name = "IDX_VInstLog_pInstId", columnList = "processInstanceId"),
+                                               @Index(name = "IDX_VInstLog_varId", columnList = "variableId"),
+                                               @Index(name = "IDX_VInstLog_pId", columnList = "processId")})
 @SequenceGenerator(name="variableInstanceLogIdSeq", sequenceName="VAR_INST_LOG_ID_SEQ", allocationSize=1)
 public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.api.runtime.manager.audit.VariableInstanceLog {
     

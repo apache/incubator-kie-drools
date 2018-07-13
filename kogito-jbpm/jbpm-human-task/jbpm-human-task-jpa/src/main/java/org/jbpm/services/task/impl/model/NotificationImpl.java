@@ -28,6 +28,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -41,7 +42,8 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.NotificationType;
 
 @Entity
-@Table(name="Notification")
+@Table(name="Notification",
+       indexes = {@Index(name = "IDX_Not_EscId",  columnList="Escalation_Notifications_Id")})
 @SequenceGenerator(name="notificationIdSeq", sequenceName="NOTIFICATION_ID_SEQ", allocationSize=1)
 public class NotificationImpl implements org.kie.internal.task.api.model.Notification  {
     
@@ -57,11 +59,15 @@ public class NotificationImpl implements org.kie.internal.task.api.model.Notific
     private int                              priority;
     
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "Notification_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))    
+    @JoinTable(name = "Notification_Recipients", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_NotRec_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_NotRec_Task", columnList="task_id")})
     private List<OrganizationalEntity>       recipients = Collections.emptyList();
 
     @ManyToMany(targetEntity=OrganizationalEntityImpl.class)
-    @JoinTable(name = "Notification_BAs", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "Notification_BAs", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"),
+       indexes = {@Index(name = "IDX_NotBAs_Entity",  columnList="entity_id"),
+                  @Index(name = "IDX_NotBAs_Task", columnList="task_id")})
     private List<OrganizationalEntity>       businessAdministrators = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)

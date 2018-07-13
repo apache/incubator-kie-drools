@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -38,7 +39,8 @@ import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
 
 @Entity
-@Table(name="Escalation")
+@Table(name="Escalation",
+       indexes = {@Index(name = "IDX_Escalation_Id",  columnList="Deadline_Escalation_Id")})
 @SequenceGenerator(name="escalationIdSeq", sequenceName="ESCALATION_ID_SEQ", allocationSize=1)
 public class EscalationImpl implements org.kie.internal.task.api.model.Escalation {
 

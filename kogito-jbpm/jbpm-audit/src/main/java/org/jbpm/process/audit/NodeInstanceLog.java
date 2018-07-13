@@ -24,13 +24,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.jbpm.process.audit.event.AuditEvent;
 
 @Entity
+@Table(name = "NodeInstanceLog", indexes = {@Index(name = "IDX_NInstLog_pInstId", columnList = "processInstanceId"),
+                                        @Index(name = "IDX_NInstLog_nodeType", columnList = "nodeType"),
+                                        @Index(name = "IDX_NInstLog_pId", columnList = "processId")})
 @SequenceGenerator(name="nodeInstanceLogIdSeq", sequenceName="NODE_INST_LOG_ID_SEQ", allocationSize=1)
 public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.runtime.manager.audit.NodeInstanceLog {
    

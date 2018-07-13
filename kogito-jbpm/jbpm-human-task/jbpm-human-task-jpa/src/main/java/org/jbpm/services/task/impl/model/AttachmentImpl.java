@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -37,7 +38,10 @@ import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 
 @Entity
-@Table(name="Attachment")
+@Table(name="Attachment",
+       indexes = {@Index(name = "IDX_Attachment_Id",  columnList="attachedBy_id"),
+                  @Index(name = "IDX_Attachment_DataId", columnList="TaskData_Attachments_Id")})
+
 @SequenceGenerator(name="attachmentIdSeq", sequenceName="ATTACHMENT_ID_SEQ", allocationSize=1)
 public class AttachmentImpl implements InternalAttachment {
     

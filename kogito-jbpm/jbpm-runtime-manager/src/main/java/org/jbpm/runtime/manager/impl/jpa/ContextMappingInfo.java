@@ -22,9 +22,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
@@ -37,6 +39,9 @@ import javax.persistence.Version;
  * This entity must be included in the persistence.xml when the "Per Process Instance" strategy is used.
  */
 @Entity
+@Table(name = "ContextMappingInfo", indexes = {@Index(name = "IDX_CMI_Context", columnList = "CONTEXT_ID"),
+                                        @Index(name = "IDX_CMI_KSession", columnList = "KSESSION_ID"),
+                                        @Index(name = "IDX_CMI_Owner", columnList = "OWNER_ID")})
 @SequenceGenerator(name="contextMappingInfoIdSeq", sequenceName="CONTEXT_MAPPING_INFO_ID_SEQ")
 @NamedQueries(value=
     {@NamedQuery(name="FindContextMapingByContextId", 
