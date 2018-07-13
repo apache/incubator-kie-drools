@@ -1334,7 +1334,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult expr = visit(ctx.primary());
         if (ctx.qualifiedName() != null) {
             List<String> names = ctx.qualifiedName().nameRef().stream().map(nameRefContext -> ParserHelper.getOriginalText(nameRefContext)).collect(Collectors.toList());
-            return telescopePathAccessor(expr, names);
+            expr = telescopePathAccessor(expr, names);
+        }
+        if (ctx.parameters() != null) {
+            expr = buildFunctionCall(ctx, expr, ctx.parameters());
         }
         return expr;
     }

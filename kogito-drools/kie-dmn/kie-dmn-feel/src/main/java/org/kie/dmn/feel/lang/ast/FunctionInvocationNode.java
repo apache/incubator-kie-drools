@@ -64,16 +64,26 @@ public class FunctionInvocationNode
         if ( name instanceof NameRefNode ) {
             // simple name
             value = ctx.getValue( name.getText() );
-        } else {
+        } else if (name instanceof QualifiedNameNode) {
             QualifiedNameNode qn = (QualifiedNameNode) name;
             String[] qns = qn.getPartsAsStringArray();
             value = ctx.getValue( qns );
+        } else if (name instanceof PathExpressionNode) {
+            PathExpressionNode pathExpressionNode = (PathExpressionNode) name;
+            value = pathExpressionNode.evaluate(ctx);
         }
         if ( value instanceof FEELFunction ) {
             function = (FEELFunction) value;
             if ( function != null ) {
                 Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-                List<String> functionNameParts = (name instanceof NameRefNode) ? Arrays.asList(name.getText()) : Arrays.asList(((QualifiedNameNode) name).getPartsAsStringArray());
+                List<String> functionNameParts = null;
+                if (name instanceof NameRefNode) {
+                    functionNameParts = Arrays.asList(name.getText());
+                } else if (name instanceof QualifiedNameNode) {
+                    functionNameParts = Arrays.asList(((QualifiedNameNode) name).getPartsAsStringArray());
+                } else if (name instanceof PathExpressionNode) {
+                    functionNameParts = Arrays.asList(function.getName());
+                }
                 Object result = invokeTheFunction(functionNameParts, function, ctx, p);
                 return result;
             } else {

@@ -478,7 +478,7 @@ public class ASTBuilderVisitor
         if ( name instanceof NameRefNode ) {
             // simple name
             functionName = name.getText();
-        } else {
+        } else if (name instanceof QualifiedNameNode) {
             QualifiedNameNode qn = (QualifiedNameNode) name;
             functionName = qn.getParts().stream().map( p -> p.getText() ).collect( Collectors.joining( " ") );
         }
@@ -568,6 +568,10 @@ public class ASTBuilderVisitor
         if( ctx.qualifiedName() != null ) {
             BaseNode path = visit( ctx.qualifiedName() );
             expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+        }
+        if (ctx.parameters() != null) {
+            ListNode params = (ListNode) visit(ctx.parameters());
+            return buildFunctionCall(ctx, expr, params);
         }
         return expr;
     }
