@@ -233,17 +233,20 @@ public abstract class AccumulateVisitor {
                 // Every expression in an accumulate function gets transformed in a bind expression with a generated id
                 // Then the accumulate function will have that binding expression as a source
                 final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
-                Expression withThis = DrlxParseUtil.prepend(DrlxParseUtil._THIS_EXPR, typedExpression.getExpression());
 
                 final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, accumulateFunctionParameterStr);
-                final DrlxParseSuccess result = (DrlxParseSuccess) drlxParseResult;
-                result.setExprBinding(bindExpressionVariable);
-                final MethodCallExpr binding = expressionBuilder.buildBinding(result);
-                newBinding = Optional.of(new AccumulateVisitorPatternDSL.NewBinding(Optional.of(result.getPatternBinding()), binding));
-                context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
-                functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
-                context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+                newBinding = drlxParseResult.acceptWithReturnValue(result -> {
+
+                    result.setExprBinding(bindExpressionVariable);
+                    final MethodCallExpr binding = expressionBuilder.buildBinding(result);
+                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
+                    functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
+
+                    context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+                    return Optional.of(new NewBinding(Optional.of(result.getPatternBinding()), binding));
+                });
+
             } else if (accumulateFunctionParameter instanceof NameExpr ) {
                 final Class<?> declarationClass = context
                         .getDeclarationById(accumulateFunctionParameter.toString())
