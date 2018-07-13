@@ -65,10 +65,12 @@ public class DecisionServiceCompiler {
         List<FormalParameter> parameters = new ArrayList<>();
         
         // WARNING this is only for defining the parameters, not the dependency, as DS does not have dependencies
+        // TODO are we sure? How to check for InputData and InputDecisions?
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
             if (input != null) {
+                ni.addDependency(input.getName(), input);
                 parameters.add(new FormalParameter(input.getName(), input.getType()));
             } else {
                 MsgUtil.reportMessage(LOG,
@@ -86,7 +88,42 @@ public class DecisionServiceCompiler {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
             if (input != null) {
+                ni.addDependency(input.getName(), input);
                 parameters.add(new FormalParameter(input.getName(), input.getResultType()));
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
+        for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
+            String id = DMNCompilerImpl.getId(er);
+            DecisionNode input = model.getDecisionById(id);
+            if (input != null) {
+                // not a needed dependency.
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      id,
+                                      node.getName());
+            }
+        }
+        for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
+            String id = DMNCompilerImpl.getId(er);
+            DecisionNode input = model.getDecisionById(id);
+            if (input != null) {
+                // not a needed dependency.
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
