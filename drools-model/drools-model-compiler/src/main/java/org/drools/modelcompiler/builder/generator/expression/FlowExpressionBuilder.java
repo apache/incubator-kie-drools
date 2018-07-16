@@ -81,7 +81,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
-        drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindAsDSL.addArgument(toVar(d)));
+        drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindAsDSL.addArgument(context.getVar(d)));
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
