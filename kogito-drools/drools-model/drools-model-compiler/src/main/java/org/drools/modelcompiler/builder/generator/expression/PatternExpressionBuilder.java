@@ -24,6 +24,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static java.util.Optional.of;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 
@@ -86,6 +87,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
         }
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
+        drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindDSL.addArgument(context.getVar(d)));
         bindDSL.addArgument(constraintExpression);
         final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
         methodCallExpr.ifPresent(bindDSL::addArgument);

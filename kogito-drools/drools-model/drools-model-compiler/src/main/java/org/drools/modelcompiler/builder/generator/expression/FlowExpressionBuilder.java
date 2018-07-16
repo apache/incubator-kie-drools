@@ -20,6 +20,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -80,6 +81,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
+        drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindAsDSL.addArgument(context.getVar(d)));
         bindAsDSL.addArgument(constraintExpression);
         return buildReactOn( drlxParseResult, bindAsDSL );
     }
