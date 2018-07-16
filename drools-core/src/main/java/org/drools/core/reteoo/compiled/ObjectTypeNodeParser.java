@@ -17,6 +17,8 @@
 package org.drools.core.reteoo.compiled;
 
 import org.drools.core.base.ClassFieldReader;
+import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -105,6 +107,15 @@ public class ObjectTypeNodeParser {
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
+
+                traverseSink(sink, handler);
+            }
+        }
+    }
+
+    private void traverseSinkLisk(ObjectSink[] sinks, NetworkHandler handler) {
+        if (sinks != null) {
+            for (ObjectSink sink : sinks) {
 
                 traverseSink(sink, handler);
             }
