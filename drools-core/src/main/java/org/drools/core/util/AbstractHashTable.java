@@ -458,6 +458,9 @@ public abstract class AbstractHashTable
         }
 
         public boolean equals(final Object object) {
+            if (object == null) {
+                return false;
+            }
             final AbstractIndexTupleList other = (AbstractIndexTupleList) object;
             return this.hashCode == other.hashCode && this.index == other.index;
         }

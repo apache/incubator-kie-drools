@@ -860,6 +860,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         public boolean equals(final Object object) {
+            if (object == null) {
+                return false;
+            }
             final HashKey other = (HashKey) object;
 
             if (this.isNull != other.isNull || this.index != other.index) {
