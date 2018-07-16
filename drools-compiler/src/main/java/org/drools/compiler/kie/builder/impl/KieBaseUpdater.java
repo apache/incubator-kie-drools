@@ -97,15 +97,25 @@ public class KieBaseUpdater implements Runnable {
 
         final InternalKnowledgeBase kBase = ((KnowledgeBuilderImpl) kbuilder).getKnowledgeBase();
 
-        kBase.getRete().getEntryPointNodes().values().stream()
-                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                .forEach(otn -> {
-                    final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
-                    clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
-                    final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
-                    otn.setCompiledNetwork(compile);
-                });
+        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
+        final Boolean isAlphaNetworkEnabled;
+        if(configurationProperty != null) {
+            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        } else {
+            isAlphaNetworkEnabled = false;
+        }
+
+        if(isAlphaNetworkEnabled) {
+            kBase.getRete().getEntryPointNodes().values().stream()
+                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                    .forEach(otn -> {
+                        final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
+                        clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
+                        final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
+                        otn.setCompiledNetwork(compile);
+                    });
+        }
     }
 
     protected void clearInstancesOfModifiedClass( Class<?> cls ) {

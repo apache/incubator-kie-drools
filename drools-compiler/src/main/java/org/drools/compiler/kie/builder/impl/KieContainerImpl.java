@@ -403,12 +403,12 @@ public class KieContainerImpl
 
     public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
         final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
-        Boolean isAlphaNetworkEnabled = true;
-//        if(configurationProperty != null) {
-//            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
-//        } else {
-//            isAlphaNetworkEnabled = false;
-//        }
+        final Boolean isAlphaNetworkEnabled;
+        if(configurationProperty != null) {
+            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        } else {
+            isAlphaNetworkEnabled = false;
+        }
         if(isAlphaNetworkEnabled) {
         KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
         kBase.getRete().getEntryPointNodes().values().stream()
