@@ -87,7 +87,7 @@ public class CountAccumulateFunction extends AbstractAccumulateFunction<CountAcc
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(CountData data) {
-        return new Long( data.count );
+        return data.count;
     }
 
     /* (non-Javadoc)

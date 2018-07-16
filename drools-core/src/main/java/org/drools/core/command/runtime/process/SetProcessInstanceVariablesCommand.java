@@ -16,14 +16,8 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.runtime.Context;
-import org.kie.internal.command.ProcessInstanceIdCommand;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,28 +25,38 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
+public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Void>,
+                                                           ProcessInstanceIdCommand {
 
-	/** Generated serial version UID */
+    /**
+     * Generated serial version UID
+     */
     private static final long serialVersionUID = 7802415761845739379L;
 
     @XmlAttribute(required = true)
     private Long processInstanceId;
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
-    @XmlElement(name="variables")
+    @XmlElement(name = "variables")
     private Map<String, Object> variables = new HashMap<String, Object>();
 
     public SetProcessInstanceVariablesCommand() {
     }
 
-    public SetProcessInstanceVariablesCommand(long processInstanceId, 
-    		Map<String, Object> variables) {
+    public SetProcessInstanceVariablesCommand(long processInstanceId,
+                                              Map<String, Object> variables) {
         this.processInstanceId = processInstanceId;
         this.variables = variables;
     }
@@ -76,27 +80,32 @@ public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Voi
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+        KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         if (processInstance != null) {
-        	if (variables != null) {
-	        	for (Map.Entry<String, Object> entry: variables.entrySet()) {
-	        		((WorkflowProcessInstance) processInstance).setVariable(entry.getKey(), entry.getValue());
-	        	}
-        	}
+            if (variables != null) {
+                for (Map.Entry<String, Object> entry : variables.entrySet()) {
+                    ((WorkflowProcessInstance) processInstance).setVariable(entry.getKey(), entry.getValue());
+                }
+            }
         }
         return null;
     }
 
     public String toString() {
-        String result = "WorkflowProcessInstance processInstance = (WorkflowProcessInstance) session.getProcessInstance(" + processInstanceId + ");";
+        final StringBuilder result = new StringBuilder();
+        result.append("WorkflowProcessInstance processInstance = (WorkflowProcessInstance) session.getProcessInstance(");
+        result.append(processInstanceId);
+        result.append(");");
         if (variables != null) {
-            for (Map.Entry<String, Object> entry: variables.entrySet()) {
-                result += "\nprocessInstance.setVariable(\"" + entry.getKey() + "\", " 
-            		+ (entry.getValue() == null ? "null" : entry.getValue().toString()) + ");";
+            for (final Map.Entry<String, Object> entry : variables.entrySet()) {
+                result.append("\nprocessInstance.setVariable(\"");
+                result.append(entry.getKey());
+                result.append("\", ");
+                result.append((entry.getValue() == null ? "null" : entry.getValue().toString()));
+                result.append(");");
             }
         }
-        return result;
+        return result.toString();
     }
-
 }

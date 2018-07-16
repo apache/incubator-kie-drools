@@ -74,7 +74,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public void internalAddWorkItem(WorkItem workItem) {
-        workItems.put(new Long(workItem.getId()), workItem);
+        workItems.put(workItem.getId(), workItem);
         // fix to reset workItemCounter after deserialization
         if (workItem.getId() > workItemCounter.get()) {
             workItemCounter.set(workItem.getId());
@@ -82,7 +82,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public void internalAbortWorkItem(long id) {
-        WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
+        WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
@@ -135,7 +135,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        WorkItem workItem = workItems.get(new Long(id));
+        WorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             (workItem).setResults(results);
@@ -145,12 +145,12 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
-            workItems.remove(new Long(id));
+            workItems.remove(id);
         }
     }
 
     public void abortWorkItem(long id) {
-        WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
+        WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
@@ -159,7 +159,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
-            workItems.remove(new Long(id));
+            workItems.remove(id);
         }
     }
 

@@ -78,10 +78,13 @@ public class DroolsObjectInputStream extends ObjectInputStream
         return resolveClass( desc.getName() );
     }
 
-    public static InvalidClassException newInvalidClassException(Class clazz,
-                                                                 Throwable cause) {
-        InvalidClassException exception = new InvalidClassException( clazz.getName() );
-        exception.initCause( cause );
+    public static InvalidClassException newInvalidClassException(Class clazz, Throwable cause) {
+        return newInvalidClassException(clazz.getName(), cause);
+    }
+
+    public static InvalidClassException newInvalidClassException(final String className, final Throwable cause) {
+        InvalidClassException exception = new InvalidClassException(className);
+        exception.initCause(cause);
         return exception;
     }
 

@@ -16,12 +16,19 @@
 
 package org.drools.core.management;
 
-import org.drools.core.common.InternalWorkingMemory;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.drools.core.management.GenericKieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.GenericKieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -31,18 +38,6 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.management.GenericKieSessionMonitoringMXBean;
-
-import javax.management.ObjectName;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * An MBean to monitor a given knowledge session
@@ -224,12 +219,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
         }
         
         private AgendaStatsData getRuleStatsInstance(String ruleName) {
-            AgendaStatsData data = this.ruleStats.get( ruleName );
-            if( data == null ) {
-                data = new AgendaStatsData();
-                this.ruleStats.put( ruleName, data );
-            }
-            return data;
+            return this.ruleStats.computeIfAbsent(ruleName, d -> new AgendaStatsData());
         }
 
         public static class AgendaStatsData implements IAgendaStatsData {
@@ -335,12 +325,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
         }
         
         private ProcessStatsData getProcessStatsInstance(String processId) {
-            ProcessStatsData data = this.processStats.get(processId);
-            if (data == null) {
-                data = new ProcessStatsData();
-                this.processStats.put(processId, data);
-            }
-            return data;
+            return this.processStats.computeIfAbsent(processId, d -> new ProcessStatsData());
         }
 
         public void afterProcessStarted(ProcessStartedEvent event) {
