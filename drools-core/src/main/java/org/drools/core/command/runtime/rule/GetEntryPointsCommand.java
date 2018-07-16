@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.EntryPointCreator;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -28,7 +28,7 @@ import java.util.Collection;
 
 public class GetEntryPointsCommand
     implements
-    ExecutableCommand<Collection< ? extends EntryPoint>> {
+    TransactionalCommand<Collection< ? extends EntryPoint>> {
 
     public GetEntryPointsCommand() {
     }

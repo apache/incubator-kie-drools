@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.KieSession;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public class GetCalendarsCommand
     implements
-    ExecutableCommand<Calendars> {
+    TransactionalCommand<Calendars> {
 
     public Calendars execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

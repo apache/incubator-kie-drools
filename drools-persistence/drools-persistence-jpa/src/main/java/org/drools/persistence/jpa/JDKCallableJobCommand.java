@@ -15,12 +15,12 @@
 
 package org.drools.persistence.jpa;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.kie.api.runtime.Context;
 
 public class JDKCallableJobCommand
     implements
-    ExecutableCommand<Void> {
+    TransactionalCommand<Void> {
 
     private static final long   serialVersionUID = 4L;
 

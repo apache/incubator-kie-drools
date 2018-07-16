@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.process;
 
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
@@ -33,7 +33,7 @@ import java.util.Set;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
+public class GetWorkItemIdsCommand implements TransactionalCommand<List<Long>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 1471981530823361925L;

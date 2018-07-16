@@ -15,7 +15,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.KieSession;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 import java.util.Collection;
 
-public class FromExternalFactHandleCommand implements ExecutableCommand<FactHandle> {
+public class FromExternalFactHandleCommand implements TransactionalCommand<FactHandle> {
 
     private String factHandleExternalForm;
     private boolean disconnected;

@@ -16,7 +16,7 @@
 package org.drools.persistence.session;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -195,7 +195,7 @@ public class AgendaRuleFlowGroupsTest {
 	}
 	
 	@SuppressWarnings("serial")
-	public class ActivateRuleFlowCommand implements ExecutableCommand<Object> {
+	public class ActivateRuleFlowCommand implements TransactionalCommand<Object> {
 		
 		private String ruleFlowGroupName;
 		
@@ -212,7 +212,7 @@ public class AgendaRuleFlowGroupsTest {
 	}
 	
 	@SuppressWarnings("serial")
-    public class ActivateAgendaGroupCommand implements ExecutableCommand<Object> {
+    public class ActivateAgendaGroupCommand implements TransactionalCommand<Object> {
         
         private String agendaGroupName;
         
@@ -229,7 +229,7 @@ public class AgendaRuleFlowGroupsTest {
     }
 	
 	@SuppressWarnings("serial")
-	public class ExceptionCommand implements ExecutableCommand<Object> {
+	public class ExceptionCommand implements TransactionalCommand<Object> {
 
 	    public Void execute(Context context) {
 	    	throw new RuntimeException();

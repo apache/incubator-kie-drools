@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetProcessInstanceByCorrelationKeyCommand implements ExecutableCommand<ProcessInstance>, CorrelationKeyCommand {
+public class GetProcessInstanceByCorrelationKeyCommand implements TransactionalCommand<ProcessInstance>, CorrelationKeyCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = -211522165088235065L;

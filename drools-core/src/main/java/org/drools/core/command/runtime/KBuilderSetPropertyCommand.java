@@ -16,11 +16,11 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.api.runtime.Context;
 
-public class KBuilderSetPropertyCommand implements ExecutableCommand<Void> {
+public class KBuilderSetPropertyCommand implements TransactionalCommand<Void> {
 	
     private String kbuilderConfId;
     private String name;

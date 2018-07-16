@@ -17,12 +17,12 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.kie.api.runtime.Context;
 
 import java.util.Map;
 
-public class SetVarAsRegistryEntry<Void> implements ExecutableCommand<Void> {
+public class SetVarAsRegistryEntry<Void> implements TransactionalCommand<Void> {
     private String registryName;
     private String varName;
 

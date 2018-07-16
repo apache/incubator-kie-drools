@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public class GetGlobalsCommand
     implements
-    ExecutableCommand<Globals> {
+    TransactionalCommand<Globals> {
 
     public Globals execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

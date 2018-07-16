@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -32,7 +32,7 @@ import java.util.Collection;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstancesCommand
     implements
-    ExecutableCommand<Collection<ProcessInstance>> {
+    TransactionalCommand<Collection<ProcessInstance>> {
 
     public Collection<ProcessInstance> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

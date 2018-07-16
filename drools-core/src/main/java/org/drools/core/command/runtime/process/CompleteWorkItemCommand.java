@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.runtime.KieSession;
@@ -33,7 +33,7 @@ import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class CompleteWorkItemCommand implements ExecutableCommand<Void> {
+public class CompleteWorkItemCommand implements TransactionalCommand<Void> {
 
     @XmlAttribute(name="id", required = true)
     private Long workItemId;

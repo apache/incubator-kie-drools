@@ -20,7 +20,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -39,7 +39,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -115,8 +114,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         Cheese stilton = new Cheese( "stilton", 5 );
         
         final StatelessKieSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
-        final ExecutableCommand cmd = (ExecutableCommand) CommandFactory.newInsert( stilton, "outStilton" );
-        final BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new ExecutableCommand<?>[] { cmd } ) );
+        final TransactionalCommand cmd = (TransactionalCommand) CommandFactory.newInsert(stilton, "outStilton" );
+        final BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new TransactionalCommand<?>[] { cmd } ) );
         
         final ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );

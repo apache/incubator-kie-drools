@@ -18,7 +18,7 @@ package org.drools.core.command;
 
 import java.util.function.Supplier;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -26,7 +26,7 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 public class RunUnitCommand<T extends RuleUnit>
         implements
-        ExecutableCommand<Integer> {
+        TransactionalCommand<Integer> {
 
     private static final long serialVersionUID = 626194815589613487L;
     private Class<T> unitClass;

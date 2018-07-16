@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.util.MVELSafeHelper;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class ModifyCommand implements ExecutableCommand<Object> {
+public class ModifyCommand implements TransactionalCommand<Object> {
 
     /**
      * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.

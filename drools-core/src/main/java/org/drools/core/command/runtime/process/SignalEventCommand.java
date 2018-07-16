@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.KieSession;
@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
+public class SignalEventCommand implements TransactionalCommand<Void>, ProcessInstanceIdCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 2134028686669740220L;

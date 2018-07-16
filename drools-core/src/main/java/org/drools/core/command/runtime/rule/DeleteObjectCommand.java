@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteObjectCommand
-        implements ExecutableCommand<Void> {
+        implements TransactionalCommand<Void> {
 
     @XmlAttribute(name="object")
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)

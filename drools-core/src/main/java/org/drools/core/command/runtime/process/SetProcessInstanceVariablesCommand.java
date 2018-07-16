@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.runtime.KieSession;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
+public class SetProcessInstanceVariablesCommand implements TransactionalCommand<Void>, ProcessInstanceIdCommand {
 
 	/** Generated serial version UID */
     private static final long serialVersionUID = 7802415761845739379L;

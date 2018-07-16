@@ -17,11 +17,11 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Context;
 
-public class GetContextCommand<Void> implements ExecutableCommand<Void> {
+public class GetContextCommand<Void> implements TransactionalCommand<Void> {
     private String name;
 
     public GetContextCommand(String name) {

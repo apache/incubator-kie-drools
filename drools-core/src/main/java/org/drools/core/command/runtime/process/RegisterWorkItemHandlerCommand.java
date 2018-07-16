@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.process;
 
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.KieSession;
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class RegisterWorkItemHandlerCommand implements ExecutableCommand<Void> {
+public class RegisterWorkItemHandlerCommand implements TransactionalCommand<Void> {
 
     @XmlElement
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)

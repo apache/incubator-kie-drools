@@ -18,7 +18,7 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.runtime.InternalLocalRunner;
 import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
@@ -82,7 +82,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
             }
 
             for (Command cmd : batch.getCommands() ) {
-                Object returned = ((ExecutableCommand)cmd).execute( ctx );
+                Object returned = ((TransactionalCommand)cmd).execute(ctx );
                 if ( returned != null ) {
                     ctx.setResult( returned );
                     if ( returned instanceof KieSession ) {
@@ -99,7 +99,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
         // anything with a temporal distance of 0 is executed now
         // everything else must be handled by a priority queue and timer afterwards.
         for (Command cmd : batch.getCommands() ) {
-            Object returned = ((ExecutableCommand)cmd).execute( ctx );
+            Object returned = ((TransactionalCommand)cmd).execute(ctx );
             if ( returned != null ) {
                 ctx.setResult( returned );
                 if ( returned instanceof KieSession ) {

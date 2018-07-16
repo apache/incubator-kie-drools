@@ -16,7 +16,7 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.kie.api.runtime.Executable;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public interface InternalExecutable extends Executable {
     default boolean canRunInTransaction() {
         return getBatches().stream()
                            .flatMap( batch -> batch.getCommands().stream() )
-                           .map( ExecutableCommand.class::cast )
-                           .allMatch( ExecutableCommand::canRunInTransaction );
+                           .map( TransactionalCommand.class::cast )
+                           .allMatch(TransactionalCommand::canRunInTransaction );
     }
 }

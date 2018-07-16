@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.KieSession;
@@ -30,7 +30,7 @@ import java.util.Collection;
 
 public class GetFactHandlesInEntryPointCommand
     implements
-    ExecutableCommand<Collection<FactHandle>> {
+    TransactionalCommand<Collection<FactHandle>> {
 
     private ObjectFilter filter = null;
     private boolean      disconnected = false;

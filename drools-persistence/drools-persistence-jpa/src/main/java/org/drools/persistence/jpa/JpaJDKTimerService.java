@@ -17,7 +17,7 @@
 package org.drools.persistence.jpa;
 
 import org.kie.api.runtime.ExecutableRunner;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -117,7 +117,7 @@ public class JpaJDKTimerService extends JDKTimerService {
 
     public static class JDKCallableJobCommand
         implements
-        ExecutableCommand<Void> {
+        TransactionalCommand<Void> {
 
         private static final long serialVersionUID = 4L;
 

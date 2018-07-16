@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.KieSession;
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetIdCommand
     implements
-    ExecutableCommand<Long> {
+    TransactionalCommand<Long> {
 
     private static final long serialVersionUID = 510l;
 

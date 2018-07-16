@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectInEntryPointCommand
         implements
-        ExecutableCommand<FactHandle>, IdentifiableResult {
+        TransactionalCommand<FactHandle>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
     @XmlElement

@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class FireAllRulesCommand implements ExecutableCommand<Integer>, IdentifiableResult {
+public class FireAllRulesCommand implements TransactionalCommand<Integer>, IdentifiableResult {
 
     @XmlAttribute
     private int          max          = -1;

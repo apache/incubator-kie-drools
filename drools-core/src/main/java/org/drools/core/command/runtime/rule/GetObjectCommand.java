@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedFactHandle;
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand
     implements
-    ExecutableCommand<Object>, IdentifiableResult {
+    TransactionalCommand<Object>, IdentifiableResult {
 
     private DisconnectedFactHandle disconnectedFactHandle;
 

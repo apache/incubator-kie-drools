@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.Context;
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetFactCountCommand
     implements
-    ExecutableCommand<Long> {
+    TransactionalCommand<Long> {
 
     public Long execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.TransactionalCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -25,7 +25,7 @@ import org.kie.api.runtime.Context;
 
 public class GetKieContainerCommand
     implements
-    ExecutableCommand<KieContainer> {
+    TransactionalCommand<KieContainer> {
 
     private static final long serialVersionUID = 8748826714594402049L;
     private ReleaseId releaseId;
