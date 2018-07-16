@@ -137,21 +137,21 @@ public class CronExpressionTest extends SerializationTestSupport {
             fail("Expected ParseException did not fire for wildcard day-of-month and day-of-week");
         } catch(ParseException pe) {
             assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."));
+                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
         }
         try {
             CronExpression cronExpression = new CronExpression("0 0 * 4 * *");
             fail("Expected ParseException did not fire for specified day-of-month and wildcard day-of-week");
         } catch(ParseException pe) {
             assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."));
+                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
         }
         try {
             CronExpression cronExpression = new CronExpression("0 0 * * * 4");
             fail("Expected ParseException did not fire for wildcard day-of-month and specified day-of-week");
         } catch(ParseException pe) {
             assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."));
+                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
         }
     }
 

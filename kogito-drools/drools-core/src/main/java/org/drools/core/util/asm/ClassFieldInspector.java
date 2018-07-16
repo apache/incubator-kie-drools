@@ -534,7 +534,7 @@ public class ClassFieldInspector {
 
     }
 
-    public class GetterOverloadWarning implements KnowledgeBuilderResult {
+    public static class GetterOverloadWarning implements KnowledgeBuilderResult {
 
         private Class klass;
         private String oldName;

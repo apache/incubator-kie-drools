@@ -617,7 +617,7 @@ public class ProtobufInputMarshaller {
             }
 
             for ( Integer factHandleId : _key.getOtherHandleList() ) {
-                handle = (InternalFactHandle) context.handles.get( factHandleId.intValue() );
+                handle = context.handles.get( factHandleId );
                 key.addFactHandle( handle );
                 handle.setEqualityKey( key );
             }

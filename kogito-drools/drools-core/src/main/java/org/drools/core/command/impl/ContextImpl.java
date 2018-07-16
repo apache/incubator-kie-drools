@@ -52,7 +52,7 @@ public class ContextImpl implements RegistryContext {
         this.name = name;
         this.manager = manager;
         this.delegate = delegate;
-        set(REGISTRY, new HashMap<String, Object>() );
+        map.put(REGISTRY, new HashMap<String, Object>());
     }
 
     @Override

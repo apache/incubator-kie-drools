@@ -152,17 +152,24 @@ public class CreateCorrelatedProcessInstanceCommand implements ExecutableCommand
     }
 
     public String toString() {
-        String result = "session.createProcessInstance(" + processId + ", " + correlationKey + ", [";
+        final StringBuilder result = new StringBuilder();
+        result.append("session.createProcessInstance(");
+        result.append(processId);
+        result.append(", ");
+        result.append(correlationKey);
+        result.append(", [");
         if (parameters != null) {
             int i = 0;
-            for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+            for (final Map.Entry<String, Object> entry: parameters.entrySet()) {
                 if (i++ > 0) {
-                    result += ", ";
+                    result.append(", ");
                 }
-                result += entry.getKey() + "=" + entry.getValue();
+                result.append(entry.getKey());
+                result.append("=");
+                result.append(entry.getValue());
             }
         }
-        result += "]);";
-        return result;
+        result.append("]);");
+        return result.toString();
     }
 }

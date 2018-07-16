@@ -109,7 +109,7 @@ public class ClassFieldAccessorFactory {
                     }
                 }
                 if ( fieldType != null && getterMethod != null ) {
-                    final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( System.identityHashCode( clazz ) ) + "$" + getterMethod.getName();
+                    final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( (long) System.identityHashCode( clazz ) ) + "$" + getterMethod.getName();
 
                     // generating byte array to create target class
                     final byte[] bytes = dumpReader( clazz,
@@ -185,7 +185,7 @@ public class ClassFieldAccessorFactory {
             }
             if ( setterMethod != null ) {
                 final Class< ? > fieldType = setterMethod.getParameterTypes()[0];
-                final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( System.identityHashCode( clazz ) ) + "$" + setterMethod.getName();
+                final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( (long) System.identityHashCode( clazz ) ) + "$" + setterMethod.getName();
 
                 // generating byte array to create target class
                 final byte[] bytes = dumpWriter( clazz,

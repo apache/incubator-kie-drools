@@ -541,7 +541,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || !(obj instanceof XpathChunk)) {
+            if (obj == null || !(obj instanceof XpathChunk)){
                 return false;
             }
 

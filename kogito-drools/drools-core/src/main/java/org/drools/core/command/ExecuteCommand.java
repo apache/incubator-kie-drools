@@ -59,16 +59,7 @@ public class ExecuteCommand
 
     public ExecutionResults execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        
-        ExecutionResults kresults = null;
-        if( ksession instanceof StatefulKnowledgeSessionImpl ) { 
-            kresults = ksession.execute(this.command );
-        }
-        else { 
-            // Graceful failure
-            kresults = ksession.execute(this.command);
-        }
-        
+        ExecutionResults kresults = ksession.execute(this.command);
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, kresults );
         }

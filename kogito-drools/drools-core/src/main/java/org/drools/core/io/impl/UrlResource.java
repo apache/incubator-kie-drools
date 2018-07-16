@@ -214,8 +214,11 @@ public class UrlResource extends BaseResource
     private void cacheStream() {
         try {
             File fi = getTemproralCacheFile();
-            if (fi.exists())
-                fi.delete();
+            if (fi.exists()) {
+                if (!fi.delete()) {
+                    throw new IllegalStateException("Cannot delete file " + fi.getAbsolutePath() + "!");
+                }
+            }
             FileOutputStream fout = new FileOutputStream(fi);
             InputStream in = grabStream();
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
@@ -228,7 +231,9 @@ public class UrlResource extends BaseResource
             in.close();
             
             File cacheFile = getCacheFile();
-            fi.renameTo(cacheFile);            
+            if (!fi.renameTo(cacheFile)) {
+                throw new IllegalStateException("Cannot rename file \"" + fi.getAbsolutePath() + "\" to \"" + cacheFile.getAbsolutePath() + "\"!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -81,7 +81,9 @@ public class SessionsCache {
         }
 
         private void enqueue(SessionsCache sessionsCache, StatefulKnowledgeSessionImpl session) {
-            dirtySessions.offer(new SessionSlot(sessionsCache, session));
+            if (!dirtySessions.offer(new SessionSlot(sessionsCache, session))) {
+                throw new IllegalStateException("Cannot insert item into the queue! There is no space left in the queue.");
+            }
         }
     }
 

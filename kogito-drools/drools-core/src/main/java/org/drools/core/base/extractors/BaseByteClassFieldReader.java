@@ -46,7 +46,7 @@ public abstract class BaseByteClassFieldReader extends BaseClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Byte( getByteValue( workingMemory, object ) );
+        return getByteValue( workingMemory, object );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

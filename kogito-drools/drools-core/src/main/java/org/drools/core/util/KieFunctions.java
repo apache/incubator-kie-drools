@@ -130,15 +130,15 @@ public class KieFunctions {
         if (value == null) throw new RuntimeException("Number: " + number + " can not be compared with a null value.");
 
         if (number instanceof Short) {
-            return new Short(number.shortValue()).compareTo(Short.valueOf(value));
+            return Short.valueOf(number.shortValue()).compareTo(Short.valueOf(value));
         } else if (number instanceof Integer) {
-            return new Integer(number.intValue()).compareTo(Integer.valueOf(value));
+            return Integer.valueOf(number.intValue()).compareTo(Integer.valueOf(value));
         } else if (number instanceof Long) {
-            return new Long(number.longValue()).compareTo(Long.valueOf(value));
+            return Long.valueOf(number.longValue()).compareTo(Long.valueOf(value));
         } else if (number instanceof Float) {
-            return new Float(number.floatValue()).compareTo(Float.valueOf(value));
+            return Float.valueOf(number.floatValue()).compareTo(Float.valueOf(value));
         } else if (number instanceof Double) {
-            return new Double(number.doubleValue()).compareTo(Double.valueOf(value));
+            return Double.valueOf(number.doubleValue()).compareTo(Double.valueOf(value));
         } else if (number instanceof BigDecimal) {
             return ((BigDecimal) number).compareTo((new BigDecimal(value)));
         } else if (number instanceof BigInteger) {

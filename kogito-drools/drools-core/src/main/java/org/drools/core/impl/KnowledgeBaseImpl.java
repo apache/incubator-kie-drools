@@ -442,12 +442,12 @@ public class KnowledgeBaseImpl
         this.workingMemoryCounter.set(droolsStream.readInt());
 
         this.processes = (Map<String, Process>) droolsStream.readObject();
-        Class cls = null;
+        final String classNameFromStream = droolsStream.readUTF();
         try {
-            cls = droolsStream.getParentClassLoader().loadClass(droolsStream.readUTF());
+            Class cls = droolsStream.getParentClassLoader().loadClass(classNameFromStream);
             this.factHandleFactory = (FactHandleFactory) cls.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            DroolsObjectInputStream.newInvalidClassException(cls, e);
+            DroolsObjectInputStream.newInvalidClassException(classNameFromStream, e);
         }
 
         for (InternalKnowledgePackage pkg : this.pkgs.values()) {

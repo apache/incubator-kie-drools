@@ -425,7 +425,7 @@ public class LogicTransformer {
      *       a   c    b   c
      * </pre>
      */
-    class AndOrTransformation
+    static class AndOrTransformation
         implements
         Transformation {
 
@@ -511,7 +511,7 @@ public class LogicTransformer {
      * a b
      * </pre>
      */
-    class ExistOrTransformation
+    static class ExistOrTransformation
             implements
             Transformation {
 
@@ -558,7 +558,7 @@ public class LogicTransformer {
      * a b
      * </pre>
      */
-    public class NotOrTransformation
+    public static class NotOrTransformation
             implements
             Transformation {
 

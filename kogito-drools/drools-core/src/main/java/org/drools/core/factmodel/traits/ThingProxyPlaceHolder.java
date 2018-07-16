@@ -20,6 +20,8 @@ import java.util.BitSet;
 
 public class ThingProxyPlaceHolder<K> extends TraitProxy implements Thing<K>, TraitType, Serializable {
 
+    private static final long serialVersionUID = 6017272084020598391L;
+
     private transient static ThingProxyPlaceHolder singleton;
 
     public static ThingProxyPlaceHolder getThingPlaceHolder() {

@@ -44,24 +44,14 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
      * @return the Class instance for the given class definition
      *
      * @throws java.io.IOException
-     * @throws java.lang.reflect.InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
      * @throws ClassNotFoundException
      * @throws IllegalArgumentException
      * @throws SecurityException
-     * @throws NoSuchFieldException
-     * @throws InstantiationException
      */
     public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) throws IOException,
             SecurityException,
             IllegalArgumentException,
-            ClassNotFoundException,
-            NoSuchMethodException,
-            IllegalAccessException,
-            InvocationTargetException,
-            InstantiationException,
-            NoSuchFieldException {
+            ClassNotFoundException {
 
         if ( ! ( classDef instanceof EnumClassDefinition ) ) {
             throw new RuntimeException( "FATAL : Trying to create an enum out of a bean class definition  " + classDef );
@@ -144,12 +134,12 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
     }
 
 
-    protected void buildConstructors(ClassWriter cw, EnumClassDefinition classDef) throws IOException, ClassNotFoundException {
+    protected void buildConstructors(ClassWriter cw, EnumClassDefinition classDef) {
         MethodVisitor mv;
-        String argTypes = "";
+        final StringBuilder argTypesBuilder = new StringBuilder();
         int size = 0;
         for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
-            argTypes += BuildUtils.getTypeDescriptor( fld.getTypeName() );
+            argTypesBuilder.append(BuildUtils.getTypeDescriptor( fld.getTypeName() ));
             size += BuildUtils.sizeOf( fld.getTypeName() );
         }
 
@@ -159,8 +149,8 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
             mv = cw.visitMethod( ACC_PRIVATE,
                     "<init>",
-                    "(Ljava/lang/String;I" + argTypes +")V",
-                    "(" + argTypes + ")V",
+                    "(Ljava/lang/String;I" + argTypesBuilder.toString() +")V",
+                    "(" + argTypesBuilder.toString() + ")V",
                     null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
@@ -232,7 +222,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
                 mv.visitMethodInsn( INVOKESPECIAL,
                         BuildUtils.getInternalType( classDef.getClassName() ),
                         "<init>",
-                        "(Ljava/lang/String;I" + argTypes + ")V" );
+                        "(Ljava/lang/String;I" + argTypesBuilder.toString() + ")V" );
                 mv.visitFieldInsn(PUTSTATIC,
                         BuildUtils.getInternalType(classDef.getClassName()),
                         lit.getName(),

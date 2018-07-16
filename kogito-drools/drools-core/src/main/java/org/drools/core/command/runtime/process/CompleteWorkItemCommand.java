@@ -16,11 +16,8 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.Context;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,8 +25,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -76,18 +77,23 @@ public class CompleteWorkItemCommand implements ExecutableCommand<Void> {
     }
 
     public String toString() {
-        String result = "session.getWorkItemManager().completeWorkItem(" + workItemId + ", [";
+        final StringBuilder result = new StringBuilder();
+        result.append("session.getWorkItemManager().completeWorkItem(");
+        result.append(workItemId);
+        result.append(", [");
         if (results != null) {
             int i = 0;
-            for (Map.Entry<String, Object> entry: results.entrySet()) {
+            for (final Map.Entry<String, Object> entry: results.entrySet()) {
                 if (i++ > 0) {
-                    result += ", ";
+                    result.append(", ");
                 }
-                result += entry.getKey() + "=" + entry.getValue();
+                result.append(entry.getKey());
+                result.append("=");
+                result.append(entry.getValue());
             }
         }
-        result += "]);";
-        return result;
+        result.append("]);");
+        return result.toString();
     }
 
 }

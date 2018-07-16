@@ -16,6 +16,8 @@
 
 package org.drools.core.base;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -163,10 +165,13 @@ public class ClassFieldAccessorCache {
             if ( parentClassLoader == null ) {
                 throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
-            this.byteArrayClassLoader = ClassUtils.isAndroid() ?
-                    (ByteArrayClassLoader) ClassUtils.instantiateObject(
-                            "org.drools.android.MultiDexClassLoader", null, parentClassLoader) :
-                    new DefaultByteArrayClassLoader( parentClassLoader );
+
+            this.byteArrayClassLoader = AccessController.doPrivileged(
+                    (PrivilegedAction<ByteArrayClassLoader>) () ->
+                            ClassUtils.isAndroid() ?
+                                    (ByteArrayClassLoader) ClassUtils.instantiateObject(
+                                            "org.drools.android.MultiDexClassLoader", null, parentClassLoader) :
+                            new DefaultByteArrayClassLoader(parentClassLoader));
         }
 
         public ByteArrayClassLoader getByteArrayClassLoader() {

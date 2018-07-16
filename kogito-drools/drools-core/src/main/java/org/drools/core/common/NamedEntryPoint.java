@@ -339,81 +339,79 @@ public class NamedEntryPoint
                                      final BitMask mask,
                                      final Class<?> modifiedClass,
                                      final Activation activation) {
+        this.lock.lock();
         try {
-            this.lock.lock();
             this.wm.startOperation();
-            this.kBase.executeQueuedActions();
+            try {
+                this.kBase.executeQueuedActions();
 
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( handle.isDisconnected() ) {
-                handle = this.objectStore.reconnect( handle );
-            }
-
-            final Object originalObject = handle.getObject();
-
-            if ( handle.getEntryPoint() != this ) {
-                throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
-            }
-
-            final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
-
-
-            if ( handle.getId() == -1 || object == null || handle.isExpired() ) {
-                // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
-                return handle;
-            }
-
-            if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.kBase.getConfiguration().getAssertBehaviour() ) ) {
-                this.objectStore.updateHandle(handle, object);
-            }
-
-            this.handleFactory.increaseFactHandleRecency( handle );
-
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
-                                                                                               activation == null ? null : activation.getRule(),
-                                                                                               activation == null ? null : activation.getTuple().getTupleSink(),
-                                                                                               handle, entryPoint, mask, modifiedClass, null);
-
-            if ( typeConf.isTMSEnabled() ) {
-                EqualityKey newKey = tms.get( object );
-                EqualityKey oldKey = handle.getEqualityKey();
-
-                if ( ( oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null ) && newKey != oldKey ) {
-                    // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
-                    throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-                                                    "Rule " + activation.getRule().getName() + " attempted an illegal operation" );
+                // the handle might have been disconnected, so reconnect if it has
+                if (handle.isDisconnected()) {
+                    handle = this.objectStore.reconnect(handle);
                 }
 
-                if ( newKey == null ) {
-                    oldKey.removeFactHandle( handle );
-                    newKey = new EqualityKey( handle,
-                                              EqualityKey.STATED ); // updates are always stated
-                    handle.setEqualityKey( newKey );
-                    getTruthMaintenanceSystem().put( newKey );
+                final Object originalObject = handle.getObject();
 
-
-                } else if ( newKey != oldKey ) {
-                    oldKey.removeFactHandle( handle );
-                    handle.setEqualityKey( newKey );
-                    newKey.addFactHandle( handle );
+                if (handle.getEntryPoint() != this) {
+                    throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
                 }
 
-                // If the old equality key is now empty, and no justified entries, remove it
-                if ( oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null  ) {
-                    getTruthMaintenanceSystem().remove( oldKey );
+                final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint, object);
+
+                if (handle.getId() == -1 || handle.isExpired()) {
+                    // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
+                    return handle;
                 }
+
+                if (originalObject != object || !AssertBehaviour.IDENTITY.equals(this.kBase.getConfiguration().getAssertBehaviour())) {
+                    this.objectStore.updateHandle(handle, object);
+                }
+
+                this.handleFactory.increaseFactHandleRecency(handle);
+
+                final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
+                                                                                                   activation == null ? null : activation.getRule(),
+                                                                                                   activation == null ? null : activation.getTuple().getTupleSink(),
+                                                                                                   handle, entryPoint, mask, modifiedClass, null);
+
+                if (typeConf.isTMSEnabled()) {
+                    EqualityKey newKey = tms.get(object);
+                    EqualityKey oldKey = handle.getEqualityKey();
+
+                    if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
+                        // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
+                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
+                                                                "Rule " + activation.getRule().getName() + " attempted an illegal operation");
+                    }
+
+                    if (newKey == null) {
+                        oldKey.removeFactHandle(handle);
+                        newKey = new EqualityKey(handle,
+                                                 EqualityKey.STATED); // updates are always stated
+                        handle.setEqualityKey(newKey);
+                        getTruthMaintenanceSystem().put(newKey);
+                    } else if (newKey != oldKey) {
+                        oldKey.removeFactHandle(handle);
+                        handle.setEqualityKey(newKey);
+                        newKey.addFactHandle(handle);
+                    }
+
+                    // If the old equality key is now empty, and no justified entries, remove it
+                    if (oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null) {
+                        getTruthMaintenanceSystem().remove(oldKey);
+                    }
+                }
+
+                if (handle.isTraitable() && object != originalObject
+                        && object instanceof TraitableBean && originalObject instanceof TraitableBean) {
+                    this.traitHelper.replaceCore(handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation);
+                }
+
+                update(handle, object, originalObject, typeConf, propagationContext);
+            } finally {
+                this.wm.endOperation();
             }
-
-            if ( handle.isTraitable() && object != originalObject
-                 && object instanceof TraitableBean && originalObject instanceof TraitableBean ) {
-                this.traitHelper.replaceCore( handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation );
-            }
-
-            update( handle, object, originalObject, typeConf, propagationContext );
-
         } finally {
-            this.wm.endOperation();
             this.lock.unlock();
         }
         return handle;
@@ -458,36 +456,39 @@ public class NamedEntryPoint
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }
 
+        this.lock.lock();
         try {
-            this.lock.lock();
             this.wm.startOperation();
-            this.kBase.executeQueuedActions();
+            try {
+                this.kBase.executeQueuedActions();
 
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
+                InternalFactHandle handle = (InternalFactHandle) factHandle;
 
-            if ( handle.getId() == -1 ) {
-                // can't retract an already retracted handle
-                return;
-            }
+                if (handle.getId() == -1) {
+                    // can't retract an already retracted handle
+                    return;
+                }
 
-            // the handle might have been disconnected, so reconnect if it has
-            if ( handle.isDisconnected() ) {
-                handle = this.objectStore.reconnect( handle );
-            }
+                // the handle might have been disconnected, so reconnect if it has
+                if (handle.isDisconnected()) {
+                    handle = this.objectStore.reconnect(handle);
+                }
 
-            if ( handle.getEntryPoint() != this ) {
-                throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
-            }
+                if (handle.getEntryPoint() != this) {
+                    throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
+                }
 
-            EqualityKey key = handle.getEqualityKey();
-            if (fhState.isStated()) {
-                deleteStated( rule, terminalNode, handle, key );
-            }
-            if (fhState.isLogical()) {
-                deleteLogical( key );
+                EqualityKey key = handle.getEqualityKey();
+                if (fhState.isStated()) {
+                    deleteStated(rule, terminalNode, handle, key);
+                }
+                if (fhState.isLogical()) {
+                    deleteLogical(key);
+                }
+            } finally {
+                this.wm.endOperation();
             }
         } finally {
-            this.wm.endOperation();
             this.lock.unlock();
         }
     }
@@ -610,10 +611,8 @@ public class NamedEntryPoint
     }
 
     protected void removePropertyChangeListener(final FactHandle handle, final boolean removeFromSet ) {
-        Object object = null;
+        Object object = ((InternalFactHandle) handle).getObject();
         try {
-            object = ((InternalFactHandle) handle).getObject();
-
             if ( dynamicFacts != null && removeFromSet ) {
                 dynamicFacts.remove( object );
             }

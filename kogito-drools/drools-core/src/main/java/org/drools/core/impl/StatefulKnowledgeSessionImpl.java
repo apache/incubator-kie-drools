@@ -239,7 +239,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     // or -1 if there are operation being executed at this moment
     private AtomicLong lastIdleTimestamp;
 
-    private InternalProcessRuntime processRuntime;
+    private volatile InternalProcessRuntime processRuntime;
 
     private Map<String, Object> runtimeServices;
 
@@ -2255,7 +2255,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return result;
     }
 
-    private class EntryPointObjects {
+    private static class EntryPointObjects {
         private String name;
         private List   objects;
 

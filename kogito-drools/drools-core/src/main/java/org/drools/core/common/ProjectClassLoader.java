@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
 
@@ -374,10 +378,12 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     InternalTypesClassLoader makeClassLoader() {
-        return ClassUtils.isAndroid() ?
-                (InternalTypesClassLoader) ClassUtils.instantiateObject(
-                        "org.drools.android.DexInternalTypesClassLoader", null, this) :
-                new DefaultInternalTypesClassLoader( this );
+        return AccessController.doPrivileged(
+                (PrivilegedAction<InternalTypesClassLoader>) () ->
+                        ClassUtils.isAndroid() ?
+                                (InternalTypesClassLoader) ClassUtils.instantiateObject(
+                                        "org.drools.android.DexInternalTypesClassLoader", null, this) :
+                                new DefaultInternalTypesClassLoader(this));
     }
 
     @Override public boolean equals(Object o) {

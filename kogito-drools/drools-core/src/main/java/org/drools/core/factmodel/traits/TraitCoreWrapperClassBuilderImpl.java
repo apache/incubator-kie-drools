@@ -147,7 +147,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "getCore" ) ) {
+        if ( needsMethod( coreKlazz, "getCore" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getCore", "()" + Type.getDescriptor( Object.class ), "()"+BuildUtils.getTypeDescriptor( coreName ), null );
                 mv.visitCode();
@@ -161,7 +161,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "_getDynamicProperties" ) ) {
+        if ( needsMethod( coreKlazz, "_getDynamicProperties" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "_getDynamicProperties", "()" + Type.getDescriptor( Map.class ), "()Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
                 mv.visitCode();
@@ -188,7 +188,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "_getTraitMap" ) ) {
+        if ( needsMethod( coreKlazz, "_getTraitMap" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "_getTraitMap", "()" + Type.getDescriptor( Map.class ),
                         "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null );
@@ -220,7 +220,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "setTraitMap", Map.class ) ) {
+        if ( needsMethod( coreKlazz, "setTraitMap", Map.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "setTraitMap", "(Ljava/util/Map;)V", null, null );
                 mv.visitCode();
@@ -235,7 +235,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "addTrait", String.class, Thing.class ) ) {
+        if ( needsMethod( coreKlazz, "addTrait", String.class, Thing.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "addTrait",
                         "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Thing.class ) + ")V",
@@ -255,7 +255,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "getTrait", String.class ) ) {
+        if ( needsMethod( coreKlazz, "getTrait", String.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getTrait",
                         "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Thing.class ),
@@ -273,7 +273,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "hasTraits" ) ) {
+        if ( needsMethod( coreKlazz, "hasTraits" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC,
                                      "hasTraits",
@@ -300,7 +300,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "hasTrait", String.class ) ) {
+        if ( needsMethod( coreKlazz, "hasTrait", String.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "hasTrait", "(" + Type.getDescriptor( String.class )+ ")Z", null, null );
                 mv.visitCode();
@@ -313,7 +313,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "removeTrait", String.class ) ) {
+        if ( needsMethod( coreKlazz, "removeTrait", String.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "removeTrait",
                         Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
@@ -347,7 +347,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
 
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "getTraits" ) ) {
+        if ( needsMethod( coreKlazz, "getTraits" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getTraits", "()" + Type.getDescriptor( Collection.class ), "()Ljava/util/Collection<Ljava/lang/String;>;", null );
                 mv.visitCode();
@@ -359,7 +359,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
-        if ( coreKlazz == null || needsMethod( coreKlazz, "_setBottomTypeCode" ) ) {
+        if ( needsMethod( coreKlazz, "_setBottomTypeCode" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "_setBottomTypeCode", "(" + Type.getDescriptor( BitSet.class )+ ")V", null, null );
                 mv.visitCode();
@@ -374,7 +374,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             }
         }
 
-        if ( coreKlazz == null || needsMethod( coreKlazz, "getCurrentTypeCode" ) ) {
+        if ( needsMethod( coreKlazz, "getCurrentTypeCode" ) ) {
 
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getCurrentTypeCode", "()" + Type.getDescriptor( BitSet.class ), null, null );
@@ -408,7 +408,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             }
         }
 
-        if ( coreKlazz == null || needsMethod( coreKlazz, "getMostSpecificTraits" ) ) {
+        if ( needsMethod( coreKlazz, "getMostSpecificTraits" ) ) {
 
             {
                 mv = cw.visitMethod( ACC_PUBLIC,
@@ -434,7 +434,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         }
 
 
-        if ( coreKlazz == null || needsMethod( coreKlazz, "_getFieldTMS", TraitFieldTMS.class ) ) {
+        if ( needsMethod( coreKlazz, "_getFieldTMS", TraitFieldTMS.class ) ) {
             {
                 mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                      "_getFieldTMS",
@@ -451,7 +451,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             }
         }
 
-        if ( coreKlazz == null || needsMethod( coreKlazz, "_setFieldTMS", TraitFieldTMS.class ) ) {
+        if ( needsMethod( coreKlazz, "_setFieldTMS", TraitFieldTMS.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC,
                                      "_setFieldTMS",

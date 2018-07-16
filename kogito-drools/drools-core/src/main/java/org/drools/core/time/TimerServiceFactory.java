@@ -19,18 +19,20 @@ package org.drools.core.time;
 import org.drools.core.SessionConfiguration;
 
 public class TimerServiceFactory {
-    
-    public static TimerService getTimerService( SessionConfiguration config ) {
-        TimerService service = null;
-        switch( config.getClockType() ) {
+
+    public static TimerService getTimerService(SessionConfiguration config) {
+        TimerService service;
+        switch (config.getClockType()) {
             case REALTIME_CLOCK:
                 service = config.newTimerService();
                 break;
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
                 break;
+            default:
+                throw new IllegalArgumentException("Unsupported clock type: " + config.getClockType());
         }
-        service.setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
+        service.setTimerJobFactoryManager(config.getTimerJobFactoryManager());
         return service;
     }
 }

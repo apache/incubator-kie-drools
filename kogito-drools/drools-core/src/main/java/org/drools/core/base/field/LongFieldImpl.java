@@ -50,7 +50,7 @@ public class LongFieldImpl
     }
 
     public Serializable getValue() {
-        return new Long( this.value );
+        return this.value;
     }
 
     public String toString() {

@@ -33,7 +33,7 @@ public class InstanceNotEqualsConstraint
 
     private static final long          serialVersionUID = 510l;
 
-    private static Declaration[] declarations     = new Declaration[0];
+    private Declaration[] declarations     = new Declaration[0];
 
     private Pattern                     otherPattern;
 
@@ -57,7 +57,7 @@ public class InstanceNotEqualsConstraint
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return InstanceNotEqualsConstraint.declarations;
+        return declarations;
     }
 
     public void replaceDeclaration(Declaration oldDecl,

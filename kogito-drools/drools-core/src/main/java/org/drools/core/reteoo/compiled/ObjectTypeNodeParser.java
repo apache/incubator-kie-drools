@@ -17,11 +17,21 @@
 package org.drools.core.reteoo.compiled;
 
 import org.drools.core.base.ClassFieldReader;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSinkNode;
+import org.drools.core.reteoo.ObjectSinkNodeList;
+import org.drools.core.reteoo.ObjectSinkPropagator;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.SingleObjectSinkAdapter;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
 
 /**
  * This class is used for reading an {@link ObjectTypeNode} using callbacks.
@@ -86,33 +96,11 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traversePropagator(LeftTupleSinkPropagator propagator, NetworkHandler handler) {
-        if (propagator instanceof SingleLeftTupleSinkAdapter) {
-            // we know there is only a single child sink for this propagator
-            LeftTupleSink sink = propagator.getSinks()[0];
-
-            traverseSink(sink, handler);
-        } else if (propagator instanceof CompositeLeftTupleSinkAdapter) {
-            CompositeLeftTupleSinkAdapter composite = (CompositeLeftTupleSinkAdapter) propagator;
-
-            LeftTupleSink[] sinks = composite.getSinks();
-            traverseSinkLisk(sinks, handler);
-        }
-    }
-
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
 
                 traverseSink(sink, handler);
-            }
-        }
-    }
-
-    private void traverseSinkLisk(LeftTupleSink[] sinks, NetworkHandler handler) {
-        if (sinks != null) {
-            for (int sinkIndex = 0; sinkIndex < sinks.length; ++sinkIndex) {
-                traverseSink(sinks[sinkIndex], handler);
             }
         }
     }
@@ -164,10 +152,6 @@ public class ObjectTypeNodeParser {
             // todo traverse lia
             handler.endLeftInputAdapterNode(leftInputAdapterNode);
         }
-    }
-
-    private void traverseSink(LeftTupleSink sink, NetworkHandler handler) {
-        // todo traverse sink's propagator
     }
 
     /**

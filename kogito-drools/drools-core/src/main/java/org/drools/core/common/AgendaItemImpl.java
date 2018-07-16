@@ -298,7 +298,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
             return true;
         }
 
-        if (!(object instanceof AgendaItemImpl)) {
+        if (!(AgendaItemImpl.class.isAssignableFrom(object.getClass()))) {
             return false;
         }
 

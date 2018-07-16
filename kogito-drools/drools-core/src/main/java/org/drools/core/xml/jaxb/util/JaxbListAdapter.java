@@ -38,10 +38,11 @@ public class JaxbListAdapter extends XmlAdapter<JaxbListWrapper, Collection> {
 
     @Override
     public JaxbListWrapper marshal( Collection v ) throws Exception {
+        if ( v == null ) {
+            return new JaxbListWrapper(new Object[0]);
+        }
         try {
-            if( v == null ) {
-                return new JaxbListWrapper(new Object[0]);
-            } else if( v instanceof List ) {
+            if( v instanceof List ) {
                 Object [] marshalledArr = marshalUnknownCollection(v);
                 return new JaxbListWrapper(marshalledArr, JaxbWrapperType.LIST);
             } else if( v instanceof Set ) {

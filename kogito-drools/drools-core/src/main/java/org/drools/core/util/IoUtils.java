@@ -100,13 +100,13 @@ public class IoUtils {
     }
 
     public static void copyFile(File sourceFile, File destFile) {
-        destFile.getParentFile().mkdirs();
-        if(!destFile.exists()) {
-            try {
-                destFile.createNewFile();
-            } catch (IOException ioe) {
-                throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
-            }
+        if (!destFile.getParentFile().mkdirs()) {
+            throw new IllegalStateException("Cannot create directory structure for file " + destFile.getParentFile().getAbsolutePath() + "!");
+        }
+        try {
+            destFile.createNewFile();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
         }
 
         FileChannel source = null;

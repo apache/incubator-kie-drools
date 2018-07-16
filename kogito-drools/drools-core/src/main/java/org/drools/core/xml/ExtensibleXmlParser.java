@@ -679,7 +679,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     protected String buildPrintMessage(final SAXParseException x) {
-        return this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
+        return this.message.format( new Object[]{x.getSystemId(), x.getLineNumber(), x.getColumnNumber(), x.getMessage()} );
     }
 
     public void warning(final SAXParseException x) {

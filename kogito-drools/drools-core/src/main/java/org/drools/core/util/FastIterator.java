@@ -27,10 +27,6 @@ public interface FastIterator {
         public boolean isFullIterator() {
             return false;
         }
-
-        public void resume(Entry target) {
-
-        }
     };
 
     public static class IteratorAdapter implements Iterator {
