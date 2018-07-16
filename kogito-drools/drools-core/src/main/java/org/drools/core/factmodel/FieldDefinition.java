@@ -205,7 +205,7 @@ public class FieldDefinition
      * @inheritDoc
      */
     public boolean equals(Object o) {
-        return this.getName().equals( ((FieldDefinition) o).getName() );
+        return (o != null) && this.getName().equals( ((FieldDefinition) o).getName() );
     }
 
     /**

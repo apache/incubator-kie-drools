@@ -204,6 +204,9 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         }
 
         public boolean equals(final Object object) {
+            if (object == null) {
+                return false;
+            }
             if ( object == this ) {
                 return true;
             }

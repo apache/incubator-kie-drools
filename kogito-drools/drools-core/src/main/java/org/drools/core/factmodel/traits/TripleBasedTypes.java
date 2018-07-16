@@ -162,6 +162,9 @@ public class TripleBasedTypes extends TripleBasedStruct {
 
 
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this == o) return true;
         if ( ! this.getClass().equals( o.getClass() ) ) return false;
 

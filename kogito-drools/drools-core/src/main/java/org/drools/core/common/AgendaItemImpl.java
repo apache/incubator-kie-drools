@@ -294,6 +294,10 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
      */
     @Override
     public boolean equals(final Object object) {
+        if (object == null) {
+            return false;
+        }
+
         if (object == this) {
             return true;
         }
