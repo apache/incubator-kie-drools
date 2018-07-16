@@ -129,18 +129,18 @@ public final class KieUtil {
         }
 
         final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        KieModuleModel kproj = KieBaseUtil.getKieModuleModelWithAlphaNetworkCompiler(kieBaseTestConfiguration);
+        KieModuleModel kproj = KieBaseUtil.getKieModuleModelWithAlphaNetworkCompiler();
         kfs.writeKModuleXML(kproj.toXML());
 
         final Class<? extends KieBuilder.ProjectType> projectClass;
         switch (kieBaseTestConfiguration.runType()) {
-            case STANDARD_FROM_DRL:
+            case STANDARD_FROM_DRL: case STANDARD_WITH_ALPHA_NETWORK:
                 projectClass = DrlProject.class;
                 break;
-            case FLOW_DSL:
+            case FLOW_DSL: case FLOW_WITH_ALPHA_NETWORK:
                 projectClass = ExecutableModelFlowProject.class;
                 break;
-            case PATTERN_DSL:
+            case PATTERN_DSL: case PATTERN_WITH_ALPHA_NETWORK:
                 projectClass = ExecutableModelProject.class;
                 break;
             default:

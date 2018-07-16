@@ -26,6 +26,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
@@ -121,5 +122,11 @@ public final class KieBaseUtil {
 
     private KieBaseUtil() {
         // Creating instances of util classes should not be possible.
+    }
+
+    public static KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
+        KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
+        return kproj;
     }
 }
