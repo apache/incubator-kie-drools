@@ -37,6 +37,9 @@ public class RuleRemovalContext
 
     private InternalKnowledgeBase kBase;
 
+    // This should be used just for deserialization purposes.
+    public RuleRemovalContext() { }
+
     public RuleRemovalContext(RuleImpl rule) {
         this.rule = rule;
     }
