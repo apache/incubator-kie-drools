@@ -153,6 +153,9 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
 
 
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this == o) return true;
         if ( ! this.getClass().equals( o.getClass() ) ) return false;
 
