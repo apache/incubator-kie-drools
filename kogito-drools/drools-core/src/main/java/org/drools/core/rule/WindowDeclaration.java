@@ -27,7 +27,7 @@ import org.kie.internal.definition.KnowledgeDefinition;
  * The window declaration defines a window that can be used by patterns
  * in rules
  */
-public class WindowDeclaration extends BaseAnnotatedAsset
+public class WindowDeclaration
     implements
     KnowledgeDefinition,
     Externalizable {
