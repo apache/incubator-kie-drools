@@ -115,6 +115,7 @@ public class ImportsTest {
 
     @Test
     public void testImport2BKMsInvokeUsingInputData() {
+        // DROOLS-2746 DMN Invocation parameters resolution with imported function
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_invoke_hello_with_2_bkms_using_inputdata.dmn",
                                                                                  this.getClass(),
                                                                                  "Saying_hello_2_bkms.dmn");
