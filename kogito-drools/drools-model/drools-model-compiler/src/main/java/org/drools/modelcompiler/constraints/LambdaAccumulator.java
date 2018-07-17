@@ -104,7 +104,7 @@ public abstract class LambdaAccumulator implements Accumulator {
                 }
                 return binding.evaluate(args);
             } else {
-                return binding.evaluate(handle, tuple, wm);
+                return binding.evaluate(handle, tuple, wm, declarations, innerDeclarations);
             }
         }
     }

@@ -31,23 +31,30 @@ public class BindingEvaluator {
         this.binding = binding;
     }
 
-    public Object evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
-        return evaluate( getArguments( handle, tuple, workingMemory ) );
+    public Object evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory, Declaration[] declarations, Declaration[] innerDeclarations ) {
+        return evaluate( getArguments( handle, tuple, workingMemory, declarations, innerDeclarations ) );
     }
 
     public Object evaluate( Object... args ) {
         return binding.eval( args );
     }
 
-    protected Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
-        Object[] params = new Object[declarations.length];
+    public Declaration[] getDeclarations() {
+        return declarations;
+    }
+
+    protected Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory, Declaration[] declarations, Declaration[] innerDeclarations ) {
+        Object[] params = new Object[declarations.length + innerDeclarations.length];
+        for (int i = 0; i < innerDeclarations.length; i++) {
+            params[i] = getArgument( handle, workingMemory, innerDeclarations[i], tuple );
+        }
         for (int i = 0; i < declarations.length; i++) {
-            params[i] = getArgument( handle, workingMemory, declarations[i], tuple );
+            params[i+innerDeclarations.length] = getArgument( handle, workingMemory, declarations[i], tuple );
         }
         return params;
     }
 
-    private Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
+    public Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
         Object object = tuple != null && declaration.getPattern().getOffset() < tuple.size() ? tuple.getObject(declaration.getPattern().getOffset()) : handle.getObject();
         return declaration.getValue(workingMemory, object);
     }
