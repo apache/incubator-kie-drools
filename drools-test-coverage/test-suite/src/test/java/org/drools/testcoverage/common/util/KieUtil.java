@@ -104,7 +104,7 @@ public final class KieUtil {
 
     public static KieBuilder getKieBuilderFromKieFileSystem(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                             final KieFileSystem fileSystem, final boolean failIfBuildError) {
-        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError, true);
+        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError, false);
     }
 
     public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -117,13 +117,6 @@ public final class KieUtil {
                                                         final boolean failIfBuildError, final Resource... resources) {
         return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration,
                                                         KieServices.Factory.get().newKieFileSystem(), failIfBuildError, true, resources);
-    }
-
-    public static KieModuleModel getDefaultKieModuleModel(final KieServices ks) {
-        final KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        final KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("kbase").setDefault(true);
-        final KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("ksession").setDefault(true);
-        return kproj;
     }
 
     private static KieBuilder getKieBuilderFromFileSystemWithResources(final KieBaseTestConfiguration kieBaseTestConfiguration,

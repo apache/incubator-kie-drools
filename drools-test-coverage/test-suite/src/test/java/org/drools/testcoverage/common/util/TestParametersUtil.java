@@ -88,6 +88,11 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
+        if(TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK});
+            parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_ALPHA_NETWORK});
+        }
+
         if ( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
