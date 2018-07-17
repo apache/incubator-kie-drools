@@ -94,15 +94,15 @@ public class DMNInvocationEvaluator
         result.setContext( dmnContext );
         Object invocationResult = null;
 
-        boolean walkedIntoScope = false;
-        String[] fnameParts = functionName.split("\\.");
-        if (fnameParts.length > 1) {
-            QName importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(fnameParts[0]);
-            dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
-            walkedIntoScope = true;
-        }
-        
         try {
+            boolean walkedIntoScope = false;
+            QName importAlias = null;
+            String[] fnameParts = functionName.split("\\.");
+            if (fnameParts.length > 1) {
+                importAlias = ((DMNModelImpl) ((DMNResultImpl) dmnr).getModel()).getImportAliasesForNS().get(fnameParts[0]);
+                dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
+                walkedIntoScope = true;
+            }
             FEELFunction function = this.functionLocator.apply(dmnContext, (fnameParts.length > 1) ? fnameParts[1] : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
@@ -116,6 +116,11 @@ public class DMNInvocationEvaluator
                     function = (FEELFunction) r;
                 }
             }
+            // this invocation will need to resolve parameters according to the importING scope, hence I need to pop scope to push it back later at actual invocation.
+            if (walkedIntoScope) {
+                dmnContext.popScope();
+            }
+
             if ( function == null ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
@@ -128,6 +133,7 @@ public class DMNInvocationEvaluator
                                        nodeName );
                 return new EvaluatorResultImpl( null, ResultType.FAILURE );
             }
+
             Object[] namedParams = new Object[parameters.size()];
             int index = 0;
             for ( ActualParameter param : parameters ) {
@@ -167,8 +173,13 @@ public class DMNInvocationEvaluator
             listenerMgr.addListener(events::add);
 
             EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
-            invocationResult = function.invokeReflectively( ctx, namedParams );
 
+            if (walkedIntoScope) {
+                // the DMN Invocation needed to resolve parameters according to the importING scope, hence the import scope was pop-ed previously to resolve correctly the parameters.
+                // now walk back into the importED scope to actually invoke the `function`.
+                dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
+            }
+            invocationResult = function.invokeReflectively( ctx, namedParams );
             if (walkedIntoScope) {
                 dmnContext.popScope();
             }
