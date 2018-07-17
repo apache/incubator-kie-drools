@@ -137,7 +137,7 @@ public class ImportsTest {
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("invocation of hello").getResult(), is("Hello, Bob"));
+        assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult(), is("Hello, Bob"));
     }
 
     @Test
