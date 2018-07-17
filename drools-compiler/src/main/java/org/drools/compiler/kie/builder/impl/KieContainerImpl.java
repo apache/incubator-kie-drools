@@ -409,12 +409,12 @@ public class KieContainerImpl
         } else {
             isAlphaNetworkEnabled = false;
         }
-        if(isAlphaNetworkEnabled) {
-        KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
-        kBase.getRete().getEntryPointNodes().values().stream()
-                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn)));
+        if (isAlphaNetworkEnabled) {
+            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
+            kBase.getRete().getEntryPointNodes().values().stream()
+                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn)));
         }
     }
 

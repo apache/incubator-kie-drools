@@ -82,9 +82,13 @@ public final class KieUtil {
         return kieModule;
     }
 
-    public static KieModuleModel createKieModuleModel() {
+    public static KieModuleModel createKieModuleModel(Boolean alphaNetworkEnabled) {
         final KieServices kieServices = KieServices.Factory.get();
-        return kieServices.newKieModuleModel();
+        final KieModuleModel kieModuleModel = kieServices.newKieModuleModel();
+        if(alphaNetworkEnabled) {
+            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", "true");
+        }
+        return kieModuleModel;
     }
 
     public static KieFileSystem getKieFileSystemWithKieModule(final KieModuleModel kieModuleModel,
@@ -100,7 +104,7 @@ public final class KieUtil {
 
     public static KieBuilder getKieBuilderFromKieFileSystem(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                             final KieFileSystem fileSystem, final boolean failIfBuildError) {
-        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError, false);
+        return getKieBuilderFromFileSystemWithResources(kieBaseTestConfiguration, fileSystem, failIfBuildError, true);
     }
 
     public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -259,7 +263,7 @@ public final class KieUtil {
     public static KieModuleModel getKieModuleModel(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                    final KieSessionTestConfiguration kieSessionTestConfiguration,
                                                    final Map<String, String> kieModuleConfigurationProperties) {
-        final KieModuleModel module = createKieModuleModel();
+        final KieModuleModel module = createKieModuleModel(kieBaseTestConfiguration.useAlphaNetwork());
         kieModuleConfigurationProperties.forEach(module::setConfigurationProperty);
         final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
