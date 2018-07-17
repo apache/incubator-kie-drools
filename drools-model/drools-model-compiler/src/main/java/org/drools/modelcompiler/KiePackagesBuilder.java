@@ -581,7 +581,23 @@ public class KiePackagesBuilder {
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
-            accumulate = new SingleAccumulate(source, getRequiredDeclarationsForAccumulate( ctx, binding, accFunction ), accumulator);
+
+            Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, binding, accFunction );
+            if (requiredDeclarations.length == 0 && source instanceof Pattern && bindingEvaluator != null && bindingEvaluator.getDeclarations() != null) {
+                List<Declaration> previousDecl = new ArrayList<>();
+                Pattern patternSource = ( Pattern ) source;
+                patternSource.resetDeclarations();
+                for (Declaration d : bindingEvaluator.getDeclarations()) {
+                    if (d.getIdentifier().equals( patternSource.getDeclaration().getIdentifier() )) {
+                        patternSource.addDeclaration( d );
+                    } else {
+                        previousDecl.add( d );
+                    }
+                }
+                requiredDeclarations = previousDecl.toArray( new Declaration[previousDecl.size()] );
+            }
+
+            accumulate = new SingleAccumulate(source, requiredDeclarations, accumulator);
 
         } else {
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
@@ -628,8 +644,6 @@ public class KiePackagesBuilder {
         } else {
             return new Declaration[0];
         }
-
-
     }
 
     private BindingEvaluator createBindingEvaluator(RuleContext ctx, Binding binding) {

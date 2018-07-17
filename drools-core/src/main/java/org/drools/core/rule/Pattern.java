@@ -376,6 +376,10 @@ public class Pattern
         this.declarations.put( decl.getIdentifier(), decl );
     }
 
+    public void resetDeclarations() {
+        this.declarations = Collections.EMPTY_MAP;
+    }
+
     public boolean isBound() {
         return (this.declaration != null);
     }
