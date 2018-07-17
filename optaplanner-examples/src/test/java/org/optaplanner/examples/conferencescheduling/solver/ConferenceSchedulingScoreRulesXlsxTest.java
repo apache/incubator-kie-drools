@@ -62,7 +62,6 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     private ConferenceSolution initialSolution;
     private String currentPackage;
     private String currentConstraint;
-    private String currentSheetName;
     private HardSoftScore expectedScore;
 
     private HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
@@ -78,7 +77,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             this.testFileReader = new testConferenceSchedulingScoreRulesReader(workbook);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputSolutionFile ("
-                                                    + testFile.getName() + ").", e);
+                    + testFile.getName() + ").", e);
         }
     }
 
@@ -86,7 +85,6 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     public void testRules() {
         ConferenceSolution currentSheetSolution;
         while ((currentSheetSolution = testFileReader.nextSolution()) != null) {
-            //TODO: give a clue which test sheet is failing
             scoreVerifier.assertHardWeight(currentPackage, currentConstraint, expectedScore.getHardScore(), currentSheetSolution);
             scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, expectedScore.getSoftScore(), currentSheetSolution);
         }
@@ -112,7 +110,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                     Collectors.toMap(Room::getName, Function.identity()));
             timeslotMap = initialSolution.getTimeslotList().stream().collect(
                     Collectors.toMap(timeslot -> Pair.of(timeslot.getStartDateTime(), timeslot.getEndDateTime()),
-                                     Function.identity()));
+                            Function.identity()));
             this.columnIndexToDateMap = new HashMap<>(timeslotMap.size());
             this.columnIndexToStartTimeMap = new HashMap<>(timeslotMap.size());
             this.columnIndexToEndTimeMap = new HashMap<>(timeslotMap.size());
@@ -130,7 +128,6 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             }
 
             nextSheet(workbook.getSheetName(currentTestSheetIndex++));
-            currentSheetName = currentSheet.getSheetName();
 
             nextRow(false);
             readHeaderCell("Constraint package");
@@ -146,7 +143,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             Map<String, Talk> talkMap = nextSheetSolution.getTalkList().stream().collect(
                     Collectors.toMap(Talk::getCode, Function.identity()));
 
-            logger.info(currentSheetName);
+            logger.info(currentSheet.getSheetName());
             scoreVerifier.assertHardWeight(currentPackage, currentConstraint, unassignedScore.getHardScore(), nextSheetSolution);
             scoreVerifier.assertSoftWeight(currentPackage, currentConstraint, unassignedScore.getSoftScore(), nextSheetSolution);
 
@@ -160,7 +157,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                 Room room = roomMap.get(roomName);
                 if (room == null) {
                     throw new IllegalStateException(currentPosition() + ": The room (" + roomName
-                                                            + ") does not exist in the room list.");
+                            + ") does not exist in the room list.");
                 }
                 for (int i = 0; i < columnIndexToStartTimeMap.size(); i++) {
                     String talkCode = nextCell().getStringCellValue();
@@ -168,7 +165,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                         Talk talk = talkMap.get(talkCode);
                         if (talk == null) {
                             throw new IllegalStateException(currentPosition() + ": Talk (" + talkCode
-                                                                    + ") does not exist in the talk list.");
+                                    + ") does not exist in the talk list.");
                         }
 
                         LocalDateTime startDateTime = LocalDateTime.of(columnIndexToDateMap.get(currentColumnNumber), columnIndexToStartTimeMap.get(currentColumnNumber));
@@ -177,8 +174,8 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                         Timeslot timeslot = timeslotMap.get(Pair.of(startDateTime, endDateTime));
                         if (timeslot == null) {
                             throw new IllegalStateException(currentPosition() + ": The timeslot with date (" + startDateTime.toLocalDate().toString()
-                                                                    + "), startTime (" + startDateTime.toLocalTime().toString() + ") and endTime (" + endDateTime.toLocalTime().toString()
-                                                                    + ") that doesn't exist in the other sheet (Timeslots).");
+                                    + "), startTime (" + startDateTime.toLocalTime().toString() + ") and endTime (" + endDateTime.toLocalTime().toString()
+                                    + ") that doesn't exist in the other sheet (Timeslots).");
                         }
                         talk.setRoom(room);
                         talk.setTimeslot(timeslot);
@@ -202,7 +199,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                         columnIndexToDateMap.put(i, LocalDate.parse(previousDateString, DAY_FORMATTER));
                     } catch (DateTimeParseException e) {
                         throw new IllegalStateException(currentPosition() + ": The date (" + cell.getStringCellValue()
-                                                                + ") does not parse as a date.");
+                                + ") does not parse as a date.");
                     }
                 }
             }
@@ -220,8 +217,8 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                                 columnIndexToEndTimeMap.put(cell.getColumnIndex(), LocalTime.parse(startAndEndTimeStringArray[1], TIME_FORMATTER));
                             } catch (DateTimeParseException e) {
                                 throw new IllegalStateException(currentPosition() + ": The startTime (" + startAndEndTimeStringArray[0]
-                                                                        + ") or endTime (" + startAndEndTimeStringArray[1]
-                                                                        + ") doesn't parse as a  time.", e);
+                                        + ") or endTime (" + startAndEndTimeStringArray[1]
+                                        + ") doesn't parse as a  time.", e);
                             }
                         }
                     });
