@@ -121,14 +121,31 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
 
+        if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK});
+            parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK});
+        }
+
+
         if ( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
+
+            if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+                parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK});
+                parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK});
+            }
+
         }
 
         if( testAlsoExecutableModel ) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
+
+            if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+                parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
+                parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
+            }
         }
 
         return parameters;
