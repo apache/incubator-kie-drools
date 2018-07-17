@@ -293,8 +293,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
+    protected int getAvailableProcessors() {
+        return Runtime.getRuntime().availableProcessors();
+    }
+
     protected Integer resolveMoveThreadCount() {
-        int availableProcessorCount = Runtime.getRuntime().availableProcessors();
+        int availableProcessorCount = getAvailableProcessors();
         Integer resolvedMoveThreadCount;
         if (moveThreadCount == null || moveThreadCount.equals(MOVE_THREAD_COUNT_NONE)) {
             return null;
