@@ -129,8 +129,11 @@ public final class KieUtil {
         }
 
         final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        KieModuleModel kproj = KieBaseUtil.getKieModuleModelWithAlphaNetworkCompiler();
-        kfs.writeKModuleXML(kproj.toXML());
+
+        if(writeKieModule) {
+            KieModuleModel kproj = KieBaseUtil.getKieModuleModelWithAlphaNetworkCompiler();
+            kfs.writeKModuleXML(kproj.toXML());
+        }
 
         final Class<? extends KieBuilder.ProjectType> projectClass;
         switch (kieBaseTestConfiguration.runType()) {
