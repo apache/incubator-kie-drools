@@ -104,14 +104,40 @@ public class ImportsTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
+        DMNContext emptyContext = runtime.newContext();
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("invocation of hello").getResult(), is("Hello, John"));
+    }
+
+    @Test
+    public void testImport2BKMsInvokeUsingInputData() {
+        // DROOLS-2746 DMN Invocation parameters resolution with imported function
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_invoke_hello_with_2_bkms_using_inputdata.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Saying_hello_2_bkms.dmn");
+
+        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a",
+                                                  "Saying hello 2 bkms");
+        assertThat(importedModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(importedModel.getMessages()), importedModel.hasErrors(), is(false));
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_eedf6ecc-f113-4333-ace0-79b783e313e5",
+                                             "Do invoke hello with 2 bkms");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
         DMNContext context = runtime.newContext();
-        context.set("Person name", "John");
+        context.set("Person name", "Bob");
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("invocation of hello").getResult(), is("Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult(), is("Hello, Bob"));
     }
 
     @Test
