@@ -9,6 +9,7 @@ public final class Msg {
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS             = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s'; missing DMN Import name alias." );
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found for Decision Service '%s', invoking using null.");
+    public static final Message2 REFERENCE_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Element reference '%s' not resolved for Decision Service '%s'.");
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
     public static final Message2 REQ_DECISION_NOT_FOUND_FOR_NODE                     = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Decision '%s' not found on node '%s'" );
     public static final Message2 REQ_BKM_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Business Knowledge Model '%s' not found on node '%s'" );

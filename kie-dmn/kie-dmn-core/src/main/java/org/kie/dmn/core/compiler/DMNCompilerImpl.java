@@ -268,7 +268,6 @@ public class DMNCompilerImpl
                         variable.setId(UUID.randomUUID().toString());
                         variable.setName(ds.getName());
                         variable.setParent(ds);
-
                         //                        ItemDefinition itemDefDS = new ItemDefinition();
                         //                        String idID = UUID.randomUUID().toString();
                         //                        itemDefDS.setName("t" + ds.getName() + "-" + idID);
@@ -303,10 +302,8 @@ public class DMNCompilerImpl
                         //                        model.addItemDefinition( idn );
                         //                        
                         //                        variable.setTypeRef(new QName(model.getNamespace(), itemDefDS.getName(), dmndefs.getPrefixForNamespaceURI(model.getNamespace()).orElse("")));
-                        
                         ds.setVariable(variable);
                     }
-                    
                     // continuing with normal compilation of Decision Service:
                     compiler.compileNode(ds, this, model);
                 }

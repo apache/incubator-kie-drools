@@ -42,7 +42,7 @@ public class DecisionServiceCompiler {
     public void compileNode(DecisionService drge, DMNCompilerImpl compiler, DMNModelImpl model) {
         DecisionService ds = (DecisionService) drge;
         DMNType type = null;
-        if (ds.getVariable() == null) {
+        if (ds.getVariable() == null) { // even for the v1.1 backport, variable creation is taken care in DMNCompiler.
             DMNCompilerHelper.reportMissingVariable(model, drge, ds, Msg.MISSING_VARIABLE_FOR_DS);
             return;
         }
@@ -62,8 +62,6 @@ public class DecisionServiceCompiler {
 
         List<FormalParameter> parameters = new ArrayList<>();
         
-        // WARNING this is only for defining the parameters, not the dependency, as DS does not have dependencies
-        // TODO are we sure? How to check for InputData and InputDecisions?
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
@@ -77,7 +75,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
                                       id,
                                       node.getName());
             }
@@ -95,7 +93,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
                                       id,
                                       node.getName());
             }
@@ -112,7 +110,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, // TODO wrong message should be a node is not found.
+                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
                                       id,
                                       node.getName());
             }
@@ -129,7 +127,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, // TODO wrong message should be a node is not found.
+                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
                                       id,
                                       node.getName());
             }
