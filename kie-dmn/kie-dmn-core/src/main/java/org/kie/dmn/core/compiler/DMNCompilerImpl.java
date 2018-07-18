@@ -269,40 +269,40 @@ public class DMNCompilerImpl
                         variable.setName(ds.getName());
                         variable.setParent(ds);
 
-                        ItemDefinition itemDefDS = new ItemDefinition();
-                        String idID = UUID.randomUUID().toString();
-                        itemDefDS.setName("t" + ds.getName() + "-" + idID);
-                        itemDefDS.setId(idID);
-                        itemDefDS.setParent(dmndefs);
-                        for (DMNElementReference er : ds.getOutputDecision()) {
-                            String id = DMNCompilerImpl.getId(er);
-                            DecisionNode inputDecision = model.getDecisionById(id);
-                            if (inputDecision != null) {
-                                ItemDefinition outCompo = new ItemDefinition();
-                                outCompo.setName(inputDecision.getName());
-                                outCompo.setId(UUID.randomUUID().toString());
-                                DMNType inputDecisionType = inputDecision.getResultType();
-                                outCompo.setTypeRef(new QName(inputDecisionType.getNamespace(), inputDecisionType.getName(), dmndefs.getPrefixForNamespaceURI(inputDecisionType.getNamespace()).orElse("feel")));
-                                itemDefDS.getItemComponent().add(outCompo);
-                                outCompo.setParent(itemDefDS);
-                            } else {
-                                MsgUtil.reportMessage(logger,
-                                                      DMNMessage.Severity.ERROR,
-                                                      ds,
-                                                      model,
-                                                      null,
-                                                      null,
-                                                      Msg.REQ_DECISION_NOT_FOUND_FOR_NODE,
-                                                      id,
-                                                      ds.getName());
-                            }
-                        }
-                        ItemDefNodeImpl idn = new ItemDefNodeImpl( itemDefDS );
-                        DMNType type = buildTypeDef( ctx, feel, model, idn, itemDefDS, true );
-                        idn.setType( type );
-                        model.addItemDefinition( idn );
-                        
-                        variable.setTypeRef(new QName(model.getNamespace(), itemDefDS.getName(), dmndefs.getPrefixForNamespaceURI(model.getNamespace()).orElse("")));
+                        //                        ItemDefinition itemDefDS = new ItemDefinition();
+                        //                        String idID = UUID.randomUUID().toString();
+                        //                        itemDefDS.setName("t" + ds.getName() + "-" + idID);
+                        //                        itemDefDS.setId(idID);
+                        //                        itemDefDS.setParent(dmndefs);
+                        //                        for (DMNElementReference er : ds.getOutputDecision()) {
+                        //                            String id = DMNCompilerImpl.getId(er);
+                        //                            DecisionNode inputDecision = model.getDecisionById(id);
+                        //                            if (inputDecision != null) {
+                        //                                ItemDefinition outCompo = new ItemDefinition();
+                        //                                outCompo.setName(inputDecision.getName());
+                        //                                outCompo.setId(UUID.randomUUID().toString());
+                        //                                DMNType inputDecisionType = inputDecision.getResultType();
+                        //                                outCompo.setTypeRef(new QName(inputDecisionType.getNamespace(), inputDecisionType.getName(), dmndefs.getPrefixForNamespaceURI(inputDecisionType.getNamespace()).orElse("feel")));
+                        //                                itemDefDS.getItemComponent().add(outCompo);
+                        //                                outCompo.setParent(itemDefDS);
+                        //                            } else {
+                        //                                MsgUtil.reportMessage(logger,
+                        //                                                      DMNMessage.Severity.ERROR,
+                        //                                                      ds,
+                        //                                                      model,
+                        //                                                      null,
+                        //                                                      null,
+                        //                                                      Msg.REQ_DECISION_NOT_FOUND_FOR_NODE,
+                        //                                                      id,
+                        //                                                      ds.getName());
+                        //                            }
+                        //                        }
+                        //                        ItemDefNodeImpl idn = new ItemDefNodeImpl( itemDefDS );
+                        //                        DMNType type = buildTypeDef( ctx, feel, model, idn, itemDefDS, true );
+                        //                        idn.setType( type );
+                        //                        model.addItemDefinition( idn );
+                        //                        
+                        //                        variable.setTypeRef(new QName(model.getNamespace(), itemDefDS.getName(), dmndefs.getPrefixForNamespaceURI(model.getNamespace()).orElse("")));
                         
                         ds.setVariable(variable);
                     }

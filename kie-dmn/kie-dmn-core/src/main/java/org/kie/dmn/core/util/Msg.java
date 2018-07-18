@@ -8,7 +8,7 @@ public final class Msg {
     public static final Message1 IMPORT_TYPE_UNKNOWN                                 = new Message1( DMNMessageType.INVALID_SYNTAX, "Import type unknown: '%s'." );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS             = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s'; missing DMN Import name alias." );
-    public static final Message2 REQ_INPUT_NOT_FOUND_FOR_DS                          = new Message2(DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found for Decision Service '%s', invoking using null.");
+    public static final Message2 REQ_INPUT_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found for Decision Service '%s', invoking using null.");
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
     public static final Message2 REQ_DECISION_NOT_FOUND_FOR_NODE                     = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Decision '%s' not found on node '%s'" );
     public static final Message2 REQ_BKM_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Business Knowledge Model '%s' not found on node '%s'" );
@@ -31,6 +31,7 @@ public final class Msg {
     public static final Message1 MISSING_PARAMETER_FOR_INVOCATION                    = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing parameter for invocation node '%s'" );
     public static final Message2 MISSING_EXPRESSION_FOR_NAME                         = new Message2( DMNMessageType.MISSING_EXPRESSION, "No expression defined for name '%s' on node '%s'" );
     public static final Message1 MISSING_ENTRIES_ON_CONTEXT                          = new Message1( DMNMessageType.MISSING_EXPRESSION, "Context expression has no entries on node '%s'" );
+    public static final Message1 MISSING_VARIABLE_FOR_DS                             = new Message1( DMNMessageType.MISSING_VARIABLE, "Decision Service node '%s' is missing the variable declaration");
     public static final Message1 MISSING_VARIABLE_FOR_BKM                            = new Message1( DMNMessageType.MISSING_VARIABLE, "Business Knowledge Model node '%s' is missing the variable declaration" );
     public static final Message1 MISSING_VARIABLE_FOR_INPUT                          = new Message1( DMNMessageType.MISSING_VARIABLE, "Input Data node '%s' is missing the variable declaration" );
     public static final Message1 MISSING_VARIABLE_FOR_DECISION                       = new Message1( DMNMessageType.MISSING_VARIABLE, "Decision node '%s' is missing the variable declaration" );

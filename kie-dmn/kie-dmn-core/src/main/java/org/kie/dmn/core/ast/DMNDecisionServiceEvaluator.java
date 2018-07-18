@@ -52,10 +52,11 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
     }
 
     @Override
-    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult r) {
+        DMNResultImpl result = (DMNResultImpl) r;
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionService(eventManager, dsNode, result);
         DMNRuntime dmnRuntime = eventManager.getRuntime();
-        DMNModel dmnModel = ((DMNResultImpl) result).getModel();
+        DMNModel dmnModel = result.getModel();
         List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
         Map<String, Object> ctx = new HashMap<String, Object>();
@@ -68,11 +69,11 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
                 result.getContext().set(decisionName, decisionResultById.getResult());
             }
             if (transferResult) {
-                ((DMNResultImpl) result).addDecisionResult(decisionResultById);
+                result.addDecisionResult(decisionResultById);
             }
         }
         for (DMNMessage m : evaluateById.getMessages()) {
-            ((DMNResultImpl) result).addMessage(m);
+            result.addMessage(m);
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, dsNode, result);
         return new EvaluatorResultImpl(ctx, ResultType.SUCCESS);

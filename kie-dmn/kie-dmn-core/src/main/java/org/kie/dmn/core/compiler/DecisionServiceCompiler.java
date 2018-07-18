@@ -43,7 +43,7 @@ public class DecisionServiceCompiler {
         DecisionService ds = (DecisionService) drge;
         DMNType type = null;
         if (ds.getVariable() == null) {
-            DMNCompilerHelper.reportMissingVariable(model, drge, ds, Msg.MISSING_VARIABLE_FOR_BKM);
+            DMNCompilerHelper.reportMissingVariable(model, drge, ds, Msg.MISSING_VARIABLE_FOR_DS);
             return;
         }
         DMNCompilerHelper.checkVariableName(model, ds, ds.getName());
