@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class DMNDecisionServicesTest {
@@ -337,5 +339,92 @@ public class DMNDecisionServicesTest {
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+    }
+
+    @Test
+    public void testDSSingletonOrMultipleOutputDecisions() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a Value"), is("a string Value"));
+        assertThat(result.get("a String Value"), is("a String Value"));
+        assertThat(result.get("a Number Value"), is(BigDecimal.valueOf(47)));
+        assertThat(result.get("eval DS with singleton value"), is("a string Value"));
+        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
+        assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
+
+        DMNResult dmnResultDSSingleton = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
+        LOG.debug("{}", dmnResultDSSingleton);
+        dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
+        assertThat(dmnResultDSSingleton.getContext().get("a Value"), is("a string Value"));
+        assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+        assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+
+        DMNResult dmnResultMultiple = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
+        LOG.debug("{}", dmnResultMultiple);
+        dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));
+        assertThat(dmnResultMultiple.getContext().get("a String Value"), is("a String Value"));
+        assertThat(dmnResultMultiple.getContext().get("a Number Value"), is(BigDecimal.valueOf(47)));
+        assertThat(dmnResultMultiple.getContext().getAll(), not(hasEntry(is("a Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+    }
+
+    @Test
+    public void testDSSingletonOrMultipleOutputDecisions_OVERRIDE() {
+        try {
+            System.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
+            DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
+            DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
+            assertThat(dmnModel, notNullValue());
+            assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+            DMNContext emptyContext = DMNFactory.newContext();
+
+            DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+            LOG.debug("{}", dmnResult);
+            dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+            DMNContext result = dmnResult.getContext();
+            assertThat(result.get("a Value"), is("a string Value"));
+            assertThat(result.get("a String Value"), is("a String Value"));
+            assertThat(result.get("a Number Value"), is(BigDecimal.valueOf(47)));
+            assertThat((Map<String, Object>) result.get("eval DS with singleton value"), hasEntry(is("a Value"), is("a string Value"))); // DIFFERENCE with base test
+            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
+            assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
+
+            DMNResult dmnResultDSSingleton = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
+            LOG.debug("{}", dmnResultDSSingleton);
+            dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+            assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
+            assertThat(dmnResultDSSingleton.getContext().get("a Value"), is("a string Value"));
+            assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+            assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+
+            DMNResult dmnResultMultiple = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
+            LOG.debug("{}", dmnResultMultiple);
+            dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+            assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));
+            assertThat(dmnResultMultiple.getContext().get("a String Value"), is("a String Value"));
+            assertThat(dmnResultMultiple.getContext().get("a Number Value"), is(BigDecimal.valueOf(47)));
+            assertThat(dmnResultMultiple.getContext().getAll(), not(hasEntry(is("a Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
+        } catch (Exception e) {
+            LOG.error("{}", e.getLocalizedMessage(), e);
+            throw e;
+        } finally {
+            System.clearProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME);
+            assertNull(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
+        }
     }
 }

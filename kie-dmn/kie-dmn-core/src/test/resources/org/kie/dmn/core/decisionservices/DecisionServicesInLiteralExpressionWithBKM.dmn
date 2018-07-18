@@ -65,7 +65,7 @@
       <dmn11:requiredKnowledge href="#_f3adc292-38ac-4bb3-a7aa-e7df1efeeab1"/>
     </dmn11:knowledgeRequirement>
     <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_745aece8-041d-4e7c-8c28-1c0bb399d514" triso:unparsed="true">
-      <dmn11:text>A only as output knowing D and E("x", "y").A + A + bkm invoke a DS("m", "n").A</dmn11:text>
+      <dmn11:text>A only as output knowing D and E("x", "y") + A + bkm invoke a DS("m", "n")</dmn11:text>
     </dmn11:literalExpression>
   </dmn11:decision>
   <dmn11:businessKnowledgeModel id="_f3adc292-38ac-4bb3-a7aa-e7df1efeeab1" name="bkm invoke a DS">

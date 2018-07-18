@@ -84,7 +84,7 @@
       </dmn11:contextEntry>
       <dmn11:contextEntry>
         <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_48f01476-f42a-4097-8c60-60956171ec88" triso:unparsed="true">
-          <dmn11:text>A + BKMinvoke.A</dmn11:text>
+          <dmn11:text>A + BKMinvoke</dmn11:text>
         </dmn11:literalExpression>
       </dmn11:contextEntry>
     </dmn11:context>

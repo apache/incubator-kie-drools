@@ -44,11 +44,13 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
     private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceEvaluator.class);
     private DecisionServiceNode dsNode;
     private boolean transferResult;
+    private boolean coerceSingletonResult;
 
 
-    public DMNDecisionServiceEvaluator(DecisionServiceNode dsNode, boolean transferResult) {
+    public DMNDecisionServiceEvaluator(DecisionServiceNode dsNode, boolean transferResult, boolean coerceSingletonResult) {
         this.dsNode = dsNode;
         this.transferResult = transferResult;
+        this.coerceSingletonResult = coerceSingletonResult;
     }
 
     @Override
@@ -76,7 +78,11 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
             result.addMessage(m);
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, dsNode, result);
-        return new EvaluatorResultImpl(ctx, ResultType.SUCCESS);
+        Object evaluatorResultValue = ctx;
+        if (decisionIDs.size() == 1 && coerceSingletonResult) {
+            evaluatorResultValue = ctx.values().iterator().next();
+        }
+        return new EvaluatorResultImpl(evaluatorResultValue, ResultType.SUCCESS);
     }
 
 }

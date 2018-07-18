@@ -267,7 +267,7 @@ public class DMNRuntimeImpl
             //            if (missingInput) {
             //                return result; // early return because of failing typeCheck && !checkDependencyValueIsValid(dep, result)
             //            }
-            EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true).evaluate(this, result);
+            EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true, false).evaluate(this, result); // please note singleton output coercion does not influence anyway when invoked DS on a model.
         } else {
             MsgUtil.reportMessage(logger,
                                   DMNMessage.Severity.ERROR,

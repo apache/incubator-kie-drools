@@ -62,7 +62,7 @@
       <dmn11:requiredKnowledge href="#_4620ef13-248a-419e-bc68-6b601b725a03"/>
     </dmn11:knowledgeRequirement>
     <dmn11:literalExpression id="_745aece8-041d-4e7c-8c28-1c0bb399d514">
-      <dmn11:text>A only as output knowing D and E("x", "y").A + A </dmn11:text>
+      <dmn11:text>A only as output knowing D and E("x", "y") + A </dmn11:text>
     </dmn11:literalExpression>
   </dmn11:decision>
 </dmn11:definitions>

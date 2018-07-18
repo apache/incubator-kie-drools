@@ -43,16 +43,18 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
     private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceFunctionDefinitionEvaluator.class);
     private DecisionServiceNode dsNode;
     private List<FormalParameter> parameters;
+    private boolean coerceSingletonResult;
 
-    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionServiceNode dsNode, List<FormalParameter> parameters) {
+    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionServiceNode dsNode, List<FormalParameter> parameters, boolean coerceSingletonResult) {
         this.dsNode = dsNode;
         this.parameters = parameters;
+        this.coerceSingletonResult = coerceSingletonResult;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
-        DMNDSFunction function = new DMNDSFunction(dsNode.getName(), parameters, new DMNDecisionServiceEvaluator(dsNode, false), eventManager, result);
+        DMNDSFunction function = new DMNDSFunction(dsNode.getName(), parameters, new DMNDecisionServiceEvaluator(dsNode, false, coerceSingletonResult), eventManager, result);
         return new EvaluatorResultImpl(function, ResultType.SUCCESS);
     }
 
