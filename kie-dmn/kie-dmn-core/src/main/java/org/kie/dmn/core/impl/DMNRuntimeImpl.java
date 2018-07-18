@@ -212,6 +212,7 @@ public class DMNRuntimeImpl
         return result;
     }
 
+    @Override
     public DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName) {
         boolean typeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = new DMNResultImpl(model);
@@ -223,34 +224,7 @@ public class DMNRuntimeImpl
                                                                     .findFirst();
         if (lookupDS.isPresent()) {
             DecisionServiceNodeImpl decisionService = (DecisionServiceNodeImpl) lookupDS.get();
-            //            boolean missingInput = false;
             for (DMNNode dep : decisionService.getInputParameters().values()) {
-                //                try {
-                //                    if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
-                //                        missingInput = true;
-                //                        DMNMessage message = MsgUtil.reportMessage(logger,
-                //                                                                   DMNMessage.Severity.ERROR,
-                //                                                                   ((DMNBaseNode) dep).getSource(),
-                //                                                                   result,
-                //                                                                   null,
-                //                                                                   null,
-                //                                                                   Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
-                //                                                                   getIdentifier(decisionService),
-                //                                                                   getIdentifier(dep),
-                //                                                                   MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
-                //                                                                   ((DMNBaseNode) dep).getType());
-                //                    }
-                //                } catch (Exception e) {
-                //                    MsgUtil.reportMessage(logger,
-                //                                          DMNMessage.Severity.ERROR,
-                //                                          ((DMNBaseNode) dep).getSource(),
-                //                                          result,
-                //                                          e,
-                //                                          null,
-                //                                          Msg.ERROR_CHECKING_ALLOWED_VALUES,
-                //                                          getIdentifier(dep),
-                //                                          e.getMessage());
-                //                }
                 if (!isNodeValueDefined(result, decisionService, dep)) {
                     DMNMessage message = MsgUtil.reportMessage(logger,
                                                                DMNMessage.Severity.WARN,
@@ -264,9 +238,6 @@ public class DMNRuntimeImpl
                     result.getContext().set(dep.getName(), null);
                 }
             }
-            //            if (missingInput) {
-            //                return result; // early return because of failing typeCheck && !checkDependencyValueIsValid(dep, result)
-            //            }
             EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true, false).evaluate(this, result); // please note singleton output coercion does not influence anyway when invoked DS on a model.
         } else {
             MsgUtil.reportMessage(logger,

@@ -26,7 +26,6 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class DMNDecisionServicesTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "A only as output knowing D and E");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A only as output knowing D and E");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -76,7 +75,7 @@ public class DMNDecisionServicesTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -92,7 +91,7 @@ public class DMNDecisionServicesTest {
         context.set("B", "inB");
         context.set("C", "inC");
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "A Only Knowing B and C");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -228,7 +227,7 @@ public class DMNDecisionServicesTest {
         context.set("Person name", "John");
         context.set("Person year of birth", BigDecimal.valueOf(2008));
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS all");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS all");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -245,7 +244,7 @@ public class DMNDecisionServicesTest {
         context.set("Person name", "John");
         context.set("Person year of birth", BigDecimal.valueOf(2008));
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS encapsulate");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS encapsulate");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -262,7 +261,7 @@ public class DMNDecisionServicesTest {
         context.set("Person name", "John");
         context.set("Person age", BigDecimal.valueOf(10));
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS greet adult");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS greet adult");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -319,7 +318,7 @@ public class DMNDecisionServicesTest {
         context.set("Person name", "John");
         context.set("Person age", BigDecimal.valueOf(21));
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS given inputdata");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS given inputdata");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -335,7 +334,7 @@ public class DMNDecisionServicesTest {
         context.set("Person name", BigDecimal.valueOf(21));
         context.set("Person age", "John");
 
-        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS given inputdata");
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS given inputdata");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
@@ -363,7 +362,7 @@ public class DMNDecisionServicesTest {
         assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
         assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
 
-        DMNResult dmnResultDSSingleton = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
+        DMNResult dmnResultDSSingleton = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
         LOG.debug("{}", dmnResultDSSingleton);
         dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
@@ -371,7 +370,7 @@ public class DMNDecisionServicesTest {
         assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
         assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
 
-        DMNResult dmnResultMultiple = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
+        DMNResult dmnResultMultiple = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
         LOG.debug("{}", dmnResultMultiple);
         dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));
@@ -404,7 +403,7 @@ public class DMNDecisionServicesTest {
             assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a String Value"), is("a String Value")));
             assertThat((Map<String, Object>) result.get("eval DS with multiple output decisions"), hasEntry(is("a Number Value"), is(BigDecimal.valueOf(47))));
 
-            DMNResult dmnResultDSSingleton = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
+            DMNResult dmnResultDSSingleton = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with singleton value");
             LOG.debug("{}", dmnResultDSSingleton);
             dmnResultDSSingleton.getDecisionResults().forEach(x -> LOG.debug("{}", x));
             assertThat(DMNRuntimeUtil.formatMessages(dmnResultDSSingleton.getMessages()), dmnResultDSSingleton.hasErrors(), is(false));
@@ -412,7 +411,7 @@ public class DMNDecisionServicesTest {
             assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a String Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
             assertThat(dmnResultDSSingleton.getContext().getAll(), not(hasEntry(is("a Number Value"), anything()))); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
 
-            DMNResult dmnResultMultiple = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
+            DMNResult dmnResultMultiple = runtime.evaluateDecisionService(dmnModel, emptyContext, "DS with multiple output decisions");
             LOG.debug("{}", dmnResultMultiple);
             dmnResultMultiple.getDecisionResults().forEach(x -> LOG.debug("{}", x));
             assertThat(DMNRuntimeUtil.formatMessages(dmnResultMultiple.getMessages()), dmnResultMultiple.hasErrors(), is(false));

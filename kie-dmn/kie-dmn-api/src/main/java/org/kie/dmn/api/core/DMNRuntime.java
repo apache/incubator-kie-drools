@@ -134,4 +134,15 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     ClassLoader getRootClassLoader();
 
+    /**
+     * Evaluate the Decision Service identified by the given name, given the context
+     *
+     * @param model the model to evaluate
+     * @param decisionServiceName the Decision Service name
+     * @param context the context with all the required inputs (inputData and inputDecision) required by the Decision Service
+     *
+     * @return the result of the evaluation
+     */
+    DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName);
+
 }
