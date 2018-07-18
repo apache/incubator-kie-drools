@@ -62,6 +62,34 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testAlphaConstraintsSwitchPerson() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Luca\")) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Mario\")) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Matteo\")) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
     public void testAlphaConstraintsSwitchIntegers() {
         String str =
                 "rule \"Bind1\"\n" +
