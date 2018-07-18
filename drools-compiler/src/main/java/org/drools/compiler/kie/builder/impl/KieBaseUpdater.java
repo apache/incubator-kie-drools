@@ -111,7 +111,9 @@ public class KieBaseUpdater implements Runnable {
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                     .forEach(otn -> {
                         final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
-                        clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
+                        if(oldCompiledNetwork != null) {
+                            clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
+                        }
                         final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
                         otn.setCompiledNetwork(compile);
                     });
