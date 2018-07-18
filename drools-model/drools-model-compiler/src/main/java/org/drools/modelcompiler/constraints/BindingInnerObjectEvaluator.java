@@ -18,6 +18,7 @@ package org.drools.modelcompiler.constraints;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Binding;
 
@@ -28,7 +29,7 @@ public class BindingInnerObjectEvaluator extends BindingEvaluator {
     }
 
     @Override
-    protected Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
+    protected Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory, Declaration[] declarations, Declaration[] innerDeclarations ) {
         return new Object[] { handle.getObject() };
     }
 }

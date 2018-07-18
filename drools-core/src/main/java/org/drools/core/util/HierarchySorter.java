@@ -30,7 +30,7 @@ public class HierarchySorter<K> {
         for ( K item : sortables ) {
             Collection<K> parents = new ArrayList<K>(  );
             for ( K other : sortables ) {
-                if ( comparator.compare( item, other ) == -1 ) {
+                if ( comparator.compare( item, other ) < 0 ) {
                     parents.add( other );
                 }
             }

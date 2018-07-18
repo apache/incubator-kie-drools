@@ -235,9 +235,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         boolean isActiveUnitCurrent = currentRuleUnit != null && currentRuleUnit.getClass().getName().equals( activateUnitName );
 
         if ( isActiveUnitCurrent ) {
-            if ( currentRuleUnit != null ) {
-                currentRuleUnit.onYield( ruleUnit );
-            }
+            currentRuleUnit.onYield( ruleUnit );
             session.getPropagationList().flush();
             InternalAgenda agenda = session.getAgenda();
             agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));

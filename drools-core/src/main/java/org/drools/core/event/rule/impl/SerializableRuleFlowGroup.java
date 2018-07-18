@@ -26,10 +26,9 @@ import org.kie.api.runtime.rule.RuleFlowGroup;
 public class SerializableRuleFlowGroup implements RuleFlowGroup, Externalizable {
     
     private String name;
-    
-    SerializableRuleFlowGroup() {
-        
-    }
+
+    // This should be used just for deserialization purposes.
+    public SerializableRuleFlowGroup() { }
     
     SerializableRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
         this.name = ruleFlowGroup.getName();

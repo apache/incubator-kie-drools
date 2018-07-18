@@ -926,4 +926,97 @@ public class AccumulateTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testAccumulateWithFunctionWithExternalBinding() {
+        final String drl =
+                "import " + Converter.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "   Integer (this == 1)\n" +
+                "   String( $length : length )\n" +
+                "   accumulate ( $c : Converter(), $result : sum( $c.convert($length) ) )\n" +
+                "then\n" +
+                "    list.add($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.insert("hello");
+        ksession.insert(new Converter());
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(5, list.get(0).intValue());
+    }
+
+    public static class Converter {
+
+        public static int convert(final int i) {
+            return i;
+        }
+    }
+
+    @Test
+    public void testAccumulateWithFunctionWithExternalBindingAndOR() {
+        final String drl =
+                "import " + Converter.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  (or\n" +
+                "    Integer (this == 1)\n" +
+                "    Integer (this == 2)\n" +
+                "  )\n" +
+                "   String( $length : length )\n" +
+                "   accumulate ( $c : Converter(), $result : sum( $c.convert($length) ) )\n" +
+                "then\n" +
+                "    list.add($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.insert("hello");
+        ksession.insert(new Converter());
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(5, list.get(0).intValue());
+    }
+
+    @Test
+    public void testAccumulateWithOR() {
+        final String drl =
+                "import " + Converter.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  (or\n" +
+                "    Integer (this == 1)\n" +
+                "    Integer (this == 2)\n" +
+                "  )\n" +
+                "   accumulate ( String( $length : length ), $result : sum( $length ) )\n" +
+                "then\n" +
+                "    list.add($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        final List<Number> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.insert("hello");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(5, list.get(0).intValue());
+    }
+
 }

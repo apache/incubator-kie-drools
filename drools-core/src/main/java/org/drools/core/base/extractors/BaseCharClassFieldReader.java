@@ -42,7 +42,7 @@ public abstract class BaseCharClassFieldReader extends BaseClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Character( getCharValue( workingMemory, object ) );
+        return getCharValue( workingMemory, object );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

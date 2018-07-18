@@ -122,8 +122,8 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     }
 
     public void putAll(Map<? extends String, ? extends Object> m) {
-        for ( String k : m.keySet() ) {
-            put( k, m.get( k ) );
+        for ( Entry<? extends String, ? extends Object> kEntry : m.entrySet() ) {
+            put( kEntry.getKey(), kEntry.getValue() );
         }
     }
 
@@ -153,6 +153,9 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
 
 
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this == o) return true;
         if ( ! this.getClass().equals( o.getClass() ) ) return false;
 

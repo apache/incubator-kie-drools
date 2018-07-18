@@ -111,11 +111,9 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
     }
         
     public void clear() {
-        if (listeners != null) {
-            for (EventListener listener : listeners) {
-                if (listener instanceof Closeable) {
-                    ((Closeable) listener).close();
-                }
+        for (EventListener listener : listeners) {
+            if (listener instanceof Closeable) {
+                ((Closeable) listener).close();
             }
         }
         this.listeners.clear();

@@ -110,10 +110,10 @@ public class AnnotationDefinition implements Externalizable,
     public static AnnotationDefinition build(Class annotationClass, Map<String, Object> valueMap, TypeResolver resolver) throws NoSuchMethodException {
         AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationClass.getName());
         HashMap<String, AnnotationPropertyVal> values = new HashMap<String, AnnotationPropertyVal>();
-        for (String key : valueMap.keySet()) {
-            AnnotationPropertyVal value = rebuild(key, annotationClass, valueMap.get(key), resolver);
+        for (Map.Entry<String, Object> valueMapEntry : valueMap.entrySet()) {
+            AnnotationPropertyVal value = rebuild(valueMapEntry.getKey(), annotationClass, valueMapEntry.getValue(), resolver);
             if (value != null) {
-                values.put(key, value);
+                values.put(valueMapEntry.getKey(), value);
             }
         }
         annotationDefinition.values = Collections.unmodifiableMap(values);

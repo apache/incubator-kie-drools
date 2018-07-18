@@ -54,44 +54,37 @@ public abstract class BaseObjectClassFieldWriter extends BaseClassFieldWriter {
 
     public void setByteValue(final Object bean,
                              final byte value) {
-        setValue( bean,
-                  new Byte( value ) );
+        setValue( bean, value );
     }
 
     public void setCharValue(final Object bean,
                              final char value) {
-        setValue( bean,
-                  new Character( value ) );
+        setValue( bean, value );
     }
 
     public void setDoubleValue(final Object bean,
                                final double value) {
-        setValue( bean,
-                  new Double( value ) );
+        setValue( bean, value );
     }
 
     public void setFloatValue(final Object bean,
                               final float value) {
-        setValue( bean,
-                  new Float( value ) );
+        setValue( bean, value );
     }
 
     public void setIntValue(final Object bean,
                             final int value) {
-        setValue( bean,
-                  new Integer( value ) );
+        setValue( bean, value );
     }
 
     public void setLongValue(final Object bean,
                              final long value) {
-        setValue( bean,
-                  new Long( value ) );
+        setValue( bean, value );
     }
 
     public void setShortValue(final Object bean,
                               final short value) {
-        setValue( bean,
-                  new Short( value ) );
+        setValue( bean, value );
     }
 
     public Method getNativeWriteMethod() {

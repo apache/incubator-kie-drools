@@ -376,6 +376,10 @@ public class Pattern
         this.declarations.put( decl.getIdentifier(), decl );
     }
 
+    public void resetDeclarations() {
+        this.declarations = Collections.EMPTY_MAP;
+    }
+
     public boolean isBound() {
         return (this.declaration != null);
     }
@@ -561,7 +565,7 @@ public class Pattern
         return returnType == null ||
                 returnType == Object.class ||
                 ( returnType == Number.class && patternType != null && Number.class.isAssignableFrom( patternType ) ||
-                patternType.isAssignableFrom( convertFromPrimitiveType(returnType) ) );
+                        (patternType != null && patternType.isAssignableFrom( convertFromPrimitiveType(returnType) )) );
     }
 
     public static boolean isCompatibleWithFromReturnType( Class<?> patternType, Class<?> returnType ) {

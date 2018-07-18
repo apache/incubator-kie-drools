@@ -121,29 +121,31 @@ public class DynamicEntryPoint extends NamedEntryPoint {
             super.delete( factHandle, rule, terminalNode, fhState );
         }
 
+        this.lock.lock();
         try {
-            this.lock.lock();
             this.wm.startOperation();
+            try {
+                InternalFactHandle handle = (InternalFactHandle) factHandle;
 
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
+                if (handle.getId() == -1) {
+                    // can't retract an already retracted handle
+                    return;
+                }
 
-            if ( handle.getId() == -1 ) {
-                // can't retract an already retracted handle
-                return;
+                // the handle might have been disconnected, so reconnect if it has
+                if (handle.isDisconnected()) {
+                    handle = this.objectStore.reconnect(handle);
+                }
+
+                if (handle.getEntryPoint() != this) {
+                    throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
+                }
+
+                this.objectStore.removeHandle(handle);
+            } finally {
+                this.wm.endOperation();
             }
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( handle.isDisconnected() ) {
-                handle = this.objectStore.reconnect( handle );
-            }
-
-            if ( handle.getEntryPoint() != this ) {
-                throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
-            }
-
-            this.objectStore.removeHandle( handle );
         } finally {
-            this.wm.endOperation();
             this.lock.unlock();
         }
     }

@@ -605,6 +605,9 @@ public final class ClassUtils {
 
         @Override
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
             PropertyInClass other = (PropertyInClass) obj;
             return clazz == other.clazz && setter.equals(other.setter);
         }

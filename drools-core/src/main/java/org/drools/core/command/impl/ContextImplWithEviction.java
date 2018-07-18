@@ -39,8 +39,6 @@ public class ContextImplWithEviction extends ContextImpl{
     //Time that the entry is valid
     private long              entryEvictionTime = 60 * 60 * 1000;  // 1 hour
     
-    //private LinkedBlockingQueue<ChangeSet> queue;
-    
     public ContextImplWithEviction(String name, ContextManager manager, Context delegate) {
         super(name, manager, delegate);
     }
