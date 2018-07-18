@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
@@ -78,7 +79,12 @@ public class ObjectTypeNodeCompiler {
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
         this.className = classObjectType.getClassName().replace("$", ".");
-        generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network" + objectTypeNode.getId();
+        final String classObjectTypeName = classObjectType.getClassName().replace('.', '_');
+        final String randomId = UUID.randomUUID().toString().replace("-", "");
+        generatedClassSimpleName = String.format("Compiled%sNetwork%d%s"
+                , classObjectTypeName
+                , objectTypeNode.getId()
+                , randomId);
     }
 
     public static class SourceGenerated {
