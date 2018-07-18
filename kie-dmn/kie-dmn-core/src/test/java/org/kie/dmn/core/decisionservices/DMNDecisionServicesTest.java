@@ -271,4 +271,71 @@ public class DMNDecisionServicesTest {
         assertThat(result.getAll(), hasEntry(is("is Person an adult"), is(false)));
         assertThat(result.getAll(), not(hasEntry(is("hardcoded now"), anything())));
     }
+
+    @Test
+    public void testDSForTypeCheck() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionService20180718.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a", "Decision Service 20180718");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        testDSForTypeCheck_runNormal(runtime, dmnModel);
+        testDSForTypeCheck_runAllDecisionsWithWrongTypes(runtime, dmnModel);
+        testDSForTypeCheck_runDecisionService_Normal(runtime, dmnModel);
+        testDSForTypeCheck_runDecisionService_WithWrongTypes(runtime, dmnModel);
+    }
+
+    private void testDSForTypeCheck_runNormal(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Person name", "John");
+        context.set("Person age", BigDecimal.valueOf(21));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Greet the person"), is("Hello, John"));
+        assertThat(result.get("is Person at age allowed"), is(true));
+        assertThat(result.get("Final Decision"), is("Hello, John; you are allowed"));
+    }
+
+    private void testDSForTypeCheck_runAllDecisionsWithWrongTypes(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Person name", BigDecimal.valueOf(21));
+        context.set("Person age", "John");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+    }
+
+    private void testDSForTypeCheck_runDecisionService_Normal(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Person name", "John");
+        context.set("Person age", BigDecimal.valueOf(21));
+
+        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS given inputdata");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.getAll(), not(hasEntry(is("Greet the person"), anything()))); // Decision Service will encapsulate this decision
+        assertThat(result.getAll(), not(hasEntry(is("is Person at age allowed"), anything()))); // Decision Service will encapsulate this decision
+        assertThat(result.get("Final Decision"), is("Hello, John; you are allowed"));
+    }
+
+    private void testDSForTypeCheck_runDecisionService_WithWrongTypes(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Person name", BigDecimal.valueOf(21));
+        context.set("Person age", "John");
+
+        DMNResult dmnResult = ((DMNRuntimeImpl) runtime).evaluateDecisionService(dmnModel, context, "DS given inputdata");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+    }
 }

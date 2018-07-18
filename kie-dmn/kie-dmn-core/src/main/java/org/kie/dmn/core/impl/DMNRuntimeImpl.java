@@ -216,41 +216,41 @@ public class DMNRuntimeImpl
         boolean typeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = new DMNResultImpl(model);
         result.setContext(context.clone());
-        // the engine should evaluate all belonging to the "local" model namespace, not imported decision explicitly.
+        // the engine should evaluate all belonging to the "local" model namespace, not imported nodes explicitly.
         Optional<DecisionServiceNode> lookupDS = ((DMNModelImpl) model).getDecisionServices().stream()
                                                                     .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
                                                                     .filter(ds -> ds.getName().equals(decisionServiceName))
                                                                     .findFirst();
         if (lookupDS.isPresent()) {
             DecisionServiceNodeImpl decisionService = (DecisionServiceNodeImpl) lookupDS.get();
-            boolean missingInput = false;
-            for (DMNNode dep : decisionService.getDependencies().values()) {
-                try {
-                    if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
-                        missingInput = true;
-                        DMNMessage message = MsgUtil.reportMessage(logger,
-                                                                   DMNMessage.Severity.ERROR,
-                                                                   ((DMNBaseNode) dep).getSource(),
-                                                                   result,
-                                                                   null,
-                                                                   null,
-                                                                   Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
-                                                                   getIdentifier(decisionService),
-                                                                   getIdentifier(dep),
-                                                                   MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
-                                                                   ((DMNBaseNode) dep).getType());
-                    }
-                } catch (Exception e) {
-                    MsgUtil.reportMessage(logger,
-                                          DMNMessage.Severity.ERROR,
-                                          ((DMNBaseNode) dep).getSource(),
-                                          result,
-                                          e,
-                                          null,
-                                          Msg.ERROR_CHECKING_ALLOWED_VALUES,
-                                          getIdentifier(dep),
-                                          e.getMessage());
-                }
+            //            boolean missingInput = false;
+            for (DMNNode dep : decisionService.getInputParameters().values()) {
+                //                try {
+                //                    if (typeCheck && !checkDependencyValueIsValid(dep, result)) {
+                //                        missingInput = true;
+                //                        DMNMessage message = MsgUtil.reportMessage(logger,
+                //                                                                   DMNMessage.Severity.ERROR,
+                //                                                                   ((DMNBaseNode) dep).getSource(),
+                //                                                                   result,
+                //                                                                   null,
+                //                                                                   null,
+                //                                                                   Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                //                                                                   getIdentifier(decisionService),
+                //                                                                   getIdentifier(dep),
+                //                                                                   MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
+                //                                                                   ((DMNBaseNode) dep).getType());
+                //                    }
+                //                } catch (Exception e) {
+                //                    MsgUtil.reportMessage(logger,
+                //                                          DMNMessage.Severity.ERROR,
+                //                                          ((DMNBaseNode) dep).getSource(),
+                //                                          result,
+                //                                          e,
+                //                                          null,
+                //                                          Msg.ERROR_CHECKING_ALLOWED_VALUES,
+                //                                          getIdentifier(dep),
+                //                                          e.getMessage());
+                //                }
                 if (!isNodeValueDefined(result, decisionService, dep)) {
                     DMNMessage message = MsgUtil.reportMessage(logger,
                                                                DMNMessage.Severity.WARN,
@@ -264,9 +264,9 @@ public class DMNRuntimeImpl
                     result.getContext().set(dep.getName(), null);
                 }
             }
-            if (missingInput) {
-                return result; // early return
-            }
+            //            if (missingInput) {
+            //                return result; // early return because of failing typeCheck && !checkDependencyValueIsValid(dep, result)
+            //            }
             EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true).evaluate(this, result);
         } else {
             MsgUtil.reportMessage(logger,

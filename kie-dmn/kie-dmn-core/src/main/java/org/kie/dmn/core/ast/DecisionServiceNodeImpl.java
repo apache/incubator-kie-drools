@@ -16,7 +16,11 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.model.v1_1.DecisionService;
@@ -26,6 +30,7 @@ public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServ
     private DecisionService ds;
     private DMNExpressionEvaluator evaluator;
     private DMNType resultType;
+    private Map<String, DMNNode> inputs = new LinkedHashMap<>();
 
     public DecisionServiceNodeImpl(DecisionService ds, DMNType resultType) {
         super(ds);
@@ -58,6 +63,29 @@ public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServ
     @Override
     public DMNType getType() {
         return getResultType();
+    }
+
+    @Override
+    public Map<String, DMNNode> getDependencies() {
+        throw new UnsupportedOperationException("A Decision Service has no dependency");
+    }
+
+    @Override
+    public void setDependencies(Map<String, DMNNode> dependencies) {
+        throw new UnsupportedOperationException("A Decision Service has no dependency");
+    }
+
+    @Override
+    public void addDependency(String name, DMNNode dependency) {
+        throw new UnsupportedOperationException("A Decision Service has no dependency");
+    }
+
+    public Map<String, DMNNode> getInputParameters() {
+        return inputs;
+    }
+
+    public void addInputParameter(String name, DMNNode node) {
+        this.inputs.put(name, node);
     }
 
 }

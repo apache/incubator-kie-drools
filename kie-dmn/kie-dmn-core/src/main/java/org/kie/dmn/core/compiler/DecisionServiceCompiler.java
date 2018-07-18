@@ -68,7 +68,7 @@ public class DecisionServiceCompiler {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
             if (input != null) {
-                ni.addDependency(input.getName(), input);
+                ni.addInputParameter(input.getName(), input);
                 parameters.add(new FormalParameter(input.getName(), input.getType()));
             } else {
                 MsgUtil.reportMessage(LOG,
@@ -86,7 +86,7 @@ public class DecisionServiceCompiler {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
             if (input != null) {
-                ni.addDependency(input.getName(), input);
+                ni.addInputParameter(input.getName(), input);
                 parameters.add(new FormalParameter(input.getName(), input.getResultType()));
             } else {
                 MsgUtil.reportMessage(LOG,
@@ -112,7 +112,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, // TODO wrong message should be a node is not found.
                                       id,
                                       node.getName());
             }
@@ -129,7 +129,7 @@ public class DecisionServiceCompiler {
                                       model,
                                       null,
                                       null,
-                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                      Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, // TODO wrong message should be a node is not found.
                                       id,
                                       node.getName());
             }
