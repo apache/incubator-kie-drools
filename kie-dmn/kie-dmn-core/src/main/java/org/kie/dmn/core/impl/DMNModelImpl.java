@@ -76,7 +76,7 @@ public class DMNModelImpl
     private Map<String, DecisionNode>               decisions    = new HashMap<>();
     private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
     private Map<String, ItemDefNode>                itemDefs     = new HashMap<>();
-    private Map<String, DecisionServiceNode> decisionServices = new HashMap<>();
+    private Map<String, DecisionServiceNode> decisionServices    = new HashMap<>();
 
     // these are messages created at loading/compilation time
     private DMNMessageManager messages = new DefaultDMNMessagesManager();

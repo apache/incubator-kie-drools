@@ -20,6 +20,9 @@ import java.util.List;
 
 public class DecisionService extends NamedElement {
 
+    /**
+     * This is not defined in the v1.1 XSD but used in this pojo for full backport of Decision Service onto v1.1 runtime. 
+     */
     private InformationItem variable;
     private List<DMNElementReference> outputDecision;
     private List<DMNElementReference> encapsulatedDecision;

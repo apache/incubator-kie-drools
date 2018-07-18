@@ -102,7 +102,7 @@ public class DecisionServiceCompiler {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
             if (input != null) {
-                // not a needed dependency.
+                // nothing to do.
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -119,7 +119,7 @@ public class DecisionServiceCompiler {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
             if (input != null) {
-                // not a needed dependency.
+                // nothing to do.
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,

@@ -30,7 +30,7 @@ public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServ
     private DecisionService ds;
     private DMNExpressionEvaluator evaluator;
     private DMNType resultType;
-    private Map<String, DMNNode> inputs = new LinkedHashMap<>();
+    private Map<String, DMNNode> inputs = new LinkedHashMap<>(); // need to retain order of input (parameter)s
 
     public DecisionServiceNodeImpl(DecisionService ds, DMNType resultType) {
         super(ds);
