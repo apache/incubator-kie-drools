@@ -16,16 +16,16 @@
 
 package org.drools.core.world.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.command.Command;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ContextManagerImpl
         implements ContextManager, GetDefaultValue, CommandExecutor {

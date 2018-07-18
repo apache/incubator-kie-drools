@@ -16,12 +16,12 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.Context;
 
 public class GetFactHandleCommand
     implements

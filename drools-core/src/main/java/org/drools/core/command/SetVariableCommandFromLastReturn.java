@@ -16,15 +16,15 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.common.InternalFactHandle;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.Context;
-import org.kie.api.runtime.builder.Scope;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalFactHandle;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.builder.Scope;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SetVariableCommandFromLastReturn
     implements
