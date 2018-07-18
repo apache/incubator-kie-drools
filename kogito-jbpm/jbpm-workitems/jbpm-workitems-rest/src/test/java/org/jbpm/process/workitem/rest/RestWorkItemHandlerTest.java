@@ -16,6 +16,7 @@
 
 package org.jbpm.process.workitem.rest;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -1047,5 +1048,41 @@ public class RestWorkItemHandlerTest {
         results = ((TestWorkItemManager) manager).getResults(workItem.getId());
         result = (String) results.get(PARAM_RESULT);
         assertEquals(result, headerValues2);
-    }     
+    }
+
+    @Test
+    public void testGETCharsetOperation() throws UnsupportedEncodingException {
+        final String charset = "Windows-1252";
+        String expected = "Š";
+
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/charset");
+        workItem.setParameter("AcceptCharset", charset);
+        workItem.setParameter("Method",
+                              "GET");
+
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        assertNotNull("results cannot be null",
+                      results);
+        String result = (String) results.get(PARAM_RESULT);
+        assertNotNull("result cannot be null",
+                      result);
+
+        assertEquals(expected, result);
+        int responseCode = (Integer) results.get(PARAM_STATUS);
+        assertNotNull(responseCode);
+        assertEquals(200,
+                     responseCode);
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
+                     responseMsg);
+    }
 }

@@ -21,16 +21,16 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
 import javax.xml.bind.JAXBContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -77,6 +77,8 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * WorkItemHandler that is capable of interacting with REST service. Supports both types of services
@@ -495,6 +497,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         String handleExceptionStr = (String) workItem.getParameter("HandleResponseErrors");
         String resultClass = (String) workItem.getParameter("ResultClass");
         String acceptHeader = (String) workItem.getParameter("AcceptHeader");
+        String acceptCharset = (String) workItem.getParameter("AcceptCharset");
         String headers = (String) workItem.getParameter(PARAM_HEADERS);
 
         if (urlStr == null) {
@@ -534,6 +537,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                                                urlStr,
                                                params,
                                                acceptHeader,
+                                               acceptCharset,
                                                headers);
         try {
             HttpResponse response = doRequestWithAuthorization(httpClient,
@@ -547,7 +551,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             String responseBody = null;
             String contentType = null;
             if (respEntity != null) {
-                responseBody = EntityUtils.toString(respEntity);
+                responseBody = EntityUtils.toString(respEntity, acceptCharset);
 
                 if (respEntity.getContentType() != null) {
                     contentType = respEntity.getContentType().getValue();
@@ -606,11 +610,26 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
         return null;
     }
 
+    protected void setCharset(RequestBuilder builder,
+                              String charset) {
+        if (charset != null) {
+            builder.addHeader(HttpHeaders.ACCEPT_CHARSET, charset);
+        }
+    }
+
     protected void addAcceptHeader(RequestBuilder builder,
                                    String value) {
         if (value != null) {
             builder.addHeader(HttpHeaders.ACCEPT,
                               value);
+        }
+    }
+
+    protected void setCharset(HttpRequestBase theMethod,
+                              String charset) {
+        if (charset != null) {
+            theMethod.addHeader(HttpHeaders.ACCEPT_CHARSET, 
+                                charset);
         }
     }
 
@@ -1082,6 +1101,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                                       String urlStr,
                                       Map<String, Object> params,
                                       String acceptHeaderValue,
+                                      String acceptCharset,
                                       String httpHeaders) {
 
         if (HTTP_CLIENT_API_43) {
@@ -1090,6 +1110,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                 builder = RequestBuilder.get().setUri(urlStr);
                 addAcceptHeader(builder,
                                 acceptHeaderValue);
+                setCharset(builder,
+                           acceptCharset);
             } else if ("POST".equals(method)) {
                 builder = RequestBuilder.post().setUri(urlStr);
                 setBody(builder,
@@ -1115,6 +1137,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                 theMethod = new HttpGet(urlStr);
                 addAcceptHeader(theMethod,
                                 acceptHeaderValue);
+                setCharset(theMethod, acceptCharset);
             } else if ("POST".equals(method)) {
                 theMethod = new HttpPost(urlStr);
                 setBody(theMethod,

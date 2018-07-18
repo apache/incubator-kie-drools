@@ -16,12 +16,14 @@
 
 package org.jbpm.process.workitem.rest;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -30,6 +32,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 @Path("/test")
 public class TestRESTResource {
@@ -39,6 +43,19 @@ public class TestRESTResource {
     public String get(@QueryParam("param") String param) {
 
         return "Hello from REST" + (param != null ? " " + param : "");
+    }
+
+    @GET
+    @Path("/charset")
+    @Produces("text/plain")
+    public Response getPlainText(@HeaderParam("Accept-Charset") String acceptCharset) {
+        String entity = "Š"; // utf string
+        Charset charset = Charset.forName(acceptCharset);
+
+        Response myResponse = Response.status(Status.OK)
+                .entity(entity.getBytes(charset))
+                .build();
+        return myResponse;
     }
 
     @POST
