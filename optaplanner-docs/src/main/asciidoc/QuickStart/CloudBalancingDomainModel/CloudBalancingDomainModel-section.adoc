@@ -118,6 +118,7 @@ Instead of getter annotations, it is also possible to use <<annotationAlternativ
 
 The `CloudBalance` class has a [path]_@PlanningSolution_
  annotation.
+
 * It holds a list of all computers and processes.
 * It represents both the planning problem and (if it's initialized) the planning solution.
 
