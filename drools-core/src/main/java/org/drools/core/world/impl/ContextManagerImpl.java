@@ -18,7 +18,7 @@ package org.drools.core.world.impl;
 
 import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
@@ -87,14 +87,14 @@ public class ContextManagerImpl
     }
 
     public static interface CommandExecutionHandler {
-        public Object execute( TransactionalCommand command,
+        public Object execute( ExecutableCommand command,
                                Context context );
     }
 
     public static class DefaultCommandExecutionHandler
             implements
             CommandExecutionHandler {
-        public Object execute( TransactionalCommand command,
+        public Object execute( ExecutableCommand command,
                                Context context ) {
             return command.execute( context );
         }

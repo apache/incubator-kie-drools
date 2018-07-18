@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.Context;
@@ -32,7 +32,7 @@ import org.kie.api.time.SessionClock;
 
 @XmlRootElement(name="get-session-time")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetSessionTimeCommand implements TransactionalCommand<Long>, IdentifiableResult {
+public class GetSessionTimeCommand implements ExecutableCommand<Long>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 

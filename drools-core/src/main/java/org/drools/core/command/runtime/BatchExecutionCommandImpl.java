@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
@@ -65,8 +65,7 @@ import java.util.List;
 @XmlRootElement(name="batch-execution")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
-public class BatchExecutionCommandImpl implements Batch,
-                                                  TransactionalCommand<ExecutionResults> {
+public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<ExecutionResults> {
 
     private static final long serialVersionUID = 510l;
 
@@ -157,7 +156,7 @@ public class BatchExecutionCommandImpl implements Batch,
 
     public ExecutionResults execute(Context context) {
         for ( Command command : commands ) {
-            ((TransactionalCommand<?>) command).execute(context );
+            ((ExecutableCommand<?>) command).execute( context );
         }
         return null;
     }

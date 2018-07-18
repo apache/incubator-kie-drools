@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.process;
 
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetWorkItemCommand implements TransactionalCommand<WorkItem> {
+public class GetWorkItemCommand implements ExecutableCommand<WorkItem> {
 
     @XmlAttribute(required = true)
     private long workItemId;

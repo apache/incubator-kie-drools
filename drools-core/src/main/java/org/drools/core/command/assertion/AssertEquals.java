@@ -19,7 +19,7 @@ package org.drools.core.command.assertion;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.command.Command;
@@ -27,7 +27,7 @@ import org.kie.api.runtime.Context;
 
 public class AssertEquals
     implements
-    TransactionalCommand<Void> {
+    ExecutableCommand<Void> {
 
     private String  message;
     private Object  expectedObject;
@@ -57,7 +57,7 @@ public class AssertEquals
     }
 
     public Void execute(Context context) {
-        Object actualObject = ((TransactionalCommand) command).execute(context );
+        Object actualObject = ((ExecutableCommand) command).execute( context );
 
         if ( this.mvelString != null ) {
             actualObject = MVELSafeHelper.getEvaluator().eval( this.mvelString,

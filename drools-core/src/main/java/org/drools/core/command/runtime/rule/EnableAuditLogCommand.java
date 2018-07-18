@@ -1,6 +1,6 @@
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
@@ -14,7 +14,7 @@ import java.io.File;
 
 @XmlRootElement
 @XmlAccessorType( XmlAccessType.NONE )
-public class EnableAuditLogCommand implements TransactionalCommand<Void> {
+public class EnableAuditLogCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = -2615993429554597508L;
 

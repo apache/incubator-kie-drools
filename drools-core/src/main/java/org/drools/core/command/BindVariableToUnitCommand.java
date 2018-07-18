@@ -18,14 +18,14 @@ package org.drools.core.command;
 
 import java.util.function.Function;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 public class BindVariableToUnitCommand
         implements
-        TransactionalCommand<Void> {
+        ExecutableCommand<Void> {
 
     private static final long serialVersionUID = -4917539905114798177L;
     private final Function<Context, ?> lazyValueProvider;

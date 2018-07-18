@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.rule.FactHandle;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class SetVariableCommandFromLastReturn
     implements
-    TransactionalCommand<Object> {
+    ExecutableCommand<Object> {
     private String identifier;
     private String contextName;
     private Scope scope = Scope.REQUEST;

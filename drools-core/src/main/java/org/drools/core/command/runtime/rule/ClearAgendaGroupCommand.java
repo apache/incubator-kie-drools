@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.Context;
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ClearAgendaGroupCommand implements TransactionalCommand<Void> {
+public class ClearAgendaGroupCommand implements ExecutableCommand<Void> {
 
     @XmlAttribute(name="name", required=true)
     private String name;

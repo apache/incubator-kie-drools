@@ -16,14 +16,14 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.Context;
 
 public class UnregisterChannelCommand
     implements
-    TransactionalCommand<Void> {
+    ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 510l;
     

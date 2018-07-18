@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.KieSession;
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ClearRuleFlowGroupCommand implements TransactionalCommand<Void> {
+public class ClearRuleFlowGroupCommand implements ExecutableCommand<Void> {
 
     @XmlAttribute(required=true)
     private String name;

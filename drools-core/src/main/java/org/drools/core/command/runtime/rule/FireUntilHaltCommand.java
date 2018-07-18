@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.InternalWorkingMemory;
@@ -33,7 +33,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class FireUntilHaltCommand
 	implements
-    TransactionalCommand<Void>, UnpersistableCommand {
+    ExecutableCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     @XmlTransient

@@ -18,7 +18,7 @@ package org.drools.core.command.runtime.rule;
 
 import org.drools.core.ClassObjectSerializationFilter;
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -37,7 +37,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsCommand
     implements
-    TransactionalCommand<Collection>, IdentifiableResult {
+    ExecutableCommand<Collection>, IdentifiableResult {
 
     @XmlElement(name="class-object-filter", required=false)
     private ClassObjectSerializationFilter classObjectFilter = null;

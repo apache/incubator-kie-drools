@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public class SetVariableCommandFromCommand
     implements
-    TransactionalCommand<Void> {
+    ExecutableCommand<Void> {
     private String identifier;
     private String contextName;
     private Command cmd;
@@ -40,10 +40,10 @@ public class SetVariableCommandFromCommand
     public Void execute(Context context) {
         if ( this.contextName == null ) {
             ( (RegistryContext) context ).getContextManager().getContext( ContextManagerImpl.ROOT ).set( this.identifier,
-                                                                                                     ((TransactionalCommand) this.cmd).execute(context ) );
+                                                                                                     ((ExecutableCommand) this.cmd).execute( context ) );
         } else {
             ( (RegistryContext) context ).getContextManager().getContext( this.contextName ).set( this.identifier,
-                                                                            ((TransactionalCommand) this.cmd).execute(context ) );
+                                                                            ((ExecutableCommand) this.cmd).execute( context ) );
         }
         return null;
     }

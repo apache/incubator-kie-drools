@@ -23,7 +23,7 @@ import java.util.HashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -44,7 +44,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  * 
  *
  */
-public class TransactionTestCommand implements TransactionalCommand<Void> {
+public class TransactionTestCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = -7640078670024414748L;
     

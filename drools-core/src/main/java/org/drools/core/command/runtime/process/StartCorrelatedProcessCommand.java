@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.process;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartCorrelatedProcessCommand implements TransactionalCommand<ProcessInstance>, IdentifiableResult, CorrelationKeyCommand {
+public class StartCorrelatedProcessCommand implements ExecutableCommand<ProcessInstance>, IdentifiableResult, CorrelationKeyCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 4032503589773486738L;

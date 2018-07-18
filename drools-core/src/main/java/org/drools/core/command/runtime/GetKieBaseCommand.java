@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBase;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public class GetKieBaseCommand
     implements
-    TransactionalCommand<KieBase> {
+    ExecutableCommand<KieBase> {
 
     public GetKieBaseCommand() {
     }

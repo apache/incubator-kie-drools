@@ -16,9 +16,11 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
 
-public interface TransactionalCommand<T> extends ExecutableCommand<T> {
+public interface ExecutableCommand<T> extends org.kie.api.command.Command<T> {
+
+    T execute(Context context);
 
     default boolean canRunInTransaction() {
         return true;

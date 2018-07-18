@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.KieSession;
@@ -32,7 +32,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessIdsCommand
     implements
-    TransactionalCommand<List<String>> {
+    ExecutableCommand<List<String>> {
 
     public List<String> execute(Context context) {
     	List<String> result = new ArrayList<String>();

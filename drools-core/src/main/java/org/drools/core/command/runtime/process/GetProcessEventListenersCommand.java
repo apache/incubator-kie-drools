@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.KieSession;
@@ -29,7 +29,7 @@ import java.util.Collection;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessEventListenersCommand
     implements
-    TransactionalCommand<Collection<ProcessEventListener> > {
+    ExecutableCommand<Collection<ProcessEventListener> > {
 
     public Collection<ProcessEventListener> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

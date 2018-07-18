@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -37,7 +37,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsInEntryPointCommand
     implements
-    TransactionalCommand<Collection>, IdentifiableResult {
+    ExecutableCommand<Collection>, IdentifiableResult {
 
     public String getOutIdentifier() {
         return outIdentifier;

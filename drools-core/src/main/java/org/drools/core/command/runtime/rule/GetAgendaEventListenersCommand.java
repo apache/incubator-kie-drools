@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
@@ -26,7 +26,7 @@ import java.util.Collection;
 
 public class GetAgendaEventListenersCommand
     implements
-    TransactionalCommand<Collection<AgendaEventListener>> {
+    ExecutableCommand<Collection<AgendaEventListener>> {
 
     public Collection<AgendaEventListener> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );

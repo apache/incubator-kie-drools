@@ -1,10 +1,10 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.runtime.Context;
 
 
-public class LeaveConversationCommand<Void> implements TransactionalCommand<Void> {
+public class LeaveConversationCommand<Void> implements ExecutableCommand<Void> {
     public LeaveConversationCommand() {
     }
 

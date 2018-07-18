@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -26,7 +26,7 @@ import org.kie.api.runtime.Context;
 
 public class RemoveEventListenerCommand
     implements
-    TransactionalCommand<Void> {
+    ExecutableCommand<Void> {
 
     private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventListener        = null;

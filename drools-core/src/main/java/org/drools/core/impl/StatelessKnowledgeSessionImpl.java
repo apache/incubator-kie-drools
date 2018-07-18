@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
@@ -229,7 +229,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
             ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution();
 
-            Object o = ((TransactionalCommand) command).execute(context );
+            Object o = ((ExecutableCommand) command).execute( context );
             // did the user take control of fireAllRules, if not we will auto execute
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {

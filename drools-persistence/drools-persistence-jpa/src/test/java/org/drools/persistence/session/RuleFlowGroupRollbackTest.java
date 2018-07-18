@@ -16,7 +16,7 @@
 package org.drools.persistence.session;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -126,7 +126,7 @@ public class RuleFlowGroupRollbackTest {
 	}
 	
 	@SuppressWarnings("serial")
-	public class ActivateRuleFlowCommand implements TransactionalCommand<Object> {
+	public class ActivateRuleFlowCommand implements ExecutableCommand<Object> {
 		
 		private String ruleFlowGroupName;
 		
@@ -143,7 +143,7 @@ public class RuleFlowGroupRollbackTest {
 	}
 	
 	@SuppressWarnings("serial")
-	public class ExceptionCommand implements TransactionalCommand<Object> {
+	public class ExceptionCommand implements ExecutableCommand<Object> {
 
 	    public Void execute(Context context) {
 	    	throw new RuntimeException("(Expected) exception thrown by test");

@@ -19,7 +19,7 @@ package org.drools.core.command;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.rule.DataSource;
@@ -27,7 +27,7 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 public class AddDataSourceCommand<E>
         implements
-        TransactionalCommand<Void> {
+        ExecutableCommand<Void> {
 
     private static final long serialVersionUID = -5255184977368094272L;
     private final Class<E> clazz;

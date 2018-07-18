@@ -16,11 +16,11 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.runtime.Context;
 
-public class NewKnowledgeBuilderConfigurationCommand implements TransactionalCommand<Void> {
+public class NewKnowledgeBuilderConfigurationCommand implements ExecutableCommand<Void> {
     private String kbuilderConfId;
 
     public NewKnowledgeBuilderConfigurationCommand(String kbuilderConfId) {

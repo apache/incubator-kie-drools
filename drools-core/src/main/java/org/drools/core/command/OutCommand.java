@@ -1,11 +1,11 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.RequestContext;
 
 
-public class OutCommand<T> implements TransactionalCommand<T> {
+public class OutCommand<T> implements ExecutableCommand<T> {
     private String name;
 
     public OutCommand() {

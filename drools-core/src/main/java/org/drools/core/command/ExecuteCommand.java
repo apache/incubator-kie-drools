@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 public class ExecuteCommand
     implements
-    TransactionalCommand<ExecutionResults> {
+    ExecutableCommand<ExecutionResults> {
 
     private String   outIdentifier;
     private Command<ExecutionResults>  command;

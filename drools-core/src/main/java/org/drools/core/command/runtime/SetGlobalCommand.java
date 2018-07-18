@@ -17,7 +17,7 @@
 package org.drools.core.command.runtime;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    TransactionalCommand<Object>, IdentifiableResult{
+    ExecutableCommand<Object>, IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;

@@ -17,11 +17,11 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.builder.Scope;
 
-public class SetCommand<T> implements TransactionalCommand<T> {
+public class SetCommand<T> implements ExecutableCommand<T> {
     private String name;
     private Scope scope = Scope.REQUEST;
 

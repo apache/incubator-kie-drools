@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.runtime.KieSession;
@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 @XmlRootElement(name="update-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class UpdateCommand implements TransactionalCommand<Void> {
+public class UpdateCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
 

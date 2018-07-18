@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Context;
 
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 @XmlRootElement(name="get-variable-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetVariableCommand implements TransactionalCommand<Object> {
+public class GetVariableCommand implements ExecutableCommand<Object> {
    
     @XmlElement
     @XmlSchemaType(name="string")

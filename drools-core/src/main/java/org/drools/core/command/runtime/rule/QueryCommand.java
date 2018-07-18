@@ -18,7 +18,7 @@ package org.drools.core.command.runtime.rule;
 
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 @XmlAccessorType( XmlAccessType.NONE )
-public class QueryCommand implements TransactionalCommand<QueryResults>, IdentifiableResult {
+public class QueryCommand implements ExecutableCommand<QueryResults>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 

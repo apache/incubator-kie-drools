@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.runtime.AdvanceSessionTimeCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
@@ -243,9 +243,9 @@ public class XStreamJSon {
                 if ( "commands".equals( reader.getNodeName() ) ) {
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        TransactionalCommand cmd = (TransactionalCommand) readItem(reader,
-                                                                                   context,
-                                                                                   null );
+                        ExecutableCommand cmd = (ExecutableCommand) readItem( reader,
+                                                                              context,
+                                                                              null );
                         list.add( cmd );
                         reader.moveUp();
                     }

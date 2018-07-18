@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public class GetSessionClockCommand
     implements
-    TransactionalCommand<SessionClock> {
+    ExecutableCommand<SessionClock> {
 
     public SessionClock execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);

@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.TransactionalCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -34,7 +34,7 @@ import java.util.Collection;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetFactHandlesCommand
     implements
-    TransactionalCommand<Collection<FactHandle>> {
+    ExecutableCommand<Collection<FactHandle>> {
 
     private transient ObjectFilter filter = null;
 
