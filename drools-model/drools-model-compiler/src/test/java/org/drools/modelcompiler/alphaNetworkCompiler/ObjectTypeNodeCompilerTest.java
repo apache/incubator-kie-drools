@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.alphaNetworkCompiler;
 
+import java.math.BigDecimal;
+
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.ChildFactWithEnum1;
 import org.drools.modelcompiler.domain.EnumFact1;
@@ -57,6 +59,38 @@ public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    /*
+        This generates the switch but not the inlining
+     */
+    @Test
+    public void testAlphaConstraintsSwitchBigDecimal() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + BigDecimal.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(0)) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(1)) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(2)) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Luca", new BigDecimal(0)));
+        ksession.insert(new Person("Asdrubale", new BigDecimal(10)));
 
         assertEquals(1, ksession.fireAllRules());
     }
