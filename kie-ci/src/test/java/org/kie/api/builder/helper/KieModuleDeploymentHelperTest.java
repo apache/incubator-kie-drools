@@ -127,12 +127,6 @@ public class KieModuleDeploymentHelperTest {
     public void testFluentDeploymentHelper() throws Exception {
         int numFiles = 0;
         int numDirs = 0;
-        String content = "test file created by " + this.getClass().getSimpleName();
-        File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".tst");
-        tempFile.deleteOnExit();
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(content.getBytes());
-        fos.close();
         
         FluentKieModuleDeploymentHelper deploymentHelper = KieModuleDeploymentHelper.newFluentInstance();
 
@@ -143,7 +137,6 @@ public class KieModuleDeploymentHelperTest {
                 .setArtifactId(artifactId)
                 .setVersion(version)
                 .addResourceFilePath("builder/test/", "builder/simple_query_test.drl")
-                .addResourceFilePath(tempFile.getAbsolutePath())
                 .addResourceFilePath("/META-INF/WorkDefinitions.conf") // from the drools-core jar
                 .addClass(KieModuleDeploymentHelperTest.class)
                 .addClass(KieModule.class)
@@ -159,7 +152,7 @@ public class KieModuleDeploymentHelperTest {
         // kbase.cache x 2
         numFiles += 2;
         // drl files
-        numFiles += 3;
+        numFiles += 2;
         // WorkDefinitions
         ++numFiles;
         // classes
