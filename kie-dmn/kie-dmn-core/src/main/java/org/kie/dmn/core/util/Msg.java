@@ -61,6 +61,7 @@ public final class Msg {
     public static final Message2 DUPLICATED_RELATION_COLUMN                          = new Message2( DMNMessageType.DUPLICATED_RELATION_COLUMN, "Relation column '%s' is duplicated on node '%s'" );
     public static final Message2 RELATION_CELL_NOT_LITERAL                           = new Message2( DMNMessageType.RELATION_CELL_NOT_LITERAL, "Relation row '%d' contains a cell that is not a literal expression on node '%s'" );
     public static final Message2 RELATION_CELL_COUNT_MISMATCH                        = new Message2( DMNMessageType.RELATION_CELL_COUNT_MISMATCH, "Relation row '%d' contains the wrong number of cells on node '%s'" );
+    public static final Message1 ERRORS_EVAL_DS_NODE                                 = new Message1( DMNMessageType.ERROR_EVAL_NODE, "Errors occured while evaluating Decision Service node '%s'.");
     public static final Message2 ERROR_EVAL_DS_NODE                                  = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision Service node '%s': %s" );
     public static final Message2 ERROR_EVAL_BKM_NODE                                 = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Business Knowledge Model node '%s': %s" );
     public static final Message2 ERROR_EVAL_DECISION_NODE                            = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision node '%s': %s" );

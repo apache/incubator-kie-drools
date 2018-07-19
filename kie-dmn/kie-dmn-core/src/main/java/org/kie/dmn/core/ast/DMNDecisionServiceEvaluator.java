@@ -22,12 +22,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -36,6 +35,8 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,25 +65,38 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         Map<String, Object> ctx = new HashMap<String, Object>();
         for (String id : decisionIDs) {
             DMNDecisionResult decisionResultById = evaluateById.getDecisionResultById(id);
-            if (decisionResultById.getEvaluationStatus() == DecisionEvaluationStatus.SUCCEEDED) {
-                DecisionNode decisionNode = dmnModel.getDecisionById(id);
-                String decisionName = decisionNode.getName();
-                ctx.put(decisionName, decisionResultById.getResult());
-                result.getContext().set(decisionName, decisionResultById.getResult());
-            }
+            String decisionName = dmnModel.getDecisionById(id).getName();
+            ctx.put(decisionName, decisionResultById.getResult());
+            result.getContext().set(decisionName, decisionResultById.getResult());
             if (transferResult) {
                 result.addDecisionResult(decisionResultById);
             }
         }
+        boolean errors = false;
         for (DMNMessage m : evaluateById.getMessages()) {
             result.addMessage(m);
+            if (m.getSeverity() == Severity.ERROR) {
+                errors = true;
+            }
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, dsNode, result);
         Object evaluatorResultValue = ctx;
         if (decisionIDs.size() == 1 && coerceSingletonResult) {
             evaluatorResultValue = ctx.values().iterator().next();
         }
-        return new EvaluatorResultImpl(evaluatorResultValue, ResultType.SUCCESS);
+        ResultType resultType = ResultType.SUCCESS;
+        if (errors) {
+            resultType = ResultType.FAILURE;
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  ((DecisionServiceNodeImpl) dsNode).getSource(),
+                                  result,
+                                  null,
+                                  null,
+                                  Msg.ERRORS_EVAL_DS_NODE,
+                                  dsNode.getName());
+        }
+        return new EvaluatorResultImpl(evaluatorResultValue, resultType);
     }
 
 }
