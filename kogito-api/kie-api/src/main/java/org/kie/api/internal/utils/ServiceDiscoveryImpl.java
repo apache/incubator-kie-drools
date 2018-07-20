@@ -87,7 +87,7 @@ public class ServiceDiscoveryImpl {
                 try {
                     confResources = getClassLoader().getResources(path);
                 } catch (Exception e) {
-                    new IllegalStateException("Discovery started, but no kie.conf's found");
+                    throw new IllegalStateException("Discovery started, but no kie.conf's found");
                 }
                 if (confResources != null) {
                     while (confResources.hasMoreElements()) {
