@@ -149,7 +149,7 @@ public class ObjectTypeNodeParser {
             // end of the hashed alphas
             handler.endHashedAlphaNodes(hashedFieldReader);
 
-            if(optionalNullAlphaNodeCase != null) {
+            if (optionalNullAlphaNodeCase != null) {
                 handler.nullCaseAlphaNodeStart(optionalNullAlphaNodeCase);
                 traversePropagator(optionalNullAlphaNodeCase.getObjectSinkPropagator(), handler);
                 handler.nullCaseAlphaNodeEnd(optionalNullAlphaNodeCase);
