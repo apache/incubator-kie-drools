@@ -136,7 +136,7 @@ public class ObjectTypeNodeParser {
                 AlphaNode alphaNode = (AlphaNode) entry.getValue();
 
                 final Object objectValue = hashKey.getObjectValue();
-                if(objectValue != null) {
+                if (objectValue != null) {
                     handler.startHashedAlphaNode(alphaNode, objectValue);
                     // traverse the propagator for each alpha
                     traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
