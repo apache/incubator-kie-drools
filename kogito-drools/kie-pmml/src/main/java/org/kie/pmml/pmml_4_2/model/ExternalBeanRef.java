@@ -11,10 +11,14 @@ public class ExternalBeanRef {
         OUTPUT;
     }
 
-    public ExternalBeanRef(String modelFieldName, String beanInfo, ModelUsage usage) {
+    public ExternalBeanRef(String modelFieldName, String beanInfo, ModelUsage usage) throws IllegalArgumentException {
         this.modelFieldName = modelFieldName;
         this.usage = usage;
-        this.beanDefinition = new ExternalBeanDefinition(beanInfo);
+        try {
+            this.beanDefinition = new ExternalBeanDefinition(beanInfo);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unable to construct ExternalBeanRef. ", e);
+        }
     }
 
     public String getBeanPackageName() {
