@@ -99,19 +99,19 @@ public class KieBaseUpdater implements Runnable {
 
         final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
         final Boolean isAlphaNetworkEnabled;
-        if(configurationProperty != null) {
+        if (configurationProperty != null) {
             isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
         } else {
             isAlphaNetworkEnabled = false;
         }
 
-        if(isAlphaNetworkEnabled) {
+        if (isAlphaNetworkEnabled) {
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                     .forEach(otn -> {
                         final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
-                        if(oldCompiledNetwork != null) {
+                        if (oldCompiledNetwork != null) {
                             clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
                         }
                         final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
