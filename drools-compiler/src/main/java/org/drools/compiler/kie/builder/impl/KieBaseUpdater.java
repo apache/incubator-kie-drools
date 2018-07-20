@@ -49,8 +49,6 @@ public class KieBaseUpdater implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdater.class );
     
-    public static final String ALPHA_NETWORK_COMPILER_OPTION = "drools.alphaNetworkCompiler";
-
     protected final KieBaseUpdateContext ctx;
 
     public KieBaseUpdater( KieBaseUpdateContext ctx ) {
@@ -99,7 +97,7 @@ public class KieBaseUpdater implements Runnable {
 
         final InternalKnowledgeBase kBase = ((KnowledgeBuilderImpl) kbuilder).getKnowledgeBase();
 
-        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
+        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
         final Boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
 
         if (isAlphaNetworkEnabled) {
