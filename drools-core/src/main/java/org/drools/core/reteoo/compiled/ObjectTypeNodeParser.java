@@ -107,7 +107,6 @@ public class ObjectTypeNodeParser {
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-
                 traverseSink(sink, handler);
             }
         }
@@ -116,7 +115,6 @@ public class ObjectTypeNodeParser {
     private void traverseSinkLisk(ObjectSink[] sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSink sink : sinks) {
-
                 traverseSink(sink, handler);
             }
         }
