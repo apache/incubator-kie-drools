@@ -71,7 +71,7 @@ public class ObjectTypeNodeCompiler {
 
     private StringBuilder builder = new StringBuilder();
 
-    private static final Logger logger          = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
 
 
     private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
@@ -162,7 +162,7 @@ public class ObjectTypeNodeCompiler {
             for (Object hashedValue : declaration.getHashedValues()) {
                 Object value = hashedValue;
 
-                if(value == null) {
+                if (value == null) {
                     // generate the map.put(hashedValue, nodeId) call
                     String nodeId = declaration.getNodeId(hashedValue);
 
@@ -260,7 +260,7 @@ public class ObjectTypeNodeCompiler {
         ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
         CompilationResult compiled = JAVA_COMPILER.compile(new String[]{compiler.getSourceName()}, mfs, trg, rootClassLoader);
 
-        if(compiled.getErrors().length > 0) {
+        if (compiled.getErrors().length > 0) {
             throw new RuntimeException("This is a bug. Please contact the development team:\n" + Arrays.toString(compiled.getErrors()));
         }
 
