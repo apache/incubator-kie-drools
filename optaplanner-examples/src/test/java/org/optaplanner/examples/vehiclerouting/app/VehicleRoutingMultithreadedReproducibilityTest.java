@@ -1,0 +1,80 @@
+package org.optaplanner.examples.vehiclerouting.app;
+
+import java.io.File;
+import java.util.stream.IntStream;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.examples.common.app.AbstractTurtleTest;
+import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
+ * a constant number of steps, every iteration must finish with the same score.
+ * */
+public class VehicleRoutingMultithreadedReproducibilityTest extends AbstractTurtleTest {
+
+    private static final int REPETITION_COUNT = 10;
+
+    private static final int STEP_LIMIT = 5000;
+
+    private static final String MOVE_THREAD_COUNT = "4";
+
+    private static final String DATA_SET = "import/belgium/basic/air/belgium-n50-k10.vrp";
+
+    private final VehicleRoutingApp vehicleRoutingApp = new VehicleRoutingApp();
+
+    private VehicleRoutingSolution[] vehicleRoutingSolutions = new VehicleRoutingSolution[REPETITION_COUNT];
+
+    private SolverFactory<VehicleRoutingSolution> solverFactory;
+
+    @Before
+    public void createUninitializedSolutions() {
+        final VehicleRoutingImporter importer = new VehicleRoutingImporter();
+        for (int i = 0; i < REPETITION_COUNT; i++) {
+            File dataSetFile = new File(CommonApp.determineDataDir(vehicleRoutingApp.getDataDirName()), DATA_SET);
+            VehicleRoutingSolution solution = importer.readSolution(dataSetFile);
+            vehicleRoutingSolutions[i] = solution;
+        }
+
+        solverFactory = SolverFactory.createFromXmlResource(vehicleRoutingApp.getSolverConfig());
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setStepCountLimit(STEP_LIMIT);
+
+        solverConfig.getPhaseConfigList().forEach(phaseConfig -> {
+            if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
+                phaseConfig.setTerminationConfig(terminationConfig);
+            }
+        });
+        solverConfig.setMoveThreadCount(MOVE_THREAD_COUNT);
+        solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
+    }
+
+    @Test
+    public void testMultithreadedSolvingIsReproducible() {
+        IntStream.range(0, REPETITION_COUNT).forEach(iteration -> solveAndCompareWithPrevious(iteration));
+    }
+
+    private void solveAndCompareWithPrevious(final int iteration) {
+        Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();
+        VehicleRoutingSolution bestSolution = solver.solve(vehicleRoutingSolutions[iteration]);
+        vehicleRoutingSolutions[iteration] = bestSolution;
+
+        if (iteration > 0) {
+            VehicleRoutingSolution previousBestSolution = vehicleRoutingSolutions[iteration - 1];
+            assertThat(previousBestSolution.getScore()).isEqualTo(bestSolution.getScore());
+        }
+    }
+
+}
