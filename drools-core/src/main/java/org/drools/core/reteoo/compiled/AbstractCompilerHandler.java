@@ -60,7 +60,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
         return getVariableName(variableType, sink.getId());
     }
 
-    protected String getVariableName(String fieldName) {
+    protected String getVariableName() {
         return MAP_VARIABLE_NAME_SUFFIX;
     }
 

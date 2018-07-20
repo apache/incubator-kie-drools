@@ -61,7 +61,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
 
             builder.append("Integer ").append(localVariableName);
             // todo we are casting to Integer because generics aren't supported
-            builder.append(" = (Integer)").append(getVariableName(""))
+            builder.append(" = (Integer)").append(getVariableName())
                     .append(".get(")
                     .append("readAccessor.getValue(")
                     .append(LOCAL_FACT_VAR_NAME).append(")")
