@@ -87,7 +87,6 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
         builder.append("case ").append(alphaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(alphaNode, PARAM_NAME)).append(NEWLINE);
-//        builder.append(getContextVariableAssignmentStatement(alphaNode)).append(NEWLINE);
         builder.append("break;").append(NEWLINE);
     }
 
