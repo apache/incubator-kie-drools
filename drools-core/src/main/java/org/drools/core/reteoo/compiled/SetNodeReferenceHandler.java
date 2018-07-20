@@ -62,20 +62,6 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         return assignmentStatement;
     }
 
-
-//    private String getContextVariableAssignmentStatement(AlphaNode alphaNode) {
-//        String contextVariableName = getContextVariableName(alphaNode);
-//        String alphaVariableName = getVariableName(alphaNode);
-//        String assignmentStatement;
-//
-//        // we need the constraint for an alpha node assignment, so generate a cast, plus the method call to get
-//        // the constraint
-//        assignmentStatement = contextVariableName + " = " + alphaVariableName + ".createContextEntry();";
-//
-//        return assignmentStatement;
-//    }
-
-
     @Override
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(SET_NETWORK_NODE_REFERENCE_SIGNATURE).append(NEWLINE);
