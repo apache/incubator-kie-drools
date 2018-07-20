@@ -41,13 +41,16 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -209,6 +212,74 @@ public class DMNRuntimeImpl
         return result;
     }
 
+    @Override
+    public DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName) {
+        boolean typeCheck = performRuntimeTypeCheck(model);
+        DMNResultImpl result = new DMNResultImpl(model);
+        result.setContext(context.clone());
+        // the engine should evaluate all belonging to the "local" model namespace, not imported nodes explicitly.
+        Optional<DecisionServiceNode> lookupDS = ((DMNModelImpl) model).getDecisionServices().stream()
+                                                                    .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
+                                                                    .filter(ds -> ds.getName().equals(decisionServiceName))
+                                                                    .findFirst();
+        if (lookupDS.isPresent()) {
+            DecisionServiceNodeImpl decisionService = (DecisionServiceNodeImpl) lookupDS.get();
+            for (DMNNode dep : decisionService.getInputParameters().values()) {
+                if (!isNodeValueDefined(result, decisionService, dep)) {
+                    DMNMessage message = MsgUtil.reportMessage(logger,
+                                                               DMNMessage.Severity.WARN,
+                                                               decisionService.getSource(),
+                                                               result,
+                                                               null,
+                                                               null,
+                                                               Msg.REQ_INPUT_NOT_FOUND_FOR_DS,
+                                                               dep.getName(),
+                                                               getIdentifier(decisionService));
+                    result.getContext().set(dep.getName(), null);
+                }
+            }
+            EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true, false).evaluate(this, result); // please note singleton output coercion does not influence anyway when invoked DS on a model.
+        } else {
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  null,
+                                  result,
+                                  null,
+                                  null,
+                                  Msg.DECISION_SERVICE_NOT_FOUND_FOR_NAME,
+                                  decisionServiceName);
+        }
+        return result;
+    }
+
+    private void evaluateDecisionService(DMNContext context, DMNResultImpl result, DecisionServiceNode d, boolean typeCheck) {
+        DecisionServiceNodeImpl ds = (DecisionServiceNodeImpl) d;
+        if (isNodeValueDefined(result, ds, ds)) {
+            // already resolved
+            return;
+        }
+        // Note: a Decision Service is expected to always have an evaluator, it does not depend on an xml expression, it is done always by the compiler.
+        try {
+            // a Decision Service when is evaluated as a function does not require any dependency check, as they will be passed as params.
+
+            EvaluatorResult er = ds.getEvaluator().evaluate(this, result);
+            if (er.getResultType() == EvaluatorResult.ResultType.SUCCESS) {
+                FEELFunction resultFn = (FEELFunction) er.getResult();
+                result.getContext().set(ds.getName(), resultFn);
+            }
+        } catch (Throwable t) {
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  ds.getSource(),
+                                  result,
+                                  t,
+                                  null,
+                                  Msg.ERROR_EVAL_DS_NODE,
+                                  getIdentifier(ds),
+                                  t.getMessage());
+        }
+    }
+
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b, boolean typeCheck) {
         BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) b;
         if (isNodeValueDefined(result, bkm, bkm)) {
@@ -247,12 +318,11 @@ public class DMNRuntimeImpl
                     return;
                 }
                 if (!isNodeValueDefined(result, bkm, dep)) {
+                    boolean walkingIntoScope = walkIntoImportScope(result, bkm, dep);
                     if( dep instanceof BusinessKnowledgeModelNode ) {
-                        boolean walkingIntoScope = walkIntoImportScope(result, bkm, dep);
                         evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
-                        if (walkingIntoScope) {
-                            result.getContext().popScope();
-                        }
+                    } else if (dep instanceof DecisionServiceNode) {
+                        evaluateDecisionService(context, result, (DecisionServiceNode) dep, typeCheck);
                     } else {
                         MsgUtil.reportMessage( logger,
                                                DMNMessage.Severity.ERROR,
@@ -265,6 +335,9 @@ public class DMNRuntimeImpl
                                                getIdentifier( bkm )
                         );
                         return;
+                    }
+                    if (walkingIntoScope) {
+                        result.getContext().popScope();
                     }
                 }
             }
@@ -424,6 +497,8 @@ public class DMNRuntimeImpl
                         }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
+                    } else if (dep instanceof DecisionServiceNode) {
+                        evaluateDecisionService(context, result, (DecisionServiceNode) dep, typeCheck);
                     } else {
                         missingInput = true;
                         DMNMessage message = MsgUtil.reportMessage( logger,
