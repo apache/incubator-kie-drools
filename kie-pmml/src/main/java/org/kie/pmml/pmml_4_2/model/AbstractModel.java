@@ -47,6 +47,8 @@ import org.mvel2.templates.TemplateError;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.TemplateRuntimeError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractModel<T> implements PMML4Model {
 
@@ -65,6 +67,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
     protected static TemplateRegistry templateRegistry;
     public final static String PMML_JAVA_PACKAGE_NAME = "org.kie.pmml.pmml_4_2.model";
+    private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
     protected abstract void addMiningTemplateToRegistry(TemplateRegistry registry);
 
@@ -95,12 +98,12 @@ public abstract class AbstractModel<T> implements PMML4Model {
         initFieldMaps();
     }
 
-    protected void initFieldMaps() {
+    protected void initFieldMaps() throws IllegalArgumentException {
         initMiningFieldMap();
         initOutputFieldMap();
     }
 
-    protected void initMiningFieldMap() {
+    protected void initMiningFieldMap() throws IllegalArgumentException {
         MiningSchema schema = getMiningSchema();
         boolean addExternalBeanRefs = isUseExternalBeanRefs(schema);
         miningFieldMap = new HashMap<>();
@@ -110,8 +113,13 @@ public abstract class AbstractModel<T> implements PMML4Model {
             if (addExternalBeanRefs) {
                 Extension ext = getExternalClassInfo(field.getExtensions());
                 if (ext != null) {
-                    ExternalBeanRef ref = new ExternalBeanRef(field.getName(), ext.getValue(), ModelUsage.MINING);
-                    externalMiningFields.add(ref);
+                    ExternalBeanRef ref;
+                    try {
+                        ref = new ExternalBeanRef(field.getName(), ext.getValue(), ModelUsage.MINING);
+                        externalMiningFields.add(ref);
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException("Error while initializing the MiningField map. ",e);
+                    }
                 }
             }
         }
