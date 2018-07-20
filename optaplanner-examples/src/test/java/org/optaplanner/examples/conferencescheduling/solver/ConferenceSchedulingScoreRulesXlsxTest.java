@@ -56,6 +56,7 @@ import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFi
 
 public class ConferenceSchedulingScoreRulesXlsxTest {
 
+    private final String testFileName = "testConferenceSchedulingScoreRules.xlsx";
     private final HardSoftScore unassignedScore = HardSoftScore.ZERO;
     private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -70,7 +71,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
 
     @Before
     public void setup() {
-        File testFile = new File(getClass().getResource("testConferenceSchedulingScoreRules.xlsx").getFile());
+        File testFile = new File(getClass().getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
             this.initialSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
