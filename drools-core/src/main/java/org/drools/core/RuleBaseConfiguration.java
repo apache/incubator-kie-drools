@@ -47,7 +47,6 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.SessionCacheOption;
-//import org.kie.internal.conf.AlphaNetworkCompilerOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
@@ -147,8 +146,6 @@ public class RuleBaseConfiguration
     private boolean         phreakEnabled;
 
     private boolean declarativeAgenda;
-
-    private boolean alphaNetworkCompilerEnabled;
 
     private EventProcessingOption eventProcessingMode;
 
@@ -339,9 +336,6 @@ public class RuleBaseConfiguration
         } else if ( name.equals( SessionCacheOption.PROPERTY_NAME ) ) {
             setSessionCacheOption(SessionCacheOption.determineOption(StringUtils.isEmpty(value) ? "none" : value));
         }
-//        else if ( name.equals( AlphaNetworkCompilerOption.PROPERTY_NAME ) ) {
-//            setAlphaNetworkCompilerEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-//        }
     }
 
     public String getProperty(String name) {
@@ -486,9 +480,6 @@ public class RuleBaseConfiguration
 
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
-
-//        setAlphaNetworkCompilerEnabled( Boolean.valueOf( this.chainedProperties.getProperty( AlphaNetworkCompilerOption.PROPERTY_NAME,
-//                                                                                          "false" ) ) );
     }
 
     /**
@@ -1168,9 +1159,6 @@ public class RuleBaseConfiguration
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
-//        else if (AlphaNetworkCompilerOption.class.equals(option)) {
-//            return (T) (this.isAlphaNetworkCompilerEnabled() ? AlphaNetworkCompilerOption.YES : AlphaNetworkCompilerOption.NO);
-//        }
         return null;
 
     }
@@ -1229,14 +1217,5 @@ public class RuleBaseConfiguration
 
     public ChainedProperties getChainedProperties() {
         return chainedProperties;
-    }
-
-    public boolean isAlphaNetworkCompilerEnabled() {
-        return alphaNetworkCompilerEnabled;
-    }
-
-    public void setAlphaNetworkCompilerEnabled(boolean alphaNetworkCompilerEnabled) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.alphaNetworkCompilerEnabled = alphaNetworkCompilerEnabled;
     }
 }
