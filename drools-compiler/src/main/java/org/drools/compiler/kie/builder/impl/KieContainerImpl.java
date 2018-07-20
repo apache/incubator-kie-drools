@@ -79,9 +79,11 @@ public class KieContainerImpl
     implements
     InternalKieContainer {
 
-    private static final Logger        log    = LoggerFactory.getLogger( KieContainerImpl.class );
+    private static final Logger log = LoggerFactory.getLogger( KieContainerImpl.class );
 
-    private KieProject           kProject;
+    public static final String ALPHA_NETWORK_COMPILER_OPTION = "drools.alphaNetworkCompiler";
+
+    private KieProject kProject;
 
     private final Map<String, KieBase> kBases = new ConcurrentHashMap<String, KieBase>();
 
@@ -402,13 +404,8 @@ public class KieContainerImpl
     }
 
     public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
-        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
-        final Boolean isAlphaNetworkEnabled;
-        if(configurationProperty != null) {
-            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
-        } else {
-            isAlphaNetworkEnabled = false;
-        }
+        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
+        final Boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
         if (isAlphaNetworkEnabled) {
             KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
