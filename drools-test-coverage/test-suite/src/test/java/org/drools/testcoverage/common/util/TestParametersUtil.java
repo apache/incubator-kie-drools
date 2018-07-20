@@ -26,7 +26,7 @@ public final class TestParametersUtil {
 
     public static boolean TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL = true;
     public static boolean TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL = true;
-    public static boolean TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK = true;
+    public static boolean TEST_WITH_ALPHA_NETWORK = Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"));
 
     /**
      * Prepares collection of KieBaseTestConfiguration.
@@ -39,7 +39,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK});
@@ -52,7 +52,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
 
-            if(TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            if(TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK});
@@ -67,7 +67,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
@@ -88,7 +88,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
 
-        if(TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if(TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_ALPHA_NETWORK});
         }
@@ -97,7 +97,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK});
             }
@@ -107,7 +107,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK});
             }
@@ -126,7 +126,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY});
 
-        if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK});
         }
@@ -136,7 +136,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
 
-            if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK});
             }
@@ -147,7 +147,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
 
-            if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK});
             }
@@ -178,7 +178,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -189,7 +189,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -202,7 +202,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -213,7 +213,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -224,7 +224,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -237,7 +237,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATELESS_REALTIME});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATELESS_REALTIME});
@@ -249,7 +249,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
@@ -258,7 +258,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             }
@@ -269,7 +269,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             }
@@ -278,7 +278,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         }
@@ -287,7 +287,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             }
@@ -298,7 +298,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             }
@@ -322,7 +322,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -339,7 +339,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -358,7 +358,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -383,7 +383,7 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-        if (TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK) {
+        if (TEST_WITH_ALPHA_NETWORK) {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -397,7 +397,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_REALTIME});
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
-            if ( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            if (TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -414,7 +414,7 @@ public final class TestParametersUtil {
             parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
 
-            if( TEST_EXECUTABLE_MODEL_WITH_ALPHA_NETWORK ) {
+            if(TEST_WITH_ALPHA_NETWORK) {
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_PSEUDO});
                 parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK, KieSessionTestConfiguration.STATEFUL_REALTIME});
