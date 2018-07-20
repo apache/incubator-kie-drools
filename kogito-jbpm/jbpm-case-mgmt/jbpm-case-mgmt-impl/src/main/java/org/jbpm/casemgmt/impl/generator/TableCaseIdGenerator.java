@@ -16,21 +16,22 @@
 
 package org.jbpm.casemgmt.impl.generator;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.NoResultException;
+
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.generator.CasePrefixNotFoundException;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.NoResultException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Data base tabled backed case id generator. The underlying table keeps single entry per case prefix and updates it 

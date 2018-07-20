@@ -15,13 +15,14 @@
  */
 package org.jbpm.services.task.commands;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import java.util.List;
+
+import org.kie.api.command.ExecutableCommand;
 
 /**
  *

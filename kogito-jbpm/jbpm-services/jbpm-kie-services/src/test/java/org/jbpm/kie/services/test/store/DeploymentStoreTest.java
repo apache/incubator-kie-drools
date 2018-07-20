@@ -16,10 +16,6 @@
 
 package org.jbpm.kie.services.test.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -27,7 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
 import org.jbpm.kie.services.impl.store.DeploymentStoreEntry;
@@ -42,8 +37,13 @@ import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
 

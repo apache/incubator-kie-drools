@@ -18,8 +18,8 @@ package org.jbpm.shared.services.impl.commands;
 
 import java.util.Map;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 
 public class UpdateStringCommand implements ExecutableCommand<Integer> {

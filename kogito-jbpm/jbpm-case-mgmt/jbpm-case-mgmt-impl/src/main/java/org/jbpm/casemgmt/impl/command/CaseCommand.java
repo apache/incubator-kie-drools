@@ -16,22 +16,21 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
-import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
-
-import java.util.Collection;
-import java.util.Collections;
 
 public abstract class CaseCommand<T> implements ExecutableCommand<T> {
 

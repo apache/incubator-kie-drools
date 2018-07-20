@@ -16,18 +16,18 @@
 
 package org.jbpm.process.instance.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.ProcessInstanceIdCommand;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceVariableCommand implements ExecutableCommand<Object>, ProcessInstanceIdCommand {

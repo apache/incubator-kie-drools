@@ -16,11 +16,14 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import java.util.Date;
+import java.util.List;
+
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.impl.ExecutorImpl;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.executor.Executor;
 import org.kie.api.executor.ExecutorAdminService;
 import org.kie.api.executor.STATUS;
@@ -28,9 +31,6 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Default implementation of <code>ExecutorAdminService</code> backed with JPA

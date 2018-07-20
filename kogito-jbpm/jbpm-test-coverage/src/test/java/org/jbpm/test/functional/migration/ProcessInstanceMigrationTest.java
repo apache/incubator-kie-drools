@@ -16,8 +16,14 @@
 
 package org.jbpm.test.functional.migration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.test.JbpmTestCase;
@@ -26,6 +32,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -38,14 +45,8 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ProcessInstanceMigrationTest extends JbpmTestCase {
 

@@ -15,13 +15,13 @@
  */
 package org.jbpm.services.task.commands;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.fluent.impl.Batch;
 import org.drools.core.fluent.impl.InternalExecutable;
 import org.drools.core.runtime.ChainableRunner;
 import org.drools.core.runtime.InternalLocalRunner;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.kie.api.command.Command;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.Executable;

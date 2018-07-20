@@ -15,10 +15,10 @@
  */
 package org.jbpm.persistence.jta;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionSynchronization;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;

@@ -16,26 +16,27 @@
 
 package org.jbpm.process.instance.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.instance.NodeInstanceContainer;
-import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.Context;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.command.ProcessInstanceIdCommand;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.instance.NodeInstanceContainer;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement(name="get-completed-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)

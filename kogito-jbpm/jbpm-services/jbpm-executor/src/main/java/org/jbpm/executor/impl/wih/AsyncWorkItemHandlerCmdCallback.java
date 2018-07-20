@@ -18,7 +18,6 @@ package org.jbpm.executor.impl.wih;
 
 import java.util.Collection;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.executor.AsyncJobException;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -29,6 +28,7 @@ import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.executor.CommandCallback;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutionResults;

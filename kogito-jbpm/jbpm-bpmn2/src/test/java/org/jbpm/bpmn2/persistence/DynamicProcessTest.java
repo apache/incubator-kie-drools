@@ -17,7 +17,6 @@
 package org.jbpm.bpmn2.persistence;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
@@ -31,6 +30,7 @@ import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -39,8 +39,8 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;

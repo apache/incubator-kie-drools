@@ -16,20 +16,20 @@
 
 package org.jbpm.kie.services.impl.query.persistence;
 
-import org.dashbuilder.dataset.def.DataSetDef;
-import org.dashbuilder.dataset.def.DataSetDefRegistryListener;
-import org.dashbuilder.dataset.def.SQLDataSetDef;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.jbpm.services.api.query.model.QueryDefinition.Target;
-import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.jbpm.shared.services.impl.TransactionalCommandService;
-import org.kie.api.runtime.Context;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefRegistryListener;
+import org.dashbuilder.dataset.def.SQLDataSetDef;
+import org.jbpm.services.api.query.model.QueryDefinition.Target;
+import org.jbpm.shared.services.impl.JpaPersistenceContext;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PersistDataSetListener implements DataSetDefRegistryListener {

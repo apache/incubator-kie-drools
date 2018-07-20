@@ -16,12 +16,9 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -30,6 +27,7 @@ import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -41,6 +39,8 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 public class CloseCaseCommand extends CaseCommand<Void> {
     

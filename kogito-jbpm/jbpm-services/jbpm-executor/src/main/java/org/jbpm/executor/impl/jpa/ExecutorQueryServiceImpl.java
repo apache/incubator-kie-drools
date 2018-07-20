@@ -25,9 +25,9 @@ import java.util.Map;
 
 import javax.persistence.NoResultException;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.QueryManager;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;

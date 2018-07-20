@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.shared.services.impl.commands.FindObjectCommand;
 import org.jbpm.shared.services.impl.commands.FunctionCommand;
@@ -32,6 +31,7 @@ import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
 import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.ExecutorStoreService;
