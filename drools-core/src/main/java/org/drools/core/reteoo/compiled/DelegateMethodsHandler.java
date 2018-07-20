@@ -69,21 +69,6 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
 
     @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-
-//        final String constraintName = getVariableName(alphaNode);
-//
-//        final String adapterName = getVariableName(leftInputAdapterNode);
-//        final String modifyObjectMethod = String.format(
-//                "    public void modifyObject(org.drools.core.common.InternalFactHandle factHandle,\n" +
-//                        "                      org.drools.core.reteoo.ModifyPreviousTuples modifyPreviousTuples,\n" +
-//                        "                      org.drools.core.spi.PropagationContext context,\n" +
-//                        "                      org.drools.core.common.InternalWorkingMemory workingMemory) {\n" +
-//                        "        if (%s.isAllowed(factHandle, workingMemory)) {\n" +
-//                        "            %s.modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);\n" +
-//                        "        }\n" +
-//                        "    }", constraintName, adapterName);
-//
-//        builder.append(modifyObjectMethod).append(NEWLINE);
     }
 
     @Override
