@@ -204,7 +204,7 @@ public abstract class BaseModelTest {
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
+        kproj.setConfigurationProperty( org.drools.compiler.kie.builder.impl.KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION, "true" );
         return kproj;
     }
 }
