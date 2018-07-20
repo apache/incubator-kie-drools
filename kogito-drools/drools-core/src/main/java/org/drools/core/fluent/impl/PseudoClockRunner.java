@@ -16,18 +16,6 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.ConversationContextManager;
-import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.runtime.InternalLocalRunner;
-import org.kie.api.time.SessionPseudoClock;
-import org.drools.core.world.impl.ContextManagerImpl;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.Context;
-import org.kie.api.runtime.Executable;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.RequestContext;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +23,18 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import org.drools.core.command.ConversationContextManager;
+import org.drools.core.command.RequestContextImpl;
+import org.drools.core.runtime.InternalLocalRunner;
+import org.drools.core.world.impl.ContextManagerImpl;
+import org.kie.api.command.Command;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RequestContext;
+import org.kie.api.time.SessionPseudoClock;
 
 public class PseudoClockRunner implements InternalLocalRunner {
 

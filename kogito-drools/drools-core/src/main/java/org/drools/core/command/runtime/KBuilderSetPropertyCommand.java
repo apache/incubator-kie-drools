@@ -16,9 +16,9 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 public class KBuilderSetPropertyCommand implements ExecutableCommand<Void> {
 	

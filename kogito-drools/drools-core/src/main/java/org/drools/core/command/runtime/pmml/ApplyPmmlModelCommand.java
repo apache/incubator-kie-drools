@@ -8,17 +8,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 @XmlRootElement(name="apply-pmml-model-command")
 @XmlAccessorType(XmlAccessType.NONE)

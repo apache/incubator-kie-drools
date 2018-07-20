@@ -16,15 +16,16 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.Context;
+import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.Collection;
+
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessEventListenersCommand

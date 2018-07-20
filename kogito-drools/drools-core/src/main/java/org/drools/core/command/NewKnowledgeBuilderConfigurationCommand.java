@@ -16,9 +16,9 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 public class NewKnowledgeBuilderConfigurationCommand implements ExecutableCommand<Void> {
     private String kbuilderConfId;

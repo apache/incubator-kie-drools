@@ -16,18 +16,17 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import java.util.HashMap;
+
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.Command;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.Context;
-
-import java.util.HashMap;
 
 public class ExecuteCommand
     implements

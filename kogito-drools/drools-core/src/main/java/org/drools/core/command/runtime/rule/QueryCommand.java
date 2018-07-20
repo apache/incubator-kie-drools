@@ -16,24 +16,25 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.QueryResultsImpl;
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
-import org.kie.api.runtime.Context;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
+import org.drools.core.QueryResultsImpl;
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class QueryCommand implements ExecutableCommand<QueryResults>, IdentifiableResult {

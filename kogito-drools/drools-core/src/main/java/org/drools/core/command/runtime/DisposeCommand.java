@@ -16,20 +16,20 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.Context;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.drools.core.command.impl.NotTransactionalCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class DisposeCommand
     implements
-    ExecutableCommand<Void> {
+    NotTransactionalCommand<Void> {
 
     public Void execute(Context context) {
         KieSession ksession = ( (RegistryContext) context ).lookup( KieSession.class );

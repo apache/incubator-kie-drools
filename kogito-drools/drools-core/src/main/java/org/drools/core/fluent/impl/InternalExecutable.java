@@ -16,18 +16,18 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.api.runtime.Executable;
-
 import java.util.List;
 
+import org.drools.core.command.impl.NotTransactionalCommand;
+import org.kie.api.runtime.Executable;
+
 public interface InternalExecutable extends Executable {
+
     List<Batch> getBatches();
 
     default boolean canRunInTransaction() {
         return getBatches().stream()
-                           .flatMap( batch -> batch.getCommands().stream() )
-                           .map( ExecutableCommand.class::cast )
-                           .allMatch( ExecutableCommand::canRunInTransaction );
+                .flatMap(batch -> batch.getCommands().stream())
+                .noneMatch(NotTransactionalCommand.class::isInstance);
     }
 }
