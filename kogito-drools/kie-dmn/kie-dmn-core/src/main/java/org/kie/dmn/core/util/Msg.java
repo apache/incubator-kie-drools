@@ -8,6 +8,8 @@ public final class Msg {
     public static final Message1 IMPORT_TYPE_UNKNOWN                                 = new Message1( DMNMessageType.INVALID_SYNTAX, "Import type unknown: '%s'." );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS             = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s'; missing DMN Import name alias." );
+    public static final Message2 REQ_INPUT_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found for Decision Service '%s', invoking using null.");
+    public static final Message2 REFERENCE_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Element reference '%s' not resolved for Decision Service '%s'.");
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
     public static final Message2 REQ_DECISION_NOT_FOUND_FOR_NODE                     = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Decision '%s' not found on node '%s'" );
     public static final Message2 REQ_BKM_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Business Knowledge Model '%s' not found on node '%s'" );
@@ -30,6 +32,7 @@ public final class Msg {
     public static final Message1 MISSING_PARAMETER_FOR_INVOCATION                    = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing parameter for invocation node '%s'" );
     public static final Message2 MISSING_EXPRESSION_FOR_NAME                         = new Message2( DMNMessageType.MISSING_EXPRESSION, "No expression defined for name '%s' on node '%s'" );
     public static final Message1 MISSING_ENTRIES_ON_CONTEXT                          = new Message1( DMNMessageType.MISSING_EXPRESSION, "Context expression has no entries on node '%s'" );
+    public static final Message1 MISSING_VARIABLE_FOR_DS                             = new Message1( DMNMessageType.MISSING_VARIABLE, "Decision Service node '%s' is missing the variable declaration");
     public static final Message1 MISSING_VARIABLE_FOR_BKM                            = new Message1( DMNMessageType.MISSING_VARIABLE, "Business Knowledge Model node '%s' is missing the variable declaration" );
     public static final Message1 MISSING_VARIABLE_FOR_INPUT                          = new Message1( DMNMessageType.MISSING_VARIABLE, "Input Data node '%s' is missing the variable declaration" );
     public static final Message1 MISSING_VARIABLE_FOR_DECISION                       = new Message1( DMNMessageType.MISSING_VARIABLE, "Decision node '%s' is missing the variable declaration" );
@@ -58,6 +61,8 @@ public final class Msg {
     public static final Message2 DUPLICATED_RELATION_COLUMN                          = new Message2( DMNMessageType.DUPLICATED_RELATION_COLUMN, "Relation column '%s' is duplicated on node '%s'" );
     public static final Message2 RELATION_CELL_NOT_LITERAL                           = new Message2( DMNMessageType.RELATION_CELL_NOT_LITERAL, "Relation row '%d' contains a cell that is not a literal expression on node '%s'" );
     public static final Message2 RELATION_CELL_COUNT_MISMATCH                        = new Message2( DMNMessageType.RELATION_CELL_COUNT_MISMATCH, "Relation row '%d' contains the wrong number of cells on node '%s'" );
+    public static final Message1 ERRORS_EVAL_DS_NODE                                 = new Message1( DMNMessageType.ERROR_EVAL_NODE, "Errors occured while evaluating Decision Service node '%s'.");
+    public static final Message2 ERROR_EVAL_DS_NODE                                  = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision Service node '%s': %s" );
     public static final Message2 ERROR_EVAL_BKM_NODE                                 = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Business Knowledge Model node '%s': %s" );
     public static final Message2 ERROR_EVAL_DECISION_NODE                            = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision node '%s': %s" );
     public static final Message4 ERROR_EVAL_NODE_DEP_WRONG_TYPE                      = new Message4( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s' for dependency '%s': the dependency value '%s' is not allowed by the declared type (%s)" );
@@ -72,6 +77,7 @@ public final class Msg {
     public static final Message2 ERR_EVAL_CTX_ENTRY_ON_CTX                           = new Message2( DMNMessageType.ERR_EVAL_CTX, "Error evaluating context extry '%s' on context '%s'" );
     public static final Message1 DECISION_NOT_FOUND_FOR_NAME                         = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision not found for name '%s'" );
     public static final Message1 DECISION_NOT_FOUND_FOR_ID                           = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision not found for type '%s'" );
+    public static final Message1 DECISION_SERVICE_NOT_FOUND_FOR_NAME                 = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision Service not found for name '%s'");
     public static final Message1 FEEL_ERROR                                          = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
     public static final Message1 FEEL_WARN                                           = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
     public static final Message3 ERR_EVAL_PARAM_FOR_INVOCATION_ON_NODE               = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating parameter '%s' for invocation '%s' on node '%s'" );

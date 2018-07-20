@@ -28,7 +28,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -42,6 +44,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
@@ -51,6 +54,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -67,15 +71,18 @@ import org.kie.dmn.model.v1_1.DMNElementReference;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.DRGElement;
 import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.DecisionService;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.Import;
+import org.kie.dmn.model.v1_1.InformationItem;
 import org.kie.dmn.model.v1_1.InformationRequirement;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.kie.dmn.model.v1_1.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.NamedElement;
 import org.kie.dmn.model.v1_1.OutputClause;
 import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,6 +256,32 @@ public class DMNCompilerImpl
             }
         }
 
+        // in DMN v1.1 the DecisionService is not on the DRGElement but as an extension
+        if (dmndefs.getExtensionElements() != null) {
+            DecisionServiceCompiler compiler = new DecisionServiceCompiler();
+            List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
+            for (DecisionServices dss : decisionServices) {
+                for (DecisionService ds : dss.getDecisionService()) {
+                    // compatibility with DMN v1.1, create Decision Service's variable:
+                    if (ds.getVariable() == null) {
+                        InformationItem variable = new InformationItem();
+                        variable.setId(UUID.randomUUID().toString());
+                        variable.setName(ds.getName());
+                        variable.setParent(ds);
+                        // the introduction of an on-the-fly ItemDefinition has been removed. The variable type will be evaluated as feel:any, or in v1.2 will receive the (user-defined, explicit) ItemDefinition type.
+                        ds.setVariable(variable);
+                    }
+                    // continuing with normal compilation of Decision Service:
+                    compiler.compileNode(ds, this, model);
+                }
+            }
+            for (DecisionServiceNode ds : model.getDecisionServices()) {
+                DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
+                dsi.addModelImportAliases(model.getImportAliasesForNS());
+                compiler.compileEvaluator(dsi, this, ctx, model);
+            }
+        }
+
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
             bkmi.addModelImportAliases(model.getImportAliasesForNS());
@@ -269,6 +302,8 @@ public class DMNCompilerImpl
             }
         }
         detectCycles( model );
+
+
     }
 
     private void detectCycles( DMNModelImpl model ) {
@@ -345,8 +380,11 @@ public class DMNCompilerImpl
             if ( kr.getRequiredKnowledge() != null ) {
                 String id = getId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
+                DecisionServiceNode dsn = model.getDecisionServiceById(id);
                 if ( bkmn != null ) {
                     node.addDependency( bkmn.getName(), bkmn );
+                } else if (dsn != null) {
+                    node.addDependency(dsn.getName(), dsn);
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -354,7 +392,7 @@ public class DMNCompilerImpl
                                            model,
                                            null,
                                            null,
-                                           Msg.REQ_BKM_NOT_FOUND_FOR_NODE,
+                                          Msg.REQ_BKM_NOT_FOUND_FOR_NODE, // TODO or a DS ?
                                            id,
                                            node.getName() );
                 }
@@ -368,7 +406,7 @@ public class DMNCompilerImpl
      *  - namespace#id (an imported DRGElement ID)
      * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
      */
-    private String getId(DMNElementReference er) {
+    public static String getId(DMNElementReference er) {
         String href = er.getHref();
         return href.startsWith("#") ? href.substring(1) : href;
     }
@@ -377,7 +415,7 @@ public class DMNCompilerImpl
         BaseDMNTypeImpl type = null;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
-            type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef, itemDef.getTypeRef() );
+            type = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, itemDef.getTypeRef());
             if ( type != null ) {
                 UnaryTests allowedValuesStr = itemDef.getAllowedValues();
 
@@ -457,7 +495,7 @@ public class DMNCompilerImpl
         return type;
     }
 
-    public DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
+    public DMNType resolveTypeRef(DMNModelImpl dmnModel, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
 
@@ -469,13 +507,13 @@ public class DMNCompilerImpl
                         // implicitly define a type for the decision table result
                         CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), model.getName()+"_Type", model.getId(), dt.getHitPolicy().isMultiHit() );
                         for ( OutputClause oc : dt.getOutput() ) {
-                            DMNType fieldType = resolveTypeRef( dmnModel, node, model, oc, oc.getTypeRef() );
+                            DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
                             compType.addField( oc.getName(), fieldType );
                         }
                         dmnModel.getTypeRegistry().registerType( compType );
                         return compType;
                     } else if ( dt.getOutput().size() == 1 ) {
-                        return resolveTypeRef( dmnModel, node, model, dt.getOutput().get( 0 ), dt.getOutput().get( 0 ).getTypeRef() );
+                        return resolveTypeRef(dmnModel, model, dt.getOutput().get(0), dt.getOutput().get(0).getTypeRef());
                     }
                 }
             } else if( type == null ) {

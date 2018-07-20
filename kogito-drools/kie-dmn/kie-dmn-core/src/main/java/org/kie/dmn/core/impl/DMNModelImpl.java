@@ -42,6 +42,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -51,6 +52,7 @@ import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
@@ -74,6 +76,7 @@ public class DMNModelImpl
     private Map<String, DecisionNode>               decisions    = new HashMap<>();
     private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
     private Map<String, ItemDefNode>                itemDefs     = new HashMap<>();
+    private Map<String, DecisionServiceNode> decisionServices    = new HashMap<>();
 
     // these are messages created at loading/compilation time
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
@@ -195,6 +198,30 @@ public class DMNModelImpl
             collectRequiredInputs( decision.getDependencies().values(), inputs );
         }
         return inputs;
+    }
+
+    public void addDecisionService(DecisionServiceNodeImpl dsni) {
+        decisionServices.put(computeDRGElementModelLocalId(dsni), dsni);
+    }
+
+    public DecisionServiceNode getDecisionServiceById(String id) {
+        return this.decisionServices.get(id);
+    }
+
+    public DecisionServiceNode getDecisionServiceByName(String name) {
+        if (name == null) {
+            return null;
+        }
+        for (DecisionServiceNode dn : this.decisionServices.values()) {
+            if (Objects.equals(name, dn.getName())) {
+                return dn;
+            }
+        }
+        return null;
+    }
+
+    public Set<DecisionServiceNode> getDecisionServices() {
+        return this.decisionServices.values().stream().collect(Collectors.toSet());
     }
 
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
@@ -402,5 +429,6 @@ public class DMNModelImpl
     public QName getImportNamespaceAndNameforAlias(String iAlias) {
         return this.importAliases.get(iAlias);
     }
+
 
 }

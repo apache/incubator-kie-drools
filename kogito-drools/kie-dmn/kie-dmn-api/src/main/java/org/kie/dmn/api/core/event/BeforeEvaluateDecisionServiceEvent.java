@@ -16,21 +16,10 @@
 
 package org.kie.dmn.api.core.event;
 
-public interface DMNRuntimeEventListener {
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 
-    void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event);
+public interface BeforeEvaluateDecisionServiceEvent extends DMNEvent {
 
-    void afterEvaluateDecision(AfterEvaluateDecisionEvent event);
+    DecisionServiceNode getDecisionService();
 
-    void beforeEvaluateBKM(BeforeEvaluateBKMEvent event);
-
-    void afterEvaluateBKM(AfterEvaluateBKMEvent event);
-
-    void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event);
-
-    void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event);
-
-    void beforeEvaluateDecisionService(BeforeEvaluateDecisionServiceEvent event);
-
-    void afterEvaluateDecisionService(AfterEvaluateDecisionServiceEvent event);
 }

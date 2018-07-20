@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -43,10 +44,10 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
         }
         DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
         if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
-            type = compiler.resolveTypeRef( model, bkmn, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef() );
+            type = compiler.resolveTypeRef(model, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef());
         } else {
             // for now the call bellow will return type UNKNOWN
-            type = compiler.resolveTypeRef( model, bkmn, bkm, bkm, null );
+            type = compiler.resolveTypeRef(model, bkm, bkm, null);
         }
         bkmn.setResultType( type );
         model.addBusinessKnowledgeModel( bkmn );
@@ -66,6 +67,8 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                 if( dep instanceof BusinessKnowledgeModelNode ) {
                     // might need to create a DMNType for "functions" and replace the type here by that
                     ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
+                } else if (dep instanceof DecisionServiceNode) {
+                    ctx.setVariable(dep.getName(), ((DecisionServiceNode) dep).getResultType());
                 }
             }
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:

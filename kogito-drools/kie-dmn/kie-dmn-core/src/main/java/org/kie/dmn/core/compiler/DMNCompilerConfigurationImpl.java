@@ -60,6 +60,8 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     public final <T extends Option> T getOption(Class<T> option) {
         if (RuntimeTypeCheckOption.class.equals(option)) {
             return (T) new RuntimeTypeCheckOption(properties.get(RuntimeTypeCheckOption.PROPERTY_NAME));
+        } else if (CoerceDecisionServiceSingletonOutputOption.class.equals(option)) {
+            return (T) new CoerceDecisionServiceSingletonOutputOption(properties.get(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
         }
         return null;
     }

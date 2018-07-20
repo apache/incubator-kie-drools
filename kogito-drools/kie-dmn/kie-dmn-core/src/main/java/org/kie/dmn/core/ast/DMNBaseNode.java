@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Decision;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.InformationRequirement;
@@ -61,12 +62,12 @@ public abstract class DMNBaseNode implements DMNNode {
 
     private Optional<Definitions> getParentDefinitions() {
         if (source != null) {
-            Object parent = source.getParent();
+            DMNModelInstrumentedBase parent = source.getParent();
             while (!(parent instanceof Definitions)) {
                 if (parent == null) {
                     return Optional.empty();
                 }
-                parent = source.getParent();
+                parent = parent.getParent();
             }
             return Optional.of((Definitions) parent);
         }

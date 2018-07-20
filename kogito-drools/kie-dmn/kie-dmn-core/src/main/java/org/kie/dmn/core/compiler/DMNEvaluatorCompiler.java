@@ -165,7 +165,7 @@ public class DMNEvaluatorCompiler {
             }
             invEval.addParameter(
                     binding.getParameter().getName(),
-                    compiler.resolveTypeRef( model, node, binding.getParameter(), binding.getParameter(), binding.getParameter().getTypeRef() ),
+                    compiler.resolveTypeRef( model, binding.getParameter(), binding.getParameter(), binding.getParameter().getTypeRef() ),
                     compileExpression( ctx, model, node, binding.getParameter().getName(), binding.getExpression() ) );
         }
         return invEval;
@@ -227,7 +227,7 @@ public class DMNEvaluatorCompiler {
                 if ( ce.getVariable() != null ) {
                     String entryName = ce.getVariable().getName();
                     DMNCompilerHelper.checkVariableName( model, node.getSource(), entryName );
-                    DMNType entryType = compiler.resolveTypeRef( model, node, ce.getVariable(), ce.getVariable(), ce.getVariable().getTypeRef() );
+                    DMNType entryType = compiler.resolveTypeRef(model, ce.getVariable(), ce.getVariable(), ce.getVariable().getTypeRef());
                     // add context entry to the list of available variables for the following entries
                     ctx.setVariable( entryName, entryType );
                     DMNExpressionEvaluator evaluator = compileExpression( ctx, model, node, entryName, ce.getExpression() );
@@ -245,7 +245,7 @@ public class DMNEvaluatorCompiler {
                     DMNType type = null;
                     if ( ctxDef.getParent() instanceof ContextEntry && ((ContextEntry)ctxDef.getParent()).getVariable() != null ) {
                         ContextEntry parentEntry = (ContextEntry) ctxDef.getParent();
-                        type = compiler.resolveTypeRef( model, node, parentEntry.getVariable(), parentEntry.getVariable(), parentEntry.getVariable().getTypeRef() );
+                        type = compiler.resolveTypeRef(model, parentEntry.getVariable(), parentEntry.getVariable(), parentEntry.getVariable().getTypeRef());
                     } else if ( node instanceof BusinessKnowledgeModelNode ) {
                         type = ((BusinessKnowledgeModelNode) node).getResultType();
                     } else if ( node instanceof DecisionNode ) {
@@ -288,7 +288,7 @@ public class DMNEvaluatorCompiler {
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                 for ( InformationItem p : funcDef.getFormalParameter() ) {
                     DMNCompilerHelper.checkVariableName( model, p, p.getName() );
-                    DMNType dmnType = compiler.resolveTypeRef( model, node, p, p, p.getTypeRef() );
+                    DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
                     func.addParameter( p.getName(), dmnType );
                     ctx.setVariable( p.getName(), dmnType );
                 }
@@ -349,7 +349,7 @@ public class DMNEvaluatorCompiler {
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {
                             DMNCompilerHelper.checkVariableName( model, p, p.getName() );
-                            DMNType dmnType = compiler.resolveTypeRef( model, node, p, p, p.getTypeRef() );
+                            DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
                             func.addParameter( p.getName(), dmnType );
                             invoker.addParameter( p.getName(), dmnType, (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
                         }
