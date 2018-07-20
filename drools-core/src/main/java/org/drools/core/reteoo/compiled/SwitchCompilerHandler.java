@@ -38,7 +38,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
         final InternalReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
         fieldType = fieldExtractor.getExtractToClass();
 
-        if(canInlineValue()) {
+        if (canInlineValue()) {
             String switchVar = "switchVar";
             builder.append(fieldType.getCanonicalName())
                     .append(" ")
@@ -49,7 +49,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
                     .append(LOCAL_FACT_VAR_NAME)
                     .append(");").append(NEWLINE);
 
-            if(fieldType.isPrimitive()) {
+            if (fieldType.isPrimitive()) {
                 builder.append("if(true) {").append(NEWLINE);
             } else {
                 builder.append("if(switchVar != null) {").append(NEWLINE);
@@ -75,7 +75,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     }
 
     protected void generateSwitchCase(AlphaNode hashedAlpha, Object hashedValue) {
-        if(canInlineValue()) {
+        if (canInlineValue()) {
 
             final Object quotedHashedValue;
             if (hashedValue instanceof String) {
@@ -98,14 +98,14 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
 
     @Override
     public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-        if(canInlineValue()) {
+        if (canInlineValue()) {
             builder.append("else { ");
         }
     }
 
     @Override
     public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
-        if(canInlineValue()) {
+        if (canInlineValue()) {
             builder.append("}").append(NEWLINE);
         }
     }
