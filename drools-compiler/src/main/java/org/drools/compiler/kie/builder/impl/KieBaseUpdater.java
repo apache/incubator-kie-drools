@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
 public class KieBaseUpdater implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdater.class );
+    
+    public static final String ALPHA_NETWORK_COMPILER_OPTION = "drools.alphaNetworkCompiler";
 
     protected final KieBaseUpdateContext ctx;
 
@@ -97,13 +99,8 @@ public class KieBaseUpdater implements Runnable {
 
         final InternalKnowledgeBase kBase = ((KnowledgeBuilderImpl) kbuilder).getKnowledgeBase();
 
-        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty("drools.alphaNetworkCompiler");
-        final Boolean isAlphaNetworkEnabled;
-        if (configurationProperty != null) {
-            isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
-        } else {
-            isAlphaNetworkEnabled = false;
-        }
+        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
+        final Boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
 
         if (isAlphaNetworkEnabled) {
             kBase.getRete().getEntryPointNodes().values().stream()
