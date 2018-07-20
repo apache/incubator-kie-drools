@@ -53,16 +53,29 @@ public abstract class BaseModelTest {
         FLOW_WITH_ALPHA_NETWORK;
     }
 
+    final static Object[] PLAIN = {
+            RUN_TYPE.STANDARD_FROM_DRL,
+            FLOW_DSL,
+            PATTERN_DSL,
+    };
+
+    final static Object[] WITH_ALPHA_NETWORK = {
+            RUN_TYPE.STANDARD_FROM_DRL,
+            FLOW_DSL,
+            PATTERN_DSL,
+            STANDARD_WITH_ALPHA_NETWORK,
+            PATTERN_WITH_ALPHA_NETWORK,
+            FLOW_WITH_ALPHA_NETWORK,
+    };
+
+
     @Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{
-                BaseModelTest.RUN_TYPE.STANDARD_FROM_DRL,
-                FLOW_DSL,
-                PATTERN_DSL,
-                STANDARD_WITH_ALPHA_NETWORK,
-                PATTERN_WITH_ALPHA_NETWORK,
-                FLOW_WITH_ALPHA_NETWORK,
-         };
+        if(Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"))) {
+            return WITH_ALPHA_NETWORK;
+        } else {
+            return PLAIN;
+        }
     }
 
     protected final CompilerTest.RUN_TYPE testRunType;
