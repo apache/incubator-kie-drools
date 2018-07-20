@@ -16,20 +16,21 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.common.DisconnectedFactHandle;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.Context;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import java.util.Arrays;
+
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.DisconnectedFactHandle;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="update-command")
 @XmlAccessorType(XmlAccessType.NONE)

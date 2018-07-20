@@ -16,18 +16,9 @@
 
 package org.drools.core.command.runtime.process;
 
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.Context;
-import org.kie.internal.command.CorrelationKeyCommand;
-import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
-import org.kie.internal.process.CorrelationKey;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,9 +27,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.CorrelationKeyCommand;
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

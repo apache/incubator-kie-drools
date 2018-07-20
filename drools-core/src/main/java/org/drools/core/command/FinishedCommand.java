@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 
 public class FinishedCommand

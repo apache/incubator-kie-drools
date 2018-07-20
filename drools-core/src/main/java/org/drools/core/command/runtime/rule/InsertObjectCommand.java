@@ -16,24 +16,23 @@
 
 package org.drools.core.command.runtime.rule;
 
-
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.util.StringUtils;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.Context;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.util.StringUtils;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="insert-object-command")
 @XmlAccessorType(XmlAccessType.NONE)

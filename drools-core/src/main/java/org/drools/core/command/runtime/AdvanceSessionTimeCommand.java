@@ -17,18 +17,19 @@
 package org.drools.core.command.runtime;
 
 import java.util.concurrent.TimeUnit;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.kie.api.time.SessionPseudoClock;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.time.SessionPseudoClock;
 
 @XmlRootElement(name="advance-session-time")
 @XmlAccessorType(XmlAccessType.NONE)

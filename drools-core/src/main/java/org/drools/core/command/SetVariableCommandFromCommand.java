@@ -16,10 +16,10 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 
 public class SetVariableCommandFromCommand

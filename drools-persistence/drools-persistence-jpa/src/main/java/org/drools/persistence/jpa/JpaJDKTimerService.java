@@ -16,8 +16,11 @@
 
 package org.drools.persistence.jpa;
 
-import org.kie.api.runtime.ExecutableRunner;
-import org.drools.core.command.impl.ExecutableCommand;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -27,14 +30,11 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.TimerJobInstance;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutableRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A default Scheduler implementation that uses the
