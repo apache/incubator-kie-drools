@@ -11,6 +11,8 @@
   <logger name="org.drools.compiler.kie.builder.impl" level="ERROR" />
   <!--<logger name="org.drools.modelcompiler.builder.generator.expressiontyper" level="debug"/>-->
   <!--<logger name="org.drools.modelcompiler.builder" level="debug"/>-->
+  <!--<logger name="org.drools.compiler.reteoo.compiled" level="debug"/>-->
+
   <logger name="org.drools" level="info"/>
 
   <root level="warn">

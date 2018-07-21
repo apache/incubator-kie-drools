@@ -62,22 +62,10 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         return assignmentStatement;
     }
 
-    private String getContextVariableAssignmentStatement(AlphaNode alphaNode) {
-        String contextVariableName = getContextVariableName(alphaNode);
-        String alphaVariableName = getVariableName(alphaNode);
-        String assignmentStatement;
-
-        // we need the constraint for an alpha node assignment, so generate a cast, plus the method call to get
-        // the constraint
-        assignmentStatement = contextVariableName + " = " + alphaVariableName + ".createContextEntry();";
-
-        return assignmentStatement;
-    }
-
-
     @Override
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(SET_NETWORK_NODE_REFERENCE_SIGNATURE).append(NEWLINE);
+
         // we are switch based on the parameter's node ID
         builder.append("switch (").append(PARAM_NAME).append(".getId()) {").append(NEWLINE);
     }
@@ -99,7 +87,6 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
         builder.append("case ").append(alphaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(alphaNode, PARAM_NAME)).append(NEWLINE);
-        builder.append(getContextVariableAssignmentStatement(alphaNode)).append(NEWLINE);
         builder.append("break;").append(NEWLINE);
     }
 
@@ -112,6 +99,18 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
         builder.append("case ").append(betaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(betaNode, PARAM_NAME)).append(NEWLINE);
+        builder.append("break;").append(NEWLINE);
+    }
+
+    @Override
+    public void startWindowNode(WindowNode windowNode) {
+        // case statement for the window looks like the following
+        // case 65:
+        //      notNode65 = (NodeNode) node;
+        //      break;
+
+        builder.append("case ").append(windowNode.getId()).append(": ").append(NEWLINE);
+        builder.append(getVariableAssignmentStatement(windowNode, PARAM_NAME)).append(NEWLINE);
         builder.append("break;").append(NEWLINE);
     }
 

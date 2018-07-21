@@ -16,12 +16,14 @@
 
 package org.drools.core.reteoo.compiled;
 
-import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.IndexableConstraint;
 
 import java.util.*;
 
@@ -63,7 +65,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
         Class<?> variableType = getVariableType(alphaNode);
         String variableName = getVariableName(alphaNode);
         // comment for variable declaration is just the toString of the node
-        String comment = alphaNode.toString();
+        String comment = alphaNode.toString().replaceAll("\\n", "");
 
         return PRIVATE_MODIFIER + " " + variableType.getName() + " " + variableName + "; // " + comment;
     }
@@ -84,14 +86,13 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
         return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + variableName + "; // " + comment;
     }
 
-    private String getVariableDeclaration(ClassFieldReader fieldReader) {
+    private String getVariableDeclaration(String varName) {
         Class<?> declarationType = Map.class;
         Class<?> createType = HashMap.class;
-        String variableName = getVariableName(fieldReader);
 
         // todo JANINO doesn't support generics
         // return "private java.util.Map<Object,Integer> " + variableName + " = new java.util.HashMap<Object,Integer>();";
-        return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + variableName
+        return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + varName
                 + " = new " + createType.getName() + "();";
     }
 
@@ -111,21 +112,29 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     }
 
     @Override
+    public void startWindowNode(WindowNode windowNode) {
+        builder.append(getVariableDeclaration(windowNode)).append(NEWLINE);
+    }
+
+    @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         builder.append(getVariableDeclaration(leftInputAdapterNode)).append(NEWLINE);
     }
 
     @Override
-    public void startHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
+        final String variableName = getVariableName();
+
         // we create a new hashed alpha that will be used to keep track of the hashes values to node ID for each
         // class field reader.
-        currentHashedAlpha = new HashedAlphasDeclaration(getVariableName(hashedFieldReader),
-                hashedFieldReader.getValueType());
+        currentHashedAlpha = new HashedAlphasDeclaration(variableName,
+                                                         ValueType.STRING_TYPE);
 
         // add the new declaration
         hashedAlphaDeclarations.add(currentHashedAlpha);
 
-        builder.append(getVariableDeclaration(hashedFieldReader)).append(NEWLINE);
+        final String alphaMap = getVariableDeclaration(variableName);
+        builder.append(alphaMap).append(NEWLINE);
     }
 
     @Override

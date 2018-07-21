@@ -21,6 +21,8 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
+import org.drools.core.rule.IndexableConstraint;
 
 /**
  * An abstract adapter class for receiving network node events from the {@link org.kie.reteoo.compiled.ObjectTypeNodeParser}.
@@ -54,19 +56,27 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
 
     }
 
+    public void startWindowNode(WindowNode windowNode) {
+
+    }
+
+    public void endWindowNode(WindowNode windowNode) {
+
+    }
+
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
 
     }
 
-    public void endLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
+    public void endWindowNode(LeftInputAdapterNode leftInputAdapterNode) {
 
     }
 
-    public void startHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void startHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
 
     }
 
-    public void endHashedAlphaNodes(ClassFieldReader hashedFieldReader) {
+    public void endHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
 
     }
 
@@ -79,6 +89,15 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
     }
 
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
+
+    }
+
+    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
+
+    }
+
+    @Override
+    public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
 
     }
 }

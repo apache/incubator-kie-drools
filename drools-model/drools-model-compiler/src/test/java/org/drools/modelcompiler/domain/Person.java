@@ -30,6 +30,12 @@ public class Person extends AbstractReactiveObject {
         this.name = name;
     }
 
+
+    public Person(String name, BigDecimal money) {
+        this.name = name;
+        this.money = money;
+    }
+
     public Person(String name, int age) {
         this.name = name;
         this.age = age;

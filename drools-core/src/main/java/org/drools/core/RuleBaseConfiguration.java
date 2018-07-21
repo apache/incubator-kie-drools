@@ -479,7 +479,7 @@ public class RuleBaseConfiguration
         setSessionCacheOption(SessionCacheOption.determineOption(this.chainedProperties.getProperty(SessionCacheOption.PROPERTY_NAME, "none")));
 
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
-                                                                                          "false" ) ) );        
+                                                                                          "false" ) ) );
     }
 
     /**

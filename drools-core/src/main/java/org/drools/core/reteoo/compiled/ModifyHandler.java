@@ -26,7 +26,13 @@ import org.drools.core.rule.IndexableConstraint;
 /**
  * todo: document
  */
-public class AssertHandler extends SwitchCompilerHandler {
+public class ModifyHandler extends SwitchCompilerHandler {
+
+    private static final String ASSERT_METHOD_SIGNATURE = "public final void modifyObject("
+            + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
+            + MODIFY_PREVIOUS_TUPLE_NAME + " " + MODIFY_PREVIOUS_TUPLE_PARAM_NAME + ","
+            + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
+            + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
@@ -39,11 +45,11 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     private final String factClassName;
 
-    AssertHandler(StringBuilder builder, String factClassName) {
+    ModifyHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);
     }
 
-    public AssertHandler(StringBuilder builder, String factClassName, boolean alphaNetContainsHashedField) {
+    public ModifyHandler(StringBuilder builder, String factClassName, boolean alphaNetContainsHashedField) {
         super(builder);
         this.factClassName = factClassName;
         this.alphaNetContainsHashedField = alphaNetContainsHashedField;
@@ -66,25 +72,32 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startBetaNode(BetaNode betaNode) {
-        builder.append(getVariableName(betaNode)).append(".assertObject(").
+        builder.append(getVariableName(betaNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
     }
 
-
     @Override
     public void startWindowNode(WindowNode windowNode) {
-        builder.append(getVariableName(windowNode)).append(".assertObject(").
+        builder.append(getVariableName(windowNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    }
+
+    @Override
+    public void endWindowNode(WindowNode windowNode) {
+
     }
 
     @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-        builder.append(getVariableName(leftInputAdapterNode)).append(".assertObject(").
+        builder.append(getVariableName(leftInputAdapterNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
+                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
     }
@@ -120,7 +133,7 @@ public class AssertHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void endHashedAlphaNodes(IndexableConstraint indexableConstraint) {
+    public void endHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
         // close switch statement
         builder.append("}").append(NEWLINE);
         // and if statement for ensuring non-null

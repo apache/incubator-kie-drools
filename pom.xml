@@ -22,6 +22,7 @@
 
   <properties>
     <surefire.forkCount>1</surefire.forkCount>
+    <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
   </properties>
 
   <repositories>
