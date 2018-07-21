@@ -15,22 +15,37 @@
 
 package org.drools.compiler.reteoo.compiled;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.UUID;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.reteoo.compiled.DeclarationsHandler;
+import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
 import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
+import org.drools.core.reteoo.compiled.ModifyHandler;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.IoUtils;
-
-import java.util.Collection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * todo: document
@@ -56,15 +71,33 @@ public class ObjectTypeNodeCompiler {
 
     private StringBuilder builder = new StringBuilder();
 
+    private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
+
+
     private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
-        this.className = classObjectType.getClassName();
-        generatedClassSimpleName = "Compiled" + classObjectType.getClassName().replace('.', '_') + "Network";
+        this.className = classObjectType.getClassName().replace("$", ".");
+        final String classObjectTypeName = classObjectType.getClassName().replace('.', '_');
+        final String randomId = UUID.randomUUID().toString().replace("-", "");
+        generatedClassSimpleName = String.format("Compiled%sNetwork%d%s"
+                , classObjectTypeName
+                , objectTypeNode.getId()
+                , randomId);
     }
 
-    private String generateSource() {
+    public static class SourceGenerated {
+        public final String source;
+        public final IndexableConstraint indexableConstraint;
+
+        public SourceGenerated(String source, IndexableConstraint indexableConstraint) {
+            this.source = source;
+            this.indexableConstraint = indexableConstraint;
+        }
+    }
+
+    private SourceGenerated generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -86,10 +119,16 @@ public class ObjectTypeNodeCompiler {
         AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
         parser.accept(assertHandler);
 
+        ModifyHandler modifyHandler = new ModifyHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        parser.accept(modifyHandler);
+
+        DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
+        parser.accept(delegateMethodsHandler);
+
         // end of class
         builder.append("}").append(NEWLINE);
 
-        return builder.toString();
+        return new SourceGenerated(builder.toString(), parser.getIndexableConstraint());
     }
 
     /**
@@ -99,6 +138,8 @@ public class ObjectTypeNodeCompiler {
         builder.append("package ").append(PACKAGE_NAME).append(";").append(NEWLINE);
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
+
+        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
     /**
@@ -110,24 +151,40 @@ public class ObjectTypeNodeCompiler {
      *                                maps for the generate class
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
-        builder.append("public ").append(generatedClassSimpleName).append("() {").append(NEWLINE);
+        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
 
+
+        builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
         for (HashedAlphasDeclaration declaration : hashedAlphaDeclarations) {
             String mapVariableName = declaration.getVariableName();
 
             for (Object hashedValue : declaration.getHashedValues()) {
                 Object value = hashedValue;
-                // need to quote value if it is a string
-                if (declaration.getValueType() == ValueType.STRING_TYPE) {
-                    value = "\"" + value + "\"";
+
+                if (value == null) {
+                    // generate the map.put(hashedValue, nodeId) call
+                    String nodeId = declaration.getNodeId(hashedValue);
+
+                    builder.append(mapVariableName).append(".put(null,").append(nodeId).append(");");
+                    builder.append(NEWLINE);
+                } else {
+
+                    // need to quote value if it is a string
+                    if (value.getClass().equals(String.class)) {
+                        value = "\"" + value + "\"";
+                    } else if (value instanceof BigDecimal) {
+                        value = "new java.math.BigDecimal(\"" + value + "\")";
+                    } else if (value instanceof BigInteger) {
+                        value = "new java.math.BigInteger(\"" + value + "\")";
+                    }
+
+                    String nodeId = declaration.getNodeId(hashedValue);
+
+                    // generate the map.put(hashedValue, nodeId) call
+                    builder.append(mapVariableName).append(".put(").append(value).append(", ").append(nodeId).append(");");
+                    builder.append(NEWLINE);
                 }
-
-                String nodeId = declaration.getNodeId(hashedValue);
-
-                // generate the map.put(hashedValue, nodeId) call
-                builder.append(mapVariableName).append(".put(").append(value).append(", ").append(nodeId).append(");");
-                builder.append(NEWLINE);
             }
         }
 
@@ -149,12 +206,23 @@ public class ObjectTypeNodeCompiler {
      * @return binary name of generated class
      */
     private String getBinaryName() {
-        return BINARY_PACKAGE_NAME + "." + generatedClassSimpleName + ".class";
+        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".class";
+    }
+
+    /**
+     * Returns the fully qualified source name of the generated subclass of {@link CompiledNetwork}
+     *
+     * @return binary name of generated class
+     */
+    private String getSourceName() {
+        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".java";
     }
 
     private String getPackageName() {
         return PACKAGE_NAME;
     }
+
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
 
     /**
      * Creates a {@link CompiledNetwork} for the specified {@link ObjectTypeNode}. The {@link PackageBuilder} is used
@@ -181,22 +249,29 @@ public class ObjectTypeNodeCompiler {
             pkgReg = kBuilder.getPackageRegistry(packageName);
         }
 
-        String source = compiler.generateSource();
-        String generatedSourceName = compiler.getName();
+        SourceGenerated source = compiler.generateSource();
 
-        JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("java");
-        dialect.addSrc(compiler.getBinaryName(), source.getBytes(IoUtils.UTF8_CHARSET));
-        kBuilder.compileAll();
-        kBuilder.updateResults();
+        logger.debug("Generated alpha node compiled network source:\n" + source.source);
+
+        MemoryFileSystem mfs = new MemoryFileSystem();
+        mfs.write(compiler.getSourceName(), source.source.getBytes(IoUtils.UTF8_CHARSET));
+
+        MemoryFileSystem trg = new MemoryFileSystem();
+        ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
+        CompilationResult compiled = JAVA_COMPILER.compile(new String[]{compiler.getSourceName()}, mfs, trg, rootClassLoader);
+
+        if (compiled.getErrors().length > 0) {
+            throw new RuntimeException("This is a bug. Please contact the development team:\n" + Arrays.toString(compiled.getErrors()));
+        }
+
+        rootClassLoader.defineClass(compiler.getName(), trg.getBytes(compiler.getBinaryName()));
 
         CompiledNetwork network;
         try {
-            network = (CompiledNetwork) Class.forName(generatedSourceName, true, kBuilder.getRootClassLoader()).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        } catch (InstantiationException e) {
+            final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
+            final IndexableConstraint indexableConstraint = source.indexableConstraint;
+            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
+        } catch (Exception e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         }
 

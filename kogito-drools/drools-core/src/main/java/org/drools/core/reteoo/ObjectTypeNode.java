@@ -265,6 +265,10 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.isAssignableFrom(objectType);
     }
 
+    public CompiledNetwork getCompiledNetwork() {
+        return this.compiledNetwork;
+    }
+
     public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
         this.compiledNetwork = compiledNetwork;
 

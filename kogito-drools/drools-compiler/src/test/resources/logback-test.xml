@@ -11,6 +11,7 @@
   <logger name="org.drools" level="info"/>
   
   <logger name="org.drools.core.management" level="debug"/>
+  <!--<logger name="org.drools.compiler.reteoo.compiled" level="debug"/>-->
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

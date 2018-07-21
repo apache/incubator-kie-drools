@@ -16,18 +16,17 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
@@ -68,13 +67,11 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
     }
 
-    private static void generateKieModuleForCanonicalModel(final KieBuilder kieBuilder ) {
-        final KieServices ks = KieServices.get();
-        final ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        final InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
-        final File kjarFile = FileUtil.bytesToTempKJARFile(releaseId, kieModule.getBytes(), ".jar" );
-        final KieModule zipKieModule = new CanonicalKieModule(releaseId, KieUtil.getDefaultKieModuleModel(ks ), kjarFile );
-        ks.getRepository().addKieModule( zipKieModule );
+    private static void generateKieModuleForCanonicalModel(KieBuilder kieBuilder) {
+        KieServices ks = KieServices.get();
+        InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
+
+        ks.getRepository().addKieModule( kieModule );
     }
 
     public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -125,5 +122,11 @@ public final class KieBaseUtil {
 
     private KieBaseUtil() {
         // Creating instances of util classes should not be possible.
+    }
+
+    public static KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
+        KieModuleModel kproj = KieServices.get().newKieModuleModel();
+        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
+        return kproj;
     }
 }

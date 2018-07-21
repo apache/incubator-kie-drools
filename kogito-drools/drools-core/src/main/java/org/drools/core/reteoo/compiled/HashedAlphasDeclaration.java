@@ -53,7 +53,7 @@ public class HashedAlphasDeclaration {
     }
 
     void add(Object hashedValue, String nodeId) {
-        hashedValuesToNodeIds.put(hashedValue,  nodeId);
+        hashedValuesToNodeIds.put(hashedValue, nodeId);
     }
 
     public Collection<Object> getHashedValues() {

@@ -49,7 +49,7 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         super(enforcedJitting, serializeKieBase, sharedKieBase, false);
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test1() throws InterruptedException {
         final String drl = "rule R when String() then end";
 
@@ -59,13 +59,13 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drl );
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test2NoSubnetwork() throws InterruptedException {
         test2(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test2WithSubnetwork() throws InterruptedException {
         test2(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
@@ -95,19 +95,19 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drls );
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test3NoSubnetwork() throws InterruptedException {
         test3(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test3WithSubnetwork() throws InterruptedException {
         test3(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 40000)
     public void test3WithSharedSubnetwork() throws InterruptedException {
         final String ruleTemplate = "import " + Product.class.getCanonicalName() + ";\n" +
                 "rule ${ruleName} when\n" +

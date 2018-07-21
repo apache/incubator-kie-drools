@@ -46,7 +46,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         super(enforcedJitting, serializeKieBase, false, false);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNoExceptions() throws InterruptedException {
         final String drl = "rule R1 when String() then end";
 
