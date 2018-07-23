@@ -93,9 +93,12 @@ public class LocalTaskAuditWithDeadlineTest extends HumanTaskServicesBaseTest {
     
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
         Task task = (InternalTask) TaskFactory.evalTask(reader, vars);
-        taskService.addTask(task, new HashMap<String, Object>());
+
+        Map<String, Object> inputVars = new HashMap<String, Object>();
+        inputVars.put("NotCompletedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[500ms]");
+        taskService.addTask(task, inputVars);
         long taskId = task.getId();
-        
+
         taskService.claim(taskId, "Tony Stark");
     
         task = taskService.getTaskById(taskId);

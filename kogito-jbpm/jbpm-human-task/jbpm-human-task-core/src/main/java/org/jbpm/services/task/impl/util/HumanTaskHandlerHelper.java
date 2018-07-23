@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.task.wih.util;
+package org.jbpm.services.task.impl.util;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +25,6 @@ import java.util.Map;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -56,11 +55,11 @@ public class HumanTaskHandlerHelper {
 	
 	private static final String[] KNOWN_KEYS = {"users", "groups", "from", "tousers", "togroups", "replyto", "subject","body"}; 
 	
-	public static Deadlines setDeadlines(WorkItem workItem, List<OrganizationalEntity> businessAdministrators, Environment environment) {
-		String notStartedReassign = (String) workItem.getParameter("NotStartedReassign");
-		String notStartedNotify = (String) workItem.getParameter("NotStartedNotify");
-		String notCompletedReassign = (String) workItem.getParameter("NotCompletedReassign");
-		String notCompletedNotify = (String) workItem.getParameter("NotCompletedNotify");
+	public static Deadlines setDeadlines(Map<String, Object> parameters, List<OrganizationalEntity> businessAdministrators, Environment environment) {
+		String notStartedReassign = (String) parameters.get("NotStartedReassign");
+		String notStartedNotify = (String) parameters.get("NotStartedNotify");
+		String notCompletedReassign = (String) parameters.get("NotCompletedReassign");
+		String notCompletedNotify = (String) parameters.get("NotCompletedNotify");
 		
 
 	    Deadlines deadlinesTotal = TaskModelProvider.getFactory().newDeadlines();
@@ -68,7 +67,6 @@ public class HumanTaskHandlerHelper {
 	    List<Deadline> startDeadlines = new ArrayList<Deadline>();
 	    startDeadlines.addAll(parseDeadlineString(notStartedNotify, businessAdministrators, environment));
 	    startDeadlines.addAll(parseDeadlineString(notStartedReassign, businessAdministrators, environment));
-	    
 	    List<Deadline> endDeadlines = new ArrayList<Deadline>();
 	    endDeadlines.addAll(parseDeadlineString(notCompletedNotify, businessAdministrators, environment));
 	    endDeadlines.addAll(parseDeadlineString(notCompletedReassign, businessAdministrators, environment));

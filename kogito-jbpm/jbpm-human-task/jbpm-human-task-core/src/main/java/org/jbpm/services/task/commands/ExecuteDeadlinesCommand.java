@@ -20,6 +20,7 @@ import org.jbpm.services.task.assignment.AssignmentService;
 import org.jbpm.services.task.assignment.AssignmentServiceProvider;
 import org.jbpm.services.task.deadlines.notifications.impl.NotificationListenerManager;
 import org.jbpm.services.task.events.TaskEventSupport;
+import org.jbpm.services.task.impl.util.DeadlineSchedulerHelper;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
@@ -35,6 +36,7 @@ import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Escalation;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.NotificationEvent;
@@ -150,7 +152,7 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	                        if (assignmentService.isEnabled()) {
 	                            assignmentService.assignTask(task, ctx);
 	                        }
-	
+
 	                        taskEventSupport.fireAfterTaskReassigned(task, ctx);
 	                    }
 	                    for (Notification notification : escalation.getNotifications()) {
@@ -171,6 +173,7 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	        deadline.setEscalated(true);
 	        persistenceContext.updateDeadline(deadline);
 	        persistenceContext.updateTask(task);
+            DeadlineSchedulerHelper.rescheduleDeadlinesForTask((InternalTask) task, ctx, type);
         } catch (Exception e) {
 
         	logger.error("Error when executing deadlines", e);

@@ -263,4 +263,10 @@ public abstract class HumanTaskServicesBaseTest {
             ((EventService<TaskLifeCycleEventListener>) taskService).registerTaskEventListener(countDownListener);
         }
     }
+
+    protected void removeCountDownListner(CountDownTaskEventListener countDownListener) {
+        if (taskService instanceof EventService) {
+            ((EventService<TaskLifeCycleEventListener>) taskService).removeTaskEventListener(countDownListener);
+        }
+    }
 }
