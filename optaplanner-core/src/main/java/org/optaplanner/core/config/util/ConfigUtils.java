@@ -265,6 +265,11 @@ public class ConfigUtils {
     public static int resolveThreadPoolSizeScript(String propertyName, String script, String... magicValues) {
         final String scriptLanguage = "JavaScript";
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
+        if (scriptEngine == null) {
+            throw new IllegalStateException("The " + propertyName + " (" + script
+                    + ") could not resolve because the JVM doesn't support scriptLanguage (" + scriptLanguage + ").\n"
+                    + "  Maybe try running in a normal JVM.");
+        }
         scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
         Object scriptResult;
         try {
