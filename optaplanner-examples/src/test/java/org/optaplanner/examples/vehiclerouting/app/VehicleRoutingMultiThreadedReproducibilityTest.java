@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
  * a constant number of steps, every iteration must finish with the same score.
- * */
-public class VehicleRoutingMultithreadedReproducibilityTest extends AbstractTurtleTest {
+ */
+public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurtleTest {
 
     private static final int REPETITION_COUNT = 10;
 
@@ -49,12 +49,10 @@ public class VehicleRoutingMultithreadedReproducibilityTest extends AbstractTurt
 
         solverFactory = SolverFactory.createFromXmlResource(vehicleRoutingApp.getSolverConfig());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setStepCountLimit(STEP_LIMIT);
 
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {
             if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-                phaseConfig.setTerminationConfig(terminationConfig);
+                phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(STEP_LIMIT));
             }
         });
         solverConfig.setMoveThreadCount(MOVE_THREAD_COUNT);
@@ -62,7 +60,7 @@ public class VehicleRoutingMultithreadedReproducibilityTest extends AbstractTurt
     }
 
     @Test
-    public void testMultithreadedSolvingIsReproducible() {
+    public void multiThreadedSolvingIsReproducible() {
         IntStream.range(0, REPETITION_COUNT).forEach(iteration -> solveAndCompareWithPrevious(iteration));
     }
 

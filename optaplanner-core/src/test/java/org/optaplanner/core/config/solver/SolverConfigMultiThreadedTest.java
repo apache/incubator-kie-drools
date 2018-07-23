@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -21,13 +22,13 @@ import static org.mockito.Mockito.when;
 public class SolverConfigMultiThreadedTest {
 
     @Test
-    public void testMoveThreadCountAutoPositive() {
+    public void moveThreadCountAutoIsCorrectlyResolvedWhenCpuCountIsPositive() {
         final int cpuCount = 16;
         assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount()).isEqualTo(cpuCount - 2);
     }
 
     @Test
-    public void testMoveThreadCountAutoNegative() {
+    public void moveThreadCountAutoIsResolvedToNullWhenCpuCountIsNegative() {
         final int cpuCount = -2;
         assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount()).isNull();
     }
@@ -40,33 +41,34 @@ public class SolverConfigMultiThreadedTest {
     }
 
     @Test
-    public void testMoveThreadCountFixedPositive() {
+    public void moveThreadCountIsCorrectlyResolvedWhenValueIsPositive() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount("2");
         assertThat(solverConfig.resolveMoveThreadCount()).isEqualTo(2);
     }
 
     @Test
-    public void testMoveThreadCountFixedNegative() {
+    public void moveThreadCountThrowsExceptionWhenValueIsNegative() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount("-6");
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> solverConfig.resolveMoveThreadCount());
     }
 
     @Test
-    public void testMoveThreadCountNone() {
+    public void moveThreadCountIsResolvedToNullWhenValueIsNone() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
         assertThat(solverConfig.resolveMoveThreadCount()).isNull();
     }
 
     @Test(timeout = 5000L)
-    public void testSolvingWithTooHighThreadCount() {
+    public void solvingWithTooHighThreadCountFinishes() {
         runSolvingAndVerifySolution(10, 20, "256");
     }
 
+    @Ignore("PLANNER-1180")
     @Test(timeout = 5000L)
-    public void testSmallProblemMultithreadedSolving() {
+    public void solvingOfVerySmallProblemFinishes() {
         runSolvingAndVerifySolution(1, 1, "2");
     }
 
@@ -103,7 +105,7 @@ public class SolverConfigMultiThreadedTest {
     }
 
     @Test(timeout = 5000L)
-    public void testThreadFactoryClassUsage() {
+    public void customThreadFactoryClassIsUsed() {
         SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataSolution.class, TestdataEntity.class);
         solverFactory.getSolverConfig().setThreadFactoryClass(TestThreadFactory.class);

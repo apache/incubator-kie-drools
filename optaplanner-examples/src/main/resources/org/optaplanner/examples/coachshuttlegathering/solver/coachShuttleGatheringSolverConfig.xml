@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
-  <!-- To solve faster by saturating multiple CPU cores. Use value "AUTO" to let OptaPlanner calculate optimal
-     move thread count.-->
-  <moveThreadCount>2</moveThreadCount>
+  <moveThreadCount>AUTO</moveThreadCount><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution</solutionClass>
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop</entityClass>

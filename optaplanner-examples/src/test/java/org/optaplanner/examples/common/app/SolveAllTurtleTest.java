@@ -34,6 +34,8 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 @RunWith(Parameterized.class)
 public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
+    private static final int MOVE_THREAD_COUNT = 2;
+
     private final String solverConfig;
 
     public SolveAllTurtleTest(String solverConfig) {
@@ -61,6 +63,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
+        solverConfig.setMoveThreadCount(String.valueOf(MOVE_THREAD_COUNT));
         Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = overwritingEasyScoreCalculatorClass();
         if (easyScoreCalculatorClass != null && environmentMode.isAsserted()) {
             ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
