@@ -52,7 +52,6 @@ import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
-import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
@@ -200,8 +199,8 @@ public class DMNModelImpl
         return inputs;
     }
 
-    public void addDecisionService(DecisionServiceNodeImpl dsni) {
-        decisionServices.put(computeDRGElementModelLocalId(dsni), dsni);
+    public void addDecisionService(DecisionServiceNode dsn) {
+        decisionServices.put(computeDRGElementModelLocalId(dsn), dsn);
     }
 
     public DecisionServiceNode getDecisionServiceById(String id) {
@@ -220,7 +219,8 @@ public class DMNModelImpl
         return null;
     }
 
-    public Set<DecisionServiceNode> getDecisionServices() {
+    @Override
+    public Collection<DecisionServiceNode> getDecisionServices() {
         return this.decisionServices.values().stream().collect(Collectors.toSet());
     }
 

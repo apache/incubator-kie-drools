@@ -218,8 +218,8 @@ public class DMNCompilerImpl
         for (DecisionNode dn : m.getDecisions()) {
             model.addDecision(dn);
         }
-        for (DecisionServiceNode dsn : ((DMNModelImpl) m).getDecisionServices()) {
-            model.addDecisionService((DecisionServiceNodeImpl) dsn);
+        for (DecisionServiceNode dsn : m.getDecisionServices()) {
+            model.addDecisionService(dsn);
         }
     }
 
