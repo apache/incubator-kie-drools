@@ -690,11 +690,11 @@ extend the `TerminationConfig` class and configure it in the solver configuratio
 
 [source,xml,options="nowrap"]
 ----
-  <solver>
-    <termination class="...MyTerminationConfig">
-      <myProperty>myValue</myProperty>
-    </termination>
-  </solver>
+<solver>
+  <termination class="...MyTerminationConfig">
+    <myProperty>myValue</myProperty>
+  </termination>
+</solver>
 ----
 
 [NOTE]
