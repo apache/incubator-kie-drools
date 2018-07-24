@@ -676,17 +676,39 @@ but it is useful in some use cases with a very erratic score landscape.
 [[customTerminationSelectorOrAcceptor]]
 == Using a Custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor
 
-You can plug in a custom ``Termination``, ``MoveSelector``, ``EntitySelector``, `ValueSelector` or `Acceptor` by extending the abstract class and also the related `\*Config` class.
+Plug in a custom ``Termination``, ``MoveSelector``, ``EntitySelector``, `ValueSelector` or `Acceptor`
+by extending the abstract class and also the related `\*Config` class.
 
-For example, to use a custom ``MoveSelector``, extend the `AbstractMoveSelector` class, extend the `MoveSelectorConfig` class and configure it in the solver configuration.
+[IMPORTANT]
+====
+Extending `Config` classes is not covered by the backwards compatbility gaurantee.
+Whenever possible, it's better to just use <<customPropertiesConfiguration,custom properties>> instead.
+====
+
+For example, to use a custom ``Termination``, extend the `AbstractTermination` class,
+extend the `TerminationConfig` class and configure it in the solver configuration.
+
+[source,xml,options="nowrap"]
+----
+  <solver>
+    <termination class="...MyTerminationConfig">
+      <myProperty>myValue</myProperty>
+    </termination>
+  </solver>
+----
 
 [NOTE]
 ====
 It's not possible to inject a ``Termination``, ... instance directly (to avoid extending a `Config` class too) because:
 
 * A `SolverFactory` can build multiple `Solver` instances, which each require a distinct ``Termination``, ... instance.
-* A solver configuration needs to be serializable to and from XML. This makes benchmarking with `PlannerBenchmark` particularly easy because you can configure different `Solver` variants in XML.
-* A `Config` class is often easier and clearer to configure. For example: `TerminationConfig` translates `minutesSpentLimit` and `secondsSpentLimit` into ``timeMillisSpentLimit``.
+* A solver configuration needs to be serializable from and to XML.
+This makes benchmarking with `PlannerBenchmark` particularly easy because you can configure different `Solver` variants in XML.
+* A `Config` class is often easier and clearer to configure.
+For example: `TerminationConfig` translates `minutesSpentLimit` and `secondsSpentLimit` into ``timeMillisSpentLimit``.
 ====
 
-If you build a better implementation that's not domain specific, consider contributing it back as a pull request on github: we'll optimize it and take it along in future refactorings.
+If you write a custom implementation of any of those classes,
+let us know _why_ on https://groups.google.com/forum/#!forum/optaplanner-dev[our forum].
+If it's not domain specific, you might want to consider contributing it back as a pull request on github:
+we'll optimize it and take it along in future refactorings.

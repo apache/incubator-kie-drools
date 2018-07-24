@@ -278,8 +278,10 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 ====
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
-The built-in implementations of these should be sufficient, however a custom `Termination` can also be used.
-Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
+The built-in implementations of these should be sufficient,
+but <<customTerminationSelectorOrAcceptor,custom terminations>> are supported too.
+Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms),
+which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
 
 
 [[timeMillisSpentTermination]]
