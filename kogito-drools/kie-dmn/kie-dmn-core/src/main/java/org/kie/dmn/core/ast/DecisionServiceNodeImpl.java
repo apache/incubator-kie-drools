@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,9 +66,12 @@ public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServ
         return getResultType();
     }
 
+    /**
+     * Will always return an empty collection, a Decision Service has no dependency.
+     */
     @Override
     public Map<String, DMNNode> getDependencies() {
-        throw new UnsupportedOperationException("A Decision Service has no dependency");
+        return Collections.emptyMap();
     }
 
     @Override

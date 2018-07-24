@@ -218,6 +218,9 @@ public class DMNCompilerImpl
         for (DecisionNode dn : m.getDecisions()) {
             model.addDecision(dn);
         }
+        for (DecisionServiceNode dsn : m.getDecisionServices()) {
+            model.addDecisionService(dsn);
+        }
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
@@ -278,7 +281,9 @@ public class DMNCompilerImpl
             for (DecisionServiceNode ds : model.getDecisionServices()) {
                 DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
                 dsi.addModelImportAliases(model.getImportAliasesForNS());
-                compiler.compileEvaluator(dsi, this, ctx, model);
+                if (dsi.getEvaluator() == null && compiler.accept(dsi)) { // will compile in fact all DS belonging to this model (not the imported ones).
+                    compiler.compileEvaluator(dsi, this, ctx, model);
+                }
             }
         }
 
