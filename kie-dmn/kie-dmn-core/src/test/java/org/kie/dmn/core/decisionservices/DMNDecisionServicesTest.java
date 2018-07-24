@@ -426,4 +426,88 @@ public class DMNDecisionServicesTest {
             assertNull(System.getProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
         }
     }
+
+    @Test
+    public void testImportDS() {
+        // DROOLS-2768 DMN Decision Service encapsulate Decision which imports a Decision Service
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DecisionService20180718.dmn", this.getClass(), "ImportDecisionService20180718.dmn");
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1", "Import Decision Service 20180718");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        testImportDS_testEvaluateAll(runtime, dmnModel);
+        testImportDS_testEvaluateDS(runtime, dmnModel);
+    }
+
+    private void testImportDS_testEvaluateAll(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("L1 person name", "L1 Import John");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("invoke imported DS"), is("Hello, L1 Import John; you are allowed"));
+        assertThat(result.get("Prefixing"), is("Hello, L1 Import John"));
+        assertThat(result.get("final Import L1 decision"), is("Hello, L1 Import John the result of invoking the imported DS is: Hello, L1 Import John; you are allowed"));
+    }
+
+    private void testImportDS_testEvaluateDS(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("L1 person name", "L1 Import Evaluate DS NAME");
+
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Import L1 DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.getAll(), not(hasEntry(is("invoke imported DS"), anything()))); // Decision Service will encapsulate this decision
+        assertThat(result.getAll(), not(hasEntry(is("Prefixing"), anything()))); // Decision Service will encapsulate this decision
+        assertThat(result.get("final Import L1 decision"), is("Hello, L1 Import Evaluate DS NAME the result of invoking the imported DS is: Hello, L1 Import Evaluate DS NAME; you are allowed"));
+    }
+
+    @Test
+    public void testTransitiveImportDS() {
+        // DROOLS-2768 DMN Decision Service encapsulate Decision which imports a Decision Service   
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DecisionService20180718.dmn", this.getClass(),
+                                                                                 "ImportDecisionService20180718.dmn",
+                                                                                 "ImportofImportDecisionService20180718.dmn");
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6698dc07-cc43-47ec-8187-8faa7d8c35ba", "Import of Import Decision Service 20180718");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        testTransitiveImportDS_testEvaluateAll(runtime, dmnModel);
+        testTransitiveImportDS_testEvaluateDS(runtime, dmnModel);
+    }
+
+    private void testTransitiveImportDS_testEvaluateAll(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("L2 Person name", "L2 Bob");
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("L2 Invoking the L1 import"), is("Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed"));
+        assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob the result of invoking the imported DS is: Hello, L2 Bob; you are allowed"));
+    }
+
+    private void testTransitiveImportDS_testEvaluateDS(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("L2 Person name", "L2 Bob DS");
+
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "L2 DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.getAll(), not(hasEntry(is("L2 Invoking the L1 import"), anything()))); // Decision Service will encapsulate this decision
+        assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed"));
+    }
 }

@@ -57,6 +57,10 @@ public class DecisionServiceCompiler {
         model.addDecisionService(bkmn);
     }
 
+    public boolean accept(DMNNode node) {
+        return node instanceof DecisionServiceNodeImpl;
+    }
+
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
 
