@@ -32,11 +32,10 @@ import org.appformer.maven.integration.DependencyDescriptor;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.eclipse.aether.artifact.Artifact;
@@ -396,12 +395,18 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
                 Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
-                log.debug( artifact + " resolved to  " + artifact.getFile() );
-                if (isKJar(artifact.getFile())) {
-                    depsMap.put(adapt( dep.getReleaseIdWithoutVersion() ), new DependencyDescriptor(artifact));
+                if (artifact != null) {
+                    if ( log.isDebugEnabled() ) {
+                        log.debug( artifact + " resolved to  " + artifact.getFile() );
+                    }
+                    if ( isKJar( artifact.getFile() ) ) {
+                        depsMap.put( adapt( dep.getReleaseIdWithoutVersion() ), new DependencyDescriptor( artifact ) );
+                    }
                 }
             } else {
-                log.debug("{} does not need to be resolved because in scope {}", dep, dep.getScope());
+                if (log.isDebugEnabled()) {
+                    log.debug( "{} does not need to be resolved because in scope {}", dep, dep.getScope() );
+                }
             }
         }
         return depsMap;
