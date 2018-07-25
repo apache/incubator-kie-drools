@@ -100,11 +100,11 @@ public class PersistableRunner implements SingleSessionCommandService {
         checkEnvironment( this.env );
 
         initTransactionManager( this.env );
-        
+
         initNewKnowledgeSession(kbase, conf);
 
         // Use the App scoped EntityManager if the user has provided it, and it is open.
-        // - open the entity manager before the transaction begins. 
+        // - open the entity manager before the transaction begins.
         PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
         boolean transactionOwner = false;
         try {
@@ -130,17 +130,17 @@ public class PersistableRunner implements SingleSessionCommandService {
         ((InternalKnowledgeRuntime) ksession).setIdentifier( this.sessionInfo.getId());
     }
 
-    protected void initNewKnowledgeSession(KieBase kbase, KieSessionConfiguration conf) { 
+    protected void initNewKnowledgeSession(KieBase kbase, KieSessionConfiguration conf) {
         this.sessionInfo = new SessionInfo();
 
         // create session but bypass command service
         this.ksession = kbase.newKieSession( conf,
                                              this.env );
-        
+
         initKieSessionMBeans(this.ksession);
-        
+
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
-        
+
         MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
         config.setMarshallProcessInstances( false );
         config.setMarshallWorkItems( false );
@@ -163,7 +163,7 @@ public class PersistableRunner implements SingleSessionCommandService {
         // DROOLS-1322
         statefulKnowledgeSessionImpl.initMBeans(internalKnowledgeBase.getContainerId(), internalKnowledgeBase.getId(), "persistent");
     }
-    
+
     public PersistableRunner( Long sessionId,
                               KieBase kbase,
                               KieSessionConfiguration conf,
@@ -178,7 +178,7 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         initTransactionManager( this.env );
 
-        // Open the entity manager before the transaction begins. 
+        // Open the entity manager before the transaction begins.
         PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
 
         boolean transactionOwner = false;
@@ -262,7 +262,7 @@ public class PersistableRunner implements SingleSessionCommandService {
         while (iterator.hasNext()) {
             addInterceptor(iterator.next(), false);
         }
-        
+
         initKieSessionMBeans(this.ksession);
     }
 
@@ -435,9 +435,9 @@ public class PersistableRunner implements SingleSessionCommandService {
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-            
+
             persistenceContext.joinTransaction();
-            
+
             initExistingKnowledgeSession( this.sessionInfo.getId(),
                     this.marshallingHelper.getKbase(),
                     this.marshallingHelper.getConf(),
@@ -461,6 +461,15 @@ public class PersistableRunner implements SingleSessionCommandService {
     }
 
     private void registerRollbackSync() {
+        if (txm != null) {
+            ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+
+            for (ObjectMarshallingStrategy strategy : strategies) {
+                if (strategy instanceof TransactionAware) {
+                    ((TransactionAware) strategy).onStart(txm);
+                }
+            }
+        }
         TransactionManagerHelper.registerTransactionSyncInContainer(this.txm, new SynchronizationImpl( this ));
     }
 
@@ -500,7 +509,7 @@ public class PersistableRunner implements SingleSessionCommandService {
                 if ( internalProcessRuntime != null ) {
                     if (this.service.doRollback) {
                         internalProcessRuntime.clearProcessInstancesState();
-                    } 
+                    }
 
                     internalProcessRuntime.clearProcessInstances();
                 }
@@ -580,16 +589,6 @@ public class PersistableRunner implements SingleSessionCommandService {
                 jpm.beginCommandScopedEntityManager();
 
                 registerRollbackSync();
-
-                if (txm != null) {
-                    ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
-
-                    for (ObjectMarshallingStrategy strategy : strategies) {
-                        if (strategy instanceof TransactionAware) {
-                            ((TransactionAware) strategy).onStart(txm);
-                        }
-                    }
-                }
 
                 executeNext(executable, context);
 
