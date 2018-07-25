@@ -52,6 +52,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This is a sample class to launch a rule.
@@ -575,5 +576,22 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         int count = ksession.fireAllRules();
 
         assertEquals( 1, count );
+    }
+
+    @Test
+    public void testVeyifyNotExistingKieBase() throws Exception {
+        // DROOLS-2757
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        try {
+            kieContainer.verify( "notexistingKB" );
+            fail("Verifying a not existing KieBase should throw a RuntimeException");
+        } catch (RuntimeException e) {
+            assertTrue( e.getMessage().contains( "notexistingKB" ) );
+        }
     }
 }
