@@ -499,7 +499,7 @@ public class PatternDSL extends DSL {
         }
 
         public String[] getReactOn() {
-            return reactOn != null ? reactOn.getStrings() : new String[0];
+            return reactOn != null ? reactOn.getStrings() : null;
         }
 
         public abstract Constraint asConstraint( PatternDefImpl patternDef );

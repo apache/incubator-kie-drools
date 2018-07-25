@@ -125,6 +125,7 @@ public class ModelGenerator {
         TypeResolver typeResolver = pkg.getTypeResolver();
         packageModel.addImports(pkg.getImports().keySet());
         packageModel.addStaticImports(pkg.getStaticImports());
+        packageModel.addEntryPoints(packageDescr.getEntryPointDeclarations());
         packageModel.addGlobals(pkg.getGlobals());
         packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage(pkg);

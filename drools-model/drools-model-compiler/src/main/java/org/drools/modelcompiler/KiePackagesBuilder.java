@@ -165,6 +165,11 @@ public class KiePackagesBuilder {
 
     public CanonicalKiePackages build() {
         for (Model model : models) {
+            for (EntryPoint entryPoint : model.getEntryPoints()) {
+                KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( model.getName(), this::createKiePackage );
+                pkg.addEntryPointId( entryPoint.getName() );
+            }
+
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
                 pkg.addTypeDeclaration( createTypeDeclaration( pkg, metaType ) );
@@ -780,6 +785,11 @@ public class KiePackagesBuilder {
         Variable<T> variable = declarationOf( window.getPatternType() );
         Pattern windowPattern = new Pattern(0, getClassObjectType( window.getPatternType() ), variable.getName() );
         windowDeclaration.setPattern( windowPattern );
+
+        if (window.getEntryPoint() != null) {
+            windowPattern.setSource( new EntryPointId( window.getEntryPoint().getName() ) );
+        }
+
         for ( Predicate1<T> predicate : window.getPredicates()) {
             SingleConstraint singleConstraint = new SingleConstraint1<>( generateName("expr"), variable, predicate );
             ConstraintEvaluator constraintEvaluator = new ConstraintEvaluator( windowPattern, singleConstraint );

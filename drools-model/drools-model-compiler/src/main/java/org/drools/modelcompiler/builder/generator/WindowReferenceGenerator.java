@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
@@ -22,6 +23,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Window;
 import org.drools.model.WindowDefinition;
@@ -37,6 +39,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 
 public class WindowReferenceGenerator {
@@ -93,6 +96,13 @@ public class WindowReferenceGenerator {
 
         final Type initType = JavaParser.parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
+
+        if (pattern.getSource() != null) {
+            String epName = (( EntryPointDescr ) pattern.getSource()).getEntryId();
+            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
+            entryPointCall.addArgument( new StringLiteralExpr(epName) );
+            initializer.addArgument( entryPointCall );
+        }
 
         parseConditions(kbuilder, packageModel, pattern, initClass).forEach(initializer::addArgument);
 

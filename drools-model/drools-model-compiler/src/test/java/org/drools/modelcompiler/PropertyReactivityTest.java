@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -286,5 +287,23 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         ksession.insert( new ArrayList() );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testPROnAtomic() {
+        final String str =
+                "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                "rule R2 when\n" +
+                "    $i : AtomicInteger( get() < 3 )\n" +
+                "then\n" +
+                "    $i.incrementAndGet();" +
+                "    insert(\"test\" + $i.get());" +
+                "    update($i);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new AtomicInteger(0));
+        assertEquals( 3, ksession.fireAllRules() );
     }
 }

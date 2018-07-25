@@ -2,8 +2,10 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -15,6 +17,7 @@ import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
@@ -274,6 +277,11 @@ public class Consequence {
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
+        Map<String, String> newDeclarations = new HashMap<>();
+        for (VariableDeclarator variableDeclarator : rhs.findAll(VariableDeclarator.class)) {
+            variableDeclarator.getInitializer().ifPresent( init -> newDeclarations.put( variableDeclarator.getNameAsString(), init.toString() ) );
+        }
+
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
             if (isDroolsMethod(methodCallExpr)) {
                 if (!methodCallExpr.getScope().isPresent()) {
@@ -297,7 +305,8 @@ public class Consequence {
             Expression argExpr = updateExpr.getArgument(0);
             if (argExpr instanceof NameExpr) {
                 String updatedVar = ((NameExpr) argExpr).getNameAsString();
-                Class<?> updatedClass = context.getDeclarationById(updatedVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
+                String declarationVar = newDeclarations.containsKey( updatedVar ) ? newDeclarations.get( updatedVar ) : updatedVar;
+                Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
 
                 Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
 

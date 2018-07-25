@@ -120,7 +120,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void delete(Object object) {
-        workingMemory.delete( getFactHandleForObject( object ) );
+        knowledgeHelper.delete( getFactHandleForObject( object ) );
     }
 
     void registerFactHandle(InternalFactHandle fh) {
