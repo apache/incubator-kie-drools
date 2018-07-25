@@ -17,9 +17,11 @@
 package org.drools.model.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.drools.model.EntryPoint;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Query;
@@ -65,6 +67,11 @@ public class ModelImpl implements Model {
     @Override
     public List<TypeMetaData> getTypeMetaDatas() {
         return typeMetaDatas;
+    }
+
+    @Override
+    public List<EntryPoint> getEntryPoints() {
+        return Collections.emptyList();
     }
 
     public ModelImpl withRules( List<Rule> rules ) {

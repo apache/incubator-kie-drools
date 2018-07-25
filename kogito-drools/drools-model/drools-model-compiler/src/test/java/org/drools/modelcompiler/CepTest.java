@@ -32,6 +32,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
@@ -212,6 +213,36 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick("ACME") );
         clock.advanceTime( 2, TimeUnit.SECONDS );
         ksession.insert( new StockTick("DROO") );
+
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDeclaredSlidingWindowWithEntryPoint() throws Exception {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "declare window DeclaredWindow\n" +
+                "    StockTick( company == \"DROO\" ) over window:time( 5s ) from entry-point ticks\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    $a : StockTick() from window DeclaredWindow\n" +
+                "then\n" +
+                "  System.out.println($a.getCompany());\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        EntryPoint ep = ksession.getEntryPoint("ticks");
+
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ep.insert( new StockTick("DROO") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ep.insert( new StockTick("DROO") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ep.insert( new StockTick("ACME") );
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ep.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
     }

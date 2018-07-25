@@ -196,19 +196,27 @@ public class DSL {
     }
 
     public static <T> WindowReference<T> window( Window.Type type, long value, Class<T> patternType, Predicate1<T>... predicates ) {
-        Predicate1<T>[] ps = new Predicate1[predicates.length];
-        for (int i = 0; i < predicates.length; i++) {
-            ps[i] = new Predicate1.Impl<T>( predicates[i] );
-        }
-        return new WindowReferenceImpl( type, value, patternType, ps );
+        return new WindowReferenceImpl( type, value, patternType, getPredicateForWindow( predicates ) );
     }
 
     public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, Predicate1<T>... predicates ) {
+        return new WindowReferenceImpl( type, value, timeUnit, patternType, getPredicateForWindow( predicates ) );
+    }
+
+    public static <T> WindowReference<T> window( Window.Type type, long value, Class<T> patternType, EntryPoint entryPoint, Predicate1<T>... predicates ) {
+        return new WindowReferenceImpl( type, value, patternType, entryPoint, getPredicateForWindow( predicates ) );
+    }
+
+    public static <T> WindowReference<T> window( Window.Type type, long value, TimeUnit timeUnit, Class<T> patternType, EntryPoint entryPoint, Predicate1<T>... predicates ) {
+        return new WindowReferenceImpl( type, value, timeUnit, patternType, entryPoint, getPredicateForWindow( predicates ) );
+    }
+
+    private static <T> Predicate1<T>[] getPredicateForWindow( Predicate1<T>[] predicates ) {
         Predicate1<T>[] ps = new Predicate1[predicates.length];
         for (int i = 0; i < predicates.length; i++) {
             ps[i] = new Predicate1.Impl<T>( predicates[i] );
         }
-        return new WindowReferenceImpl( type, value, timeUnit, patternType, ps );
+        return ps;
     }
 
     public static UnitData<?> unitData( String name ) {

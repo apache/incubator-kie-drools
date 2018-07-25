@@ -25,4 +25,6 @@ public interface WindowReference<T> extends WindowDefinition, DeclarationSource 
     Predicate1<T>[] getPredicates();
 
     String getName();
+
+    EntryPoint getEntryPoint();
 }

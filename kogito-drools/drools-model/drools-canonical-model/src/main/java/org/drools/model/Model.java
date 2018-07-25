@@ -29,4 +29,6 @@ public interface Model {
     List<Query> getQueries();
 
     List<TypeMetaData> getTypeMetaDatas();
+
+    List<EntryPoint> getEntryPoints();
 }

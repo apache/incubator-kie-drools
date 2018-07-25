@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.CompilationUnit;
@@ -66,6 +67,8 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.joining;
+
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
@@ -91,6 +94,7 @@ public class PackageModel {
     
     private Set<String> imports = new HashSet<>();
     private Set<String> staticImports = new HashSet<>();
+    private Set<String> entryPoints = new HashSet<>();
     private Map<String, Method> staticMethods;
 
     private Map<String, Class<?>> globals = new HashMap<>();
@@ -157,6 +161,10 @@ public class PackageModel {
 
     public void addStaticImports(Collection<String> imports) {
         this.staticImports.addAll(imports);
+    }
+
+    public void addEntryPoints(Collection<EntryPointDeclarationDescr> entryPoints) {
+        entryPoints.stream().map( EntryPointDeclarationDescr::getEntryPointId ).forEach( this.entryPoints::add );
     }
 
     public Collection<String> getStaticImports() {
@@ -367,6 +375,18 @@ public class PackageModel {
                 );
         rulesClass.addMember(getRulesMethod);
 
+        String entryPointsBuilder = entryPoints.isEmpty() ?
+                "Collections.emptyList()" :
+                "Arrays.asList(D.entryPoint(\"" + entryPoints.stream().collect( joining("\"), D.entryPoint(\"") ) + "\"))";
+
+        BodyDeclaration<?> getEntryPointsMethod = JavaParser.parseBodyDeclaration(
+                "    @Override\n" +
+                "    public List<org.drools.model.EntryPoint> getEntryPoints() {\n" +
+                "        return " + entryPointsBuilder + ";\n" +
+                "    }\n"
+                );
+        rulesClass.addMember(getEntryPointsMethod);
+
         StringBuilder sb = new StringBuilder("\n");
         sb.append("With the following expression ID:\n");
         sb.append(exprIdGenerator.toString());
@@ -425,7 +445,6 @@ public class PackageModel {
 
         queryMethods.values().forEach(rulesClass::addMember);
         buildArtifactsDeclaration( queryMethods.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Query", "queries", false );
-        buildArtifactsDeclaration( windowReferences.keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.WindowReference", "windowReferences", false );
         buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
