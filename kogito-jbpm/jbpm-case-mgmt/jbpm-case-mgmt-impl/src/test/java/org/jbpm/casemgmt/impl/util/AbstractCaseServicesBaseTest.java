@@ -142,7 +142,7 @@ public abstract class AbstractCaseServicesBaseTest {
 
     protected AuthorizationManager authorizationManager;
 
-    private List<String> listenerMvelDefinitions = new ArrayList<>();
+    protected List<String> listenerMvelDefinitions = new ArrayList<>();
 
     protected static final String EMPTY_CASE_P_ID = "EmptyCase";
     protected static final String USER_TASK_STAGE_CASE_P_ID = "UserTaskWithStageCase";

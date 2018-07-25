@@ -93,6 +93,21 @@
     </properties>
   </persistence-unit>
 
+  <persistence-unit name="org.jbpm.persistence.patient.example" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/testDS1</jta-data-source>
+    <class>org.jbpm.casemgmt.impl.objects.Patient</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
+    <properties>
+        <property name="hibernate.max_fetch_depth" value="3"/>
+        <property name="hibernate.hbm2ddl.auto" value="update" />
+        <property name="hibernate.show_sql" value="false" />
+        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+                       
+        
+        <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" /> 
+      </properties>        
+    </persistence-unit>
 
 </persistence>
