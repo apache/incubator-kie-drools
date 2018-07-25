@@ -77,7 +77,11 @@ public abstract class AbstractKieProject implements KieProject {
 
     public void verify(String[] kBaseNames, ResultsImpl messages) {
         for ( String modelName : kBaseNames ) {
-            buildKnowledgePackages( (KieBaseModelImpl) kBaseModels.get( modelName ), messages);
+            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kBaseModels.get( modelName );
+            if ( kieBaseModel == null ) {
+                throw new RuntimeException( "Unknown KieBase. Cannot find a KieBase named: " + modelName );
+            }
+            buildKnowledgePackages( kieBaseModel, messages);
         }
     }
 
