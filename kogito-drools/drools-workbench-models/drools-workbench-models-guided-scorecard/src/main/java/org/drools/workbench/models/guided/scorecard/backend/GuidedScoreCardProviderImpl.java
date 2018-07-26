@@ -24,8 +24,6 @@ import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.dmg.pmml.pmml_4_2.descr.True;
 import org.drools.compiler.compiler.GuidedScoreCardProvider;
-import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.core.util.IoUtils;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
@@ -64,7 +62,7 @@ public class GuidedScoreCardProviderImpl implements GuidedScoreCardProvider {
         PMML pmml = GuidedScoreCardDRLPersistence.createPMMLDocument(model);
         checkCharacteristics(pmml);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PMML4Compiler compiler = (PMML4Compiler) PMMLCompilerFactory.getPMMLCompiler();
+        PMML4Compiler compiler = new PMML4Compiler();
         compiler.dumpModel(pmml, baos);
         return new String(baos.toByteArray());
     }

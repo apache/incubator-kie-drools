@@ -16,19 +16,20 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.assertFalse;
+import org.junit.Test;
+import org.kie.api.internal.assembler.KieAssemblers;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.io.ResourceType;
+import org.kie.pmml.assembler.PMMLAssemblerService;
 
 public class KieBaseTest {
 
     @Test
     public void testKieBaseCompilation() {
-        KieServices ks = KieServices.Factory.get();
-        Results rs = ks.getKieClasspathContainer().verify();
-        assertFalse(rs.hasMessages(Message.Level.ERROR));
+        KieAssemblers kieAssemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        PMMLAssemblerService assembler = (PMMLAssemblerService)kieAssemblers.getAssemblers().get(ResourceType.PMML);
+        assertNotNull(assembler);
     }
 }
