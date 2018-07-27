@@ -205,6 +205,7 @@ public class JtaTransactionManager
         // and still be associated with current thread
         // See WFLY-4327
         int status = getStatus();
+        boolean result = false;
         if ( status == TransactionManager.STATUS_ROLLEDBACK ) {
             logger.debug("Cleanup of transaction that has been rolled back previously");
             rollback(true);
@@ -213,7 +214,7 @@ public class JtaTransactionManager
         if ( status == TransactionManager.STATUS_NO_TRANSACTION ) {
             try {
                 getUt().begin();
-                return true;
+                result =  true;
             } catch ( Exception e ) {
                 // special WAS handling for cached UserTrnsactions
                 if (e.getClass().getName().equals("javax.ejb.EJBException")) {
@@ -221,23 +222,31 @@ public class JtaTransactionManager
                     this.ut = findUserTransaction();
                     this.tm = findTransactionManager(this.ut);
                     this.tsr = findTransactionSynchronizationRegistry(this.ut, this.tm);
-
-
                     try {
                         this.ut.begin();
-                        return true;
+                        result =  true;
                     } catch (Exception ex) {
                         logger.warn( "Unable to begin transaction", e);
                         throw new RuntimeException( "Unable to begin transaction",  e );
                     }
                 } else {
-
                     logger.warn( "Unable to begin transaction", e);
                     throw new RuntimeException( "Unable to begin transaction", e );
                 }
+            }finally{
+                if( result ){
+	            if( transactionResources.get() != null && transactionResources.get().size() > 0 ){
+	                logger.warn( "Found transaction resources not properly cleared, clearing them!" );
+	                Map<Object,Object> map = transactionResources.get();
+	                for( Object key : map.keySet() ){
+		           logger.warn( "Item[" + key + "]:" + map.get(key) );
+	                }
+	                transactionResources.get().clear();
+	            }
+            	}
             }
         } 
-        return false;
+        return result;
     }
 
     public void commit(boolean transactionOwner) {
@@ -248,9 +257,10 @@ public class JtaTransactionManager
                 logger.warn( "Unable to commit transaction", e);
                 throw new RuntimeException( "Unable to commit transaction",
                                             e );
+            }finally{
+                transactionResources.get().clear();
             }
         }
-        transactionResources.get().clear();
     }
     
     public void rollback(boolean transactionOwner) {
