@@ -62,6 +62,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -70,10 +71,12 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -3931,5 +3934,37 @@ public class AccumulateTest {
         Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
         Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText)
                 .anySatisfy(text -> Assertions.assertThat(text).contains("openAlarms"));
+    }
+
+    @Test
+    public void testAverageWithNoFacts() throws Exception {
+        // DROOLS-2595
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list;\n" +
+                        "rule R when\n" +
+                        "   accumulate( String( $l : length ) , \n" +
+                        "               $avg : average( $l ) )\n" +
+                        "then\n" +
+                        "   list.add($avg); \n" +
+                        "end\n";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        List<Integer> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        FactHandle fh = kieSession.insert( "test" );
+
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertEquals(4, ((Number)list.get(0)).intValue());
+
+        list.clear();
+
+        kieSession.delete( fh );
+        assertEquals(0, kieSession.fireAllRules() );
+        assertEquals(0, list.size() );
     }
 }
