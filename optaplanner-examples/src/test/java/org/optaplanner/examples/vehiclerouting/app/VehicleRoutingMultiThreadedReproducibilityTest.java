@@ -16,7 +16,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
@@ -71,7 +71,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
 
         if (iteration > 0) {
             VehicleRoutingSolution previousBestSolution = vehicleRoutingSolutions[iteration - 1];
-            assertThat(previousBestSolution.getScore()).isEqualTo(bestSolution.getScore());
+            assertEquals(bestSolution.getScore(), previousBestSolution.getScore());
         }
     }
 
