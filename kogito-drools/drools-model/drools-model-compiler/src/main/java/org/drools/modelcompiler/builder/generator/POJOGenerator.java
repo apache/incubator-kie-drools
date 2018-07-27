@@ -461,7 +461,7 @@ public class POJOGenerator {
     }
 
     private static String quote(String str) {
-        return format("\"{0}\"", str);
+        return "\"" + str.replace( "\"", "\\\"" ) + "\"";
     }
 
     private static String getAnnotationValue(String annotationName, String valueName, Object value) {

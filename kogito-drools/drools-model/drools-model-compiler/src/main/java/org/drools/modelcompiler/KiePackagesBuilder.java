@@ -222,6 +222,9 @@ public class KiePackagesBuilder {
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
         processConsequences( ctx, rule );
+        if (ctx.needsStreamMode()) {
+            pkg.setNeedStreamMode();
+        }
         return ruleImpl;
     }
 
@@ -758,6 +761,7 @@ public class KiePackagesBuilder {
             }
             if ( decl.getWindow() != null ) {
                 pattern.addBehavior( createWindow( decl.getWindow() ) );
+                ctx.setNeedStreamMode();
             }
         }
         ctx.registerPattern( patternVariable, pattern );
@@ -877,7 +881,7 @@ public class KiePackagesBuilder {
     private ObjectType getClassObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass.getCanonicalName(), name -> {
             boolean isEvent = false;
-            if (!name.startsWith( "java.lang" ) && !patternClass.isPrimitive()) {
+            if ((!name.startsWith( "java.lang" ) || packages.containsKey( patternClass.getPackage().getName() )) && !patternClass.isPrimitive()) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {

@@ -322,4 +322,14 @@ public class GlobalTest extends BaseModelTest {
 
         assertEquals( 0, ksession.fireAllRules() );
     }
+
+
+    @Test
+    public void testGlobalOnTypeDeclaration() throws Exception {
+        String str =
+                "declare MyObject end\n" +
+                "global MyObject event;";
+
+        KieSession ksession = getKieSession(str);
+    }
 }

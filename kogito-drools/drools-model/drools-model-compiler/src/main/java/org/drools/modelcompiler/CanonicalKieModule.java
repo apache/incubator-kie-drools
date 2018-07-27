@@ -79,6 +79,7 @@ import org.kie.internal.builder.ResourceChangeSet;
 
 import static java.util.stream.Collectors.toList;
 
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -132,6 +133,7 @@ public class CanonicalKieModule implements InternalKieModule {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
         CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf) );
+        checkStreamMode( kBaseModel, conf, kpkgs.getKiePackages() );
         return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
     }
 

@@ -212,14 +212,14 @@ public class PackageModel {
         return staticMethods;
     }
 
-    public void addGlobals(Map<String, String> values) {
+    public void addGlobals(InternalKnowledgePackage pkg) {
         Map<String, Class<?>> transformed;
-        transformed = values
+        transformed = pkg.getGlobals()
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap( Entry::getKey, e -> {
                     try {
-                        return Class.forName(e.getValue(), true, configuration.getClassLoader());
+                        return pkg.getTypeResolver().resolveType(e.getValue());
                     } catch (ClassNotFoundException e1) {
                         throw new UnsupportedOperationException("Class not found", e1);
                     }

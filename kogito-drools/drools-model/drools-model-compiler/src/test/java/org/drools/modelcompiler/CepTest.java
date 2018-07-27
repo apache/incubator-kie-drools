@@ -272,6 +272,30 @@ public class CepTest extends BaseModelTest {
     }
 
     @Test
+    public void testDeclaredSlidingWindowOnDeclaredType() throws Exception {
+        String str =
+                "declare MyEvent\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "declare window DeclaredWindow\n" +
+                "    MyEvent( ) over window:time( 5s )\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new MyEvent());\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    $a : MyEvent() from window DeclaredWindow\n" +
+                "then\n" +
+                "  System.out.println($a);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
     public void testDeclaredSlidingWindowWith2Arguments() throws Exception {
         String str =
                 "declare String\n" +

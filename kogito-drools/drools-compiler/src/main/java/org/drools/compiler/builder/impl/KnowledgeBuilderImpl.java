@@ -15,10 +15,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
-import static org.drools.core.util.StringUtils.isEmpty;
-import static org.drools.core.util.StringUtils.ucFirst;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -164,6 +160,10 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
+import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 

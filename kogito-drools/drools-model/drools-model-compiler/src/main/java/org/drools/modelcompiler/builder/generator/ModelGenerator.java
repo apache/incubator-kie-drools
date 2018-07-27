@@ -126,7 +126,7 @@ public class ModelGenerator {
         packageModel.addImports(pkg.getImports().keySet());
         packageModel.addStaticImports(pkg.getStaticImports());
         packageModel.addEntryPoints(packageDescr.getEntryPointDeclarations());
-        packageModel.addGlobals(pkg.getGlobals());
+        packageModel.addGlobals(pkg);
         packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage(pkg);
         new WindowReferenceGenerator(packageModel, typeResolver).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());

@@ -1,8 +1,10 @@
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
 import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalChunkExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
 import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralInfiniteChunkExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -33,10 +35,15 @@ public class TemporalOperatorSpec implements OperatorSpec {
 
     public static void addArgumentToMethodCall(Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr) {
-            TemporalLiteralExpr tempExpr1 = (TemporalLiteralExpr) expr;
-            final TemporalLiteralChunkExpr firstTemporalExpression = (TemporalLiteralChunkExpr) tempExpr1.getChunks().iterator().next();
-            methodCallExpr.addArgument("" + firstTemporalExpression.getValue() );
-            methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + firstTemporalExpression.getTimeUnit() );
+            TemporalChunkExpr firstTemporalExpression = ((TemporalLiteralExpr) expr).getChunks().iterator().next();
+            if (firstTemporalExpression instanceof TemporalLiteralInfiniteChunkExpr) {
+                methodCallExpr.addArgument( Long.MAX_VALUE + "L" );
+                methodCallExpr.addArgument( "java.util.concurrent.TimeUnit.MILLISECONDS" );
+            } else {
+                final TemporalLiteralChunkExpr literal = ( TemporalLiteralChunkExpr ) firstTemporalExpression;
+                methodCallExpr.addArgument( literal.getValue() + "L" );
+                methodCallExpr.addArgument( "java.util.concurrent.TimeUnit." + literal.getTimeUnit() );
+            }
         } else {
             methodCallExpr.addArgument( expr );
         }

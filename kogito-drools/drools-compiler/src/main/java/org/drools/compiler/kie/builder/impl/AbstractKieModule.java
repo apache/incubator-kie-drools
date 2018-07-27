@@ -217,14 +217,7 @@ public abstract class AbstractKieModule
         // if we get to here, then we know the pkgs is now cached
         pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
-        if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
-             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
-            for (KiePackage kpkg : pkgs) {
-                if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
-                    throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
-                }
-            }
-        }
+        checkStreamMode( kBaseModel, conf, pkgs );
 
         ClassLoader cl = kieProject.getClassLoader();
         if (conf == null) {
@@ -236,6 +229,17 @@ public abstract class AbstractKieModule
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
         kBase.addPackages( pkgs );
         return kBase;
+    }
+
+    public static void checkStreamMode( KieBaseModelImpl kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {
+        if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
+             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
+            for (KiePackage kpkg : pkgs) {
+                if ( ((KnowledgePackageImpl ) kpkg).needsStreamMode() ) {
+                    throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
+                }
+            }
+        }
     }
 
     private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
