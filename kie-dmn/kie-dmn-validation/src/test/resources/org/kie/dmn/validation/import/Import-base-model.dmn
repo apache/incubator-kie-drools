@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_cba6aa1b-5c53-49b1-aaf6-0144a72e0f8a" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_cba6aa1b-5c53-49b1-aaf6-0144a72e0f8a" name="Import base model" namespace="http://www.trisotech.com/dmn/definitions/_cba6aa1b-5c53-49b1-aaf6-0144a72e0f8a" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:import drools:modelName="Base model" drools:name="Base model" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:fileId="eyJmIjp7InNrdSI6IjE5ZjNkMWY0LTQyZGMtNDczNi1hZTNhLWFjNWRjODM5M2I1ZSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19" triso:fileName="20180727/Base model"/>
+  <dmn11:inputData id="_2b822125-1d27-40da-8fa7-4c13385c5dd3" name="Customer">
+    <dmn11:variable id="_58efcb80-b92c-4140-ab84-e11815af26d5" name="Customer" typeRef="Base model.tPerson"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_2c8040df-8746-42cf-aee4-867227ab4241" name="Greetings to the Customer">
+    <dmn11:variable id="_cd5d853c-ae7a-4731-89c6-84d09e8ca9db" name="Greetings to the Customer" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_2b822125-1d27-40da-8fa7-4c13385c5dd3"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_e63f2587-df20-44d3-b3f0-1c5227d85a5b"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_878c3e75-f8d5-4202-92f5-1ef98dd05fae" typeRef="feel:string">
+      <dmn11:text>Base model.How to greet a Person(Customer)</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>
