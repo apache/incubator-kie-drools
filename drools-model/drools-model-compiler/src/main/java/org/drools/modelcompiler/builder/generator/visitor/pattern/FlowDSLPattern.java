@@ -1,11 +1,9 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
@@ -19,7 +17,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -69,13 +66,11 @@ class FlowDSLPattern extends PatternDSL {
             exprDSL.addArgument( declarationSpec.getDeclarationSource().get() );
         }
 
-        Set<String> watchedProperties = new HashSet<>();
-        watchedProperties.addAll(context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern));
-        watchedProperties.addAll(getPatternListenedProperties(pattern));
-        if (!watchedProperties.isEmpty()) {
-            exprDSL = new MethodCallExpr(exprDSL, WATCH_CALL);
-            watchedProperties.stream()
-                    .map(StringLiteralExpr::new )
+        Set<String> settableWatchedProps = getSettableWatchedProps();
+        if (!settableWatchedProps.isEmpty()) {
+            exprDSL = new MethodCallExpr( exprDSL, WATCH_CALL );
+            settableWatchedProps.stream()
+                    .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );
         }
 

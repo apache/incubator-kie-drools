@@ -56,6 +56,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     public void buildPackages(Collection<CompositePackageDescr> packages) {
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
+        buildDeclaredTypes( packages );
         buildOtherDeclarations(packages);
         deregisterTypeDeclarations( packages );
         buildRules(packages);
@@ -81,6 +82,19 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     }
 
     protected void buildRules(Collection<CompositePackageDescr> packages) {
+        if (hasErrors()) { // if Error while generating pojo do not try compile rule as they very likely depends hence fail too.
+            return;
+        }
+
+        for (CompositePackageDescr packageDescr : packages) {
+            setAssetFilter(packageDescr.getFilter());
+            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
+            compileKnowledgePackages(packageDescr, pkgRegistry);
+            setAssetFilter(null);
+        }
+    }
+
+    private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
             generatePOJOs(packageDescr, pkgRegistry);
@@ -89,7 +103,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         List<GeneratedClassWithPackage> allGeneratedPojos =
                 packageModels.values().stream()
                              .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
-                        .collect(Collectors.toList());
+                        .collect( Collectors.toList());
 
 
         // Every class gets compiled in each classloader, maybe they can be compiled only one time?
@@ -102,17 +116,6 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
-        }
-
-        if (hasErrors()) { // if Error while generating pojo do not try compile rule as they very likely depends hence fail too.
-            return;
-        }
-
-        for (CompositePackageDescr packageDescr : packages) {
-            setAssetFilter(packageDescr.getFilter());
-            PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            compileKnowledgePackages(packageDescr, pkgRegistry);
-            setAssetFilter(null);
         }
     }
 

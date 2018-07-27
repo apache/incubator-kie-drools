@@ -33,6 +33,7 @@ import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.PrimitiveType;
@@ -144,6 +145,10 @@ public abstract class AbstractExpressionBuilder {
 
     protected Expression narrowExpressionToType( TypedExpression right, java.lang.reflect.Type leftType ) {
         Expression expression = right.getExpression();
+
+        if (expression instanceof NullLiteralExpr) {
+            return expression;
+        }
 
         if (leftType.equals(Double.class)) {
             expression = new CastExpr( PrimitiveType.doubleType(), expression );

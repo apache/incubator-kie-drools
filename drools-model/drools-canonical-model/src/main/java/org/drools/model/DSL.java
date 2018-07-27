@@ -463,6 +463,10 @@ public class DSL {
         return after(lowerBound, TimeUnit.MILLISECONDS, upperBound, TimeUnit.MILLISECONDS);
     }
 
+    public static TemporalPredicate after( long lowerBound, TimeUnit lowerUnit ) {
+        return after(lowerBound, lowerUnit, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+    }
+
     public static TemporalPredicate after( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
         return new AfterPredicate( lowerBound, lowerUnit, upperBound, upperUnit );
     }
@@ -475,8 +479,16 @@ public class DSL {
         return before(lowerBound, TimeUnit.MILLISECONDS, upperBound, TimeUnit.MILLISECONDS);
     }
 
+    public static TemporalPredicate before( long lowerBound, TimeUnit lowerUnit ) {
+        return before(lowerBound, lowerUnit, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+    }
+
     public static TemporalPredicate before( long lowerBound, TimeUnit lowerUnit, long upperBound, TimeUnit upperUnit ) {
         return new BeforePredicate( lowerBound, lowerUnit, upperBound, upperUnit );
+    }
+
+    public static TemporalPredicate coincides() {
+        return coincides( 0, TimeUnit.MILLISECONDS );
     }
 
     public static TemporalPredicate coincides( long dev, TimeUnit devUnit ) {

@@ -46,6 +46,7 @@ public class RuleContext {
     private final Map<Variable, Pattern> patterns = new HashMap<>();
 
     private int patternIndex = -1;
+    private boolean needStreamMode = false;
 
     RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
@@ -127,11 +128,15 @@ public class RuleContext {
         return accumulateSource.get( variable );
     }
 
-    public Object getBoundFact( Variable variable, Object[] objs ) {
-        return objs[ patterns.get( variable ).getOffset() ];
-    }
-
     public ClassLoader getClassLoader() {
         return builder.getClassLoader();
+    }
+
+    public boolean needsStreamMode() {
+        return needStreamMode;
+    }
+
+    public void setNeedStreamMode() {
+        this.needStreamMode = true;
     }
 }
