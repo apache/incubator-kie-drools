@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating average values
@@ -94,7 +93,7 @@ public class AverageAccumulateFunction extends AbstractAccumulateFunction<Averag
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(AverageData data) {
-        return new Double( data.count == 0 ? 0 : data.total / data.count );
+        return data.count == 0 ? null : data.total / data.count;
     }
 
     /* (non-Javadoc)
