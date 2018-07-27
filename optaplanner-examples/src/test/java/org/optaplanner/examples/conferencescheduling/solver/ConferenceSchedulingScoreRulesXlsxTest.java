@@ -66,19 +66,21 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     private String constraintName;
     private HardSoftScore expectedScore;
     private ConferenceSolution solution;
+    private String testSheetName;
 
     private static HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
     public ConferenceSchedulingScoreRulesXlsxTest(String constraintPackage, String constraintName,
-                                                  HardSoftScore expectedScore, ConferenceSolution solution) {
+                                                  HardSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.expectedScore = expectedScore;
         this.solution = solution;
+        this.testSheetName = testSheetName;
     }
 
-    @Parameterized.Parameters(name = "{1}")
+    @Parameterized.Parameters(name = "{4}")
     public static Collection testSheetParameters() {
         List<Object[]> parametersList = new ArrayList<>();
         Object[] currentParameterList;
@@ -143,12 +145,14 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             String constraintName;
             HardSoftScore expectedScore;
             ConferenceSolution nextSheetSolution;
+            String testSheetName;
 
             if (currentTestSheetIndex >= numberOfSheets) {
                 return null;
             }
 
             nextSheet(workbook.getSheetName(currentTestSheetIndex++));
+            testSheetName = currentSheet.getSheetName();
 
             nextRow(false);
             readHeaderCell("Constraint package");
@@ -207,7 +211,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
                 }
             }
 
-            return new Object[]{constraintPackage, constraintName, expectedScore, nextSheetSolution};
+            return new Object[]{constraintPackage, constraintName, expectedScore, nextSheetSolution, testSheetName};
         }
 
         private void readTimeslotDays() {
