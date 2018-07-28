@@ -44,7 +44,6 @@ import org.kie.api.executor.STATUS;
 
 @Entity
 @Table(name = "RequestInfo", indexes = {@Index(name = "IDX_RequestInfo_status", columnList = "status"),
-                                        @Index(name = "IDX_RequestInfo_timestamp", columnList = "timestamp"),
                                         @Index(name = "IDX_RequestInfo_owner", columnList = "owner")})
 @SequenceGenerator(name="requestInfoIdSeq", sequenceName="REQUEST_INFO_ID_SEQ")
 public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, Serializable {
