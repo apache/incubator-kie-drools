@@ -581,7 +581,7 @@ public class MigrationManager {
 
                     for (Entry<Long, List<TimerInstance>> entry : timerMigrated.entrySet()) {
 
-                        org.jbpm.workflow.instance.NodeInstance active = processInstance.getNodeInstance(entry.getKey(), false);
+                        org.jbpm.workflow.instance.NodeInstance active = processInstance.getNodeInstance(entry.getKey(), true);
                         if (active instanceof TimerNodeInstance) {
                             TimerInstance timerInstance = entry.getValue().get(0);
                             

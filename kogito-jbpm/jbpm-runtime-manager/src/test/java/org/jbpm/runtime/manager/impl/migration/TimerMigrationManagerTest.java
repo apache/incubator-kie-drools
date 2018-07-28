@@ -101,6 +101,9 @@ public class TimerMigrationManagerTest extends AbstractBaseTest {
     private static final String CYCLE_TIMER_ID_V1 = "CycleTimer-V1";
     private static final String CYCLE_TIMER_ID_V2 = "CycleTimer-V2";
     
+    private static final String LOOP_TIMER_ID_V1 = "ProcessClaim.CheckDisruption-v1";
+    private static final String LOOP_TIMER_ID_V2 = "ProcessClaim.CheckDisruption-v2";
+    
     private JPAAuditLogService auditService;
     
     @Before
@@ -455,6 +458,92 @@ public class TimerMigrationManagerTest extends AbstractBaseTest {
         assertEquals(CYCLE_TIMER_ID_V2, log.getProcessId());
         assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
         assertEquals(ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
+
+    }
+    
+    @Test(timeout=40000)
+    public void testMigrateTimerWithLoopProcessInstance() throws Exception {
+        NodeLeftCountDownProcessEventListener countdownListener = new NodeLeftCountDownProcessEventListener("3s timer", 1);
+        createRuntimeManagers("migration/v1/CheckDisruption-v1.bpmn2", "migration/v2/CheckDisruption-v2.bpmn2", countdownListener);
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+        
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ProcessInstance pi1 = ksession.startProcess(LOOP_TIMER_ID_V1);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState()); 
+        JPAAuditLogService auditService = new JPAAuditLogService(emf);
+        ProcessInstanceLog log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(LOOP_TIMER_ID_V1, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+                
+        managerV1.disposeRuntimeEngine(runtime);
+        
+        // wait till timer fires for the first iteration
+        countdownListener.waitTillCompleted();
+        
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, LOOP_TIMER_ID_V2);
+        
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        MigrationReport report = migrationManager.migrate();
+        
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(LOOP_TIMER_ID_V2, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_ACTIVE, log.getStatus().intValue());
+        
+        
+        // wait till timer fires for next iterations already on migrated process instance
+        countdownListener.reset(1);
+        countdownListener.waitTillCompleted();
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        
+        assertNotNull(log);
+        assertEquals(LOOP_TIMER_ID_V2, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V2, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_ACTIVE, log.getStatus().intValue());
+        
+        migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V2, pi1.getId(), DEPLOYMENT_ID_V1, LOOP_TIMER_ID_V1);
+        
+        migrationManager = new MigrationManager(migrationSpec);
+        report = migrationManager.migrate();
+        
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        assertNotNull(log);
+        assertEquals(LOOP_TIMER_ID_V1, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_ACTIVE, log.getStatus().intValue());
+        
+        
+        // wait till timer fires for next iterations already on migrated process instance
+        countdownListener.reset(1);
+        countdownListener.waitTillCompleted();
+        
+        log = auditService.findProcessInstance(pi1.getId());
+        auditService.dispose();
+        assertNotNull(log);
+        assertEquals(LOOP_TIMER_ID_V1, log.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, log.getExternalId());
+        assertEquals(ProcessInstance.STATE_ACTIVE, log.getStatus().intValue());
+        
+        runtime = managerV1.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        
+        ksession.abortProcessInstance(pi1.getId());
+        
+        managerV1.disposeRuntimeEngine(runtime);
 
     }
     
