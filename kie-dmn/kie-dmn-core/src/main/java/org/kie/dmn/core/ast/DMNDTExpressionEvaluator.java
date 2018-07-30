@@ -84,7 +84,7 @@ public class DMNDTExpressionEvaluator
             for ( int i = 0; i < params.length; i++ ) {
                 EvaluationContextImpl evalCtx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
                 evalCtx.setValues(result.getContext().getAll());
-                params[i] = feel.evaluate( paramNames.get( i ), evalCtx );
+                params[i] = feel.evaluate(dt.getDecisionTable().getCompiledParameterNames().get(i), evalCtx);
                 ctx.setValue( paramNames.get( i ), params[i] );
             }
             Object dtr = dt.invoke( ctx, params ).cata( e -> { events.add( e); return null; }, Function.identity());
