@@ -62,6 +62,10 @@ public class DMNDTExpressionEvaluator
         this.feel = (FEELImpl) feel;
     }
 
+    public DTInvokerFunction getDt() {
+        return dt;
+    }
+
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
 

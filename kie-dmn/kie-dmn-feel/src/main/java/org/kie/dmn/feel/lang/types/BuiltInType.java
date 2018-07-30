@@ -95,7 +95,7 @@ public enum BuiltInType implements SimpleType {
                " }";
     }
 
-    public static Type determineTypeFromName( String name ) {
+    public static BuiltInType determineTypeFromName( String name ) {
         if( name == null ) {
             return UNKNOWN;
         }
