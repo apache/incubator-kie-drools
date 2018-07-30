@@ -2,7 +2,6 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -428,7 +427,7 @@ public class DMNEvaluatorCompiler {
 
     protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         java.util.List<DTInputClause> inputs = new ArrayList<>();
-        List<DMNType> inputTypes = new ArrayList<>();
+        java.util.List<DMNType> inputTypes = new ArrayList<>();
         int index = 0;
         for ( InputClause ic : dt.getInput() ) {
             index++;
@@ -600,8 +599,8 @@ public class DMNEvaluatorCompiler {
         return dtee;
     }
 
-    public static List<String> getParameters( DMNModelImpl model, DMNBaseNode node, DecisionTable dt ) {
-        List<String> parameterNames = new ArrayList<>();
+    public static java.util.List<String> getParameters(DMNModelImpl model, DMNBaseNode node, DecisionTable dt) {
+        java.util.List<String> parameterNames = new ArrayList<>();
         if ( node instanceof BusinessKnowledgeModelNode ) {
             // need to break this statement down and check for nulls
             parameterNames.addAll( ((BusinessKnowledgeModelNode) node).getBusinessKnowledModel().getEncapsulatedLogic().getFormalParameter().stream().map( f -> f.getName() ).collect( toList() ) );
@@ -755,7 +754,7 @@ public class DMNEvaluatorCompiler {
         return evaluator;
     }
 
-    private List<UnaryTest> textToUnaryTestList(DMNCompilerContext ctx, String text, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams ) {
+    private java.util.List<UnaryTest> textToUnaryTestList(DMNCompilerContext ctx, String text, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
