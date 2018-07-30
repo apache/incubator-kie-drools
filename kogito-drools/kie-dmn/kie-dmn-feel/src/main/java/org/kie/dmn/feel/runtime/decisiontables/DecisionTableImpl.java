@@ -50,6 +50,7 @@ public class DecisionTableImpl implements DecisionTable {
 
     private String               name;
     private List<String>         parameterNames;
+    private List<CompiledExpression> compiledParameterNames;
     private List<DTInputClause>  inputs;
     private List<DTOutputClause> outputs;
     private List<DTDecisionRule> decisionRules;
@@ -344,6 +345,20 @@ public class DecisionTableImpl implements DecisionTable {
 
     public List<String> getParameterNames() {
         return parameterNames;
+    }
+
+    /**
+     * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
+     */
+    public void setCompiledParameterNames(List<CompiledExpression> compiledParameterNames) {
+        this.compiledParameterNames = compiledParameterNames;
+    }
+
+    /**
+     * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
+     */
+    public List<CompiledExpression> getCompiledParameterNames() {
+        return compiledParameterNames;
     }
 
     public String getSignature() {
