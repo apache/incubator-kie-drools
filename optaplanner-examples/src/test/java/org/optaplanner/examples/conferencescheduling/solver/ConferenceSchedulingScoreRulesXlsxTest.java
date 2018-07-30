@@ -88,7 +88,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         File testFile = new File(ConferenceSchedulingScoreRulesXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO().read(testFile);
+            ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(true).read(testFile);
             TestConferenceSchedulingScoreRulesReader testFileReader = new TestConferenceSchedulingScoreRulesReader(workbook, initialSolution);
             while ((currentParameterList = testFileReader.nextTestSheetParameterList()) != null) {
                 parametersList.add(currentParameterList);
@@ -160,6 +160,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             nextRow(false);
             readHeaderCell("Constraint name");
             constraintName = nextStringCell().getStringCellValue();
+            nextRow(false);
             nextRow(false);
             readHeaderCell("Score");
             expectedScore = HardSoftScore.parseScore(nextStringCell().getStringCellValue());
