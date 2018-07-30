@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toMap;
 
-public class DecisionTableImpl {
+public class DecisionTableImpl implements DecisionTable {
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableImpl.class );
 
     private String               name;
@@ -99,7 +99,7 @@ public class DecisionTableImpl {
             List<Object> results = evaluateResults( ctx, feel, actualInputs, matches );
             Map<Integer, String> msgs = checkResults( ctx, matches, results );
             if( msgs.isEmpty() ) {
-                Object result = hitPolicy.getDti().dti( ctx, this, actualInputs, matches, results );
+                Object result = hitPolicy.getDti().dti( ctx, this, matches, results );
                 return FEELFnResult.ofResult( result );
             } else {
                 List<Integer> offending = msgs.keySet().stream().collect( Collectors.toList());

@@ -169,7 +169,7 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         }
 
-        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, models, this.moduleClassLoader).build();
+        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, models).build();
         return mergeProcesses( processes, canonicalKiePkgs );
     }
 

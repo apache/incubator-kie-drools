@@ -8,7 +8,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-public class DTOutputClause {
+public class DTOutputClause implements DecisionTable.OutputClause  {
     private final String          name;
     private final String          id;
     private final String          defaultValue;

@@ -42,7 +42,7 @@ public class DMNLiteralExpressionEvaluator
     }
 
     public boolean isFunctionDefinition() {
-        return ((CompiledExpressionImpl)expression).getExpression() instanceof FunctionDefNode;
+        return expression instanceof CompiledExpressionImpl && ((CompiledExpressionImpl)expression).getExpression() instanceof FunctionDefNode;
     }
 
     public CompiledExpression getExpression() {
