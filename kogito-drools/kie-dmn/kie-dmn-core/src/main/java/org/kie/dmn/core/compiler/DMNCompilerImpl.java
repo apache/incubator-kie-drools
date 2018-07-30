@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -57,6 +56,7 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -86,10 +86,10 @@ import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNCompilerImpl
-        implements DMNCompiler {
+public class DMNCompilerImpl implements DMNCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
+
     private final DMNEvaluatorCompiler evaluatorCompiler;
     private final DMNFEELHelper feel;
     private DMNCompilerConfiguration dmnCompilerConfig;
@@ -110,7 +110,9 @@ public class DMNCompilerImpl
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
         this.feel = new DMNFEELHelper(cc.getRootClassLoader(), cc.getFeelProfiles());
-        this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
+        this.evaluatorCompiler = cc.isUseExecModelCompiler() ?
+                new ExecModelDMNEvaluatorCompiler( this, feel ) :
+                new DMNEvaluatorCompiler( this, feel );
     }
     
     private void addDRGElementCompiler(DRGElementCompiler compiler) {

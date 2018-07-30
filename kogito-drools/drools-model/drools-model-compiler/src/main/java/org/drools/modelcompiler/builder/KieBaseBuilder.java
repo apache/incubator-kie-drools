@@ -17,7 +17,6 @@
 package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.model.Model;
@@ -58,7 +57,11 @@ public class KieBaseBuilder {
                 kieBaseConf.setOption( option );
             }
         }
-        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf, ProjectClassLoader.createProjectClassLoader(kieBaseConf.getClass().getClassLoader()));
+        return createKieBaseFromModel( model, kieBaseConf );
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseConfiguration kieBaseConf ) {
+        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
         builder.addModel( model );
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }

@@ -16,12 +16,11 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
 8.3.3 Decision Rule metamodel
@@ -49,7 +48,7 @@ The outputEntry elements SHALL be in the same order as the containing DecisionTa
 th outputEntry SHALL be consistent with the typeRef of the i
 th OutputClause.
  */
-public class DTDecisionRule {
+public class DTDecisionRule implements Indexed {
     private int                      index;
     private List<UnaryTest>          inputEntry;
     private List<CompiledExpression> outputEntry;

@@ -113,7 +113,11 @@ public class FEELImpl
     public CompilerContext newCompilerContext(Collection<FEELEventListener> contextListeners) {
         return new CompilerContextImpl(getEventsManager(contextListeners)).addFEELFunctions(customFunctions);
     }
-    
+
+    public Collection<FEELFunction> getCustomFunctions() {
+        return customFunctions;
+    }
+
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
         if (doCompile) {

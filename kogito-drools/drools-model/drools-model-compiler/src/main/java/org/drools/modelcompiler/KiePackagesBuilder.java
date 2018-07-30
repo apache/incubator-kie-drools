@@ -35,7 +35,6 @@ import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -121,7 +120,6 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
-import org.kie.internal.utils.ChainedProperties;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -147,16 +145,14 @@ public class KiePackagesBuilder {
     private final Map<String, ObjectType> objectTypeCache = new HashMap<>();
 
     private final Collection<Model> models;
-    private final ChainedProperties chainedProperties;
 
-    public KiePackagesBuilder(KieBaseConfiguration conf, ProjectClassLoader moduleClassLoader) {
-        this(conf, new ArrayList<>(), moduleClassLoader);
+    public KiePackagesBuilder(KieBaseConfiguration conf) {
+        this(conf, new ArrayList<>());
     }
 
-    public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models, ProjectClassLoader moduleClassLoader) {
+    public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models) {
         this.configuration = ((RuleBaseConfiguration) conf);
         this.models = models;
-        this.chainedProperties = ChainedProperties.getChainedProperties( moduleClassLoader.getTypesClassLoader() );
     }
 
     public void addModel( Model model ) {
