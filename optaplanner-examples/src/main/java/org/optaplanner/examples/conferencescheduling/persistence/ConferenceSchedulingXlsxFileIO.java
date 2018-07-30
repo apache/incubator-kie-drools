@@ -68,6 +68,18 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferencePar
 
 public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
+    private static boolean isTest;
+
+    public ConferenceSchedulingXlsxFileIO() {
+        super();
+        this.isTest = false;
+    }
+
+    public ConferenceSchedulingXlsxFileIO(boolean isTest) {
+        super();
+        this.isTest = isTest;
+    }
+
     @Override
     public ConferenceSolution read(File inputSolutionFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputSolutionFile))) {
@@ -111,7 +123,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextRow();
             readHeaderCell("Conference name");
             solution.setConferenceName(nextStringCell().getStringCellValue());
-            if (!VALID_NAME_PATTERN.matcher(solution.getConferenceName()).matches()) {
+            if (!isTest && !VALID_NAME_PATTERN.matcher(solution.getConferenceName()).matches()) {
                 throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
@@ -213,7 +225,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     if (talkType == null) {
                         talkType = new TalkType(talkTypeId);
                         talkTypeId++;
-                        if (!VALID_TAG_PATTERN.matcher(talkTypeName).matches()) {
+                        if (!isTest && !VALID_TAG_PATTERN.matcher(talkTypeName).matches()) {
                             throw new IllegalStateException(currentPosition()
                                     + ": The timeslot (" + timeslot + ")'s talkType (" + talkTypeName
                                     + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
@@ -236,7 +248,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 timeslot.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : timeslot.getTagSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition()
                                 + ": The timeslot (" + timeslot + ")'s tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
@@ -267,14 +279,14 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 Room room = new Room();
                 room.setId(id++);
                 room.setName(nextStringCell().getStringCellValue());
-                if (!VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
+                if (!isTest && !VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The room name (" + room.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
 
                 String[] talkTypeNames = nextStringCell().getStringCellValue().split(", ");
                 Set<TalkType> talkTypeSet;
-                if (talkTypeNames.length == 0  || (talkTypeNames.length == 1 && talkTypeNames[0].isEmpty())) {
+                if (talkTypeNames.length == 0 || (talkTypeNames.length == 1 && talkTypeNames[0].isEmpty())) {
                     talkTypeSet = new LinkedHashSet<>(totalTalkTypeMap.values());
                     for (TalkType talkType : talkTypeSet) {
                         talkType.getCompatibleRoomSet().add(room);
@@ -297,7 +309,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 room.setTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : room.getTagSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The room (" + room + ")'s tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
@@ -350,7 +362,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 Speaker speaker = new Speaker();
                 speaker.setId(id++);
                 speaker.setName(nextStringCell().getStringCellValue());
-                if (!VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
+                if (!isTest && !VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The speaker name (" + speaker.getName()
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
@@ -434,7 +446,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextStringCell().getStringCellValue());
-                if (!VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
+                if (!isTest && !VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk code (" + talk.getCode()
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
                 }
@@ -460,7 +472,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setThemeTrackTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getThemeTrackTagSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s theme tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
@@ -468,7 +480,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setSectorTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getSectorTagSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s sector tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
@@ -476,13 +488,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setAudienceTypeSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String audienceType : talk.getAudienceTypeSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(audienceType).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(audienceType).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s audience type (" + audienceType
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
                 double audienceLevelDouble = nextNumericCell().getNumericCellValue();
-                if (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble)) {
+                if (!isTest && (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble))) {
                     throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
                             + ")'s has an audience level (" + audienceLevelDouble + ") that isn't a strictly positive integer number.");
                 }
@@ -490,7 +502,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setContentTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getContentTagSet()) {
-                    if (!VALID_TAG_PATTERN.matcher(tag).matches()) {
+                    if (!isTest && !VALID_TAG_PATTERN.matcher(tag).matches()) {
                         throw new IllegalStateException(currentPosition() + ": The talk (" + talk + ")'s content tag (" + tag
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
@@ -600,9 +612,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
             }
         }
-
     }
-
 
     @Override
     public void write(ConferenceSolution solution, File outputSolutionFile) {
@@ -798,7 +808,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 for (Timeslot timeslot : solution.getTimeslotList()) {
                     nextCell(speaker.getUnavailableTimeslotSet().contains(timeslot) ? unavailableStyle : defaultStyle)
                             .setCellValue("");
-
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1246,7 +1255,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
-                String[] filteredConstraintNames) {
+                                        String[] filteredConstraintNames) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                     : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
@@ -1318,7 +1327,5 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             cell.setCellValue(talkList.stream().map(stringFunction).collect(joining("\n")));
             currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), talkList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
-
     }
-
 }
