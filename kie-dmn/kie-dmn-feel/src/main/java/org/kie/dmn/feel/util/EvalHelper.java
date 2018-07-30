@@ -28,11 +28,11 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
@@ -49,18 +49,10 @@ public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
     private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
 
-    private static final Map<String, Method> accessorCache = new HashMap<>();
-    private static final Map<String, String> normalizationCache = new HashMap<>();
+    private static final Map<String, Method> accessorCache = new ConcurrentHashMap<>();
 
     public static String normalizeVariableName(String name) {
-		if (normalizationCache.containsKey(name)){
-			return normalizationCache.get(name);
-		}
-        String normalized = SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
-
-        normalizationCache.put(name, normalized);
-
-        return normalized;
+        return SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
@@ -328,21 +320,14 @@ public class EvalHelper {
         String accessorQualifiedName = new StringBuilder(clazz.getCanonicalName())
 			.append(".").append(field).toString();
 
-        if (accessorCache.containsKey(accessorQualifiedName)) {
-			return accessorCache.get(accessorQualifiedName);
-        }
-
-        Method method = Stream.of( clazz.getMethods() )
-                .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
-                        .map( ann -> ann.value().equals( field ) )
-                        .orElse( false )
-                )
-                .findFirst()
-                .orElse( getAccessor( clazz, field ) );
-
-        accessorCache.put(accessorQualifiedName, method);
-
-        return method;
+        return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
+        	Stream.of( clazz.getMethods() )
+            .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
+                    .map( ann -> ann.value().equals( field ) )
+                    .orElse( false )
+            )
+            .findFirst()
+            .orElse( getAccessor( clazz, field ) ));
     }
 
     /**
