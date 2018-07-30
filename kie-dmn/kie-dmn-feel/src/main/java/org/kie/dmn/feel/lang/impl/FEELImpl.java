@@ -100,7 +100,7 @@ public class FEELImpl
                 functions.put(f.getName(), f);
             }
         }
-        doCompile = profiles.stream().filter(DoCompileFEELProfile.class::isInstance).findFirst().isPresent();
+        doCompile = profiles.stream().anyMatch(DoCompileFEELProfile.class::isInstance);
         customFrame = Optional.of(frame);
         customFunctions = Collections.unmodifiableCollection(functions.values());
     }
@@ -120,7 +120,7 @@ public class FEELImpl
 
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        if (doCompile) {
+        if (doCompile || ctx.isDoCompile()) {
             // Use JavaParser to translate FEEL to Java:
             Set<FEELEventListener> listeners = new HashSet<>(ctx.getListeners());
             // add listener to syntax errors, and save them
