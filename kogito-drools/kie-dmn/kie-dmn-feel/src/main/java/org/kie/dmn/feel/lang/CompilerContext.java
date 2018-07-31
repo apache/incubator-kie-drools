@@ -39,4 +39,8 @@ public interface CompilerContext {
 
     Collection<FEELFunction> getFEELFunctions();
 
+    boolean isDoCompile();
+
+    void setDoCompile( boolean doCompile );
+
 }

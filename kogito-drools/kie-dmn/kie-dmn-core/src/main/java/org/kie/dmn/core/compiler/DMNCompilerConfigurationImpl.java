@@ -27,7 +27,6 @@ import org.kie.api.conf.Option;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.feel.lang.FEELProfile;
-import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
@@ -39,12 +38,6 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     private List<DRGElementCompiler> drgElementCompilers = new ArrayList<>();
     private List<FEELProfile> feelProfiles = new ArrayList<>();
     private ClassLoader rootClassLoader = ClassLoaderUtil.findDefaultClassLoader();
-
-    public DMNCompilerConfigurationImpl() {
-        if ( useExecModelCompiler ) {
-            addFEELProfile( (new DoCompileFEELProfile() ) );
-        }
-    }
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);

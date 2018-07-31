@@ -32,6 +32,7 @@ public class CompilerContextImpl implements CompilerContext {
     private Map<String, Object> inputVariables = new HashMap<>();
     private Map<String, Type> inputVariableTypes = new HashMap<>();
     private Set<FEELFunction> customFunctions = new LinkedHashSet<>();
+    private boolean doCompile;
 
     /**
      * PLEASE NOTICE: it is recommended to instance the CompilerContext via the FEEL instance, so to have all profile configuration applied correctly.
@@ -76,5 +77,15 @@ public class CompilerContextImpl implements CompilerContext {
     @Override
     public Collection<FEELFunction> getFEELFunctions() {
         return this.customFunctions;
+    }
+
+    @Override
+    public boolean isDoCompile() {
+        return doCompile;
+    }
+
+    @Override
+    public void setDoCompile( boolean doCompile ) {
+        this.doCompile = doCompile;
     }
 }

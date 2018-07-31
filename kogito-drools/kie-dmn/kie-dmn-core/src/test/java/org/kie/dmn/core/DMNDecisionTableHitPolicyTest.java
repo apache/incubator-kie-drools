@@ -20,11 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -32,7 +28,6 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 
@@ -46,28 +41,10 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class DMNDecisionTableHitPolicyTest {
-
-    @Parameterized.Parameters(name = "{0}")
-    public static Object[] params() {
-        return new Object[]{ true, false };
-    }
-
-    private final boolean useExecModelCompiler;
+public class DMNDecisionTableHitPolicyTest extends BaseDecisionTableTest {
 
     public DMNDecisionTableHitPolicyTest( boolean useExecModelCompiler ) {
-        this.useExecModelCompiler = useExecModelCompiler;
-    }
-
-    @Before
-    public void before() {
-        DMNCompilerConfigurationImpl.useExecModelCompiler = useExecModelCompiler;
-    }
-
-    @After
-    public void after() {
-        DMNCompilerConfigurationImpl.useExecModelCompiler = false;
+        super( useExecModelCompiler );
     }
 
     @Test

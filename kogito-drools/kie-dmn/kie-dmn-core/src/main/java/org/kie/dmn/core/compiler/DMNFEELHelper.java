@@ -21,7 +21,6 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
@@ -42,8 +41,6 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 public class DMNFEELHelper {
 
@@ -266,10 +263,6 @@ public class DMNFEELHelper {
         return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables);
     }
 
-    public Object evaluate(String expression) {
-        return feel.evaluate( expression );
-    }
-
     public Object evaluate(String expression, EvaluationContext ctx) {
         return feel.evaluate( expression, ctx );
     }
@@ -282,9 +275,11 @@ public class DMNFEELHelper {
         return feel.evaluateUnaryTests( expression, variableTypes );
     }
 
-    public List<CompiledFEELExpression> getFeelExpressionsForInputs( DMNCompilerContext ctx, List<String> exprs ) {
-        CompilerContext feelctx = feel.newCompilerContext();
-        ctx.getVariables().forEach( (k, v) -> feelctx.addInputVariableType( k, ((BaseDMNTypeImpl ) v).getFeelType() ) );
-        return exprs.stream().map( n -> (CompiledFEELExpression) feel.compile( n, feelctx ) ).collect( toList() );
+    public CompilerContext newCompilerContext() {
+        return feel.newCompilerContext();
+    }
+
+    public Object compile( String expr, CompilerContext feelctx ) {
+        return feel.compile( expr, feelctx );
     }
 }
