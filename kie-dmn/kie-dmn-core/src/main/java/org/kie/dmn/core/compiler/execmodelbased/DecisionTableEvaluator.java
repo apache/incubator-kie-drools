@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.util.Null;
+
+import static org.kie.dmn.feel.util.EvalHelper.coerceNumber;
 
 public class DecisionTableEvaluator {
     private final DTableModel dTableModel;
@@ -43,7 +46,8 @@ public class DecisionTableEvaluator {
         Object[] inputs = new Object[dTableModel.getColumns().size()];
         for (int i = 0; i < inputs.length; i++) {
             Object result = dTableModel.getColumns().get(i).evaluate( evalCtx );
-            inputs[i] = result == null ? Null.INSTANCE : result;
+            // Manually coerce number since the compiled expression doesn't do this
+            inputs[i] = result == null ? Null.INSTANCE : coerceNumber(result);
         }
         return inputs;
     }
@@ -58,5 +62,21 @@ public class DecisionTableEvaluator {
 
     public void registerFire(int row) {
         indexes.add(row);
+    }
+
+    public boolean hasDefaultValues() {
+        return dTableModel.hasDefaultValues();
+    }
+
+    public Object defaultToOutput( EvaluationContext ctx) {
+        return dTableModel.defaultToOutput( ctx );
+    }
+
+    public HitPolicy getHitPolicy() {
+        return dTableModel.getHitPolicy();
+    }
+
+    public EvaluationContext getEvalCtx() {
+        return evalCtx;
     }
 }

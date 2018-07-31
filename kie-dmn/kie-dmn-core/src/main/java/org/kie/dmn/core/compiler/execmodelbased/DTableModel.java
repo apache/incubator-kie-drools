@@ -16,14 +16,17 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -46,11 +49,14 @@ import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
 
 public class DTableModel {
+    private final DMNFEELHelper feel;
+    private final DMNModelImpl model;
     private final DecisionTable dt;
     private final String namespace;
     private final String dtName;
     private final String tableName;
     private final HitPolicy hitPolicy;
+    private final boolean hasDefaultValues;
 
     private final List<DColumnModel> columns;
     private final List<DRowModel> rows;
@@ -60,56 +66,83 @@ public class DTableModel {
 
     private final org.kie.dmn.feel.runtime.decisiontables.DecisionTable dtable;
 
-    public DTableModel( DMNFEELHelper feel, String namespace, String dtName, DecisionTable dt ) {
+    public DTableModel( DMNFEELHelper feel, DMNModelImpl model, String dtName, String tableName, DecisionTable dt ) {
+        this.feel = feel;
+        this.model = model;
         this.dt = dt;
         this.dtName = dtName;
-        this.namespace = CodegenStringUtil.escapeIdentifier( namespace );
-        this.tableName = CodegenStringUtil.escapeIdentifier( dtName );
+        this.namespace = CodegenStringUtil.escapeIdentifier( model.getNamespace() );
+        this.tableName = CodegenStringUtil.escapeIdentifier( tableName );
         this.hitPolicy = fromString(dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : ""));
         this.columns = dt.getInput().stream()
                 .map( DColumnModel::new ).collect( toList() );
         this.outputs = dt.getOutput().stream()
                 .map( DOutputModel::new ).collect( toList() );
-        this.rows = dt.getRule().stream().map( dr -> new DRowModel( feel, dr ) ).collect( toList() );
+        this.rows = dt.getRule().stream().map( DRowModel::new ).collect( toList() );
 
         this.variableTypes = columns.stream().collect( toMap( DColumnModel::getName, DColumnModel::getType ) );
         this.dtable = new DecisionTableImpl( dtName, outputs );
+        this.hasDefaultValues = outputs.stream().allMatch( o -> o.defaultValue != null );
     }
 
-    public DTableModel compileAll( DMNFEELHelper feel, DMNCompilerContext ctx ) {
+    public DTableModel compileAll( DMNCompilerContext ctx ) {
         CompilerContext feelctx = feel.newCompilerContext();
         feelctx.setDoCompile( true );
         ctx.getVariables().forEach( (k, v) -> feelctx.addInputVariableType( k, ((BaseDMNTypeImpl ) v).getFeelType() ) );
 
-        initInputClauses(feel, feelctx);
-        initRows(feel, feelctx);
-        initOutputClauses(feel, feelctx);
+        Map<String, CompiledFEELExpression> compilationCache = new HashMap<>();
+        initInputClauses(feelctx, compilationCache);
+        initRows(feelctx, compilationCache);
+        initOutputClauses(feelctx);
         return this;
     }
 
-    private void initInputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
+    private void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        int index = 1;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
             if (inputValuesText != null) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            column.compiledInputClause = (CompiledFEELExpression) feel.compile( column.getName(), feelctx );
+            column.compiledInputClause = compileFeelExpression( feel, feelctx, compilationCache, column.getName(), index++ );
         }
     }
 
-    private void initRows( DMNFEELHelper feel, CompilerContext feelctx ) {
+    private void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        int index = 1;
         for (DRowModel row : rows) {
-            row.compiledOutputs = row.outputs.stream().map( expr -> (CompiledFEELExpression) feel.compile( expr, feelctx ) ).collect( toList() );
+            int rowIndex = index;
+            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( feel, feelctx, compilationCache, expr, rowIndex ) ).collect( toList() );
+            index++;
         }
     }
 
-    private void initOutputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
+    private CompiledFEELExpression compileFeelExpression( DMNFEELHelper feel, CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
+        return compilationCache.computeIfAbsent(expr, e -> (CompiledFEELExpression ) feel.compile( model, dt, dtName, e, feelctx, index ) );
+    }
+
+    private void initOutputClauses( CompilerContext feelctx ) {
         for (DOutputModel output : outputs) {
             String outputValuesText = getOutputValuesText( output.outputClause );
             if (outputValuesText != null) {
                 output.outputValues = feel.evaluateUnaryTests( outputValuesText, variableTypes );
             }
         }
+    }
+
+    public boolean hasDefaultValues() {
+        return hasDefaultValues;
+    }
+
+    public Object defaultToOutput( EvaluationContext ctx ) {
+        Map<String, Object> values = ctx.getAllValues();
+        if ( outputs.size() == 1 ) {
+            return feel.evaluate( outputs.get( 0 ).defaultValue, values );
+        }
+
+        // zip outputEntries with its name:
+        return IntStream.range( 0, outputs.size() ).boxed()
+                .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( outputs.get( i ).defaultValue, values ) ) );
     }
 
     public String getNamespace() {
@@ -163,7 +196,7 @@ public class DTableModel {
 
         private List<CompiledFEELExpression> compiledOutputs;
 
-        DRowModel(DMNFEELHelper feel, DecisionRule dr) {
+        DRowModel(DecisionRule dr) {
             this.inputs = dr.getInputEntry().stream()
                     .map( UnaryTests::getText ).collect( toList() );
             this.outputs = dr.getOutputEntry().stream()
@@ -232,10 +265,12 @@ public class DTableModel {
 
     public static class DOutputModel {
         private final OutputClause outputClause;
+        private final String defaultValue;
         private List<UnaryTest> outputValues;
 
         DOutputModel( OutputClause outputClause ) {
             this.outputClause = outputClause;
+            this.defaultValue = outputClause.getDefaultOutputEntry() != null ? outputClause.getDefaultOutputEntry().getText() : null;
         }
 
         org.kie.dmn.feel.runtime.decisiontables.DecisionTable.OutputClause asOutputClause() {
@@ -250,6 +285,10 @@ public class DTableModel {
                     return outputValues;
                 }
             };
+        }
+
+        public String getName() {
+            return outputClause.getName();
         }
     }
 

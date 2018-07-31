@@ -24,6 +24,9 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 
 @RunWith(Parameterized.class)
 public abstract class BaseDecisionTableTest {
+
+    private boolean oldValue;
+
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{ true, false };
@@ -37,11 +40,12 @@ public abstract class BaseDecisionTableTest {
 
     @Before
     public void before() {
+        oldValue = DMNCompilerConfigurationImpl.useExecModelCompiler;
         DMNCompilerConfigurationImpl.useExecModelCompiler = useExecModelCompiler;
     }
 
     @After
     public void after() {
-        DMNCompilerConfigurationImpl.useExecModelCompiler = false;
+        DMNCompilerConfigurationImpl.useExecModelCompiler = oldValue;
     }
 }
