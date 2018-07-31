@@ -84,7 +84,7 @@ public final class DMNRuntimeUtil {
         return runtime;
     }
 
-    private static DMNRuntime typeSafeGetKieRuntime(final KieContainer kieContainer) {
+    public static DMNRuntime typeSafeGetKieRuntime(final KieContainer kieContainer) {
         DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         ((DMNRuntimeImpl) dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
         return dmnRuntime;
