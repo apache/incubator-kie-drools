@@ -21,6 +21,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class ConferenceParametrization extends AbstractPersistable {
 
     public static final String TALK_TYPE_OF_TIMESLOT = "Talk type of timeslot";
+    public static final String TALK_TYPE_OF_ROOM = "Talk type of room";
     public static final String ROOM_UNAVAILABLE_TIMESLOT = "Room unavailable timeslot";
     public static final String ROOM_CONFLICT = "Room conflict";
     public static final String SPEAKER_UNAVAILABLE_TIMESLOT = "Speaker unavailable timeslot";
@@ -51,6 +52,21 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String TALK_PREFERRED_ROOM_TAG = "Talk preferred room tag";
     public static final String TALK_UNDESIRED_ROOM_TAG = "Talk undesired room tag";
 
+    private int talkTypeOfTimeslot = 10000;
+    private int talkTypeOfRoom = 10000;
+    private int roomUnavailableTimeslot = 10000;
+    private int roomConflict = 10;
+    private int speakerUnavailableTimeslot = 1;
+    private int speakerConflict = 1;
+    private int speakerRequiredTimeslotTag = 1;
+    private int speakerProhibitedTimeslotTag = 1;
+    private int talkRequiredTimeslotTag = 1;
+    private int talkProhibitedTimeslotTag = 1;
+    private int speakerRequiredRoomTag = 1;
+    private int speakerProhibitedRoomTag = 1;
+    private int talkRequiredRoomTag = 1;
+    private int talkProhibitedRoomTag = 1;
+
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
     private int audienceTypeDiversity = 1;
@@ -78,6 +94,118 @@ public class ConferenceParametrization extends AbstractPersistable {
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
+
+    public int getTalkTypeOfTimeslot() {
+        return talkTypeOfTimeslot;
+    }
+
+    public int getTalkTypeOfRoom() {
+        return talkTypeOfRoom;
+    }
+
+    public void setTalkTypeOfRoom(int talkTypeOfRoom) {
+        this.talkTypeOfRoom = talkTypeOfRoom;
+    }
+
+    public void setTalkTypeOfTimeslot(int talkTypeOfTimeslot) {
+        this.talkTypeOfTimeslot = talkTypeOfTimeslot;
+    }
+
+    public int getRoomUnavailableTimeslot() {
+        return roomUnavailableTimeslot;
+    }
+
+    public void setRoomUnavailableTimeslot(int roomUnavailableTimeslot) {
+        this.roomUnavailableTimeslot = roomUnavailableTimeslot;
+    }
+
+    public int getRoomConflict() {
+        return roomConflict;
+    }
+
+    public void setRoomConflict(int roomConflict) {
+        this.roomConflict = roomConflict;
+    }
+
+    public int getSpeakerUnavailableTimeslot() {
+        return speakerUnavailableTimeslot;
+    }
+
+    public void setSpeakerUnavailableTimeslot(int speakerUnavailableTimeslot) {
+        this.speakerUnavailableTimeslot = speakerUnavailableTimeslot;
+    }
+
+    public int getSpeakerConflict() {
+        return speakerConflict;
+    }
+
+    public void setSpeakerConflict(int speakerConflict) {
+        this.speakerConflict = speakerConflict;
+    }
+
+    public int getSpeakerRequiredTimeslotTag() {
+        return speakerRequiredTimeslotTag;
+    }
+
+    public void setSpeakerRequiredTimeslotTag(int speakerRequiredTimeslotTag) {
+        this.speakerRequiredTimeslotTag = speakerRequiredTimeslotTag;
+    }
+
+    public int getSpeakerProhibitedTimeslotTag() {
+        return speakerProhibitedTimeslotTag;
+    }
+
+    public void setSpeakerProhibitedTimeslotTag(int speakerProhibitedTimeslotTag) {
+        this.speakerProhibitedTimeslotTag = speakerProhibitedTimeslotTag;
+    }
+
+    public int getTalkRequiredTimeslotTag() {
+        return talkRequiredTimeslotTag;
+    }
+
+    public void setTalkRequiredTimeslotTag(int talkRequiredTimeslotTag) {
+        this.talkRequiredTimeslotTag = talkRequiredTimeslotTag;
+    }
+
+    public int getTalkProhibitedTimeslotTag() {
+        return talkProhibitedTimeslotTag;
+    }
+
+    public void setTalkProhibitedTimeslotTag(int talkProhibitedTimeslotTag) {
+        this.talkProhibitedTimeslotTag = talkProhibitedTimeslotTag;
+    }
+
+    public int getSpeakerRequiredRoomTag() {
+        return speakerRequiredRoomTag;
+    }
+
+    public void setSpeakerRequiredRoomTag(int speakerRequiredRoomTag) {
+        this.speakerRequiredRoomTag = speakerRequiredRoomTag;
+    }
+
+    public int getSpeakerProhibitedRoomTag() {
+        return speakerProhibitedRoomTag;
+    }
+
+    public void setSpeakerProhibitedRoomTag(int speakerProhibitedRoomTag) {
+        this.speakerProhibitedRoomTag = speakerProhibitedRoomTag;
+    }
+
+    public int getTalkRequiredRoomTag() {
+        return talkRequiredRoomTag;
+    }
+
+    public void setTalkRequiredRoomTag(int talkRequiredRoomTag) {
+        this.talkRequiredRoomTag = talkRequiredRoomTag;
+    }
+
+    public int getTalkProhibitedRoomTag() {
+        return talkProhibitedRoomTag;
+    }
+
+    public void setTalkProhibitedRoomTag(int talkProhibitedRoomTag) {
+        this.talkProhibitedRoomTag = talkProhibitedRoomTag;
+    }
 
     public int getThemeTrackConflict() {
         return themeTrackConflict;

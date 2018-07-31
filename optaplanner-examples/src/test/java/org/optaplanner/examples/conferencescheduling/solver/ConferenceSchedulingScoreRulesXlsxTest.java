@@ -83,13 +83,14 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     @Parameterized.Parameters(name = "{4}")
     public static Collection testSheetParameters() {
         List<Object[]> parametersList = new ArrayList<>();
-        Object[] currentParameterList;
 
         File testFile = new File(ConferenceSchedulingScoreRulesXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
             ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(true).read(testFile);
             TestConferenceSchedulingScoreRulesReader testFileReader = new TestConferenceSchedulingScoreRulesReader(workbook, initialSolution);
+
+            Object[] currentParameterList;
             while ((currentParameterList = testFileReader.nextTestSheetParameterList()) != null) {
                 parametersList.add(currentParameterList);
             }
