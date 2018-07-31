@@ -11,8 +11,10 @@
   </parent>
 
   <artifactId>drools-model-compiler</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
+    <java.module.name>org.drools.model-compiler</java.module.name>
     <version.jmh>1.19</version.jmh>
   </properties>
 
@@ -98,5 +100,21 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.drools.modelcompiler.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

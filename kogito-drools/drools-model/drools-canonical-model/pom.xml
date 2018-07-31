@@ -11,6 +11,11 @@
   </parent>
 
   <artifactId>drools-canonical-model</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <properties>
+    <java.module.name>org.drools.canonical-model</java.module.name>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -19,5 +24,21 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.drools.model.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
