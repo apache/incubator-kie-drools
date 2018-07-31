@@ -26,7 +26,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class ValidatorImportTest extends AbstractValidatorTest {
 
@@ -34,7 +33,8 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     public void testBaseModel_OK__ReaderInput() throws IOException {
         try (final Reader reader = getReader("import/Import-base-model.dmn")) {
             final List<DMNMessage> messages = validator.validate(reader,
-                                                                 VALIDATE_SCHEMA, VALIDATE_MODEL);// TODO , VALIDATE_COMPILATION);
+                                                                 // VALIDATE_SCHEMA, due to QName use not compliant. 
+                                                                 VALIDATE_MODEL);// TODO , VALIDATE_COMPILATION);
             assertThat( messages.toString(), messages.size(), is( 0 ) );
         }
     }
