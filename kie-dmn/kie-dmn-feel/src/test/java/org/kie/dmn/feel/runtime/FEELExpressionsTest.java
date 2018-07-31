@@ -16,14 +16,14 @@
 
 package org.kie.dmn.feel.runtime;
 
-import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELExpressionsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // quantified expressions
@@ -98,6 +98,6 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ someNestedList : { theList : [1, 2, 3] } , x : 47, result : x in someNestedList.theList }.result", Boolean.FALSE , null}
 
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }

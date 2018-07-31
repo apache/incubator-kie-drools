@@ -29,7 +29,7 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELListsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
 
@@ -110,6 +110,6 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
                         new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ), null }
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }
