@@ -44,7 +44,7 @@ public class DMNIncrementalCompilationTest {
     public void testUpgrade() throws Exception {
         final KieServices ks = KieServices.Factory.get();
 
-        ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-PR1999", "1.0");
+        ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.0");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/20180731-pr1997.dmn", this.getClass())
@@ -56,7 +56,7 @@ public class DMNIncrementalCompilationTest {
 
         checkTestUpgrade(kieContainer, runtime, "setFirstName", "setLastName", "Hello John Doe, your age is: 47");
 
-        ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-PR1999", "1.1");
+        ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.1");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v11,
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/20180731-pr1997.dmn", this.getClass())
