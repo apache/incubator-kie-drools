@@ -154,6 +154,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "package " ).append( pkgName ).append( ";\n" );
             sb.append( "\n" );
             sb.append( "import java.util.List;\n" );
+            sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
             sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
             sb.append( "import org.drools.model.*;\n" );
             sb.append( "import org.drools.modelcompiler.dsl.pattern.D;\n" );
@@ -170,7 +171,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             int exprCounter = 0;
 
             sb.append( "\n" );
-            sb.append( "    private static final UnitData<List> var_indexes = D.unitData(List.class, \"indexes\");\n" );
+            sb.append( "    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n" );
             for (int j = 0; j < dTableModel.getOutputSize(); j++) {
                 sb.append( "    private static final UnitData<List> var_output" + j + " = D.unitData(List.class, \"output" + j + "\");\n" );
             }
@@ -193,15 +194,15 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     sb.append( "                           (_this) -> GET_TEST(" + i + "," + j + ").apply( null, _this )),\n" );
                 }
 
-                sb.append( "                       D.on( var_indexes, " );
+                sb.append( "                       D.on( var_evaluator, " );
                 sb.append( IntStream.range( 0, dTableModel.getOutputSize() ).mapToObj( j -> "var_output" + j ).collect( joining(", ") ) );
-                sb.append( " ).execute(( indexes, " );
+                sb.append( " ).execute(( evaluator, " );
                 sb.append( IntStream.range( 0, dTableModel.getOutputSize() ).mapToObj( j -> "output" + j ).collect( joining(", ") ) );
                 sb.append( " ) -> {\n" );
                 for (int j = 0; j < dTableModel.getOutputSize(); j++) {
-                    sb.append( "                            output" + j + ".add(" + row.getOutputs().get(j) + ");\n" );
+                    sb.append( "                            output" + j + ".add(evaluator.getOutput(" + i + ", " + j + "));\n" );
                 }
-                sb.append( "                            indexes.add(" + (i+1) + ");\n" );
+                sb.append( "                            evaluator.registerFire(" + (i+1) + ");\n" );
 
                 sb.append( "                       }\n" );
                 sb.append( "        ));\n" );
@@ -298,7 +299,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     "    public static UnaryTest GET_TEST(int i, int j) {\n" +
                     "        List<UnaryTest> fs = TEST_ARRAY[i][j].getUnaryTests();\n" +
                     "        return fs.size() == 1 ? fs.get(0) : (a,b) -> fs.stream().anyMatch( f -> f.apply( a,b ) );\n" +
-                    "    }" );
+                    "    }\n" );
             sb.append( "\n" );
             sb.append( getUnaryTestsSource(ctx, feel, dTableModel, pkgName, clasName) );
             sb.append( "}\n" );
@@ -311,13 +312,15 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         }
 
         public String getUnaryTestsSource( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className ) {
-            Map<String, String> testClassesByInput = new HashMap<>();
-            StringBuilder sb = new StringBuilder();
-            sb.append( "    private static final CompiledFEELUnaryTests[][] TEST_ARRAY = new CompiledFEELUnaryTests[][] {\n" );
-
+            StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
+            StringBuilder instancesBuilder = new StringBuilder();
+
+            Map<String, String> testClassesByInput = new HashMap<>();
+            testArrayBuilder.append( "    private static final CompiledFEELUnaryTests[][] TEST_ARRAY = new CompiledFEELUnaryTests[][] {\n" );
+
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
-                sb.append( "            { " );
+                testArrayBuilder.append( "            { " );
                 DTableModel.DRowModel row = dTableModel.getRows().get(i);
                 for (int j = 0; j < row.getInputs().size(); j++) {
                     String input = row.getInputs().get(j);
@@ -326,25 +329,25 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
                         testsBuilder.append( "\n" );
+                        instancesBuilder.append( "    private static final CompiledFEELUnaryTests " + testClass + "_INSTANCE = new " + testClass + "();\n" );
                         testsBuilder.append( feel.getSourceForUnaryTest( pkgName, testClass, input, ctx ) );
                         testsBuilder.append( "\n" );
                     }
-                    sb.append( "new " ).append( testClass ).append( "()" );
+                    testArrayBuilder.append( testClass ).append( "_INSTANCE" );
                     if (j < row.getInputs().size()-1) {
-                        sb.append( ", " );
+                        testArrayBuilder.append( ", " );
                     }
                 }
                 if (i < dTableModel.getRows().size()-1) {
-                    sb.append( " },\n" );
+                    testArrayBuilder.append( " },\n" );
                 } else {
-                    sb.append( " }\n" );
+                    testArrayBuilder.append( " }\n" );
                 }
             }
 
-            sb.append( "    };\n" );
-            sb.append( testsBuilder );
+            testArrayBuilder.append( "    };\n" );
 
-            return sb.toString();
+            return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
     }
 }

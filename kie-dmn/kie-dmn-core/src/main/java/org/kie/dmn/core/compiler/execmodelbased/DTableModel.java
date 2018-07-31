@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,8 +23,10 @@ import java.util.Optional;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -38,7 +39,6 @@ import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.kie.dmn.model.v1_1.OutputClause;
 import org.kie.dmn.model.v1_1.UnaryTests;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -73,10 +73,43 @@ public class DTableModel {
         this.rows = dt.getRule().stream().map( dr -> new DRowModel( feel, dr ) ).collect( toList() );
 
         this.variableTypes = columns.stream().collect( toMap( DColumnModel::getName, DColumnModel::getType ) );
-        initInputs(feel);
-
         this.dtable = new DecisionTableImpl( dtName, outputs );
-        initOutputs(feel);
+    }
+
+    public DTableModel compileAll( DMNFEELHelper feel, DMNCompilerContext ctx ) {
+        CompilerContext feelctx = feel.newCompilerContext();
+        feelctx.setDoCompile( true );
+        ctx.getVariables().forEach( (k, v) -> feelctx.addInputVariableType( k, ((BaseDMNTypeImpl ) v).getFeelType() ) );
+
+        initInputClauses(feel, feelctx);
+        initRows(feel, feelctx);
+        initOutputClauses(feel, feelctx);
+        return this;
+    }
+
+    private void initInputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
+        for (DColumnModel column : columns) {
+            String inputValuesText = getInputValuesText( column.inputClause );
+            if (inputValuesText != null) {
+                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
+            }
+            column.compiledInputClause = (CompiledFEELExpression) feel.compile( column.getName(), feelctx );
+        }
+    }
+
+    private void initRows( DMNFEELHelper feel, CompilerContext feelctx ) {
+        for (DRowModel row : rows) {
+            row.compiledOutputs = row.outputs.stream().map( expr -> (CompiledFEELExpression) feel.compile( expr, feelctx ) ).collect( toList() );
+        }
+    }
+
+    private void initOutputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
+        for (DOutputModel output : outputs) {
+            String outputValuesText = getOutputValuesText( output.outputClause );
+            if (outputValuesText != null) {
+                output.outputValues = feel.evaluateUnaryTests( outputValuesText, variableTypes );
+            }
+        }
     }
 
     public String getNamespace() {
@@ -123,44 +156,27 @@ public class DTableModel {
         return dtable;
     }
 
-    public List<CompiledFEELExpression> getFeelExpressionsForInputs( DMNFEELHelper feel, DMNCompilerContext ctx) {
-        return feel.getFeelExpressionsForInputs( ctx, columns.stream().map( DColumnModel::getName ).collect( toList() ) );
-    }
-
     public static class DRowModel {
 
         private final List<String> inputs;
         private final List<String> outputs;
 
+        private List<CompiledFEELExpression> compiledOutputs;
+
         DRowModel(DMNFEELHelper feel, DecisionRule dr) {
             this.inputs = dr.getInputEntry().stream()
                     .map( UnaryTests::getText ).collect( toList() );
             this.outputs = dr.getOutputEntry().stream()
-                    .map( LiteralExpression::getText )
-                    .map( feel::evaluate )
-                    .map( DTableModel::feelValueToString ).collect( toList() );
+                    .map( LiteralExpression::getText ).collect( toList() );
         }
 
         public List<String> getInputs() {
             return inputs;
         }
 
-        public List<String> getOutputs() {
-            return outputs;
+        public Object evaluate(EvaluationContext ctx, int pos) {
+            return compiledOutputs.get( pos ).apply( ctx );
         }
-    }
-
-    public static String feelValueToString(Object value) {
-        if (value instanceof BigDecimal) {
-            return "new java.math.BigDecimal( \"" + value.toString() + "\" )";
-        }
-        if (value instanceof String) {
-            return "\"" + value.toString() + "\"";
-        }
-        if (value instanceof List) {
-            return "java.util.Arrays.asList( " + (( List ) value).stream().map( DTableModel::feelValueToString ).collect( joining(",") )  + " )";
-        }
-        return value == null ? "null" : value.toString();
     }
 
     public static class DColumnModel {
@@ -169,6 +185,7 @@ public class DTableModel {
         private final Type type;
 
         private List<UnaryTest> inputTests;
+        private CompiledFEELExpression compiledInputClause;
 
         DColumnModel(InputClause inputClause) {
             this.inputClause = inputClause;
@@ -199,23 +216,9 @@ public class DTableModel {
             }
             return null;
         }
-    }
 
-    private void initInputs(DMNFEELHelper feel) {
-        for (DColumnModel column : columns) {
-            String inputValuesText = getInputValuesText( column.inputClause );
-            if (inputValuesText != null) {
-                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
-            }
-        }
-    }
-
-    private void initOutputs(DMNFEELHelper feel) {
-        for (DOutputModel output : outputs) {
-            String outputValuesText = getOutputValuesText( output.outputClause );
-            if (outputValuesText != null) {
-                output.outputValues = feel.evaluateUnaryTests( outputValuesText, variableTypes );
-            }
+        public Object evaluate(EvaluationContext ctx) {
+            return compiledInputClause.apply( ctx );
         }
     }
 

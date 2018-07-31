@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
@@ -23,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class DMNUnit implements RuleUnit {
 
-    private Object[] inputs;
     private EvaluationContext evalCtx;
 
     private HitPolicy hitPolicy;
@@ -31,55 +29,49 @@ public abstract class DMNUnit implements RuleUnit {
 
     protected Object result;
 
-    private List<Integer> indexes = new ArrayList<>();
+    private DecisionTableEvaluator evaluator;
 
     private List<FEELEvent> events;
-
-    public List<Integer> getIndexes() {
-        return indexes;
-    }
-
-    // TODO
-    public Set<String> getRequirements() {
-        return Collections.emptySet();
-    }
 
     public Object getResult() {
         return result;
     }
 
-    public DMNDecisionResult execute( RuleUnitExecutor executor) {
+    DMNDecisionResult execute( String decisionId, RuleUnitExecutor executor) {
         executor.run(this);
-        DMNDecisionResultImpl result = new DMNDecisionResultImpl("x", "x", DecisionEvaluationStatus.SUCCEEDED, getResult(), Collections.emptyList());
-        return result;
+        return new DMNDecisionResultImpl(decisionId, decisionTable.getName(), DecisionEvaluationStatus.SUCCEEDED, getResult(), Collections.emptyList());
     }
 
     protected Object getValue( int pos ) {
-        return inputs[pos];
+        return evaluator.getInputs()[pos];
     }
 
-    public DMNUnit setInputs( Object[] inputs ) {
-        this.inputs = inputs;
-        return this;
-    }
-
-    public DMNUnit setEvalCtx( EvaluationContext evalCtx ) {
+    DMNUnit setEvalCtx( EvaluationContext evalCtx ) {
         this.evalCtx = evalCtx;
         return this;
     }
 
-    public DMNUnit setHitPolicy( HitPolicy hitPolicy ) {
+    DMNUnit setHitPolicy( HitPolicy hitPolicy ) {
         this.hitPolicy = hitPolicy;
         return this;
     }
 
-    public DMNUnit setDecisionTable( DecisionTable decisionTable ) {
+    DMNUnit setDecisionTable( DecisionTable decisionTable ) {
         this.decisionTable = decisionTable;
         return this;
     }
 
-    protected Object applyHitPolicy(List<Object>... results) {
-        if (indexes.isEmpty()) {
+    DMNUnit setDecisionTableEvaluator( DecisionTableEvaluator evaluator ) {
+        this.evaluator = evaluator;
+        return this;
+    }
+
+    public DecisionTableEvaluator getEvaluator() {
+        return evaluator;
+    }
+
+    protected Object applyHitPolicy( List<Object>... results) {
+        if (evaluator.getIndexes().isEmpty()) {
             if( hitPolicy.getDefaultValue() != null ) {
                 return hitPolicy.getDefaultValue();
             }
@@ -91,7 +83,7 @@ public abstract class DMNUnit implements RuleUnit {
                     Collections.EMPTY_LIST ) );
         }
 
-        List<? extends Indexed> matches = indexes.stream().map( i -> (Indexed ) () -> i ).collect( toList() );
+        List<? extends Indexed> matches = evaluator.getIndexes().stream().map( i -> (Indexed ) () -> i ).collect( toList() );
         if (results.length == 1) {
             return hitPolicy.getDti().dti( evalCtx, decisionTable, matches, results[0] );
         }
