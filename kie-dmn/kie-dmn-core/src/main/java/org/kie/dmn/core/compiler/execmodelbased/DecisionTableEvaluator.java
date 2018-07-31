@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.Null;
 
 public class DecisionTableEvaluator {
     private final DTableModel dTableModel;

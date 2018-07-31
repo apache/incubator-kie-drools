@@ -81,19 +81,19 @@ public class DTableModel {
         feelctx.setDoCompile( true );
         ctx.getVariables().forEach( (k, v) -> feelctx.addInputVariableType( k, ((BaseDMNTypeImpl ) v).getFeelType() ) );
 
-        initInputs(feel, feelctx);
+        initInputClauses(feel, feelctx);
         initRows(feel, feelctx);
-        initOutputs(feel, feelctx);
+        initOutputClauses(feel, feelctx);
         return this;
     }
 
-    private void initInputs( DMNFEELHelper feel, CompilerContext feelctx ) {
+    private void initInputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
             if (inputValuesText != null) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            column.compiledInput = (CompiledFEELExpression) feel.compile( column.getName(), feelctx );
+            column.compiledInputClause = (CompiledFEELExpression) feel.compile( column.getName(), feelctx );
         }
     }
 
@@ -103,7 +103,7 @@ public class DTableModel {
         }
     }
 
-    private void initOutputs( DMNFEELHelper feel, CompilerContext feelctx ) {
+    private void initOutputClauses( DMNFEELHelper feel, CompilerContext feelctx ) {
         for (DOutputModel output : outputs) {
             String outputValuesText = getOutputValuesText( output.outputClause );
             if (outputValuesText != null) {
@@ -185,7 +185,7 @@ public class DTableModel {
         private final Type type;
 
         private List<UnaryTest> inputTests;
-        private CompiledFEELExpression compiledInput;
+        private CompiledFEELExpression compiledInputClause;
 
         DColumnModel(InputClause inputClause) {
             this.inputClause = inputClause;
@@ -218,7 +218,7 @@ public class DTableModel {
         }
 
         public Object evaluate(EvaluationContext ctx) {
-            return compiledInput.apply( ctx );
+            return compiledInputClause.apply( ctx );
         }
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.compiler.execmodelbased;
+package org.kie.dmn.feel.util;
 
 public class Null {
 
