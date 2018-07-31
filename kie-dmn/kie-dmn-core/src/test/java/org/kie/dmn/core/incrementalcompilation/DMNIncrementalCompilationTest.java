@@ -54,28 +54,7 @@ public class DMNIncrementalCompilationTest {
         final KieContainer kieContainer = ks.newKieContainer(releaseId_v10);
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
 
-        {
-            DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997");
-            assertThat(runtime, notNullValue());
-
-            Object personByReflection = kieContainer.getClassLoader().loadClass("acme.Person").newInstance();
-            Method setFirstNameMethod = personByReflection.getClass().getMethod("setFirstName", String.class);
-            setFirstNameMethod.invoke(personByReflection, "John");
-            Method setLastNameMethod = personByReflection.getClass().getMethod("setLastName", String.class);
-            setLastNameMethod.invoke(personByReflection, "Doe");
-            Method setAgeMethod = personByReflection.getClass().getMethod("setAge", int.class);
-            setAgeMethod.invoke(personByReflection, 47);
-
-            DMNContext context = DMNFactory.newContext();
-            context.set("a Person", personByReflection);
-
-            DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            LOG.debug("{}", dmnResult);
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-            DMNContext result = dmnResult.getContext();
-            assertThat(result.get("Say hello and age"), is(new StringBuilder("Hello John Doe, your age is: ").append(47).toString()));
-        }
+        checkTestUpgrade(kieContainer, runtime, "setFirstName", "setLastName", "Hello John Doe, your age is: 47");
 
         ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-PR1999", "1.1");
         KieHelper.createAndDeployJar(ks,
@@ -86,29 +65,35 @@ public class DMNIncrementalCompilationTest {
                                        .setTargetPath("acme/Person.java"));
         kieContainer.updateToVersion(releaseId_v11);
 
-        {
-            // the Model does NOT change in its NAME or ID, but it does change indeed in the LiteralExpression decision logic.
-            DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997"); //  // NO change v1.0 -> v1.1
-            assertThat(runtime, notNullValue());
+        checkTestUpgrade(kieContainer, runtime, "setFN", "setLN", "UPGRADED Hello John Doe, your age is: 47");
+    }
 
-            Object personByReflection = kieContainer.getClassLoader().loadClass("acme.Person").newInstance();
-            Method setFirstNameMethod = personByReflection.getClass().getMethod("setFN", String.class); // change v1.0 -> v1.1
-            setFirstNameMethod.invoke(personByReflection, "John");
-            Method setLastNameMethod = personByReflection.getClass().getMethod("setLN", String.class); // change v1.0 -> v1.1
-            setLastNameMethod.invoke(personByReflection, "Doe");
-            Method setAgeMethod = personByReflection.getClass().getMethod("setAge", int.class);
-            setAgeMethod.invoke(personByReflection, 47);
+    private void checkTestUpgrade(final KieContainer kieContainer,
+                                  final DMNRuntime runtime,
+                                  String methodNameForFirstName,
+                                  String methodNameForLastName,
+                                  String sayHelloAndAgeDecisionResultValue) throws Exception {
+        // the Model does NOT change in its NAME or ID, but it does change indeed in the LiteralExpression decision logic.
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997"); //  // NO change v1.0 -> v1.1
+        assertThat(runtime, notNullValue());
 
-            DMNContext context = DMNFactory.newContext();
-            context.set("a Person", personByReflection);
+        Object personByReflection = kieContainer.getClassLoader().loadClass("acme.Person").newInstance();
+        Method setFirstNameMethod = personByReflection.getClass().getMethod(methodNameForFirstName, String.class);// change v1.0 -> v1.1
+        setFirstNameMethod.invoke(personByReflection, "John");
+        Method setLastNameMethod = personByReflection.getClass().getMethod(methodNameForLastName, String.class);// change v1.0 -> v1.1
+        setLastNameMethod.invoke(personByReflection, "Doe");
+        Method setAgeMethod = personByReflection.getClass().getMethod("setAge", int.class);
+        setAgeMethod.invoke(personByReflection, 47);
 
-            DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            LOG.debug("{}", dmnResult);
-            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        DMNContext context = DMNFactory.newContext();
+        context.set("a Person", personByReflection);
 
-            DMNContext result = dmnResult.getContext();
-            assertThat(result.get("Say hello and age"), is(new StringBuilder("UPGRADED Hello John Doe, your age is: ").append(47).toString())); // change v1.0 -> v1.1
-        }
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Say hello and age"), is(sayHelloAndAgeDecisionResultValue));// change v1.0 -> v1.1
     }
 }
 
