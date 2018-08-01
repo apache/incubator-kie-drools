@@ -426,7 +426,7 @@ public class DMNEvaluatorCompiler {
         return trim.startsWith( "\"" ) && trim.endsWith( "\"" ) && trim.length() >= 2 ? trim.substring( 1, trim.length()-1 ) : trim;
     }
 
-    private String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement) {
+    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement) {
         if ( typeRef.getNamespaceURI() == null || typeRef.getNamespaceURI().isEmpty() ) {
             // TODO this could have actually been populated during unmarshalling, but requires throughout customization of the Stax reader.
             String namespaceURI = fromElement.getNamespaceURI(typeRef.getPrefix());
@@ -484,21 +484,8 @@ public class DMNEvaluatorCompiler {
             String id = oc.getId();
             String outputValuesText = Optional.ofNullable( oc.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
             String defaultValue = oc.getDefaultOutputEntry() != null ? oc.getDefaultOutputEntry().getText() : null;
-            BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+            BaseDMNTypeImpl typeRef = inferTypeRef( model, dt, oc );
             java.util.List<UnaryTest> outputValues = null;
-            if ( oc.getTypeRef() != null ) {
-                QName outputExpressionTypeRef = oc.getTypeRef();
-                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
-                if( typeRef == null ) {
-                    typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
-                }
-            } else if (dt.getOutput().size() == 1 && (dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry)) {
-                QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
-                // if inferredTypeRef is null, a std err will have been reported
-                if (inferredTypeRef != null) {
-                    typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
-                }
-            }
 
             if ( outputValuesText != null ) {
                 outputValues = textToUnaryTestList( ctx,
@@ -610,6 +597,24 @@ public class DMNEvaluatorCompiler {
         return dtee;
     }
 
+    public static BaseDMNTypeImpl inferTypeRef( DMNModelImpl model, DecisionTable dt, OutputClause oc ) {
+        BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+        if ( oc.getTypeRef() != null ) {
+            QName outputExpressionTypeRef = oc.getTypeRef();
+            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
+            if( typeRef == null ) {
+                typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+            }
+        } else if (dt.getOutput().size() == 1 && (dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry)) {
+            QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
+            // if inferredTypeRef is null, a std err will have been reported
+            if (inferredTypeRef != null) {
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+            }
+        }
+        return typeRef;
+    }
+
     public static java.util.List<String> getParameters(DMNModelImpl model, DMNBaseNode node, DecisionTable dt) {
         java.util.List<String> parameterNames = new ArrayList<>();
         if ( node instanceof BusinessKnowledgeModelNode ) {
@@ -647,7 +652,7 @@ public class DMNEvaluatorCompiler {
      * @param recursionIdx start of the recursion is the DecisionTable model node itself
      * @return the inferred `typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
      */
-    private QName recurseUpToInferTypeRef(DMNModelImpl model, OutputClause originalElement, DMNElement recursionIdx) {
+    private static QName recurseUpToInferTypeRef(DMNModelImpl model, OutputClause originalElement, DMNElement recursionIdx) {
         if ( recursionIdx.getParent() instanceof Decision ) {
             InformationItem parentVariable = ((Decision) recursionIdx.getParent()).getVariable();
             if ( parentVariable != null ) {
@@ -705,7 +710,7 @@ public class DMNEvaluatorCompiler {
      * @param variable the variable to extract typeRef
      * @return the `variable.typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
      */
-    private QName variableTypeRefOrErrIfNull(DMNModelImpl model, InformationItem variable) {
+    private static QName variableTypeRefOrErrIfNull(DMNModelImpl model, InformationItem variable) {
         if ( variable.getTypeRef() != null ) {
             return variable.getTypeRef();
         } else {

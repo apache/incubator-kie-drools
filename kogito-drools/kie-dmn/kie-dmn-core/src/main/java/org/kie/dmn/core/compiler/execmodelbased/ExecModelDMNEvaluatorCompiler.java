@@ -45,7 +45,7 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
+    static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
     enum GeneratorsEnum {
         EVALUATOR("Evaluator", new EvaluatorSourceGenerator()),
@@ -157,7 +157,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "package " ).append( pkgName ).append( ";\n" );
             sb.append( "\n" );
             sb.append( "import java.util.List;\n" );
-//            sb.append( "import " + EvaluationContext.class.getCanonicalName() + ";\n" );
             sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
             sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
             sb.append( "import org.drools.model.*;\n" );
@@ -175,7 +174,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             int exprCounter = 0;
 
             sb.append( "\n" );
-//            sb.append( "    private static final Global<EvaluationContext> evalCtx = globalOf(EvaluationContext.class, \"defaultpkg\", \"list\");\n" );
             sb.append( "    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n" );
             for (int j = 0; j < dTableModel.getOutputSize(); j++) {
                 sb.append( "    private static final UnitData<List> var_output" + j + " = D.unitData(List.class, \"output" + j + "\");\n" );
