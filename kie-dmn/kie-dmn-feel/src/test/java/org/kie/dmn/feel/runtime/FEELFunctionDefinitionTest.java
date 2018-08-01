@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
@@ -25,7 +24,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELFunctionDefinitionTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // function definition and invocation
@@ -85,6 +84,6 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                 {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
                 {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r2 : m.n.f1() }.r2", "Hi", null }
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }

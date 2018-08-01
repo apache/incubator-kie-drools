@@ -17,14 +17,13 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELValuesConstantsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // constants
@@ -50,6 +49,6 @@ public class FEELValuesConstantsTest extends BaseFEELTest {
                 { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" , null},
                 { "\"\"", "" , null}
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }

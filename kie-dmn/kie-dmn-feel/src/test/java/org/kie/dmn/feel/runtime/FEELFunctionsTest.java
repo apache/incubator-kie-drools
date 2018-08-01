@@ -17,15 +17,15 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELFunctionsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // constants
@@ -151,6 +151,6 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null}
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }
