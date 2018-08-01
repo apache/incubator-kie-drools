@@ -162,6 +162,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 for (Definitions dmnModel : models) {
                     try {
                         if (flags.contains(VALIDATE_MODEL)) {
+                            // TODO I should actually pass-down only those referenced from the Imports...
                             results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
                             otherModel_Definitions.add(dmnModel);
                         }
