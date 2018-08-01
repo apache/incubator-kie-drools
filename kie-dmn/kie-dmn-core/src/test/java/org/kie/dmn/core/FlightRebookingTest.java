@@ -36,7 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class FlightRebookingTest extends BaseDecisionTableTest {
+public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     public FlightRebookingTest( boolean useExecModelCompiler ) {
         super( useExecModelCompiler );

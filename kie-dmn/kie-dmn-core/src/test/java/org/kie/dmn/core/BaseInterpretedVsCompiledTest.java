@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 
 @RunWith(Parameterized.class)
-public abstract class BaseDecisionTableTest {
+public abstract class BaseInterpretedVsCompiledTest {
 
     private boolean oldValue;
 
@@ -34,7 +34,7 @@ public abstract class BaseDecisionTableTest {
 
     private final boolean useExecModelCompiler;
 
-    public BaseDecisionTableTest( boolean useExecModelCompiler ) {
+    public BaseInterpretedVsCompiledTest( boolean useExecModelCompiler ) {
         this.useExecModelCompiler = useExecModelCompiler;
     }
 

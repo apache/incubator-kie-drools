@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
-public class DMNInputRuntimeTest extends BaseDecisionTableTest {
+public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     public DMNInputRuntimeTest( boolean useExecModelCompiler ) {
         super( useExecModelCompiler );

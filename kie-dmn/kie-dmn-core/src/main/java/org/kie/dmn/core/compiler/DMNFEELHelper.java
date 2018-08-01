@@ -268,10 +268,6 @@ public class DMNFEELHelper {
         return feel.evaluate( expression, ctx );
     }
 
-    public Object evaluate(String expression, Map<String, Object> inputVariables) {
-        return feel.evaluate( expression, inputVariables );
-    }
-
     public List<UnaryTest> evaluateUnaryTests(String expression) {
         return feel.evaluateUnaryTests( expression );
     }

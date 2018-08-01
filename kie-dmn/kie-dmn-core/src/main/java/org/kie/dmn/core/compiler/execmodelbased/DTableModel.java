@@ -56,15 +56,15 @@ public class DTableModel {
     private final String dtName;
     private final String tableName;
     private final HitPolicy hitPolicy;
-    private final boolean hasDefaultValues;
 
     private final List<DColumnModel> columns;
     private final List<DRowModel> rows;
     private final List<DOutputModel> outputs;
 
     private final Map<String, Type> variableTypes;
-
     private final org.kie.dmn.feel.runtime.decisiontables.DecisionTable dtable;
+
+    private boolean hasDefaultValues;
 
     public DTableModel( DMNFEELHelper feel, DMNModelImpl model, String dtName, String tableName, DecisionTable dt ) {
         this.feel = feel;
@@ -82,7 +82,6 @@ public class DTableModel {
 
         this.variableTypes = columns.stream().collect( toMap( DColumnModel::getName, DColumnModel::getType ) );
         this.dtable = new DecisionTableImpl( dtName, outputs );
-        this.hasDefaultValues = outputs.stream().allMatch( o -> o.defaultValue != null );
     }
 
     public DTableModel compileAll( DMNCompilerContext ctx ) {
@@ -93,7 +92,8 @@ public class DTableModel {
         Map<String, CompiledFEELExpression> compilationCache = new HashMap<>();
         initInputClauses(feelctx, compilationCache);
         initRows(feelctx, compilationCache);
-        initOutputClauses(feelctx);
+        initOutputClauses(feelctx, compilationCache);
+        this.hasDefaultValues = outputs.stream().allMatch( o -> o.compiledDefault != null );
         return this;
     }
 
@@ -121,11 +121,15 @@ public class DTableModel {
         return compilationCache.computeIfAbsent(expr, e -> (CompiledFEELExpression ) feel.compile( model, dt, dtName, e, feelctx, index ) );
     }
 
-    private void initOutputClauses( CompilerContext feelctx ) {
+    private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         for (DOutputModel output : outputs) {
             String outputValuesText = getOutputValuesText( output.outputClause );
             if (outputValuesText != null) {
                 output.outputValues = feel.evaluateUnaryTests( outputValuesText, variableTypes );
+            }
+            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
+            if (defaultValue != null) {
+                output.compiledDefault = compileFeelExpression( feel, feelctx, compilationCache, defaultValue, 0 );
             }
         }
     }
@@ -135,14 +139,13 @@ public class DTableModel {
     }
 
     public Object defaultToOutput( EvaluationContext ctx ) {
-        Map<String, Object> values = ctx.getAllValues();
         if ( outputs.size() == 1 ) {
-            return feel.evaluate( outputs.get( 0 ).defaultValue, values );
+            return outputs.get( 0 ).compiledDefault.apply( ctx );
         }
 
         // zip outputEntries with its name:
         return IntStream.range( 0, outputs.size() ).boxed()
-                .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( outputs.get( i ).defaultValue, values ) ) );
+                .collect( toMap( i -> outputs.get( i ).getName(), i -> outputs.get( i ).compiledDefault.apply( ctx ) ) );
     }
 
     public String getNamespace() {
@@ -265,12 +268,11 @@ public class DTableModel {
 
     public static class DOutputModel {
         private final OutputClause outputClause;
-        private final String defaultValue;
         private List<UnaryTest> outputValues;
+        private CompiledFEELExpression compiledDefault;
 
         DOutputModel( OutputClause outputClause ) {
             this.outputClause = outputClause;
-            this.defaultValue = outputClause.getDefaultOutputEntry() != null ? outputClause.getDefaultOutputEntry().getText() : null;
         }
 
         org.kie.dmn.feel.runtime.decisiontables.DecisionTable.OutputClause asOutputClause() {
