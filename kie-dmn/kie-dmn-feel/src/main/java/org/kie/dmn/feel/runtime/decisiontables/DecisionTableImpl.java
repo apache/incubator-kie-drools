@@ -129,15 +129,20 @@ public class DecisionTableImpl implements DecisionTable {
     }
 
     private Map<Integer, String> checkResults(EvaluationContext ctx, List<DTDecisionRule> matches, List<Object> results) {
+        return checkResults(outputs, ctx, matches, results);
+    }
+
+    public static Map<Integer, String> checkResults(List<? extends DecisionTable.OutputClause> outputs, EvaluationContext ctx, List<? extends Indexed> matches, List<Object> results) {
         Map<Integer, String> msgs = new TreeMap<>(  );
         int i = 0;
         for( Object result : results ) {
             if( outputs.size() == 1 ) {
-                checkOneResult( ctx, matches.get( i ), msgs, outputs.get( 0 ), result );
+                checkOneResult( ctx, matches.get( i ), msgs, outputs.get( 0 ), result, 1 );
             } else if( outputs.size() > 1 ) {
                 Map<String, Object> r = (Map<String, Object>) result;
-                for ( DTOutputClause output : outputs ) {
-                    checkOneResult( ctx, matches.get( i ), msgs, output, r.get( output.getName() ) );
+                int outputIndex = 1;
+                for ( DecisionTable.OutputClause output : outputs ) {
+                    checkOneResult( ctx, matches.get( i ), msgs, output, r.get( output.getName() ), outputIndex++ );
                 }
             }
             i++;
@@ -148,20 +153,19 @@ public class DecisionTableImpl implements DecisionTable {
     /**
      * This checks one "column" of the decision table output(s).
      */
-    private void checkOneResult(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object result) {
+    private static void checkOneResult(EvaluationContext ctx, Indexed rule, Map<Integer, String> msgs, DecisionTable.OutputClause dtOutputClause, Object result, int index) {
         if (dtOutputClause.isCollection() && result instanceof Collection) {
             for (Object value : (Collection) result) {
-                checkOneValue(ctx, rule, msgs, dtOutputClause, value);
+                checkOneValue(ctx, rule, msgs, dtOutputClause, value, index);
             }
         } else {
-            checkOneValue(ctx, rule, msgs, dtOutputClause, result);
+            checkOneValue(ctx, rule, msgs, dtOutputClause, result, index);
         }
     }
 
-    private void checkOneValue(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object value) {
+    private static void checkOneValue(EvaluationContext ctx, Indexed rule, Map<Integer, String> msgs, DecisionTable.OutputClause dtOutputClause, Object value, int index) {
         if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(value)) {
             // invalid type
-            int index = outputs.indexOf( dtOutputClause ) + 1;
             msgs.put( index,
                       "Invalid result type on rule #" + rule.getIndex() + ", output " +
                       (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#" + index) +
@@ -178,7 +182,6 @@ public class DecisionTableImpl implements DecisionTable {
             }
             if( ! found ) {
                 // invalid result
-                int index = outputs.indexOf( dtOutputClause ) + 1;
                 msgs.put( index,
                           "Invalid result value on rule #"+rule.getIndex()+", output "+
                           (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#"+index ) +

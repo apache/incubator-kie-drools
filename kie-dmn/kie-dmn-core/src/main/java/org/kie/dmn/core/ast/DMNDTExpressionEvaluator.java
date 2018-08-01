@@ -132,7 +132,7 @@ public class DMNDTExpressionEvaluator
         return r;
     }
 
-    private static class EventResults {
+    public static class EventResults {
         public boolean hasErrors = false;
         public List<Integer> matchedRules;
         public List<Integer> fired;
