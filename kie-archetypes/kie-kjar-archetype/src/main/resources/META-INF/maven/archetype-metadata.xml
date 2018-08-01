@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="${artifactId}" xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+                      xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <requiredProperties>
+    <requiredProperty key="groupId">
+      <defaultValue>org.kie.businessapp</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId">
+      <defaultValue>mybusinessapp</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="version">
+      <defaultValue>1.0</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="archetypeCatalog">
+      <defaultValue>local</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="caseProject">
+      <defaultValue>false</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet packaged="true" encoding="UTF-8">
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet packaged="true" encoding="UTF-8">
+      <directory>src/test/java</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>src/test/resources</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>global</directory>
+      <includes>
+        <include>**/*.gif</include>
+        <include>**/*.png</include>
+        <include>**/*.json</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>package-names-white-list</include>
+        <include>project.imports</include>
+        <include>project.repositories</include>
+        <include>.caseproject</include>
+        <include>readme.md</include>
+      </includes>
+    </fileSet>
+
+  </fileSets>
+
+</archetype-descriptor>
