@@ -102,7 +102,6 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
             DMNUnit unit = getDMNUnit()
                     .setEvalCtx( evalCtx )
                     .setDecisionTableEvaluator( decisionTableEvaluator )
-                    .setHitPolicy( dTableModel.getHitPolicy() )
                     .setDecisionTable( dTableModel.asDecisionTable() );
 
             Object result = unit.execute( node.getName(), executor ).getResult();
@@ -142,7 +141,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
     protected AbstractModelEvaluator initParameters( DMNFEELHelper feel, DMNCompilerContext ctx, DTableModel dTableModel, DMNModelImpl model, DMNBaseNode node, DecisionTable dt) {
         this.paramNames = getParameters( model, node, dt );
         this.feel = feel;
-        this.dTableModel = dTableModel.compileAll( feel, ctx );
+        this.dTableModel = dTableModel.compileAll( ctx );
         this.node = node;
         return this;
     }

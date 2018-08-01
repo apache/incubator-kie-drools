@@ -18,6 +18,7 @@ package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -33,6 +34,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.model.v1_1.DRGElement;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +70,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     @Override
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
-        DTableModel dTableModel = new DTableModel( feel, model.getNamespace(), dtName, dt );
+        String decisionName = dt.getParent() instanceof DRGElement ? dtName : ( dt.getId() != null ? dt.getId() :  "_" + UUID.randomUUID().toString() );
+        DTableModel dTableModel = new DTableModel( feel, model, dtName, decisionName, dt );
         AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
         evaluator.initParameters( feel, ctx, dTableModel, model, node, dt );
         return evaluator;
@@ -154,6 +157,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "package " ).append( pkgName ).append( ";\n" );
             sb.append( "\n" );
             sb.append( "import java.util.List;\n" );
+//            sb.append( "import " + EvaluationContext.class.getCanonicalName() + ";\n" );
             sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
             sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
             sb.append( "import org.drools.model.*;\n" );
@@ -171,6 +175,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             int exprCounter = 0;
 
             sb.append( "\n" );
+//            sb.append( "    private static final Global<EvaluationContext> evalCtx = globalOf(EvaluationContext.class, \"defaultpkg\", \"list\");\n" );
             sb.append( "    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n" );
             for (int j = 0; j < dTableModel.getOutputSize(); j++) {
                 sb.append( "    private static final UnitData<List> var_output" + j + " = D.unitData(List.class, \"output" + j + "\");\n" );
@@ -190,8 +195,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                 sb.append( "                .build( \n" );
 
                 for (int j = 0; j < dTableModel.getInputSize(); j++) {
-                    sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(GET_TEST_NAME(" + i + ", " + j + "),\n" );
-                    sb.append( "                           (_this) -> GET_TEST(" + i + "," + j + ").apply( null, _this )),\n" );
+                    sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(GET_TEST_NAME(" + i + ", " + j + "), var_evaluator,\n" );
+                    sb.append( "                           (_this, evaluator) -> GET_TEST(" + i + "," + j + ").apply( evaluator.getEvalCtx(), _this )),\n" );
                 }
 
                 sb.append( "                       D.on( var_evaluator, " );
@@ -202,7 +207,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                 for (int j = 0; j < dTableModel.getOutputSize(); j++) {
                     sb.append( "                            output" + j + ".add(evaluator.getOutput(" + i + ", " + j + "));\n" );
                 }
-                sb.append( "                            evaluator.registerFire(" + (i+1) + ");\n" );
+                sb.append( "                            evaluator.registerFire(" + i + ");\n" );
 
                 sb.append( "                       }\n" );
                 sb.append( "        ));\n" );
