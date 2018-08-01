@@ -1,0 +1,31 @@
+{ "themes":{
+        "jBPM":{
+           "Start Events" : "#9acd32|#000000|#000000",
+           "Catching Intermediate Events" : "#f5deb3|#a0522d|#000000",
+           "Throwing Intermediate Events" : "#8cabff|#008cec|#000000",
+           "End Events" : "#ff6347|#000000|#000000",
+           "Gateways" : "#f0e68c|#a67f00|#000000",
+           "Tasks" : "#fafad2|#000000|#000000",
+           "Subprocesses" : "#fafad2|#000000|#000000",
+           "Service Tasks" : "#fafad2|#000000|#000000",
+           "Data Objects" : "#C0C0C0|#000000|#000000",
+           "Swimlanes" : "#ffffff|#000000|#000000",
+           "Artifacts" : "#ffffff|#000000|#000000",
+           "Connecting Objects" : "#000000|#000000|#000000"
+        },
+        "HighContrast":{
+           "Start Events" : "#d2b29f|#000000|#000000",
+           "Catching Intermediate Events" : "#ffd3a6|#a37e25|#000000",
+           "Throwing Intermediate Events" : "#adbaf2|#000099|#000000",
+           "End Events" : "#ffc4d1|#000000|#000000",
+           "Gateways" : "#ccaea0|#330600|#000000",
+           "Tasks" : "#f3df8c|#000000|#000000",
+           "Subprocesses" : "#fafad2|#000000|#000000",
+           "Service Tasks" : "#f3df8c|#000000|#000000",
+           "Data Objects" : "#C0C0C0|#000000|#000000",
+           "Swimlanes" : "#ffffff|#000000|#000000",
+           "Artifacts" : "#ffffff|#000000|#000000",
+           "Connecting Objects" : "#000000|#000000|#000000"
+        }
+   }
+}
