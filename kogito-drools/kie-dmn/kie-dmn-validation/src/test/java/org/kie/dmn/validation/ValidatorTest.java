@@ -318,4 +318,10 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
 
+    @Test
+    public void testBoxedInvocationMissingExpression() {
+        // DROOLS-2813 DMN boxed invocation missing expression NPE and Validator issue
+        List<DMNMessage> validate = validator.validate(getReader("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", DMNRuntimeTest.class), VALIDATE_MODEL);
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
+    }
 }

@@ -136,6 +136,17 @@ public class DMNEvaluatorCompiler {
     private DMNExpressionEvaluator compileInvocation(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, Invocation expression) {
         Invocation invocation = expression;
         // expression must be a literal text with the name of the function
+        if (invocation.getExpression() == null || ((LiteralExpression) invocation.getExpression()).getText().isEmpty()) {
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  invocation,
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.MISSING_EXPRESSION_FOR_INVOCATION,
+                                  node.getIdentifierString());
+            return null;
+        }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
         DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null, feel.newFEELInstance() );
         for ( Binding binding : invocation.getBinding() ) {

@@ -28,7 +28,8 @@ public final class Msg {
     public static final Message1 MISSING_EXPRESSION_FOR_FUNCTION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for function '%s'. Skipping evaluation and returning null" );
     public static final Message1 MISSING_EXPRESSION_FOR_DECISION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Decision Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_NODE                         = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Node '%s'" );
-    public static final Message2 MISSING_EXPRESSION_FOR_INVOCATION                   = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing expression for parameter %s on node '%s'" );
+    public static final Message1 MISSING_EXPRESSION_FOR_INVOCATION                   = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for invocation node '%s'" );
+    public static final Message2 MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION          = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing expression for parameter %s on node '%s'");
     public static final Message1 MISSING_PARAMETER_FOR_INVOCATION                    = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing parameter for invocation node '%s'" );
     public static final Message2 MISSING_EXPRESSION_FOR_NAME                         = new Message2( DMNMessageType.MISSING_EXPRESSION, "No expression defined for name '%s' on node '%s'" );
     public static final Message1 MISSING_ENTRIES_ON_CONTEXT                          = new Message1( DMNMessageType.MISSING_EXPRESSION, "Context expression has no entries on node '%s'" );
