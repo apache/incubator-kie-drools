@@ -37,6 +37,7 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.InNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InstanceOfNode;
@@ -516,6 +517,8 @@ public class ASTBuilderVisitor
                 return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
             } else if( param instanceof InfixOpNode && ((InfixOpNode)param).isBoolean() ) {
                 return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if (param instanceof FunctionInvocationNode) {
+                return ASTBuilderFactory.newFunctionInvocationNode(ctx, name, params);
             } else if( param instanceof RangeNode ) {
                 return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
             } else if( param instanceof DashNode ) {
