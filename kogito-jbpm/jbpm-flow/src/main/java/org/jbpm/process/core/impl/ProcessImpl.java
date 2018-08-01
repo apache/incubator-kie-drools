@@ -19,7 +19,9 @@ package org.jbpm.process.core.impl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +51,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private ContextContainer contextContainer = new ContextContainerImpl();
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private transient Map<String, Object> runtimeMetaData = new HashMap<String, Object>();
-    private Set<String> imports;
+    private Set<String> imports = new HashSet<>(Arrays.asList("org.kie.api.runtime.process.CaseData", "org.kie.api.runtime.process.CaseAssignment"));
     private Map<String, String> globals;
     private List<String> functionImports;
 

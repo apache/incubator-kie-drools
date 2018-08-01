@@ -12,7 +12,10 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <process processType="Private" isExecutable="true" id="Minimal" name="&lt; &amp; &gt;" tns:packageName="com.sample" >
-
+    <extensionElements>
+     <tns:import name="org.kie.api.runtime.process.CaseAssignment" />
+     <tns:import name="org.kie.api.runtime.process.CaseData" />
+    </extensionElements>
     <!-- nodes -->
     <startEvent id="Node1" name="StartProcess" isInterrupting="true"/>
     <scriptTask id="_2" name="Hello" >

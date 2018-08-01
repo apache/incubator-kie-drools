@@ -152,7 +152,7 @@
           </bpmn2:resourceAssignmentExpression>
         </bpmn2:potentialOwner>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_cwGOH_gsEeaZ4bMlBcF_9g" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(definitionId == "PuppyScenarios.PuppyDefinition", ((String)data.get("stage1")).equals("Completed"))]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_cwGOH_gsEeaZ4bMlBcF_9g" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(definitionId == "PuppyScenarios.PuppyDefinition", ((String)data.get("stage1")).equals("Completed"))]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:sequenceFlow id="_A055E738-F10C-4691-A14F-67D419718617" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_360A8663-DAAF-487C-8136-AA55F9506BE2" targetRef="_F8F4B6AC-EC1F-4308-B99C-4A998C552E9B"/>
     <bpmn2:scriptTask id="_FA4790AD-9A61-4A02-BBF9-1C24CDBE2E9A" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="end" scriptFormat="http://www.java.com/java">

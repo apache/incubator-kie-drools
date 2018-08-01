@@ -63,7 +63,7 @@
             </semantic:sentry>
             <semantic:sentry id="_d2882dcb-a360-4326-b516-208fde40d094">
                 <semantic:ifPart id="_c647f915-7749-4c60-bddf-a0ae1b96c749">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("hwSpec") != null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_e6e4d23f-7692-44e4-85b6-cd12fafe716c">
@@ -73,7 +73,7 @@
             </semantic:sentry>
             <semantic:sentry id="_e1d2a726-dd4c-40da-b803-a0e3a2d36c33">
                 <semantic:ifPart id="_46e9626d-483d-4d97-9b9b-fe30cbc2b6e1">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null, data.get("approved") == true)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("hwSpec") != null, data.get("approved") == true)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_7b330ff7-bbfd-4221-9496-b3d217ec6ace">
@@ -108,37 +108,37 @@
             </semantic:sentry>
             <semantic:sentry id="_3e1e7a4a-5b46-442c-9452-42cb0a0e44dd">
                 <semantic:ifPart id="_5f9985b1-5b57-4dca-ae56-2ec393946851">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("delivered") == true)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("delivered") == true)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_4e14e7e2-8b3d-4ef3-aba4-9385a9eef072">
                 <semantic:ifPart id="_70ed2863-9055-4e7f-b511-debc286cf490">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("approved") != null)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("approved") != null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_9f286ce9-075d-4355-835c-d50326bfbe80">
                 <semantic:ifPart id="_f99aee45-1cc0-4d11-965b-0b599f793815">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("hwSpec") != null)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("hwSpec") != null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_a65eece6-fc9a-440b-85c9-c42ce6c75146">
                 <semantic:ifPart id="_523579d3-95b2-48d5-8652-7ea959de3527">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("approved") != null)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("approved") != null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_85390f9a-2852-46c0-bba3-e88d36f03a41">
                 <semantic:ifPart id="_0c9331b5-d08b-4661-a351-10cd3e237c55">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("ordered") == true)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("ordered") == true)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_8b8cc963-8bc2-4932-8f00-bfbaeacdf9d9">
                 <semantic:ifPart id="_bc4c6f3e-55ee-45f1-afd8-d3ba1efaabb7">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("shipped") == true)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("shipped") == true)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_c424f6bd-25da-402c-b694-9ca2cafab7e7">
                 <semantic:ifPart id="_684d48d9-9c70-45ce-bea7-4d93ef4ff687">
-                    <semantic:condition>org.kie.api.runtime.process.CaseData(data.get("delivered") == true)</semantic:condition>
+                    <semantic:condition>CaseData(data.get("delivered") == true)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:humanTask id="PID__dcbfd03c-9be7-4469-902f-fd4e241e8621" name="Prepare hardware spec" performerRef="role_3">

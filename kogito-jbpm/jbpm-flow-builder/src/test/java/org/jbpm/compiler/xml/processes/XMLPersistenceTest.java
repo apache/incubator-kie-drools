@@ -165,6 +165,8 @@ public class XMLPersistenceTest extends XMLTestCase {
         Set<String> imports = new HashSet<String>();
         imports.add("import1");
         imports.add("import2");
+        imports.add("org.kie.api.runtime.process.CaseAssignment");
+        imports.add("org.kie.api.runtime.process.CaseData");
         process.setImports(imports);
         
         Map<String, String> globals = new HashMap<String, String>();
@@ -570,7 +572,7 @@ public class XMLPersistenceTest extends XMLTestCase {
         
         assertEquals(16, process.getNodes().length);
         
-        assertEquals(2, process.getImports().size());
+        assertEquals(4, process.getImports().size());
         assertEquals(2, process.getGlobals().size());
         assertEquals(4, process.getVariableScope().getVariables().size());
         assertEquals(2, process.getSwimlaneContext().getSwimlanes().size());

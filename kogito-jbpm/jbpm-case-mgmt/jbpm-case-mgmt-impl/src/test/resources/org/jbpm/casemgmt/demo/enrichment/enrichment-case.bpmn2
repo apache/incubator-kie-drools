@@ -17,7 +17,6 @@
         <drools:metaValue><![CDATA[CASE]]></drools:metaValue>
       </drools:metaData>
       <drools:import name="org.jbpm.casemgmt.demo.enrichment.*"/>
-      <drools:import name="org.kie.api.runtime.process.CaseData"/>
       <drools:global identifier="docName" type="String"/>
     </bpmn2:extensionElements>
     <bpmn2:property id="caseFile_document" itemSubjectRef="_caseFile_documentItem"/>

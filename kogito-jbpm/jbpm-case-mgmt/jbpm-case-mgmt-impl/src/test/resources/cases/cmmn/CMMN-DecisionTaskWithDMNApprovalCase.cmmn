@@ -25,12 +25,12 @@
             </semantic:sentry>
             <semantic:sentry id="_669ad455-1c24-4f53-94d7-15107aad2d70">
                 <semantic:ifPart id="_00e5e6de-d5a1-4eee-a7be-5029eb16b47a">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("vacationDays") !=null, ((Number)data.get("vacationDays")).intValue() &gt; 25)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("vacationDays") !=null, ((Number)data.get("vacationDays")).intValue() &gt; 25)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_ab211c50-4ae2-4f5c-af9d-3162b5105513">
                 <semantic:ifPart id="_14ce53fa-88fe-4ac1-b1ae-17f206fc36aa">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("vacationDays") !=null, ((Number)data.get("vacationDays")).intValue() &lt;= 25)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("vacationDays") !=null, ((Number)data.get("vacationDays")).intValue() &lt;= 25)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:decisionTask id="PID__37b292f2-acbe-4641-8500-e6c0cb9a4d00" name="call my decision" decisionRef="_17cd72b5bfc76a73ad31c4c3a5d88a98">

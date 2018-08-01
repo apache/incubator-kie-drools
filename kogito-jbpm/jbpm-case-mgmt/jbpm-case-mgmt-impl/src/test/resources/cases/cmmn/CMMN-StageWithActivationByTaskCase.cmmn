@@ -18,7 +18,7 @@
             </semantic:sentry>
             <semantic:sentry id="_fad70655-693d-46c1-a34d-d69f1bb73e87">
                 <semantic:ifPart id="_b44d12af-ace7-4c63-a49f-1db95ff4df10">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("ordered") !=null)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("ordered") !=null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:humanTask id="PID__f82ef046-af50-4f71-9684-7c2b11c795e5" name="Complete to activate" performerRef="role_1">

@@ -46,7 +46,7 @@
         <bpmn2:dataInputAssociation id="_ju_kBVAKEeafR5ATvnlHeA">
           <bpmn2:targetRef>_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX</bpmn2:targetRef>
           <bpmn2:assignment id="_ju_kBlAKEeafR5ATvnlHeA">
-            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_ju_kB1AKEeafR5ATvnlHeA"><![CDATA[org.kie.api.runtime.process.CaseData(data.get("dataComplete") == true)]]></bpmn2:from>
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_ju_kB1AKEeafR5ATvnlHeA"><![CDATA[CaseData(data.get("dataComplete") == true)]]></bpmn2:from>
             <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_ju_kCFAKEeafR5ATvnlHeA">_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX</bpmn2:to>
           </bpmn2:assignment>
         </bpmn2:dataInputAssociation>

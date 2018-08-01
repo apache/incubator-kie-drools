@@ -73,7 +73,7 @@
           </bpmn2:resourceAssignmentExpression>
         </bpmn2:potentialOwner>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="__T-3Q-4EEeal0opAuGgvLw" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(definitionId == "CaseWithTwoStagesConditions", !((String)data.get("customData")).equals("none"))]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="__T-3Q-4EEeal0opAuGgvLw" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(definitionId == "CaseWithTwoStagesConditions", !((String)data.get("customData")).equals("none"))]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:adHocSubProcess id="_1BB26695-2446-48FF-B1E8-102236021CAB" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Stage Two" ordering="Sequential">
       <bpmn2:extensionElements>
@@ -129,7 +129,7 @@
           </bpmn2:resourceAssignmentExpression>
         </bpmn2:potentialOwner>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="__T-3Vu4EEeal0opAuGgvLw" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(definitionId == "CaseWithTwoStagesConditions", ((String)data.get("customData")).equals("none"))]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="__T-3Vu4EEeal0opAuGgvLw" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(definitionId == "CaseWithTwoStagesConditions", ((String)data.get("customData")).equals("none"))]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:sequenceFlow id="_4B6721A9-3253-43AB-821C-7EC0298E7409" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_97793062-93A6-4CC8-9DB8-43F30BC001E9" targetRef="_51298678-656D-434C-A1D1-912CA47417AE"/>
     <bpmn2:sequenceFlow id="_0F304A8D-0D85-4F48-8CC0-AD7E4BCA6833" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_51298678-656D-434C-A1D1-912CA47417AE" targetRef="_1BB26695-2446-48FF-B1E8-102236021CAB"/>

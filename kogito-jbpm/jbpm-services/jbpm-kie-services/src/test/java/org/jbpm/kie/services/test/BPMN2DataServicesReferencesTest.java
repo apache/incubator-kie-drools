@@ -47,6 +47,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
+import org.kie.api.runtime.process.CaseAssignment;
+import org.kie.api.runtime.process.CaseData;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
@@ -216,8 +218,13 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         Collection<String> refClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of referenced classes", refClasses );
         assertFalse( "Empty set of referenced classes", refClasses.isEmpty() );
-        assertEquals( "Number referenced classes", 1, refClasses.size() );
-        assertEquals( "Imported class in process", refClasses.iterator().next(), Person.class.getName() );
+        assertEquals( "Number referenced classes", 3, refClasses.size() );
+        String [] expected = {
+                              Person.class.getCanonicalName(),
+                              CaseAssignment.class.getCanonicalName(),
+                              CaseData.class.getCanonicalName()
+                      };
+        assertArrayEquals( "Imported class in process", expected, refClasses.toArray(new String [refClasses.size()]) );
     }
 
     @Test
@@ -249,8 +256,13 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         Collection<String> refClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of referenced classes", refClasses );
         assertFalse( "Empty set of referenced classes", refClasses.isEmpty() );
-        assertEquals( "Number referenced classes", 1, refClasses.size() );
-        assertEquals( "Imported class in process", refClasses.iterator().next(), Person.class.getName() );
+        assertEquals( "Number referenced classes", 3, refClasses.size() );
+        String [] expected = {
+                              Person.class.getCanonicalName(),
+                              CaseAssignment.class.getCanonicalName(),
+                              CaseData.class.getCanonicalName()
+                      };
+        assertArrayEquals( "Imported class in process", expected, refClasses.toArray(new String [refClasses.size()]) );
     }
 
     @Test
@@ -404,12 +416,14 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         assertNotNull( "Null set of java classes", javaClasses );
         assertFalse( "Empty set of java classes", javaClasses.isEmpty() );
 
-        assertEquals( "Number java classes", 4, javaClasses.size() );
+        assertEquals( "Number java classes", 6, javaClasses.size() );
         String [] expected = {
                 "java.lang.Object",
                 Person.class.getCanonicalName(),
                 OtherPerson.class.getCanonicalName(),
-                Thing.class.getCanonicalName()
+                Thing.class.getCanonicalName(),
+                CaseAssignment.class.getCanonicalName(),
+                CaseData.class.getCanonicalName()
         };
         Set<String> expectedClasses = new HashSet<String>(Arrays.asList(expected));
         for( String className : javaClasses ) {

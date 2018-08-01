@@ -25,7 +25,7 @@
       <bpmn2:incoming>_2A1C5AEA-9261-44CC-82A5-5FCFF33C810D</bpmn2:incoming>
       <bpmn2:outgoing>_F52202C2-7F79-45E6-A83E-F0B9EAE664B2</bpmn2:outgoing>
       <bpmn2:conditionalEventDefinition id="_kxEXAdf8EeaWo9b-_Nq0ug">
-        <bpmn2:condition xsi:type="bpmn2:tFormalExpression" id="_kxEXAtf8EeaWo9b-_Nq0ug" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(definitionId == "CaseFileConditionalEvent", ((java.util.List)data.get("Documents")).size() > 0)]]></bpmn2:condition>
+        <bpmn2:condition xsi:type="bpmn2:tFormalExpression" id="_kxEXAtf8EeaWo9b-_Nq0ug" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(definitionId == "CaseFileConditionalEvent", ((java.util.List)data.get("Documents")).size() > 0)]]></bpmn2:condition>
       </bpmn2:conditionalEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:scriptTask id="_90EF67EF-7D65-48C4-82BB-004E0D99BEC5" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Hello" scriptFormat="http://www.java.com/java">

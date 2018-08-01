@@ -78,7 +78,7 @@ public class BPMN2XMLTest extends XMLTestCase {
 			Diff diff = new Diff(original, result);
 			
 			// Ignore the sequence of nodes (or children nodes) when looking at these nodes
-			final HashSet<String> sequenceDoesNotMatter = new HashSet<String>();
+			final HashSet<String> sequenceDoesNotMatter = new HashSet<String>();			
 			sequenceDoesNotMatter.add("startEvent");
 			sequenceDoesNotMatter.add("scriptTask");
 			sequenceDoesNotMatter.add("endEvent");

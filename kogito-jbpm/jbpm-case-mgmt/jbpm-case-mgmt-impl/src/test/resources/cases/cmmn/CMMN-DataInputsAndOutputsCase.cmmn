@@ -25,12 +25,12 @@
             </semantic:sentry>
             <semantic:sentry id="_4217c7da-0802-4bf4-876e-e26890af2af4">
                 <semantic:ifPart id="_f523c09d-434e-43b1-ac48-687fe76a0d92">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("ordered") !=null)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("ordered") !=null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:sentry id="_af444c21-70e3-4aec-b0a4-081489c94108">
                 <semantic:ifPart id="_f7c1d480-39fd-44ad-b124-f270d1cd1abe">
-                    <semantic:condition language="http://www.jboss.org/drools/rule">org.kie.api.runtime.process.CaseData(data.get("shipped") !=null)</semantic:condition>
+                    <semantic:condition language="http://www.jboss.org/drools/rule">CaseData(data.get("shipped") !=null)</semantic:condition>
                 </semantic:ifPart>
             </semantic:sentry>
             <semantic:humanTask id="PID__e866f276-9244-4db3-a2a5-365ff443d414" name="First task" performerRef="role_1">

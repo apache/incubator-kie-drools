@@ -20,7 +20,7 @@
         <bpmn2:inputSet id="_JaoAglAwEeekOsAiqAUZKw"/>
         <bpmn2:outputSet id="_JaoAg1AwEeekOsAiqAUZKw"/>
       </bpmn2:ioSpecification>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_JaoAhFAwEeekOsAiqAUZKw" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(data.get("continue") == true)]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_JaoAhFAwEeekOsAiqAUZKw" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(data.get("continue") == true)]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:startEvent id="_CFF602B7-06FA-4BAD-907D-003FACBC5357" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:extensionElements>
