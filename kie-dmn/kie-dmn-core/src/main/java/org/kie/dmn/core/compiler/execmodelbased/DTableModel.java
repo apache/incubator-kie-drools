@@ -16,17 +16,22 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -35,6 +40,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DecisionRule;
 import org.kie.dmn.model.v1_1.DecisionTable;
 import org.kie.dmn.model.v1_1.InputClause;
@@ -45,6 +51,7 @@ import org.kie.dmn.model.v1_1.UnaryTests;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
 
@@ -63,8 +70,6 @@ public class DTableModel {
 
     private final Map<String, Type> variableTypes;
     private final org.kie.dmn.feel.runtime.decisiontables.DecisionTable dtable;
-
-    private boolean hasDefaultValues;
 
     public DTableModel( DMNFEELHelper feel, DMNModelImpl model, String dtName, String tableName, DecisionTable dt ) {
         this.feel = feel;
@@ -93,8 +98,29 @@ public class DTableModel {
         initInputClauses(feelctx, compilationCache);
         initRows(feelctx, compilationCache);
         initOutputClauses(feelctx, compilationCache);
-        this.hasDefaultValues = outputs.stream().allMatch( o -> o.compiledDefault != null );
+        validate();
         return this;
+    }
+
+    private void validate() {
+        if ( dt.getHitPolicy().equals( org.kie.dmn.model.v1_1.HitPolicy.PRIORITY) && !hasOutputValues() ) {
+            MsgUtil.reportMessage( ExecModelDMNEvaluatorCompiler.logger,
+                                   DMNMessage.Severity.ERROR,
+                                   dt.getParent(),
+                                   model,
+                                   null,
+                                   null,
+                                   Msg.MISSING_OUTPUT_VALUES,
+                                   dt.getParent() );
+        }
+    }
+
+    private boolean hasOutputValues() {
+        return outputs.stream().map( o -> o.outputValues ).anyMatch( l -> !l.isEmpty() );
+    }
+
+    public boolean hasDefaultValues() {
+        return outputs.stream().allMatch( o -> o.compiledDefault != null );
     }
 
     private void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
@@ -104,7 +130,7 @@ public class DTableModel {
             if (inputValuesText != null) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            column.compiledInputClause = compileFeelExpression( feel, feelctx, compilationCache, column.getName(), index++ );
+            column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
         }
     }
 
@@ -112,30 +138,35 @@ public class DTableModel {
         int index = 1;
         for (DRowModel row : rows) {
             int rowIndex = index;
-            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( feel, feelctx, compilationCache, expr, rowIndex ) ).collect( toList() );
+            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) ).collect( toList() );
             index++;
         }
     }
 
-    private CompiledFEELExpression compileFeelExpression( DMNFEELHelper feel, CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
-        return compilationCache.computeIfAbsent(expr, e -> (CompiledFEELExpression ) feel.compile( model, dt, dtName, e, feelctx, index ) );
+    private CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
+        return compilationCache.computeIfAbsent(expr, e -> e == null || e.isEmpty() ? ctx -> null : (CompiledFEELExpression ) feel.compile( model, element, msg, dtName, e, feelctx, index ) );
     }
 
     private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         for (DOutputModel output : outputs) {
-            String outputValuesText = getOutputValuesText( output.outputClause );
-            if (outputValuesText != null) {
-                output.outputValues = feel.evaluateUnaryTests( outputValuesText, variableTypes );
-            }
+            output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null) {
-                output.compiledDefault = compileFeelExpression( feel, feelctx, compilationCache, defaultValue, 0 );
+                output.compiledDefault = compileFeelExpression( output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue, 0 );
             }
         }
     }
 
-    public boolean hasDefaultValues() {
-        return hasDefaultValues;
+    private List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
+        String outputValuesText = Optional.ofNullable( output.outputClause.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
+        output.typeRef = inferTypeRef(model, dt, output.outputClause);
+        if (outputValuesText != null) {
+            return feel.evaluateUnaryTests( outputValuesText, variableTypes );
+        }
+        if ( output.typeRef != DMNTypeRegistry.UNKNOWN && output.typeRef.getAllowedValuesFEEL() != null) {
+            return output.typeRef.getAllowedValuesFEEL();
+        }
+        return Collections.emptyList();
     }
 
     public Object defaultToOutput( EvaluationContext ctx ) {
@@ -262,14 +293,11 @@ public class DTableModel {
         return Optional.ofNullable( inputClause.getInputValues() ).map( UnaryTests::getText ).orElse(null);
     }
 
-    private static String getOutputValuesText( OutputClause outputClause ) {
-        return  Optional.ofNullable( outputClause.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
-    }
-
     public static class DOutputModel {
         private final OutputClause outputClause;
         private List<UnaryTest> outputValues;
         private CompiledFEELExpression compiledDefault;
+        private BaseDMNTypeImpl typeRef;
 
         DOutputModel( OutputClause outputClause ) {
             this.outputClause = outputClause;
@@ -285,6 +313,16 @@ public class DTableModel {
                 @Override
                 public List<UnaryTest> getOutputValues() {
                     return outputValues;
+                }
+
+                @Override
+                public Type getType() {
+                    return typeRef.getFeelType();
+                }
+
+                @Override
+                public boolean isCollection() {
+                    return typeRef.isCollection();
                 }
             };
         }
