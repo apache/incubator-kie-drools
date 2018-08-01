@@ -18,15 +18,15 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELContextsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 { "{ first name : \"Bob\", birthday : date(\"1978-09-12\"), salutation : \"Hello \"+first name }",
@@ -62,6 +62,6 @@ public class FEELContextsTest extends BaseFEELTest {
 
 
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }

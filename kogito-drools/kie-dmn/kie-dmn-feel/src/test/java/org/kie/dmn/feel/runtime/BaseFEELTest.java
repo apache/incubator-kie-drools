@@ -16,7 +16,9 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +42,15 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
-    private final boolean doTestCompile = false;
+    public static enum FEEL_TARGET {
+        AST_INTERPRETED,
+        JAVA_TRANSLATED;
+    }
 
-    private final FEEL feel = doTestCompile ? FEEL.newInstance(Arrays.asList(new DoCompileFEELProfile())) : FEEL.newInstance();
+    @Parameterized.Parameter(3)
+    public FEEL_TARGET testFEELTarget;
+
+    private FEEL feel = null; // due to @Parameter injection by JUnit framework, need to defer FEEL init to actual instance method, to have the opportunity for the JUNit framework to initialize all the @Parameters
 
     @Parameterized.Parameter(0)
     public String expression;
@@ -55,6 +63,7 @@ public abstract class BaseFEELTest {
 
     @Test
     public void testExpression() {
+        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEEL.newInstance(Arrays.asList(new DoCompileFEELProfile())) : FEEL.newInstance();
         FEELEventListener listener = mock( FEELEventListener.class );
         feel.addListener( listener );
         feel.addListener( evt -> {
@@ -79,5 +88,16 @@ public abstract class BaseFEELTest {
         } else {
             assertThat( "Evaluating: '"+expression+"'", feel.evaluate( expression ), is( result ) );
         }
+    }
+
+    protected static List<Object[]> enrichWith4thParameter(final Object[][] cases) {
+        List<Object[]> results = new ArrayList<>();
+        for (Object[] c : cases) {
+            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED});
+        }
+        for (Object[] c : cases) {
+            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED});
+        }
+        return results;
     }
 }

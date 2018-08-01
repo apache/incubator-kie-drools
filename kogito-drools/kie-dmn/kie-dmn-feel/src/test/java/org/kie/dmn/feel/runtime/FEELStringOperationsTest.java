@@ -16,8 +16,8 @@
 
 package org.kie.dmn.feel.runtime;
 
-import java.util.Arrays;
 import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 
 public class FEELStringOperationsTest extends BaseFEELTest {
@@ -35,7 +35,7 @@ public class FEELStringOperationsTest extends BaseFEELTest {
                 { "\"string with \\\"quotes\\\"\"", "string with \"quotes\"", null},
                 { "\"a\\b\\t\\n\\f\\r\\\"\\'\\\\\\u2202b\"", "a\b\t\n\f\r\"\'\\\u2202b", null}
         };
-        return Arrays.asList( cases );
+        return enrichWith4thParameter(cases);
     }
 }
 
