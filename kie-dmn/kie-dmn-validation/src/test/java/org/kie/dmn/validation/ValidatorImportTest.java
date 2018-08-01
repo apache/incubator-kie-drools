@@ -22,19 +22,23 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.validation.DMNValidator.Validation;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 
 public class ValidatorImportTest extends AbstractValidatorTest {
 
     @Test
     public void testBaseModel_OK__ReaderInput() throws IOException {
-        try (final Reader reader = getReader("import/Import-base-model.dmn")) {
-            final List<DMNMessage> messages = validator.validate(reader,
-                                                                 // VALIDATE_SCHEMA, due to QName use not compliant. 
-                                                                 VALIDATE_MODEL);// TODO , VALIDATE_COMPILATION);
+        try (
+                final Reader reader0 = getReader("import/Base-model.dmn");
+                final Reader reader1 = getReader("import/Import-base-model.dmn");) {
+            final List<DMNMessage> messages = ((DMNValidatorImpl) validator).validateWith( // VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
+                                                                                           Validation.VALIDATE_MODEL,
+                                                                                           Validation.VALIDATE_COMPILATION
+            )
+                                                                            .theseModels(reader0, reader1);
             assertThat( messages.toString(), messages.size(), is( 0 ) );
         }
     }

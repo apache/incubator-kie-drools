@@ -126,6 +126,79 @@ public class DMNValidatorImpl implements DMNValidator {
         kieContainer.ifPresent( KieContainer::dispose );
     }
 
+    public static class ValidatorBuilder {
+
+        private final EnumSet<Validation> flags;
+        private final DMNValidatorImpl validator;
+
+        public ValidatorBuilder(DMNValidatorImpl dmnValidatorImpl, Validation[] options) {
+            this.validator = dmnValidatorImpl;
+            this.flags = EnumSet.copyOf(Arrays.asList(options));
+        }
+
+        public List<DMNMessage> theseModels(Reader... readers) {
+            DMNMessageManager results = new DefaultDMNMessagesManager();
+            if (flags.contains(VALIDATE_SCHEMA)) {
+                for (Reader reader : readers) {
+                    results.addAll(validator.validateSchema(reader));
+                }
+            }
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
+                if (results.hasErrors()) {
+                    // TODO insert message that will not progress to validatation as other errors were detected.
+                    return results.getMessages();
+                }
+                List<Definitions> models = new ArrayList<>();
+                for (Reader reader : readers) {
+                    Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(reader);
+                    Definitions.normalize(dmndefs);
+                    models.add(dmndefs);
+                }
+                // TODO sort Models.
+                List<Definitions> otherModel_Definitions = new ArrayList<>();
+                List<DMNModel> otherModel_DMNModels = new ArrayList<>();
+                for (Definitions dmnModel : models) {
+                    try {
+                        if (flags.contains(VALIDATE_MODEL)) {
+                            results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
+                            otherModel_Definitions.add(dmnModel);
+                        }
+                        if (flags.contains(VALIDATE_COMPILATION)) {
+                            DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
+                            DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
+                            if (model != null) {
+                                results.addAll(model.getMessages());
+                                otherModel_DMNModels.add(model);
+                            } else {
+                                MsgUtil.reportMessage(LOG,
+                                                      DMNMessage.Severity.ERROR,
+                                                      dmnModel,
+                                                      results,
+                                                      null,
+                                                      null,
+                                                      Msg.FAILED_VALIDATOR);
+                            }
+                        }
+                    } catch (Throwable t) {
+                        MsgUtil.reportMessage(LOG,
+                                              DMNMessage.Severity.ERROR,
+                                              dmnModel,
+                                              results,
+                                              t,
+                                              null,
+                                              Msg.FAILED_VALIDATOR);
+                    }
+                }
+            }
+            return results.getMessages();
+        }
+
+    }
+
+    public ValidatorBuilder validateWith(Validation... options) {
+        return new ValidatorBuilder(this, options);
+    }
+
     @Override
     public List<DMNMessage> validate(Definitions dmnModel) {
         return validate( dmnModel, VALIDATE_MODEL );
@@ -220,7 +293,7 @@ public class DMNValidatorImpl implements DMNValidator {
         return results.getMessages();
     }
 
-    private String readContent(Reader reader)
+    private static String readContent(Reader reader)
             throws IOException {
         char[] b = new char[32 * 1024];
         StringBuilder content = new StringBuilder(  );
@@ -234,7 +307,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     private void validateModelCompilation(Definitions dmnModel, DMNMessageManager results, EnumSet<Validation> flags) {
         if( flags.contains( VALIDATE_MODEL ) ) {
-            results.addAll( validateModel( dmnModel ) );
+            results.addAll(validateModel(dmnModel, Collections.emptyList()));
         }
         if( flags.contains( VALIDATE_COMPILATION ) ) {
             results.addAll( validateCompilation( dmnModel, results ) );
@@ -262,7 +335,7 @@ public class DMNValidatorImpl implements DMNValidator {
         return problems;
     }
 
-    private List<DMNMessage> validateModel(Definitions dmnModel) {
+    private List<DMNMessage> validateModel(Definitions dmnModel, List<Definitions> otherModel_Definitions) {
         if (!kieContainer.isPresent()) {
             return failedInitMsg;
         }
