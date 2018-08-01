@@ -2128,5 +2128,17 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("invoking a function on a literal context"), is(new BigDecimal(3)));
     }
+
+    @Test
+    public void testBoxedInvocationMissingExpression() {
+        // DROOLS-2813 DMN boxed invocation missing expression NPE and Validator issue
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", this.getClass());
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7e400266-b8ff-4418-bc81-03bf8d642ee3", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(true));
+
+        assertTrue(dmnModel.getMessages().stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
+    }
 }
 

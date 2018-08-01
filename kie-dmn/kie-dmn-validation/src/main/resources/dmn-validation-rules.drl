@@ -34,7 +34,7 @@ rule INVOCATION_MISSING_EXPR
 when
     $b : Binding( expression == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR, $b, Msg.MISSING_EXPRESSION_FOR_INVOCATION,
+    reporter.report( DMNMessage.Severity.ERROR, $b, Msg.MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION,
                      $b.getParameter() != null ? $b.getParameter().getIdentifierString() : "[unnamed]",
                      $b.getParentDRDElement().getIdentifierString() );
 end
@@ -85,6 +85,13 @@ when
   $c2 : InformationItem( name == $c1.name, parent == $c1.parent, this != $c1 )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $c1 , Msg.DUPLICATED_RELATION_COLUMN, $c1.getName(), $c1.getParentDRDElement().getIdentifierString() );
+end
+
+rule INVOCATION_MISSING_EXPRESSION
+when
+    $inv : Invocation( expression == null || expression#LiteralExpression.text == "" )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.MISSING_EXPRESSION_FOR_INVOCATION, $inv.getParentDRDElement().getIdentifierString() );
 end
 
 // The parameter names in the Binding elements SHALL be a subset of the formalParameters of the calledFunction.
