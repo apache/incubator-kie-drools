@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -205,6 +206,54 @@ public class ImportsTest {
         assertThat(evaluateAll.getDecisionResultByName("Say the Greeting to Person").getResult(), is("Hello, John"));
     }
 
+    @Test
+    public void testImportTransitiveBaseModel() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn",
+                                                                                 "ModelB2.dmn",
+                                                                                 "ModelC.dmn");
+        getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "Say hello 1ID1D");
+    }
+
+    @Test
+    public void testImportTransitiveEvaluate2Layers() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn",
+                                                                                 "ModelB2.dmn",
+                                                                                 "ModelC.dmn");
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
+
+        DMNContext context = runtime.newContext();
+        context.set("modelA", mapOf(entry("Person name", "John")));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        assertThat(evaluateAll.getDecisionResultByName("Evaluating Say Hello").getResult(), is("Evaluating Say Hello to: Hello, John"));
+    }
+
+    @Test
+    public void testImportTransitiveEvaluate3Layers() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn",
+                                                                                 "ModelB2.dmn",
+                                                                                 "ModelC.dmn");
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "Model C");
+
+        DMNContext context = runtime.newContext();
+        context.set("Model B", mapOf(entry("modelA", mapOf(entry("Person name", "B.A.John")))));
+        context.set("Model B2", mapOf(entry("modelA", mapOf(entry("Person name", "B2.A.John2")))));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        assertThat(evaluateAll.getDecisionResultByName("Model C Decision based on Bs").getResult(), is("B: Evaluating Say Hello to: Hello, B.A.John; B2:Evaluating Say Hello to: Hello, B2.A.John2"));
+    }
 
 }
 
