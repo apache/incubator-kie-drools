@@ -30,6 +30,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "not( true )", Boolean.FALSE , null},
                 { "not( false )", Boolean.TRUE , null},
                 { "not( 10 = 3 )", Boolean.TRUE , null},
+                { "not(list contains([1,2,3,4,5,6], 3))", Boolean.FALSE , null},
                 { "not( \"foo\" )", UnaryTest.class , null},
                 {"{x : 10, r : not( x = 3 )}.r", Boolean.TRUE, null},
                 {"{x : 3, r : not( x = 3 )}.r", Boolean.FALSE, null},
