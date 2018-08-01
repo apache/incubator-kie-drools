@@ -42,11 +42,11 @@ public class ClassUtil {
         }
     }
 
-    public static Method getBestCandidate(Class clazz, Class[] argsType, String methodName) {
+    private static Method getBestCandidate(Class clazz, Class[] argsType, String methodName) {
         return getBestCandidate(clazz, argsType, methodName, clazz.getMethods());
     }
 
-    public static Method getBestCandidate(Class clazz, Class[] argsType, String methodName, Method[] methods) {
+    private static Method getBestCandidate(Class clazz, Class[] argsType, String methodName, Method[] methods) {
         if (methods.length == 0) {
             return null;
         }
@@ -97,9 +97,7 @@ public class ClassUtil {
                 Method[] nMethods = new Method[methods.length + objMethods.length];
                 System.arraycopy( methods, 0, nMethods, 0, methods.length );
 
-                for (int i = 0; i < objMethods.length; i++) {
-                    nMethods[i + methods.length] = objMethods[i];
-                }
+                System.arraycopy( objMethods, 0, nMethods, methods.length, objMethods.length );
                 methods = nMethods;
 
                 retry = true;
@@ -133,7 +131,7 @@ public class ClassUtil {
 
             if (arguments[i] == null) {
                 if (!actualParamType.isPrimitive()) {
-                    score += 6;
+                    score += 7;
                 }
                 else {
                     score = 0;
@@ -141,15 +139,18 @@ public class ClassUtil {
                 }
 
             } else if (actualParamType == arguments[i]) {
-                score += 7;
+                score += 8;
 
             } else if (actualParamType.isPrimitive() && boxPrimitive(actualParamType) == arguments[i]) {
-                score += 6;
+                score += 7;
 
             } else if (arguments[i].isPrimitive() && unboxPrimitive(arguments[i]) == actualParamType) {
-                score += 6;
+                score += 7;
 
             } else if (actualParamType.isAssignableFrom(arguments[i])) {
+                score += 6;
+
+            } else if (isPrimitiveSubtype(arguments[i], actualParamType)) {
                 score += 5;
 
             } else if (isNumericallyCoercible(arguments[i], actualParamType)) {
@@ -182,12 +183,12 @@ public class ClassUtil {
         return score;
     }
 
-    public static boolean canConvert(Class toType, Class convertFrom) {
+    private static boolean canConvert(Class toType, Class convertFrom) {
         return isAssignableFrom(toType, convertFrom) ||
                (toType.isArray() && canConvert(toType.getComponentType(), convertFrom));
     }
 
-    public static int scoreInterface(Class<?> parm, Class<?> arg) {
+    private static int scoreInterface(Class<?> parm, Class<?> arg) {
         if (parm.isInterface()) {
             Class[] iface = arg.getInterfaces();
             if (iface != null) {
@@ -200,7 +201,23 @@ public class ClassUtil {
         return 0;
     }
 
-    public static boolean isNumericallyCoercible(Class target, Class parm) {
+    private static boolean isPrimitiveSubtype( Class argument, Class<?> actualParamType ) {
+        if (!actualParamType.isPrimitive()) {
+            return false;
+        }
+        Class<?> primitiveArgument = unboxPrimitive(argument);
+        if (!primitiveArgument.isPrimitive()) {
+            return false;
+        }
+        return ( actualParamType == double.class && primitiveArgument == float.class ) ||
+                ( actualParamType == float.class && primitiveArgument == long.class ) ||
+                ( actualParamType == long.class && primitiveArgument == int.class ) ||
+                ( actualParamType == int.class && primitiveArgument == char.class ) ||
+                ( actualParamType == int.class && primitiveArgument == short.class ) ||
+                ( actualParamType == short.class && primitiveArgument == byte.class );
+    }
+
+    private static boolean isNumericallyCoercible(Class target, Class parm) {
         Class boxedTarget = target.isPrimitive() ? boxPrimitive(target) : target;
 
         if (boxedTarget != null && Number.class.isAssignableFrom(target)) {
@@ -211,7 +228,7 @@ public class ClassUtil {
         return false;
     }
 
-    public static Class<?> boxPrimitive(Class cls) {
+    private static Class<?> boxPrimitive(Class cls) {
         if (cls == int.class || cls == Integer.class) {
             return Integer.class;
         }
