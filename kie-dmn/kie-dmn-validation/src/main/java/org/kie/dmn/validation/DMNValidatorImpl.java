@@ -37,6 +37,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.drools.core.util.Drools;
 import org.kie.api.KieServices;
+import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.dmn.api.core.DMNCompiler;
@@ -55,6 +56,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -344,7 +346,10 @@ public class DMNValidatorImpl implements DMNValidator {
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
         
-        kieSession.execute(allChildren(dmnModel).collect(toList()));
+        List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel).collect(toList());
+        BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
+                                                                                     CommandFactory.newInsertElements(otherModel_Definitions, "DMNImports", false, "DMNImports")));
+        kieSession.execute(batch);
 
         return reporter.getMessages().getMessages();
     }

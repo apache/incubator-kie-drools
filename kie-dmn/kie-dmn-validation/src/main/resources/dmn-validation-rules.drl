@@ -30,6 +30,8 @@ import function org.kie.dmn.validation.ValidatorUtil.getRootItemDef;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
+declare entry-point "DMNImports" end
+
 rule INVOCATION_MISSING_EXPR
 when
     $b : Binding( expression == null )
