@@ -39,6 +39,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -279,7 +280,9 @@ public class DMNFEELHelper {
         return feel.newCompilerContext();
     }
 
-    public Object compile( String expr, CompilerContext feelctx ) {
-        return feel.compile( expr, feelctx );
+    public CompiledExpression compile( DMNModelImpl model, DecisionTable dtable, String dtableName, String expr, CompilerContext feelctx, int index ) {
+        CompiledExpression compiled = feel.compile( expr, feelctx );
+        processEvents( model, dtable, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, expr, dtableName, index );
+        return compiled;
     }
 }

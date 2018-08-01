@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class DMNDecisionTableWithSymbolsTest extends BaseDecisionTableTest {
+public class DMNDecisionTableWithSymbolsTest extends BaseInterpretedVsCompiledTest {
 
     public DMNDecisionTableWithSymbolsTest( boolean useExecModelCompiler ) {
         super( useExecModelCompiler );

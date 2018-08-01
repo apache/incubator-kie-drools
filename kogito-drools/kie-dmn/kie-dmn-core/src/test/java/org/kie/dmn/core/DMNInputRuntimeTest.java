@@ -16,16 +16,10 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Set;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -38,7 +32,18 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-public class DMNInputRuntimeTest {
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
+
+public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
+
+    public DMNInputRuntimeTest( boolean useExecModelCompiler ) {
+        super( useExecModelCompiler );
+    }
 
     @Test
     public void testInputStringEvaluateAll() {

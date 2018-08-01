@@ -16,26 +16,25 @@
 
 package org.kie.dmn.core;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class VacationDaysTest {
+public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
+
+    public VacationDaysTest( boolean useExecModelCompiler ) {
+        super( useExecModelCompiler );
+    }
 
     @Test
     public void testSolutionCase1() {

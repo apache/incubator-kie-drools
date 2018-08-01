@@ -41,7 +41,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class DMNDecisionTableHitPolicyTest extends BaseDecisionTableTest {
+public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
 
     public DMNDecisionTableHitPolicyTest( boolean useExecModelCompiler ) {
         super( useExecModelCompiler );

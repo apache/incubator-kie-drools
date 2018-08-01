@@ -23,7 +23,10 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 
 @RunWith(Parameterized.class)
-public abstract class BaseDecisionTableTest {
+public abstract class BaseInterpretedVsCompiledTest {
+
+    private boolean oldValue;
+
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{ true, false };
@@ -31,17 +34,18 @@ public abstract class BaseDecisionTableTest {
 
     private final boolean useExecModelCompiler;
 
-    public BaseDecisionTableTest( boolean useExecModelCompiler ) {
+    public BaseInterpretedVsCompiledTest( boolean useExecModelCompiler ) {
         this.useExecModelCompiler = useExecModelCompiler;
     }
 
     @Before
     public void before() {
+        oldValue = DMNCompilerConfigurationImpl.useExecModelCompiler;
         DMNCompilerConfigurationImpl.useExecModelCompiler = useExecModelCompiler;
     }
 
     @After
     public void after() {
-        DMNCompilerConfigurationImpl.useExecModelCompiler = false;
+        DMNCompilerConfigurationImpl.useExecModelCompiler = oldValue;
     }
 }

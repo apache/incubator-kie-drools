@@ -24,7 +24,6 @@ public abstract class DMNUnit implements RuleUnit {
 
     private EvaluationContext evalCtx;
 
-    private HitPolicy hitPolicy;
     private DecisionTable decisionTable;
 
     protected Object result;
@@ -51,11 +50,6 @@ public abstract class DMNUnit implements RuleUnit {
         return this;
     }
 
-    DMNUnit setHitPolicy( HitPolicy hitPolicy ) {
-        this.hitPolicy = hitPolicy;
-        return this;
-    }
-
     DMNUnit setDecisionTable( DecisionTable decisionTable ) {
         this.decisionTable = decisionTable;
         return this;
@@ -71,7 +65,11 @@ public abstract class DMNUnit implements RuleUnit {
     }
 
     protected Object applyHitPolicy( List<Object>... results) {
+        HitPolicy hitPolicy = evaluator.getHitPolicy();
         if (evaluator.getIndexes().isEmpty()) {
+            if (evaluator.hasDefaultValues()) {
+                return evaluator.defaultToOutput( evalCtx );
+            }
             if( hitPolicy.getDefaultValue() != null ) {
                 return hitPolicy.getDefaultValue();
             }

@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,11 @@ import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class ImportsTest {
+public class ImportsTest extends BaseInterpretedVsCompiledTest {
+
+    public ImportsTest( boolean useExecModelCompiler ) {
+        super( useExecModelCompiler );
+    }
 
     public static final Logger LOG = LoggerFactory.getLogger(ImportsTest.class);
 
