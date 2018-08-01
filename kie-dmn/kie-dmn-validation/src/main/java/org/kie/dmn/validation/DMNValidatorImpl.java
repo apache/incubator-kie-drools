@@ -197,7 +197,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     }
 
-    public ValidatorBuilder validateWith(Validation... options) {
+    public ValidatorBuilder validateUsing(Validation... options) {
         return new ValidatorBuilder(this, options);
     }
 

@@ -31,13 +31,11 @@ public class ValidatorImportTest extends AbstractValidatorTest {
 
     @Test
     public void testBaseModel_OK__ReaderInput() throws IOException {
-        try (
-                final Reader reader0 = getReader("import/Base-model.dmn");
+        try (final Reader reader0 = getReader("import/Base-model.dmn");
                 final Reader reader1 = getReader("import/Import-base-model.dmn");) {
-            final List<DMNMessage> messages = ((DMNValidatorImpl) validator).validateWith( // VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
+            final List<DMNMessage> messages = ((DMNValidatorImpl) validator).validateUsing( // VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
                                                                                            Validation.VALIDATE_MODEL,
-                                                                                           Validation.VALIDATE_COMPILATION
-            )
+                                                                                           Validation.VALIDATE_COMPILATION)
                                                                             .theseModels(reader0, reader1);
             assertThat( messages.toString(), messages.size(), is( 0 ) );
         }
