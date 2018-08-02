@@ -147,12 +147,12 @@ public class DMNValidatorImpl implements DMNValidator {
             }
             if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
                 if (results.hasErrors()) {
-                    // TODO insert message that will not progress to validatation as other errors were detected.
+                    // TODO insert message that will not progress to validation as other errors were detected.
                     return results.getMessages();
                 }
                 List<Definitions> models = new ArrayList<>();
                 for (Reader reader : readers) {
-                    Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(reader);
+                    Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
                     Definitions.normalize(dmndefs);
                     models.add(dmndefs);
                 }
@@ -249,7 +249,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
             Definitions dmndefs = null;
             try {
-                dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( new FileReader( xmlFile ) );
+                dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new FileReader(xmlFile));
                 Definitions.normalize(dmndefs);
                 validateModelCompilation( dmndefs, results, flags );
             } catch ( Throwable t ) {
@@ -280,7 +280,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 results.addAll( validateSchema( new StringReader( content ) ) );
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
-                Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( new StringReader( content ) );
+                Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new StringReader(content));
                 Definitions.normalize(dmndefs);
                 validateModelCompilation( dmndefs, results, flags );
             }

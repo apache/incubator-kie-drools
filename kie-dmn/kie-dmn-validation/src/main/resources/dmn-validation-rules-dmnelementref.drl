@@ -60,7 +60,12 @@ when
   (not (and Import( $importedNS : namespace )
             $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
             DMNElement( id == $targetId ) from $importDef.drgElement
-            )
+       )
+  )
+  (not (and Import( $importedNS : namespace )
+            $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
+            DecisionService( id == $targetId ) from $importDef.decisionService 
+       )
   )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $href, $elemRef.getParentDRDElement().getIdentifierString());

@@ -24,8 +24,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.internal.utils.ChainedProperties;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -36,7 +39,7 @@ public abstract class AbstractValidatorTest {
 
     @BeforeClass
     public static void init() {
-        validator = DMNValidatorFactory.newValidator();
+        validator = DMNValidatorFactory.newValidator(DMNAssemblerService.getDefaultDMNProfiles(ChainedProperties.getChainedProperties(ClassLoaderUtil.findDefaultClassLoader())));
     }
 
     @AfterClass

@@ -22,15 +22,26 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.validation.DMNValidator.Validation;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class ValidatorImportTest extends AbstractValidatorTest {
 
     @Test
     public void testBaseModel_OK__ReaderInput() throws IOException {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("import/Base-model.dmn", this.getClass(), "import/Import-base-model.dmn");
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493", "Import base model");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        System.out.println("---");
+
         try (final Reader reader0 = getReader("import/Base-model.dmn");
                 final Reader reader1 = getReader("import/Import-base-model.dmn");) {
             final List<DMNMessage> messages = ((DMNValidatorImpl) validator).validateUsing( // VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
