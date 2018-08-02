@@ -78,8 +78,8 @@ public class DMNContextEvaluator
         try {
             for ( ContextEntryDef ed : entries ) {
                 try {
-                    String entryVarId = ed.getContextEntry().getVariable() != null ? ed.getContextEntry().getVariable().getId() : null;
-                    String entryExprId = ed.getContextEntry().getExpression() != null ? ed.getContextEntry().getExpression().getId() : null;
+                    String entryVarId = getEntryVarId(ed);
+                    String entryExprId = getEntryExprId(ed);
                     DMNRuntimeEventManagerUtils.fireBeforeEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, result );
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
@@ -130,8 +130,8 @@ public class DMNContextEvaluator
                     }
                 } catch ( Exception e ) {
                     logger.error( "Error invoking expression for node '" + name + "'.", e );
-                    String entryVarId = ed.getContextEntry().getVariable() != null ? ed.getContextEntry().getVariable().getId() : null;
-                    String entryExprId = ed.getContextEntry().getExpression() != null ? ed.getContextEntry().getExpression().getId() : null;
+                    String entryVarId = getEntryVarId(ed);
+                    String entryExprId = getEntryExprId(ed);
                     DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, null, result );
                     return new EvaluatorResultImpl( results, ResultType.FAILURE );
                 }
@@ -144,6 +144,14 @@ public class DMNContextEvaluator
         } else {
             return new EvaluatorResultImpl( results, ResultType.SUCCESS );
         }
+    }
+
+    private String getEntryExprId(ContextEntryDef ed) {
+        return ed.getContextEntry().getExpression() != null ? ed.getContextEntry().getExpression().getId() : null;
+    }
+
+    private String getEntryVarId(ContextEntryDef ed) {
+        return ed.getContextEntry().getVariable() != null ? ed.getContextEntry().getVariable().getId() : null;
     }
 
     public static class ContextEntryDef {

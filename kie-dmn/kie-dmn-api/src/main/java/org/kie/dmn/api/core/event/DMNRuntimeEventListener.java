@@ -18,23 +18,23 @@ package org.kie.dmn.api.core.event;
 
 public interface DMNRuntimeEventListener {
 
-    void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event);
+    default void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event) {}
 
-    void afterEvaluateDecision(AfterEvaluateDecisionEvent event);
+    default void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {}
 
-    void beforeEvaluateBKM(BeforeEvaluateBKMEvent event);
+    default void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {}
 
-    void afterEvaluateBKM(AfterEvaluateBKMEvent event);
+    default void afterEvaluateBKM(AfterEvaluateBKMEvent event) {}
 
     default void beforeEvaluateContextEntry(BeforeEvaluateContextEntryEvent event) {}
 
     default void afterEvaluateContextEntry(AfterEvaluateContextEntryEvent event) {}
 
-    void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event);
+    default void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event) {}
 
-    void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event);
+    default void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {}
 
-    void beforeEvaluateDecisionService(BeforeEvaluateDecisionServiceEvent event);
+    default void beforeEvaluateDecisionService(BeforeEvaluateDecisionServiceEvent event) {}
 
-    void afterEvaluateDecisionService(AfterEvaluateDecisionServiceEvent event);
+    default void afterEvaluateDecisionService(AfterEvaluateDecisionServiceEvent event) {}
 }
