@@ -16,25 +16,23 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-
 import org.kie.dmn.feel.model.Address;
 import org.kie.dmn.feel.model.Person;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FEELStaticTypeTest
         extends BaseFEELCompilerTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1} | {2}) = {3}")
+    @Parameterized.Parameters(name = "{4}: {0} ({1} | {2}) = {3}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
             
@@ -125,6 +123,6 @@ public class FEELStaticTypeTest
                 
                 
         };
-        return Arrays.asList( cases );
+        return enrichWith5thParameter(cases);
     }
 }

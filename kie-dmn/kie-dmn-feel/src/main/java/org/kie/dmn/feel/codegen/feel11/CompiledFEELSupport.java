@@ -420,4 +420,8 @@ public class CompiledFEELSupport {
         feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, message, null));
         return null;
     }
+
+    public static Object coerceNumber(Object value) {
+        return EvalHelper.coerceNumber(value);
+    }
 }
