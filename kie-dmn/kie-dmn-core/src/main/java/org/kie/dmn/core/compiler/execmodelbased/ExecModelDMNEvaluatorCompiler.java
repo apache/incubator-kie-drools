@@ -73,7 +73,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         String decisionName = dt.getParent() instanceof DRGElement ? dtName : ( dt.getId() != null ? dt.getId() :  "_" + UUID.randomUUID().toString() );
         DTableModel dTableModel = new DTableModel( feel, model, dtName, decisionName, dt );
         AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        evaluator.initParameters( feel, ctx, dTableModel, model, node, dt );
+        evaluator.initParameters( feel, ctx, dTableModel, node );
         return evaluator;
     }
 
