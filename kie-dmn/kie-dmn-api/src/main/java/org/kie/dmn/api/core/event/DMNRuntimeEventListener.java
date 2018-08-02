@@ -26,6 +26,10 @@ public interface DMNRuntimeEventListener {
 
     void afterEvaluateBKM(AfterEvaluateBKMEvent event);
 
+    default void beforeEvaluateContextEntry(BeforeEvaluateContextEntryEvent event) {}
+
+    default void afterEvaluateContextEntry(AfterEvaluateContextEntryEvent event) {}
+
     void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event);
 
     void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event);
