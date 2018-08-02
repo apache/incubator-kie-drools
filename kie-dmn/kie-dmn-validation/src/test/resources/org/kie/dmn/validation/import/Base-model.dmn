@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_70df1ad5-2a33-4ede-b8b2-869988ac1d30" name="Base model" namespace="http://www.trisotech.com/dmn/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:itemDefinition label="tPerson" name="tPerson">
-    <dmn11:itemComponent id="_94190272-84d7-46a4-840b-29536292183e" name="full name">
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.1" id="_70df1ad5-2a33-4ede-b8b2-869988ac1d30" name="Base model" namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_dc528ba5-5a93-4e0c-8b90-236d510452f9" name="Base DS">
+        <dmn11:outputDecision href="#_1d52934e-aa4e-47c9-a011-fc989d795664"/>
+        <dmn11:inputData href="#_fb5fe250-f449-4692-a873-d3f616b7276f"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:itemDefinition isCollection="false" label="tPerson" name="tPerson">
+    <dmn11:itemComponent id="_94190272-84d7-46a4-840b-29536292183e" isCollection="false" name="full name">
       <dmn11:typeRef>feel:string</dmn11:typeRef>
     </dmn11:itemComponent>
-    <dmn11:itemComponent id="_640f0162-47f5-42b3-a4a5-874dc3826323" name="age">
+    <dmn11:itemComponent id="_640f0162-47f5-42b3-a4a5-874dc3826323" isCollection="false" name="age">
       <dmn11:typeRef>feel:number</dmn11:typeRef>
     </dmn11:itemComponent>
   </dmn11:itemDefinition>
