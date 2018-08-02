@@ -31,8 +31,6 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
-    public static boolean useExecModelCompiler = false;
-
     private List<DMNExtensionRegister> registeredExtensions = new ArrayList<>();
     private Map<String, String> properties = new HashMap<>();
     private List<DRGElementCompiler> drgElementCompilers = new ArrayList<>();
@@ -55,6 +53,10 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
         this.properties.putAll(dmnPrefs);
     }
 
+    public void setProperty(String name, String value) {
+        this.properties.put(name, value);
+    }
+
     public Map<String, String> getProperties() {
         return Collections.unmodifiableMap(this.properties);
     }
@@ -64,6 +66,8 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
             return (T) new RuntimeTypeCheckOption(properties.get(RuntimeTypeCheckOption.PROPERTY_NAME));
         } else if (CoerceDecisionServiceSingletonOutputOption.class.equals(option)) {
             return (T) new CoerceDecisionServiceSingletonOutputOption(properties.get(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
+        } else if (ExecModelCompilerOption.class.equals(option)) {
+            return (T) new ExecModelCompilerOption(properties.get(ExecModelCompilerOption.PROPERTY_NAME));
         }
         return null;
     }
@@ -93,6 +97,6 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     }
 
     public boolean isUseExecModelCompiler() {
-        return useExecModelCompiler;
+        return getOption(ExecModelCompilerOption.class).isUseExecModelCompiler();
     }
 }
