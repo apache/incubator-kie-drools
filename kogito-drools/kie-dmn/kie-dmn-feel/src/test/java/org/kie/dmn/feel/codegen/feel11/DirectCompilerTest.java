@@ -422,6 +422,15 @@ public class DirectCompilerTest {
         LOG.debug("{}", result);
         
         assertThat(result, is( "John Doe" ));
+
+        // check number coercion for qualified name
+        CompiledFEELExpression personAgeExpression = parse("My Person.Age", mapOf(entry("My Person", personType)));
+        LOG.debug("{}", personAgeExpression);
+
+        Object resultPersonAge = personAgeExpression.apply(context); // Please notice input variable in context is a Map containing and entry value for int 47.
+        LOG.debug("{}", resultPersonAge);
+
+        assertThat(resultPersonAge, is(BigDecimal.valueOf(47)));
     }
     
     public static class MyPerson {

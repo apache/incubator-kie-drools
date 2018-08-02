@@ -1080,7 +1080,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 typeCursor = telescope.resultType;
             }
         }
-        return DirectCompilerResult.of(exprCursor, typeCursor);
+        // If it was a NameRef expression, the number coercion is directly performed by the EvaluationContext for the simple variable.
+        // Otherwise in case of QualifiedName expression, for a structured type like this case, it need to be coerced on the last accessor:
+        MethodCallExpr coerceNumberMethodCallExpr = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "coerceNumber");
+        coerceNumberMethodCallExpr.addArgument(exprCursor);
+        return DirectCompilerResult.of(coerceNumberMethodCallExpr, typeCursor);
     }
 
     @Override
