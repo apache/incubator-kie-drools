@@ -48,6 +48,7 @@ import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
+import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.modelcompiler.util.ClassUtil;
@@ -59,7 +60,6 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 import static org.drools.core.util.ClassUtils.getter2property;
-import static org.drools.javaparser.printer.PrintUtil.toDrlx;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
@@ -293,16 +293,13 @@ public class ExpressionTyper {
         }
 
         String operator = expressionOperator.asString();
-        OperatorSpec opSpec = null;
         if (ModelGenerator.temporalOperators.contains(operator )) {
-            opSpec = TemporalOperatorSpec.INSTANCE;
-        } else if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
-            opSpec = CustomOperatorSpec.INSTANCE;
+            return TemporalOperatorSpec.INSTANCE;
         }
-        if (opSpec == null) {
-            throw new UnsupportedOperationException("Unknown operator '" + operator + "' in expression: " + toDrlx(drlxExpr));
+        if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
+            return NativeOperatorSpec.INSTANCE;
         }
-        return opSpec;
+        return CustomOperatorSpec.INSTANCE;
     }
 
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
