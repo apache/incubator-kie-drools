@@ -17,37 +17,45 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.util.Null;
-
-import static org.kie.dmn.feel.util.EvalHelper.coerceNumber;
 
 public class DecisionTableEvaluator {
     private final DTableModel dTableModel;
     private final EvaluationContext evalCtx;
     private final Object[] inputs;
+    private final List<FEELEvent> events;
+    private final EvaluationContext[] columnEvalCtxs;
 
     private final List<Integer> indexes = new ArrayList<>();
 
-    public DecisionTableEvaluator( DTableModel dTableModel, EvaluationContext evalCtx ) {
+    public DecisionTableEvaluator( DMNFEELHelper feel, DTableModel dTableModel, EvaluationContext evalCtx, List<FEELEvent> events ) {
         this.dTableModel = dTableModel;
         this.evalCtx = evalCtx;
-        this.inputs = resolveActualInputs();
+        this.events = events;
+        this.inputs = new Object[dTableModel.getColumns().size()];
+        this.columnEvalCtxs = new EvaluationContext[dTableModel.getColumns().size()];
+        initInputs(feel);
     }
 
     public Object getOutput(int row, int col) {
         return dTableModel.getRows().get( row ).evaluate( evalCtx, col );
     }
 
-    private Object[] resolveActualInputs() {
-        Object[] inputs = new Object[dTableModel.getColumns().size()];
+    private Object[] initInputs(DMNFEELHelper feel) {
         for (int i = 0; i < inputs.length; i++) {
             Object result = dTableModel.getColumns().get(i).evaluate( evalCtx );
-            // Manually coerce number since the compiled expression doesn't do this
-            inputs[i] = result == null ? Null.INSTANCE : coerceNumber(result);
+            inputs[i] = result == null ? Null.INSTANCE : result;
+
+            columnEvalCtxs[i] = feel.newEvaluationContext( Collections.singletonList( events::add ), evalCtx.getAllValues());
+            columnEvalCtxs[i].enterFrame();
+            columnEvalCtxs[i].setValue( "?", inputs[i] );
         }
         return inputs;
     }
@@ -76,7 +84,7 @@ public class DecisionTableEvaluator {
         return dTableModel.getHitPolicy();
     }
 
-    public EvaluationContext getEvalCtx() {
-        return evalCtx;
+    public EvaluationContext getEvalCtx(int col) {
+        return columnEvalCtxs[col];
     }
 }

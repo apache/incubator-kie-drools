@@ -17,7 +17,6 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,7 +78,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
         try {
-            DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( dTableModel, evalCtx );
+            DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( feel, dTableModel, evalCtx, events );
 
             for (int i = 0; i < decisionTableEvaluator.getInputs().length; i++) {
                 DTableModel.DColumnModel column = dTableModel.getColumns().get(i);
@@ -119,7 +118,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
     }
 
     private EvaluationContext createEvaluationContext( List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {
-        EvaluationContextImpl ctx = feel.newEvaluationContext( Arrays.asList(events::add), Collections.emptyMap());
+        EvaluationContextImpl ctx = feel.newEvaluationContext( Collections.singletonList( events::add ), Collections.emptyMap());
         ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl ) eventManager.getRuntime()).performRuntimeTypeCheck(( (DMNResultImpl) dmnResult).getModel()));
         ctx.setValues( dmnResult.getContext().getAll() );
         return ctx;

@@ -246,11 +246,12 @@ public class DMNFEELHelper {
         }
     }
 
-    public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx) {
+    public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx, Type columntype) {
         Map<String, Type> variableTypes = new HashMap<>();
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
+        variableTypes.put( "?", columntype );
 
         FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
         ParseTree tree = parser.expressionList();

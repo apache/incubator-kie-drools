@@ -194,7 +194,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
                 for (int j = 0; j < dTableModel.getInputSize(); j++) {
                     sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(GET_TEST_NAME(" + i + ", " + j + "), var_evaluator,\n" );
-                    sb.append( "                           (_this, evaluator) -> GET_TEST(" + i + "," + j + ").apply( evaluator.getEvalCtx(), _this )),\n" );
+                    sb.append( "                           (_this, evaluator) -> GET_TEST(" + i + "," + j + ").apply( evaluator.getEvalCtx(" + j + "), _this )),\n" );
                 }
 
                 sb.append( "                       D.on( var_evaluator, " );
@@ -333,7 +333,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testClassesByInput.put(input, testClass);
                         testsBuilder.append( "\n" );
                         instancesBuilder.append( "    private static final CompiledFEELUnaryTests " + testClass + "_INSTANCE = new " + testClass + "();\n" );
-                        testsBuilder.append( feel.getSourceForUnaryTest( pkgName, testClass, input, ctx ) );
+                        testsBuilder.append( feel.getSourceForUnaryTest( pkgName, testClass, input, ctx, dTableModel.getColumns().get(j).getType() ) );
                         testsBuilder.append( "\n" );
                     }
                     testArrayBuilder.append( testClass ).append( "_INSTANCE" );
