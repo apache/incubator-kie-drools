@@ -25,7 +25,6 @@ import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -261,14 +260,6 @@ public class DMNFEELHelper {
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables);
-    }
-
-    public Object evaluate(String expression, EvaluationContext ctx) {
-        return feel.evaluate( expression, ctx );
-    }
-
-    public List<UnaryTest> evaluateUnaryTests(String expression) {
-        return feel.evaluateUnaryTests( expression );
     }
 
     public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {

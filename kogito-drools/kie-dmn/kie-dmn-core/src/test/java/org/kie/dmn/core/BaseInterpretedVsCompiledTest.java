@@ -20,12 +20,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
+import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 
 @RunWith(Parameterized.class)
 public abstract class BaseInterpretedVsCompiledTest {
-
-    private boolean oldValue;
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
@@ -40,12 +38,11 @@ public abstract class BaseInterpretedVsCompiledTest {
 
     @Before
     public void before() {
-        oldValue = DMNCompilerConfigurationImpl.useExecModelCompiler;
-        DMNCompilerConfigurationImpl.useExecModelCompiler = useExecModelCompiler;
+        System.setProperty( ExecModelCompilerOption.PROPERTY_NAME, Boolean.toString( useExecModelCompiler ) );
     }
 
     @After
     public void after() {
-        DMNCompilerConfigurationImpl.useExecModelCompiler = oldValue;
+        System.clearProperty( ExecModelCompilerOption.PROPERTY_NAME );
     }
 }
