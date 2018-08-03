@@ -82,7 +82,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
 
             for (int i = 0; i < decisionTableEvaluator.getInputs().length; i++) {
                 DTableModel.DColumnModel column = dTableModel.getColumns().get(i);
-                FEELEvent error = column.validate( evalCtx, decisionTableEvaluator.getInputs()[i] );
+                FEELEvent error = column.validate( evalCtx, decisionTableEvaluator.getInputs()[i].getValue() );
                 if ( error != null ) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,

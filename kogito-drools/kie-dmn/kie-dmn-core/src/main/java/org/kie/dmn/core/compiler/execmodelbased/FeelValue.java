@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.util;
+package org.kie.dmn.core.compiler.execmodelbased;
 
-public class Null {
+public class FeelValue {
+    private final Object value;
 
-    public static final Null INSTANCE = new Null();
+    public FeelValue( Object value ) {
+        this.value = value;
+    }
 
-    private Null() { }
+    public Object getValue() {
+        return value;
+    }
 }
