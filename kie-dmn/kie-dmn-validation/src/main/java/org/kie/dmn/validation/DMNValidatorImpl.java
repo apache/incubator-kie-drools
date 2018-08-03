@@ -28,9 +28,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -48,6 +50,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
+import org.kie.dmn.core.assembler.DMNResource;
+import org.kie.dmn.core.assembler.DMNResourceDependenciesSorter;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNMessageImpl;
@@ -129,16 +133,17 @@ public class DMNValidatorImpl implements DMNValidator {
         kieContainer.ifPresent( KieContainer::dispose );
     }
 
-    public static class ValidatorBuilder {
+    public static class ValidatorBuilderImpl implements ValidatorBuilder {
 
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
 
-        public ValidatorBuilder(DMNValidatorImpl dmnValidatorImpl, Validation[] options) {
+        public ValidatorBuilderImpl(DMNValidatorImpl dmnValidatorImpl, Validation[] options) {
             this.validator = dmnValidatorImpl;
             this.flags = EnumSet.copyOf(Arrays.asList(options));
         }
 
+        @Override
         public List<DMNMessage> theseModels(File... files) {
             DMNMessageManager results = new DefaultDMNMessagesManager();
             try {
@@ -160,6 +165,7 @@ public class DMNValidatorImpl implements DMNValidator {
             return results.getMessages();
         }
 
+        @Override
         public List<DMNMessage> theseModels(Reader... readers) {
             DMNMessageManager results = new DefaultDMNMessagesManager();
             if (flags.contains(VALIDATE_SCHEMA)) {
@@ -184,7 +190,7 @@ public class DMNValidatorImpl implements DMNValidator {
                     Definitions.normalize(dmndefs);
                     models.add(dmndefs);
                 }
-                // TODO sort Models.
+                models = internalValidatorSortModels(models);
                 List<Definitions> otherModel_Definitions = new ArrayList<>();
                 List<DMNModel> otherModel_DMNModels = new ArrayList<>();
                 for (Definitions dmnModel : models) {
@@ -218,10 +224,72 @@ public class DMNValidatorImpl implements DMNValidator {
             return results.getMessages();
         }
 
+        @Override
+        public List<DMNMessage> theseModels(Definitions... models) {
+            DMNMessageManager results = new DefaultDMNMessagesManager();
+            if (flags.contains(VALIDATE_SCHEMA)) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      null,
+                                      results,
+                                      null,
+                                      null,
+                                      Msg.FAILED_NO_XML_SOURCE);
+            }
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
+                if (results.hasErrors()) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          null,
+                                          null,
+                                          Msg.VALIDATION_STOPPED);
+                    return results.getMessages();
+                }
+                List<Definitions> ms = internalValidatorSortModels(Arrays.asList(models));
+                List<Definitions> otherModel_Definitions = new ArrayList<>();
+                List<DMNModel> otherModel_DMNModels = new ArrayList<>();
+                for (Definitions dmnModel : ms) {
+                    try {
+                        if (flags.contains(VALIDATE_MODEL)) {
+                            results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
+                            otherModel_Definitions.add(dmnModel);
+                        }
+                        if (flags.contains(VALIDATE_COMPILATION)) {
+                            DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
+                            DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
+                            if (model != null) {
+                                results.addAll(model.getMessages());
+                                otherModel_DMNModels.add(model);
+                            } else {
+                                Objects.requireNonNull(model);
+                            }
+                        }
+                    } catch (Throwable t) {
+                        MsgUtil.reportMessage(LOG,
+                                              DMNMessage.Severity.ERROR,
+                                              null,
+                                              results,
+                                              t,
+                                              null,
+                                              Msg.VALIDATION_RUNTIME_PROBLEM,
+                                              t.getMessage());
+                    }
+                }
+            }
+            return results.getMessages();
+        }
+
+        private List<Definitions> internalValidatorSortModels(List<Definitions> ms) {
+            List<DMNResource> dmnResources = ms.stream().map(d -> new DMNResource(new QName(d.getNamespace(), d.getName()), null, d)).collect(Collectors.toList());
+            List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
+            return sortedDmnResources.stream().map(d -> d.getDefinitions()).collect(Collectors.toList());
+        }
     }
 
     public ValidatorBuilder validateUsing(Validation... options) {
-        return new ValidatorBuilder(this, options);
+        return new ValidatorBuilderImpl(this, options);
     }
 
     @Override

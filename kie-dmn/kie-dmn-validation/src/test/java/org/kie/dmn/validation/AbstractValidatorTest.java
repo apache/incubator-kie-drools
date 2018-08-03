@@ -19,6 +19,7 @@ package org.kie.dmn.validation;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -69,6 +70,19 @@ public abstract class AbstractValidatorTest {
 
         final Definitions definitions = dmnModel.getDefinitions();
         assertThat( definitions, notNullValue() );
+        return definitions;
+    }
+
+    protected Definitions getDefinitions(final List<String> resourcesName, final String namespace, final String modelName) {
+        if (resourcesName.size() < 2) {
+            throw new RuntimeException("use proper method");
+        }
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(resourcesName.get(0), this.getClass(), resourcesName.subList(1, resourcesName.size()).toArray(new String[]{}));
+        final DMNModel dmnModel = runtime.getModel(namespace, modelName);
+        assertThat(dmnModel, notNullValue());
+
+        final Definitions definitions = dmnModel.getDefinitions();
+        assertThat(definitions, notNullValue());
         return definitions;
     }
 }
