@@ -18,6 +18,7 @@ package org.kie.dmn.validation;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.kie.dmn.model.v1_1.ItemDefinition;
@@ -26,6 +27,10 @@ public final class ValidatorUtil {
 
     public static String rightOfHash(final String input) {
         return input.substring(input.indexOf("#") + 1);
+    }
+
+    public static String leftOfHash(final String input) {
+        return input.substring(0, input.indexOf("#"));
     }
 
     public static ItemDefinition getRootItemDef(final ItemDefinition id) {

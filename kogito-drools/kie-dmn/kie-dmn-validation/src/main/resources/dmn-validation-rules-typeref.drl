@@ -81,7 +81,13 @@ end
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
 when
   $o: Expression( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
-  not( ItemDefinition( name == $typeRef.getLocalPart() ) )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
 end
@@ -89,7 +95,13 @@ end
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
 when
   $o: InformationItem( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
-  not( ItemDefinition( name == $typeRef.getLocalPart() ) )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
 end
@@ -97,7 +109,13 @@ end
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
 when
   $o: ItemDefinition( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
-  not( ItemDefinition( name == $typeRef.getLocalPart() ) )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
 end
@@ -105,7 +123,13 @@ end
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
 when
   $o: OutputClause( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
-  not( ItemDefinition( name == $typeRef.getLocalPart() ) )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
 end

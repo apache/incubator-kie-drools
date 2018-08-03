@@ -26,11 +26,13 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
 
 import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
+import function org.kie.dmn.validation.ValidatorUtil.leftOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
 rule ELEMREF_NOHASH_p1
 when
+  not( Import() )
   $oc : DMNElementReference(!href.startsWith("#"), !(href contains ":"))
 then
   reporter.report(DMNMessage.Severity.ERROR, $oc, Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString());
@@ -38,15 +40,33 @@ end
 
 rule ELEMREF_NOHASH_p2
 when
+  not( Import() )
   $oc : DMNElementReference(href contains ":", !href.substring(href.indexOf(":") + 1).startsWith('#'))
 then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
 
-rule ELEMREF_MISSING
+rule ELEMREF_MISSING_p1
 when
   $elemRef: DMNElementReference(href.startsWith("#"), $targetId : rightOfHash(href))
   not (DMNElement(id == $targetId))
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $elemRef.getParentDRDElement().getIdentifierString());
+end
+
+rule ELEMREF_MISSING_p2
+when
+  $elemRef: DMNElementReference(!href.startsWith("#"), $href: href, href.contains("#"), $targetId : rightOfHash(href), $targetNS : leftOfHash(href))
+  (not (and Import( $importedNS : namespace )
+            $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
+            DMNElement( id == $targetId ) from $importDef.drgElement
+       )
+  )
+  (not (and Import( $importedNS : namespace )
+            $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
+            DecisionService( id == $targetId ) from $importDef.decisionService 
+       )
+  )
+then
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $href, $elemRef.getParentDRDElement().getIdentifierString());
 end

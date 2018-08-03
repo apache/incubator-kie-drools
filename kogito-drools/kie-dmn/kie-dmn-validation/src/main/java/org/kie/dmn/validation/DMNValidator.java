@@ -118,4 +118,57 @@ public interface DMNValidator {
      * Release all resources associated with this DMNValidator.
      */
     void dispose();
+
+    public static interface ValidatorBuilder {
+
+        /**
+         * Validate the models and return the results. 
+         * 
+         * @see DMNValidator#validateUsing(Validation...)
+         * 
+         * @param files the DMN models to validate
+         *
+         * @return returns a list of messages from the validation, or an empty
+         *         list otherwise.
+         */
+        List<DMNMessage> theseModels(File... files);
+
+        /**
+         * Validate the models and return the results. 
+         * 
+         * @see DMNValidator#validateUsing(Validation...)
+         * 
+         * @param readers the DMN models to validate
+         *
+         * @return returns a list of messages from the validation, or an empty
+         *         list otherwise.
+         */
+        List<DMNMessage> theseModels(Reader... readers);
+
+        /**
+         * Validate the models and return the results. 
+         * 
+         * @see DMNValidator#validateUsing(Validation...)
+         * 
+         * @param models the DMN models to validate
+         *
+         * @return returns a list of messages from the validation, or an empty
+         *         list otherwise.
+         */
+        List<DMNMessage> theseModels(Definitions... models);
+
+    }
+
+    /**
+     * Fluent interface to validate several models using the specified options.
+     * This API is specifically designed to validate Models which DMN-Import other DMN Models.
+     * The options field defines which validations to apply. E.g.:
+     *
+     * <code>validateUsing( VALIDATE_MODEL, VALIDATE_COMPILATION ).theseModels(reader0, reader1)</code>
+     *
+     * @param options selects which validations to apply
+     *
+     * @return a fluent interface builder to validate several models with.
+     */
+    ValidatorBuilder validateUsing(Validation... options);
 }

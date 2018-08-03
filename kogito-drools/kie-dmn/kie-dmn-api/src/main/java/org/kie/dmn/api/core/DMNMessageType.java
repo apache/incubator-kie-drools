@@ -34,7 +34,8 @@ public enum DMNMessageType {
     INVOCATION_ERROR( "Error invoking node or function", Tag.RUNTIME, Tag.DMN_CORE ),
 
     FAILED_VALIDATOR( "The DMN validator failed to load the validation rules. Impossible to proceed with validation.", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
-    FAILED_XML_VALIDATION( "DMN model failed XML schema validation", Tag.VALIDATION, Tag.DMN_VALIDATOR );
+    FAILED_XML_VALIDATION( "DMN model failed XML schema validation", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
+    FAILED_VALIDATION("DMN Validation stopped on failed validation for some DMN Model",Tag.VALIDATION,Tag.DMN_VALIDATOR);
 
     private final Tag[]  tags;
     private final String description;
