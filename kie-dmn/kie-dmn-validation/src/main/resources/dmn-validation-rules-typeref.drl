@@ -85,7 +85,7 @@ when
        (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
-                 )
+            )
        )
   )
 then
@@ -99,7 +99,7 @@ when
        (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
-                 )
+            )
        )
   )
 then
@@ -113,7 +113,7 @@ when
        (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
-                 )
+            )
        )
   )
 then
@@ -127,7 +127,7 @@ when
        (not (and Import($importName : getAdditionalAttributes().get(Import.NAME_QNAME), $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
-                 )
+            )
        )
   )
 then
