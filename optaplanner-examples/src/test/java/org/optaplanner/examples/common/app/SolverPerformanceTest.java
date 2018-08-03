@@ -31,6 +31,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.common.TestProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import static org.junit.Assert.*;
@@ -43,6 +44,8 @@ import static org.junit.Assert.*;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
+
+    private static final String MOVE_THREAD_COUNT_OVERRIDE = System.getProperty(TestProperties.MOVE_THREAD_COUNT);
 
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfig;
@@ -74,6 +77,9 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         solverFactory.getSolverConfig().setTerminationConfig(
                 new TerminationConfig().withBestScoreLimit(bestScoreLimitString));
+        if (MOVE_THREAD_COUNT_OVERRIDE != null) {
+            solverFactory.getSolverConfig().setMoveThreadCount(MOVE_THREAD_COUNT_OVERRIDE);
+        }
         return solverFactory;
     }
 

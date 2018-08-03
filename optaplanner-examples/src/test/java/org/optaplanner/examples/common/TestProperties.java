@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.app;
+package org.optaplanner.examples.common;
 
-import org.optaplanner.examples.common.TestProperties;
+public final class TestProperties {
 
-import static org.junit.Assume.*;
+    public static final String MOVE_THREAD_COUNT = "moveThreadCount";
 
-/**
- * Turtle tests are not run by default. They are only run if {@code -DrunTurtleTests=true} because it takes days.
- */
-public abstract class AbstractTurtleTest extends LoggingTest {
+    public static final String RUN_TURTLE_TESTS = "runTurtleTests";
 
-    protected static void checkRunTurtleTests() {
-        assumeTrue("true".equals(System.getProperty(TestProperties.RUN_TURTLE_TESTS)));
+    private TestProperties() {
+        throw new UnsupportedOperationException();
     }
-
 }
