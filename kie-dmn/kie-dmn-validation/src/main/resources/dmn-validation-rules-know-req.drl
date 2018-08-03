@@ -29,13 +29,30 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule KNOWREQ_REQ_DECISION_NOT_BKM
+rule KNOWREQ_REQ_DECISION_NOT_BKM_p1
 when
   $knowReq: KnowledgeRequirement(requiredKnowledge != null,
                                  $elemRef: requiredKnowledge,
+                                 requiredKnowledge.href.startsWith("#"),
+                                 $targetId : rightOfHash( requiredKnowledge.href ))
+  DMNElement(id == $targetId, !(this instanceof BusinessKnowledgeModel || this instanceof DecisionService))
+then
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_INVALID_TYPE, $targetId, $knowReq.getIdentifierString());
+end
+
+rule KNOWREQ_REQ_DECISION_NOT_BKM_p2
+when
+  $knowReq: KnowledgeRequirement(requiredKnowledge != null,
+                                 $elemRef: requiredKnowledge,
+                                 !requiredKnowledge.href.startsWith("#"),
+                                 requiredKnowledge.href.contains("#"),
                                  $targetId : rightOfHash( requiredKnowledge.href ),
-                                 $elemRef.parentDRDElement == this)
-  DMNElement(id == $targetId, !(this instanceof BusinessKnowledgeModel))
+                                 $targetNS : leftOfHash( requiredKnowledge.href ))
+  Import( $importedNS : namespace )
+  $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
+  (or DMNElement( id == $targetId, !(this instanceof BusinessKnowledgeModel || this instanceof DecisionService) ) from $importDef.drgElement
+      DMNElement( id == $targetId, !(this instanceof BusinessKnowledgeModel || this instanceof DecisionService) ) from $importDef.decisionService
+  )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_INVALID_TYPE, $targetId, $knowReq.getIdentifierString());
 end

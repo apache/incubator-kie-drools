@@ -15,11 +15,12 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 
@@ -151,7 +152,8 @@ public class Definitions extends NamedElement {
     @Override
     public String toString() {
         return "Definitions{" +
-               "_import=" + _import +
+               "name=" + getName() +
+               ", _import=" + _import +
                ", itemDefinition=" + itemDefinition +
                ", drgElement=" + drgElement +
                ", decisionService=" + decisionService +

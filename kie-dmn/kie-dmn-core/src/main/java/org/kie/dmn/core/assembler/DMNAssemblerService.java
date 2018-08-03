@@ -88,6 +88,17 @@ public class DMNAssemblerService implements KieAssemblerService {
             DMNResource dmnResource = new DMNResource(modelID, r, definitions);
             dmnResources.add(dmnResource);
         }
+        enrichDMNResourcesWithImportsDependencies(dmnResources);
+        List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
+        Collection<DMNModel> dmnModels = new ArrayList<>();
+
+        for (DMNResource dmnRes : sortedDmnResources) {
+            DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes.getResAndConfig(), dmnModels);
+            dmnModels.add(dmnModel);
+        }
+    }
+
+    public static void enrichDMNResourcesWithImportsDependencies(List<DMNResource> dmnResources) {
         // enrich with imports
         for (DMNResource r : dmnResources) {
             for (Import i : r.getDefinitions().getImport()) {
@@ -97,13 +108,6 @@ public class DMNAssemblerService implements KieAssemblerService {
                     r.addDependency(located.getModelID());
                 }
             }
-        }
-        List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
-        Collection<DMNModel> dmnModels = new ArrayList<>();
-
-        for (DMNResource dmnRes : sortedDmnResources) {
-            DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes.getResAndConfig(), dmnModels);
-            dmnModels.add(dmnModel);
         }
     }
 
