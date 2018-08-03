@@ -45,7 +45,7 @@ public abstract class DMNUnit implements RuleUnit {
         return new DMNDecisionResultImpl(decisionId, decisionTable.getName(), DecisionEvaluationStatus.SUCCEEDED, getResult(), Collections.emptyList());
     }
 
-    protected Object getValue( int pos ) {
+    protected FeelValue getValue( int pos ) {
         return evaluator.getInputs()[pos];
     }
 

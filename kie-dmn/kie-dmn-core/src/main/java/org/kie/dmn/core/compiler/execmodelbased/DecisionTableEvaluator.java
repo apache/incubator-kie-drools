@@ -24,12 +24,11 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
-import org.kie.dmn.feel.util.Null;
 
 public class DecisionTableEvaluator {
     private final DTableModel dTableModel;
     private final EvaluationContext evalCtx;
-    private final Object[] inputs;
+    private final FeelValue[] inputs;
     private final List<FEELEvent> events;
     private final EvaluationContext[] columnEvalCtxs;
 
@@ -39,7 +38,7 @@ public class DecisionTableEvaluator {
         this.dTableModel = dTableModel;
         this.evalCtx = evalCtx;
         this.events = events;
-        this.inputs = new Object[dTableModel.getColumns().size()];
+        this.inputs = new FeelValue[dTableModel.getColumns().size()];
         this.columnEvalCtxs = new EvaluationContext[dTableModel.getColumns().size()];
         initInputs(feel);
     }
@@ -51,7 +50,7 @@ public class DecisionTableEvaluator {
     private Object[] initInputs(DMNFEELHelper feel) {
         for (int i = 0; i < inputs.length; i++) {
             Object result = dTableModel.getColumns().get(i).evaluate( evalCtx );
-            inputs[i] = result == null ? Null.INSTANCE : result;
+            inputs[i] = new FeelValue(result);
 
             columnEvalCtxs[i] = feel.newEvaluationContext( Collections.singletonList( events::add ), evalCtx.getAllValues());
             columnEvalCtxs[i].enterFrame();
@@ -60,7 +59,7 @@ public class DecisionTableEvaluator {
         return inputs;
     }
 
-    public Object[] getInputs() {
+    public FeelValue[] getInputs() {
         return inputs;
     }
 

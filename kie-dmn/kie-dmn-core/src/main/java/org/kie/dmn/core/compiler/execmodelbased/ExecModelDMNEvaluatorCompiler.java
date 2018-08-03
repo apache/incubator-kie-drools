@@ -157,11 +157,12 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "package " ).append( pkgName ).append( ";\n" );
             sb.append( "\n" );
             sb.append( "import java.util.List;\n" );
+            sb.append( "import " + FeelValue.class.getCanonicalName() + ";\n" );
             sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
             sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
             sb.append( "import org.drools.model.*;\n" );
             sb.append( "import org.drools.modelcompiler.dsl.pattern.D;\n" );
-            sb.append( "import static " ).append( pkgName ).append( "." ).append( clasName ).append( "UnaryTests.*;\n" );
+            sb.append( "import static " ).append( pkgName ).append( "." ).append( clasName ).append( "UnaryTests.TEST_ARRAY;\n" );
             sb.append( "\n" );
             sb.append( "public class " ).append( clasName ).append( "ExecModel {\n" );
             sb.append( "\n" );
@@ -180,7 +181,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             }
             for (int j = 0; j < dTableModel.getInputSize(); j++) {
                 sb.append( "    private static final UnitData<DataSource> var_input" + j + " = D.unitData(DataSource.class, \"input" + j + "\");\n" );
-                sb.append( "    private static final Variable<Object> var_$pattern$" + j + "$ = D.declarationOf(Object.class, \"$pattern$" + j + "$\", var_input" + j + ");\n" );
+                sb.append( "    private static final Variable<FeelValue> var_$pattern$" + j + "$ = D.declarationOf(FeelValue.class, \"$pattern$" + j + "$\", var_input" + j + ");\n" );
             }
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
@@ -193,8 +194,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                 sb.append( "                .build( \n" );
 
                 for (int j = 0; j < dTableModel.getInputSize(); j++) {
-                    sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(GET_TEST_NAME(" + i + ", " + j + "), var_evaluator,\n" );
-                    sb.append( "                           (_this, evaluator) -> GET_TEST(" + i + "," + j + ").apply( evaluator.getEvalCtx(" + j + "), _this )),\n" );
+                    sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(TEST_ARRAY[" + i + "][" + j + "].getName(), var_evaluator,\n" );
+                    sb.append( "                           (_this, evaluator) -> TEST_ARRAY[" + i + "][" + j + "].test( evaluator.getEvalCtx(" + j + "), _this.getValue() )),\n" );
                 }
 
                 sb.append( "                       D.on( var_evaluator, " );
@@ -291,18 +292,10 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n" );
             sb.append( "import org.kie.dmn.feel.runtime.UnaryTest;\n" );
             sb.append( "import org.kie.dmn.feel.lang.EvaluationContext;\n" );
+            sb.append( "import " ).append( CompiledDTTest.class.getCanonicalName() ).append( ";\n" );
             sb.append( "import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n" );
             sb.append( "\n" );
             sb.append( "public class " ).append( clasName ).append( "UnaryTests {\n" );
-            sb.append( "\n" );
-            sb.append( "    public static String GET_TEST_NAME(int i, int j) {\n" +
-                    "        return TEST_ARRAY[i][j].getClass().getSimpleName();\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    public static UnaryTest GET_TEST(int i, int j) {\n" +
-                    "        List<UnaryTest> fs = TEST_ARRAY[i][j].getUnaryTests();\n" +
-                    "        return fs.size() == 1 ? fs.get(0) : (a,b) -> fs.stream().anyMatch( f -> f.apply( a,b ) );\n" +
-                    "    }\n" );
             sb.append( "\n" );
             sb.append( getUnaryTestsSource(ctx, feel, dTableModel, pkgName, clasName) );
             sb.append( "}\n" );
@@ -320,7 +313,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             StringBuilder instancesBuilder = new StringBuilder();
 
             Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append( "    private static final CompiledFEELUnaryTests[][] TEST_ARRAY = new CompiledFEELUnaryTests[][] {\n" );
+            testArrayBuilder.append( "    public static final CompiledDTTest[][] TEST_ARRAY = new CompiledDTTest[][] {\n" );
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
                 testArrayBuilder.append( "            { " );
@@ -332,7 +325,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
                         testsBuilder.append( "\n" );
-                        instancesBuilder.append( "    private static final CompiledFEELUnaryTests " + testClass + "_INSTANCE = new " + testClass + "();\n" );
+                        instancesBuilder.append( "    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n" );
                         testsBuilder.append( feel.getSourceForUnaryTest( pkgName, testClass, input, ctx, dTableModel.getColumns().get(j).getType() ) );
                         testsBuilder.append( "\n" );
                     }
