@@ -80,6 +80,7 @@ public class TypeDeclarationUtil {
                         if (annVal.getKey().equals( "value" )) {
                             long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
                             typeDeclaration.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
+                            typeDeclaration.setExpirationType( Expires.Policy.TIME_HARD );
                         } else if (annVal.getKey().equals( "policy" )) {
                             typeDeclaration.setExpirationType( Enum.valueOf( Expires.Policy.class, annVal.getValue().toString() ) );
                         }
@@ -118,7 +119,7 @@ public class TypeDeclarationUtil {
         }
         Timestamp timestamp = cls.getAnnotation( Timestamp.class );
         if (timestamp != null) {
-            wireDurationAccessor( timestamp.value(), typeDeclaration );
+            wireTimestampAccessor( timestamp.value(), typeDeclaration );
         }
 
         return typeDeclaration;

@@ -37,7 +37,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.core.time.impl.BaseTimer;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -60,7 +59,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     protected Declaration[]                 allDeclarations;
     protected Declaration[]                 requiredDeclarations;
 
-    protected Declaration[][]               timerDeclarations;
     protected Declaration[]                 salienceDeclarations;
     protected Declaration[]                 enabledDeclarations;
 
@@ -136,10 +134,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             }
             Arrays.sort( this.enabledDeclarations, SortDeclarations.instance );              
         }
-
-        if ( rule.getTimer() instanceof BaseTimer ) {
-            this.timerDeclarations = ((BaseTimer)rule.getTimer()).getTimerDeclarations(decls);
-        }
     }
     
     // ------------------------------------------------------------
@@ -154,7 +148,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
 
-        timerDeclarations = ( Declaration[][] ) in.readObject();
         salienceDeclarations = ( Declaration[]) in.readObject();
         enabledDeclarations = ( Declaration[]) in.readObject();
         consequenceName = (String) in.readObject();
@@ -172,7 +165,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
 
-        out.writeObject( timerDeclarations );
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
@@ -241,10 +233,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
     }
     
-    public Declaration[][] getTimerDeclarations() {
-        return timerDeclarations;
-    }
-
     public Declaration[] getSalienceDeclarations() {
         return salienceDeclarations;
     }

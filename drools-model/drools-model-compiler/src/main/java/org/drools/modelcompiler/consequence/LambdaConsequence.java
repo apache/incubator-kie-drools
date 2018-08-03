@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.consequence;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -71,7 +72,7 @@ public class LambdaConsequence implements Consequence {
         for (Variable var : vars) {
             if ( var.isFact() ) {
                 Declaration declaration = declarations[declrCounter++];
-                InternalFactHandle fh = tuple.get( declaration );
+                InternalFactHandle fh = getOriginalFactHandle( tuple.get( declaration ) );
                 if (consequence.isUsingDrools()) {
                     ( (DroolsImpl) facts[0] ).registerFactHandle( fh );
                 }
@@ -82,6 +83,11 @@ public class LambdaConsequence implements Consequence {
         }
 
         consequence.getBlock().execute( facts );
+    }
+
+    private static InternalFactHandle getOriginalFactHandle(InternalFactHandle handle) {
+        InternalFactHandle linkedFH = handle.isEvent() ? ((EventFactHandle )handle).getLinkedFactHandle() : null;
+        return linkedFH != null ? linkedFH : handle;
     }
 
     static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {

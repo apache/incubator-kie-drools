@@ -61,9 +61,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.testcoverage.common.model.OrderEvent;
-import org.drools.testcoverage.common.model.Sensor;
 import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.model.StockTickEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -1453,85 +1451,6 @@ public class CepEspTest {
 
         public void setDuration(final Long duration) {
             this.duration = duration;
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testStreamModeNoSerialization() throws IOException, ClassNotFoundException {
-        final String drl = "package org.drools.compiler\n" +
-                "import " + Sensor.class.getCanonicalName() + "\n" +
-                "declare Sensor\n" +
-                "    @role (event)\n" +
-                "end\n" +
-                "\n" +
-                "rule 'dupa2'\n" +
-                "when\n" +
-                "    Number( $avg : intValue ) from accumulate(\n" +
-                "       Sensor( $v : temperature ) over window:length( 2 ),\n" +
-                "       average( $v ) )\n" +
-                "then\n" +
-                "    // noop\n" +
-                "end";
-
-        final KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
-        final KieBase kbase2 = (KieBase) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( kbase1 ), null );
-
-        final KieSession ksession1 = kbase1.newKieSession();
-        final KieSession ksession2 = kbase2.newKieSession();
-        try {
-            final AgendaEventListener ael1 = mock(AgendaEventListener.class);
-            ksession1.addEventListener(ael1);
-
-            final AgendaEventListener ael2 = mock(AgendaEventListener.class);
-            ksession2.addEventListener(ael2);
-            try {
-                // -------------
-                // first, check the non-serialized session
-                // -------------
-                ksession1.insert(new Sensor(10, 10));
-                ksession1.fireAllRules();
-
-                final ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
-                verify(ael1, times(1)).afterMatchFired(aafe1.capture());
-                List<AfterMatchFiredEvent> events1 = aafe1.getAllValues();
-                assertThat(events1.get(0).getMatch().getDeclarationValue("$avg"), is(10));
-
-                ksession1.insert(new Sensor(20, 20));
-                ksession1.fireAllRules();
-                verify(ael1, times(2)).afterMatchFired(aafe1.capture());
-                events1 = aafe1.getAllValues();
-                assertThat(events1.get(1).getMatch().getDeclarationValue("$avg"), is(15));
-                ksession1.insert(new Sensor(30, 30));
-                ksession1.fireAllRules();
-                verify(ael1, times(3)).afterMatchFired(aafe1.capture());
-                assertThat(events1.get(2).getMatch().getDeclarationValue("$avg"), is(25));
-            } finally {
-                ksession1.dispose();
-            }
-
-            // -------------
-            // now we check the serialized session
-            // -------------
-            final ArgumentCaptor<AfterMatchFiredEvent> aafe2 = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
-
-            ksession2.insert(new Sensor(10, 10));
-            ksession2.fireAllRules();
-            verify(ael2, times(1)).afterMatchFired(aafe2.capture());
-            List<AfterMatchFiredEvent> events2 = aafe2.getAllValues();
-            assertThat(events2.get(0).getMatch().getDeclarationValue("$avg"), is(10));
-
-            ksession2.insert(new Sensor(20, 20));
-            ksession2.fireAllRules();
-            verify(ael2, times(2)).afterMatchFired(aafe2.capture());
-            events2 = aafe2.getAllValues();
-            assertThat(events2.get(1).getMatch().getDeclarationValue("$avg"), is(15));
-
-            ksession2.insert(new Sensor(30, 30));
-            ksession2.fireAllRules();
-            verify(ael2, times(3)).afterMatchFired(aafe2.capture());
-            assertThat(events2.get(2).getMatch().getDeclarationValue("$avg"), is(25));
-        } finally {
-            ksession2.dispose();
         }
     }
 
@@ -5827,7 +5746,7 @@ public class CepEspTest {
                 "rule Init when then insert( new Reading( 14.5) ); end " +
                 "rule Test " +
                 "when " +
-                "    $trigger : Reading( $value;  )   " +
+                "    $trigger : Reading( $value : value  )   " +
                 "    not(  " +
                 "       Number( doubleValue > 10.0 ) from $value  ) " +
                 "    do[viol]   " +
