@@ -67,4 +67,47 @@
       </dmn11:binding>
     </dmn11:invocation>
   </dmn11:decision>
+  <dmn11:decision id="_65c2eea3-fa18-407a-a7c7-0ecaa14f4e03" name="Greetings using a local BKM">
+    <dmn11:variable id="_a258c139-c419-43b7-9b11-a5f8c9917679" name="Greetings using a local BKM" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_ad7a94be-98a3-40a3-afed-c1adf0768c2c"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_62192d32-e2b5-48fe-8cf6-62bc5e626eb8" typeRef="feel:string">
+      <dmn11:text>which uses the imported DS(Customer)</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:businessKnowledgeModel id="_ad7a94be-98a3-40a3-afed-c1adf0768c2c" name="which uses the imported DS">
+    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_9a5f6cc5-e20b-43c6-a425-96d76ac3a018" typeRef="feel:string">
+      <dmn11:formalParameter id="_33e1103d-fcb5-4da5-bc7f-1b62fcc88ea7" name="c1" typeRef="Base model.tPerson"/>
+      <dmn11:invocation id="_065089c5-263d-46d9-8f1b-b220c587a22b">
+        <dmn11:literalExpression id="literal__065089c5-263d-46d9-8f1b-b220c587a22b">
+          <dmn11:text>Base model.Base DS</dmn11:text>
+        </dmn11:literalExpression>
+        <dmn11:binding>
+          <dmn11:parameter id="_5c05e32e-3e53-4910-a236-0ab881cce03a" name="Input Person"/>
+          <dmn11:context id="undefined">
+            <dmn11:contextEntry>
+              <dmn11:variable id="undefined" name="full name" typeRef="feel:string"/>
+              <dmn11:literalExpression id="_1c9496c7-e085-4108-aa8f-51425e23ad89">
+                <dmn11:text>c1.full name</dmn11:text>
+              </dmn11:literalExpression>
+            </dmn11:contextEntry>
+            <dmn11:contextEntry>
+              <dmn11:variable id="undefined" name="age" typeRef="feel:number"/>
+              <dmn11:literalExpression id="_0ed19d8c-7732-43cf-bbe8-ebb17a990c3b">
+                <dmn11:text>c1.age</dmn11:text>
+              </dmn11:literalExpression>
+            </dmn11:contextEntry>
+          </dmn11:context>
+        </dmn11:binding>
+      </dmn11:invocation>
+    </dmn11:encapsulatedLogic>
+    <dmn11:variable id="_55d7aa76-285f-4af6-be57-c3d8a88c4b2d" name="which uses the imported DS" typeRef="feel:string"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_f379ab62-a642-47b6-a9f8-354dd1ce9445"/>
+    </dmn11:knowledgeRequirement>
+  </dmn11:businessKnowledgeModel>
 </dmn11:definitions>

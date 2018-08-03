@@ -33,9 +33,8 @@ rule KNOWREQ_REQ_DECISION_NOT_BKM
 when
   $knowReq: KnowledgeRequirement(requiredKnowledge != null,
                                  $elemRef: requiredKnowledge,
-                                 $targetId : rightOfHash( requiredKnowledge.href ),
-                                 $elemRef.parentDRDElement == this)
-  DMNElement(id == $targetId, !(this instanceof BusinessKnowledgeModel))
+                                 $targetId : rightOfHash( requiredKnowledge.href ))
+  DMNElement(id == $targetId, !(this instanceof BusinessKnowledgeModel || this instanceof DecisionService))
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_INVALID_TYPE, $targetId, $knowReq.getIdentifierString());
 end

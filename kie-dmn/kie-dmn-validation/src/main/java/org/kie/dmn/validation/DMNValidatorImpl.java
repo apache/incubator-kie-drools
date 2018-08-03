@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -138,6 +139,27 @@ public class DMNValidatorImpl implements DMNValidator {
             this.flags = EnumSet.copyOf(Arrays.asList(options));
         }
 
+        public List<DMNMessage> theseModels(File... files) {
+            DMNMessageManager results = new DefaultDMNMessagesManager();
+            try {
+                Reader[] readers = new Reader[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    readers[i] = new FileReader(files[i]);
+                }
+                results.addAll(theseModels(readers));
+            } catch (Throwable t) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      null,
+                                      results,
+                                      t,
+                                      null,
+                                      Msg.VALIDATION_RUNTIME_PROBLEM,
+                                      t.getMessage());
+            }
+            return results.getMessages();
+        }
+
         public List<DMNMessage> theseModels(Reader... readers) {
             DMNMessageManager results = new DefaultDMNMessagesManager();
             if (flags.contains(VALIDATE_SCHEMA)) {
@@ -147,7 +169,13 @@ public class DMNValidatorImpl implements DMNValidator {
             }
             if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
                 if (results.hasErrors()) {
-                    // TODO insert message that will not progress to validation as other errors were detected.
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          null,
+                                          null,
+                                          Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
                 List<Definitions> models = new ArrayList<>();
@@ -162,7 +190,6 @@ public class DMNValidatorImpl implements DMNValidator {
                 for (Definitions dmnModel : models) {
                     try {
                         if (flags.contains(VALIDATE_MODEL)) {
-                            // TODO I should actually pass-down only those referenced from the Imports...
                             results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
                             otherModel_Definitions.add(dmnModel);
                         }
@@ -173,23 +200,18 @@ public class DMNValidatorImpl implements DMNValidator {
                                 results.addAll(model.getMessages());
                                 otherModel_DMNModels.add(model);
                             } else {
-                                MsgUtil.reportMessage(LOG,
-                                                      DMNMessage.Severity.ERROR,
-                                                      dmnModel,
-                                                      results,
-                                                      null,
-                                                      null,
-                                                      Msg.FAILED_VALIDATOR);
+                                Objects.requireNonNull(model);
                             }
                         }
                     } catch (Throwable t) {
                         MsgUtil.reportMessage(LOG,
                                               DMNMessage.Severity.ERROR,
-                                              dmnModel,
+                                              null,
                                               results,
                                               t,
                                               null,
-                                              Msg.FAILED_VALIDATOR);
+                                              Msg.VALIDATION_RUNTIME_PROBLEM,
+                                              t.getMessage());
                     }
                 }
             }
@@ -223,13 +245,14 @@ public class DMNValidatorImpl implements DMNValidator {
         try {
             validateModelCompilation( dmnModel, results, flags );
         } catch ( Throwable t ) {
-            MsgUtil.reportMessage( LOG,
-                                   DMNMessage.Severity.ERROR,
-                                   dmnModel,
-                                   results,
-                                   t,
-                                   null,
-                                   Msg.FAILED_VALIDATOR );
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  null,
+                                  results,
+                                  t,
+                                  null,
+                                  Msg.VALIDATION_RUNTIME_PROBLEM,
+                                  t.getMessage());
         }
         return results.getMessages();
     }
@@ -253,13 +276,14 @@ public class DMNValidatorImpl implements DMNValidator {
                 Definitions.normalize(dmndefs);
                 validateModelCompilation( dmndefs, results, flags );
             } catch ( Throwable t ) {
-                MsgUtil.reportMessage( LOG,
-                                       DMNMessage.Severity.ERROR,
-                                       null,
-                                       results,
-                                       t,
-                                       null,
-                                       Msg.FAILED_VALIDATOR );
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      null,
+                                      results,
+                                      t,
+                                      null,
+                                      Msg.VALIDATION_RUNTIME_PROBLEM,
+                                      t.getMessage());
             }
         }
         return results.getMessages();
@@ -285,13 +309,14 @@ public class DMNValidatorImpl implements DMNValidator {
                 validateModelCompilation( dmndefs, results, flags );
             }
         } catch ( Throwable t ) {
-            MsgUtil.reportMessage( LOG,
-                                   DMNMessage.Severity.ERROR,
-                                   null,
-                                   results,
-                                   t,
-                                   null,
-                                   Msg.FAILED_VALIDATOR );
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  null,
+                                  results,
+                                  t,
+                                  null,
+                                  Msg.VALIDATION_RUNTIME_PROBLEM,
+                                  t.getMessage());
         }
         return results.getMessages();
     }
@@ -362,13 +387,7 @@ public class DMNValidatorImpl implements DMNValidator {
             if( model != null ) {
                 return model.getMessages();
             } else {
-                MsgUtil.reportMessage( LOG,
-                                       DMNMessage.Severity.ERROR,
-                                       dmnModel,
-                                       results,
-                                       null,
-                                       null,
-                                       Msg.FAILED_VALIDATOR );
+                Objects.requireNonNull(model);
             }
         }
         return Collections.emptyList();
