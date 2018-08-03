@@ -87,7 +87,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         File testFile = new File(ConferenceSchedulingScoreRulesXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(true).read(testFile);
+            ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(false).read(testFile);
             TestConferenceSchedulingScoreRulesReader testFileReader = new TestConferenceSchedulingScoreRulesReader(workbook, initialSolution);
 
             Object[] currentParameterList;
