@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
@@ -54,7 +55,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
@@ -998,5 +999,64 @@ public class MVELTest extends CommonTestMethodBase {
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
 
         assertTrue(kbuilder.hasErrors());
+    }
+
+    @Test
+    public void testModifyObjectWithMutableHashCodeInEqualityMode() {
+        // DROOLS-2828
+        String str = "package com.sample\n" +
+                "import " + Human.class.getCanonicalName() + ";\n" +
+                "rule \"Step A\"\n" +
+                "dialect \"mvel\"\n" +
+                "    no-loop true\n" +
+                "when\n" +
+                "    e : Human()\n" +
+                "then\t\n" +
+                "    modify( e ) {\n" +
+                "        setAge( 10 );\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
+        Human h = new Human(2);
+        ksession.insert(h);
+        ksession.fireAllRules();
+        assertEquals( 10, h.getAge() );
+    }
+
+    public static class Human {
+
+        private int age;
+
+        public Human( int age ) {
+            this.age = age;
+        }
+
+        public int getAge() {
+            return this.age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        @Override
+        public int hashCode() {
+            return age;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return age == ((Human) obj).age;
+        }
     }
 }
