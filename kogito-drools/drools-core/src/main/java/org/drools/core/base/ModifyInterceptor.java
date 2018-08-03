@@ -16,10 +16,22 @@
 
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.mvel2.ast.ASTNode;
@@ -31,15 +43,6 @@ import org.mvel2.integration.Interceptor;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.SetterAccessor;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
@@ -53,13 +56,16 @@ public class ModifyInterceptor
     private static final long serialVersionUID = 510l;
 
     private BitMask modificationMask = AllSetBitMask.get();
+    private Boolean isEqualityMode;
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         modificationMask = (BitMask) in.readObject();
+        isEqualityMode = (Boolean) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(modificationMask);
+        out.writeObject(isEqualityMode);
     }
 
     public int doBefore(ASTNode node,
@@ -79,12 +85,26 @@ public class ModifyInterceptor
         }
 
         KnowledgeHelper knowledgeHelper = ((DroolsVarFactory)factory).getKnowledgeHelper();
+        if (isEqualityMode == null) {
+            isEqualityMode = knowledgeHelper.getWorkingMemory().getKnowledgeBase().getConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY;
+        }
 
         if (modificationMask.isSet(PropertySpecificUtil.TRAITABLE_BIT)) {
             calculateModificationMask(knowledgeHelper, (WithNode)node);
         }
 
-        knowledgeHelper.update(value, modificationMask, value.getClass());
+        if (isEqualityMode) {
+            Tuple tuple = knowledgeHelper.getTuple();
+            InternalFactHandle modifiedFh = tuple.getFactHandle();
+            while (modifiedFh.getObject() != value) {
+                tuple = tuple.getParent();
+                modifiedFh = tuple.getFactHandle();
+            }
+            knowledgeHelper.update(modifiedFh, modificationMask, value.getClass());
+        } else {
+            knowledgeHelper.update(value, modificationMask, value.getClass());
+        }
+
         return 0;
     }
 
