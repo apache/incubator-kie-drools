@@ -16,6 +16,13 @@
 
 package org.drools.core.time.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Date;
+import java.util.Map;
+
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ConditionalElement;
@@ -23,13 +30,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Date;
-import java.util.Map;
 
 import static org.drools.core.time.TimeUtils.evalDateExpression;
 
@@ -76,11 +76,11 @@ public class    IntervalTimer extends BaseTimer
         this.period = in.readLong();
     }
 
-    public Declaration[] getStartDeclarations() {
+    private Declaration[] getStartDeclarations() {
         return this.startTime != null ? this.startTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
     }
 
-    public Declaration[] getEndDeclarations() {
+    private Declaration[] getEndDeclarations() {
         return this.endTime != null ? this.endTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
     }
 

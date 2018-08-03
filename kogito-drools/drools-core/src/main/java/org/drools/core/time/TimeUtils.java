@@ -16,15 +16,15 @@
 
 package org.drools.core.time;
 
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.DateUtils;
-
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A helper class with utility methods for
@@ -136,7 +136,7 @@ public class TimeUtils {
     }
 
     public static long evalTimeExpression( MVELObjectExpression expr, Tuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm ) {
-        Object d = expr.getValue( leftTuple,  declrs, null, wm );
+        Object d = expr.getValue( leftTuple,  declrs, wm );
         if ( d instanceof Number ) {
             return ((Number) d).longValue();
         }
@@ -147,7 +147,7 @@ public class TimeUtils {
         if (expr == null) {
             return null;
         }
-        Object d = expr.getValue( leftTuple,  declrs, null, wm );
+        Object d = expr.getValue( leftTuple, declrs, wm );
         if ( d == null ) {
             return null;
         }

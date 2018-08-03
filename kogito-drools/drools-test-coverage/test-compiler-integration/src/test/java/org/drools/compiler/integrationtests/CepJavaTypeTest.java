@@ -28,13 +28,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 
@@ -49,7 +46,7 @@ public class CepJavaTypeTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Role(value = Role.Type.EVENT)

@@ -268,11 +268,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Declaration[][] getTimerDeclarations() {
-        throw new UnsupportedOperationException();
-    }
-
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink( this, context );
         addAssociation( context, context.getRule() );
