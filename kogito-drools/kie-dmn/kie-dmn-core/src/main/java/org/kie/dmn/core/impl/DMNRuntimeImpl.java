@@ -198,6 +198,11 @@ public class DMNRuntimeImpl
     }
 
     @Override
+    public boolean hasListeners() {
+        return this.eventManager.hasListeners();
+    }
+
+    @Override
     public Set<DMNRuntimeEventListener> getListeners() {
         return this.eventManager.getListeners();
     }

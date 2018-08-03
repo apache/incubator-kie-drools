@@ -55,6 +55,11 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
     }
 
     @Override
+    public boolean hasListeners() {
+        return !listeners.isEmpty();
+    }
+
+    @Override
     public DMNRuntime getRuntime() {
         return dmnRuntime;
     }

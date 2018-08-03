@@ -26,11 +26,13 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -76,6 +78,9 @@ public class DMNContextEvaluator
         try {
             for ( ContextEntryDef ed : entries ) {
                 try {
+                    String entryVarId = getEntryVarId(ed);
+                    String entryExprId = getEntryExprId(ed);
+                    DMNRuntimeEventManagerUtils.fireBeforeEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, result );
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
                         Object value = er.getResult();
@@ -109,6 +114,7 @@ public class DMNContextEvaluator
                         
                         results.put( ed.getName(), value );
                         dmnContext.set( ed.getName(), value );
+                        DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, value, result );
                     } else {
                         MsgUtil.reportMessage( logger,
                                                DMNMessage.Severity.ERROR,
@@ -119,10 +125,14 @@ public class DMNContextEvaluator
                                                Msg.ERR_EVAL_CTX_ENTRY_ON_CTX,
                                                ed.getName(),
                                                name );
+                        DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, er.getResult(), result );
                         return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
                     logger.error( "Error invoking expression for node '" + name + "'.", e );
+                    String entryVarId = getEntryVarId(ed);
+                    String entryExprId = getEntryExprId(ed);
+                    DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, null, result );
                     return new EvaluatorResultImpl( results, ResultType.FAILURE );
                 }
             }
@@ -134,6 +144,14 @@ public class DMNContextEvaluator
         } else {
             return new EvaluatorResultImpl( results, ResultType.SUCCESS );
         }
+    }
+
+    private String getEntryExprId(ContextEntryDef ed) {
+        return ed.getContextEntry().getExpression() != null ? ed.getContextEntry().getExpression().getId() : null;
+    }
+
+    private String getEntryVarId(ContextEntryDef ed) {
+        return ed.getContextEntry().getVariable() != null ? ed.getContextEntry().getVariable().getId() : null;
     }
 
     public static class ContextEntryDef {
