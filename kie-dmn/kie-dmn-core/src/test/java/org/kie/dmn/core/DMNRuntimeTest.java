@@ -45,12 +45,9 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.api.core.event.*;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -81,6 +78,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -238,6 +236,73 @@ public class DMNRuntimeTest {
         assertThat( (Map<String, Object>) result.get( "Car Damage Responsibility" ), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 ) ) ) );
         assertThat( (Map<String, Object>) result.get( "Car Damage Responsibility" ), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 ) ) ) );
         assertThat( result.get( "Payment method" ), is( "Check" ) );
+    }
+
+    @Test
+    public void testContextEventListeners() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "context_listener.dmn", this.getClass() );
+
+        DMNRuntimeEventListener listener = mock( DMNRuntimeEventListener.class );
+        runtime.addListener( listener );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_73481d02-76fb-4927-ac11-5d936882e16c", "context listener" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        ArgumentCaptor<AfterEvaluateContextEntryEvent> argument = ArgumentCaptor.forClass( AfterEvaluateContextEntryEvent.class );
+        verify( listener, times( 1 ) )
+                .beforeEvaluateDecision( any( BeforeEvaluateDecisionEvent.class ) );
+        verify( listener, times( 1 ) )
+                .afterEvaluateDecision( any( AfterEvaluateDecisionEvent.class ) );
+        verify( listener, times( 5 ) )
+                .beforeEvaluateContextEntry( any( BeforeEvaluateContextEntryEvent.class ) );
+        verify( listener, times( 5 ) )
+                .afterEvaluateContextEntry( argument.capture() );
+
+        AfterEvaluateContextEntryEvent aece = argument.getAllValues().get( 0 );
+        assertThat( aece.getNodeName(), is( "d1" ) );
+        assertThat( aece.getVariableName(), is( "a1" ) );
+        assertThat( aece.getVariableId(), is( "_b199c7b1-cb87-4a92-b045-a2954ccc9d01" ) );
+        assertThat( aece.getExpressionId(), is( "_898c24f8-93da-4fe2-827c-924c30956833" ) );
+        assertThat( aece.getExpressionResult(), is( BigDecimal.valueOf( 10 ) ) );
+
+        aece = argument.getAllValues().get( 1 );
+        assertThat( aece.getNodeName(), is( "d1" ) );
+        assertThat( aece.getVariableName(), is( "c1" ) );
+        assertThat( aece.getVariableId(), is( "_38a88aef-8b3c-424d-b60c-a139ffb610e1" ) );
+        assertThat( aece.getExpressionId(), is( "_879c4ac6-8b25-4cd1-9b8e-c18d0b0b281c" ) );
+        assertThat( aece.getExpressionResult(), is( "a" ) );
+
+        aece = argument.getAllValues().get( 2 );
+        assertThat( aece.getNodeName(), is( "d1" ) );
+        assertThat( aece.getVariableName(), is( "c2" ) );
+        assertThat( aece.getVariableId(), is( "_3aad82f0-74b9-4921-8b2f-d6c277c840db" ) );
+        assertThat( aece.getExpressionId(), is( "_9acf4baf-6c49-4d47-88ab-2e511e598e04" ) );
+        assertThat( aece.getExpressionResult(), is( "b" ) );
+
+        aece = argument.getAllValues().get( 3 );
+        assertThat( aece.getNodeName(), is( "d1" ) );
+        assertThat( aece.getVariableName(), is( "b1" ) );
+        assertThat( aece.getVariableId(), is( "_f4a6c2ba-e6e9-4dbd-b776-edef2c1a1343" ) );
+        assertThat( aece.getExpressionId(), is( "_c450d947-1874-41fe-9c0a-da5f1cca7fde" ) );
+        assertThat( (Map<String, Object>) aece.getExpressionResult(), hasEntry( is( "c1" ), is( "a" ) ) );
+        assertThat( (Map<String, Object>) aece.getExpressionResult(), hasEntry( is( "c2" ), is( "b" ) ) );
+
+        aece = argument.getAllValues().get( 4 );
+        assertThat( aece.getNodeName(), is( "d1" ) );
+        assertThat( aece.getVariableName(), is( DMNContextEvaluator.RESULT_ENTRY ) );
+        assertThat( aece.getVariableId(), nullValue() );
+        assertThat( aece.getExpressionId(), is( "_4264b25c-d676-4516-ab8a-a4ff34e7a95c" ) );
+        assertThat( aece.getExpressionResult(), is( "a" ) );
+
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "d1" ), is( "a" ) );
     }
 
     @Test

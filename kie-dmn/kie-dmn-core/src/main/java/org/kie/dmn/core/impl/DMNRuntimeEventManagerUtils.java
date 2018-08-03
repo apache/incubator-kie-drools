@@ -23,16 +23,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
-import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.core.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,43 +32,73 @@ public final class DMNRuntimeEventManagerUtils {
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventManagerUtils.class );
 
     public static void fireBeforeEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
-        BeforeEvaluateDecisionEvent event = new BeforeEvaluateDecisionEventImpl( decision, result );
-        notifyListeners( eventManager, l -> l.beforeEvaluateDecision( event ) );
+        if( eventManager.hasListeners() ) {
+            BeforeEvaluateDecisionEvent event = new BeforeEvaluateDecisionEventImpl( decision, result );
+            notifyListeners( eventManager, l -> l.beforeEvaluateDecision( event ) );
+        }
     }
 
     public static void fireAfterEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
-        AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl( decision, result );
-        notifyListeners( eventManager, l -> l.afterEvaluateDecision( event ) );
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl(decision, result);
+            notifyListeners(eventManager, l -> l.afterEvaluateDecision(event));
+        }
     }
 
     public static void fireBeforeEvaluateDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
-        BeforeEvaluateDecisionServiceEvent event = new BeforeEvaluateDecisionServiceEventImpl(decision, result);
-        notifyListeners(eventManager, l -> l.beforeEvaluateDecisionService(event));
+        if( eventManager.hasListeners() ) {
+            BeforeEvaluateDecisionServiceEvent event = new BeforeEvaluateDecisionServiceEventImpl(decision, result);
+            notifyListeners(eventManager, l -> l.beforeEvaluateDecisionService(event));
+        }
     }
 
     public static void fireAfterEvaluateDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
-        AfterEvaluateDecisionServiceEvent event = new AfterEvaluateDecisionServiceEventImpl(decision, result);
-        notifyListeners(eventManager, l -> l.afterEvaluateDecisionService(event));
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateDecisionServiceEvent event = new AfterEvaluateDecisionServiceEventImpl(decision, result);
+            notifyListeners(eventManager, l -> l.afterEvaluateDecisionService(event));
+        }
     }
 
     public static void fireBeforeEvaluateBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
-        BeforeEvaluateBKMEvent event = new BeforeEvaluateBKMEventImpl( bkm, result );
-        notifyListeners( eventManager, l -> l.beforeEvaluateBKM( event ) );
+        if( eventManager.hasListeners() ) {
+            BeforeEvaluateBKMEvent event = new BeforeEvaluateBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.beforeEvaluateBKM(event));
+        }
     }
 
     public static void fireAfterEvaluateBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
-        AfterEvaluateBKMEvent event = new AfterEvaluateBKMEventImpl( bkm, result );
-        notifyListeners( eventManager, l -> l.afterEvaluateBKM( event ) );
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateBKMEvent event = new AfterEvaluateBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.afterEvaluateBKM(event));
+        }
     }
 
     public static void fireBeforeEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, DMNResult result) {
-        BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl( nodeName, dtName, result );
-        notifyListeners( eventManager, l -> l.beforeEvaluateDecisionTable( event ) );
+        if( eventManager.hasListeners() ) {
+            BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl(nodeName, dtName, result);
+            notifyListeners(eventManager, l -> l.beforeEvaluateDecisionTable(event));
+        }
     }
 
     public static void fireAfterEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, DMNResult result, List<Integer> matches, List<Integer> fired ) {
-        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( nodeName, dtName, result, matches, fired );
-        notifyListeners( eventManager, l -> l.afterEvaluateDecisionTable( event ) );
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl(nodeName, dtName, result, matches, fired);
+            notifyListeners(eventManager, l -> l.afterEvaluateDecisionTable(event));
+        }
+    }
+
+    public static void fireBeforeEvaluateContextEntry( DMNRuntimeEventManager eventManager, String nodeName, String variableName, String variableId, String expressionId, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            BeforeEvaluateContextEntryEvent event = new BeforeEvaluateContextEntryEventImpl(nodeName, variableName, variableId, expressionId, result);
+            notifyListeners(eventManager, l -> l.beforeEvaluateContextEntry(event));
+        }
+    }
+
+    public static void fireAfterEvaluateContextEntry( DMNRuntimeEventManager eventManager, String nodeName, String variableName, String variableId, String expressionId, Object expressionResult, DMNResult result ) {
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateContextEntryEvent event = new AfterEvaluateContextEntryEventImpl(nodeName, variableName, variableId, expressionId, expressionResult, result);
+            notifyListeners(eventManager, l -> l.afterEvaluateContextEntry(event));
+        }
     }
 
     private static void notifyListeners(DMNRuntimeEventManager eventManager, Consumer<DMNRuntimeEventListener> consumer) {

@@ -46,6 +46,13 @@ public interface DMNRuntimeEventManager {
      */
     Set<DMNRuntimeEventListener> getListeners();
 
+    /**
+     * Returns true if there are registered listeners, false otherwise
+     *
+     * @return
+     */
+    boolean hasListeners();
+
     DMNRuntime getRuntime();
 
 }
