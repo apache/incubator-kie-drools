@@ -1056,7 +1056,9 @@ public class SolutionDescriptor<Solution_> {
                     + memberAccessor + ") should never return null.\n"
                     + (memberAccessor instanceof ReflectionFieldMemberAccessor ? ""
                     : "Maybe the getter/method always returns null instead of the actual data.\n")
-                    + "Maybe the value is null instead of an empty collection/array.");
+                    + "Maybe that property (" + memberAccessor.getName()
+                    + ") was set with null instead of an empty collection/array when the class ("
+                    + solutionClass.getSimpleName() + ") instance was created.");
         }
         return collection;
     }
