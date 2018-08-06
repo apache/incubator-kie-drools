@@ -479,6 +479,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                         // being a range, need the `in` operator.
                         DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
                         exprs.add(replaced);
+                    } else if (child.resultType == BuiltInType.BOOLEAN) {
+                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.TEST);
+                        exprs.add(replaced);
                     } else {
                         // implied a unarytest for the `=` equal operator.
                         DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
@@ -682,6 +685,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 lambdaBody = new ExpressionStmt(expression);
             }
                 break;
+            case TEST: {
+                lambdaBody = new ExpressionStmt(endpoint.getExpression());
+            }
+            break;
             default:
                 throw new UnsupportedOperationException("Unable to determine operator of unary test");
         }
