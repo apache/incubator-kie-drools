@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,8 +61,11 @@ import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
@@ -70,6 +74,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ATTRIBUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
@@ -77,6 +82,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.DECLARAT
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.METADATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.RULE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.SUPPLY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
@@ -85,24 +91,24 @@ import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelGenerator {
 
-    private static final Map<String, Expression> attributesMap = new HashMap<>();
+    private static final Map<String, String> attributesMap = new HashMap<>();
 
     public static final Set<String> temporalOperators = new HashSet<>();
 
     static {
-        attributesMap.put("no-loop", parseExpression("Rule.Attribute.NO_LOOP"));
-        attributesMap.put("salience", parseExpression("Rule.Attribute.SALIENCE"));
-        attributesMap.put("enabled", parseExpression("Rule.Attribute.ENABLED"));
-        attributesMap.put("auto-focus", parseExpression("Rule.Attribute.AUTO_FOCUS"));
-        attributesMap.put("lock-on-active", parseExpression("Rule.Attribute.LOCK_ON_ACTIVE"));
-        attributesMap.put("agenda-group", parseExpression("Rule.Attribute.AGENDA_GROUP"));
-        attributesMap.put("activation-group", parseExpression("Rule.Attribute.ACTIVATION_GROUP"));
-        attributesMap.put("ruleflow-group", parseExpression("Rule.Attribute.RULEFLOW_GROUP"));
-        attributesMap.put("duration", parseExpression("Rule.Attribute.DURATION"));
-        attributesMap.put("timer", parseExpression("Rule.Attribute.TIMER"));
-        attributesMap.put("calendars", parseExpression("Rule.Attribute.CALENDARS"));
-        attributesMap.put("date-effective", parseExpression("Rule.Attribute.DATE_EFFECTIVE"));
-        attributesMap.put("date-expires", parseExpression("Rule.Attribute.DATE_EXPIRES"));
+        attributesMap.put("no-loop", "Rule.Attribute.NO_LOOP");
+        attributesMap.put("salience", "Rule.Attribute.SALIENCE");
+        attributesMap.put("enabled", "Rule.Attribute.ENABLED");
+        attributesMap.put("auto-focus", "Rule.Attribute.AUTO_FOCUS");
+        attributesMap.put("lock-on-active", "Rule.Attribute.LOCK_ON_ACTIVE");
+        attributesMap.put("agenda-group", "Rule.Attribute.AGENDA_GROUP");
+        attributesMap.put("activation-group", "Rule.Attribute.ACTIVATION_GROUP");
+        attributesMap.put("ruleflow-group", "Rule.Attribute.RULEFLOW_GROUP");
+        attributesMap.put("duration", "Rule.Attribute.DURATION");
+        attributesMap.put("timer", "Rule.Attribute.TIMER");
+        attributesMap.put("calendars", "Rule.Attribute.CALENDARS");
+        attributesMap.put("date-effective", "Rule.Attribute.DATE_EFFECTIVE");
+        attributesMap.put("date-expires", "Rule.Attribute.DATE_EXPIRES");
 
         temporalOperators.add("before");
         temporalOperators.add("after");
@@ -180,7 +186,7 @@ public class ModelGenerator {
                 new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
                 ruleCall;
 
-        for (MethodCallExpr attributeExpr : ruleAttributes(ruleDescr)) {
+        for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
             attributeExpr.setScope( buildCallScope );
             buildCallScope = attributeExpr;
         }
@@ -222,7 +228,7 @@ public class ModelGenerator {
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
      */
-    private static List<MethodCallExpr> ruleAttributes(RuleDescr ruleDescr) {
+    private static List<MethodCallExpr> ruleAttributes(RuleContext context, RuleDescr ruleDescr) {
         final List<MethodCallExpr> ruleAttributes = new ArrayList<>();
         final Set<Entry<String, AttributeDescr>> excludingDialect =
                 ruleDescr.getAttributes().entrySet()
@@ -231,23 +237,36 @@ public class ModelGenerator {
         for (Entry<String, AttributeDescr> as : excludingDialect) {
             MethodCallExpr attributeCall = new MethodCallExpr(null, ATTRIBUTE_CALL);
             attributeCall.addArgument(attributesMap.get(as.getKey()));
+            String value = as.getValue().getValue().trim();
             switch (as.getKey()) {
-                case "no-loop":
                 case "salience":
+                    try {
+                        Integer.parseInt( value );
+                        attributeCall.addArgument( value );
+                    } catch (NumberFormatException nfe) {
+                        addDynamicAttributeArgument( context, attributeCall, value );
+                    }
+                    break;
                 case "enabled":
+                    if (value.equalsIgnoreCase( "true" ) || value.equalsIgnoreCase( "false" )) {
+                        attributeCall.addArgument( value.toLowerCase() );
+                    } else {
+                        addDynamicAttributeArgument( context, attributeCall, value );
+                    }
+                    break;
+                case "no-loop":
                 case "auto-focus":
                 case "lock-on-active":
-                    attributeCall.addArgument( parseExpression(as.getValue().getValue()));
+                    attributeCall.addArgument( value );
                     break;
                 case "agenda-group":
                 case "activation-group":
                 case "ruleflow-group":
                 case "duration":
                 case "timer":
-                    attributeCall.addArgument(new StringLiteralExpr( as.getValue().getValue()) );
+                    attributeCall.addArgument( new StringLiteralExpr( value ) );
                     break;
                 case "calendars":
-                    String value = as.getValue().getValue().trim();
                     if (value.startsWith( "[" )) {
                         value = value.substring( 1, value.length()-1 ).trim();
                     }
@@ -264,6 +283,24 @@ public class ModelGenerator {
             ruleAttributes.add(attributeCall);
         }
         return ruleAttributes;
+    }
+
+    private static void addDynamicAttributeArgument( RuleContext context, MethodCallExpr attributeCall, String value ) {
+        ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+        ExpressionTyper expressionTyper = new ExpressionTyper(context, Integer.class, null, false, expressionTyperContext);
+        Expression salienceExpr = parseExpression( value );
+        Optional<TypedExpression> typedExpression = expressionTyper.toTypedExpression(salienceExpr).getTypedExpression();
+        if (typedExpression.isPresent()) {
+            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true);
+            MethodCallExpr supplyCall = new MethodCallExpr(null, SUPPLY_CALL);
+            expressionTyperContext.getUsedDeclarations().stream()
+                    .map(context::getVarExpr)
+                    .forEach(supplyCall::addArgument);
+            supplyCall.addArgument( lambda );
+            attributeCall.addArgument( supplyCall );
+        } else {
+            context.addCompilationError( new ParseExpressionErrorResult(salienceExpr) );
+        }
     }
 
     public static void setDialectFromRuleDescr(RuleContext context, RuleDescr ruleDescr) {

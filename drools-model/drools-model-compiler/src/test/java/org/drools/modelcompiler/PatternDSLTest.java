@@ -18,9 +18,11 @@ package org.drools.modelcompiler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
@@ -58,6 +60,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.drools.model.DSL.supply;
 import static org.drools.model.PatternDSL.accFunction;
 import static org.drools.model.PatternDSL.accumulate;
 import static org.drools.model.PatternDSL.after;
@@ -720,4 +723,91 @@ public class PatternDSLTest {
 
     }
 
+    @Test
+    public void testDynamicSalienceOnGlobal() {
+        Global<AtomicInteger> var_salience1 = D.globalOf(AtomicInteger.class, "defaultpkg", "salience1");
+        Global<AtomicInteger> var_salience2 = D.globalOf(AtomicInteger.class, "defaultpkg", "salience2");
+        Global<List> var_list = D.globalOf(List.class, "defaultpkg", "list");
+
+        Variable<Integer> var_$i = D.declarationOf(Integer.class, "$i");
+
+        Rule rule1 = D.rule("R1")
+                .attribute(Rule.Attribute.SALIENCE, supply( var_salience1, salience1 -> salience1.get() ))
+                .build(D.pattern(var_$i),
+                        D.on(var_$i,
+                                var_salience1,
+                                var_list).execute((drools, $i, salience1, list) -> {
+                            drools.delete($i);
+                            salience1.decrementAndGet();
+                            list.add(1);
+                        }));
+
+        Rule rule2 = D.rule("R2")
+                .attribute(Rule.Attribute.SALIENCE, supply( var_salience2, salience2 -> salience2.get() ))
+                .build(D.pattern(var_$i),
+                        D.on(var_$i,
+                                var_list,
+                                var_salience2).execute((drools, $i, list, salience2) -> {
+                            drools.delete($i);
+                            salience2.decrementAndGet();
+                            list.add(2);
+                        }));
+
+        Model model = new ModelImpl().addRule( rule1 ).addRule( rule2 ).addGlobal( var_salience1 ).addGlobal( var_salience2 ).addGlobal( var_list );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
+        KieSession ksession = kieBase.newKieSession();
+        try {
+            final List<Integer> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            ksession.setGlobal("salience1", new AtomicInteger(9));
+            ksession.setGlobal("salience2", new AtomicInteger(10));
+
+            for (int i = 0; i < 10; i++) {
+                ksession.insert(i);
+                ksession.fireAllRules();
+            }
+
+            assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testDynamicSalienceOnDeclarations() {
+        Global<List> var_list = D.globalOf( List.class, "defaultpkg", "list" );
+
+        Variable<Integer> var_$i = D.declarationOf(Integer.class, "$i" );
+        Variable<String> var_$s = D.declarationOf(String.class, "$s");
+
+        Rule rule1 = D.rule("R1")
+                .attribute(Rule.Attribute.SALIENCE, supply(var_$s, s -> s.length()))
+                .build(D.pattern(var_$s),
+                        D.on(var_list,
+                                var_$s).execute((list, $s) -> {
+                            list.add($s);
+                        }));
+
+        Rule rule2 = D.rule("R2")
+                .attribute(Rule.Attribute.SALIENCE, supply(var_$i, i -> i))
+                .build(D.pattern(var_$i),
+                        D.on(var_$i,
+                                var_list).execute(($i, list) -> {
+                            list.add($i);
+                        }));
+
+        Model model = new ModelImpl().addRule( rule1 ).addRule( rule2 ).addGlobal( var_list );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "ok" );
+        ksession.insert( "test" );
+        ksession.insert( 3 );
+        ksession.insert( 1 );
+
+        ksession.fireAllRules();
+        assertEquals(list, Arrays.asList("test", 3, "ok", 1));
+    }
 }

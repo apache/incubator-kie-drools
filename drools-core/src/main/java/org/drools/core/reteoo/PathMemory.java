@@ -15,7 +15,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalAgenda;
@@ -112,9 +111,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private TerminalNode ensureAgendaItemCreated(InternalAgenda agenda) {
         TerminalNode rtn = (TerminalNode) getPathEndNode();
         if (agendaItem == null) {
-            int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
-                           ? 0
-                           : rtn.getRule().getSalience().getValue(null, rtn.getRule(), agenda.getWorkingMemory());
+            int salience = rtn.getRule().getSalience().isDynamic() ? 0 : rtn.getRule().getSalience().getValue();
             agendaItem = agenda.createRuleAgendaItem(salience, this, rtn);
         }
         return rtn;

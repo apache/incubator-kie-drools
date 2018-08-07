@@ -34,16 +34,13 @@ import org.drools.model.bitmask.EmptyBitMask;
 import org.drools.model.bitmask.EmptyButLastBitMask;
 import org.drools.model.bitmask.LongBitMask;
 import org.drools.model.bitmask.OpenBitSet;
-import org.drools.modelcompiler.RuleContext;
 
 public class LambdaConsequence implements Consequence {
 
     private final org.drools.model.Consequence consequence;
-    private final RuleContext context;
 
-    public LambdaConsequence( org.drools.model.Consequence consequence, RuleContext context ) {
+    public LambdaConsequence( org.drools.model.Consequence consequence ) {
         this.consequence = consequence;
-        this.context = context;
     }
 
     @Override
@@ -53,14 +50,20 @@ public class LambdaConsequence implements Consequence {
 
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
-        Tuple tuple = knowledgeHelper.getTuple();
         Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
+        Object[] facts = declarationsToFacts( knowledgeHelper, workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
+        consequence.getBlock().execute( facts );
+    }
 
-        Variable[] vars = consequence.getVariables();
+    public static Object[] declarationsToFacts( WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
+        return declarationsToFacts( null, workingMemory, tuple, declarations, vars, false );
+    }
+
+    private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
         Object[] facts;
 
         int factsOffset = 0;
-        if (consequence.isUsingDrools()) {
+        if (useDrools) {
             factsOffset++;
             facts = new Object[vars.length + 1];
             facts[0] = new DroolsImpl(knowledgeHelper, workingMemory);
@@ -73,16 +76,15 @@ public class LambdaConsequence implements Consequence {
             if ( var.isFact() ) {
                 Declaration declaration = declarations[declrCounter++];
                 InternalFactHandle fh = getOriginalFactHandle( tuple.get( declaration ) );
-                if (consequence.isUsingDrools()) {
+                if (useDrools) {
                     ( (DroolsImpl) facts[0] ).registerFactHandle( fh );
                 }
-                facts[factsOffset++] = declaration.getValue( (InternalWorkingMemory) workingMemory, fh.getObject() );
+                facts[factsOffset++] = declaration.getValue( (InternalWorkingMemory ) workingMemory, fh.getObject() );
             } else {
                 facts[factsOffset++] = workingMemory.getGlobal( var.getName() );
             }
         }
-
-        consequence.getBlock().execute( facts );
+        return facts;
     }
 
     private static InternalFactHandle getOriginalFactHandle(InternalFactHandle handle) {

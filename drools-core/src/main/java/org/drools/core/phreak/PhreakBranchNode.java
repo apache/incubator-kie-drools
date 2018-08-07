@@ -24,7 +24,6 @@ import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Salience;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
@@ -64,12 +63,6 @@ public class PhreakBranchNode {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
 
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
-        int salienceInt = 0;
-        Salience salience = ruleAgendaItem.getRule().getSalience();
-        if ( !salience.isDynamic() ) {
-            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
-            salience = null;
-        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -85,7 +78,7 @@ public class PhreakBranchNode {
                                                                   rtn,
                                                                   leftTuple.getPropagationContext(), useLeftMemory);
                 PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, agenda,
-                                                          executor.getRuleAgendaItem(), salienceInt, salience, branchedLeftTuple) ;
+                                                          executor.getRuleAgendaItem(), branchedLeftTuple) ;
                 breaking = conditionalExecution.isBreaking();
             }
 
@@ -110,12 +103,6 @@ public class PhreakBranchNode {
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
-        int salienceInt = 0;
-        Salience salience = ruleAgendaItem.getRule().getSalience();
-        if ( !salience.isDynamic() ) {
-            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
-            salience = null;
-        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -148,7 +135,7 @@ public class PhreakBranchNode {
 
                 } else if (newRtn == oldRtn) {
                     // old and new on same branch, so update
-                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, agenda, salienceInt, salience, branchTuples.rtnLeftTuple) ;
+                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, agenda, branchTuples.rtnLeftTuple) ;
 
                 } else {
                     // old and new on different branches, delete one and insert the other
@@ -161,7 +148,7 @@ public class PhreakBranchNode {
                                                                        newRtn,
                                                                        leftTuple.getPropagationContext(), true);
                     PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, agenda,
-                                                              executor.getRuleAgendaItem(), salienceInt, salience, branchTuples.rtnLeftTuple) ;
+                                                              executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
                 }
 
             } else if (newRtn != null) {
@@ -169,7 +156,7 @@ public class PhreakBranchNode {
                 branchTuples.rtnLeftTuple = newRtn.createLeftTuple(leftTuple, newRtn,
                                                                    leftTuple.getPropagationContext(), true);
                 PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, agenda,
-                                                          executor.getRuleAgendaItem(), salienceInt, salience, branchTuples.rtnLeftTuple) ;
+                                                          executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
             }
 
             // Handle main branch

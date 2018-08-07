@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +26,6 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -90,7 +90,6 @@ public class RuleAttributesTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("supports dynamic salience where you can use an expression involving bound variables")
     public void testSalienceExpressionAttribute() throws Exception {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "\n" +
@@ -118,7 +117,6 @@ public class RuleAttributesTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("supports dynamic enabled where you can use an expression involving bound variables")
     public void testExpressionEnabledAttribute() throws Exception {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "rule R1\n" +
@@ -400,5 +398,35 @@ public class RuleAttributesTest extends BaseModelTest {
 
         Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
         Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
+    }
+
+
+    @Test
+    public void testDynamicSalience() {
+        String str =
+                "global java.util.List list;\n" +
+                "rule R1 salience $s.length when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    list.add($s);" +
+                "end\n" +
+                "rule R2 salience $i when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    list.add($i);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "ok" );
+        ksession.insert( "test" );
+        ksession.insert( 3 );
+        ksession.insert( 1 );
+
+        ksession.fireAllRules();
+        assertEquals(list, Arrays.asList("test", 3, "ok", 1));
     }
 }

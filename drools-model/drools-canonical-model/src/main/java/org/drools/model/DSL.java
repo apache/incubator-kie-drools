@@ -683,4 +683,12 @@ public class DSL {
             throw new RuntimeException( e );
         }
     }
+
+    public static <A, R> DynamicValueSupplier<R> supply( Variable<A> var1, Function1<A, R> f ) {
+        return new DynamicValueSupplier._1( var1, f );
+    }
+
+    public static <A, B, R> DynamicValueSupplier<R> supply( Variable<A> var1, Variable<B> var2, Function2<A, B, R> f ) {
+        return new DynamicValueSupplier._2( var1, var2, f );
+    }
 }
