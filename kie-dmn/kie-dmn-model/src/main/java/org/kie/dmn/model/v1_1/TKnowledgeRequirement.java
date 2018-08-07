@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+public class TKnowledgeRequirement extends KieDMNModelInstrumentedBase implements KnowledgeRequirement {
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+    private DMNElementReference requiredKnowledge;
 
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    @Override
+    public DMNElementReference getRequiredKnowledge() {
+        return requiredKnowledge;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public void setRequiredKnowledge(final DMNElementReference value) {
+        this.requiredKnowledge = value;
     }
 
 }

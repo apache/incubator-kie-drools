@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+import org.kie.dmn.model.v1x.Context;
+import org.kie.dmn.model.v1x.ContextEntry;
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+public class TContext extends TExpression implements Context {
 
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
-    }
+    private List<ContextEntry> contextEntry;
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public List<ContextEntry> getContextEntry() {
+        if ( contextEntry == null ) {
+            contextEntry = new ArrayList<>();
+        }
+        return this.contextEntry;
     }
 
 }

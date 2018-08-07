@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.List;
+import org.kie.dmn.model.v1x.Relation;
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+public class TRelation extends TExpression implements Relation {
 
-    private List<TDecisionService> decisionService;
+    private java.util.List<InformationItem> column;
+    private java.util.List<List> row;
 
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
+    @Override
+    public java.util.List<InformationItem> getColumn() {
+        if ( column == null ) {
+            column = new ArrayList<>();
         }
-        return this.decisionService;
+        return this.column;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public java.util.List<List> getRow() {
+        if ( row == null ) {
+            row = new ArrayList<>();
+        }
+        return this.row;
     }
 
 }

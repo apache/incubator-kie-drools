@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
 
-import java.util.ArrayList;
-import java.util.List;
+package org.kie.dmn.model.v1x;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+public enum DecisionTableOrientation {
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+    RULE_AS_ROW( "Rule-as-Row" ),
+    RULE_AS_COLUMN( "Rule-as-Column" ),
+    CROSS_TABLE( "CrossTable" );
 
-    private List<TDecisionService> decisionService;
+    private final String value;
 
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    DecisionTableOrientation( String v ) {
+        value = v;
     }
 
-    @Override
-    public String toString() {
-        return decisionService.toString();
+    public String value() {
+        return value;
+    }
+
+    public static DecisionTableOrientation fromValue( final String v ) {
+        for ( DecisionTableOrientation c : DecisionTableOrientation.values() ) {
+            if ( c.value.equals( v ) ) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException( v );
     }
 
 }

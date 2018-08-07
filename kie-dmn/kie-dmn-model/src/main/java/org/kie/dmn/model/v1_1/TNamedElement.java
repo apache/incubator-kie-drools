@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.model.v1x.NamedElement;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+public abstract class TNamedElement extends TDMNElement implements NamedElement {
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+    private String name;
 
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public void setName( final String value ) {
+        this.name = value;
     }
 
 }

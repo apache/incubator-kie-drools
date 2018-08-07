@@ -1,0 +1,25 @@
+package org.kie.dmn.model.v1x;
+
+public interface RuleAnnotationClause {
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    String getName();
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    void setName(String value);
+
+}

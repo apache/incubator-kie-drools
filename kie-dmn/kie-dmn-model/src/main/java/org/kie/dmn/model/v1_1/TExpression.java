@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+import org.kie.dmn.model.v1x.Expression;
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+public abstract class TExpression extends TDMNElement implements Expression {
 
-    private List<TDecisionService> decisionService;
+    private QName typeRef;
 
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    @Override
+    public QName getTypeRef() {
+        return typeRef;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public void setTypeRef( final QName value ) {
+        this.typeRef = value;
     }
 
 }

@@ -13,28 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+import org.kie.dmn.model.v1x.Binding;
+import org.kie.dmn.model.v1x.Expression;
+import org.kie.dmn.model.v1x.Invocation;
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+public class TInvocation extends TExpression implements Invocation {
 
-    private List<TDecisionService> decisionService;
+    private Expression expression;
+    private List<Binding> binding;
 
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    @Override
+    public Expression getExpression() {
+        return expression;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public void setExpression(final Expression value) {
+        this.expression = value;
+    }
+
+    @Override
+    public List<Binding> getBinding() {
+        if ( binding == null ) {
+            binding = new ArrayList<>();
+        }
+        return this.binding;
     }
 
 }

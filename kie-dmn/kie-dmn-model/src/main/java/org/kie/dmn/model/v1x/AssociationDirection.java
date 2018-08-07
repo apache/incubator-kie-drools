@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1x;
 
-import java.util.ArrayList;
-import java.util.List;
+public enum AssociationDirection {
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+    NONE( "None" ),
+    ONE( "One" ),
+    BOTH( "Both" );
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+    private final String value;
 
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    AssociationDirection( final String v ) {
+        value = v;
     }
 
-    @Override
-    public String toString() {
-        return decisionService.toString();
+    public String value() {
+        return value;
+    }
+
+    public static AssociationDirection fromValue( final String v ) {
+        for ( AssociationDirection c : AssociationDirection.values() ) {
+            if ( c.value.equals( v ) ) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException( v );
     }
 
 }

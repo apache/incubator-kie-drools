@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1x;
 
-import java.util.ArrayList;
-import java.util.List;
+public enum BuiltinAggregator {
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+    SUM,
+    COUNT,
+    MIN,
+    MAX;
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
-
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    public String value() {
+        return name();
     }
 
-    @Override
-    public String toString() {
-        return decisionService.toString();
+    public static BuiltinAggregator fromValue( final String v ) {
+        return valueOf( v );
     }
 
 }

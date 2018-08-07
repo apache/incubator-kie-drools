@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.model.v1_1.extensions;
+package org.kie.dmn.model.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.InputData;
 
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+public class TInputData extends TDRGElement implements InputData {
 
-public class DecisionServices extends KieDMNModelInstrumentedBase {
+    private InformationItem variable;
 
-    private List<TDecisionService> decisionService;
-
-    public List<TDecisionService> getDecisionService() {
-        if (decisionService == null) {
-            decisionService = new ArrayList<>();
-        }
-        return this.decisionService;
+    @Override
+    public InformationItem getVariable() {
+        return variable;
     }
 
     @Override
-    public String toString() {
-        return decisionService.toString();
+    public void setVariable(final InformationItem value) {
+        this.variable = value;
     }
 
 }
