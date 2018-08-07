@@ -65,7 +65,7 @@ public class EmailNotificationListener implements NotificationListener {
     
     @Override
     public void onNotification(NotificationEvent event, UserInfo userInfo) {
-        
+        logger.debug("User info implementation {} and mail session {}", userInfo, mailSession);
         if (userInfo == null || mailSession == null) {
             logger.info("Missing mail session or userinfo - skipping email notification listener processing");
             return;
@@ -114,11 +114,12 @@ public class EmailNotificationListener implements NotificationListener {
                     for (User user : entry.getValue()) {
     
                         String emailAddress = userInfo.getEmailForEntity(user);
-                        if (emailAddress != null && !toAddresses.contains(emailAddress)) {                        	
-                        	msg.addRecipients( Message.RecipientType.TO, InternetAddress.parse( emailAddress, false));
-                        	toAddresses.add(emailAddress);
+                        if (emailAddress != null) {                        	
+                        	if (toAddresses.add(emailAddress)) {
+                        	    msg.addRecipients( Message.RecipientType.TO, InternetAddress.parse( emailAddress, false));
+                        	}
                         } else {
-                        	logger.warn("Email address not found for user {}", user.getId());
+                        	logger.warn("Email address not found for user '{}'", user.getId());
                         }
                     }
                     

@@ -144,7 +144,7 @@ public class HumanTaskHandlerHelper {
 			EmailNotification emailNotification = TaskModelProvider.getFactory().newEmialNotification();
 			notifications.add(emailNotification);
 
-			emailNotification.setBusinessAdministrators(businessAdministrators);
+			emailNotification.setBusinessAdministrators(new ArrayList<>(businessAdministrators));
 
 			Map<Language, EmailNotificationHeader> emailHeaders = new HashMap<Language, EmailNotificationHeader>();
 			List<I18NText> subjects = new ArrayList<I18NText>();
