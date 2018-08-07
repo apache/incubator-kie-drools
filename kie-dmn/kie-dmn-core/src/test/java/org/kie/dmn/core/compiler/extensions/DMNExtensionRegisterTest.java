@@ -29,8 +29,8 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.InputData;
+import org.kie.dmn.model.v1x.DMNElement;
+import org.kie.dmn.model.v1x.InputData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

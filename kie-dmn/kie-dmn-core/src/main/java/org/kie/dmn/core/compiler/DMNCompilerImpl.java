@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -67,22 +68,24 @@ import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.DecisionTable;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.Import;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-import org.kie.dmn.model.v1_1.ItemDefinition;
-import org.kie.dmn.model.v1_1.KnowledgeRequirement;
-import org.kie.dmn.model.v1_1.NamedElement;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.v1_1.TDefinitions;
+import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.DRGElement;
+import org.kie.dmn.model.v1x.Decision;
+import org.kie.dmn.model.v1x.DecisionService;
+import org.kie.dmn.model.v1x.DecisionTable;
+import org.kie.dmn.model.v1x.Definitions;
+import org.kie.dmn.model.v1x.Import;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.InformationRequirement;
+import org.kie.dmn.model.v1x.ItemDefinition;
+import org.kie.dmn.model.v1x.KnowledgeRequirement;
+import org.kie.dmn.model.v1x.NamedElement;
+import org.kie.dmn.model.v1x.OutputClause;
+import org.kie.dmn.model.v1x.UnaryTests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,7 +191,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         return null;
                     }, Function.identity());
                     if (located != null) {
-                        String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
+                        String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                         importFromModel(model, located, iAlias);
                     }
@@ -226,7 +229,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
-        Definitions.normalize(dmndefs);
+        TDefinitions.normalize(dmndefs);
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
@@ -269,7 +272,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 for (DecisionService ds : dss.getDecisionService()) {
                     // compatibility with DMN v1.1, create Decision Service's variable:
                     if (ds.getVariable() == null) {
-                        InformationItem variable = new InformationItem();
+                        InformationItem variable = new TInformationItem();
                         variable.setId(UUID.randomUUID().toString());
                         variable.setName(ds.getName());
                         variable.setParent(ds);

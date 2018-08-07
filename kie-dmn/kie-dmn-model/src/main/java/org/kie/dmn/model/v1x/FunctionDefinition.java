@@ -2,7 +2,7 @@ package org.kie.dmn.model.v1x;
 
 import java.util.List;
 
-public interface FunctionDefinition {
+public interface FunctionDefinition extends Expression {
 
     List<InformationItem> getFormalParameter();
 

@@ -55,8 +55,8 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.Definitions;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {

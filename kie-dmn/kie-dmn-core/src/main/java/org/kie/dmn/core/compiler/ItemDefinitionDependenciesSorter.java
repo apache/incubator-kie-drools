@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.v1x.ItemDefinition;
 
 public class ItemDefinitionDependenciesSorter {
     

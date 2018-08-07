@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.v1_1.Import;
+import org.kie.dmn.model.v1_1.TImport;
+import org.kie.dmn.model.v1x.Import;
 
 public class ImportDMNResolverUtil {
 
@@ -18,8 +19,8 @@ public class ImportDMNResolverUtil {
 
     public static <T> Either<String, T> resolveImportDMN(Import _import, Collection<T> all, Function<T, QName> idExtractor) {
         final String iNamespace = _import.getNamespace();
-        final String iName = _import.getAdditionalAttributes().get(Import.NAME_QNAME);
-        final String iModelName = _import.getAdditionalAttributes().get(Import.MODELNAME_QNAME);
+        final String iName = _import.getName();
+        final String iModelName = _import.getAdditionalAttributes().get(TImport.MODELNAME_QNAME);
         List<T> allInNS = all.stream()
                              .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(iNamespace))
                              .collect(Collectors.toList());

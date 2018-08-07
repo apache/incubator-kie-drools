@@ -10,7 +10,7 @@ package org.kie.dmn.model.v1_2;
 
 import org.kie.dmn.model.v1x.DMNElementReference;
 
-public class TDMNElementReference implements DMNElementReference {
+public class TDMNElementReference extends KieDMNModelInstrumentedBase implements DMNElementReference {
 
     private String href;
 

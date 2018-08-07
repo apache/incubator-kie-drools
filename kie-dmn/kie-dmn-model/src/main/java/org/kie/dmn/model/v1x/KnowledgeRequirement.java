@@ -1,6 +1,6 @@
 package org.kie.dmn.model.v1x;
 
-public interface KnowledgeRequirement {
+public interface KnowledgeRequirement extends DMNElement {
 
     DMNElementReference getRequiredKnowledge();
 

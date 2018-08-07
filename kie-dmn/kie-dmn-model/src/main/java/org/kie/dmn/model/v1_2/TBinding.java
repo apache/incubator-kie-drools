@@ -12,7 +12,7 @@ import org.kie.dmn.model.v1x.Binding;
 import org.kie.dmn.model.v1x.Expression;
 import org.kie.dmn.model.v1x.InformationItem;
 
-public class TBinding implements Binding {
+public class TBinding extends KieDMNModelInstrumentedBase implements Binding {
 
     protected InformationItem parameter;
     protected Expression expression;

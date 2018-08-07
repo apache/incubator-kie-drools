@@ -1,6 +1,6 @@
 package org.kie.dmn.model.v1x;
 
-public interface DMNElementReference {
+public interface DMNElementReference extends DMNModelInstrumentedBase {
 
     String getHref();
 

@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.v1_1.Import;
+import org.kie.dmn.model.v1x.Import;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

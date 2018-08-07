@@ -27,7 +27,7 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.v1x.ItemDefinition;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
