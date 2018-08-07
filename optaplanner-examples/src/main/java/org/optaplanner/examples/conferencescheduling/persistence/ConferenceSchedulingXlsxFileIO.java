@@ -1231,7 +1231,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         private void writeScoreView() {
-            nextSheet("Score view", 1, 1, true);
+            nextSheet("Score view", 1, 3, true);
+            nextRow();
             nextHeaderCell("Score");
             nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
             nextRow();
