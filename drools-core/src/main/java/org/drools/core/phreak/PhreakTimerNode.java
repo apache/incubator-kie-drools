@@ -465,12 +465,10 @@ public class PhreakTimerNode {
             bit = bit << 1;
         }
 
-        RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
-
-        rne.outerEval(pmem, sink, bit, tm,
-                      smems, smemIndex, trgLeftTuples,
-                      agenda, new LinkedList<>(), true,
-                      pmem.getRuleAgendaItem().getRuleExecutor());
+        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, sink, bit, tm,
+                                                smems, smemIndex, trgLeftTuples,
+                                                agenda, new LinkedList<>(), true,
+                                                pmem.getRuleAgendaItem().getRuleExecutor());
     }
 
     public static class TimerNodeJobContext
