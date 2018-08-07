@@ -71,6 +71,8 @@ public class RuleNetworkEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(RuleNetworkEvaluator.class);
 
+    public static final RuleNetworkEvaluator INSTANCE = new RuleNetworkEvaluator();
+
     private static final PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
     private static final PhreakEvalNode         pEvalNode   = new PhreakEvalNode();
     private static final PhreakFromNode         pFromNode   = new PhreakFromNode();
@@ -82,14 +84,12 @@ public class RuleNetworkEvaluator {
     private static final PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
     private static final PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
     private static final PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
+    private static PhreakQueryTerminalNode      pQtNode     = new PhreakQueryTerminalNode();
 
     private static int cycle = 0;
 
-    private static PhreakQueryTerminalNode pQtNode = new PhreakQueryTerminalNode();
 
-    public RuleNetworkEvaluator() {
-
-    }
+    private RuleNetworkEvaluator() { }
 
     public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, InternalWorkingMemory wm) {
         evaluateNetwork( pmem, executor, pmem.getActualAgenda(wm) );

@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public class RuleExecutor {
 
     protected static final transient Logger   log               = LoggerFactory.getLogger(RuleExecutor.class);
-    private static final RuleNetworkEvaluator NETWORK_EVALUATOR = new RuleNetworkEvaluator();
+
     private final PathMemory                  pmem;
     private final RuleAgendaItem              ruleAgendaItem;
     private final TupleList                   tupleList;
@@ -68,7 +68,7 @@ public class RuleExecutor {
     }
 
     public void evaluateNetwork(InternalAgenda agenda) {
-        NETWORK_EVALUATOR.evaluateNetwork( pmem, this, agenda );
+        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, agenda );
         setDirty( false );
     }
 
@@ -209,7 +209,7 @@ public class RuleExecutor {
     public void reEvaluateNetwork(InternalAgenda agenda) {
         if ( isDirty() ) {
             setDirty(false);
-            NETWORK_EVALUATOR.evaluateNetwork(pmem, this, agenda);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, this, agenda);
         }
     }
 

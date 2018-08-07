@@ -541,7 +541,7 @@ public class AddRemoveRule {
     private static void flushStagedTuples(TerminalNode tn, PathMemory pmem, PathEndNodes pathEndNodes, InternalWorkingMemory wm) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
         if ( pmem.isInitialized() ) {
-            new RuleNetworkEvaluator().evaluateNetwork(pmem, pmem.getRuleAgendaItem().getRuleExecutor(), wm);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, pmem.getRuleAgendaItem().getRuleExecutor(), wm);
         }
 
         // With the removing rules being flushed, we need to check any splits that will be merged, to see if they need flushing
@@ -678,9 +678,9 @@ public class AddRemoveRule {
                              wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         InternalAgenda agenda = pmem.getActualAgenda( wm );
-        new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, agenda,
-                                             new LinkedList<StackEntry>(),
-                                             true, rtnPmem.getOrCreateRuleAgendaItem(agenda).getRuleExecutor());
+        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, agenda,
+                                                new LinkedList<StackEntry>(),
+                                                true, rtnPmem.getOrCreateRuleAgendaItem(agenda).getRuleExecutor());
     }
 
 
