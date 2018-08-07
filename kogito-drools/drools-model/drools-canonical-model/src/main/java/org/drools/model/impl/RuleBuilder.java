@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.drools.model.DynamicValueSupplier;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 
@@ -49,6 +50,11 @@ public class RuleBuilder {
     }
 
     public <T> RuleBuilder attribute(Rule.Attribute<T> attribute, T value) {
+        attributes.put(attribute, value);
+        return this;
+    }
+
+    public <T> RuleBuilder attribute(Rule.Attribute<T> attribute, DynamicValueSupplier<T> value) {
         attributes.put(attribute, value);
         return this;
     }

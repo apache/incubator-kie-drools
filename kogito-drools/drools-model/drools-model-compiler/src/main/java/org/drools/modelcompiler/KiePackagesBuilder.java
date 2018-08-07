@@ -63,15 +63,18 @@ import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.ruleunit.RuleUnitUtil;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.Enabled;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.Salience;
 import org.drools.model.AccumulatePattern;
 import org.drools.model.Argument;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
+import org.drools.model.DynamicValueSupplier;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
 import org.drools.model.From0;
@@ -103,6 +106,8 @@ import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
+import org.drools.modelcompiler.attributes.LambdaEnabled;
+import org.drools.modelcompiler.attributes.LambdaSalience;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.BindingEvaluator;
@@ -229,8 +234,8 @@ public class KiePackagesBuilder {
         Boolean lockOnActive = setAttribute( rule, Rule.Attribute.LOCK_ON_ACTIVE, ruleImpl::setLockOnActive );
         setAttribute( rule, Rule.Attribute.AUTO_FOCUS, ruleImpl::setAutoFocus );
 
-        setAttribute( rule, Rule.Attribute.ENABLED, e -> ruleImpl.setEnabled( new EnabledBoolean(e) ) );
-        setAttribute( rule, Rule.Attribute.SALIENCE, s -> ruleImpl.setSalience( new SalienceInteger( s ) ) );
+        setDynamicAttribute( rule, Rule.Attribute.ENABLED, e -> ruleImpl.setEnabled( createEnabled(e) ) );
+        setDynamicAttribute( rule, Rule.Attribute.SALIENCE, s -> ruleImpl.setSalience( createSalience( s ) ) );
         String agendaGroup = setAttribute( rule, Rule.Attribute.AGENDA_GROUP, ruleImpl::setAgendaGroup );
         setAttribute( rule, Rule.Attribute.RULEFLOW_GROUP, rfg -> {
             ruleImpl.setRuleFlowGroup(rfg);
@@ -249,6 +254,26 @@ public class KiePackagesBuilder {
         ruleImpl.setEager( ruleImpl.isEager() || noLoop != null || lockOnActive != null );
     }
 
+    private Salience createSalience( Object s ) {
+        if (s instanceof Integer) {
+            return new SalienceInteger( (int) s );
+        }
+        if (s instanceof DynamicValueSupplier) {
+            return new LambdaSalience( (DynamicValueSupplier<Integer>) s );
+        }
+        throw new UnsupportedOperationException( "Unknown salience type: " + s.getClass().getCanonicalName() );
+    }
+
+    private Enabled createEnabled( Object e ) {
+        if (e instanceof Boolean) {
+            return new EnabledBoolean( (boolean) e );
+        }
+        if (e instanceof DynamicValueSupplier) {
+            return new LambdaEnabled( (DynamicValueSupplier<Boolean>) e );
+        }
+        throw new UnsupportedOperationException( "Unknown salience type: " + e.getClass().getCanonicalName() );
+    }
+
     private <T> T setAttribute( Rule rule, Rule.Attribute<T> attribute, Consumer<T> consumer ) {
         T value = rule.getAttribute( attribute );
         if ( value != attribute.getDefaultValue() ) {
@@ -256,6 +281,13 @@ public class KiePackagesBuilder {
             return value;
         }
         return null;
+    }
+
+    private void setDynamicAttribute( Rule rule, Rule.Attribute<?> attribute, Consumer<Object> consumer ) {
+        Object value = rule.getAttribute( attribute );
+        if ( value != attribute.getDefaultValue() ) {
+            consumer.accept( value );
+        }
     }
 
     private void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
@@ -321,14 +353,14 @@ public class KiePackagesBuilder {
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence(new LambdaConsequence(consequence, ctx));
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence ) );
             } else if ("mvel".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence(new MVELConsequence(consequence, ctx));
+                ctx.getRule().setConsequence( new MVELConsequence( consequence, ctx ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
         } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, ctx ) );
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence ) );
         }
 
         Variable[] consequenceVars = consequence.getDeclarations();

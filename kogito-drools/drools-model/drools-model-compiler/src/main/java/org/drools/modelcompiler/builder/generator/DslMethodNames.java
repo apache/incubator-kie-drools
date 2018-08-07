@@ -24,6 +24,7 @@ public class DslMethodNames {
     public static final String RULE_CALL = "D.rule";
     public static final String UNIT_CALL = "unit";
     public static final String ATTRIBUTE_CALL = "attribute";
+    public static final String SUPPLY_CALL = "D.supply";
     public static final String METADATA_CALL = "metadata";
     public static final String BUILD_CALL = "build";
     public static final String ADD_ANNOTATION_CALL = "addAnnotation";
