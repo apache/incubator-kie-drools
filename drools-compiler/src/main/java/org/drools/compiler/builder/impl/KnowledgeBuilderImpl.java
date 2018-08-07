@@ -39,6 +39,7 @@ import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -1149,19 +1150,26 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         boolean parallelRulesBuild = this.kBase == null && parallelRulesBuildThreshold != -1 && rules.size() > parallelRulesBuildThreshold;
         if (parallelRulesBuild) {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
-            rules.stream().parallel()
-                    .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
-                    .forEach(ruleDescr -> {
-                        initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
-                        RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
-                        ruleCxts.put(ruleDescr.getName(), context);
-                        List<? extends KnowledgeBuilderResult> results = addRule(context);
-                        if (!results.isEmpty()) {
+            ForkJoinPool pool = new ForkJoinPool(); // avoid common pool
+            try {
+                pool.submit(() -> 
+                rules.stream().parallel()
+                        .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
+                        .forEach(ruleDescr -> {
+                            initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
+                            RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
+                            ruleCxts.put(ruleDescr.getName(), context);
+                            List<? extends KnowledgeBuilderResult> results = addRule(context);
+                            if (!results.isEmpty()) {
                             synchronized (this.results) {
-                                this.results.addAll(results);
+                                    this.results.addAll(results);
+                                }
                             }
-                        }
-                    });
+                        })
+                ).get();
+            } catch (InterruptedException | ExecutionException e) { 
+                throw new RuntimeException("Rules compilation failed or interrupted", e);
+            }
             for (RuleDescr ruleDescr : rules) {
                 RuleBuildContext context = ruleCxts.get(ruleDescr.getName());
                 if (context != null) {
