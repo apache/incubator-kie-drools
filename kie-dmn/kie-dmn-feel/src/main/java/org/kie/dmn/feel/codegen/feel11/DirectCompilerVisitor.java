@@ -37,6 +37,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
@@ -104,6 +105,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
     private static final Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
 
+    private static final org.drools.javaparser.ast.type.Type TYPE_BOOLEAN =
+            JavaParser.parseType(Boolean.class.getCanonicalName());
     private static final org.drools.javaparser.ast.type.Type TYPE_COMPARABLE =
             JavaParser.parseType(Comparable.class.getCanonicalName());
     private static final org.drools.javaparser.ast.type.Type TYPE_LIST =
@@ -114,7 +117,6 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
 
     private ScopeHelper scopeHelper; // as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but presently keeping the same strategy as interpreted-AST-visitor
-    private boolean replaceEqualForUnaryTest = false;
 
     private static class ScopeHelper {
 
@@ -160,12 +162,30 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
      * or ranges, they need to be converted into an equality test unary expression.
      * This way, we have to compile and check the low level AST nodes to properly
      * deal with this case
-     *
-     * @param replaceEqualForUnaryTest use `true` to obtain the behavior described.
      */
-    public DirectCompilerVisitor(Map<String, Type> inputTypes, boolean replaceEqualForUnaryTest) {
-        this(inputTypes);
-        this.replaceEqualForUnaryTest = replaceEqualForUnaryTest;
+    public DirectCompilerResult compileUnaryTests(FEEL_1_1Parser.ExpressionListContext ctx) {
+        ArrayList<DirectCompilerResult> exprs = new ArrayList<>();
+        for (ExpressionContext expressionContext : ctx.expression()) {
+            DirectCompilerResult child = visit(expressionContext);
+            if (child.resultType == BuiltInType.UNARY_TEST) {
+                exprs.add(child);
+            } else if (child.resultType == BuiltInType.RANGE) {
+                // being a range, need the `in` operator.
+                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.IN);
+                exprs.add(replaced);
+            } else if (isExtendedUnaryTest(expressionContext)) {
+                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.TEST);
+                exprs.add(replaced);
+            } else {
+                // implied a unarytest for the `=` equal operator.
+                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.EQ);
+                exprs.add(replaced);
+            }
+
+        }
+        MethodCallExpr list = new MethodCallExpr(null, "list");
+        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
+        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
 
     @Override
@@ -456,6 +476,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(betweenCall, BuiltInType.BOOLEAN).withFD(value).withFD(start).withFD(end);
     }
 
+    int count = 0;
     /**
      * NOTE: technically this rule of the grammar does not have an equivalent Java expression (or a valid FEEL expression) per-se.
      * Using here as assuming if this grammar rule trigger, it is intended as a List, either to be returned, or re-used internally in this visitor.
@@ -468,32 +489,56 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 FEEL_1_1Parser.ExpressionContext childCtx = (FEEL_1_1Parser.ExpressionContext) ctx.getChild(i);
                 DirectCompilerResult child = visit(childCtx);
 
-                if (!replaceEqualForUnaryTest) {
+//                if (!replaceEqualForUnaryTest) {
                     // we are NOT compiling unary test, so we continue as-is
-                    exprs.add(child);
-                } else {
-                    if (child.resultType == BuiltInType.UNARY_TEST) {
-                        // is already a unary test, so we can add it as-is
-                        exprs.add(child);
-                    } else if (child.resultType == BuiltInType.RANGE) {
-                        // being a range, need the `in` operator.
-                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
-                        exprs.add(replaced);
-                    } else if (child.resultType == BuiltInType.BOOLEAN) {
-                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.TEST);
-                        exprs.add(replaced);
-                    } else {
-                        // implied a unarytest for the `=` equal operator.
-                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
-                        exprs.add(replaced);
-                    }
-                }
+                exprs.add(child);
+//                } else {
+//                    if (child.resultType == BuiltInType.UNARY_TEST) {
+//                        // is already a unary test, so we can add it as-is
+//                        exprs.add(child);
+//                    } else if (child.resultType == BuiltInType.RANGE) {
+//                        // being a range, need the `in` operator.
+//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
+//                        exprs.add(replaced);
+//                    } else if (isExtendedUnaryTest(childCtx)) {
+//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.TEST);
+//                        exprs.add(replaced);
+//                    } else {
+//                        // implied a unarytest for the `=` equal operator.
+//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
+//                        exprs.add(replaced);
+////                        exprs.add(child);
+//                    }
+//                }
             }
         }
         MethodCallExpr list = new MethodCallExpr(null, "list");
         exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
+
+    /**
+     * Returns true if the given subtree contains the special variable "?"
+     *
+     * similar to FEELImpl#isExtendedUnaryTest
+     * this is sort of a hack: we should carry over this information
+     * in a structured way
+     *
+     *
+     */
+    private boolean isExtendedUnaryTest(ParseTree o) {
+        if( "?".equals(o.getText()) ) {
+            return true;
+        } else {
+            for( int i = 0 ; i < o.getChildCount() ; i++ ) {
+                if( isExtendedUnaryTest( o.getChild(i) ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public DirectCompilerResult visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
@@ -511,7 +556,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         return DirectCompilerResult.of(
                 expression,
-                BuiltInType.UNARY_TEST,
+                BuiltInType.BOOLEAN,
                 mergeFDs(value, list));
     }
 
@@ -686,7 +731,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             }
                 break;
             case TEST: {
-                lambdaBody = new ExpressionStmt(endpoint.getExpression());
+                lambdaBody =
+                        new ExpressionStmt(
+                                new MethodCallExpr(
+                                        null,
+                                        "coerceToBoolean",
+                                        new NodeList<>(
+                                            new NameExpr("feelExprCtx"),
+                                            endpoint.getExpression()
+                                        )));
             }
             break;
             default:
@@ -772,7 +825,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         return DirectCompilerResult.of(
                 expression,
-                BuiltInType.UNARY_TEST,
+                BuiltInType.BOOLEAN,
                 mergeFDs(value, expr));
     }
 
@@ -1262,7 +1315,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                     "negateTest",
                     new NodeList<>(
                             parameter.getExpression()));
-            return DirectCompilerResult.of(expr, BuiltInType.UNARY_TEST, parameter.getFieldDeclarations());
+            return DirectCompilerResult.of(expr, BuiltInType.BOOLEAN, parameter.getFieldDeclarations());
         } else {
             DirectCompilerResult parameters = visit(params);
             // if childcount != 1 assume not expression

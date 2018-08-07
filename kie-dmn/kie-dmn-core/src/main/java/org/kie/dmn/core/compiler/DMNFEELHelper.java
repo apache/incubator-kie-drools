@@ -22,6 +22,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -30,6 +31,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -46,7 +48,7 @@ public class DMNFEELHelper {
     private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
     private final ClassLoader classLoader;
-    private final FEEL                   feel;
+    private final FEELImpl               feel;
     private final FEELEventsListenerImpl listener;
     private final List<FEELProfile> feelProfiles = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class DMNFEELHelper {
         this.classLoader = classLoader;
         this.feelProfiles.addAll(feelProfiles);
         this.listener = new FEELEventsListenerImpl();
-        this.feel = createFEELInstance();
+        this.feel = (FEELImpl) createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
@@ -249,18 +251,26 @@ public class DMNFEELHelper {
     public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx, Type columntype) {
         Map<String, Type> variableTypes = new HashMap<>();
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-            variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
+            variableTypes.put(entry.getKey(), dmnToFeelType((BaseDMNTypeImpl) entry.getValue()));
         }
         variableTypes.put( "?", columntype );
 
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
-        ParseTree tree = parser.expressionList();
-        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
-        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, v.visit(tree));
+        FEEL_1_1Parser parser = FEELParser.parse(
+                null,
+                input,
+                variableTypes,
+                Collections.emptyMap(),
+                feel.getCustomFunctions(),
+                Collections.emptyList());
+
+        FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
+        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes);
+        DirectCompilerResult result = v.compileUnaryTests(tree);
+        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
     }
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
-        return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables);
+        return feel.newEvaluationContext(listeners, inputVariables);
     }
 
     public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {
@@ -276,4 +286,10 @@ public class DMNFEELHelper {
         processEvents( model, element, msg, expr, dtableName, index );
         return compiled;
     }
+
+    public static Type dmnToFeelType(BaseDMNTypeImpl v) {
+        if (v.isCollection()) return BuiltInType.LIST;
+        else return v.getFeelType();
+    }
+
 }

@@ -37,6 +37,7 @@ import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
@@ -52,6 +53,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
+import static org.kie.dmn.core.compiler.DMNFEELHelper.dmnToFeelType;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
 
@@ -138,7 +140,9 @@ public class DTableModel {
         int index = 1;
         for (DRowModel row : rows) {
             int rowIndex = index;
-            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) ).collect( toList() );
+            row.compiledOutputs = row.outputs.stream().map( expr ->
+                                                                    compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) )
+                    .collect( toList() );
             index++;
         }
     }
