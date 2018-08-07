@@ -1,6 +1,14 @@
 package org.kie.dmn.model.v1x;
 
+import java.util.List;
+
 public interface DMNElement extends DMNModelInstrumentedBase {
+
+    public static interface ExtensionElements {
+
+        List<Object> getAny();
+
+    }
 
     String getDescription();
 

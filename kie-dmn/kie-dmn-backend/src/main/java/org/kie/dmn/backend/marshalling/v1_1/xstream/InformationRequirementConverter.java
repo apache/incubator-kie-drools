@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TInformationRequirement;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.InformationRequirement;
 
 public class InformationRequirementConverter
         extends DMNModelInstrumentedBaseConverter {
@@ -36,7 +36,7 @@ public class InformationRequirementConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( InformationRequirement.class );
+        return clazz.equals(TInformationRequirement.class);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class InformationRequirementConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new InformationRequirement();
+        return new TInformationRequirement();
     }
 
     @Override

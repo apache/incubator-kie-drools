@@ -16,12 +16,19 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TDecision;
+import org.kie.dmn.model.v1x.AuthorityRequirement;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.Decision;
+import org.kie.dmn.model.v1x.Expression;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.InformationRequirement;
+import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
 public class DecisionConverter extends DRGElementConverter {
     public static final String QUESTION = "question";
@@ -43,7 +50,7 @@ public class DecisionConverter extends DRGElementConverter {
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Decision.class );
+        return clazz.equals(TDecision.class);
     }
 
     @Override
@@ -90,7 +97,7 @@ public class DecisionConverter extends DRGElementConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Decision();
+        return new TDecision();
     }
     
     @Override

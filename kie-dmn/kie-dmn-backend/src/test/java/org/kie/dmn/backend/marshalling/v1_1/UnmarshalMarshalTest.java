@@ -35,8 +35,8 @@ import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -277,7 +277,7 @@ public class UnmarshalMarshalTest {
     }
 
     private String safeStripDMNPRefix(Node target) {
-        if ( DMNModelInstrumentedBase.URI_DMN.equals( target.getNamespaceURI() ) ) {
+        if (KieDMNModelInstrumentedBase.URI_DMN.equals(target.getNamespaceURI())) {
             return target.getLocalName();
         } 
         return null;

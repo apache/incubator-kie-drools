@@ -26,9 +26,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TDMNElement;
+import org.kie.dmn.model.v1x.DMNElement.ExtensionElements;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
@@ -67,8 +68,8 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
                 try {
                     Object object = readItem(reader, context, null);
                     if (object instanceof DMNModelInstrumentedBase) {
-                        ((DMNModelInstrumentedBase) object).setParent(obj);
-                        ((DMNModelInstrumentedBase) obj).addChildren((DMNModelInstrumentedBase) object);
+                        ((KieDMNModelInstrumentedBase) object).setParent(obj);
+                        ((KieDMNModelInstrumentedBase) obj).addChildren((KieDMNModelInstrumentedBase) object);
                     }
                     assignChildElement(obj, nodeName, object);
                 } catch (CannotResolveClassException e) {
@@ -108,12 +109,12 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new DMNElement.ExtensionElements();
+        return new TDMNElement.TExtensionElements();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( ExtensionElements.class );
+        return clazz.equals(TDMNElement.TExtensionElements.class);
     }
 
     @Override

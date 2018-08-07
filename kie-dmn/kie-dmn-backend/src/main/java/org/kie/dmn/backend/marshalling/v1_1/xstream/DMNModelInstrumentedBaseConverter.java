@@ -21,14 +21,13 @@ import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.backend.marshalling.CustomStaxReader;
-import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
@@ -43,7 +42,7 @@ public abstract class DMNModelInstrumentedBaseConverter
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
+        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
 
         CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
         
@@ -61,12 +60,12 @@ public abstract class DMNModelInstrumentedBaseConverter
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
-        DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
+        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
 
         CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
         for (Entry<String, String> kv : mib.getNsContext().entrySet()) {
             try {
-                if ( DMNModelInstrumentedBase.URI_DMN.equals(kv.getValue()) ) {
+                if (KieDMNModelInstrumentedBase.URI_DMN.equals(kv.getValue())) {
                     // skip as that is the default namespace xmlns<:prefix>=DMN is handled by the stax driver.
                 } else {
                     staxWriter.writeNamespace(kv.getKey(), kv.getValue());

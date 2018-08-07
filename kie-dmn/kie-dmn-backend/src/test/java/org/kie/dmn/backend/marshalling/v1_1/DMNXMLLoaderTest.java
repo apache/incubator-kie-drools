@@ -26,11 +26,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.InputData;
-import org.kie.dmn.model.v1_1.LiteralExpression;
+import org.kie.dmn.model.v1x.Decision;
+import org.kie.dmn.model.v1x.DecisionService;
+import org.kie.dmn.model.v1x.Definitions;
+import org.kie.dmn.model.v1x.InputData;
+import org.kie.dmn.model.v1x.LiteralExpression;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;

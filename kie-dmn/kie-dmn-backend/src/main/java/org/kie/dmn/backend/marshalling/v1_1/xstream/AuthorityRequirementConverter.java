@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.AuthorityRequirement;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TAuthorityRequirement;
+import org.kie.dmn.model.v1x.AuthorityRequirement;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
 public class AuthorityRequirementConverter extends DMNModelInstrumentedBaseConverter {
     public static final String REQUIRED_AUTHORITY = "requiredAuthority";
@@ -76,11 +76,11 @@ public class AuthorityRequirementConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new AuthorityRequirement();
+        return new TAuthorityRequirement();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( AuthorityRequirement.class );
+        return clazz.equals(TAuthorityRequirement.class);
     }
 }

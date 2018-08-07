@@ -1,5 +1,5 @@
 package org.kie.dmn.model.v1x;
 
-public interface DRGElement {
+public interface DRGElement extends NamedElement {
 
 }

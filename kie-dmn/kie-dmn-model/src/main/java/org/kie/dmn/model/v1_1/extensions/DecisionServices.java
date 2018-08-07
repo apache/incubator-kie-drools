@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.TDecisionService;
+import org.kie.dmn.model.v1x.DecisionService;
 
 public class DecisionServices extends KieDMNModelInstrumentedBase {
 
-    private List<TDecisionService> decisionService;
+    private List<DecisionService> decisionService;
 
-    public List<TDecisionService> getDecisionService() {
+    public List<DecisionService> getDecisionService() {
         if (decisionService == null) {
             decisionService = new ArrayList<>();
         }

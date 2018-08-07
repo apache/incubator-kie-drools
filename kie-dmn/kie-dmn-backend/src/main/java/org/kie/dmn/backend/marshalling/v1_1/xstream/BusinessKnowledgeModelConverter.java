@@ -16,12 +16,17 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TBusinessKnowledgeModel;
+import org.kie.dmn.model.v1x.AuthorityRequirement;
+import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.FunctionDefinition;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
 public class BusinessKnowledgeModelConverter extends DRGElementConverter {
     public static final String ENCAPSULATED_LOGIC = "encapsulatedLogic";
@@ -81,12 +86,12 @@ public class BusinessKnowledgeModelConverter extends DRGElementConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new BusinessKnowledgeModel();
+        return new TBusinessKnowledgeModel();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( BusinessKnowledgeModel.class );
+        return clazz.equals(TBusinessKnowledgeModel.class);
     }
 
 }

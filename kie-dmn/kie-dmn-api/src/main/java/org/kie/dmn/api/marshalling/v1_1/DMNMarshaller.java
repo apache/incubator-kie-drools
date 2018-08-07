@@ -19,7 +19,7 @@ package org.kie.dmn.api.marshalling.v1_1;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1x.Definitions;
 
 public interface DMNMarshaller {
 

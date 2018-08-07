@@ -16,15 +16,15 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.AuthorityRequirement;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.KnowledgeSource;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TKnowledgeSource;
+import org.kie.dmn.model.v1x.AuthorityRequirement;
+import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.KnowledgeSource;
 
 public class KnowledgeSourceConverter extends DRGElementConverter {
     public static final String OWNER = "owner";
@@ -83,12 +83,12 @@ public class KnowledgeSourceConverter extends DRGElementConverter {
     
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new KnowledgeSource();
+        return new TKnowledgeSource();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( KnowledgeSource.class );
+        return clazz.equals(TKnowledgeSource.class);
     }
 
 }

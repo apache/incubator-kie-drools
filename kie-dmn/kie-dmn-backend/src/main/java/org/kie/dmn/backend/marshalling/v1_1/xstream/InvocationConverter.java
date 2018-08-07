@@ -16,15 +16,15 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.Binding;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.Invocation;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TInvocation;
+import org.kie.dmn.model.v1x.Binding;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.Expression;
+import org.kie.dmn.model.v1x.Invocation;
 
 public class InvocationConverter extends ExpressionConverter {
     public static final String BINDING = "binding";
@@ -70,12 +70,12 @@ public class InvocationConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Invocation();
+        return new TInvocation();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Invocation.class );
+        return clazz.equals(TInvocation.class);
     }
 
 }

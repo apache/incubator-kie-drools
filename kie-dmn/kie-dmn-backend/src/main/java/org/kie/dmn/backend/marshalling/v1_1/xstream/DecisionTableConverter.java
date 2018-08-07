@@ -16,12 +16,19 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TDecisionTable;
+import org.kie.dmn.model.v1x.BuiltinAggregator;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.DecisionRule;
+import org.kie.dmn.model.v1x.DecisionTable;
+import org.kie.dmn.model.v1x.DecisionTableOrientation;
+import org.kie.dmn.model.v1x.HitPolicy;
+import org.kie.dmn.model.v1x.InputClause;
+import org.kie.dmn.model.v1x.OutputClause;
 
 public class DecisionTableConverter extends ExpressionConverter {
     public static final String RULE = "rule";
@@ -96,12 +103,12 @@ public class DecisionTableConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new DecisionTable();
+        return new TDecisionTable();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( DecisionTable.class );
+        return clazz.equals(TDecisionTable.class);
     }
 
 }

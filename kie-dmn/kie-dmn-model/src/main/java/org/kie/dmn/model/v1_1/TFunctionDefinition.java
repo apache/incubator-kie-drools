@@ -27,6 +27,7 @@ import org.kie.dmn.model.v1x.InformationItem;
 
 public class TFunctionDefinition extends TExpression implements FunctionDefinition {
 
+    @Deprecated
     public static final QName KIND_QNAME = new QName( KieDMNModelInstrumentedBase.URI_KIE, "kind" );
 
     @Deprecated

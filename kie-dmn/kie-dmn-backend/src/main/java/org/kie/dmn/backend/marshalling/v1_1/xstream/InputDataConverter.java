@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.InputData;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TInputData;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.v1x.InputData;
 
 public class InputDataConverter
         extends DRGElementConverter {
@@ -35,7 +35,7 @@ public class InputDataConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( InputData.class );
+        return clazz.equals(TInputData.class);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class InputDataConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new InputData();
+        return new TInputData();
     }
 
     @Override

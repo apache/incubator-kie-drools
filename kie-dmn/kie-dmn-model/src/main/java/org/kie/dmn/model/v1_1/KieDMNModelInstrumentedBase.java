@@ -35,11 +35,12 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
 
     private Map<String, String> nsContext;
 
-    private KieDMNModelInstrumentedBase parent;
-    private final java.util.List<KieDMNModelInstrumentedBase> children = new ArrayList<>();
+    private DMNModelInstrumentedBase parent;
+    private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
     private Location location;
     private Map<QName, String> additionalAttributes = new HashMap<>();
 
+    @Override
     public String getIdentifierString() {
         if( this instanceof TNamedElement && ((TNamedElement)this).getName() != null ) {
             return ((TNamedElement)this).getName();
@@ -50,7 +51,8 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         }
     }
 
-    public KieDMNModelInstrumentedBase getParentDRDElement() {
+    @Override
+    public DMNModelInstrumentedBase getParentDRDElement() {
         if( this instanceof TDRGElement
                 || (this instanceof TArtifact)
                 || (this instanceof TItemDefinition && parent != null && parent instanceof TDefinitions)) {
@@ -66,6 +68,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
      * Namespace context map as defined at the level of the given element.
      * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
      */
+
     public Map<String, String> getNsContext() {
         if (nsContext == null) {
             nsContext = new HashMap<String, String>();  
@@ -84,6 +87,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         return null;
     }
     
+    @Override
     public Optional<String> getPrefixForNamespaceURI( String namespaceURI ) {
         if( this.nsContext != null && this.nsContext.containsValue(namespaceURI) ) {
             return this.nsContext.entrySet().stream().filter(kv -> kv.getValue().equals(namespaceURI)).findFirst().map(Map.Entry::getKey);
@@ -94,30 +98,36 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         return Optional.empty();
     }
     
+    @Override
     public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
     }
     
+    @Override
     public Map<QName, String> getAdditionalAttributes() {
         return additionalAttributes;
     }
 
-    public KieDMNModelInstrumentedBase getParent() {
+    @Override
+    public DMNModelInstrumentedBase getParent() {
         return parent;
     }
 
-    public void setParent(KieDMNModelInstrumentedBase parent) {
+    @Override
+    public void setParent(DMNModelInstrumentedBase parent) {
         this.parent = parent;
     }
 
     /*
      * children element references are populated during deserialization, enabling fast access for Validation.
      */
-    public java.util.List<KieDMNModelInstrumentedBase> getChildren() {
+    @Override
+    public java.util.List<DMNModelInstrumentedBase> getChildren() {
         return Collections.unmodifiableList(children);
     }
     
-    public void addChildren(KieDMNModelInstrumentedBase child) {
+    @Override
+    public void addChildren(DMNModelInstrumentedBase child) {
         this.children.add(child);
     }
 

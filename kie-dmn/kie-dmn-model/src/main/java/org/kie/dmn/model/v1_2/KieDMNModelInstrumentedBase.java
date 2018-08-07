@@ -35,8 +35,8 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
 
     private Map<String, String> nsContext;
 
-    private KieDMNModelInstrumentedBase parent;
-    private final java.util.List<KieDMNModelInstrumentedBase> children = new ArrayList<>();
+    private DMNModelInstrumentedBase parent;
+    private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
     private Location location;
     private Map<QName, String> additionalAttributes = new HashMap<>();
 
@@ -50,7 +50,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         }
     }
 
-    public KieDMNModelInstrumentedBase getParentDRDElement() {
+    public DMNModelInstrumentedBase getParentDRDElement() {
         if( this instanceof TDRGElement
                 || (this instanceof TArtifact)
                 || (this instanceof TItemDefinition && parent != null && parent instanceof TDefinitions)) {
@@ -102,22 +102,22 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         return additionalAttributes;
     }
 
-    public KieDMNModelInstrumentedBase getParent() {
+    public DMNModelInstrumentedBase getParent() {
         return parent;
     }
 
-    public void setParent(KieDMNModelInstrumentedBase parent) {
+    public void setParent(DMNModelInstrumentedBase parent) {
         this.parent = parent;
     }
 
     /*
      * children element references are populated during deserialization, enabling fast access for Validation.
      */
-    public java.util.List<KieDMNModelInstrumentedBase> getChildren() {
+    public java.util.List<DMNModelInstrumentedBase> getChildren() {
         return Collections.unmodifiableList(children);
     }
     
-    public void addChildren(KieDMNModelInstrumentedBase child) {
+    public void addChildren(DMNModelInstrumentedBase child) {
         this.children.add(child);
     }
 

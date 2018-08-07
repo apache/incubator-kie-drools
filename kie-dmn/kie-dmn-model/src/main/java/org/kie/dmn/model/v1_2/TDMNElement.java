@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.model.v1x.DMNElement;
-import org.kie.dmn.model.v1x.ExtensionElements;
 
 public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNElement {
 

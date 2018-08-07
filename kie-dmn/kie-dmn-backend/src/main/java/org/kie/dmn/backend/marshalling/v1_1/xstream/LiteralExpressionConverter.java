@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.ImportedValues;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1_1.TLiteralExpression;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.ImportedValues;
+import org.kie.dmn.model.v1x.LiteralExpression;
 
 public class LiteralExpressionConverter
         extends ExpressionConverter {
@@ -37,7 +37,7 @@ public class LiteralExpressionConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( LiteralExpression.class );
+        return clazz.equals(TLiteralExpression.class);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class LiteralExpressionConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new LiteralExpression();
+        return new TLiteralExpression();
     }
 
     @Override
