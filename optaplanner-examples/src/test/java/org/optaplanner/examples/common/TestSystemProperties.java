@@ -16,13 +16,11 @@
 
 package org.optaplanner.examples.common;
 
-public final class TestProperties {
-
-    public static final String MOVE_THREAD_COUNT = "moveThreadCount";
+public final class TestSystemProperties {
 
     public static final String RUN_TURTLE_TESTS = "runTurtleTests";
+    public static final String MOVE_THREAD_COUNT = "moveThreadCount";
 
-    private TestProperties() {
-        throw new UnsupportedOperationException();
+    private TestSystemProperties() {
     }
 }
