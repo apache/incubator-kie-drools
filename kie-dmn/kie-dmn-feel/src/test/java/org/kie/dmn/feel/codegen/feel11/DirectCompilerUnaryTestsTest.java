@@ -115,10 +115,10 @@ public class DirectCompilerUnaryTestsTest {
     private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes) {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
-        ParseTree tree = parser.expressionList();
+        FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
 
-        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes, true);
-        DirectCompilerResult directResult = v.visit(tree);
+        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes);
+        DirectCompilerResult directResult = v.compileUnaryTests(tree);
         
         Expression expr = directResult.getExpression();
         CompiledFEELUnaryTests cu = new CompilerBytecodeLoader().makeFromJPUnaryTestsExpression(input, expr, directResult.getFieldDeclarations());
