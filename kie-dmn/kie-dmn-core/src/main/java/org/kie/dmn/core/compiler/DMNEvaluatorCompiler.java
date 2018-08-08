@@ -38,17 +38,18 @@ import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
+import org.kie.dmn.model.v1_1.TLiteralExpression;
 import org.kie.dmn.model.v1x.Binding;
 import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
 import org.kie.dmn.model.v1x.Context;
 import org.kie.dmn.model.v1x.ContextEntry;
 import org.kie.dmn.model.v1x.DMNElement;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.Decision;
 import org.kie.dmn.model.v1x.DecisionRule;
 import org.kie.dmn.model.v1x.DecisionTable;
 import org.kie.dmn.model.v1x.Expression;
 import org.kie.dmn.model.v1x.FunctionDefinition;
+import org.kie.dmn.model.v1x.FunctionKind;
 import org.kie.dmn.model.v1x.HitPolicy;
 import org.kie.dmn.model.v1x.InformationItem;
 import org.kie.dmn.model.v1x.InputClause;
@@ -195,7 +196,7 @@ public class DMNEvaluatorCompiler {
                     // DROOLS-2439
                     LiteralExpression literalExpression = (LiteralExpression) expr;
                     if (literalExpression.getText() == null || literalExpression.getText().isEmpty()) {
-                        LiteralExpression nullProxy = new LiteralExpression();
+                        LiteralExpression nullProxy = (literalExpression instanceof TLiteralExpression) ? new TLiteralExpression() : new org.kie.dmn.model.v1_2.TLiteralExpression();
                         nullProxy.setText("null");
                         nullProxy.setImportedValues(literalExpression.getImportedValues());
                         nullProxy.setExpressionLanguage(literalExpression.getExpressionLanguage());
@@ -277,8 +278,7 @@ public class DMNEvaluatorCompiler {
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition expression) {
         FunctionDefinition funcDef = expression;
 
-        String kindStr = funcDef.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME);
-        FunctionDefinition.Kind kind = kindStr != null ? FunctionDefinition.Kind.determineFromString( kindStr ) :FunctionDefinition.Kind.FEEL;
+        FunctionKind kind = funcDef.getKind();
 
         if( kind == null ) {
             // unknown function kind
@@ -289,10 +289,10 @@ public class DMNEvaluatorCompiler {
                                    null,
                                    null,
                                    Msg.FUNC_DEF_INVALID_KIND,
-                                   kindStr,
+                                  kind,
                                    node.getIdentifierString() );
             return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
-        } else if( kind.equals( FunctionDefinition.Kind.FEEL ) ) {
+        } else if (kind.equals(FunctionKind.FEEL)) {
             ctx.enterFrame();
             try {
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
@@ -311,8 +311,8 @@ public class DMNEvaluatorCompiler {
                                                                           Msg.FUNC_DEF_COMPILATION_ERR,
                                                                           functionName,
                                                                           node.getIdentifierString() );
-                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                 ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
+                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                                (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                     for( InformationItem p : funcDef.getFormalParameter() ) {
                         invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
@@ -325,7 +325,7 @@ public class DMNEvaluatorCompiler {
             } finally {
                 ctx.exitFrame();
             }
-        } else if( kind.equals( FunctionDefinition.Kind.JAVA ) ) {
+        } else if (kind.equals(FunctionKind.JAVA)) {
             if( funcDef.getExpression() instanceof Context ) {
                 // proceed
                 Context context = (Context) funcDef.getExpression();
@@ -353,8 +353,8 @@ public class DMNEvaluatorCompiler {
                             ((BaseFEELFunction)feelFunction).setName( functionName );
                         }
 
-                        DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                     ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
+                        DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                                    (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {
@@ -399,7 +399,7 @@ public class DMNEvaluatorCompiler {
                                        Msg.FUNC_DEF_BODY_NOT_CONTEXT,
                                        node.getIdentifierString() );
             }
-        } else if( kind.equals( FunctionDefinition.Kind.PMML ) ) {
+        } else if (kind.equals(FunctionKind.PMML)) {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.WARN,
                                    funcDef,
@@ -416,7 +416,7 @@ public class DMNEvaluatorCompiler {
                                    null,
                                    null,
                                    Msg.FUNC_DEF_INVALID_KIND,
-                                   kindStr,
+                                  kind,
                                    node.getIdentifierString() );
         }
         return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
@@ -445,7 +445,7 @@ public class DMNEvaluatorCompiler {
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
             java.util.List<UnaryTest> inputValues = null;
-            DMNType inputType = DMNTypeRegistry.UNKNOWN;
+            DMNType inputType = model.getTypeRegistry().unknown();
             if ( inputValuesText != null ) {
                 inputValues = textToUnaryTestList( ctx,
                                                    inputValuesText,
@@ -496,7 +496,7 @@ public class DMNEvaluatorCompiler {
                                                     outputValuesText,
                                                     node.getIdentifierString(),
                                                     ++index );
-            } else if ( typeRef != DMNTypeRegistry.UNKNOWN ) {
+            } else if (typeRef != model.getTypeRegistry().unknown()) {
                 outputValues = typeRef.getAllowedValuesFEEL();
             }
 
@@ -598,12 +598,12 @@ public class DMNEvaluatorCompiler {
     }
 
     public static BaseDMNTypeImpl inferTypeRef( DMNModelImpl model, DecisionTable dt, OutputClause oc ) {
-        BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+        BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
         if ( oc.getTypeRef() != null ) {
             QName outputExpressionTypeRef = oc.getTypeRef();
             typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
             if( typeRef == null ) {
-                typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
             }
         } else if (dt.getOutput().size() == 1 && (dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry)) {
             QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
@@ -729,7 +729,7 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
         DMNLiteralExpressionEvaluator evaluator = null;
-        if ( expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals( DMNModelInstrumentedBase.URI_FEEL ) ) {
+        if (expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals(expression.getURIFEEL())) {
             String exprText = expression.getText();
             if( exprText != null ) {
                 try {

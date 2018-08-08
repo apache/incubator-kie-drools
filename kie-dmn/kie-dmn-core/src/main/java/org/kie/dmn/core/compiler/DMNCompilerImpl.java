@@ -68,6 +68,7 @@ import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
@@ -484,7 +485,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
                 DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
                 DMNType fieldType = buildTypeDef( ctx, feel, dmnModel, node, fieldDef, false );
-                fieldType = fieldType != null ? fieldType : DMNTypeRegistry.UNKNOWN;
+                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
                 compType.addField( fieldDef.getName(), fieldType );
             }
             type = compType;
@@ -510,7 +511,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-            if (type == null && DMNModelInstrumentedBase.URI_FEEL.equals(nsAndName.getNamespaceURI())) {
+            if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
                 if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
                     DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
                     if ( dt.getOutput().size() > 1 ) {
@@ -539,7 +540,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
             return type;
         }
-        return dmnModel.getTypeRegistry().resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
+        return dmnModel.getTypeRegistry().unknown();
     }
 
     /**
@@ -551,17 +552,39 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param typeRef the typeRef to be resolved.
      * @return
      */
-    private QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
-        if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+    private static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
+        if (localElement instanceof KieDMNModelInstrumentedBase) {
+            if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            } else {
+                for (Entry<String, QName> alias : importAliases.entrySet()) {
+                    String prefix = alias.getKey() + ".";
+                    if (typeRef.getLocalPart().startsWith(prefix)) {
+                        return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
+                    }
+                }
+                return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            }
         } else {
+            //            FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time,
+            //            and date and time.
+            switch (typeRef.getLocalPart()) {
+                case "number":
+                case "string":
+                case "boolean":
+                case "days and time duration":
+                case "years and months duration":
+                case "time":
+                case "date and time":
+                    return new QName(localElement.getURIFEEL(), typeRef.getLocalPart());
+            }
             for (Entry<String, QName> alias : importAliases.entrySet()) {
                 String prefix = alias.getKey() + ".";
                 if (typeRef.getLocalPart().startsWith(prefix)) {
                     return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
                 }
             }
-            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            return new QName(localElement.getNamespaceURI(""), typeRef.getLocalPart());
         }
     }
 

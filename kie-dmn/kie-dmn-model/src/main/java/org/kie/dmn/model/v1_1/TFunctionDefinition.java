@@ -79,7 +79,21 @@ public class TFunctionDefinition extends TExpression implements FunctionDefiniti
      */
     @Override
     public FunctionKind getKind() {
-        return FunctionKind.fromValue(this.getAdditionalAttributes().get(KIND_QNAME));
+        String kindValueOnV11 = this.getAdditionalAttributes().get(KIND_QNAME);
+        if (kindValueOnV11 == null || kindValueOnV11.isEmpty()) {
+            return FunctionKind.FEEL;
+        } else {
+            switch (kindValueOnV11) {
+                case "F":
+                    return FunctionKind.FEEL;
+                case "J":
+                    return FunctionKind.JAVA;
+                case "P":
+                    return FunctionKind.PMML;
+                default:
+                    return FunctionKind.FEEL;
+            }
+        }
     }
 
     /**

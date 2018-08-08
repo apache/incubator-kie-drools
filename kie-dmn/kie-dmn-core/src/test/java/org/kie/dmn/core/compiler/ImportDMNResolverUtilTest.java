@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.v1_1.TImport;
 import org.kie.dmn.model.v1x.Import;
 
 import static org.junit.Assert.assertEquals;
@@ -146,14 +147,14 @@ public class ImportDMNResolverUtilTest {
     }
 
     private Import makeImport(String namespace, String name, String modelName) {
-        Import i = new Import();
+        Import i = new TImport();
         i.setNamespace(namespace);
         Map<QName, String> addAttributes = new HashMap<>();
         if (name != null) {
-            addAttributes.put(Import.NAME_QNAME, name);
+            addAttributes.put(TImport.NAME_QNAME, name);
         }
         if (modelName != null) {
-            addAttributes.put(Import.MODELNAME_QNAME, modelName);
+            addAttributes.put(TImport.MODELNAME_QNAME, modelName);
         }
         i.setAdditionalAttributes(addAttributes);
         return i;

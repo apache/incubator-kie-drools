@@ -45,7 +45,13 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.event.*;
+import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
@@ -55,6 +61,8 @@ import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.model.v1_1.TDecision;
+import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.dmn.model.v1x.Decision;
 import org.kie.dmn.model.v1x.Definitions;
 import org.kie.dmn.model.v1x.ItemDefinition;
@@ -78,7 +86,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -1519,10 +1526,10 @@ public class DMNRuntimeTest {
     }
 
     private Definitions buildSimplifiedDefinitions(String namespace, String... decisions) {
-        Definitions def = new Definitions();
+        Definitions def = new TDefinitions();
         def.setNamespace(namespace);
         for (String d : decisions) {
-            Decision dec = new Decision();
+            Decision dec = new TDecision();
             dec.setName(d);
             def.getDrgElement().add(dec);
             def.addChildren(dec);

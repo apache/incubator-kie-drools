@@ -27,7 +27,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -50,7 +49,6 @@ import org.kie.dmn.model.v1x.UnaryTests;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-
 import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
@@ -163,7 +161,7 @@ public class DTableModel {
         if (outputValuesText != null) {
             return feel.evaluateUnaryTests( outputValuesText, variableTypes );
         }
-        if ( output.typeRef != DMNTypeRegistry.UNKNOWN && output.typeRef.getAllowedValuesFEEL() != null) {
+        if (output.typeRef != model.getTypeRegistry().unknown() && output.typeRef.getAllowedValuesFEEL() != null) {
             return output.typeRef.getAllowedValuesFEEL();
         }
         return Collections.emptyList();

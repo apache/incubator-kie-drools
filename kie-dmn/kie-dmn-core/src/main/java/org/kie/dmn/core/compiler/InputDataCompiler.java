@@ -37,7 +37,7 @@ public class InputDataCompiler implements DRGElementCompiler {
             DMNType type = compiler.resolveTypeRef(model, de, input.getVariable(), input.getVariable().getTypeRef());
             idn.setType( type );
         } else {
-            idn.setType( DMNTypeRegistry.UNKNOWN );
+            idn.setType(model.getTypeRegistry().unknown());
             DMNCompilerHelper.reportMissingVariable( model, de, input, Msg.MISSING_VARIABLE_FOR_INPUT );
         }
         model.addInput( idn );

@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.model.v1_1.TItemDefinition;
 import org.kie.dmn.model.v1x.ItemDefinition;
 
 import static org.hamcrest.Matchers.contains;
@@ -38,10 +39,10 @@ public class ItemDefinitionDependenciesTest {
     private static final DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
     private ItemDefinition build(String name, ItemDefinition... components) {
-        ItemDefinition res = new ItemDefinition();
+        ItemDefinition res = new TItemDefinition();
         res.setName(name);
         for ( ItemDefinition ic : components ) {
-            ItemDefinition c = new ItemDefinition();
+            ItemDefinition c = new TItemDefinition();
             c.setName("_" + name + "-" + ic.getName());
             c.setTypeRef(new QName(TEST_NS, ic.getName()));
             res.getItemComponent().add(c);

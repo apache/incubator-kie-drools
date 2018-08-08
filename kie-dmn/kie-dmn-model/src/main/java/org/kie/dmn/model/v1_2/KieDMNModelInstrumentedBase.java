@@ -22,16 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.RowLocation;
 
 public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumentedBase {
-    public static final String URI_FEEL = "http://www.omg.org/spec/FEEL/20140401";
-    public static final String URI_DMN = "http://www.omg.org/spec/DMN/20151101/dmn.xsd";
-    public static final String URI_KIE = "http://www.drools.org/kie/dmn/1.1";
+
+    public static final String URI_FEEL = "http://www.omg.org/spec/DMN/20180521/FEEL/";
+    public static final String URI_DMN = "http://www.omg.org/spec/DMN/20180521/DMN12.xsd";
+    public static final String URI_KIE = "http://www.drools.org/kie/dmn/1.2";
 
     private Map<String, String> nsContext;
 
@@ -62,10 +63,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         }
     }
 
-    /**
-     * Namespace context map as defined at the level of the given element.
-     * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
-     */
+    @Override
     public Map<String, String> getNsContext() {
         if (nsContext == null) {
             nsContext = new HashMap<String, String>();  
@@ -121,6 +119,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         this.children.add(child);
     }
 
+    @Override
     public void setLocation(Location location) {
         this.location = new RowLocation(location);
     }
@@ -128,51 +127,13 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
     /**
      * Returns an approximated location of the XML origin for this DMN Model node.
      */
+    @Override
     public Location getLocation() {
         return location;
     }
-    
-    static class RowLocation implements Location {
-        private int lineNumber;
-        private String publicId;
-        private String systemId;
-        
-        RowLocation(Location from) {
-            this.lineNumber = from.getLineNumber();
-            this.publicId = from.getPublicId();
-            this.systemId = from.getSystemId();
-        }
 
-        @Override
-        public int getLineNumber() {
-            return this.lineNumber;
-        }
-
-        @Override
-        public int getColumnNumber() {
-            return -1;
-        }
-
-        @Override
-        public int getCharacterOffset() {
-            return -1;
-        }
-
-        @Override
-        public String getPublicId() {
-            return this.publicId;
-        }
-
-        @Override
-        public String getSystemId() {
-            return this.systemId;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("RowLocation [getLineNumber()=").append(getLineNumber()).append(", getColumnNumber()=").append(getColumnNumber()).append(", getCharacterOffset()=").append(getCharacterOffset()).append(", getPublicId()=").append(getPublicId()).append(", getSystemId()=").append(getSystemId()).append("]");
-            return builder.toString();
-        }
+    @Override
+    public String getURIFEEL() {
+        return URI_FEEL;
     }
 }
