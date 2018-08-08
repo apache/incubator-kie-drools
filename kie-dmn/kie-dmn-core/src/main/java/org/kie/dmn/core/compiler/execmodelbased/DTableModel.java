@@ -140,9 +140,7 @@ public class DTableModel {
         int index = 1;
         for (DRowModel row : rows) {
             int rowIndex = index;
-            row.compiledOutputs = row.outputs.stream().map( expr ->
-                                                                    compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) )
-                    .collect( toList() );
+            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) ).collect( toList() );
             index++;
         }
     }

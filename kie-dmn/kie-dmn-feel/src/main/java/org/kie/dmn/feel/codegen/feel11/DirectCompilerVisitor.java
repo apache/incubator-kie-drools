@@ -488,28 +488,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             if (ctx.getChild(i) instanceof FEEL_1_1Parser.ExpressionContext) {
                 FEEL_1_1Parser.ExpressionContext childCtx = (FEEL_1_1Parser.ExpressionContext) ctx.getChild(i);
                 DirectCompilerResult child = visit(childCtx);
-
-//                if (!replaceEqualForUnaryTest) {
-                    // we are NOT compiling unary test, so we continue as-is
                 exprs.add(child);
-//                } else {
-//                    if (child.resultType == BuiltInType.UNARY_TEST) {
-//                        // is already a unary test, so we can add it as-is
-//                        exprs.add(child);
-//                    } else if (child.resultType == BuiltInType.RANGE) {
-//                        // being a range, need the `in` operator.
-//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
-//                        exprs.add(replaced);
-//                    } else if (isExtendedUnaryTest(childCtx)) {
-//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.TEST);
-//                        exprs.add(replaced);
-//                    } else {
-//                        // implied a unarytest for the `=` equal operator.
-//                        DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
-//                        exprs.add(replaced);
-////                        exprs.add(child);
-//                    }
-//                }
             }
         }
         MethodCallExpr list = new MethodCallExpr(null, "list");
@@ -731,8 +710,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             }
                 break;
             case TEST: {
-                lambdaBody =
-                        new ExpressionStmt(
+                lambdaBody = new ExpressionStmt(
                                 new MethodCallExpr(
                                         null,
                                         "coerceToBoolean",

@@ -255,13 +255,7 @@ public class DMNFEELHelper {
         }
         variableTypes.put( "?", columntype );
 
-        FEEL_1_1Parser parser = FEELParser.parse(
-                null,
-                input,
-                variableTypes,
-                Collections.emptyMap(),
-                feel.getCustomFunctions(),
-                Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), feel.getCustomFunctions(), Collections.emptyList());
 
         FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
         DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes);
