@@ -54,9 +54,6 @@ public class Airport extends AbstractPersistable {
         double cartesianX = 0.5 * Math.cos(latitudeInRads) * Math.sin(longitudeInRads);
         double cartesianY = 0.5 * Math.cos(latitudeInRads) * Math.cos(longitudeInRads);
         double cartesianZ = 0.5 * Math.sin(latitudeInRads);
-//        double cartesianX = Math.cos(latitudeInRads) * Math.cos(longitudeInRads);
-//        double cartesianY = Math.cos(latitudeInRads) * Math.sin(longitudeInRads);
-//        double cartesianZ = Math.sin(latitudeInRads);
 
         double otherLatitudeInRads  = Math.toRadians(other.latitude);
         double otherLongitudeInRads = Math.toRadians(other.longitude);
@@ -64,9 +61,6 @@ public class Airport extends AbstractPersistable {
         double otherCartesianX = 0.5 * Math.cos(otherLatitudeInRads) * Math.sin(otherLongitudeInRads);
         double otherCartesianY = 0.5 * Math.cos(otherLatitudeInRads) * Math.cos(otherLongitudeInRads);
         double otherCartesianZ = 0.5 * Math.sin(otherLatitudeInRads);
-//        double otherCartesianX = Math.cos(otherLatitudeInRads) * Math.cos(otherLongitudeInRads);
-//        double otherCartesianY = Math.cos(otherLatitudeInRads) * Math.sin(otherLongitudeInRads);
-//        double otherCartesianZ = Math.sin(otherLatitudeInRads);
 
         // TODO cache the part above
         double dX = cartesianX - otherCartesianX;

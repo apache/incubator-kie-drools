@@ -19,13 +19,30 @@ package org.optaplanner.examples.flightcrewscheduling.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 
+import org.optaplanner.examples.flightcrewscheduling.domain.Airport;
+import org.optaplanner.examples.flightcrewscheduling.domain.Employee;
+import org.optaplanner.examples.flightcrewscheduling.domain.Flight;
+import org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization;
+import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 
 global HardSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
+
+rule "Flight conflict"
+    when
+        FlightAssignment(employee != null, $employee : employee,
+                $flight: flight,
+                $leftId : id)
+        FlightAssignment(employee != null, getFlight().overlaps($flight),
+                employee == $employee,
+                id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -10);
+end
 
 // ############################################################################
 // Soft constraints

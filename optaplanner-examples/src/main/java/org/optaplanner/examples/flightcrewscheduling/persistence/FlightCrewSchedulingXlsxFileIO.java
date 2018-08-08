@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -305,6 +307,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             writeTaxiTimeMaps();
             writeEmployeeList();
             writeFlightListAndFlightAssignmentList();
+            writeEmployeesView();
             writeScoreView();
             return workbook;
         }
@@ -419,9 +422,53 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 nextCell().setCellValue(DATE_TIME_FORMATTER.format(flight.getDepartureUTCDateTime()));
                 nextCell().setCellValue(flight.getArrivalAirport().getCode());
                 nextCell().setCellValue(DATE_TIME_FORMATTER.format(flight.getArrivalUTCDateTime()));
-                nextCell().setCellValue(flightToFlightAssignmentMap.get(flight).stream()
+                List<FlightAssignment> flightAssignmentList = flightToFlightAssignmentMap.get(flight);
+                nextCell().setCellValue(flightAssignmentList.stream()
                         .map(FlightAssignment::getRequiredSkill).map(Skill::getName)
                         .collect(joining(", ")));
+            }
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeEmployeesView() {
+            nextSheet("Employees view", 1, 1, true);
+            nextRow();
+            nextHeaderCell("Employee name");
+
+            List<LocalDate> dateList = solution.getFlightList().stream()
+                    .map(Flight::getDepartureUTCDate)
+                    .sorted().distinct().collect(toList());
+            LocalDate firstDate = dateList.get(0);
+            LocalDate lastDate = dateList.get(dateList.size() - 1);
+            for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                nextHeaderCell(DAY_FORMATTER.format(date));
+            }
+            Map<Employee, List<FlightAssignment>> employeeToFlightAssignmentMap = solution.getFlightAssignmentList()
+                    .stream().filter(flightAssignment -> flightAssignment.getEmployee() != null)
+                    .collect(groupingBy(FlightAssignment::getEmployee, toList()));
+            for (Employee employee : solution.getEmployeeList()) {
+                nextRow();
+                nextHeaderCell(employee.getName());
+                List<FlightAssignment> flightAssignmentList = employeeToFlightAssignmentMap.get(employee);
+                if (flightAssignmentList != null) {
+                    Function<FlightAssignment, Flight> getFlight = FlightAssignment::getFlight;
+                    flightAssignmentList.sort(Comparator
+                            .comparing(getFlight.andThen(Flight::getDepartureUTCDate))
+                            .thenComparing(getFlight.andThen(Flight::getArrivalUTCDateTime))
+                            .thenComparing(FlightAssignment::getId));
+                    for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                        LocalDate finalDate = date;
+                        nextCell().setCellValue(flightAssignmentList.stream()
+                                .map(FlightAssignment::getFlight)
+                                .filter(flight -> flight.getDepartureUTCDate().equals(finalDate))
+                                .map(flight -> flight.getFlightNumber()
+                                        + "(" + TIME_FORMATTER.format(flight.getDepartureUTCTime())
+                                        + " " + flight.getDepartureAirport().getCode() + " -> "
+                                        + TIME_FORMATTER.format(flight.getArrivalUTCTime())
+                                        + " " + flight.getArrivalAirport().getCode() + ")")
+                                .collect(joining(", ")));
+                    }
+                }
             }
             autoSizeColumnsWithHeader();
         }

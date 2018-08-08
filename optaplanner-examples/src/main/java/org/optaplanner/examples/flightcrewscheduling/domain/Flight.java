@@ -18,6 +18,7 @@ package org.optaplanner.examples.flightcrewscheduling.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -39,6 +40,22 @@ public class Flight extends AbstractPersistable {
 
     public LocalDate getDepartureUTCDate() {
         return departureUTCDateTime.toLocalDate();
+    }
+    public LocalTime getDepartureUTCTime() {
+        return departureUTCDateTime.toLocalTime();
+    }
+
+    public LocalDate getArrivalUTCDate() {
+        return arrivalUTCDateTime.toLocalDate();
+    }
+    public LocalTime getArrivalUTCTime() {
+        return arrivalUTCDateTime.toLocalTime();
+    }
+
+    // TODO return overlapping time to avoid score trap?
+    public boolean overlaps(Flight other) {
+        return departureUTCDateTime.compareTo(other.arrivalUTCDateTime) < 0
+            && other.departureUTCDateTime.compareTo(arrivalUTCDateTime) < 0;
     }
 
     @Override
