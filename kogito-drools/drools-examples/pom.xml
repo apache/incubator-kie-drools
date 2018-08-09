@@ -45,7 +45,6 @@
         <configuration>
           <executable>java</executable>
           <!-- only waltz12 is configured at the moment -->
-          <!-- TODO waltz50, manners64 and manners128 -->
           <arguments>
             <argument>-Xms1024M</argument>
             <argument>-Xmx1024M</argument>
