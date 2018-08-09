@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -35,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class DirectCompilerUnaryTestsTest {
 
@@ -92,6 +95,19 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 2), is(Arrays.asList(true, true)));
     }
 
+    @Test
+    public void test_QMarkVariable() {
+        assertThat(parseCompileEvaluate(">0, <0, =0", 1), is(Arrays.asList(true, false, false)));
+        CompiledFEELUnaryTests parsed = parse("? > 0, ? < 0, ? = 0", mapOf(entry("?", BuiltInType.NUMBER)));
+        LOG.debug("{}", parsed);
+
+        EvaluationContext populatedContext = CodegenTestUtil.newEmptyEvaluationContext();
+        populatedContext.setValue("?", 1);
+        List<Boolean> result = parsed.getUnaryTests().stream().map(ut -> ut.apply(populatedContext, 1)).collect(Collectors.toList());
+        LOG.debug("{}", result);
+        assertThat(result, is(Arrays.asList(true, false, false)));
+    }
+
     private CompiledFEELUnaryTests parse(String input) {
         return parse( input, Collections.emptyMap() );
     }
@@ -99,10 +115,10 @@ public class DirectCompilerUnaryTestsTest {
     private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes) {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
-        ParseTree tree = parser.expressionList();
+        FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
 
-        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes, true);
-        DirectCompilerResult directResult = v.visit(tree);
+        UnaryCompilerVisitor v = new UnaryCompilerVisitor(inputTypes);
+        DirectCompilerResult directResult = v.compileUnaryTests(tree);
         
         Expression expr = directResult.getExpression();
         CompiledFEELUnaryTests cu = new CompilerBytecodeLoader().makeFromJPUnaryTestsExpression(input, expr, directResult.getFieldDeclarations());

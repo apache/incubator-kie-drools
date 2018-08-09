@@ -154,10 +154,27 @@ public class CompilerBytecodeLoader {
         }
         ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
 
-        fieldDeclarations.stream().sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+        fieldDeclarations.stream()
+                .filter(f -> fieldHasPrefix(f, DirectCompilerVisitor.FIELD_PREFIX_CONSTANT))
+                .sorted(new SortFieldDeclarationStrategy())
+                .forEach(classDecl::addMember);
+
+        fieldDeclarations.stream()
+                .filter(f -> fieldHasPrefix(f, DirectCompilerVisitor.FIELD_PREFIX_RANGE))
+                .sorted(new SortFieldDeclarationStrategy())
+                .forEach(classDecl::addMember);
+
+        fieldDeclarations.stream()
+                .filter(f -> fieldHasPrefix(f, DirectCompilerVisitor.FIELD_PREFIX_UNARY_TEST))
+                .sorted(new SortFieldDeclarationStrategy())
+                .forEach(classDecl::addMember);
 
         LOG.debug("{}", cu);
         return cu;
+    }
+
+    private boolean fieldHasPrefix(FieldDeclaration f, String prefix) {
+        return f.getVariable(0).getNameAsString().startsWith(prefix);
     }
 
     private String generateRandomPackage() {
@@ -171,7 +188,7 @@ public class CompilerBytecodeLoader {
         public int compare(FieldDeclaration o1, FieldDeclaration o2) {
             String s1 = o1.getVariable(0).getNameAsString();
             String s2 = o2.getVariable(0).getNameAsString();
-            return s1.compareTo(s2);
+            return s1.length() - s2.length();
         }
 
     }

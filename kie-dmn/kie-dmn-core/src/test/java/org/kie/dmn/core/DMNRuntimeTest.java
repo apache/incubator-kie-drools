@@ -83,9 +83,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-public class DMNRuntimeTest {
+public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTest.class);
+
+    public DMNRuntimeTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testSimpleItemDefinition() {
