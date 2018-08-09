@@ -569,6 +569,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             //            FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time,
             //            and date and time.
             switch (typeRef.getLocalPart()) {
+                // TODO: add all FEEL types from lattice instead.
                 case "number":
                 case "string":
                 case "boolean":

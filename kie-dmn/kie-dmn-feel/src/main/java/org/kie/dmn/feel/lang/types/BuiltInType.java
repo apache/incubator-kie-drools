@@ -41,7 +41,7 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 
 public enum BuiltInType implements SimpleType {
 
-    UNKNOWN("any", "unknown"),
+    UNKNOWN("Any", "unknown", "any"), // updated FEEL lattice of types from DMN v1.2
     NUMBER("number"),
     STRING("string"),
     DATE("date"),
