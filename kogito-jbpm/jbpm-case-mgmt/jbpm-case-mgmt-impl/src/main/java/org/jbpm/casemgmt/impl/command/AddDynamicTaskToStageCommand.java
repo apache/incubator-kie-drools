@@ -40,19 +40,19 @@ public class AddDynamicTaskToStageCommand extends CaseCommand<Void> {
 
     private String caseId;
     private String nodeType;
-    private String stageId;
+    private String stage;
     private long processInstanceId;
     private Map<String, Object> parameters;
     
-    public AddDynamicTaskToStageCommand(IdentityProvider identityProvider, String caseId, String nodeType, Long processInstanceId, String stageId, Map<String, Object> parameters) {
+    public AddDynamicTaskToStageCommand(IdentityProvider identityProvider, String caseId, String nodeType, Long processInstanceId, String stage, Map<String, Object> parameters) {
         super(identityProvider);
         this.caseId = caseId;
         this.nodeType = nodeType;
         this.processInstanceId = processInstanceId;
-        this.stageId = stageId;
+        this.stage = stage;
         this.parameters = parameters;
         
-        if (processInstanceId == null || stageId == null) {
+        if (processInstanceId == null || stage == null) {
             throw new IllegalArgumentException("Process instance id and stage id are mandatory");
         }
     }
@@ -64,12 +64,12 @@ public class AddDynamicTaskToStageCommand extends CaseCommand<Void> {
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         
         DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstanceImpl) processInstance).getNodeInstances(true).stream()
-                .filter(ni -> (ni instanceof DynamicNodeInstance) && stageId.equals(ni.getNode().getMetaData().get("UniqueId")))
+                .filter(ni -> (ni instanceof DynamicNodeInstance) && stage.equals(ni.getNode().getMetaData().get("UniqueId")) || stage.equals(ni.getNodeName()))
                 .findFirst()
                 .orElse(null);
 
         if (dynamicContext == null) {
-            throw new StageNotFoundException("No stage found with id " + stageId);
+            throw new StageNotFoundException("No stage found with id " + stage);
         }
         
         CaseFileInstance caseFile = getCaseFile(ksession, caseId);  

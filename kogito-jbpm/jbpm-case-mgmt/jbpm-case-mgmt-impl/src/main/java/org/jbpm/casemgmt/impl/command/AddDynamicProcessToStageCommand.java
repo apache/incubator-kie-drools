@@ -41,24 +41,24 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Long> {
 
     private String caseId;
     private String processId;
-    private String stageId;
+    private String stage;
     private long processInstanceId;
     private Map<String, Object> parameters;
 
     public AddDynamicProcessToStageCommand(IdentityProvider identityProvider,
                                            String caseId,
                                            Long processInstanceId,
-                                           String stageId,
+                                           String stage,
                                            String processId,
                                            Map<String, Object> parameters) {
         super(identityProvider);
         this.caseId = caseId;
         this.processInstanceId = processInstanceId;
-        this.stageId = stageId;
+        this.stage = stage;
         this.processId = processId;
         this.parameters = parameters;
 
-        if (processInstanceId == null || processId == null || stageId == null) {
+        if (processInstanceId == null || processId == null || stage == null) {
             throw new IllegalArgumentException("Mandatory parameters are missing - process instance id / process id / stage id");
         }
     }
@@ -73,12 +73,12 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Long> {
         }
 
         DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstanceImpl) processInstance).getNodeInstances(true).stream()
-                .filter(ni -> (ni instanceof DynamicNodeInstance) && stageId.equals(ni.getNode().getMetaData().get("UniqueId")))
+                .filter(ni -> (ni instanceof DynamicNodeInstance) && stage.equals(ni.getNode().getMetaData().get("UniqueId")) || stage.equals(ni.getNodeName()))
                 .findFirst()
                 .orElse(null);
 
         if (dynamicContext == null) {
-            throw new StageNotFoundException("No stage found with id " + stageId);
+            throw new StageNotFoundException("No stage found with id " + stage);
         }
 
         try {

@@ -47,6 +47,7 @@ import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
 import org.jbpm.casemgmt.api.CaseDefinitionNotFoundException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
+import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseFileItem;
@@ -103,6 +104,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/CaseWithExpressionOnCaseFileItem.bpmn2");
         processes.add("cases/UserTaskCaseDataRestrictions.bpmn2");
         processes.add("cases/InclusiveGatewayInDynamicCase.bpmn2");
+        processes.add("cases/CaseMultiInstanceStage.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         return processes;
@@ -3235,5 +3237,101 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     public void testGetCaseFileInstanceForNotExistingCase() {
         assertThatExceptionOfType(CaseNotFoundException.class)
                 .isThrownBy(() -> caseService.getCaseFileInstance("nonexisting"));
+    }
+    
+    @Test
+    public void testStartCaseForMultiInstanceStagesTriggerAdHocFragment() {
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), MULTI_STAGE_CASE_P_ID);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("type", "basic");
+            caseService.triggerAdHocFragment(caseId, "Stage #{type}", data);
+            
+            Collection<CaseStageInstance> stages = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext());
+            Assertions.assertThat(stages).hasSize(1);
+            Assertions.assertThat(stages.iterator().next().getName()).isEqualTo("Stage basic");
+            
+            data = new HashMap<>();
+            data.put("type", "advanced");
+            caseService.triggerAdHocFragment(caseId, "Stage #{type}", data);
+            
+            stages = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext());
+            Assertions.assertThat(stages).hasSize(2);
+            Iterator<CaseStageInstance> it = stages.iterator();
+            Assertions.assertThat(it.next().getName()).isEqualTo("Stage basic");
+            Assertions.assertThat(it.next().getName()).isEqualTo("Stage advanced");
+            
+            // now trigger ad hoc fragment within give stage            
+            caseService.triggerAdHocFragment(caseId, "Stage basic", "Simple task", data);
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            Assertions.assertThat(tasks).hasSize(1);
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartCaseForMultiInstanceStagesAddDynamicNodes() {
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), MULTI_STAGE_CASE_P_ID);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("type", "basic");
+            caseService.triggerAdHocFragment(caseId, "Stage #{type}", data);
+            
+            Collection<CaseStageInstance> stages = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext());
+            Assertions.assertThat(stages).hasSize(1);
+            Assertions.assertThat(stages.iterator().next().getName()).isEqualTo("Stage basic");
+      
+            // now add dynamic task to given stage
+            TaskSpecification taskSpec = caseService.newHumanTaskSpec("Basic", "just a task", "john", null, null);
+            caseService.addDynamicTaskToStage(caseId, "Stage basic", taskSpec);
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            Assertions.assertThat(tasks).hasSize(1);
+            Assertions.assertThat(tasks.get(0).getName()).isEqualTo("Basic");
+            Assertions.assertThat(tasks.get(0).getDescription()).isEqualTo("just a task");
+            
+            Map<String, Object> parameters = new HashMap<>();
+            caseService.addDynamicSubprocessToStage(caseId, "Stage basic", SUBPROCESS_P_ID, parameters);
+
+            // second task add by process instance id
+            Collection<ProcessInstanceDesc> caseProcessInstances = caseRuntimeDataService.getProcessInstancesForCase(caseId, new QueryContext());            
+            Assertions.assertThat(caseProcessInstances).hasSize(2);
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
     }
 }

@@ -155,6 +155,7 @@ public abstract class AbstractCaseServicesBaseTest {
     protected static final String TWO_STAGES_CONDITIONS_CASE_P_ID = "CaseWithTwoStagesConditions";
     protected static final String EXPRESSION_CASE_P_ID = "ExpressionWithCaseFileItem";
     protected static final String USER_TASK_DATA_RESTRICTIONS_CASE_P_ID = "UserTaskCaseDataRestrictions";
+    protected static final String MULTI_STAGE_CASE_P_ID = "multiplestages";
 
     protected static final String SUBPROCESS_P_ID = "DataVerification";
 

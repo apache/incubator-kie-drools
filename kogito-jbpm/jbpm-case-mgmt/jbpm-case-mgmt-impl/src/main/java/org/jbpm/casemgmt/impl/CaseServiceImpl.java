@@ -39,7 +39,6 @@ import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
-import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
@@ -315,18 +314,18 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public void addDynamicTaskToStage(String caseId, String stageId, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException {
+    public void addDynamicTaskToStage(String caseId, String stage, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
         }
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stage, taskSpecification.getParameters()));
     }
     
 
     @Override
-    public void addDynamicTaskToStage(Long processInstanceId, String stageId, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException {
+    public void addDynamicTaskToStage(Long processInstanceId, String stage, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
@@ -334,7 +333,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));        
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stage, taskSpecification.getParameters()));        
     }
     
 
@@ -362,15 +361,15 @@ public class CaseServiceImpl implements CaseService {
     }
     
     @Override
-    public Long addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocessToStage(String caseId, String stage, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stage, processId, parameters));
     }
 
     @Override
-    public Long addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocessToStage(Long processInstanceId, String stage, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
@@ -378,7 +377,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stage, processId, parameters));
     }
     
     @Override
@@ -395,14 +394,14 @@ public class CaseServiceImpl implements CaseService {
     }
     
     @Override
-    public void triggerAdHocFragment(String caseId, String stageId, String fragmentName, Object data) throws CaseNotFoundException {
+    public void triggerAdHocFragment(String caseId, String stage, String fragmentName, Object data) throws CaseNotFoundException {
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        triggerAdHocFragment(pi.getId(), stageId, fragmentName, data);
+        triggerAdHocFragment(pi.getId(), stage, fragmentName, data);
     }
 
     @Override
-    public void triggerAdHocFragment(Long processInstanceId, String stageId, String fragmentName, Object data) throws CaseNotFoundException {
+    public void triggerAdHocFragment(Long processInstanceId, String stage, String fragmentName, Object data) throws CaseNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
@@ -412,19 +411,9 @@ public class CaseServiceImpl implements CaseService {
         
         CorrelationKey key = CorrelationKeyXmlAdapter.unmarshalCorrelationKey(pi.getCorrelationKey());
         String caseId = (String) key.getProperties().get(0).getValue();
-        authorizationManager.checkAuthorization(caseId);
-      
-        CaseStage caseStage = caseDef.getCaseStages()
-            .stream()
-            .filter(stage -> stage.getId().equals(stageId))
-            .findFirst()
-            .orElseThrow(() -> new StageNotFoundException("No stage found with id " + stageId));
-        
-        if (!caseStage.getAdHocFragments().stream().anyMatch(fragment -> fragment.getName().equals(fragmentName))) {
-            throw new AdHocFragmentNotFoundException("AdHoc fragment '" + fragmentName + "' not found in case " + pi.getCorrelationKey() + " and stage " + stageId);
-        }
+        authorizationManager.checkAuthorization(caseId);        
                 
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new TriggerAdHocNodeInStageCommand(identityProvider, pi.getId(), stageId, fragmentName, data));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new TriggerAdHocNodeInStageCommand(identityProvider, caseDef, pi.getId(), stage, fragmentName, data));
     }
    
 

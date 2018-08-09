@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.spi.ProcessContext;
@@ -174,6 +175,11 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	    	    }
 	    	}
     	}
+    	if (dynamicParameters != null) {
+            for (Entry<String, Object> entry : dynamicParameters.entrySet()) {
+                setVariable(entry.getKey(), entry.getValue());
+            }
+        }
     	configureSla();
     	
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();

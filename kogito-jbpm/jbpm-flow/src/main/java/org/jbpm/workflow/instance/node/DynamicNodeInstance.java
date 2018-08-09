@@ -40,6 +40,7 @@ import org.kie.api.runtime.rule.Match;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class DynamicNodeInstance extends CompositeContextNodeInstance implements AgendaEventListener {
 
@@ -51,10 +52,17 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
 
 	protected DynamicNode getDynamicNode() {
 		return (DynamicNode) getNode();
-	}
+	}	
+
+    @Override
+    public String getNodeName() {
+        
+        return resolveVariable(super.getNodeName());
+    }
 
     public void internalTrigger(NodeInstance from, String type) {
     	triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
+    	
     	// if node instance was cancelled, abort
 		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
 			return;

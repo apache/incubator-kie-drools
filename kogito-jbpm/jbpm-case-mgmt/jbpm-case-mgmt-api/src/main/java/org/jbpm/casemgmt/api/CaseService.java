@@ -176,22 +176,22 @@ public interface CaseService {
      * If there are more process instances for given case and user task should be added to specific process instance
      * {@link #addDynamicTaskToStage(Long, String, TaskSpecification)} should be used
      * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param taskSpecification complete specification that defines the type of a task to be added
      * @throws CaseNotFoundException thrown in case case was not found with given id
      * @throws StageNotFoundException thrown in case stage does not exist
      */
-    void addDynamicTaskToStage(String caseId, String stageId, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException;
+    void addDynamicTaskToStage(String caseId, String stage, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException;
 
     /**
      * Adds new user task to specified case and stage on given process instance.
      * @param processInstanceId unique process instance id
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param taskSpecification complete specification that defines the type of a task to be added
      * @throws CaseNotFoundException thrown in case case was not found with given id
      * @throws StageNotFoundException thrown in case stage does not exist
      */
-    void addDynamicTaskToStage(Long processInstanceId, String stageId, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException;
+    void addDynamicTaskToStage(Long processInstanceId, String stage, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException;
 
     /**
      * Adds new subprocess (identified by process id) to given process instance. Should be used when subprocess should be added to the main process instance of the case.
@@ -219,24 +219,24 @@ public interface CaseService {
      * main process instance of the case. If there are more process instances for given case and subprocess should be added to specific process instance
      * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method {@link #addDynamicSubprocess(Long, String, Map)}
      * method should be used instead.
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
      * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    Long addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocessToStage(String caseId, String stage, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
 
     /**
      * Adds new subprocess (identified by process id) to case.
      * @param processInstanceId unique process instance id
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
      * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    Long addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocessToStage(Long processInstanceId, String stage, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
 
     /**
      * Triggers given by fragmentName adhoc element (such as task, milestone) within given case.  Should be used when fragment should be triggered
@@ -262,21 +262,21 @@ public interface CaseService {
      * on the main process instance of the case. If there are more process instances for given case and fragment should be triggered on specific process
      * instance {@link #triggerAdHocFragment(Long, String, String, Object)} method should be used instead
      * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param fragmentName name of the element that can be triggered
      * @param data optional data to be given when triggering the node
      */
-    void triggerAdHocFragment(String caseId, String stageId, String fragmentName, Object data) throws CaseNotFoundException;
+    void triggerAdHocFragment(String caseId, String stage, String fragmentName, Object data) throws CaseNotFoundException;
 
     /**
      * Triggers given by fragmentName adhoc element (such as task, milestone) within given process instance and stage
      * @param processInstanceId unique process instance id
-     * @param stageId id of the stage there the task should be added
+     * @param stage id or name of the stage there the task should be added
      * @param fragmentName name of the element that can be triggered
      * @param data optional data to be given when triggering the node
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void triggerAdHocFragment(Long processInstanceId, String stageId, String fragmentName, Object data) throws CaseNotFoundException;
+    void triggerAdHocFragment(Long processInstanceId, String stage, String fragmentName, Object data) throws CaseNotFoundException;
     
     /*
      * Case file section
