@@ -84,7 +84,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
     private void writeFlightCrewSolution(String locationDataName,
             LocationDataGenerator.LocationData[] locationDataArray, int flightRoundTripsPerDay, int dayCount) {
-        int flightListSize = (flightRoundTripsPerDay * 5 / 3) * dayCount;
+        int flightListSize = (flightRoundTripsPerDay * 5 / 2) * dayCount;
         String fileName = flightListSize + "flights-" + locationDataName;
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         FlightCrewSolution solution = createFlightCrewSolution(
