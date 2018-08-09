@@ -29,7 +29,9 @@ public class DMNTypeRegistryV11 implements DMNTypeRegistry {
         Map<String, DMNType> feelTypes = new HashMap<>(  );
         types.put( feelNamespace, feelTypes );
 
-        feelTypes.put( UNKNOWN.getName(), UNKNOWN );
+        for (String name : BuiltInType.UNKNOWN.getNames()) {
+            feelTypes.put(name, UNKNOWN);
+        }
 
         for( BuiltInType type : BuiltInType.values() ) {
             for( String name : type.getNames() ) {
