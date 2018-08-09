@@ -413,23 +413,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	            }
 	        	}
 	        }
-	        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-            if (manager != null) {
-                org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
-                
-                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-                if (caseId != null) {
-                    context = CaseContext.get(caseId);
-                }
-                
-                RuntimeEngine runtime = manager.getRuntimeEngine(context);
-                KieSession ksession = runtime.getKieSession();
-                
-                ksession.execute(new StartProcessWithTypeCommand(processId, params, type));
-                
-            } else {
-            	startProcess( processId, params, type );
-            }
+	        startProcessWithParamsAndTrigger(processId, params, type, false);
 	    }
 	}
 
@@ -457,6 +441,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                             || ruleName.startsWith( "RuleFlow-AdHocActivate-" )) {
                         kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(ruleName, event));
                     }
+                } else {
+                    String ruleName = event.getMatch().getRule().getName();
+                    if ( ruleName.startsWith( "RuleFlow-Start-" )) {
+                        String processId = ruleName.replace("RuleFlow-Start-", "");
+                        
+                        startProcessWithParamsAndTrigger(processId, null, "conditional", true);      
+                    }
                 }
 			}
     	});
@@ -472,6 +463,31 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             	}
             }
         } );
+    }
+    
+    private void startProcessWithParamsAndTrigger(String processId, Map<String, Object> params, String type, boolean dispose) {
+        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
+        if (manager != null) {
+            org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
+            
+            String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+            if (caseId != null) {
+                context = CaseContext.get(caseId);
+            }
+            
+            RuntimeEngine runtime = manager.getRuntimeEngine(context);
+            KieSession ksession = runtime.getKieSession();
+            try {
+                ksession.execute(new StartProcessWithTypeCommand(processId, params, type));
+            } finally {
+                if (dispose) {
+                    manager.disposeRuntimeEngine(runtime);
+                }
+            }
+            
+        } else {
+            startProcess( processId, params, type );
+        }
     }
     
     private class StartProcessWithTypeCommand implements ExecutableCommand<Void> {

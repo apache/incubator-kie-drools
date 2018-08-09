@@ -64,7 +64,6 @@ public class StartEventTest extends JbpmTestCase {
 
         List<Command<?>> cmds = new ArrayList<Command<?>>();
         cmds.add(getCommands().newInsert("condition"));
-        cmds.add(getCommands().newFireAllRules());
         ksession.execute(getCommands().newBatchExecution(cmds, null));
 
         Assertions.assertThat(process.wasProcessStarted(CONDITIONAL_ID)).isTrue();

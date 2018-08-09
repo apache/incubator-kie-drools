@@ -90,13 +90,26 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testConditionalStart() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ConditionalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        final List<Long> startedInstances = new ArrayList<>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                startedInstances.add(event.getProcessInstance().getId());
+            }
+            
+        });
         Person person = new Person();
         person.setName("jack");
         ksession.insert(person);
+        assertThat(startedInstances).hasSize(0);
 
         person = new Person();
         person.setName("john");
         ksession.insert(person);
+        assertThat(startedInstances).hasSize(1);
+        
+        assertNodeTriggered(startedInstances.get(0), "StartProcess", "Hello", "EndProcess");
     }
 
     @Test(timeout=10000)
