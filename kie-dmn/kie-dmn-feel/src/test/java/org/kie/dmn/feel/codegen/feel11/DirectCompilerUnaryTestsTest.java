@@ -117,7 +117,7 @@ public class DirectCompilerUnaryTestsTest {
 
         FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
 
-        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes);
+        UnaryCompilerVisitor v = new UnaryCompilerVisitor(inputTypes);
         DirectCompilerResult directResult = v.compileUnaryTests(tree);
         
         Expression expr = directResult.getExpression();

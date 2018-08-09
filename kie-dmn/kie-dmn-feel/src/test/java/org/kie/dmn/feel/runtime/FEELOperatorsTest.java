@@ -62,6 +62,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "10 in ]5..10[", Boolean.FALSE , null},
                 { "10 in (5..10]", Boolean.TRUE , null},
                 { "\"b\" in (\"a\"..\"z\"]", Boolean.TRUE , null},
+//                { "false in not(true) "},
                 {" duration(\"P1Y2M\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", Boolean.TRUE, null},
                 {" duration(\"P1Y4M\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", Boolean.FALSE, null},
                 {" duration(\"PT24H\") in [ duration(\"P1Y2M\") .. duration(\"P1Y3M\")] ", null, FEELEvent.Severity.ERROR},

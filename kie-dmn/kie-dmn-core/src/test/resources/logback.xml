@@ -23,10 +23,10 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie" level="info"/>
+  <logger name="org.kie" level="debug"/>
   <!--<logger name="org.kie.dmn.core.compiler.execmodelbased" level="debug"/>-->
 
-  <root level="warn">
+  <root level="debug">
     <appender-ref ref="consoleAppender" />
   </root>
 

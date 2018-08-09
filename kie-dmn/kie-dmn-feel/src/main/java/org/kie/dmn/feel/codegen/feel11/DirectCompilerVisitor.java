@@ -37,7 +37,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
@@ -116,6 +115,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final org.drools.javaparser.ast.type.Type TYPE_BIG_DECIMAL =
             JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
 
+    public static final String FIELD_PREFIX_UNARY_TEST = "UT";
+    public static final String FIELD_PREFIX_CONSTANT = "K";
+    public static final String FIELD_PREFIX_RANGE = "RANGE";
+
     private ScopeHelper scopeHelper; // as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but presently keeping the same strategy as interpreted-AST-visitor
 
     private static class ScopeHelper {
@@ -157,43 +160,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         this.scopeHelper.addTypes(inputTypes);
     }
 
-    /**
-     * DMN defines a special case where, unless the expressions are unary tests
-     * or ranges, they need to be converted into an equality test unary expression.
-     * This way, we have to compile and check the low level AST nodes to properly
-     * deal with this case
-     */
-    public DirectCompilerResult compileUnaryTests(FEEL_1_1Parser.ExpressionListContext ctx) {
-        ArrayList<DirectCompilerResult> exprs = new ArrayList<>();
-        for (ExpressionContext expressionContext : ctx.expression()) {
-            DirectCompilerResult child = visit(expressionContext);
-            if (child.resultType == BuiltInType.UNARY_TEST) {
-                exprs.add(child);
-            } else if (child.resultType == BuiltInType.RANGE) {
-                // being a range, need the `in` operator.
-                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.IN);
-                exprs.add(replaced);
-            } else if (isExtendedUnaryTest(expressionContext)) {
-                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.TEST);
-                exprs.add(replaced);
-            } else {
-                // implied a unarytest for the `=` equal operator.
-                DirectCompilerResult replaced = createUnaryTestExpression(expressionContext, child, UnaryOperator.EQ);
-                exprs.add(replaced);
-            }
-
-        }
-        MethodCallExpr list = new MethodCallExpr(null, "list");
-        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
-        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
-    }
-
     @Override
     public DirectCompilerResult visitNumberLiteral(FEEL_1_1Parser.NumberLiteralContext ctx) {
         ObjectCreationExpr result = new ObjectCreationExpr();
         result.setType(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
         String originalText = ParserHelper.getOriginalText(ctx);
-        String constantName =  "K_" + CodegenStringUtil.escapeIdentifier(originalText);
+        String constantName =  FIELD_PREFIX_CONSTANT + "_" + CodegenStringUtil.escapeIdentifier(originalText);
         try {
             Long.parseLong(originalText);
             result.addArgument(originalText.replaceFirst("^0+(?!$)", "")); // see EvalHelper.getBigDecimalOrNull
@@ -496,29 +468,6 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
 
-    /**
-     * Returns true if the given subtree contains the special variable "?"
-     *
-     * similar to FEELImpl#isExtendedUnaryTest
-     * this is sort of a hack: we should carry over this information
-     * in a structured way
-     *
-     *
-     */
-    private boolean isExtendedUnaryTest(ParseTree o) {
-        if( "?".equals(o.getText()) ) {
-            return true;
-        } else {
-            for( int i = 0 ; i < o.getChildCount() ; i++ ) {
-                if( isExtendedUnaryTest( o.getChild(i) ) ) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
     @Override
     public DirectCompilerResult visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
         DirectCompilerResult value = visit(ctx.val);
@@ -565,7 +514,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
             FieldDeclaration rangeField =
                     fieldDeclarationOf(
-                            "RANGE",
+                            FIELD_PREFIX_RANGE,
                             ParserHelper.getOriginalText(ctx),
                             initializer);
             Set<FieldDeclaration> fieldDeclarations =
@@ -637,7 +586,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
      * @param endpoint the right of the unary test
      * @param op the operator of the unarytest
      */
-    private DirectCompilerResult createUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint, UnaryOperator op) {
+    protected DirectCompilerResult createUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint, UnaryOperator op) {
         String originalText = ParserHelper.getOriginalText(ctx);
 
         LambdaExpr initializer = new LambdaExpr();
@@ -716,6 +665,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                                         "coerceToBoolean",
                                         new NodeList<>(
                                             new NameExpr("feelExprCtx"),
+                                            new NameExpr("left"),
                                             endpoint.getExpression()
                                         )));
             }
@@ -724,7 +674,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 throw new UnsupportedOperationException("Unable to determine operator of unary test");
         }
         initializer.setBody(lambdaBody);
-        String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
+        String constantName = FIELD_PREFIX_UNARY_TEST + "_" + CodegenStringUtil.escapeIdentifier(originalText);
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
@@ -1283,8 +1233,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return null;
     }
 
-
-    private DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, ParseTree params) {
+    protected DirectCompilerResult buildNotCall(ParserRuleContext ctx, DirectCompilerResult name, ParseTree params) {
         if (params.getChildCount() == 1) {
             DirectCompilerResult parameter = visit(params.getChild(0));
             // this is an ambiguous call: defer choice to runtime
@@ -1293,7 +1242,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                     "negateTest",
                     new NodeList<>(
                             parameter.getExpression()));
-            return DirectCompilerResult.of(expr, BuiltInType.BOOLEAN, parameter.getFieldDeclarations());
+            return DirectCompilerResult.of(expr, BuiltInType.UNKNOWN, parameter.getFieldDeclarations());
         } else {
             DirectCompilerResult parameters = visit(params);
             // if childcount != 1 assume not expression

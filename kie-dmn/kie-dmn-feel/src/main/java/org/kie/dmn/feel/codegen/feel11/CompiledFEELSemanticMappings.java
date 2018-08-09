@@ -212,8 +212,9 @@ public class CompiledFEELSemanticMappings {
         return (T) actual;
     }
 
-    public static Boolean coerceToBoolean(EvaluationContext ctx, Object value) {
+    public static Boolean coerceToBoolean(EvaluationContext ctx, Object left, Object value) {
         if (value instanceof Boolean) return (Boolean) value;
+        if (value instanceof UnaryTest) return ((UnaryTest) value).apply(ctx, left);
 
         ctx.notifyEvt( () -> new ASTEventBase(
                 FEELEvent.Severity.ERROR,
@@ -385,12 +386,10 @@ public class CompiledFEELSemanticMappings {
         return not(EvalHelper.isEqual(left, right, null));
     }
 
-    public static Object negateTest( Object param ) {
-        if( param instanceof Boolean) {
-            return param.equals(Boolean.FALSE);
-        } else if ( param instanceof UnaryTest ) {
+    public static Object negateUnaryTest( Object param ) {
+        if ( param instanceof UnaryTest ) {
             UnaryTest orig = (UnaryTest) param;
-            UnaryTest t = negatedUnaryTest(orig);
+            UnaryTest t = makeNegatedUnaryTest(orig);
             return t;
         } else if ( param instanceof Range ) {
             UnaryTest t = (c, left) -> not(includes(c, param, left));
@@ -401,7 +400,15 @@ public class CompiledFEELSemanticMappings {
         }
     }
 
-    private static UnaryTest negatedUnaryTest(UnaryTest orig) {
+    public static Object negateTest( Object param ) {
+        if( param instanceof Boolean) {
+            return param.equals(Boolean.FALSE);
+        } else {
+            return negateUnaryTest( param );
+        }
+    }
+
+    private static UnaryTest makeNegatedUnaryTest(UnaryTest orig) {
         return (c, left) -> {
             Boolean r = orig.apply(c, left);
             if (r == null) return null;

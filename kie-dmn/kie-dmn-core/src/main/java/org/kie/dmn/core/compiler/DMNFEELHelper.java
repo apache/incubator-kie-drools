@@ -24,6 +24,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
+import org.kie.dmn.feel.codegen.feel11.UnaryCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -258,7 +259,7 @@ public class DMNFEELHelper {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), feel.getCustomFunctions(), Collections.emptyList());
 
         FEEL_1_1Parser.ExpressionListContext tree = parser.expressionList();
-        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes);
+        UnaryCompilerVisitor v = new UnaryCompilerVisitor(variableTypes);
         DirectCompilerResult result = v.compileUnaryTests(tree);
         return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
     }

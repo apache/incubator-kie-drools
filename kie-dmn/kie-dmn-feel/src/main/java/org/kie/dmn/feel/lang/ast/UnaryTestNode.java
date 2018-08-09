@@ -229,7 +229,7 @@ public class UnaryTestNode
             if( right instanceof Boolean ) {
                 return (Boolean) right;
             } else {
-                context.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, left.toString(), value.toString() ) ) );
+                context.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, left.toString(), value.toString() ) ) );
                 return Boolean.FALSE;
             }
         };
