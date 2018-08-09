@@ -8,7 +8,7 @@ specify one of these two options when creating a new project.
 
 Generate KJAR Base project
 --------------------
-1. build the kie-kjar-archetype module (mvn clean install)
+1. Build the kie-kjar-archetype module (mvn clean install)
 2. Change to directory of your choice where you want to build the 
 base kjar from this archetype.
 3. Create your new base kjar project from the archetype with:
@@ -81,3 +81,15 @@ file://myuser/mypath/to/my/new/project/projectname
 
 Workbench should now import your created kjar project and you can start
 working on adding new assets to it etc. 
+
+Troubleshooting
+-----------------------------------
+This archetype requires maven-archetype-plugin version 3.0.1 or above.
+In case you run into issues with the post generation scripts 
+not being executed during archetype generation run it once with
+force update maven option
+```
+-U 
+```
+This will make sure you up the 3.0.1 version of maven-archetype-plugin
+and get it installed in your local maven repo.

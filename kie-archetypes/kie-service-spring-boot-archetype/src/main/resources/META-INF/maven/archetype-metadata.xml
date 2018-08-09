@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="${artifactId}" xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+                      xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <requiredProperties>
+    <requiredProperty key="groupId">
+      <defaultValue>org.kie.businessapp</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId">
+      <defaultValue>myserviceapp</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="version">
+      <defaultValue>1.0</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="kjarGroupId">
+      <defaultValue>none</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="kjarArtifactId">
+      <defaultValue>none</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="kjarVersion">
+      <defaultValue>none</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="archetypeCatalog">
+      <defaultValue>local</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="appServerAddress">
+      <defaultValue>localhost</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="appServerPort">
+      <defaultValue>8090</defaultValue>
+    </requiredProperty>
+    <!-- used to set up the controller in dev mode -->
+    <requiredProperty key="jbpmConsolePort">
+      <defaultValue>8080</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="package">
+      <defaultValue>${groupId}</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="kieVersion">
+      <defaultValue>${project.version}</defaultValue>
+    </requiredProperty>
+    <!-- appType options are bpm,brm,planner -->
+    <requiredProperty key="appType">
+      <defaultValue>bpm</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet packaged="true" filtered="true" encoding="UTF-8">
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.html</include>
+        <include>**/*.properties</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.jpg</exclude>
+        <exclude>**/*.css</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet filtered="false" encoding="UTF-8">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.jpg</include>
+        <include>**/*.css</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.html</exclude>
+        <exclude>**/*.properties</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet packaged="true" encoding="UTF-8">
+      <directory>src/test/java</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>src/test/resources</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="false" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>**/*.sh</include>
+        <include>**/*.md</include>
+      </includes>
+      <excludes>
+        <exclude>__artifactId__.xml</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>__artifactId__.xml</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.sh</exclude>
+        <exclude>**/*.md</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+
+</archetype-descriptor>
