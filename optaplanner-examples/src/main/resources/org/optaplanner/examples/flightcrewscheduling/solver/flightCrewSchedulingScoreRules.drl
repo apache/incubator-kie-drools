@@ -32,6 +32,13 @@ global HardSoftLongScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+rule "Required skill"
+    when
+        FlightAssignment(employee != null, !getEmployee().hasSkill(getRequiredSkill()))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -100);
+end
+
 rule "Flight conflict"
     when
         FlightAssignment(employee != null, $employee : employee,

@@ -98,7 +98,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::setNightsAwayFromBaseFairness,
                     "Soft penalty to load balance the nights away from base");
             readIntConstraintLine(REQUIRED_SKILL, null,
-                    "Hard penalty per missing required skill");
+                    "Hard penalty per missing required skill for a flight assignment");
+            readIntConstraintLine(FLIGHT_CONFLICT, null,
+                    "Hard penalty per 2 flights of an employee that directly overlap");
             solution.setParametrization(parametrization);
         }
 
@@ -324,7 +326,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     "Soft penalty to load balance the nights away from base");
             nextRow();
             writeIntConstraintLine(REQUIRED_SKILL, null,
-                    "Hard penalty per missing required skill");
+                    "Hard penalty per missing required skill for a flight assignment");
+            writeIntConstraintLine(FLIGHT_CONFLICT, null,
+                    "Hard penalty per 2 flights of an employee that directly overlap");
             autoSizeColumnsWithHeader();
         }
 

@@ -21,6 +21,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class FlightCrewParametrization extends AbstractPersistable {
 
     public static final String REQUIRED_SKILL = "Required skill";
+    public static final String FLIGHT_CONFLICT = "Flight conflict";
 
     public static final String NIGHTS_AWAY_FROM_BASE_FAIRNESS = "Nights away from base fairness";
 

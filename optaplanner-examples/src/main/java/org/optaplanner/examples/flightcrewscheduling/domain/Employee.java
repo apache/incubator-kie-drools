@@ -30,6 +30,10 @@ public class Employee extends AbstractPersistable {
     public Employee() {
     }
 
+    public boolean hasSkill(Skill skill) {
+        return skillSet.contains(skill);
+    }
+
     @Override
     public String toString() {
         return name;
