@@ -361,11 +361,11 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         }
 
         private void writeTaxiTimeMaps() {
-            nextSheet("Taxi time", 2, 3, false);
+            nextSheet("Taxi time", 1, 1, false);
             nextRow();
             nextHeaderCell("Driving time in minutes by taxi between two nearby airports to allow employees to start from a different airport.");
             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
-                    currentColumnNumber, currentColumnNumber + 10));
+                    currentColumnNumber, currentColumnNumber + 20));
             List<Airport> airportList = solution.getAirportList();
             nextRow();
             nextHeaderCell("Airport code");
@@ -438,6 +438,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextSheet("Employees view", 1, 1, true);
             nextRow();
             nextHeaderCell("Employee name");
+            nextHeaderCell("Home airport");
 
             List<LocalDate> dateList = solution.getFlightList().stream()
                     .map(Flight::getDepartureUTCDate)
@@ -453,6 +454,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             for (Employee employee : solution.getEmployeeList()) {
                 nextRow();
                 nextHeaderCell(employee.getName());
+                nextHeaderCell(employee.getHomeAirport().getCode());
                 List<FlightAssignment> flightAssignmentList = employeeToFlightAssignmentMap.get(employee);
                 if (flightAssignmentList != null) {
                     Function<FlightAssignment, Flight> getFlight = FlightAssignment::getFlight;
@@ -465,11 +467,10 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                         nextCell().setCellValue(flightAssignmentList.stream()
                                 .map(FlightAssignment::getFlight)
                                 .filter(flight -> flight.getDepartureUTCDate().equals(finalDate))
-                                .map(flight -> flight.getFlightNumber()
-                                        + "(" + TIME_FORMATTER.format(flight.getDepartureUTCTime())
+                                .map(flight -> TIME_FORMATTER.format(flight.getDepartureUTCTime())
                                         + " " + flight.getDepartureAirport().getCode() + " -> "
                                         + TIME_FORMATTER.format(flight.getArrivalUTCTime())
-                                        + " " + flight.getArrivalAirport().getCode() + ")")
+                                        + " " + flight.getArrivalAirport().getCode())
                                 .collect(joining(", ")));
                     }
                 }

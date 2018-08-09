@@ -61,8 +61,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
     public static void main(String[] args) {
         FlightCrewSchedulingGenerator generator = new FlightCrewSchedulingGenerator();
-        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_CAPITALS, 10, 7);
-        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_CAPITALS, 50, 7);
+        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 10, 7);
+        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 50, 7);
         generator.writeFlightCrewSolution("US", LocationDataGenerator.US_MAINLAND_STATE_CAPITALS, 10, 7);
     }
 
