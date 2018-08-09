@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.marshalling.v1_1;
+package org.kie.dmn.api.marshalling.v1x;
 
-@Deprecated
-public interface DMNMarshaller extends org.kie.dmn.api.marshalling.v1x.DMNMarshaller {
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.QNameMap;
 
+
+public interface DMNExtensionRegister {
+
+    public void registerExtensionConverters(XStream xstream);
+
+    default void beforeMarshal(Object o, QNameMap qmap) {
+        // do nothing.
+    }
 }

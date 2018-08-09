@@ -24,7 +24,7 @@ import javax.xml.XMLConstants;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
 import org.kie.dmn.model.v1x.Decision;
 import org.kie.dmn.model.v1x.DecisionService;

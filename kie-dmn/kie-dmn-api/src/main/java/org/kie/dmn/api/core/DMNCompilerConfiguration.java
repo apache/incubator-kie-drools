@@ -16,7 +16,7 @@
 
 package org.kie.dmn.api.core;
 
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
 
 import java.util.List;
 

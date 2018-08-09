@@ -39,7 +39,7 @@ import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;

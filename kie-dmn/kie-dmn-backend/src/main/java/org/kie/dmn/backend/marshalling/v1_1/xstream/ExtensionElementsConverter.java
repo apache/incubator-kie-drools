@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TDMNElement;
 import org.kie.dmn.model.v1x.DMNElement.ExtensionElements;

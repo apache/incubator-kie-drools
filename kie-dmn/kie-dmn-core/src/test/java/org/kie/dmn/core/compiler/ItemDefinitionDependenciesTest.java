@@ -22,7 +22,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 import org.kie.dmn.model.v1x.ItemDefinition;

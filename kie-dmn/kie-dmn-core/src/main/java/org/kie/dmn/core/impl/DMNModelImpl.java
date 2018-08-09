@@ -46,7 +46,7 @@ import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;

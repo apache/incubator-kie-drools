@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.marshalling.v1_1;
+package org.kie.dmn.api.marshalling.v1x;
 
-@Deprecated
-public interface DMNMarshaller extends org.kie.dmn.api.marshalling.v1x.DMNMarshaller {
+import java.io.Reader;
+import java.io.Writer;
+
+import org.kie.dmn.model.v1x.Definitions;
+
+public interface DMNMarshaller {
+
+    Definitions unmarshal(final Reader isr);
+
+    Definitions unmarshal(final String xml);
+
+    String marshal(Object o);
+
+    void marshal(Object o, Writer out);
 
 }
