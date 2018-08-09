@@ -124,7 +124,7 @@ public class XStreamMarshaller
     }
     
     public static void configureQNameMap( QNameMap qmap ) {
-        qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
+        qmap.setDefaultNamespace(KieDMNModelInstrumentedBase.URI_DMN);
     }
 
     public XStreamMarshaller() {

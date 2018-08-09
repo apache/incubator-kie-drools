@@ -11,7 +11,7 @@ package org.kie.dmn.model.v1_2;
 import org.kie.dmn.model.v1x.RuleAnnotationClause;
 
 
-public class TRuleAnnotationClause implements RuleAnnotationClause {
+public class TRuleAnnotationClause extends KieDMNModelInstrumentedBase implements RuleAnnotationClause {
 
     protected String name;
 

@@ -1,6 +1,6 @@
 package org.kie.dmn.model.v1x;
 
-public interface RuleAnnotationClause {
+public interface RuleAnnotationClause extends DMNModelInstrumentedBase {
 
     /**
      * Gets the value of the name property.

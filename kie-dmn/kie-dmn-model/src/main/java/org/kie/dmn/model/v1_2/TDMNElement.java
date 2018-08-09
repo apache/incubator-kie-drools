@@ -60,7 +60,7 @@ public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNEleme
         this.label = value;
     }
 
-    public static class TExtensionElements implements ExtensionElements {
+    public static class TExtensionElements extends KieDMNModelInstrumentedBase implements ExtensionElements {
 
         protected List<Object> any;
 

@@ -8,109 +8,22 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
+public interface Bounds {
 
 
-/**
- * Bounds specifies a rectangular area in some x-y coordinate system that is defined by a location (x and y) and a size (width and height).
- * 
- * <p>Java class for Bounds complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Bounds">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="x" use="required" type="{http://www.w3.org/2001/XMLSchema}double" />
- *       &lt;attribute name="y" use="required" type="{http://www.w3.org/2001/XMLSchema}double" />
- *       &lt;attribute name="width" use="required" type="{http://www.w3.org/2001/XMLSchema}double" />
- *       &lt;attribute name="height" use="required" type="{http://www.w3.org/2001/XMLSchema}double" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Bounds", namespace = "http://www.omg.org/spec/DMN/20180521/DC/")
-public class Bounds {
+    public double getX();
 
-    @XmlAttribute(name = "x", required = true)
-    protected double x;
-    @XmlAttribute(name = "y", required = true)
-    protected double y;
-    @XmlAttribute(name = "width", required = true)
-    protected double width;
-    @XmlAttribute(name = "height", required = true)
-    protected double height;
+    public void setX(double value);
 
-    /**
-     * Gets the value of the x property.
-     * 
-     */
-    public double getX() {
-        return x;
-    }
+    public double getY();
 
-    /**
-     * Sets the value of the x property.
-     * 
-     */
-    public void setX(double value) {
-        this.x = value;
-    }
+    public void setY(double value);
 
-    /**
-     * Gets the value of the y property.
-     * 
-     */
-    public double getY() {
-        return y;
-    }
+    public double getWidth();
 
-    /**
-     * Sets the value of the y property.
-     * 
-     */
-    public void setY(double value) {
-        this.y = value;
-    }
+    public void setWidth(double value);
 
-    /**
-     * Gets the value of the width property.
-     * 
-     */
-    public double getWidth() {
-        return width;
-    }
+    public double getHeight();
 
-    /**
-     * Sets the value of the width property.
-     * 
-     */
-    public void setWidth(double value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the height property.
-     * 
-     */
-    public double getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     * 
-     */
-    public void setHeight(double value) {
-        this.height = value;
-    }
-
+    public void setHeight(double value);
 }

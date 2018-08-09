@@ -8,338 +8,50 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+public interface DMNStyle extends Style {
 
+    public Color getFillColor();
 
-/**
- * <p>Java class for DMNStyle complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="DMNStyle">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20180521/DI/}Style">
- *       &lt;sequence>
- *         &lt;element name="FillColor" type="{http://www.omg.org/spec/DMN/20180521/DC/}Color" minOccurs="0"/>
- *         &lt;element name="StrokeColor" type="{http://www.omg.org/spec/DMN/20180521/DC/}Color" minOccurs="0"/>
- *         &lt;element name="FontColor" type="{http://www.omg.org/spec/DMN/20180521/DC/}Color" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="fontFamily" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="fontSize" type="{http://www.w3.org/2001/XMLSchema}double" />
- *       &lt;attribute name="fontItalic" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="fontBold" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="fontUnderline" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="fontStrikeThrough" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="labelHorizontalAlignement" type="{http://www.omg.org/spec/DMN/20180521/DC/}AlignmentKind" />
- *       &lt;attribute name="labelVerticalAlignment" type="{http://www.omg.org/spec/DMN/20180521/DC/}AlignmentKind" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DMNStyle", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/", propOrder = {
-    "fillColor",
-    "strokeColor",
-    "fontColor"
-})
-public class DMNStyle
-    extends Style
-{
+    public void setFillColor(Color value);
 
-    @XmlElement(name = "FillColor", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/")
-    protected Color fillColor;
-    @XmlElement(name = "StrokeColor", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/")
-    protected Color strokeColor;
-    @XmlElement(name = "FontColor", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/")
-    protected Color fontColor;
-    @XmlAttribute(name = "fontFamily")
-    protected String fontFamily;
-    @XmlAttribute(name = "fontSize")
-    protected Double fontSize;
-    @XmlAttribute(name = "fontItalic")
-    protected Boolean fontItalic;
-    @XmlAttribute(name = "fontBold")
-    protected Boolean fontBold;
-    @XmlAttribute(name = "fontUnderline")
-    protected Boolean fontUnderline;
-    @XmlAttribute(name = "fontStrikeThrough")
-    protected Boolean fontStrikeThrough;
-    @XmlAttribute(name = "labelHorizontalAlignement")
-    protected AlignmentKind labelHorizontalAlignement;
-    @XmlAttribute(name = "labelVerticalAlignment")
-    protected AlignmentKind labelVerticalAlignment;
+    public Color getStrokeColor();
 
-    /**
-     * Gets the value of the fillColor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Color }
-     *     
-     */
-    public Color getFillColor() {
-        return fillColor;
-    }
+    public void setStrokeColor(Color value);
 
-    /**
-     * Sets the value of the fillColor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Color }
-     *     
-     */
-    public void setFillColor(Color value) {
-        this.fillColor = value;
-    }
+    public Color getFontColor();
 
-    /**
-     * Gets the value of the strokeColor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Color }
-     *     
-     */
-    public Color getStrokeColor() {
-        return strokeColor;
-    }
+    public void setFontColor(Color value);
 
-    /**
-     * Sets the value of the strokeColor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Color }
-     *     
-     */
-    public void setStrokeColor(Color value) {
-        this.strokeColor = value;
-    }
+    public String getFontFamily();
 
-    /**
-     * Gets the value of the fontColor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Color }
-     *     
-     */
-    public Color getFontColor() {
-        return fontColor;
-    }
+    public void setFontFamily(String value);
 
-    /**
-     * Sets the value of the fontColor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Color }
-     *     
-     */
-    public void setFontColor(Color value) {
-        this.fontColor = value;
-    }
+    public Double getFontSize();
 
-    /**
-     * Gets the value of the fontFamily property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFontFamily() {
-        return fontFamily;
-    }
+    public void setFontSize(Double value);
 
-    /**
-     * Sets the value of the fontFamily property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFontFamily(String value) {
-        this.fontFamily = value;
-    }
+    public Boolean isFontItalic();
 
-    /**
-     * Gets the value of the fontSize property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Double }
-     *     
-     */
-    public Double getFontSize() {
-        return fontSize;
-    }
+    public void setFontItalic(Boolean value);
 
-    /**
-     * Sets the value of the fontSize property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Double }
-     *     
-     */
-    public void setFontSize(Double value) {
-        this.fontSize = value;
-    }
+    public Boolean isFontBold();
 
-    /**
-     * Gets the value of the fontItalic property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFontItalic() {
-        return fontItalic;
-    }
+    public void setFontBold(Boolean value);
 
-    /**
-     * Sets the value of the fontItalic property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFontItalic(Boolean value) {
-        this.fontItalic = value;
-    }
+    public Boolean isFontUnderline();
 
-    /**
-     * Gets the value of the fontBold property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFontBold() {
-        return fontBold;
-    }
+    public void setFontUnderline(Boolean value);
 
-    /**
-     * Sets the value of the fontBold property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFontBold(Boolean value) {
-        this.fontBold = value;
-    }
+    public Boolean isFontStrikeThrough();
 
-    /**
-     * Gets the value of the fontUnderline property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFontUnderline() {
-        return fontUnderline;
-    }
+    public void setFontStrikeThrough(Boolean value);
 
-    /**
-     * Sets the value of the fontUnderline property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFontUnderline(Boolean value) {
-        this.fontUnderline = value;
-    }
+    public AlignmentKind getLabelHorizontalAlignement();
 
-    /**
-     * Gets the value of the fontStrikeThrough property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFontStrikeThrough() {
-        return fontStrikeThrough;
-    }
+    public void setLabelHorizontalAlignement(AlignmentKind value);
 
-    /**
-     * Sets the value of the fontStrikeThrough property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFontStrikeThrough(Boolean value) {
-        this.fontStrikeThrough = value;
-    }
+    public AlignmentKind getLabelVerticalAlignment();
 
-    /**
-     * Gets the value of the labelHorizontalAlignement property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link AlignmentKind }
-     *     
-     */
-    public AlignmentKind getLabelHorizontalAlignement() {
-        return labelHorizontalAlignement;
-    }
-
-    /**
-     * Sets the value of the labelHorizontalAlignement property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AlignmentKind }
-     *     
-     */
-    public void setLabelHorizontalAlignement(AlignmentKind value) {
-        this.labelHorizontalAlignement = value;
-    }
-
-    /**
-     * Gets the value of the labelVerticalAlignment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link AlignmentKind }
-     *     
-     */
-    public AlignmentKind getLabelVerticalAlignment() {
-        return labelVerticalAlignment;
-    }
-
-    /**
-     * Sets the value of the labelVerticalAlignment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AlignmentKind }
-     *     
-     */
-    public void setLabelVerticalAlignment(AlignmentKind value) {
-        this.labelVerticalAlignment = value;
-    }
+    public void setLabelVerticalAlignment(AlignmentKind value);
 
 }

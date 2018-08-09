@@ -10,7 +10,7 @@ package org.kie.dmn.model.v1_2;
 
 import org.kie.dmn.model.v1x.RuleAnnotation;
 
-public class TRuleAnnotation implements RuleAnnotation {
+public class TRuleAnnotation extends KieDMNModelInstrumentedBase implements RuleAnnotation {
 
     protected String text;
 

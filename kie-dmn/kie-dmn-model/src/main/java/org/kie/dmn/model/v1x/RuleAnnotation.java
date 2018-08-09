@@ -1,6 +1,6 @@
 package org.kie.dmn.model.v1x;
 
-public interface RuleAnnotation {
+public interface RuleAnnotation extends DMNModelInstrumentedBase {
 
     /**
      * Gets the value of the text property.
