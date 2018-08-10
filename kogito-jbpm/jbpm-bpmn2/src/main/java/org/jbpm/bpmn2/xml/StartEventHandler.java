@@ -123,7 +123,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 startNode.setMetaData("MessageType", message.getType());
 
 
-                addTriggerWithInMappings(startNode, "Message-" + messageRef);
+                addTriggerWithInMappings(startNode, "Message-" + message.getName());
             } else if ("timerEventDefinition".equals(nodeName)) {
             	handleTimerNode(startNode, element, uri, localName, parser);
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions

@@ -1290,6 +1290,23 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
+    
+    @Test
+    public void testIntermediateCatchEventMessageWithRef() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventMessageWithRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        // now signal process instance
+        ksession.signalEvent("Message-HelloMessage", "SomeValue",
+                processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 
     @Test(timeout=10000)
     public void testIntermediateCatchEventTimerDuration() throws Exception {
@@ -2055,10 +2072,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.Multiple_MessageSignal_Subprocess");
 		logger.debug("Parent Process ID: " + processInstance.getId());
 
-		ksession.signalEvent("Message-Message_1","Test",processInstance.getId());
+		ksession.signalEvent("Message-Message 1","Test",processInstance.getId());
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 
-		ksession.signalEvent("Message-Message_1","Test",processInstance.getId());
+		ksession.signalEvent("Message-Message 1","Test",processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 

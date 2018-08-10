@@ -230,7 +230,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData("MessageType", message.getType());
                 List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
-                eventFilter.setType("Message-" + messageRef);
+                eventFilter.setType("Message-" + message.getName());
                 eventFilters.add(eventFilter);
                 eventNode.setEventFilters(eventFilters);
             }

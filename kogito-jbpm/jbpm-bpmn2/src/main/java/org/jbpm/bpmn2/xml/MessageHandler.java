@@ -61,6 +61,10 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String itemRef = attrs.getValue("itemRef");
+		String name = attrs.getValue("name");
+		if (name == null) {
+		    name = id;
+		}
 		
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
             ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
@@ -81,6 +85,7 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
         }
         Message message = new Message(id); 
         message.setType(itemDefinition.getStructureRef());
+        message.setName(name);
         messages.put(id, message);
 		return message;
 	}
