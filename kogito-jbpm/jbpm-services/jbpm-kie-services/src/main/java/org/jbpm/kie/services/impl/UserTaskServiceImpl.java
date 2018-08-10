@@ -187,9 +187,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			taskService.claim(taskId, userId);
-		} catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
-        } finally {
+		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}
 
@@ -218,8 +216,6 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
             TaskService taskService = engine.getTaskService();
             // perform actual operation
             taskService.complete(taskId, userId, params);
-        } catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
         } finally {
             disposeRuntimeEngine(manager, engine);
         }
@@ -256,8 +252,6 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
             }
             // perform actual operation
             taskService.complete(taskId, userId, params);
-        } catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
         } finally {
             disposeRuntimeEngine(manager, engine);
         }
@@ -284,9 +278,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			taskService.delegate(taskId, userId, targetUserId);
-		} catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
-        } finally {
+		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
@@ -368,9 +360,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			taskService.forward(taskId, userId, targetEntityId);
-		} catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
-        } finally {
+		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
@@ -395,9 +385,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			taskService.release(taskId, userId);
-		} catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
-        } finally {
+		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
@@ -557,9 +545,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			taskService.nominate(taskId, userId, potentialOwners);
-		} catch(PermissionDeniedException e){
-            throw new TaskNotFoundException(e.getMessage());
-        } finally {
+		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
