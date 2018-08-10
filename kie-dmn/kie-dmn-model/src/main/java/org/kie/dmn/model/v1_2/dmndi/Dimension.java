@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-public class Dimension implements org.kie.dmn.model.v1x.dmndi.Dimension {
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+
+public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Dimension {
 
     protected double width;
     protected double height;

@@ -11,10 +11,11 @@ package org.kie.dmn.model.v1_2.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.w3c.dom.Element;
 
 
-public abstract class Style implements org.kie.dmn.model.v1x.dmndi.Style {
+public abstract class Style extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Style {
 
     protected org.kie.dmn.model.v1x.dmndi.Style.Extension extension;
     protected String id;

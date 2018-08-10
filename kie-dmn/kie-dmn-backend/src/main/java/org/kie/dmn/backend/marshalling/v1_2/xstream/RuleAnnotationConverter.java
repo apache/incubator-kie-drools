@@ -24,7 +24,7 @@ import org.kie.dmn.model.v1_2.TRuleAnnotation;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.RuleAnnotation;
 
-public class RuleAnnotationConverter extends DRGElementConverter {
+public class RuleAnnotationConverter extends DMNModelInstrumentedBaseConverter {
 
     public static final String TEXT = "text";
 
@@ -35,29 +35,35 @@ public class RuleAnnotationConverter extends DRGElementConverter {
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         super.assignChildElement(parent, nodeName, child);
+        RuleAnnotation e = (RuleAnnotation) parent;
+
+        if (TEXT.equals(nodeName)) {
+            e.setText((String) child);
+        } else {
+            super.assignChildElement(parent, nodeName, child);
+        }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes( reader, parent );
 
-        ((RuleAnnotation) parent).setText(reader.getAttribute(TEXT));
+        // no attributes.
     }
 
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
+        RuleAnnotation r = (RuleAnnotation) parent;
+
+        writeChildrenNode(writer, context, r.getText(), TEXT);
     }
 
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
 
-        RuleAnnotation e = (RuleAnnotation) parent;
-
-        if (e.getText() != null) {
-            writer.addAttribute(TEXT, e.getText());
-        }
+        // no attributes.
     }
 
     @Override
@@ -67,6 +73,6 @@ public class RuleAnnotationConverter extends DRGElementConverter {
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(RuleAnnotation.class);
+        return type.equals(TRuleAnnotation.class);
     }
 }

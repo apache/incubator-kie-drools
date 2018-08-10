@@ -10,8 +10,9 @@ package org.kie.dmn.model.v1x.dmndi;
 
 import java.util.List;
 
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
-public interface DiagramElement {
+public interface DiagramElement extends DMNModelInstrumentedBase {
 
     public DiagramElement.Extension getExtension();
 

@@ -31,7 +31,7 @@ import org.kie.dmn.model.v1x.RowLocation;
 public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumentedBase {
 
     public static final String URI_FEEL = "http://www.omg.org/spec/DMN/20180521/FEEL/";
-    public static final String URI_DMN = "http://www.omg.org/spec/DMN/20180521/DMN12.xsd";
+    public static final String URI_DMN = "http://www.omg.org/spec/DMN/20180521/MODEL/";
     public static final String URI_KIE = "http://www.drools.org/kie/dmn/1.2";
 
     private Map<String, String> nsContext;

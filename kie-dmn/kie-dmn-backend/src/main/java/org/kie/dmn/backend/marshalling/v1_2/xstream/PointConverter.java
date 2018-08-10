@@ -20,16 +20,17 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Point;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public class PointConverter extends DMNModelInstrumentedBaseConverter {
 
-    public static final String NAME = "name";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    private static final String Y = "y";
+    private static final String X = "x";
+
+    public PointConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
@@ -39,9 +40,11 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        Point abs = (Point) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        abs.setX(Double.valueOf(reader.getAttribute(X)));
+        abs.setY(Double.valueOf(reader.getAttribute(Y)));
     }
 
     @Override
@@ -53,18 +56,20 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
+        Point abs = (Point) parent;
 
-        writer.addAttribute(NAME, e.getName());
+        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()).toString());
+        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()).toString());
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
+        return new org.kie.dmn.model.v1_2.dmndi.Point();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
+        return type.equals(org.kie.dmn.model.v1_2.dmndi.Point.class);
     }
+
 }

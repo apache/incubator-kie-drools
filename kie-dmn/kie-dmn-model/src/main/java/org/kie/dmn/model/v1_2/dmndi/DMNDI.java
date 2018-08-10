@@ -11,11 +11,12 @@ package org.kie.dmn.model.v1_2.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.dmndi.DMNDiagram;
 import org.kie.dmn.model.v1x.dmndi.DMNStyle;
 
 
-public class DMNDI implements org.kie.dmn.model.v1x.dmndi.DMNDI {
+public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.DMNDI {
 
     protected List<DMNDiagram> dmnDiagram;
     protected List<DMNStyle> dmnStyle;

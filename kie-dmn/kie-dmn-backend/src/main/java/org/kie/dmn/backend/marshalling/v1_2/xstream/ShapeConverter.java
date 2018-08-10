@@ -20,51 +20,51 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Bounds;
+import org.kie.dmn.model.v1x.dmndi.Shape;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public abstract class ShapeConverter extends DiagramElementConverter {
 
-    public static final String NAME = "name";
+    private static final String BOUNDS = "Bounds";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    public ShapeConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
-        super.assignChildElement(parent, nodeName, child);
+        Shape abs = (Shape) parent;
+
+        if (child instanceof Bounds) {
+            abs.setBounds((Bounds) child);
+        } else {
+            super.assignChildElement(abs, nodeName, child);
+        }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        // no attributes.
     }
 
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
+        Shape abs = (Shape) parent;
+
+        if (abs.getBounds() != null) {
+            writeChildrenNode(writer, context, abs.getBounds(), BOUNDS);
+        }
     }
 
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
-
-        writer.addAttribute(NAME, e.getName());
+        // no attributes.
     }
 
-    @Override
-    protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
-    }
 
-    @Override
-    public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
-    }
 }

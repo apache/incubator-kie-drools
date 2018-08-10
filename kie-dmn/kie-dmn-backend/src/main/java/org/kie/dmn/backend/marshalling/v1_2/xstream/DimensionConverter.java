@@ -20,16 +20,17 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Dimension;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public class DimensionConverter extends DMNModelInstrumentedBaseConverter {
 
-    public static final String NAME = "name";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    private static final String HEIGHT = "height";
+    private static final String WIDTH = "width";
+
+    public DimensionConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
@@ -39,9 +40,11 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        Dimension abs = (Dimension) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        abs.setWidth(Double.valueOf(reader.getAttribute(WIDTH)));
+        abs.setHeight(Double.valueOf(reader.getAttribute(HEIGHT)));
     }
 
     @Override
@@ -52,19 +55,20 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
+        Dimension abs = (Dimension) parent;
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
-
-        writer.addAttribute(NAME, e.getName());
+        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()).toString());
+        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()).toString());
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
+        return new org.kie.dmn.model.v1_2.dmndi.Dimension();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
+        return type.equals(org.kie.dmn.model.v1_2.dmndi.Dimension.class);
     }
+
 }

@@ -8,56 +8,14 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNShape {
 
-/**
- * <p>Java class for DMNShape complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="DMNShape">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20180521/DI/}Shape">
- *       &lt;sequence>
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20180521/DMNDI/}DMNLabel" minOccurs="0"/>
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20180521/DMNDI/}DMNDecisionServiceDividerLine" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="dmnElementRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *       &lt;attribute name="isListedInputData" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="isCollapsed" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DMNShape", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/", propOrder = {
-    "dmnLabel",
-    "dmnDecisionServiceDividerLine"
-})
-public class DMNShape
-    extends Shape
-{
-
-    @XmlElement(name = "DMNLabel", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/")
-    protected DMNLabel dmnLabel;
-    @XmlElement(name = "DMNDecisionServiceDividerLine", namespace = "http://www.omg.org/spec/DMN/20180521/DMNDI/")
-    protected DMNDecisionServiceDividerLine dmnDecisionServiceDividerLine;
-    @XmlAttribute(name = "dmnElementRef", required = true)
+    protected org.kie.dmn.model.v1x.dmndi.DMNLabel dmnLabel;
+    protected org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine dmnDecisionServiceDividerLine;
     protected QName dmnElementRef;
-    @XmlAttribute(name = "isListedInputData")
     protected Boolean isListedInputData;
-    @XmlAttribute(name = "isCollapsed")
     protected Boolean isCollapsed;
 
     /**
@@ -68,7 +26,7 @@ public class DMNShape
      *     {@link DMNLabel }
      *     
      */
-    public DMNLabel getDMNLabel() {
+    public org.kie.dmn.model.v1x.dmndi.DMNLabel getDMNLabel() {
         return dmnLabel;
     }
 
@@ -80,7 +38,7 @@ public class DMNShape
      *     {@link DMNLabel }
      *     
      */
-    public void setDMNLabel(DMNLabel value) {
+    public void setDMNLabel(org.kie.dmn.model.v1x.dmndi.DMNLabel value) {
         this.dmnLabel = value;
     }
 
@@ -92,7 +50,7 @@ public class DMNShape
      *     {@link DMNDecisionServiceDividerLine }
      *     
      */
-    public DMNDecisionServiceDividerLine getDMNDecisionServiceDividerLine() {
+    public org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine getDMNDecisionServiceDividerLine() {
         return dmnDecisionServiceDividerLine;
     }
 
@@ -104,7 +62,7 @@ public class DMNShape
      *     {@link DMNDecisionServiceDividerLine }
      *     
      */
-    public void setDMNDecisionServiceDividerLine(DMNDecisionServiceDividerLine value) {
+    public void setDMNDecisionServiceDividerLine(org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine value) {
         this.dmnDecisionServiceDividerLine = value;
     }
 

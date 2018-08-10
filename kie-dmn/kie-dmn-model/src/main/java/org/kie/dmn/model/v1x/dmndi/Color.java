@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-public interface Color {
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+
+public interface Color extends DMNModelInstrumentedBase {
 
     public int getRed();
 

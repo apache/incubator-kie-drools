@@ -37,6 +37,7 @@ import org.kie.dmn.model.v1x.KnowledgeSource;
 import org.kie.dmn.model.v1x.OrganizationUnit;
 import org.kie.dmn.model.v1x.PerformanceIndicator;
 import org.kie.dmn.model.v1x.TextAnnotation;
+import org.kie.dmn.model.v1x.dmndi.DMNDI;
 
 public class DefinitionsConverter
         extends NamedElementConverter {
@@ -76,6 +77,8 @@ public class DefinitionsConverter
             def.getElementCollection().add((ElementCollection) child);
         } else if (child instanceof BusinessContextElement ) {
             def.getBusinessContextElement().add((BusinessContextElement) child);
+        } else if (child instanceof DMNDI) {
+            def.setDMNDI((DMNDI) child);
         } else {
             super.assignChildElement( def, nodeName, child );
         }
@@ -148,6 +151,10 @@ public class DefinitionsConverter
                 nodeName = "performanceIndicator";
             }
             writeChildrenNode(writer, context, bce, nodeName);
+        }
+
+        if (def.getDMNDI() != null) {
+            writeChildrenNode(writer, context, def.getDMNDI(), "DMNDI");
         }
     }
 

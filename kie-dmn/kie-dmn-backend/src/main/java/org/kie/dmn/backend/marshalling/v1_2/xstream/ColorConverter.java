@@ -20,17 +20,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Color;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public class ColorConverter extends DMNModelInstrumentedBaseConverter {
 
-    public static final String NAME = "name";
+    private static final String RED = "red";
+    private static final String GREEN = "green";
+    private static final String BLUE = "blue";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
-    }
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
@@ -39,9 +37,12 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        Color style = (Color) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        style.setRed(Integer.valueOf(reader.getAttribute(RED)));
+        style.setGreen(Integer.valueOf(reader.getAttribute(GREEN)));
+        style.setBlue(Integer.valueOf(reader.getAttribute(BLUE)));
     }
 
     @Override
@@ -52,19 +53,25 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
+        Color style = (Color) parent;
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
+        writer.addAttribute(RED, Integer.valueOf(style.getRed()).toString());
+        writer.addAttribute(GREEN, Integer.valueOf(style.getGreen()).toString());
+        writer.addAttribute(BLUE, Integer.valueOf(style.getBlue()).toString());
+    }
 
-        writer.addAttribute(NAME, e.getName());
+    public ColorConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
+        return new org.kie.dmn.model.v1_2.dmndi.Color();
     }
 
     @Override
-    public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
+    public boolean canConvert(Class clazz) {
+        return clazz.equals(org.kie.dmn.model.v1_2.dmndi.Color.class);
     }
+
 }

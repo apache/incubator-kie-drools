@@ -20,68 +20,65 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TInformationRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.InformationRequirement;
+import org.kie.dmn.model.v1x.dmndi.DMNDiagram;
+import org.kie.dmn.model.v1x.dmndi.DiagramElement;
+import org.kie.dmn.model.v1x.dmndi.Dimension;
 
-public class InformationRequirementConverter extends DMNElementConverter {
+public class DMNDiagramConverter extends DiagramConverter {
 
-    private static final String REQUIRED_INPUT    = "requiredInput";
-    private static final String REQUIRED_DECISION = "requiredDecision";
-
-    public InformationRequirementConverter(XStream xstream) {
-        super( xstream );
-    }
-
-    public boolean canConvert(Class clazz) {
-        return clazz.equals(TInformationRequirement.class);
-    }
+    private static final String SIZE = "Size";
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
-        InformationRequirement ir = (InformationRequirement) parent;
-        
-        if ( REQUIRED_INPUT.equals( nodeName ) ) {
-            ir.setRequiredInput( (DMNElementReference) child );
-        } else if ( REQUIRED_DECISION.equals( nodeName ) ) {
-            ir.setRequiredDecision( (DMNElementReference) child );
+        DMNDiagram style = (DMNDiagram) parent;
+
+        if (child instanceof Dimension) {
+            style.setSize((Dimension) child);
+        } else if (child instanceof DiagramElement) {
+            style.getDMNDiagramElement().add((DiagramElement) child);
         } else {
-            super.assignChildElement( parent, nodeName, child );
+            super.assignChildElement(style, nodeName, child);
         }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
-    }
-
-    @Override
-    protected DMNModelInstrumentedBase createModelObject() {
-        return new TInformationRequirement();
+        super.assignAttributes(reader, parent);
+        // no attributes.
     }
 
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        InformationRequirement ir = (InformationRequirement) parent;
+        DMNDiagram style = (DMNDiagram) parent;
         
-        if ( ir.getRequiredDecision() != null ) {
-            writeChildrenNode(writer, context, ir.getRequiredDecision(), REQUIRED_DECISION);
+        if (style.getSize() != null) {
+            writeChildrenNode(writer, context, style.getSize(), SIZE);
         }
-        // TODO or if else ?
-        if ( ir.getRequiredInput() != null ) {
-            writeChildrenNode(writer, context, ir.getRequiredInput(), REQUIRED_INPUT);
+        for (DiagramElement de : style.getDMNDiagramElement()) {
+            writeChildrenNode(writer, context, de, de.getClass().getSimpleName());
         }
     }
 
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
-        
         // no attributes.
     }
 
-    
+    public DMNDiagramConverter(XStream xstream) {
+        super(xstream);
+    }
+
+    @Override
+    protected DMNModelInstrumentedBase createModelObject() {
+        return new org.kie.dmn.model.v1_2.dmndi.DMNDiagram();
+    }
+
+    @Override
+    public boolean canConvert(Class clazz) {
+        return clazz.equals(org.kie.dmn.model.v1_2.dmndi.DMNDiagram.class);
+    }
 
 }

@@ -16,55 +16,76 @@
 
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
+import javax.xml.namespace.QName;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.DMNEdge;
+import org.kie.dmn.model.v1x.dmndi.DMNLabel;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public class DMNEdgeConverter extends EdgeConverter {
 
-    public static final String NAME = "name";
+    private static final String DMN_ELEMENT_REF = "dmnElementRef";
+    private static final String DMN_LABEL = "DMNLabel";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    public DMNEdgeConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
-        super.assignChildElement(parent, nodeName, child);
+        DMNEdge concrete = (DMNEdge) parent;
+
+        if (child instanceof DMNLabel) {
+            concrete.setDMNLabel((DMNLabel) child);
+        } else {
+            super.assignChildElement(parent, nodeName, child);
+        }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        DMNEdge concrete = (DMNEdge) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        String dmnElementRef = reader.getAttribute(DMN_ELEMENT_REF);
+
+        if (dmnElementRef != null) {
+            concrete.setDmnElementRef(new QName(dmnElementRef));
+        }
     }
 
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
+        DMNEdge concrete = (DMNEdge) parent;
+
+        if (concrete.getDMNLabel() != null) {
+            writeChildrenNode(writer, context, concrete.getDMNLabel(), DMN_LABEL);
+        }
     }
 
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
-
-        writer.addAttribute(NAME, e.getName());
+        DMNEdge concrete = (DMNEdge) parent;
+        if (concrete.getDmnElementRef() != null) {
+            writer.addAttribute(DMN_ELEMENT_REF, concrete.getDmnElementRef().toString());
+        }
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
+        return new org.kie.dmn.model.v1_2.dmndi.DMNEdge();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
+        return type.equals(org.kie.dmn.model.v1_2.dmndi.DMNEdge.class);
     }
+
 }

@@ -20,68 +20,60 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TInformationRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.InformationRequirement;
+import org.kie.dmn.model.v1x.dmndi.DMNLabel;
 
-public class InformationRequirementConverter extends DMNElementConverter {
+public class DMNLabelConverter extends ShapeConverter {
 
-    private static final String REQUIRED_INPUT    = "requiredInput";
-    private static final String REQUIRED_DECISION = "requiredDecision";
+    private static final String TEXT = "Text";
 
-    public InformationRequirementConverter(XStream xstream) {
-        super( xstream );
-    }
-
-    public boolean canConvert(Class clazz) {
-        return clazz.equals(TInformationRequirement.class);
+    public DMNLabelConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
-        InformationRequirement ir = (InformationRequirement) parent;
-        
-        if ( REQUIRED_INPUT.equals( nodeName ) ) {
-            ir.setRequiredInput( (DMNElementReference) child );
-        } else if ( REQUIRED_DECISION.equals( nodeName ) ) {
-            ir.setRequiredDecision( (DMNElementReference) child );
+        DMNLabel concrete = (DMNLabel) parent;
+
+        if (nodeName.equals(TEXT)) {
+            concrete.setText((String) child);
         } else {
-            super.assignChildElement( parent, nodeName, child );
+            super.assignChildElement(parent, nodeName, child);
         }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
-    }
+        super.assignAttributes(reader, parent);
 
-    @Override
-    protected DMNModelInstrumentedBase createModelObject() {
-        return new TInformationRequirement();
+        // no attributes.
     }
 
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        InformationRequirement ir = (InformationRequirement) parent;
-        
-        if ( ir.getRequiredDecision() != null ) {
-            writeChildrenNode(writer, context, ir.getRequiredDecision(), REQUIRED_DECISION);
-        }
-        // TODO or if else ?
-        if ( ir.getRequiredInput() != null ) {
-            writeChildrenNode(writer, context, ir.getRequiredInput(), REQUIRED_INPUT);
+        DMNLabel concrete = (DMNLabel) parent;
+
+        if (concrete.getText() != null) {
+            writeChildrenNode(writer, context, concrete.getText(), TEXT);
         }
     }
 
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
-        
+
         // no attributes.
     }
 
-    
+    @Override
+    protected DMNModelInstrumentedBase createModelObject() {
+        return new org.kie.dmn.model.v1_2.dmndi.DMNLabel();
+    }
+
+    @Override
+    public boolean canConvert(Class type) {
+        return type.equals(org.kie.dmn.model.v1_2.dmndi.DMNLabel.class);
+    }
 
 }

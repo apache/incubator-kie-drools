@@ -2,7 +2,9 @@ package org.kie.dmn.model.v1x.dmndi;
 
 import java.util.List;
 
-public interface DMNDI {
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+
+public interface DMNDI extends DMNModelInstrumentedBase {
 
     /**
      * Gets the value of the dmnDiagram property.

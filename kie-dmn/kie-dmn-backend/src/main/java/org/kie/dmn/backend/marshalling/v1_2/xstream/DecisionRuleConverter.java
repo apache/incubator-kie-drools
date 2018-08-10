@@ -24,11 +24,13 @@ import org.kie.dmn.model.v1_2.TDecisionRule;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.DecisionRule;
 import org.kie.dmn.model.v1x.LiteralExpression;
+import org.kie.dmn.model.v1x.RuleAnnotation;
 import org.kie.dmn.model.v1x.UnaryTests;
 
 public class DecisionRuleConverter extends DMNElementConverter {
     public static final String OUTPUT_ENTRY = "outputEntry";
     public static final String INPUT_ENTRY = "inputEntry";
+    public static final String ANNOTATION_ENTRY = "annotationEntry";
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
@@ -38,6 +40,8 @@ public class DecisionRuleConverter extends DMNElementConverter {
             dr.getInputEntry().add((UnaryTests) child);
         } else if (OUTPUT_ENTRY.equals(nodeName)) {
             dr.getOutputEntry().add((LiteralExpression) child);
+        } else if (ANNOTATION_ENTRY.equals(nodeName)) {
+            dr.getAnnotationEntry().add((RuleAnnotation) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -60,6 +64,9 @@ public class DecisionRuleConverter extends DMNElementConverter {
         }
         for (LiteralExpression oe : dr.getOutputEntry()) {
             writeChildrenNode(writer, context, oe, OUTPUT_ENTRY);
+        }
+        for (RuleAnnotation a : dr.getAnnotationEntry()) {
+            writeChildrenNode(writer, context, a, ANNOTATION_ENTRY);
         }
     }
 

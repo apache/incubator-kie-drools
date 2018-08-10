@@ -10,8 +10,9 @@ package org.kie.dmn.model.v1x.dmndi;
 
 import java.util.List;
 
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
-public interface Style {
+public interface Style extends DMNModelInstrumentedBase {
 
     public Style.Extension getExtension();
 

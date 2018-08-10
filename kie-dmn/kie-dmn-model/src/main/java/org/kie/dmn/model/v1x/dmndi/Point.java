@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-public interface Point {
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+
+public interface Point extends DMNModelInstrumentedBase {
 
     public double getX();
 

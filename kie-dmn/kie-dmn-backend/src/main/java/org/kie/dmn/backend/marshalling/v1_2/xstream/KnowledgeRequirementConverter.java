@@ -25,7 +25,7 @@ import org.kie.dmn.model.v1x.DMNElementReference;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
-public class KnowledgeRequirementConverter extends DMNModelInstrumentedBaseConverter {
+public class KnowledgeRequirementConverter extends DMNElementConverter {
     public static final String REQUIRED_KNOWLEDGE = "requiredKnowledge";
 
     @Override

@@ -25,10 +25,9 @@ import org.kie.dmn.model.v1x.AuthorityRequirement;
 import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.InformationItem;
 import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
-public class BusinessKnowledgeModelConverter extends DRGElementConverter {
+public class BusinessKnowledgeModelConverter extends InvocableConverter {
     public static final String ENCAPSULATED_LOGIC = "encapsulatedLogic";
     public static final String VARIABLE = "variable";
     public static final String KNOWLEDGE_REQUIREMENT = "knowledgeRequirement";
@@ -40,8 +39,6 @@ public class BusinessKnowledgeModelConverter extends DRGElementConverter {
         
         if (ENCAPSULATED_LOGIC.equals(nodeName)) {
             bkm.setEncapsulatedLogic((FunctionDefinition) child);
-        } else if (VARIABLE.equals(nodeName)) {
-            bkm.setVariable((InformationItem) child);
         } else if (KNOWLEDGE_REQUIREMENT.equals(nodeName)) {
             bkm.getKnowledgeRequirement().add((KnowledgeRequirement) child);
         } else if (AUTHORITY_REQUIREMENT.equals(nodeName)) {
@@ -64,7 +61,7 @@ public class BusinessKnowledgeModelConverter extends DRGElementConverter {
         BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) parent;
         
         if (bkm.getEncapsulatedLogic() != null) writeChildrenNode(writer, context, bkm.getEncapsulatedLogic(), ENCAPSULATED_LOGIC);
-        if (bkm.getVariable() != null) writeChildrenNode(writer, context, bkm.getVariable(), VARIABLE);
+        // Now as Invocable: if (bkm.getVariable() != null) writeChildrenNode(writer, context, bkm.getVariable(), VARIABLE);
         for (KnowledgeRequirement i : bkm.getKnowledgeRequirement()) {
             writeChildrenNode(writer, context, i, KNOWLEDGE_REQUIREMENT);
         }

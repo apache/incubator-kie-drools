@@ -29,6 +29,7 @@ import org.kie.dmn.model.v1x.DecisionTableOrientation;
 import org.kie.dmn.model.v1x.HitPolicy;
 import org.kie.dmn.model.v1x.InputClause;
 import org.kie.dmn.model.v1x.OutputClause;
+import org.kie.dmn.model.v1x.RuleAnnotationClause;
 
 public class DecisionTableConverter extends ExpressionConverter {
     public static final String RULE = "rule";
@@ -39,6 +40,8 @@ public class DecisionTableConverter extends ExpressionConverter {
     public static final String PREFERRED_ORIENTATION = "preferredOrientation";
     public static final String OUTPUT_LABEL = "outputLabel";
     
+    public static final String ANNOTATION = "annotation";
+
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         DecisionTable dt = (DecisionTable) parent;
@@ -47,6 +50,8 @@ public class DecisionTableConverter extends ExpressionConverter {
             dt.getInput().add((InputClause) child);
         } else if (OUTPUT.equals(nodeName)) {
             dt.getOutput().add((OutputClause) child);
+        } else if (ANNOTATION.equals(nodeName)) {
+            dt.getAnnotation().add((RuleAnnotationClause) child);
         } else if (RULE.equals(nodeName)) {
             dt.getRule().add((DecisionRule) child);
         } else {
@@ -80,6 +85,9 @@ public class DecisionTableConverter extends ExpressionConverter {
         }
         for (OutputClause o : dt.getOutput()) {
             writeChildrenNode(writer, context, o, OUTPUT);
+        }
+        for (RuleAnnotationClause a : dt.getAnnotation()) {
+            writeChildrenNode(writer, context, a, ANNOTATION);
         }
         for (DecisionRule r : dt.getRule()) {
             writeChildrenNode(writer, context, r, RULE);

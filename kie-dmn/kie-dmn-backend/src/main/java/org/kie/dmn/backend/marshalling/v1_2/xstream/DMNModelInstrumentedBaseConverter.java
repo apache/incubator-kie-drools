@@ -28,6 +28,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_2.TDefinitions;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
@@ -78,6 +79,23 @@ public abstract class DMNModelInstrumentedBaseConverter
         
         for ( Entry<QName, String> kv : mib.getAdditionalAttributes().entrySet() ) {
             staxWriter.addAttribute(kv.getKey().getPrefix() + ":" + kv.getKey().getLocalPart(), kv.getValue());
+        }
+
+        // TODO un-hardcode this XStream hack... peek namespace value from node NSContext and populate with the Definitions NSContext actual prefixes.
+        if (parent instanceof TDefinitions) {
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNDI", "dmndi"), "DMNDI");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNDiagram", "dmndi"), "DMNDiagram");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNStyle", "dmndi"), "style");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNStyle", "dmndi"), "DMNStyle");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNShape", "dmndi"), "DMNShape");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNEdge", "dmndi"), "DMNEdge");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNLabel", "dmndi"), "DMNLabel");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "Size", "dmndi"), "Size");
+
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "FillColor", "dmndi"), "FillColor");
+
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DI/", "waypoint", "di"), "waypoint");
+            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DC/", "Bounds", "dc"), "Bounds");
         }
     }
 }

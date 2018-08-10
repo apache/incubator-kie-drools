@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-public class Color implements org.kie.dmn.model.v1x.dmndi.Color {
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+
+public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Color {
 
     protected int red;
     protected int green;

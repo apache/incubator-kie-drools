@@ -25,7 +25,7 @@ import org.kie.dmn.model.v1x.AuthorityRequirement;
 import org.kie.dmn.model.v1x.DMNElementReference;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 
-public class AuthorityRequirementConverter extends DMNModelInstrumentedBaseConverter {
+public class AuthorityRequirementConverter extends DMNElementConverter {
     public static final String REQUIRED_AUTHORITY = "requiredAuthority";
     public static final String REQUIRED_INPUT = "requiredInput";
     public static final String REQUIRED_DECISION = "requiredDecision";

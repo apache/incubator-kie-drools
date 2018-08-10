@@ -20,16 +20,16 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Diagram;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public abstract class DiagramConverter extends DiagramElementConverter {
 
-    public static final String NAME = "name";
+    private static final String RESOLUTION = "resolution";
+    private static final String DOCUMENTATION = "documentation";
+    private static final String NAME = "name";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    public DiagramConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
@@ -39,9 +39,22 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        Diagram abs = (Diagram) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        String name = reader.getAttribute(NAME);
+        String documentation = reader.getAttribute(DOCUMENTATION);
+        String resolution = reader.getAttribute(RESOLUTION);
+
+        if (name != null) {
+            abs.setName(name);
+        }
+        if (documentation != null) {
+            abs.setDocumentation(documentation);
+        }
+        if (resolution != null) {
+            abs.setResolution(Double.valueOf(resolution));
+        }
     }
 
     @Override
@@ -52,19 +65,18 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
+        Diagram abs = (Diagram) parent;
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
-
-        writer.addAttribute(NAME, e.getName());
+        if (abs.getName() != null) {
+            writer.addAttribute(NAME, abs.getName());
+        }
+        if (abs.getDocumentation() != null) {
+            writer.addAttribute(DOCUMENTATION, abs.getDocumentation());
+        }
+        if (abs.getResolution() != null) {
+            writer.addAttribute(RESOLUTION, abs.getResolution().toString());
+        }
     }
 
-    @Override
-    protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
-    }
 
-    @Override
-    public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
-    }
 }

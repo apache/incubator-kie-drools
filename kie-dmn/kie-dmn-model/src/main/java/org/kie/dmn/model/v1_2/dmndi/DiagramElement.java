@@ -13,7 +13,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-public abstract class DiagramElement implements org.kie.dmn.model.v1x.dmndi.DiagramElement {
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+
+public abstract class DiagramElement extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.DiagramElement {
 
     protected org.kie.dmn.model.v1x.dmndi.DiagramElement.Extension extension;
     protected org.kie.dmn.model.v1x.dmndi.Style style;

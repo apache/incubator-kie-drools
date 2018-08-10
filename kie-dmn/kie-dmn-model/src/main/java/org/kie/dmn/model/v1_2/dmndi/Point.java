@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-public class Point implements org.kie.dmn.model.v1x.dmndi.Point {
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+
+public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Point {
 
     protected double x;
     protected double y;

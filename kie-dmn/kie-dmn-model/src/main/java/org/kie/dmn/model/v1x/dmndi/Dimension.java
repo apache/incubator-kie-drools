@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-public interface Dimension {
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+
+public interface Dimension extends DMNModelInstrumentedBase {
 
     public double getWidth();
 

@@ -26,7 +26,7 @@ import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.Expression;
 import org.kie.dmn.model.v1x.InformationItem;
 
-public class ContextEntryConverter extends DMNModelInstrumentedBaseConverter {
+public class ContextEntryConverter extends DMNElementConverter {
     public static final String EXPRESSION = "expression";
     public static final String VARIABLE = "variable";
 

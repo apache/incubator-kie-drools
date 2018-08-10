@@ -8,7 +8,9 @@
 
 package org.kie.dmn.model.v1x.dmndi;
 
-public interface Bounds {
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+
+public interface Bounds extends DMNModelInstrumentedBase {
 
 
     public double getX();

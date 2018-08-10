@@ -24,11 +24,15 @@ import org.kie.dmn.model.v1_2.TFunctionDefinition;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.Expression;
 import org.kie.dmn.model.v1x.FunctionDefinition;
+import org.kie.dmn.model.v1x.FunctionKind;
 import org.kie.dmn.model.v1x.InformationItem;
 
 public class FunctionDefinitionConverter extends ExpressionConverter {
+
+    private static final String KIND = "kind";
     public static final String EXPRESSION = "expression";
     public static final String FORMAL_PARAMETER = "formalParameter";
+
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
@@ -47,7 +51,13 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes(reader, parent);
 
-        // no attributes (drools:kind is now managed fully as a generic additional attribute in DMNModelInstrumentedBase)
+        FunctionDefinition i = (FunctionDefinition) parent;
+
+        String kind = reader.getAttribute(KIND);
+        if (kind != null) {
+            i.setKind(FunctionKind.fromValue(kind));
+        }
+
     }
 
     @Override
@@ -65,7 +75,8 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
         
-        // no attributes.
+        FunctionDefinition fd = (FunctionDefinition) parent;
+        writer.addAttribute(KIND, fd.getKind().toString());
     }
 
     public FunctionDefinitionConverter(XStream xstream) {

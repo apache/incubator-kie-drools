@@ -20,16 +20,19 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.v1x.dmndi.Bounds;
 
-public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
+public class BoundsConverter extends DMNModelInstrumentedBaseConverter {
 
-    public static final String NAME = "name";
 
-    public RuleAnnotationClauseConverter(XStream xstream) {
-        super( xstream );
+    private static final String HEIGHT = "height";
+    private static final String WIDTH = "width";
+    private static final String Y = "y";
+    private static final String X = "x";
+
+    public BoundsConverter(XStream xstream) {
+        super(xstream);
     }
 
     @Override
@@ -39,9 +42,13 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        super.assignAttributes( reader, parent );
+        super.assignAttributes(reader, parent);
+        Bounds abs = (Bounds) parent;
 
-        ((RuleAnnotationClause) parent).setName(reader.getAttribute(NAME));
+        abs.setX(Double.valueOf(reader.getAttribute(X)));
+        abs.setY(Double.valueOf(reader.getAttribute(Y)));
+        abs.setWidth(Double.valueOf(reader.getAttribute(WIDTH)));
+        abs.setHeight(Double.valueOf(reader.getAttribute(HEIGHT)));
     }
 
     @Override
@@ -53,18 +60,22 @@ public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConve
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
 
-        RuleAnnotationClause e = (RuleAnnotationClause) parent;
+        Bounds abs = (Bounds) parent;
 
-        writer.addAttribute(NAME, e.getName());
+        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()).toString());
+        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()).toString());
+        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()).toString());
+        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()).toString());
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new TRuleAnnotationClause();
+        return new org.kie.dmn.model.v1_2.dmndi.Bounds();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(TRuleAnnotationClause.class);
+        return type.equals(org.kie.dmn.model.v1_2.dmndi.Bounds.class);
     }
+
 }

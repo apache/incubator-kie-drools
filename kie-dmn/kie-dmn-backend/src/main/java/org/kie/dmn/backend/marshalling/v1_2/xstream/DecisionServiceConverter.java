@@ -28,7 +28,7 @@ import org.kie.dmn.model.v1x.DMNElementReference;
 import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.DecisionService;
 
-public class DecisionServiceConverter extends NamedElementConverter {
+public class DecisionServiceConverter extends InvocableConverter {
 
     public static final String OUTPUT_DECISION = "outputDecision";
 
