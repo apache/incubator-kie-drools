@@ -51,20 +51,6 @@ rule "Flight conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -10);
 end
 
-rule "First assignment valid"
-    when
-        Employee(!isFirstAssignmentValid())
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
-end
-
-rule "Last assignment valid"
-    when
-        Employee(!isLastAssignmentValid())
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
-end
-
 rule "Invalid connections"
     when
         Employee($invalidConnectionCount : countInvalidConnections() > 0)
@@ -75,3 +61,18 @@ end
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+
+rule "First assignment departing from home"
+    when
+        Employee(!isFirstAssignmentDepartingFromHome())
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -1);
+end
+
+rule "Last assignment arriving at home"
+    when
+        Employee(!isLastAssignmentArrivingAtHome())
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -1);
+end

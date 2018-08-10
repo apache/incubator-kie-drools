@@ -44,7 +44,7 @@ public class Employee extends AbstractPersistable {
         return skillSet.contains(skill);
     }
 
-    public boolean isFirstAssignmentValid() {
+    public boolean isFirstAssignmentDepartingFromHome() {
         if (flightAssignmentSet.isEmpty()) {
             return true;
         }
@@ -53,7 +53,7 @@ public class Employee extends AbstractPersistable {
         return firstAssignment.getFlight().getDepartureAirport() == homeAirport;
     }
 
-    public boolean isLastAssignmentValid() {
+    public boolean isLastAssignmentArrivingAtHome() {
         if (flightAssignmentSet.isEmpty()) {
             return true;
         }
