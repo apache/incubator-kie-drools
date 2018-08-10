@@ -410,7 +410,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                     if (!cell.getStringCellValue().isEmpty()) {
                         throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
-                                + ") should be empty. Use the talks sheet pre-assign rooms and timeslots.");
+                                + ") should be empty. Use the other sheet (Talks) to pre-assign rooms and timeslots.");
                     }
                 }
                 speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);

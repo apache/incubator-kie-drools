@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.flightcrewscheduling.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -29,6 +30,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
 public class FlightCrewSolution extends AbstractPersistable {
+
+    private LocalDate scheduleFirstUTCDate;
+    private LocalDate scheduleLastUTCDate;
 
     @ProblemFactProperty
     private FlightCrewParametrization parametrization;
@@ -58,6 +62,22 @@ public class FlightCrewSolution extends AbstractPersistable {
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
+
+    public LocalDate getScheduleFirstUTCDate() {
+        return scheduleFirstUTCDate;
+    }
+
+    public void setScheduleFirstUTCDate(LocalDate scheduleFirstUTCDate) {
+        this.scheduleFirstUTCDate = scheduleFirstUTCDate;
+    }
+
+    public LocalDate getScheduleLastUTCDate() {
+        return scheduleLastUTCDate;
+    }
+
+    public void setScheduleLastUTCDate(LocalDate scheduleLastUTCDate) {
+        this.scheduleLastUTCDate = scheduleLastUTCDate;
+    }
 
     public FlightCrewParametrization getParametrization() {
         return parametrization;

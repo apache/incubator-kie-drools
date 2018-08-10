@@ -34,6 +34,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -95,6 +96,13 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
 
         private void readConfiguration() {
             nextSheet("Configuration");
+            nextRow(false);
+            readHeaderCell("Schedule start UTC Date");
+            solution.setScheduleFirstUTCDate(LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER));
+            nextRow(false);
+            readHeaderCell("Schedule end UTC Date");
+            solution.setScheduleLastUTCDate(LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER));
+            nextRow(false);
             nextRow(false);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
@@ -179,12 +187,16 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
-//            readTimeslotDaysHeaders();
+            readHeaderCell("Unavailability");
             nextRow(false);
             readHeaderCell("Name");
             readHeaderCell("Home airport");
             readHeaderCell("Skills");
-//            readTimeslotHoursHeaders();
+            LocalDate firstDate = solution.getScheduleFirstUTCDate();
+            LocalDate lastDate = solution.getScheduleLastUTCDate();
+            for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                readHeaderCell(DAY_FORMATTER.format(date));
+            }
             List<Employee> employeeList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
@@ -218,6 +230,18 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     skillSet.add(skill);
                 }
                 employee.setSkillSet(skillSet);
+                Set<LocalDate> unavailableDaySet = new LinkedHashSet<>();
+                for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                    XSSFCell cell = nextStringCell();
+                    if (Objects.equals(extractColor(cell, UNAVAILABLE_COLOR), UNAVAILABLE_COLOR)) {
+                        unavailableDaySet.add(date);
+                    }
+                    if (!cell.getStringCellValue().isEmpty()) {
+                        throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
+                                + ") should be empty.");
+                    }
+                }
+                employee.setUnavailableDaySet(unavailableDaySet);
                 employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
                 employeeList.add(employee);
             }
@@ -322,7 +346,14 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 1, false);
+            nextSheet("Configuration", 1, 4, false);
+            nextRow();
+            nextHeaderCell("Schedule start UTC Date");
+            nextCell().setCellValue(DAY_FORMATTER.format(solution.getScheduleFirstUTCDate()));
+            nextRow();
+            nextHeaderCell("Schedule end UTC Date");
+            nextCell().setCellValue(DAY_FORMATTER.format(solution.getScheduleLastUTCDate()));
+            nextRow();
             nextRow();
             nextHeaderCell("Constraint");
             nextHeaderCell("Weight");
@@ -400,17 +431,25 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
-//            writeTimeslotDaysHeaders();
+            nextHeaderCell("Unavailability");
             nextRow();
             nextHeaderCell("Name");
             nextHeaderCell("Home airport");
             nextHeaderCell("Skills");
-//            writeTimeslotHoursHeaders();
+            LocalDate firstDate = solution.getScheduleFirstUTCDate();
+            LocalDate lastDate = solution.getScheduleLastUTCDate();
+            for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                nextHeaderCell(DAY_FORMATTER.format(date));
+            }
             for (Employee employee : solution.getEmployeeList()) {
                 nextRow();
                 nextCell().setCellValue(employee.getName());
                 nextCell().setCellValue(employee.getHomeAirport().getCode());
                 nextCell().setCellValue(String.join(", ", employee.getSkillSet().stream().map(Skill::getName).collect(toList())));
+                for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                    nextCell(employee.getUnavailableDaySet().contains(date) ? unavailableStyle : defaultStyle)
+                            .setCellValue("");
+                }
             }
             autoSizeColumnsWithHeader();
         }
@@ -452,11 +491,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
-            List<LocalDate> dateList = solution.getFlightList().stream()
-                    .map(Flight::getDepartureUTCDate)
-                    .sorted().distinct().collect(toList());
-            LocalDate firstDate = dateList.get(0);
-            LocalDate lastDate = dateList.get(dateList.size() - 1);
+            LocalDate firstDate = solution.getScheduleFirstUTCDate();
+            LocalDate lastDate = solution.getScheduleLastUTCDate();
             for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                 nextHeaderCell(DAY_FORMATTER.format(date));
                 currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
@@ -485,6 +521,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                             .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
                             .thenComparing(FlightAssignment::getId));
                     for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                        boolean unavailable = employee.getUnavailableDaySet().contains(date);
                         Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = new HashMap<>(
                                 employeeAssignmentList.size());
                         int previousArrivalHour = -1;
@@ -507,7 +544,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                         for (int departureHour = minimumHour; departureHour <= maximumHour; departureHour++) {
                             List<FlightAssignment> flightAssignmentList = hourToAssignmentListMap.get(departureHour);
                             if (flightAssignmentList != null) {
-                                nextCell().setCellValue(flightAssignmentList.stream()
+                                nextCell(unavailable ? unavailableStyle : defaultStyle).setCellValue(flightAssignmentList.stream()
                                         .map(FlightAssignment::getFlight)
                                         .map(flight -> flight.getDepartureAirport().getCode()
                                                 + MILITARY_TIME_FORMATTER.format(flight.getDepartureUTCTime())
@@ -517,10 +554,13 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                                         .collect(joining(", ")));
                                 int maxArrivalHour = flightAssignmentList.stream().map(a -> a.getFlight().getArrivalUTCTime().getHour())
                                         .max(Comparator.naturalOrder()).get();
+                                int stretch = maxArrivalHour - departureHour;
                                 currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
-                                        currentColumnNumber, currentColumnNumber + (maxArrivalHour - departureHour)));
+                                        currentColumnNumber, currentColumnNumber + stretch));
+                                currentColumnNumber += stretch;
+                                departureHour += stretch;
                             } else {
-                                currentColumnNumber++;
+                                nextCell(unavailable ? unavailableStyle : defaultStyle);
                             }
                         }
                     }

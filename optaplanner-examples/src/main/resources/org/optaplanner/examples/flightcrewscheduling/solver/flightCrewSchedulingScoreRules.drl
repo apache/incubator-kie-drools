@@ -58,6 +58,13 @@ rule "Invalid connections"
         scoreHolder.addHardConstraintMatch(kcontext, - $invalidConnectionCount);
 end
 
+rule "Unavailable day"
+    when
+        FlightAssignment(employee != null, !getEmployee().isAvailable(getFlight().getDepartureUTCDate()))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -10);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################

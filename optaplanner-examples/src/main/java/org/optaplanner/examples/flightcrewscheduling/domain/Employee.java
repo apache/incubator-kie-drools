@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.flightcrewscheduling.domain;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -30,6 +31,7 @@ public class Employee extends AbstractPersistable {
     private Airport homeAirport;
 
     private Set<Skill> skillSet;
+    private Set<LocalDate> unavailableDaySet;
 
     /**
      * Sorted by {@link FlightAssignment#DATE_TIME_COMPARATOR}.
@@ -42,6 +44,10 @@ public class Employee extends AbstractPersistable {
 
     public boolean hasSkill(Skill skill) {
         return skillSet.contains(skill);
+    }
+
+    public boolean isAvailable(LocalDate date) {
+        return !unavailableDaySet.contains(date);
     }
 
     public boolean isFirstAssignmentDepartingFromHome() {
@@ -107,6 +113,14 @@ public class Employee extends AbstractPersistable {
 
     public void setSkillSet(Set<Skill> skillSet) {
         this.skillSet = skillSet;
+    }
+
+    public Set<LocalDate> getUnavailableDaySet() {
+        return unavailableDaySet;
+    }
+
+    public void setUnavailableDaySet(Set<LocalDate> unavailableDaySet) {
+        this.unavailableDaySet = unavailableDaySet;
     }
 
     public SortedSet<FlightAssignment> getFlightAssignmentSet() {
