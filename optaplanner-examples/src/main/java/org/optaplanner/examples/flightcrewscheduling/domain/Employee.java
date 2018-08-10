@@ -17,9 +17,13 @@
 package org.optaplanner.examples.flightcrewscheduling.domain;
 
 import java.util.Set;
+import java.util.SortedSet;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 public class Employee extends AbstractPersistable {
 
     private String name;
@@ -27,11 +31,49 @@ public class Employee extends AbstractPersistable {
 
     private Set<Skill> skillSet;
 
+    /**
+     * Sorted by {@link FlightAssignment#DATE_TIME_COMPARATOR}.
+     */
+    @InverseRelationShadowVariable(sourceVariableName = "employee")
+    private SortedSet<FlightAssignment> flightAssignmentSet;
+
     public Employee() {
     }
 
     public boolean hasSkill(Skill skill) {
         return skillSet.contains(skill);
+    }
+
+    public boolean isFirstAssignmentValid() {
+        if (flightAssignmentSet.isEmpty()) {
+            return true;
+        }
+        FlightAssignment firstAssignment = flightAssignmentSet.first();
+        // TODO allow taking a taxi, but penalize it with a soft score instead
+        return firstAssignment.getFlight().getDepartureAirport() == homeAirport;
+    }
+
+    public boolean isLastAssignmentValid() {
+        if (flightAssignmentSet.isEmpty()) {
+            return true;
+        }
+        FlightAssignment lastAssignment = flightAssignmentSet.last();
+        // TODO allow taking a taxi, but penalize it with a soft score instead
+        return lastAssignment.getFlight().getArrivalAirport() == homeAirport;
+    }
+
+    public long countInvalidConnections() {
+        long count = 0L;
+        FlightAssignment previousAssignment = null;
+        for (FlightAssignment assignment : flightAssignmentSet) {
+            if (previousAssignment != null
+                    && previousAssignment.getFlight().getArrivalAirport()
+                    != assignment.getFlight().getDepartureAirport()) {
+                count++;
+            }
+            previousAssignment = assignment;
+        }
+        return count;
     }
 
     @Override
@@ -65,6 +107,14 @@ public class Employee extends AbstractPersistable {
 
     public void setSkillSet(Set<Skill> skillSet) {
         this.skillSet = skillSet;
+    }
+
+    public SortedSet<FlightAssignment> getFlightAssignmentSet() {
+        return flightAssignmentSet;
+    }
+
+    public void setFlightAssignmentSet(SortedSet<FlightAssignment> flightAssignmentSet) {
+        this.flightAssignmentSet = flightAssignmentSet;
     }
 
 }

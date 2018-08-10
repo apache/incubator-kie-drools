@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -217,6 +218,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     skillSet.add(skill);
                 }
                 employee.setSkillSet(skillSet);
+                employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
                 employeeList.add(employee);
             }
             solution.setEmployeeList(employeeList);

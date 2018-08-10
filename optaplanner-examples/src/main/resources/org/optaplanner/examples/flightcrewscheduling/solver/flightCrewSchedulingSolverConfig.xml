@@ -5,6 +5,7 @@
 
   <solutionClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution</solutionClass>
   <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment</entityClass>
+  <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.Employee</entityClass>
 
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingScoreRules.drl</scoreDrl>

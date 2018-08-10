@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.app.CommonApp;
@@ -242,6 +243,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
             employee.setName(employeeNameGenerator.generateNextValue());
             employee.setHomeAirport(extractRandomElement(random, homeAirportList));
             employee.setSkillSet(Collections.singleton((i % 5) < 2 ? pilotSkill : flightAttendantSkill));
+            employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
             logger.trace("Created employee ({}).", employee);
             employeeList.add(employee);
         }
