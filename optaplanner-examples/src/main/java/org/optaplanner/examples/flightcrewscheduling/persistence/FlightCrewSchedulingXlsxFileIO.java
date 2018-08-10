@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -435,11 +435,16 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         }
 
         private void writeEmployeesView() {
-            nextSheet("Employees view", 1, 1, true);
+            nextSheet("Employees view", 2, 2, true);
+            int minimumHour = solution.getFlightList().stream()
+                    .map(Flight::getDepartureUTCTime).map(LocalTime::getHour)
+                    .min(Comparator.naturalOrder()).orElse(9);
+            int maximumHour = solution.getFlightList().stream()
+                    .map(Flight::getArrivalUTCTime).map(LocalTime::getHour)
+                    .max(Comparator.naturalOrder()).orElse(17);
             nextRow();
-            nextHeaderCell("Employee name");
-            nextHeaderCell("Home airport");
-
+            nextHeaderCell("");
+            nextHeaderCell("");
             List<LocalDate> dateList = solution.getFlightList().stream()
                     .map(Flight::getDepartureUTCDate)
                     .sorted().distinct().collect(toList());
@@ -447,6 +452,17 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             LocalDate lastDate = dateList.get(dateList.size() - 1);
             for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                 nextHeaderCell(DAY_FORMATTER.format(date));
+                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
+                        currentColumnNumber, currentColumnNumber + (maximumHour - minimumHour)));
+                currentColumnNumber += (maximumHour - minimumHour);
+            }
+            nextRow();
+            nextHeaderCell("Employee name");
+            nextHeaderCell("Home airport");
+            for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
+                for (int hour = minimumHour; hour <= maximumHour; hour++) {
+                    nextHeaderCell(TIME_FORMATTER.format(LocalTime.of(hour, 0)));
+                }
             }
             Map<Employee, List<FlightAssignment>> employeeToFlightAssignmentMap = solution.getFlightAssignmentList()
                     .stream().filter(flightAssignment -> flightAssignment.getEmployee() != null)
@@ -455,23 +471,50 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 nextRow();
                 nextHeaderCell(employee.getName());
                 nextHeaderCell(employee.getHomeAirport().getCode());
-                List<FlightAssignment> flightAssignmentList = employeeToFlightAssignmentMap.get(employee);
-                if (flightAssignmentList != null) {
-                    Function<FlightAssignment, Flight> getFlight = FlightAssignment::getFlight;
-                    flightAssignmentList.sort(Comparator
-                            .comparing(getFlight.andThen(Flight::getDepartureUTCDate))
-                            .thenComparing(getFlight.andThen(Flight::getArrivalUTCDateTime))
+                List<FlightAssignment> employeeAssignmentList = employeeToFlightAssignmentMap.get(employee);
+                if (employeeAssignmentList != null) {
+                    employeeAssignmentList.sort(Comparator
+                            .<FlightAssignment, LocalDateTime>comparing(a -> a.getFlight().getDepartureUTCDateTime())
+                            .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
                             .thenComparing(FlightAssignment::getId));
                     for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
-                        LocalDate finalDate = date;
-                        nextCell().setCellValue(flightAssignmentList.stream()
-                                .map(FlightAssignment::getFlight)
-                                .filter(flight -> flight.getDepartureUTCDate().equals(finalDate))
-                                .map(flight -> TIME_FORMATTER.format(flight.getDepartureUTCTime())
-                                        + " " + flight.getDepartureAirport().getCode() + " -> "
-                                        + TIME_FORMATTER.format(flight.getArrivalUTCTime())
-                                        + " " + flight.getArrivalAirport().getCode())
-                                .collect(joining(", ")));
+                        Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = new HashMap<>(
+                                employeeAssignmentList.size());
+                        int previousArrivalHour = -1;
+                        List<FlightAssignment> previousFlightAssignmentList = null;
+                        for (FlightAssignment flightAssignment : employeeAssignmentList) {
+                            Flight flight = flightAssignment.getFlight();
+                            if (flight.getDepartureUTCDate().equals(date)) {
+                                int departureHour = flight.getDepartureUTCTime().getHour();
+                                int arrivalHour = flight.getArrivalUTCTime().getHour();
+                                if (previousArrivalHour < departureHour) {
+                                    previousFlightAssignmentList = new ArrayList<>(24);
+                                    hourToAssignmentListMap.put(departureHour, previousFlightAssignmentList);
+                                    previousArrivalHour = arrivalHour;
+                                } else {
+                                    previousArrivalHour = Math.max(previousArrivalHour, arrivalHour);
+                                }
+                                previousFlightAssignmentList.add(flightAssignment);
+                            }
+                        }
+                        for (int departureHour = minimumHour; departureHour <= maximumHour; departureHour++) {
+                            List<FlightAssignment> flightAssignmentList = hourToAssignmentListMap.get(departureHour);
+                            if (flightAssignmentList != null) {
+                                nextCell().setCellValue(flightAssignmentList.stream()
+                                        .map(FlightAssignment::getFlight)
+                                        .map(flight -> TIME_FORMATTER.format(flight.getDepartureUTCTime())
+                                                + " " + flight.getDepartureAirport().getCode() + " -> "
+                                                + TIME_FORMATTER.format(flight.getArrivalUTCTime())
+                                                + " " + flight.getArrivalAirport().getCode())
+                                        .collect(joining(", ")));
+                                int maxArrivalHour = flightAssignmentList.stream().map(a -> a.getFlight().getArrivalUTCTime().getHour())
+                                        .max(Comparator.naturalOrder()).get();
+                                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
+                                        currentColumnNumber, currentColumnNumber + (maxArrivalHour - departureHour)));
+                            } else {
+                                currentColumnNumber++;
+                            }
+                        }
                     }
                 }
             }
