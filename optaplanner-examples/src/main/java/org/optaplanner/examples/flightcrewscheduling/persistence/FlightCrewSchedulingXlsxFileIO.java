@@ -25,12 +25,14 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +56,9 @@ import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.*;
 
 public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<FlightCrewSolution> {
+
+    public static final DateTimeFormatter MILITARY_TIME_FORMATTER
+            = DateTimeFormatter.ofPattern("HHmm", Locale.ENGLISH);
 
     @Override
     public FlightCrewSolution read(File inputSolutionFile) {
@@ -502,10 +507,11 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                             if (flightAssignmentList != null) {
                                 nextCell().setCellValue(flightAssignmentList.stream()
                                         .map(FlightAssignment::getFlight)
-                                        .map(flight -> TIME_FORMATTER.format(flight.getDepartureUTCTime())
-                                                + " " + flight.getDepartureAirport().getCode() + " -> "
-                                                + TIME_FORMATTER.format(flight.getArrivalUTCTime())
-                                                + " " + flight.getArrivalAirport().getCode())
+                                        .map(flight -> flight.getDepartureAirport().getCode()
+                                                + MILITARY_TIME_FORMATTER.format(flight.getDepartureUTCTime())
+                                                + "→"
+                                                + flight.getArrivalAirport().getCode()
+                                                + MILITARY_TIME_FORMATTER.format(flight.getArrivalUTCTime()))
                                         .collect(joining(", ")));
                                 int maxArrivalHour = flightAssignmentList.stream().map(a -> a.getFlight().getArrivalUTCTime().getHour())
                                         .max(Comparator.naturalOrder()).get();
