@@ -99,7 +99,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
                 InternalFactHandle[] handles = tuple != null ? tuple.toFactHandles() : new InternalFactHandle[0];
                 for (EvaluatorWrapper operator : operators) {
                     vars.put( operator.getBindingName(), operator );
-                    operator.loadHandles(workingMemory, handles, handle);
+                    operator.loadHandles(handles, handle);
                 }
             }
             return evaluate(statement, handle.getObject(), vars);

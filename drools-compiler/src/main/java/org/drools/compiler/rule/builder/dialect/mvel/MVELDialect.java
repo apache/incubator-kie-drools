@@ -82,6 +82,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.LineMappings;
@@ -94,6 +95,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
+
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 public class MVELDialect
         implements
@@ -585,7 +588,7 @@ public class MVELDialect
 
         List<String> strList = new ArrayList<String>();
         for (String identifier : analysis.getIdentifiers()) {
-            Class<?> type = analysis.getBoundIdentifiers().resolveVarType(identifier);
+            Class<?> type = identifier.equals( WM_ARGUMENT ) ? InternalWorkingMemory.class : analysis.getBoundIdentifiers().resolveVarType(identifier);
             if (type != null) {
                 strList.add(identifier);
                 ids.add(identifier);

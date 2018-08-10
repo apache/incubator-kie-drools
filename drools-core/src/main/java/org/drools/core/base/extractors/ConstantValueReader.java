@@ -15,13 +15,15 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.InternalReadAccessor;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 
 public class ConstantValueReader implements InternalReadAccessor {
 
@@ -60,7 +62,7 @@ public class ConstantValueReader implements InternalReadAccessor {
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, Object object) {
-        return (Long)value;
+        return value instanceof Long ? (Long)value : getTimestampFromDate( value );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, Object object) {

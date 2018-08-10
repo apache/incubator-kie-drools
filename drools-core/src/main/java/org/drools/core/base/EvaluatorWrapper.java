@@ -19,6 +19,7 @@ package org.drools.core.base;
 import org.drools.core.base.extractors.ConstantValueReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.base.field.ObjectFieldImpl;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
@@ -29,6 +30,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 import static org.drools.core.base.mvel.MVELCompilationUnit.getFactHandle;
+import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
 
 /**
  * An EvaluatorWrapper is used when executing MVEL expressions
@@ -46,21 +48,19 @@ public class EvaluatorWrapper
     private static final SelfReferenceClassFieldReader extractor        = new SelfReferenceClassFieldReader( Object.class );
 
     private Evaluator                                  evaluator;
-    private transient InternalWorkingMemory            workingMemory;
 
     private Declaration                                leftBinding;
     private Declaration                                rightBinding;
-
-    private transient InternalFactHandle               leftHandle;
-    private transient InternalFactHandle               rightHandle;
-
-    private InternalReadAccessor                       leftExtractor;
-    private InternalReadAccessor                       rightExtractor;
 
     private boolean                                    selfLeft;
     private boolean                                    selfRight;
 
     private String                                     bindingName;
+
+    private transient boolean                          rightLiteral;
+
+    private transient Long                             leftTimestamp;
+    private transient Long                             rightTimestamp;
 
     public EvaluatorWrapper(Evaluator evaluator,
                             Declaration leftBinding,
@@ -72,8 +72,6 @@ public class EvaluatorWrapper
     }
 
     private void init() {
-        leftExtractor = leftBinding == null || leftBinding.getExtractor() == null ? extractor : leftBinding.getExtractor();
-        rightExtractor = rightBinding == null || rightBinding.getExtractor() == null ? extractor : rightBinding.getExtractor();
         selfLeft = leftBinding == null || leftBinding.getIdentifier().equals("this");
         selfRight = rightBinding == null || rightBinding.getIdentifier().equals("this");
     }
@@ -85,23 +83,24 @@ public class EvaluatorWrapper
      * 
      * Is rewritten as
      * 
-     * after.evaluate( x, y )
+     * after.evaluate( _workingMemory_, x, y )
      * 
      * @return
      */
-    public boolean evaluate(Object left,
-                            Object right) {
-        if (rightHandle == null || rightBinding == null) {
-            return evaluator.evaluate( workingMemory,
-                                       leftBinding != null ? leftExtractor : new ConstantValueReader(left),
-                                       leftHandle,
-                                       new ObjectFieldImpl(right) );
-        }
-        return evaluator.evaluate( workingMemory,
-                                   leftBinding != null ? leftExtractor : new ConstantValueReader(left),
-                                   leftHandle,
-                                   rightExtractor,
-                                   rightHandle );
+    public boolean evaluate(InternalWorkingMemory workingMemory, Object left, Object right) {
+        Object leftValue = leftTimestamp != null ? leftTimestamp : left;
+        Object rightValue = rightTimestamp != null ? rightTimestamp : right;
+
+        return rightLiteral ?
+                evaluator.evaluate( workingMemory,
+                                    new ConstantValueReader( leftValue ),
+                                    dummyFactHandleOf( leftValue ),
+                                    new ObjectFieldImpl( rightValue ) ) :
+                evaluator.evaluate( workingMemory,
+                                    new ConstantValueReader( leftValue ),
+                                    dummyFactHandleOf( leftValue ),
+                                    new ConstantValueReader( rightValue ),
+                                    dummyFactHandleOf( rightValue ) );
     }
 
     /**
@@ -213,13 +212,19 @@ public class EvaluatorWrapper
         return evaluator.getInterval();
     }
 
-    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, InternalFactHandle rightHandle) {
-        this.workingMemory = workingMemory;
-        leftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
-        if (leftHandle == null) {
-            leftHandle = rightHandle;
+    public void loadHandles(InternalFactHandle[] handles, InternalFactHandle rightHandle) {
+        InternalFactHandle localLeftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
+
+        InternalFactHandle localRightHandle = selfRight ? rightHandle : getFactHandle(rightBinding, handles);
+        this.rightLiteral = localRightHandle == null;
+
+        if (isTemporal()) {
+            if (localLeftHandle == null) {
+                localLeftHandle = rightHandle;
+            }
+            leftTimestamp = localLeftHandle instanceof EventFactHandle ? (( EventFactHandle ) localLeftHandle).getStartTimestamp() : null;
+            rightTimestamp = localRightHandle instanceof EventFactHandle ? (( EventFactHandle ) localRightHandle).getStartTimestamp() : null;
         }
-        this.rightHandle = selfRight ? rightHandle : getFactHandle(rightBinding, handles);
     }
 
     @Override
@@ -230,46 +235,6 @@ public class EvaluatorWrapper
 
     public static SelfReferenceClassFieldReader getExtractor() {
         return extractor;
-    }
-
-    public Evaluator getEvaluator() {
-        return evaluator;
-    }
-
-    public InternalWorkingMemory getWorkingMemory() {
-        return workingMemory;
-    }
-
-    public Declaration getLeftBinding() {
-        return leftBinding;
-    }
-
-    public Declaration getRightBinding() {
-        return rightBinding;
-    }
-
-    public InternalFactHandle getLeftHandle() {
-        return leftHandle;
-    }
-
-    public InternalFactHandle getRightHandle() {
-        return rightHandle;
-    }
-
-    public InternalReadAccessor getLeftExtractor() {
-        return leftExtractor;
-    }
-
-    public InternalReadAccessor getRightExtractor() {
-        return rightExtractor;
-    }
-
-    public boolean isSelfLeft() {
-        return selfLeft;
-    }
-
-    public boolean isSelfRight() {
-        return selfRight;
     }
 
     public String getBindingName() {

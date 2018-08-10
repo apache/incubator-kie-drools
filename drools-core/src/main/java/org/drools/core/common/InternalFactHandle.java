@@ -177,4 +177,252 @@ public interface InternalFactHandle
     default void setParentHandle( InternalFactHandle parentHandle ) {
         throw new UnsupportedOperationException();
     }
+
+    static InternalFactHandle dummyFactHandleOf(Object object) {
+        return new DummyFactHandle( object );
+    }
+
+    class DummyFactHandle implements InternalFactHandle {
+        private final Object object;
+
+        private DummyFactHandle( Object object ) {
+            this.object = object;
+        }
+
+        @Override
+        public Object getObject() {
+            return object;
+        }
+
+        @Override
+        public int getId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long getRecency() {
+            throw new UnsupportedOperationException();
+        }
+
+
+        @Override
+        public String getObjectClassName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setObject( Object object ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setEqualityKey( EqualityKey key ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public EqualityKey getEqualityKey() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setRecency( long recency ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void invalidate() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isValid() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getIdentityHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getObjectHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isDisconnected() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isEvent() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isTraitOrTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isTraiting() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public TraitTypeEnum getTraitType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public RightTuple getFirstRightTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public LeftTuple getFirstLeftTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public WorkingMemoryEntryPoint getEntryPoint() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setEntryPoint( WorkingMemoryEntryPoint ep ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public InternalFactHandle clone() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String toExternalForm() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void disconnect() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addFirstLeftTuple( LeftTuple leftTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addLastLeftTuple( LeftTuple leftTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void removeLeftTuple( LeftTuple leftTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clearLeftTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clearRightTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addFirstRightTuple( RightTuple rightTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addLastRightTuple( RightTuple rightTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void removeRightTuple( RightTuple rightTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addTupleInPosition( Tuple tuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isNegated() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setNegated( boolean negated ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <K> K as( Class<K> klass ) throws ClassCastException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isExpired() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isPendingRemoveFromStore() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public LinkedTuples detachLinkedTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public LinkedTuples detachLinkedTuplesForPartition( int i ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public LinkedTuples getLinkedTuples() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
