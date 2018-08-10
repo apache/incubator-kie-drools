@@ -28,6 +28,8 @@ import org.mvel2.util.Soundex;
 
 public class EvaluatorHelper {
 
+    public static final String WM_ARGUMENT = "_workingMemory_";
+
     private EvaluatorHelper() { }
 
     public static Map<String, Object> valuesAsMap(Object object, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations) {
@@ -46,10 +48,10 @@ public class EvaluatorHelper {
         return map;
     }
 
-    public static void initOperators(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, EvaluatorWrapper[] operators) {
+    public static void initOperators(InternalFactHandle handle, Tuple tuple, EvaluatorWrapper[] operators) {
         InternalFactHandle[] handles = tuple != null ? tuple.toFactHandles() : new InternalFactHandle[0];
         for (EvaluatorWrapper operator : operators) {
-            operator.loadHandles(workingMemory, handles, handle);
+            operator.loadHandles(handles, handle);
         }
     }
 

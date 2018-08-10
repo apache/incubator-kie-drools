@@ -19,6 +19,7 @@ package org.drools.core.base.evaluators;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -103,6 +104,9 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         }
         if (obj instanceof LocalDateTime ) {
             return (( LocalDateTime ) obj).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        if (obj instanceof Instant ) {
+            return (( Instant ) obj).toEpochMilli();
         }
         throw new RuntimeException("Cannot extract timestamp from " + obj);
     }

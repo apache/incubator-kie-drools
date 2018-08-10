@@ -67,7 +67,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.CodedHierarchyImpl;
 import org.drools.core.util.HierarchyEncoder;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -108,7 +107,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 public class TraitTest extends CommonTestMethodBase {
@@ -5282,14 +5283,13 @@ public class TraitTest extends CommonTestMethodBase {
                      "@Traitable " +
                      "end " +
 
-                     "declare trait IPerson end " +
                      "declare trait IStudent end " +
 
                      "rule Init " +
                      "when " +
                      "then " +
                      "  Foo f = new Foo( new StudentImpl() ); " +
-                     "  don( f, IPerson.class ); " +
+                     "  don( f, IStudent.class ); " +
                      "end " +
 
                      "rule Match1 " +

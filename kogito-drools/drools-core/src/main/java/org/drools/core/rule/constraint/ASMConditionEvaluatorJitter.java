@@ -15,6 +15,21 @@
 
 package org.drools.core.rule.constraint;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -47,27 +62,51 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.util.NullType;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.drools.core.rule.constraint.ConditionAnalyzer.isFixed;
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_FINAL;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.DADD;
+import static org.mvel2.asm.Opcodes.DCMPL;
+import static org.mvel2.asm.Opcodes.DDIV;
+import static org.mvel2.asm.Opcodes.DMUL;
+import static org.mvel2.asm.Opcodes.DREM;
+import static org.mvel2.asm.Opcodes.DSUB;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.FCMPL;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.IALOAD;
+import static org.mvel2.asm.Opcodes.IASTORE;
+import static org.mvel2.asm.Opcodes.ICONST_0;
+import static org.mvel2.asm.Opcodes.ICONST_1;
+import static org.mvel2.asm.Opcodes.IFEQ;
+import static org.mvel2.asm.Opcodes.IFGE;
+import static org.mvel2.asm.Opcodes.IFGT;
+import static org.mvel2.asm.Opcodes.IFLE;
+import static org.mvel2.asm.Opcodes.IFLT;
+import static org.mvel2.asm.Opcodes.IFNE;
+import static org.mvel2.asm.Opcodes.IFNULL;
+import static org.mvel2.asm.Opcodes.IF_ICMPEQ;
+import static org.mvel2.asm.Opcodes.IF_ICMPGE;
+import static org.mvel2.asm.Opcodes.IF_ICMPGT;
+import static org.mvel2.asm.Opcodes.IF_ICMPLE;
+import static org.mvel2.asm.Opcodes.IF_ICMPLT;
+import static org.mvel2.asm.Opcodes.IF_ICMPNE;
+import static org.mvel2.asm.Opcodes.INSTANCEOF;
+import static org.mvel2.asm.Opcodes.IRETURN;
+import static org.mvel2.asm.Opcodes.LCMP;
+import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.POP;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConditionEvaluatorJitter {
 
@@ -193,10 +232,9 @@ public class ASMConditionEvaluatorJitter {
             }
 
             mv.visitVarInsn(ALOAD, 1); // InternalFactHandle
-            mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
             mv.visitVarInsn(ALOAD, 3); // Tuple
             getFieldFromThis("operators", EvaluatorWrapper[].class);
-            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, InternalFactHandle.class, InternalWorkingMemory.class, Tuple.class, EvaluatorWrapper[].class);
+            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, InternalFactHandle.class, Tuple.class, EvaluatorWrapper[].class);
         }
 
         private void jitCondition(Condition condition) {
@@ -739,6 +777,10 @@ public class ASMConditionEvaluatorJitter {
                     mv.visitInsn( AALOAD ); // operators[i]
                     return;
                 }
+            }
+            if (WM_ARGUMENT.equals( variableName )) {
+                mv.visitVarInsn(ALOAD, 2);
+                return;
             }
             throw new RuntimeException("Unknown variable name: " + variableName);
         }

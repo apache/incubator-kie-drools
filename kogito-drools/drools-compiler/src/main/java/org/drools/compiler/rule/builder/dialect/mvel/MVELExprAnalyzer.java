@@ -31,6 +31,7 @@ import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.RuleConditionElement;
@@ -43,6 +44,8 @@ import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 /**
  * Expression analyzer.
@@ -166,6 +169,10 @@ public class MVELExprAnalyzer {
 
         for ( String input : requiredInputs ) {
             if ("this".equals( input )) {
+                continue;
+            }
+            if (WM_ARGUMENT.equals( input )) {
+                parserContext2.addInput( input, InternalWorkingMemory.class );
                 continue;
             }
 

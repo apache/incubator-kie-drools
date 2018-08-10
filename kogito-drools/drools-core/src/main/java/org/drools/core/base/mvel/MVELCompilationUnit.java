@@ -56,6 +56,8 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+
 public class MVELCompilationUnit
     implements
     Externalizable,
@@ -354,7 +356,11 @@ public class MVELCompilationUnit
 
         if ( globalIdentifiers != null ) {
             for (String globalIdentifier : globalIdentifiers) {
-                factory.getIndexedVariableResolver(i++).setValue(globals.resolveGlobal(globalIdentifier));
+                if (WM_ARGUMENT.equals( globalIdentifier )) {
+                    factory.getIndexedVariableResolver( i++ ).setValue( workingMemory );
+                } else {
+                    factory.getIndexedVariableResolver( i++ ).setValue( globals.resolveGlobal( globalIdentifier ) );
+                }
             }
         }
 
@@ -363,7 +369,7 @@ public class MVELCompilationUnit
             for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory
                 factory.getIndexedVariableResolver(i++).setValue(operator);
-                operator.loadHandles(workingMemory, handles, rightHandle);
+                operator.loadHandles(handles, rightHandle);
             }
         }
 

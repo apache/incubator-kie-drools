@@ -16,6 +16,13 @@
 
 package org.drools.core.base.evaluators;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
@@ -33,13 +40,6 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.CodedHierarchy;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.runtime.ObjectFilter;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>
@@ -284,8 +284,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            Object target = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : null );
-            Object source = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : null );
+            Object source = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : null );
+            Object target = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : null );
 
             return compare( source, target, workingMemory );
         }
@@ -314,7 +314,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         private boolean compare( Object source, Object target, InternalWorkingMemory workingMemory ) {
             BitSet sourceTraits = null;
             BitSet targetTraits = null;
-            if ( source instanceof Thing ) {
+            if ( source instanceof Class ) {
+                CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                sourceTraits = x.getCode( ((Class) source).getName() );
+            } else if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
                     CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
