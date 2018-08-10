@@ -71,11 +71,10 @@ public class TimerEventTest extends JbpmTestCase {
     @Test
     @BZ("1104563")
     public void testStartTimerCycle() throws InterruptedException {
-        KieSession ksession = createKSession(START_TIMER_CYCLE);
+        createKSession(START_TIMER_CYCLE); //this starts already the timer
         AuditService auditService = getLogService();
 
-        ksession.startProcess(START_TIMER_CYCLE_ID);
-
+        Thread.sleep(5000);
         Assertions.assertThat(auditService.findProcessInstances()).hasSize(1);
 
         Thread.sleep(5000);

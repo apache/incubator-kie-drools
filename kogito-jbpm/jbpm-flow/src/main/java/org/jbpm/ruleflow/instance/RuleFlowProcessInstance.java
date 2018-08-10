@@ -34,9 +34,11 @@ public class RuleFlowProcessInstance extends WorkflowProcessInstanceImpl {
 
     public void internalStart(String trigger) {
     	StartNode startNode = getRuleFlowProcess().getStart(trigger);
-    	if (startNode != null) {
-    		((NodeInstance) getNodeInstance(startNode)).trigger(null, null);
-    	}
+        if (startNode != null) {
+            ((NodeInstance) getNodeInstance(startNode)).trigger(null, null);
+        } else if (!getRuleFlowProcess().isDynamic()) {
+            throw new IllegalArgumentException("There is no start node that matches the trigger " + (trigger == null ? "none" : trigger));
+        }
     	
     	// activate ad hoc fragments if they are marked as such
     	List<Node> autoStartNodes = getRuleFlowProcess().getAutoStartNodes();

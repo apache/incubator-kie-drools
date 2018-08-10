@@ -53,6 +53,7 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
 
+        process.setDynamic(true);
         CompositeNode compositeNode = new CompositeNode();
         compositeNode.setName("CompositeNode");
         compositeNode.setId(2);
@@ -66,7 +67,7 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         forEachNode.linkIncomingConnections(
             org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
             new CompositeNode.NodeAndType(split, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE));
-        
+
         process.addNode(forEachNode);
         KieSession ksession = createKieSession(process); 
         TestProcessEventListener procEventListener = new TestProcessEventListener();
