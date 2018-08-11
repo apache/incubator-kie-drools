@@ -19,6 +19,9 @@
     <requiredProperty key="caseProject">
       <defaultValue>false</defaultValue>
     </requiredProperty>
+    <requiredProperty key="kieVersion">
+      <defaultValue>${project.version}</defaultValue>
+    </requiredProperty>
   </requiredProperties>
 
   <fileSets>

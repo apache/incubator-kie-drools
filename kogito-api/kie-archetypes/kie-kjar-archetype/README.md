@@ -54,6 +54,13 @@ mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-kjar
 mvn clean install
 ```
 
+Changing the default KIE Runtime version
+-----------------------------------
+You can define a specific KIE Runtime version to be used with the following property:
+```
+-DkieVersion=YOUR_KIE_VERSION
+```
+
 Import project to KIE Workbench
 ---------------------------------
 
