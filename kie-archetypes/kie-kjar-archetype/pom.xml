@@ -20,6 +20,7 @@
         <includes>
           <include>archetype-resources/pom.xml</include>
           <include>archetype-resources/project.repositories</include>
+          <include>META-INF/maven/archetype-metadata.xml</include>
         </includes>
       </resource>
       <resource>
@@ -28,6 +29,7 @@
         <excludes>
           <exclude>archetype-resources/pom.xml</exclude>
           <exclude>archetype-resources/project.repositories</exclude>
+          <exclude>META-INF/maven/archetype-metadata.xml</exclude>
         </excludes>
       </resource>
     </resources>

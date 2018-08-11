@@ -8,7 +8,7 @@
   <name>\${artifactId}</name>
 
   <properties>
-    <version.org.kie>${project.version}</version.org.kie>
+    <version.org.kie>${kieVersion}</version.org.kie>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
