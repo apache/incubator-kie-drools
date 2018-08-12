@@ -25,6 +25,10 @@ import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
 public class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineReassignment> {
 
+    public MachineReassignmentPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected MachineReassignmentApp createCommonApp() {
         return new MachineReassignmentApp();

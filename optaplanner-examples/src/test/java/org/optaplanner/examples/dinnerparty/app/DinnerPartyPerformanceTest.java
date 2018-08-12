@@ -25,6 +25,10 @@ import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
 public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerParty> {
 
+    public DinnerPartyPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected DinnerPartyApp createCommonApp() {
         return new DinnerPartyApp();

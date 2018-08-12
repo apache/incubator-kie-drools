@@ -25,6 +25,10 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 
 public class TennisPerformanceTest extends SolverPerformanceTest<TennisSolution> {
 
+    public TennisPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected TennisApp createCommonApp() {
         return new TennisApp();

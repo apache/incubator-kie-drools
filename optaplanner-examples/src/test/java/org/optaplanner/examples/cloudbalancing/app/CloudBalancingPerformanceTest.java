@@ -25,6 +25,10 @@ import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance> {
 
+    public CloudBalancingPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected CloudBalancingApp createCommonApp() {
         return new CloudBalancingApp();

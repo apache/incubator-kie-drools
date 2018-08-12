@@ -25,6 +25,10 @@ import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 
 public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolution> {
 
+    public ScrabblePerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected ScrabbleApp createCommonApp() {
         return new ScrabbleApp();

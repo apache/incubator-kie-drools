@@ -25,6 +25,10 @@ import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
 public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster> {
 
+    public NurseRosteringPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected NurseRosteringApp createCommonApp() {
         return new NurseRosteringApp();

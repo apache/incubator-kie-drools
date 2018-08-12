@@ -25,6 +25,10 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRoutingSolution> {
 
+    public VehicleRoutingPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected VehicleRoutingApp createCommonApp() {
         return new VehicleRoutingApp();

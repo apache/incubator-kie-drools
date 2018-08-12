@@ -25,6 +25,10 @@ import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
 public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSchedule> {
 
+    public MeetingSchedulingPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected MeetingSchedulingApp createCommonApp() {
         return new MeetingSchedulingApp();

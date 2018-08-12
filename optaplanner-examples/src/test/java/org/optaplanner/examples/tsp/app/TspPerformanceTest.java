@@ -25,6 +25,10 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class TspPerformanceTest extends SolverPerformanceTest<TspSolution> {
 
+    public TspPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected TspApp createCommonApp() {
         return new TspApp();

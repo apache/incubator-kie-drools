@@ -26,6 +26,10 @@ import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution> {
 
+    public CheapTimePerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected CheapTimeApp createCommonApp() {
         return new CheapTimeApp();

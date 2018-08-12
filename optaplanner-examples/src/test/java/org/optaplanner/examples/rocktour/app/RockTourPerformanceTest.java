@@ -25,6 +25,10 @@ import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution> {
 
+    public RockTourPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected RockTourApp createCommonApp() {
         return new RockTourApp();

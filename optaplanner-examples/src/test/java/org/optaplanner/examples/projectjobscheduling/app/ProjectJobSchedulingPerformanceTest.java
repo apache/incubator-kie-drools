@@ -25,6 +25,10 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule> {
 
+    public ProjectJobSchedulingPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected ProjectJobSchedulingApp createCommonApp() {
         return new ProjectJobSchedulingApp();

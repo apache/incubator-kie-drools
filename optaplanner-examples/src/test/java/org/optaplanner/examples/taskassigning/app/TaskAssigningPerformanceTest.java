@@ -25,6 +25,10 @@ import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
 public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution> {
 
+    public TaskAssigningPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected TaskAssigningApp createCommonApp() {
         return new TaskAssigningApp();

@@ -25,6 +25,10 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
 public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution> {
 
+    public InvestmentPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected InvestmentApp createCommonApp() {
         return new InvestmentApp();

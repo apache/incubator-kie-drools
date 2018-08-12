@@ -25,6 +25,10 @@ import org.optaplanner.examples.nqueens.domain.NQueens;
 
 public class NQueensPerformanceTest extends SolverPerformanceTest<NQueens> {
 
+    public NQueensPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected NQueensApp createCommonApp() {
         return new NQueensApp();

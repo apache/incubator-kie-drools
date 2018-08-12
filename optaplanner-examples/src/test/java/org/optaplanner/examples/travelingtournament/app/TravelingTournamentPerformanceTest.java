@@ -25,6 +25,10 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament> {
 
+    public TravelingTournamentPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected TravelingTournamentApp createCommonApp() {
         return new TravelingTournamentApp();

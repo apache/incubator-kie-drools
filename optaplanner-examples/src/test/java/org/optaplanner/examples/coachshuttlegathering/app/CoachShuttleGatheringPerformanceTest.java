@@ -25,6 +25,10 @@ import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest<CoachShuttleGatheringSolution> {
 
+    public CoachShuttleGatheringPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected CoachShuttleGatheringApp createCommonApp() {
         return new CoachShuttleGatheringApp();

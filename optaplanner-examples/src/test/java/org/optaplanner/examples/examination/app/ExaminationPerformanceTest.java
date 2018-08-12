@@ -25,6 +25,10 @@ import org.optaplanner.examples.examination.domain.Examination;
 
 public class ExaminationPerformanceTest extends SolverPerformanceTest<Examination> {
 
+    public ExaminationPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected ExaminationApp createCommonApp() {
         return new ExaminationApp();

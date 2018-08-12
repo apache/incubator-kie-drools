@@ -17,10 +17,16 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -34,7 +40,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Runs an example {@link Solver}.
@@ -43,12 +51,39 @@ import static org.junit.Assert.*;
  * Always use a {@link Test#timeout()} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+@RunWith(Parameterized.class)
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
-    private static final String MOVE_THREAD_COUNT_OVERRIDE = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNT);
+    private static final String MOVE_THREAD_COUNTS_VALUE = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
+    private static final String DEFAULT_MOVE_THREAD_COUNT = "NONE";
 
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfig;
+
+    private String moveThreadCount;
+
+    @Parameterized.Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> getSolutionFilesAsParameters() {
+        List<Object[]> testParams = new ArrayList<>();
+
+        if (MOVE_THREAD_COUNTS_VALUE != null) {
+            String[] moveThreadCounts = MOVE_THREAD_COUNTS_VALUE.split("[,]");
+            Set<String> uniqueMoveThreadCounts = new LinkedHashSet<>();
+            for (String moveThreadCount : moveThreadCounts) {
+                boolean added = uniqueMoveThreadCounts.add(moveThreadCount);
+                if (added) {
+                    testParams.add(new Object[]{moveThreadCount});
+                }
+            }
+        } else {
+            testParams.add(new Object[]{DEFAULT_MOVE_THREAD_COUNT});
+        }
+        return testParams;
+    }
+
+    public SolverPerformanceTest(String moveThreadCount) {
+        this.moveThreadCount = moveThreadCount;
+    }
 
     @Before
     public void setUp() {
@@ -77,9 +112,8 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         solverFactory.getSolverConfig().setTerminationConfig(
                 new TerminationConfig().withBestScoreLimit(bestScoreLimitString));
-        if (MOVE_THREAD_COUNT_OVERRIDE != null) {
-            solverFactory.getSolverConfig().setMoveThreadCount(MOVE_THREAD_COUNT_OVERRIDE);
-        }
+        solverFactory.getSolverConfig().setMoveThreadCount(moveThreadCount);
+
         return solverFactory;
     }
 

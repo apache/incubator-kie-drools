@@ -25,6 +25,10 @@ import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
 public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest<PatientAdmissionSchedule> {
 
+    public PatientAdmissionSchedulePerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected PatientAdmissionScheduleApp createCommonApp() {
         return new PatientAdmissionScheduleApp();

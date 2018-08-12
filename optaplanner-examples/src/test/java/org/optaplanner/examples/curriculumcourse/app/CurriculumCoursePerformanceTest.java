@@ -25,6 +25,10 @@ import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
 public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedule> {
 
+    public CurriculumCoursePerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected CurriculumCourseApp createCommonApp() {
         return new CurriculumCourseApp();
