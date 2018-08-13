@@ -15,7 +15,7 @@
 
 package org.kie.dmn.validation;
 
-import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.core.util.MsgUtil;

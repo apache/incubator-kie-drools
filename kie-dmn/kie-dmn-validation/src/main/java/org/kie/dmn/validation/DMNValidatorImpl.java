@@ -47,7 +47,7 @@ import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.assembler.DMNResource;
@@ -59,8 +59,8 @@ import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1x.Definitions;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -187,7 +187,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 List<Definitions> models = new ArrayList<>();
                 for (Reader reader : readers) {
                     Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
-                    Definitions.normalize(dmndefs);
+                    dmndefs.normalize();
                     models.add(dmndefs);
                 }
                 models = internalValidatorSortModels(models);
@@ -341,7 +341,7 @@ public class DMNValidatorImpl implements DMNValidator {
             Definitions dmndefs = null;
             try {
                 dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new FileReader(xmlFile));
-                Definitions.normalize(dmndefs);
+                dmndefs.normalize();
                 validateModelCompilation( dmndefs, results, flags );
             } catch ( Throwable t ) {
                 MsgUtil.reportMessage(LOG,
@@ -373,7 +373,7 @@ public class DMNValidatorImpl implements DMNValidator {
             }
             if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
                 Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new StringReader(content));
-                Definitions.normalize(dmndefs);
+                dmndefs.normalize();
                 validateModelCompilation( dmndefs, results, flags );
             }
         } catch ( Throwable t ) {

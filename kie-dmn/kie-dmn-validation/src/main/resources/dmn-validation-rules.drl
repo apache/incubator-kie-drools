@@ -15,7 +15,7 @@
 
 package org.kie.dmn.validation;
 
-import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.core.util.MsgUtil;
@@ -34,7 +34,7 @@ declare entry-point "DMNImports" end
 
 rule MISSING_IMPORT_p1
 when
-  $elemRef : Import( $importedNS : namespace, getAdditionalAttributes().get(Import.MODELNAME_QNAME) == null )
+  $elemRef : Import( $importedNS : namespace, name == null )
   not( Definitions( namespace == $importedNS ) from entry-point "DMNImports" )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.IMPORT_NOT_FOUND_FOR_NODE, $importedNS, $elemRef.getIdentifierString());
@@ -42,7 +42,7 @@ end
 
 rule MISSING_IMPORT_p2
 when
-  $elemRef : Import( $importedNS : namespace, $importedName : getAdditionalAttributes().get(Import.MODELNAME_QNAME) )
+  $elemRef : Import( $importedNS : namespace, $importedName : name )
   not( Definitions( namespace == $importedNS, name == $importedName ) from entry-point "DMNImports" )
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.IMPORT_NOT_FOUND_FOR_NODE, $importedNS + $importedName, $elemRef.getIdentifierString());
@@ -160,9 +160,9 @@ end
 
 rule RELATION_ROW_CELL_NOT_LITERAL
 when
-  $e : Expression( parent instanceof org.kie.dmn.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
+  $e : Expression( parent instanceof org.kie.dmn.model.v1x.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
 then
-  org.kie.dmn.model.v1_1.List row = (org.kie.dmn.model.v1_1.List) $e.getParent();
+  org.kie.dmn.model.v1x.List row = (org.kie.dmn.model.v1x.List) $e.getParent();
   Relation relation = (Relation) row.getParent();
   reporter.report( DMNMessage.Severity.ERROR,  $e , Msg.RELATION_CELL_NOT_LITERAL,
                    relation.getRow().indexOf(row)+1,
@@ -172,7 +172,7 @@ end
 rule RELATION_ROW_CELLCOUNTMISMATCH
 when
   $rel : Relation()
-  $row : org.kie.dmn.model.v1_1.List( expression.size != $rel.column.size ) from $rel.row
+  $row : org.kie.dmn.model.v1x.List( expression.size != $rel.column.size ) from $rel.row
 then
   reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_CELL_COUNT_MISMATCH,
                    $rel.getRow().indexOf($row)+1,

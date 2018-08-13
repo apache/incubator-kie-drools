@@ -197,10 +197,9 @@ public class TDefinitions extends TNamedElement implements Definitions {
     /**
      * Utility method to ensure any QName references contained inside the ItemDefinitions have the namespace correctly valorized, also accordingly to the prefix.
      * (Even in the case of {@link XMLConstants.DEFAULT_NS_PREFIX} it will take the DMN model namespace for the no-prefix accordingly.)
-     * @param defs the ItemDefinition for which to ensure the QName references are valorized correctly.
      */
-    public static void normalize(final Definitions defs) {
-        for (ItemDefinition itemDefinition : defs.getItemDefinition()) {
+    public void normalize() {
+        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
             processQNameURIs(itemDefinition);
         }
     }

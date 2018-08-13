@@ -6,7 +6,7 @@ public interface NotADMNElementInV11 extends DMNElement {
 
     @Override
     default String getDescription() {
-        throw new UnsupportedOperationException("Not on DMN v1.1");
+        return null;
     }
 
     @Override
@@ -16,7 +16,7 @@ public interface NotADMNElementInV11 extends DMNElement {
 
     @Override
     default ExtensionElements getExtensionElements() {
-        throw new UnsupportedOperationException("Not on DMN v1.1");
+        return null;
     }
 
     @Override
@@ -26,7 +26,7 @@ public interface NotADMNElementInV11 extends DMNElement {
 
     @Override
     default String getId() {
-        throw new UnsupportedOperationException("Not on DMN v1.1");
+        return null;
     }
 
     @Override
@@ -36,7 +36,7 @@ public interface NotADMNElementInV11 extends DMNElement {
 
     @Override
     default String getLabel() {
-        throw new UnsupportedOperationException("Not on DMN v1.1");
+        return null;
     }
 
     @Override
