@@ -49,7 +49,7 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
@@ -560,7 +560,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param typeRef the typeRef to be resolved.
      * @return
      */
-    private static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
+    public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
         if (localElement instanceof KieDMNModelInstrumentedBase) {
             if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());

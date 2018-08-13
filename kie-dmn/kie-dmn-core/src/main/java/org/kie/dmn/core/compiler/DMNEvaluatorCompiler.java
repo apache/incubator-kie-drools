@@ -2,6 +2,7 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -424,10 +425,10 @@ public class DMNEvaluatorCompiler {
         return trim.startsWith( "\"" ) && trim.endsWith( "\"" ) && trim.length() >= 2 ? trim.substring( 1, trim.length()-1 ) : trim;
     }
 
-    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement) {
+    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement, Map<String, QName> importsFromEnclosingnode) {
         if ( typeRef.getNamespaceURI() == null || typeRef.getNamespaceURI().isEmpty() ) {
-            // TODO this could have actually been populated during unmarshalling, but requires throughout customization of the Stax reader.
-            String namespaceURI = fromElement.getNamespaceURI(typeRef.getPrefix());
+            // here is could be a typeRef defined in the Input/OutputClauses of a Decision Table, which is not normalized by the marshaller.
+            String namespaceURI = DMNCompilerImpl.getNamespaceAndName(fromElement, importsFromEnclosingnode, typeRef).getNamespaceURI();
             return namespaceURI;
         } else {
             return typeRef.getNamespaceURI();
@@ -455,7 +456,10 @@ public class DMNEvaluatorCompiler {
                                                    index );
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef,
+                                                                                                                           ic.getInputExpression(),
+                                                                                                                           model.getImportAliasesForNS()),
+                                                                                                inputExpressionTypeRef.getLocalPart());
                 inputType = typeRef;
                 inputValues = typeRef.getAllowedValuesFEEL();
             }
@@ -599,7 +603,7 @@ public class DMNEvaluatorCompiler {
         BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
         if ( oc.getTypeRef() != null ) {
             QName outputExpressionTypeRef = oc.getTypeRef();
-            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
+            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc, model.getImportAliasesForNS()), outputExpressionTypeRef.getLocalPart());
             if( typeRef == null ) {
                 typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
             }
@@ -607,7 +611,7 @@ public class DMNEvaluatorCompiler {
             QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
             // if inferredTypeRef is null, a std err will have been reported
             if (inferredTypeRef != null) {
-                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc, model.getImportAliasesForNS()), inferredTypeRef.getLocalPart());
             }
         }
         return typeRef;

@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1x.Definitions;
 import org.slf4j.Logger;

@@ -63,7 +63,7 @@ public class UnmarshalMarshalTest {
     }
 
     public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
-        DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller();
+        DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
         testRoundTrip(subdir, xmlfile, marshaller, DMN12_SCHEMA_SOURCE);
     }
 
