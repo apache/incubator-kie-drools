@@ -67,12 +67,10 @@ public class DMNEvaluatorCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNEvaluatorCompiler.class );
 
-    protected final DMNFEELHelper feel;
     protected final DMNCompilerImpl compiler;
 
-    public DMNEvaluatorCompiler( DMNCompilerImpl compiler, DMNFEELHelper feel ) {
+    public DMNEvaluatorCompiler(DMNCompilerImpl compiler) {
         this.compiler = compiler;
-        this.feel = feel;
     }
 
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
@@ -149,7 +147,7 @@ public class DMNEvaluatorCompiler {
             return null;
         }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null, feel.newFEELInstance() );
+        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, invocation, null, ctx.getFeelHelper().newFEELInstance());
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
                 // error, missing binding parameter
@@ -307,7 +305,7 @@ public class DMNEvaluatorCompiler {
                 if( eval instanceof DMNLiteralExpressionEvaluator && ((DMNLiteralExpressionEvaluator)eval).isFunctionDefinition() ) {
                     // we need to resolve the function and eliminate the indirection
                     CompiledExpression fexpr = ((DMNLiteralExpressionEvaluator) eval).getExpression();
-                    FEELFunction feelFunction = feel.evaluateFunctionDef( ctx, fexpr, model, funcDef,
+                    FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, fexpr, model, funcDef,
                                                                           Msg.FUNC_DEF_COMPILATION_ERR,
                                                                           functionName,
                                                                           node.getIdentifierString() );
@@ -345,7 +343,7 @@ public class DMNEvaluatorCompiler {
                     String expr = String.format( "function(%s) external { java: { class: \"%s\", method signature: \"%s\" }}", params, clazz, method );
 
                     try {
-                        FEELFunction feelFunction = feel.evaluateFunctionDef( ctx, expr, model, funcDef,
+                        FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, expr, model, funcDef,
                                                                               Msg.FUNC_DEF_COMPILATION_ERR,
                                                                               functionName,
                                                                               node.getIdentifierString() );
@@ -461,7 +459,7 @@ public class DMNEvaluatorCompiler {
                 inputType = typeRef;
                 inputValues = typeRef.getAllowedValuesFEEL();
             }
-            CompiledExpression compiledInput = feel.compileFeelExpression(
+            CompiledExpression compiledInput = ctx.getFeelHelper().compileFeelExpression(
                     ctx,
                     inputExpressionText,
                     model,
@@ -557,7 +555,7 @@ public class DMNEvaluatorCompiler {
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
                 String expressionText = le.getText();
-                CompiledExpression compiledExpression = feel.compileFeelExpression(
+                CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(
                         ctx,
                         expressionText,
                         model,
@@ -572,12 +570,12 @@ public class DMNEvaluatorCompiler {
             index++;
         }
         String policy = dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : "");
-        org.kie.dmn.feel.runtime.decisiontables.HitPolicy hp = org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString( policy );
+        org.kie.dmn.feel.runtime.decisiontables.HitPolicy hp = org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString(policy);
         java.util.List<String> parameterNames = getParameters(model, node, dt);
         // DROOLS-2799 DMN Optimize DT parameter binding for compilation:
         java.util.List<CompiledExpression> compiledParameterNames = new ArrayList<>();
         for (String pName : parameterNames) {
-            CompiledExpression compiledExpression = feel.compileFeelExpression(ctx,
+            CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(ctx,
                                                                                pName,
                                                                                model,
                                                                                dt,
@@ -588,7 +586,7 @@ public class DMNEvaluatorCompiler {
         }
 
         // creates a FEEL instance which will be used by the invoker/impl (s)
-        FEEL feelInstance = feel.newFEELInstance();
+        FEEL feelInstance = ctx.getFeelHelper().newFEELInstance();
 
         DecisionTableImpl dti = new DecisionTableImpl(dtName, parameterNames, inputs, outputs, rules, hp, feelInstance);
         dti.setCompiledParameterNames(compiledParameterNames);
@@ -733,7 +731,7 @@ public class DMNEvaluatorCompiler {
             String exprText = expression.getText();
             if( exprText != null ) {
                 try {
-                    CompiledExpression compiledExpression = feel.compileFeelExpression( ctx,
+                    CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(ctx,
                                                                                         exprText,
                                                                                         model,
                                                                                         expression,
@@ -774,7 +772,7 @@ public class DMNEvaluatorCompiler {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
-        return feel.evaluateUnaryTests( ctx, text, model, element, errorMsg, msgParams );
+        return ctx.getFeelHelper().evaluateUnaryTests(ctx, text, model, element, errorMsg, msgParams);
     }
 
 }

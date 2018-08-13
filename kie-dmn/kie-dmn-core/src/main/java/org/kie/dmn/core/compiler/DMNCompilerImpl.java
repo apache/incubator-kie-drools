@@ -63,9 +63,11 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.profiles.FEELv12Profile;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
@@ -95,7 +97,6 @@ public class DMNCompilerImpl implements DMNCompiler {
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
 
     private final DMNEvaluatorCompiler evaluatorCompiler;
-    private final DMNFEELHelper feel;
     private DMNCompilerConfiguration dmnCompilerConfig;
     private Deque<DRGElementCompiler> drgCompilers = new LinkedList<>();
     {
@@ -113,10 +114,9 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.feel = new DMNFEELHelper(cc.getRootClassLoader(), cc.getFeelProfiles());
         this.evaluatorCompiler = cc.isUseExecModelCompiler() ?
-                new ExecModelDMNEvaluatorCompiler( this, feel ) :
-                new DMNEvaluatorCompiler( this, feel );
+                new ExecModelDMNEvaluatorCompiler( this ) :
+                new DMNEvaluatorCompiler( this );
     }
     
     private void addDRGElementCompiler(DRGElementCompiler compiler) {
@@ -173,7 +173,15 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
-        DMNCompilerContext ctx = new DMNCompilerContext();
+        DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
+        List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
+        if (dmndefs instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase && !helperFEELProfiles.stream().anyMatch(FEELv12Profile.class::isInstance)) {
+            helperFEELProfiles.clear();
+            helperFEELProfiles.add(new FEELv12Profile());
+            helperFEELProfiles.addAll(cc.getFeelProfiles());
+        }
+        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
+        DMNCompilerContext ctx = new DMNCompilerContext(feel);
 
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
@@ -209,8 +217,8 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
 
-        processItemDefinitions(ctx, feel, model, dmndefs);
-        processDrgElements(ctx, feel, model, dmndefs);
+        processItemDefinitions(ctx, model, dmndefs);
+        processDrgElements(ctx, model, dmndefs);
         return model;
     }
 
@@ -229,20 +237,20 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
+    private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         TDefinitions.normalize(dmndefs);
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
-            DMNType type = buildTypeDef( ctx, feel, model, idn, id, true );
+            DMNType type = buildTypeDef(ctx, model, idn, id, true);
             idn.setType( type );
             model.addItemDefinition( idn );
         }
     }
 
-    private void processDrgElements(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
+    private void processDrgElements(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             boolean foundIt = false;
             for( DRGElementCompiler dc : drgCompilers ) {
@@ -422,7 +430,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return href.startsWith("#") ? href.substring(1) : href;
     }
 
-    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {
+    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {
         BaseDMNTypeImpl type = null;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
@@ -449,7 +457,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
                     type.setAllowedValues(null);
                     if ( allowedValuesStr != null ) {
-                        List<UnaryTest> av = feel.evaluateUnaryTests(
+                        List<UnaryTest> av = ctx.getFeelHelper().evaluateUnaryTests(
                                 ctx,
                                 allowedValuesStr.getText(),
                                 dmnModel,
@@ -484,7 +492,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
                 DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
-                DMNType fieldType = buildTypeDef( ctx, feel, dmnModel, node, fieldDef, false );
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
                 fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
                 compType.addField( fieldDef.getName(), fieldType );
             }
