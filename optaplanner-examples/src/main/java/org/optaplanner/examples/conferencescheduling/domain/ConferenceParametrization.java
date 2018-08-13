@@ -34,6 +34,8 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String SPEAKER_PROHIBITED_ROOM_TAG = "Speaker prohibited room tag";
     public static final String TALK_REQUIRED_ROOM_TAG = "Talk required room tag";
     public static final String TALK_PROHIBITED_ROOM_TAG = "Talk prohibited room tag";
+    public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG = "Talk mutually-exclusive-talks tag";
+    public static final String TALK_PREREQUISITE_TALKS = "Talk prerequisite talks";
 
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
     public static final String SECTOR_CONFLICT = "Sector conflict";
@@ -66,6 +68,8 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int speakerProhibitedRoomTag = 1;
     private int talkRequiredRoomTag = 1;
     private int talkProhibitedRoomTag = 1;
+    private int talkMutuallyExclusiveTalksTag = 1;
+    private int talkPrerequisiteTalks = 1;
 
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
@@ -333,5 +337,21 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setTalkUndesiredRoomTag(int talkUndesiredRoomTag) {
         this.talkUndesiredRoomTag = talkUndesiredRoomTag;
+    }
+
+    public int getTalkMutuallyExclusiveTalksTag() {
+        return talkMutuallyExclusiveTalksTag;
+    }
+
+    public void setTalkMutuallyExclusiveTalksTag(int talkMutuallyExclusiveTalksTag) {
+        this.talkMutuallyExclusiveTalksTag = talkMutuallyExclusiveTalksTag;
+    }
+
+    public int getTalkPrerequisiteTalks() {
+        return talkPrerequisiteTalks;
+    }
+
+    public void setTalkPrerequisiteTalks(int talkPrerequisiteTalks) {
+        this.talkPrerequisiteTalks = talkPrerequisiteTalks;
     }
 }

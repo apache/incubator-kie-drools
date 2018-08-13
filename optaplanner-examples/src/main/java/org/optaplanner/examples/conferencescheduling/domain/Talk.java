@@ -46,6 +46,8 @@ public class Talk extends AbstractPersistable {
     private Set<String> preferredRoomTagSet;
     private Set<String> prohibitedRoomTagSet;
     private Set<String> undesiredRoomTagSet;
+    private Set<String> mutuallyExclusiveTalksTagSet;
+    private Set<String> prerequisiteTalksCodesSet;
 
     @PlanningPin
     private boolean pinnedByUser = false;
@@ -409,6 +411,22 @@ public class Talk extends AbstractPersistable {
         this.room = room;
     }
 
+    public Set<String> getMutuallyExclusiveTalksTagSet() {
+        return mutuallyExclusiveTalksTagSet;
+    }
+
+    public void setMutuallyExclusiveTalksTagSet(Set<String> mutuallyExclusiveTalksTagSet) {
+        this.mutuallyExclusiveTalksTagSet = mutuallyExclusiveTalksTagSet;
+    }
+
+    public Set<String> getPrerequisiteTalksCodesSet() {
+        return prerequisiteTalksCodesSet;
+    }
+
+    public void setPrerequisiteTalksCodesSet(Set<String> prerequisiteTalksCodesSet) {
+        this.prerequisiteTalksCodesSet = prerequisiteTalksCodesSet;
+    }
+
     // ************************************************************************
     // With methods
     // ************************************************************************
@@ -493,6 +511,16 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
+    public Talk withMutuallyExclusiveTalksTagSet(Set<String> mutuallyExclusiveTalksTagSet) {
+        this.mutuallyExclusiveTalksTagSet = mutuallyExclusiveTalksTagSet;
+        return this;
+    }
+
+    public Talk withPrerequisiteTalksCodesSet(Set<String> prerequisiteTalksCodesSet) {
+        this.prerequisiteTalksCodesSet = prerequisiteTalksCodesSet;
+        return this;
+    }
+
     public Talk withTimeslot(Timeslot timeSlot) {
         this.timeslot = timeSlot;
         return this;
@@ -502,5 +530,4 @@ public class Talk extends AbstractPersistable {
         this.room = room;
         return this;
     }
-
 }

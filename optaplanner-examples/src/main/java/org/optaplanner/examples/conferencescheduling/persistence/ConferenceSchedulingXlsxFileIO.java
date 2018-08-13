@@ -95,6 +95,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
+        private Set<String> totalTalkCodeSet;
 
         public ConferenceSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook);
@@ -106,6 +107,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             totalTalkTypeMap = new HashMap<>();
             totalTimeslotTagSet = new HashSet<>();
             totalRoomTagSet = new HashSet<>();
+            totalTalkCodeSet = new HashSet<>();
             readConfiguration();
             readTimeslotList();
             readRoomList();
@@ -193,6 +195,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per missing required tag in a talk's room");
             readIntConstraintLine(TALK_PROHIBITED_ROOM_TAG, parametrization::setTalkProhibitedRoomTag,
                     "Hard penalty per prohibited tag in a talk's room");
+            readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG, parametrization::setTalkMutuallyExclusiveTalksTag,
+                    "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+            readIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::setTalkPrerequisiteTalks,
+                    "Hard penalty per talk that is scheduled before any of its prerequisite talks");
+
             solution.setParametrization(parametrization);
         }
 
@@ -357,6 +364,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readHeaderCell("Preferred room tags");
             readHeaderCell("Prohibited room tags");
             readHeaderCell("Undesired room tags");
+
             readTimeslotHoursHeaders();
             List<Speaker> speakerList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
@@ -432,6 +440,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readHeaderCell("Preferred room tags");
             readHeaderCell("Prohibited room tags");
             readHeaderCell("Undesired room tags");
+            readHeaderCell("Mutually exclusive talks tags");
+            readHeaderCell("Prerequisite talks codes");
             readHeaderCell("Pinned by user");
             readHeaderCell("Timeslot day");
             readHeaderCell("Start");
@@ -448,6 +458,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextStringCell().getStringCellValue());
+                totalTalkCodeSet.add(talk.getCode());
                 if (strict && !VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk code (" + talk.getCode()
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
@@ -534,6 +545,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setUndesiredRoomTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 verifyRoomTags(talk.getUndesiredRoomTagSet());
+                talk.setMutuallyExclusiveTalksTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                talk.setPrerequisiteTalksCodesSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                        .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
                 String dateString = nextStringCell().getStringCellValue();
                 String startTimeString = nextStringCell().getStringCellValue();
@@ -574,6 +589,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talkList.add(talk);
             }
             solution.setTalkList(talkList);
+            verifyPrerequisiteTalkCodesSet();
         }
 
         private void verifyTimeslotTags(Set<String> timeslotTagSet) {
@@ -591,6 +607,17 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 if (!totalRoomTagSet.contains(tag)) {
                     throw new IllegalStateException(currentPosition() + ": The room tag (" + tag
                             + ") does not exist in the tags (" + totalRoomTagSet + ") of the other sheet (Rooms).");
+                }
+            }
+        }
+
+        private void verifyPrerequisiteTalkCodesSet() {
+            for (Talk talk : solution.getTalkList()) {
+                for (String code : talk.getPrerequisiteTalksCodesSet()) {
+                    if (!totalTalkCodeSet.contains(code)) {
+                        throw new IllegalStateException("The talk with code (" + talk.getCode() + ") contains a prerequisite "
+                                + "talk code (" + code + ") that doesn't exist in the talk codes set.");
+                    }
                 }
             }
         }
@@ -728,6 +755,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per missing required tag in a talk's room");
             writeIntConstraintLine(TALK_PROHIBITED_ROOM_TAG, parametrization::getTalkProhibitedRoomTag,
                     "Hard penalty per prohibited tag in a talk's room");
+            writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG, parametrization::getTalkMutuallyExclusiveTalksTag,
+                    "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+            writeIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::getTalkPrerequisiteTalks,
+                    "Hard penalty per talk that is scheduled before any of its prerequisite talks");
             autoSizeColumnsWithHeader();
         }
 
@@ -839,6 +870,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextHeaderCell("Preferred room tags");
             nextHeaderCell("Prohibited room tags");
             nextHeaderCell("Undesired room tags");
+            nextHeaderCell("Mutually exclusive talks tags");
+            nextHeaderCell("Prerequisite talks codes");
             nextHeaderCell("Pinned by user");
             nextHeaderCell("Timeslot day");
             nextHeaderCell("Start");
@@ -865,6 +898,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(String.join(", ", talk.getPreferredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getMutuallyExclusiveTalksTagSet()));
+                nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalksCodesSet()));
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
