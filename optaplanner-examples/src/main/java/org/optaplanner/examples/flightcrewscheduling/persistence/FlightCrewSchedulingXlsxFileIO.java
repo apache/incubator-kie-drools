@@ -76,6 +76,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
     private static class FlightCrewSchedulingXlsxReader extends AbstractXlsxReader<FlightCrewSolution> {
 
         private Map<String, Skill> skillMap;
+        private Map<String, Employee> nameToEmployeeMap;
         private Map<String, Airport> airportMap;
 
         public FlightCrewSchedulingXlsxReader(XSSFWorkbook workbook) {
@@ -197,7 +198,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                 readHeaderCell(DAY_FORMATTER.format(date));
             }
-            List<Employee> employeeList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
+            List<Employee> employeeList = new ArrayList<>(currentSheet.getLastRowNum() - 2);
+            nameToEmployeeMap = new HashMap<>(currentSheet.getLastRowNum() - 2);
             long id = 0L;
             while (nextRow()) {
                 Employee employee = new Employee();
@@ -243,6 +245,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 }
                 employee.setUnavailableDaySet(unavailableDaySet);
                 employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
+                nameToEmployeeMap.put(employee.getName(), employee);
                 employeeList.add(employee);
             }
             solution.setEmployeeList(employeeList);
@@ -257,6 +260,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("Arrival airport code");
             readHeaderCell("Arrival UTC date time");
             readHeaderCell("Employee skill requirements");
+            readHeaderCell("Employee assignments");
             List<Flight> flightList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             List<FlightAssignment> flightAssignmentList = new ArrayList<>((currentSheet.getLastRowNum() - 1) * 5);
             long id = 0L;
@@ -289,6 +293,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 flight.setArrivalUTCDateTime(LocalDateTime.parse(nextStringCell().getStringCellValue(), DATE_TIME_FORMATTER));
 
                 String[] skillNames = nextStringCell().getStringCellValue().split(", ");
+                String[] employeeNames = nextStringCell().getStringCellValue().split(", ");
                 for (int i = 0; i < skillNames.length; i++) {
                     FlightAssignment flightAssignment = new FlightAssignment();
                     flightAssignment.setId(flightAssignmentId++);
@@ -303,6 +308,17 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                                 + ") of the other sheet (Skills).");
                     }
                     flightAssignment.setRequiredSkill(requiredSkill);
+                    if (employeeNames.length > i && !employeeNames[i].isEmpty()) {
+                        Employee employee = nameToEmployeeMap.get(employeeNames[i]);
+                        if (employee == null) {
+                            throw new IllegalStateException(currentPosition()
+                                    + ": The flight (" + flight.getFlightNumber()
+                                    + ")'s employeeAssignment's name (" + employeeNames[i]
+                                    + ") does not exist in the employees (" + nameToEmployeeMap.keySet()
+                                    + ") of the other sheet (Employees).");
+                        }
+                        flightAssignment.setEmployee(employee);
+                    }
                     flightAssignmentList.add(flightAssignment);
                 }
                 flightList.add(flight);
@@ -463,6 +479,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextHeaderCell("Arrival airport code");
             nextHeaderCell("Arrival UTC date time");
             nextHeaderCell("Employee skill requirements");
+            nextHeaderCell("Employee assignments");
             Map<Flight, List<FlightAssignment>> flightToFlightAssignmentMap = solution.getFlightAssignmentList()
                     .stream().collect(groupingBy(FlightAssignment::getFlight, toList()));
             for (Flight flight : solution.getFlightList()) {
@@ -475,6 +492,10 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 List<FlightAssignment> flightAssignmentList = flightToFlightAssignmentMap.get(flight);
                 nextCell().setCellValue(flightAssignmentList.stream()
                         .map(FlightAssignment::getRequiredSkill).map(Skill::getName)
+                        .collect(joining(", ")));
+                nextCell().setCellValue(flightAssignmentList.stream()
+                        .map(FlightAssignment::getEmployee)
+                        .map(employee -> employee == null ? "" : employee.getName())
                         .collect(joining(", ")));
             }
             autoSizeColumnsWithHeader();
@@ -566,7 +587,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     }
                 }
             }
-            autoSizeColumnsWithHeader();
+            setSizeColumnsWithHeader(1500);
+            currentSheet.autoSizeColumn(0);
+            currentSheet.autoSizeColumn(1);
         }
 
         private void writeScoreView() {

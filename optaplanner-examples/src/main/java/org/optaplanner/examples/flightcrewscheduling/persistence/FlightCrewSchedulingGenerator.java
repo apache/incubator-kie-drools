@@ -67,6 +67,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         FlightCrewSchedulingGenerator generator = new FlightCrewSchedulingGenerator();
         generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 10, 7);
         generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 50, 7);
+        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 10, 4 * 7);
         generator.writeFlightCrewSolution("US", LocationDataGenerator.US_MAINLAND_STATE_CAPITALS, 10, 7);
     }
 
@@ -89,7 +90,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
     private void writeFlightCrewSolution(String locationDataName,
             LocationDataGenerator.LocationData[] locationDataArray, int flightRoundTripsPerDay, int dayCount) {
         int flightListSize = (flightRoundTripsPerDay * 5 / 2) * dayCount;
-        String fileName = flightListSize + "flights-" + locationDataName;
+        String fileName = flightListSize + "flights-" + dayCount + "days-" + locationDataName;
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         FlightCrewSolution solution = createFlightCrewSolution(
                 fileName, locationDataArray, flightRoundTripsPerDay, dayCount);
