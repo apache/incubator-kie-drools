@@ -33,6 +33,7 @@
               *;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.drools.compiler.kie.builder.impl,
+              org.drools.core.fluent.impl,
               org.drools.core.builder.conf.impl;resolution:=optional,
             </Import-Package>
             <Export-Package>
