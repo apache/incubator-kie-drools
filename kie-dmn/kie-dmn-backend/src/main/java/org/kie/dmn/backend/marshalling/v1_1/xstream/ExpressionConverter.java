@@ -16,12 +16,11 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_1.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.v1x.Expression;
 
 public abstract class ExpressionConverter
         extends DMNElementConverter {
