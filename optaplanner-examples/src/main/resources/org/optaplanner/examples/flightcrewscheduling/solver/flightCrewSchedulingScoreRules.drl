@@ -51,14 +51,15 @@ rule "Flight conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -10);
 end
 
-rule "Invalid connections"
+rule "Transfer between two flights"
     when
-        Employee($invalidConnectionCount : countInvalidConnections() > 0)
+        // TODO FIXME only allow arrival and departure from the same airport (no taxi's)
+        Employee($count : countInvalidConnections() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $invalidConnectionCount);
+        scoreHolder.addHardConstraintMatch(kcontext, - $count);
 end
 
-rule "Unavailable day"
+rule "Employee unavailability"
     when
         FlightAssignment(employee != null, !getEmployee().isAvailable(getFlight().getDepartureUTCDate()))
     then

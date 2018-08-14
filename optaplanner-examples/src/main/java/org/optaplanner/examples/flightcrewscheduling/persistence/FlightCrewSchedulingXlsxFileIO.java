@@ -110,12 +110,16 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("Description");
             FlightCrewParametrization parametrization = new FlightCrewParametrization();
             parametrization.setId(0L);
-            readIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::setNightsAwayFromBaseFairness,
-                    "Soft penalty to load balance the nights away from base");
+//            readIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::setNightsAwayFromBaseFairness,
+//                    "Soft penalty to load balance the nights away from base");
             readIntConstraintLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");
             readIntConstraintLine(FLIGHT_CONFLICT, null,
                     "Hard penalty per 2 flights of an employee that directly overlap");
+            readIntConstraintLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
+                    "Hard penalty per 2 sequential flights of an employee with no viable transfer from the arrival airport to the departure airport");
+            readIntConstraintLine(EMPLOYEE_UNAVAILABILITY, null,
+                    "Hard penalty per flight assignment to an employee that is unavailable");
             solution.setParametrization(parametrization);
         }
 
@@ -376,13 +380,17 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextHeaderCell("Description");
             FlightCrewParametrization parametrization = solution.getParametrization();
 
-            writeIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::getNightsAwayFromBaseFairness,
-                    "Soft penalty to load balance the nights away from base");
+//            writeIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::getNightsAwayFromBaseFairness,
+//                    "Soft penalty to load balance the nights away from base");
             nextRow();
             writeIntConstraintLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");
             writeIntConstraintLine(FLIGHT_CONFLICT, null,
                     "Hard penalty per 2 flights of an employee that directly overlap");
+            writeIntConstraintLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
+                    "Hard penalty per 2 sequential flights of an employee with no viable transfer from the arrival airport to the departure airport");
+            writeIntConstraintLine(EMPLOYEE_UNAVAILABILITY, null,
+                    "Hard penalty per flight assignment to an employee that is unavailable");
             autoSizeColumnsWithHeader();
         }
 

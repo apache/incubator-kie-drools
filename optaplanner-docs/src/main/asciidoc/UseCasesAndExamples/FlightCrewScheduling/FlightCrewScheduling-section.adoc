@@ -1,0 +1,36 @@
+[[flightCrewScheduling]]
+= Flight Crew Scheduling
+:imagesdir: ../..
+
+
+[[flightCrewSchedulingProblemDescription]]
+== Problem Description
+
+Assign flights to pilots and flight attendants.
+
+Hard constraints:
+
+* Required skill: each flight assignment has a required skill.
+For example, flight AB0001 requires 2 pilots and 3 flight attendants.
+* Flight conflict: each employee can only attend one flight at the same time
+* Transfer between two flights: between two flights, an employee must be able to transfer from the arrival airport to the departure airport.
+For example, Ann arrives in Brussels at 10:00 and departs in Amsterdam at 15:00.
+* Employee unavailability: the employee must be available on the day of the flight.
+For example, Ann is on PTO on 1-Feb.
+
+Soft constraints:
+
+* First assignment departing from home
+* Last assignment arriving at home
+
+
+[[flightCrewSchedulingProblemSize]]
+== Problem Size
+
+[source,options="nowrap"]
+----
+175flights-7days-Europe  has 2 skills, 50 airports, 150 employees, 175 flights and  875 flight assignments with a search space of  10^1904.
+700flights-28days-Europe has 2 skills, 50 airports, 150 employees, 700 flights and 3500 flight assignments with a search space of  10^7616.
+875flights-7days-Europe  has 2 skills, 50 airports, 750 employees, 875 flights and 4375 flight assignments with a search space of 10^12578.
+175flights-7days-US      has 2 skills, 48 airports, 150 employees, 175 flights and  875 flight assignments with a search space of  10^1904.
+----

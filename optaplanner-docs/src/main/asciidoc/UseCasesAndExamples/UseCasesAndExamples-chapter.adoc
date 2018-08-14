@@ -28,4 +28,5 @@ include::CheapTime/CheapTime-section.adoc[leveloffset=+1]
 include::Investment/Investment-section.adoc[leveloffset=+1]
 include::ConferenceScheduling/ConferenceScheduling-section.adoc[leveloffset=+1]
 include::RockTour/RockTour-section.adoc[leveloffset=+1]
+include::FlightCrewScheduling/FlightCrewScheduling-section.adoc[leveloffset=+1]
 
