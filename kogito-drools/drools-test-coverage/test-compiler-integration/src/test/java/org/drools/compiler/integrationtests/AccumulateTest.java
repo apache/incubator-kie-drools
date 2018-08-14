@@ -76,7 +76,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -3919,7 +3918,7 @@ public class AccumulateTest {
 
     @Test
     public void testAccumlateResultCannotBeUsedInFunctions() {
-        String drl =
+        final String drl =
                 "import java.util.*;" +
                         "rule \"Rule X\" when\n" +
                         "    openAlarms: Collection( ) from accumulate (\n" +
@@ -3939,7 +3938,7 @@ public class AccumulateTest {
     @Test
     public void testAverageWithNoFacts() throws Exception {
         // DROOLS-2595
-        String drl =
+        final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List list;\n" +
                         "rule R when\n" +
@@ -3949,13 +3948,13 @@ public class AccumulateTest {
                         "   list.add($avg); \n" +
                         "end\n";
 
-        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-        KieSession kieSession = kieBase.newKieSession();
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieSession kieSession = kieBase.newKieSession();
 
-        List<Integer> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
 
-        FactHandle fh = kieSession.insert( "test" );
+        final FactHandle fh = kieSession.insert("test" );
 
         assertEquals(1, kieSession.fireAllRules() );
         assertEquals(1, list.size() );
@@ -3966,5 +3965,37 @@ public class AccumulateTest {
         kieSession.delete( fh );
         assertEquals(0, kieSession.fireAllRules() );
         assertEquals(0, list.size() );
+    }
+
+    @Test
+    public void testAverageFunctionRounding() {
+        final String drl =
+                "import java.math.BigDecimal; \n" +
+                "import java.util.List; \n" +
+                "global List<BigDecimal> resultList; \n" +
+                "rule \"accumulateTest\"\n" +
+                "when\n" +
+                " accumulate(\n" +
+                "    $bd: java.math.BigDecimal();\n" +
+                "    $ave: average( $bd ))\n" +
+                "then\n " +
+                "    resultList.add($ave);\n" +
+                "end";
+
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieSession kieSession = kieBase.newKieSession();
+        final List<BigDecimal> resultList = new ArrayList<>();
+        kieSession.setGlobal("resultList", resultList);
+        try {
+            kieSession.insert(new BigDecimal(0));
+            kieSession.insert(new BigDecimal(0));
+            kieSession.insert(new BigDecimal(1));
+
+            assertEquals(1, kieSession.fireAllRules());
+            assertEquals(1, resultList.size());
+            assertEquals(BigDecimal.ZERO, resultList.get(0));
+        } finally {
+            kieSession.dispose();
+        }
     }
 }
