@@ -19,9 +19,7 @@ package org.optaplanner.examples.common.app;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -54,29 +53,24 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
-    private static final String MOVE_THREAD_COUNTS_VALUE = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
-    private static final String DEFAULT_MOVE_THREAD_COUNT = "NONE";
+    private static final String MOVE_THREAD_COUNTS_STRING = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
+
+    private final String moveThreadCount;
 
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfig;
-
-    private String moveThreadCount;
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
         List<Object[]> testParams = new ArrayList<>();
 
-        if (MOVE_THREAD_COUNTS_VALUE != null) {
-            String[] moveThreadCounts = MOVE_THREAD_COUNTS_VALUE.split("[,]");
-            Set<String> uniqueMoveThreadCounts = new LinkedHashSet<>();
+        if (MOVE_THREAD_COUNTS_STRING != null) {
+            String[] moveThreadCounts = MOVE_THREAD_COUNTS_STRING.split(",");
             for (String moveThreadCount : moveThreadCounts) {
-                boolean added = uniqueMoveThreadCounts.add(moveThreadCount);
-                if (added) {
-                    testParams.add(new Object[]{moveThreadCount});
-                }
+                testParams.add(new Object[]{moveThreadCount});
             }
         } else {
-            testParams.add(new Object[]{DEFAULT_MOVE_THREAD_COUNT});
+            testParams.add(new Object[]{SolverConfig.MOVE_THREAD_COUNT_NONE});
         }
         return testParams;
     }
