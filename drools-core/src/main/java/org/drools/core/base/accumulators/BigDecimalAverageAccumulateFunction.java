@@ -20,8 +20,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * An implementation of an accumulator capable of calculating average values
@@ -39,7 +39,7 @@ public class BigDecimalAverageAccumulateFunction extends AbstractAccumulateFunct
     public static class AverageData implements Externalizable {
         public int          count = 0;
         public BigDecimal   total = BigDecimal.ZERO;
-        
+
         public AverageData() {}
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -95,7 +95,7 @@ public class BigDecimalAverageAccumulateFunction extends AbstractAccumulateFunct
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(AverageData data) {
-        return data.count == 0 ? BigDecimal.ZERO : data.total.divide( BigDecimal.valueOf( data.count ) );
+        return data.count == 0 ? BigDecimal.ZERO : data.total.divide(BigDecimal.valueOf( data.count ), RoundingMode.HALF_EVEN );
     }
 
     /* (non-Javadoc)
