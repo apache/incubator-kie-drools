@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.DMNv1x;
 
 import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;
@@ -29,26 +29,26 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule ORG_UNIT_DECISION_MADE_WRONG_TYPE
+rule CONTEXT_DUP_ENTRY
 when
-    $d: OrganizationUnit($elemRef: /decisionMade)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
+  $ce1 : ContextEntry( parent instanceof Context, variable != null )
+  $ce2 : ContextEntry( variable!.name == $ce1.variable!.name, parent == $ce1.parent,
+                       this != $ce1 )
 then
-    reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
+  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.DUPLICATE_CONTEXT_ENTRY, $ce1.getVariable().getName() );
 end
 
-rule ORG_UNIT_DECISION_OWNED_WRONG_TYPE
+rule CONTEXT_MISSING_ENTRIES
 when
-    $d: OrganizationUnit($elemRef: /decisionOwned)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
+  $c : Context( contextEntry == null || contextEntry.isEmpty() )
 then
-    reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
+  reporter.report( DMNMessage.Severity.WARN, $c , Msg.MISSING_ENTRIES_ON_CONTEXT, $c.getParentDRDElement().getIdentifierString() );
 end
 
-rule PERF_INDICATOR_IMP_DECISION_WRONG_TYPE
+rule CONTEXT_MISSING_VARIABLE
 when
-    $d: PerformanceIndicator($elemRef: /impactingDecision)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
+  $c : Context( contextEntry != null && ! contextEntry.isEmpty() )
+  $ce : ContextEntry( variable == null, parent == $c, $c.contextEntry.indexOf( this ) < $c.contextEntry.size()-1 )
 then
-    reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
+  reporter.report( DMNMessage.Severity.ERROR, $ce , Msg.MISSING_VARIABLE_ON_CONTEXT, $c.getParentDRDElement().getIdentifierString() );
 end

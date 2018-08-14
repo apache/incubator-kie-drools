@@ -573,15 +573,16 @@ public class DMNCompilerImpl implements DMNCompiler {
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
             }
         } else {
-            //            FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time,
-            //            and date and time.
+            // FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time,
+            // and date and time.
+            // Was missing from spec document: date
             switch (typeRef.getLocalPart()) {
-                // TODO: add all FEEL types from lattice instead.
                 case "number":
                 case "string":
                 case "boolean":
                 case "days and time duration":
                 case "years and months duration":
+                case "date":
                 case "time":
                 case "date and time":
                     return new QName(localElement.getURIFEEL(), typeRef.getLocalPart());

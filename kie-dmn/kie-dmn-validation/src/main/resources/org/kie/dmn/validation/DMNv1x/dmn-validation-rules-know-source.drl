@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.DMNv1x;
 
 import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;
@@ -29,23 +29,12 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule BKM_MISSING_EXPR
+rule KNOW_SOURCE_OWNER_NOT_ORG_UNIT
 when
-    $d : BusinessKnowledgeModel( encapsulatedLogic == null || encapsulatedLogic.expression == null )
+  $knowSource : KnowledgeSource(owner != null,
+                                $elemRef: owner,
+                                $targetId: rightOfHash( owner.href))
+  DMNElement(id == $targetId, !(this instanceof OrganizationUnit))
 then
-    reporter.report( DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_BKM, $d.getIdentifierString() );
-end
-
-rule BKM_MISSING_VAR
-when
-    $d : BusinessKnowledgeModel( variable == null )
-then
-    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_VARIABLE_FOR_BKM, $d.getIdentifierString() );
-end
-
-rule BKM_VAR_MISMATCH
-when
-    $d : BusinessKnowledgeModel( variable != null, name != variable.name )
-then
-    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.VARIABLE_NAME_MISMATCH_FOR_BKM, $d.getVariable().getName(), $d.getName() );
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $targetId, $knowSource.getIdentifierString());
 end

@@ -324,4 +324,22 @@ public class ValidatorTest extends AbstractValidatorTest {
         List<DMNMessage> validate = validator.validate(getReader("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", DMNRuntimeTest.class), VALIDATE_MODEL);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
     }
+
+    @Test
+    public void testDMNv1_2_ch11Modified() {
+        // DROOLS-
+        List<DMNMessage> validate = validator.validate(getReader("DMNv1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testDMNv1_2_ch11() {
+        // DROOLS-
+        List<DMNMessage> validate = validator.validate(getReader("DMNv12_ch11.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL);
+
+        // DMN v1.2 CH11 example for Adjudication does not define decision logic nor typeRef:
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
+    }
 }

@@ -42,6 +42,7 @@ public class XStreamMarshaller implements DMNMarshaller {
     private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
     private final org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller xstream11;
     private final org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller xstream12;
+    private static final StaxDriver staxDriver = new StaxDriver();
 
     public XStreamMarshaller() {
         xstream11 = new org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller();
@@ -56,21 +57,46 @@ public class XStreamMarshaller implements DMNMarshaller {
 
     @Override
     public Definitions unmarshal(String xml) {
-        try {
-            StaxDriver staxDriver = new StaxDriver();
-            XMLStreamReader reader2 = staxDriver.getInputFactory().createXMLStreamReader(new StringReader(xml));
-            CustomStaxReader r = new CustomStaxReader(new QNameMap(), reader2);
-            if (r.getNsContext().values().stream().anyMatch(s -> KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
-                return xstream12.unmarshal(new StringReader(xml));
-            } else if (r.getNsContext().values().stream().anyMatch(s -> org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
-                return xstream11.unmarshal(new StringReader(xml));
+        try (Reader firstStringReader = new StringReader(xml);
+                Reader secondStringReader = new StringReader(xml);) {
+            DMN_VERSION inferDMNVersion = inferDMNVersion(firstStringReader);
+
+            Definitions result;
+            if (inferDMNVersion == DMN_VERSION.DMN_v1_2) {
+                result = xstream12.unmarshal(secondStringReader);
+            } else if (inferDMNVersion == DMN_VERSION.DMN_v1_1) {
+                result = xstream11.unmarshal(secondStringReader);
             } else {
-                return xstream12.unmarshal(new StringReader(xml));
+                result = xstream12.unmarshal(secondStringReader);
             }
+            return result;
         } catch ( Exception e ) {
             logger.error( "Error unmarshalling DMN model from reader.", e );
         }
         return null;
+    }
+
+    public enum DMN_VERSION {
+        UNKOWN, DMN_v1_1, DMN_v1_2;
+    }
+
+    public static DMN_VERSION inferDMNVersion(Reader from) {
+        try {
+            XMLStreamReader xmlReader = staxDriver.getInputFactory().createXMLStreamReader(from);
+            CustomStaxReader customStaxReader = new CustomStaxReader(new QNameMap(), xmlReader);
+            DMN_VERSION result = DMN_VERSION.UNKOWN;
+            if (customStaxReader.getNsContext().values().stream().anyMatch(s -> KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
+                result = DMN_VERSION.DMN_v1_2;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(s -> org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN.equals(s))) {
+                result = DMN_VERSION.DMN_v1_1;
+            }
+            xmlReader.close();
+            customStaxReader.close();
+            return result;
+        } catch (Exception e) {
+            logger.error("Error unmarshalling DMN model from reader.", e);
+        }
+        return DMN_VERSION.UNKOWN;
     }
 
     @Override

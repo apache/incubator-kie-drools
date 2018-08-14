@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.DMNv1x;
 
 import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;

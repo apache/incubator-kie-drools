@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.DMNv1x;
 
 import org.kie.dmn.model.v1x.*;
 import org.kie.dmn.api.core.DMNMessage;
@@ -29,12 +29,16 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule KNOW_SOURCE_OWNER_NOT_ORG_UNIT
+rule INPUT_MISSING_VAR
 when
-  $knowSource : KnowledgeSource(owner != null,
-                                $elemRef: owner,
-                                $targetId: rightOfHash( owner.href))
-  DMNElement(id == $targetId, !(this instanceof OrganizationUnit))
+    $d : InputData( variable == null )
 then
-  reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $targetId, $knowSource.getIdentifierString());
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_VARIABLE_FOR_INPUT, $d.getIdentifierString() );
+end
+
+rule INPUT_VAR_MISMATCH
+when
+    $d : InputData( variable != null, name != variable.name )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.VARIABLE_NAME_MISMATCH_FOR_INPUT, $d.getVariable().getName(), $d.getName() );
 end
