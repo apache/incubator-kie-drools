@@ -16,6 +16,9 @@
 
 package org.kie.dmn.api.marshalling.v1_1;
 
+/**
+ * @deprecated use {@link #org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister instead.
+ */
 @Deprecated
 public interface DMNExtensionRegister extends org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister {
 
