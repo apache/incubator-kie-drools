@@ -91,13 +91,15 @@ public class DMNValidatorImpl implements DMNValidator {
     static final Schema schemav1_2;
     static {
         try {
-            schemav1_2 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DC.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DI.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMNDI12.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMN12.xsd"))
-                                      });
-        } catch (SAXException e) {
+            // DROOLS-2893 DMN v1.2 Serialization degraded mode without XSD
+            //            schemav1_2 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+            //                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DC.xsd")),
+            //                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DI.xsd")),
+            //                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMNDI12.xsd")),
+            //                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMN12.xsd"))
+            //                                      });
+            schemav1_2 = null;
+        } catch (Exception e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
@@ -476,8 +478,9 @@ public class DMNValidatorImpl implements DMNValidator {
     private List<DMNMessage> validateSchemaV1_2(Source s) {
         List<DMNMessage> problems = new ArrayList<>();
         try {
-            schemav1_2.newValidator().validate(s);
-        } catch (SAXException | IOException e) {
+            // DROOLS-2893 DMN v1.2 Serialization degraded mode without XSD
+            throw new UnsupportedOperationException("DROOLS-2893 currently DMN Schema Validation for v1.2 is not yet supported.");
+        } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
             logDebugMessages(problems);
         }
