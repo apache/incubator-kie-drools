@@ -210,7 +210,7 @@ DMNDIv1.2:
 
     private String safeStripDMNPRefix(Node target) {
         if (KieDMNModelInstrumentedBase.URI_DMN.equals(target.getNamespaceURI()) ||
-            "http://www.omg.org/spec/DMN/20180521/DMNDI/".equals(target.getNamespaceURI())) {
+            KieDMNModelInstrumentedBase.URI_DMNDI.equals(target.getNamespaceURI())) {
             return target.getLocalName();
         }
         return null;

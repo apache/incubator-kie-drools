@@ -81,21 +81,25 @@ public abstract class DMNModelInstrumentedBaseConverter
             staxWriter.addAttribute(kv.getKey().getPrefix() + ":" + kv.getKey().getLocalPart(), kv.getValue());
         }
 
-        // TODO un-hardcode this XStream hack... peek namespace value from node NSContext and populate with the Definitions NSContext actual prefixes.
         if (parent instanceof TDefinitions) {
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNDI", "dmndi"), "DMNDI");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNDiagram", "dmndi"), "DMNDiagram");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNStyle", "dmndi"), "style");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNStyle", "dmndi"), "DMNStyle");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNShape", "dmndi"), "DMNShape");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNEdge", "dmndi"), "DMNEdge");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "DMNLabel", "dmndi"), "DMNLabel");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "Size", "dmndi"), "Size");
+            TDefinitions tDefinitions = (TDefinitions) parent;
+            String dmndiPrefix = tDefinitions.getPrefixForNamespaceURI(KieDMNModelInstrumentedBase.URI_DMNDI).orElse("dmndi");
+            String diPrefix = tDefinitions.getPrefixForNamespaceURI(KieDMNModelInstrumentedBase.URI_DI).orElse("di");
+            String dcPrefix = tDefinitions.getPrefixForNamespaceURI(KieDMNModelInstrumentedBase.URI_DC).orElse("dc");
 
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DMNDI/", "FillColor", "dmndi"), "FillColor");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNDI", dmndiPrefix), "DMNDI");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNDiagram", dmndiPrefix), "DMNDiagram");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNStyle", dmndiPrefix), "style");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNStyle", dmndiPrefix), "DMNStyle");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNShape", dmndiPrefix), "DMNShape");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNEdge", dmndiPrefix), "DMNEdge");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNLabel", dmndiPrefix), "DMNLabel");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "Size", dmndiPrefix), "Size");
 
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DI/", "waypoint", "di"), "waypoint");
-            staxWriter.getQNameMap().registerMapping(new QName("http://www.omg.org/spec/DMN/20180521/DC/", "Bounds", "dc"), "Bounds");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "FillColor", dmndiPrefix), "FillColor");
+
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DI, "waypoint", diPrefix), "waypoint");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DC, "Bounds", dcPrefix), "Bounds");
         }
     }
 }

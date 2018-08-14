@@ -36,9 +36,9 @@ import org.kie.dmn.model.v1x.dmndi.DMNDI;
 
 public class TDefinitions extends TNamedElement implements Definitions {
 
-    public static final String DEFAULT_EXPRESSION_LANGUAGE = "http://www.omg.org/spec/DMN/20180521/FEEL/";
+    public static final String DEFAULT_EXPRESSION_LANGUAGE = URI_FEEL;
 
-    public static final String DEFAULT_TYPE_LANGUAGE = "http://www.omg.org/spec/DMN/20180521/FEEL/";
+    public static final String DEFAULT_TYPE_LANGUAGE = URI_FEEL;
 
     protected List<Import> _import;
     protected List<ItemDefinition> itemDefinition;
