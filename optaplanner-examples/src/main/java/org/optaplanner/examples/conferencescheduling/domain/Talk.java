@@ -228,6 +228,10 @@ public class Talk extends AbstractPersistable {
         return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
     }
 
+    public boolean hasPrerequisite(String code) {
+        return prerequisiteTalksCodesSet.contains(code);
+    }
+
     @Override
     public String toString() {
         return code;

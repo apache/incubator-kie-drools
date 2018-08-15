@@ -164,6 +164,15 @@ rule "Talk mutually-exclusive-talks tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
 end
 
+rule "Talk prerequisite talks"
+    when
+        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTag != 0)
+        $talk : Talk(timeslot != null, $timeslot : timeslot)
+        $prerequisite : Talk($talk.hasPrerequisite(code), timeslot == null || $timeslot.endsBefore(getTimeslot()))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
+
+end
 // ############################################################################
 // Soft constraints
 // ############################################################################
