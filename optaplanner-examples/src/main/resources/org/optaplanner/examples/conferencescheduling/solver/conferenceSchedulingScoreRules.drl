@@ -153,6 +153,17 @@ rule "Talk prohibited room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
+rule "Talk mutually-exclusive-talks tag"
+    when
+        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTag != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
+        $rightTalk : Talk(timeslot != null, overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
+                getTimeslot().overlaps($timeslot),
+                id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################

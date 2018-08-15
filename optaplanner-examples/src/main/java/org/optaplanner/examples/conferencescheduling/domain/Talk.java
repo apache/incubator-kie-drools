@@ -224,6 +224,10 @@ public class Talk extends AbstractPersistable {
         return room.getUnavailableTimeslotSet().contains(timeslot);
     }
 
+    public int overlappingMutuallyExclusiveTalksTagCount(Talk other) {
+        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
+    }
+
     @Override
     public String toString() {
         return code;
