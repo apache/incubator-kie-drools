@@ -395,17 +395,27 @@ public class MigrationManager {
             if (newNodeId == null) {
                 newNodeId = oldNodeId;
             }
+            
             Node upgradedNode = findNodeByUniqueId(newNodeId, nodeContainer);
             if (upgradedNode == null) {
-                try {
-                    upgradedNodeId = Long.parseLong(newNodeId);
-                } catch (NumberFormatException e) {
+                Boolean isHidden = (Boolean) ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getMetaData().get("hidden");
+                if (isHidden != null && isHidden.booleanValue()) {
+                    // if node is hidden it cannot be found nor migrated, skip it
                     continue;
                 }
+                try {
+                    upgradedNodeId = Long.parseLong(newNodeId);
+                    if (findNodeById(upgradedNodeId, nodeContainer) == null) {
+                        report.addEntry(Type.ERROR, "Node with id " + newNodeId + " was not found in new process definition"); 
+                    }
+                } catch (NumberFormatException e) {
+                    report.addEntry(Type.ERROR, "Node with id " + newNodeId + " was not found in new process definition"); 
+                }
+        
             } else {
                 upgradedNodeId = upgradedNode.getId();
             }
-
+   
             ((NodeInstanceImpl) nodeInstance).setNodeId(upgradedNodeId);
 
             if (upgradedNode != null) {
@@ -480,6 +490,24 @@ public class MigrationManager {
             }
             if (node instanceof NodeContainer) {
                 result = findNodeByUniqueId(uniqueId, (NodeContainer) node);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+
+        return result;
+    }
+    
+    private Node findNodeById(Long id, NodeContainer nodeContainer) {
+        Node result = null;
+
+        for (Node node : nodeContainer.getNodes()) {
+            if (id.equals(node.getId())) {
+                return node;
+            }
+            if (node instanceof NodeContainer) {
+                result = findNodeById(id, (NodeContainer) node);
                 if (result != null) {
                     return result;
                 }

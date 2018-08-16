@@ -623,7 +623,9 @@ public class MigrationManagerTest extends AbstractBaseTest {
         MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, MULTIINSTANCE_ID_V2);
 
         MigrationManager migrationManager = new MigrationManager(migrationSpec);
-        MigrationReport report = migrationManager.migrate();
+        Map<String, String> nodeMapping = new HashMap<>();
+        nodeMapping.put("_2", "UserTask_1");
+        MigrationReport report = migrationManager.migrate(nodeMapping);
 
         assertNotNull(report);
         assertTrue(report.isSuccessful());

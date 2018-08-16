@@ -25,6 +25,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.io.ResourceType;
@@ -139,6 +140,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         manager.close();
     }
     
+    @Ignore("unstable")
     @Test(timeout=10000)
     public void testExecuteHumanTaskWithAsyncHandler() throws Exception {
         final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Log", 1);
