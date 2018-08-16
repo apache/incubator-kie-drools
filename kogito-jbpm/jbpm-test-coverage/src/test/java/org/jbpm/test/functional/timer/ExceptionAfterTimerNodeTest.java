@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,7 +24,7 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.wih.FirstErrorWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.task.util;
+package org.jbpm.test.listener.task;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
+import org.drools.persistence.api.TransactionSynchronization;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,7 +169,7 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     @Override
     public void afterTaskSkippedEvent(TaskEvent event) {
         
-        latch.countDown();
+        countDown();
     }
 
     @Override
@@ -184,13 +187,13 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     @Override
     public void afterTaskCompletedEvent(TaskEvent event) {
         
-        latch.countDown();
+        countDown();
     }
 
     @Override
     public void afterTaskFailedEvent(TaskEvent event) {
         
-        latch.countDown();
+        countDown();
     }
 
     @Override
@@ -202,7 +205,7 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     @Override
     public void afterTaskExitedEvent(TaskEvent event) {
         
-        latch.countDown();
+        countDown();
     }
 
     @Override
@@ -263,7 +266,7 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     public void afterTaskReassignedEvent(TaskEvent event) {
         
         if (reassignmentAware) {
-            latch.countDown();
+            countDown();
         }
     }
 
@@ -276,7 +279,7 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     @Override
     public void afterTaskNotificationEvent(TaskEvent event) {
         if (notificationAware) {
-            latch.countDown();
+            countDown();
         }
         
     }
@@ -287,5 +290,30 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
     @Override
     public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
         
+    }
+    
+    protected void countDown() {
+        try {
+            TransactionManager tm = TransactionManagerFactory.get().newTransactionManager();
+            if (tm != null && tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
+                tm.registerTransactionSynchronization(new TransactionSynchronization() {
+                    
+                    @Override
+                    public void beforeCompletion() {        
+                    }
+                    
+                    @Override
+                    public void afterCompletion(int status) {
+                        latch.countDown();
+                    }
+                });
+            } else {            
+                latch.countDown();
+            }
+        } catch (Exception e) {
+            latch.countDown();
+        }
     }
 }

@@ -31,7 +31,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
 import org.jbpm.persistence.util.PersistenceUtil;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.test.listener;
+package org.jbpm.test.listener.process;
 
 import java.util.concurrent.CountDownLatch;
 

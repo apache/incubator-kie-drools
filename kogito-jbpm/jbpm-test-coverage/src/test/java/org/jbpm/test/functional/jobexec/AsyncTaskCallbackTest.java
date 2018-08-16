@@ -24,7 +24,7 @@ import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.test.JbpmAsyncJobTestCase;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;

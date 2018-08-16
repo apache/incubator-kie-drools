@@ -40,7 +40,7 @@ import javax.xml.bind.Unmarshaller;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
-import org.jbpm.services.task.util.CountDownTaskEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.MVELUtils;
 import org.jbpm.test.util.PoolingDataSource;

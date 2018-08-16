@@ -22,7 +22,7 @@ import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

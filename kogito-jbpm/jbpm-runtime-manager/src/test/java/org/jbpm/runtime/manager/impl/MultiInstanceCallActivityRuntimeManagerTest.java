@@ -31,7 +31,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;

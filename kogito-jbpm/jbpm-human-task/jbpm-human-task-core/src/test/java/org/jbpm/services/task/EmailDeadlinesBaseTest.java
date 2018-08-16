@@ -29,7 +29,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.util.CountDownTaskEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
 import org.kie.api.task.model.OrganizationalEntity;

@@ -19,7 +19,8 @@ package org.jbpm.kie.test.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 
 public class CountDownListenerFactory {
 

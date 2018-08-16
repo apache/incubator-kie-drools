@@ -25,7 +25,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.test.functional.timer.addon.TransactionalThreadPoolSchedulerService;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

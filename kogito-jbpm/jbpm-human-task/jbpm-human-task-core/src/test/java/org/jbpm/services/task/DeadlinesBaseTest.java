@@ -33,9 +33,8 @@ import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.deadlines.notifications.impl.MockNotificationListener;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.util.HumanTaskHandlerHelper;
-import org.jbpm.services.task.util.CountDownTaskEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -472,7 +471,7 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
           assertThat(((InternalTask) task).getDeadlines().getEndDeadlines().size()).isEqualTo(0);
       }
 
-      @Test
+      @Test(timeout = 15000)
       public void testTaskNotStartedReassign() throws Exception { 
           Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithMultipleReassignment));
           Map<String, Object> vars = new HashMap<String, Object>();
@@ -481,10 +480,13 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
           Environment environment = EnvironmentFactory.newEnvironment();
 
           Map<String, Object> inputVars = new HashMap<String, Object>();
-          inputVars.put("NotStartedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[500ms]");
+          inputVars.put("NotStartedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[2s]");
           ((InternalTask) task).setDeadlines(HumanTaskHandlerHelper.setDeadlines(inputVars, Collections.emptyList(), environment));
 
           taskService.addTask(task, inputVars);
+
+          CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+          addCountDownListner(countDownListener);
 
           long taskId = task.getId();
 
@@ -493,25 +495,23 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
           };
 
           for(String owner : owners) {
-              CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
-              addCountDownListner(countDownListener);
+              countDownListener.reset(1);
 
               taskService.claim(taskId, owner);
               task = taskService.getTaskById(taskId);
-              Assert.assertEquals(task.getTaskData().getActualOwner().getId(), owner);
+              assertThat(task.getTaskData().getActualOwner().getId()).isEqualTo(owner);
 
               countDownListener.waitTillCompleted();
 
               task = taskService.getTaskById(taskId);
-              Assert.assertNull("it was not reclaimed", task.getTaskData().getActualOwner());
-              removeCountDownListner(countDownListener);
+              assertThat(task.getTaskData().getActualOwner()).as("Task was not reclaimed").isNull();
           }
           taskService.claim(taskId, "Bobba Fet");
           taskService.start(taskId, "Bobba Fet");
           taskService.complete(taskId, "Bobba Fet", Collections.<String, Object>emptyMap());
       }
 
-      @Test
+      @Test(timeout = 15000)
       public void testTaskNotCompletedReassign() throws Exception { 
           Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithMultipleReassignment));
           Map<String, Object> vars = new HashMap<String, Object>();
@@ -520,10 +520,13 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
           Environment environment = EnvironmentFactory.newEnvironment();
           Map<String, Object> inputVars = new HashMap<String, Object>();
-          inputVars.put("NotCompletedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[500ms]");
+          inputVars.put("NotCompletedReassign", "[users:Tony Stark,Bobba Fet,Jabba Hutt|groups:]@[2s]");
           ((InternalTask) task).setDeadlines(HumanTaskHandlerHelper.setDeadlines(inputVars, Collections.emptyList(), environment));
 
           taskService.addTask(task, inputVars);
+
+          CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+          addCountDownListner(countDownListener);
 
           long taskId = task.getId();
 
@@ -532,20 +535,18 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
           };
 
           for(String owner : owners) {
-              CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
-              addCountDownListner(countDownListener);
+              countDownListener.reset(1);
 
               taskService.claim(taskId, owner);
               task = (InternalTask) taskService.getTaskById(taskId);
-              Assert.assertEquals(task.getTaskData().getActualOwner().getId(), owner);
+              assertThat(task.getTaskData().getActualOwner().getId()).isEqualTo(owner);
 
               taskService.start(taskId, owner);
 
               countDownListener.waitTillCompleted();
 
               task = (InternalTask) taskService.getTaskById(taskId);
-              Assert.assertNull("it was not reclaimed", task.getTaskData().getActualOwner());
-              removeCountDownListner(countDownListener);
+              assertThat(task.getTaskData().getActualOwner()).as("Task was not reclaimed").isNull();
           }
 
           taskService.claim(taskId, "Bobba Fet");

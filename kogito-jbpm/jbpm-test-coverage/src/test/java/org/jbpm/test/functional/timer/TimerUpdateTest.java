@@ -21,7 +21,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jbpm.process.instance.command.UpdateTimerCommand;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;

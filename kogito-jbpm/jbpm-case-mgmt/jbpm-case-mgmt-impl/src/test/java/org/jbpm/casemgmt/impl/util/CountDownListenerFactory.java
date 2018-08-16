@@ -19,9 +19,9 @@ package org.jbpm.casemgmt.impl.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
-import org.jbpm.test.listener.SLAViolationCountDownProcessEventListener;
+import org.jbpm.test.listener.process.DefaultCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.SLAViolationCountDownProcessEventListener;
 
 public class CountDownListenerFactory {
 

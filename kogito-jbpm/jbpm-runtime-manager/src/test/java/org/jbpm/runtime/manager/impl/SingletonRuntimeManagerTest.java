@@ -25,7 +25,7 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorHandlerInterceptor;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;

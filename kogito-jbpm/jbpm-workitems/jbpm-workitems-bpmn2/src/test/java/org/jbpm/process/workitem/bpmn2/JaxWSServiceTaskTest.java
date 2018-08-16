@@ -30,7 +30,7 @@ import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
 import org.jbpm.test.AbstractBaseTest;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

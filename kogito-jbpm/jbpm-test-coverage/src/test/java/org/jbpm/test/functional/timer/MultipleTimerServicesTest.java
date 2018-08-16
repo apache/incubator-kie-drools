@@ -28,7 +28,7 @@ import javax.persistence.Persistence;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

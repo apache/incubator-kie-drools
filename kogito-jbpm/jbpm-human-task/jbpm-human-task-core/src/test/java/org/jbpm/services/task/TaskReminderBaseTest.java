@@ -31,7 +31,7 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.util.CountDownTaskEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.junit.Test;
 import org.kie.internal.task.api.model.InternalTask;
 import org.subethamail.wiser.Wiser;

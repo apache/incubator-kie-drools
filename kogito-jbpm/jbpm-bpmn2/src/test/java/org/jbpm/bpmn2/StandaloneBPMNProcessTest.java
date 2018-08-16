@@ -41,7 +41,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;

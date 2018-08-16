@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-package org.jbpm.test.listener;
+package org.jbpm.test.listener.process;
 
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 
 
-public class NodeTriggeredCountDownProcessEventListener extends NodeCountDownProcessEventListener {
-
-    private boolean reactOnBeforeNodeTriggered = false;
-
-    public NodeTriggeredCountDownProcessEventListener() {
-
+public class NodeLeftCountDownProcessEventListener extends NodeCountDownProcessEventListener {
+    
+    private boolean reactOnBeforeNodeLeft = false;
+    
+    public NodeLeftCountDownProcessEventListener() {
+        
     }
-
-    public NodeTriggeredCountDownProcessEventListener(String nodeName, int threads) {
+    
+    public NodeLeftCountDownProcessEventListener(String nodeName, int threads) {
         super(nodeName, threads);
     }
-
-    public NodeTriggeredCountDownProcessEventListener(String nodeName, int threads, boolean reactOnBeforeNodeTriggered) {
+    
+    public NodeLeftCountDownProcessEventListener(String nodeName, int threads, boolean reactOnBeforeNodeLeft) {
         super(nodeName, threads);
-        this.reactOnBeforeNodeTriggered = reactOnBeforeNodeTriggered;
+        this.reactOnBeforeNodeLeft = reactOnBeforeNodeLeft;
     }
 
     @Override
-    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
         if (nodeName.equals(event.getNodeInstance().getNodeName())) {
             countDown();
         }
     }
     
     @Override
-    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-        if (reactOnBeforeNodeTriggered && nodeName.equals(event.getNodeInstance().getNodeName())) {
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+        if (reactOnBeforeNodeLeft && nodeName.equals(event.getNodeInstance().getNodeName())) {
             countDown();
         }
     }

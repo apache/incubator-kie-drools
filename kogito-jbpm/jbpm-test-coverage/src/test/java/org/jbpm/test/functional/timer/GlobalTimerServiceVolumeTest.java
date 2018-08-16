@@ -40,7 +40,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

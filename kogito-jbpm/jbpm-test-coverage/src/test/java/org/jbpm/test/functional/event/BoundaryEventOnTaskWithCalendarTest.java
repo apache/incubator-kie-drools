@@ -23,7 +23,7 @@ import java.util.HashMap;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.jbpm.test.JbpmTestCase;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;

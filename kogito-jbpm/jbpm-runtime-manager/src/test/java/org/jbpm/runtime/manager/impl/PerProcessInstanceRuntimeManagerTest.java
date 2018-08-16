@@ -42,7 +42,7 @@ import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;

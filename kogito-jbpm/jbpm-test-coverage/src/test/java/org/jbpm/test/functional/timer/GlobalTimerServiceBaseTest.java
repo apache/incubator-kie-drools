@@ -45,7 +45,7 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.persistence.JPATaskPersistenceContextManager;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.Ignore;

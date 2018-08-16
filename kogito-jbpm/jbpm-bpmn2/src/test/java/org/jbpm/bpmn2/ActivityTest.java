@@ -49,7 +49,7 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;

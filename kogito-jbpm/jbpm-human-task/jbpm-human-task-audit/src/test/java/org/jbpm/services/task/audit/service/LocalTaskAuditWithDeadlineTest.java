@@ -38,7 +38,7 @@ import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
-import org.jbpm.services.task.util.CountDownTaskEventListener;
+import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;

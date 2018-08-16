@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package org.jbpm.test.listener;
+package org.jbpm.test.listener.process;
 
 import java.util.concurrent.CountDownLatch;
-
-import org.kie.api.event.process.ProcessNodeLeftEvent;
 
 
 public class NodeCountDownProcessEventListener extends DefaultCountDownProcessEventListener {

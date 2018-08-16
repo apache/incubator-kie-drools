@@ -49,7 +49,7 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.TaskExecutionException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.jbpm.test.util.PoolingDataSource;

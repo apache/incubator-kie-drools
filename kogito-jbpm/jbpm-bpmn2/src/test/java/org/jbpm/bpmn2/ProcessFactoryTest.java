@@ -20,7 +20,7 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 
 import org.junit.Test;
 

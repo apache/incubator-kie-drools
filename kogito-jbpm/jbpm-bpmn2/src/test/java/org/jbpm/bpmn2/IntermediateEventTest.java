@@ -50,7 +50,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

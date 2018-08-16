@@ -26,7 +26,7 @@ import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
 import org.jbpm.test.container.groups.EAP;
 import org.jbpm.test.container.mock.RestService;
 import org.jbpm.services.api.model.VariableDesc;
-import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
+import org.jbpm.test.listener.process.DefaultCountDownProcessEventListener;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

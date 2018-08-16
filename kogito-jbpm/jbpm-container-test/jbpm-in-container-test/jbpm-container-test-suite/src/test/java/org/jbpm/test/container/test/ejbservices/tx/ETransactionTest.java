@@ -36,7 +36,7 @@ import org.jbpm.test.container.groups.EAP;
 import org.jbpm.test.container.groups.WAS;
 import org.jbpm.test.container.groups.WLS;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
-import org.jbpm.test.listener.DefaultCountDownProcessEventListener;
+import org.jbpm.test.listener.process.DefaultCountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

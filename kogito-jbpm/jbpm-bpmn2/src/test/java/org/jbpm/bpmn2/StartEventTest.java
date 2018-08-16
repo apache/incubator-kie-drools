@@ -31,7 +31,7 @@ import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.test.listener.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
