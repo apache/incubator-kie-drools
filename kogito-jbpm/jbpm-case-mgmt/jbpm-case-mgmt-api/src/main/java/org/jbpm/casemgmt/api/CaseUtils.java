@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.casemgmt.impl;
+package org.jbpm.casemgmt.api;
 
 import java.util.Collection;
 

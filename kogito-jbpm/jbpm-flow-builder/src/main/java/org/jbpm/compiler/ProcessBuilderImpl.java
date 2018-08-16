@@ -563,7 +563,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         "      " + node.getMetaData().get("customActivationExpression") + "\n" +
         "    then \n" +
         "       org.jbpm.casemgmt.api.CaseService caseService = (org.jbpm.casemgmt.api.CaseService) org.jbpm.services.api.service.ServiceRegistry.get().service(org.jbpm.services.api.service.ServiceRegistry.CASE_SERVICE); \n" +
-        "       caseService.triggerAdHocFragment(org.jbpm.casemgmt.impl.CaseUtils.getCaseId(kcontext.getKieRuntime()), \"" + node.getMetaData().get("customActivationFragmentName") +"\", null); \n" +
+        "       caseService.triggerAdHocFragment(org.jbpm.casemgmt.api.CaseUtils.getCaseId(kcontext.getKieRuntime()), \"" + node.getMetaData().get("customActivationFragmentName") +"\", null); \n" +
         "end \n\n";
     }
 
