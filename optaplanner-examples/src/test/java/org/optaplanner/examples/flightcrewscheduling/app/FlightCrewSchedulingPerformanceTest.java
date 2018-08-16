@@ -25,6 +25,10 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
 public class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<FlightCrewSolution> {
 
+    public FlightCrewSchedulingPerformanceTest(String moveThreadCount) {
+        super(moveThreadCount);
+    }
+
     @Override
     protected FlightCrewSchedulingApp createCommonApp() {
         return new FlightCrewSchedulingApp();
