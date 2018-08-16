@@ -17,9 +17,11 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,9 +41,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Runs an example {@link Solver}.
@@ -62,17 +62,15 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        List<Object[]> testParams = new ArrayList<>();
-
+        List<Object[]> parameterList;
         if (MOVE_THREAD_COUNTS_STRING != null) {
-            String[] moveThreadCounts = MOVE_THREAD_COUNTS_STRING.split(",");
-            for (String moveThreadCount : moveThreadCounts) {
-                testParams.add(new Object[]{moveThreadCount});
-            }
+            parameterList = Arrays.stream(MOVE_THREAD_COUNTS_STRING.split(","))
+                    .map(moveThreadCount -> new Object[]{moveThreadCount})
+                    .collect(Collectors.toList());
         } else {
-            testParams.add(new Object[]{SolverConfig.MOVE_THREAD_COUNT_NONE});
+            parameterList = Collections.singletonList(new Object[]{SolverConfig.MOVE_THREAD_COUNT_NONE});
         }
-        return testParams;
+        return parameterList;
     }
 
     public SolverPerformanceTest(String moveThreadCount) {
