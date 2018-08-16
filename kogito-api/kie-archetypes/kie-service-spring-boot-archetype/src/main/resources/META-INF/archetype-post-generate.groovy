@@ -1,4 +1,16 @@
-println "[Running post-generation script]";
+def quietMode = false;
+if(System.getenv('MAVEN_CMD_LINE_ARGS').contains("-q") || System.getenv('MAVEN_CMD_LINE_ARGS').contains("-quiet")) {
+    quietMode = true;
+}
+
+def logOut(log, quietMode) {
+    if(!quietMode) {
+        println log;
+    }
+}
+
+logOut("[Running post-generation script]", quietMode);
+
 
 def appType = "${appType}";
 def myAppArtifactId = "${artifactId}";
@@ -89,21 +101,22 @@ jbpm.executor.enabled=false
 #jbpm.executor.timeUnit=SECONDS
 """;
 
-println "Updating app configuration for app type: " + appType;
+logOut("Updating app configuration for app type: " + appType, quietMode);
+
 if( appType == "bpm" ) {
-    println "Updating application properties...";
+    logOut("Updating application properties...", quietMode);
     def appPropertiesContent = appPropertiesFile.getText('UTF-8');
     def appPropertiesContentMySql = appPropertiesFileMySql.getText('UTF-8');
     def appPropertiesContentPostgres = appPropertiesFilePostgres.getText('UTF-8');
     def devAppPropertiesContent = devAppPropertiesFile.getText('UTF-8');
 
-    println "- adding server capabilities";
+    logOut("- adding server capabilities", quietMode);
     appPropertiesContent = appPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBPM);
     appPropertiesContentMySql = appPropertiesContentMySql.replace(kieServerCapabilitiesMarker, serverCapabilitiesBPM);
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(kieServerCapabilitiesMarker, serverCapabilitiesBPM);
     devAppPropertiesContent = devAppPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBPM);
 
-    println "- adding jbpm configuration";
+    logOut("- adding jbpm configuration", quietMode);
     appPropertiesContent = appPropertiesContent.replace(jbpmConfigMarker, BPMJBPMConfig);
     appPropertiesContentMySql = appPropertiesContentMySql.replace(jbpmConfigMarker, BPMJBPMConfig);
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(jbpmConfigMarker, BPMJBPMConfig);
@@ -125,17 +138,17 @@ if( appType == "bpm" ) {
         w << devAppPropertiesContent
     }
 
-    println "Updating pom...";
+    logOut("Updating pom...", quietMode);
     def pomContent = pomFile.getText('UTF-8');
 
-    println "- adding spring boot starter dependency";
+    logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, BPMSpringBootStarterDepends);
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
     }
 
-    println "Updating index.html...";
+    logOut("Updating index.html...", quietMode);
     def indexContent = indexFile.getText('UTF-8');
     indexContent = indexContent.replace(indexCSSMarkerBA, 'alert alert-success');
     indexContent = indexContent.replace(indexCSSMarkerDM, 'alert alert-success');
@@ -148,19 +161,19 @@ if( appType == "bpm" ) {
     }
 
 } else if(appType == "brm") {
-    println "Updating application properties...";
+    logOut("Updating application properties...", quietMode);
     def appPropertiesContent = appPropertiesFile.getText('UTF-8');
     def appPropertiesContentMySql = appPropertiesFileMySql.getText('UTF-8');
     def appPropertiesContentPostgres = appPropertiesFilePostgres.getText('UTF-8');
     def devAppPropertiesContent = devAppPropertiesFile.getText('UTF-8');
 
-    println "- adding server capabilities";
+    logOut("- adding server capabilities", quietMode);
     appPropertiesContent = appPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
     appPropertiesContentMySql = appPropertiesContentMySql.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
     devAppPropertiesContent = devAppPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
 
-    println "- removing jbpm configuration";
+    logOut("- removing jbpm configuration", quietMode);
     appPropertiesContent = appPropertiesContent.replace(jbpmConfigMarker, '');
     appPropertiesContentMySql = appPropertiesContentMySql.replace(jbpmConfigMarker, '');
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(jbpmConfigMarker, '');
@@ -182,17 +195,17 @@ if( appType == "bpm" ) {
         w << devAppPropertiesContent
     }
 
-    println "Updating pom...";
+    logOut("Updating pom...", quietMode);
     def pomContent = pomFile.getText('UTF-8');
 
-    println "- adding spring boot starter dependency";
+    logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, BRMSpringBootStarterDepends);
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
     }
 
-    println "Updating index.html...";
+    logOut("Updating index.html...", quietMode);
     def indexContent = indexFile.getText('UTF-8');
     indexContent = indexContent.replace(indexCSSMarkerBA, 'alert alert-danger');
     indexContent = indexContent.replace(indexCSSMarkerDM, 'alert alert-success');
@@ -204,19 +217,19 @@ if( appType == "bpm" ) {
         w << indexContent
     }
 } else if(appType == "planner") {
-    println "Updating application properties...";
+    logOut("Updating application properties...", quietMode);
     def appPropertiesContent = appPropertiesFile.getText('UTF-8');
     def appPropertiesContentMySql = appPropertiesFileMySql.getText('UTF-8');
     def appPropertiesContentPostgres = appPropertiesFilePostgres.getText('UTF-8');
     def devAppPropertiesContent = devAppPropertiesFile.getText('UTF-8');
 
-    println "- adding server capabilities";
+    logOut("- adding server capabilities", quietMode);
     appPropertiesContent = appPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
     appPropertiesContentMySql = appPropertiesContentMySql.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
     devAppPropertiesContent = devAppPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
 
-    println "- removing jbpm configuration";
+    logOut("- removing jbpm configuration", quietMode);
     appPropertiesContent = appPropertiesContent.replace(jbpmConfigMarker, '');
     appPropertiesContentMySql = appPropertiesContentMySql.replace(jbpmConfigMarker, '');
     appPropertiesContentPostgres = appPropertiesContentPostgres.replace(jbpmConfigMarker, '');
@@ -238,17 +251,17 @@ if( appType == "bpm" ) {
         w << devAppPropertiesContent
     }
 
-    println "Updating pom...";
+    logOut("Updating pom...", quietMode);
     def pomContent = pomFile.getText('UTF-8');
 
-    println "- adding spring boot starter dependency";
+    logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, PlannerSpringBootStarterDepends);
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
     }
 
-    println "Updating index.html...";
+    logOut("Updating index.html...", quietMode);
     def indexContent = indexFile.getText('UTF-8');
     indexContent = indexContent.replace(indexCSSMarkerBA, 'alert alert-danger');
     indexContent = indexContent.replace(indexCSSMarkerDM, 'alert alert-success');
@@ -260,10 +273,10 @@ if( appType == "bpm" ) {
         w << indexContent
     }
 } else {
-    println "[ERROR: Invalid app type specified - unable to finish needed configurations!]";
+    logOut("[ERROR: Invalid app type specified - unable to finish needed configurations!]", quietMode);
 }
 
-println "Updating launch scripts...";
+logOut("Updating launch scripts...", quietMode);
 def launchFileContent = launchFile.getText('UTF-8');
 def devLaunchFileContent = devLaunchFile.getText('UTF-8');
 
@@ -278,19 +291,19 @@ devLaunchFile.newWriter().withWriter { w ->
     w << devLaunchFileContent
 }
 
-println "Updating kie server state info...";
+logOut("Updating kie server state info...", quietMode);
 def kieServerStateContent = kieServerStateFile.getText('UTF-8');
 
 if( kjarContainerId != "" ) {
-    println "- updating with provided kjar info";
+    logOut("- updating with provided kjar info", quietMode);
     kieServerStateContent = kieServerStateContent.replace(kjarContainerIdMarker, kjarContainerId);
 
     kieServerStateFile.newWriter().withWriter { w ->
         w << kieServerStateContent
     }
 } else {
-    println "- no kjar info provided, deleting info";
+    logOut("- no kjar info provided, deleting info", quietMode);
     kieServerStateFile.delete();
 }
 
-println "[Finished running post-generation script]";
+logOut("[Finished running post-generation script]", quietMode);
