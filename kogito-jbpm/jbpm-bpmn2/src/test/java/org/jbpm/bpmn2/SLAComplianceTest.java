@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -438,6 +439,95 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
+        
+        ksession.dispose();
+    }
+    
+    @Test
+    public void testSLAonCatchEventViolated() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        final ProcessEventListener listener = new DefaultProcessEventListener(){
+
+            @Override
+            public void afterSLAViolated(SLAViolatedEvent event) {
+                latch.countDown();
+            }
+            
+        };
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignalWithSLAOnEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
+        assertTrue("SLA should be violated by timer", slaViolated);
+        
+
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
+        assertEquals(1, active.size());
+        
+        NodeInstance eventNode = active.iterator().next();
+        
+        ksession.signalEvent("MyMessage", null, processInstance.getId());
+        
+        assertProcessInstanceFinished(processInstance, ksession);        
+        
+        int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
+        assertEquals(ProcessInstance.SLA_NA, slaCompliance);
+
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_ENTER);
+        assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
+
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_EXIT);
+        assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
+        
+        ksession.dispose();
+    }
+    
+    @Test
+    public void testSLAonCatchEventNotViolated() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        final ProcessEventListener listener = new DefaultProcessEventListener(){
+
+            @Override
+            public void afterSLAViolated(SLAViolatedEvent event) {
+                latch.countDown();
+            }
+            
+        };
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignalWithSLAOnEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
+        assertEquals(1, active.size());
+        
+        NodeInstance eventNode = active.iterator().next();
+        
+        ksession.signalEvent("MyMessage", null, processInstance.getId());
+        
+        assertProcessInstanceFinished(processInstance, ksession);        
+        
+        int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
+        assertEquals(ProcessInstance.SLA_NA, slaCompliance);
+
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_EXIT);
+        assertEquals(ProcessInstance.SLA_MET, slaCompliance);
+        
+
+        boolean slaViolated = latch.await(3, TimeUnit.SECONDS);
+        assertFalse("SLA should not violated by timer", slaViolated);
+        
         
         ksession.dispose();
     }

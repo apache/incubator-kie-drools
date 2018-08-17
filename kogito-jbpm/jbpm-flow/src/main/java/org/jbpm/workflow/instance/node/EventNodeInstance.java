@@ -17,16 +17,23 @@
 package org.jbpm.workflow.instance.node;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.timer.TimerInstance;
+import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 
@@ -41,21 +48,32 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     private static final long serialVersionUID = 510l;
 
     public void signalEvent(String type, Object event) {
-    	String variableName = getEventNode().getVariableName();
-    	if (variableName != null) {
-    		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-    			resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-    		if (variableScopeInstance == null) {
-    			throw new IllegalArgumentException(
-					"Could not find variable for event node: " + variableName);
-    		}
-    		EventTransformer transformer = getEventNode().getEventTransformer();
-    		if (transformer != null) {
-    			event = transformer.transformEvent(event);
-    		}
-    		variableScopeInstance.setVariable(variableName, event);
-    	}
-    	triggerCompleted();
+        if ("timerTriggered".equals(type)) {
+            TimerInstance timerInstance = (TimerInstance) event;
+            if (timerInstance.getId() == slaTimerId) {                
+                handleSLAViolation();        
+            }
+        } else if (("slaViolation:" + getId()).equals(type)) {
+                           
+            handleSLAViolation();        
+           
+        } else {
+            String variableName = getEventNode().getVariableName();
+        	if (variableName != null) {
+        		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+        			resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+        		if (variableScopeInstance == null) {
+        			throw new IllegalArgumentException(
+    					"Could not find variable for event node: " + variableName);
+        		}
+        		EventTransformer transformer = getEventNode().getEventTransformer();
+        		if (transformer != null) {
+        			event = transformer.transformEvent(event);
+        		}
+        		variableScopeInstance.setVariable(variableName, event);
+        	}
+        	triggerCompleted();
+        }
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
@@ -66,6 +84,52 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     	addEventListeners();
         // Do nothing, event activated
     }
+    
+    protected void configureSla() {
+        String slaDueDateExpression = (String) getNode().getMetaData().get("customSLADueDate");
+        if (slaDueDateExpression != null) {
+            TimerInstance timer = ((WorkflowProcessInstanceImpl)getProcessInstance()).configureSLATimer(slaDueDateExpression);
+            if (timer != null) {
+                this.slaTimerId = timer.getId();
+                this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
+                this.slaCompliance = ProcessInstance.SLA_PENDING;
+                logger.debug("SLA for node instance {} is PENDING with due date {}", this.getId(), this.slaDueDate);
+            }
+        }
+    }
+    
+    protected void handleSLAViolation() {
+        if (slaCompliance == ProcessInstance.SLA_PENDING) {
+            InternalProcessRuntime processRuntime = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime());
+            processRuntime.getProcessEventSupport().fireBeforeSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
+            logger.debug("SLA violated on node instance {}", getId());                   
+            this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            this.slaTimerId = -1;
+            processRuntime.getProcessEventSupport().fireAfterSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
+        }
+    }
+    
+    private void cancelSlaTimer() {
+        if (this.slaTimerId > -1) {
+            TimerManager timerManager = ((InternalProcessRuntime)
+                    getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
+            timerManager.cancelTimer(this.slaTimerId);
+            logger.debug("SLA Timer {} has been canceled", this.slaTimerId);
+        }
+    }
+    
+    protected void addTimerListener() {
+        
+        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timer", new VariableExternalEventListener("timer"), true);
+        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getId(), new VariableExternalEventListener("slaViolation"), true);
+    }
+    
+    public void removeTimerListeners() {
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timer", new VariableExternalEventListener("timer"), true);
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getId(), new VariableExternalEventListener("slaViolation"), true);
+    }
 
     public EventNode getEventNode() {
         return (EventNode) getNode();
@@ -73,6 +137,16 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 
     public void triggerCompleted() {
     	getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
+    	removeTimerListeners();
+    	if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+            if (System.currentTimeMillis() > slaDueDate.getTime()) {
+                // completion of the node instance is after expected SLA due date, mark it accordingly
+                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            } else {
+                this.slaCompliance = ProcessInstance.STATE_COMPLETED;
+            }
+        }
+        cancelSlaTimer();
         ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
@@ -80,6 +154,16 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     @Override
 	public void cancel() {
     	getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
+    	removeTimerListeners();
+        if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+            if (System.currentTimeMillis() > slaDueDate.getTime()) {
+                // completion of the process instance is after expected SLA due date, mark it accordingly
+                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            } else {
+                this.slaCompliance = ProcessInstance.SLA_ABORTED;
+            }
+        }
+    	removeTimerListeners();
 		super.cancel();
 	}
 
@@ -98,6 +182,38 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         public void signalEvent(String type, Object event) {
             callSignal(type, event);
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            VariableExternalEventListener other = (VariableExternalEventListener) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (eventType == null) {
+                if (other.eventType != null)
+                    return false;
+            } else if (!eventType.equals(other.eventType))
+                return false;
+            return true;
+        }
+
+        private EventNodeInstance getOuterType() {
+            return EventNodeInstance.this;
+        }
     }
 
 	@Override
@@ -107,6 +223,9 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 	        getProcessInstance().addEventListener(eventType, new VariableExternalEventListener(eventType), true);
 	    } else {
 	        getProcessInstance().addEventListener(eventType, getEventListener(), true);
+	    }
+	    if (slaTimerId > -1) {
+	        addTimerListener();
 	    }
 	}
 
