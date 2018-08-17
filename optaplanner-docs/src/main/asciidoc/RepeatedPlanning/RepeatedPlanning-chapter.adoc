@@ -384,7 +384,6 @@ A planning clone of a solution must fulfill these requirements:
 
 Consider the following example of a `ProblemFactChange` implementation in the cloud balancing use case:
 
-
 [source,java,options="nowrap"]
 ----
     public void deleteComputer(final CloudComputer computer) {
@@ -412,24 +411,22 @@ Consider the following example of a `ProblemFactChange` implementation in the cl
     }
 ----
 
-
 . Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``.
-+
 
 . The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
-+
-
 * The `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
 * A planning clone also clones the planning entities and planning entity collections.
 + 
 So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.
 
 . Use the method `ScoreDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
+This requires <<planningId, annotating a property of that class as the @PlanningId>>.
 
 . A planning clone does not clone the problem facts, nor the problem fact collections.
 _Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
 +
-Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
+Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities).
+Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
 
 [[cloningSolutionsToAvoidRaceConditions]]
 ==== Cloning Solutions to Avoid Race Conditions in Real-time Planning
@@ -437,7 +434,6 @@ Any problem fact or problem fact list changed by a `ProblemFactChange` must be p
 Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized solution. This is acceptable, provided the first solver phase can handle it.
 
 All construction heuristics solver phases can handle a partially initialized solution, so it is recommended to configure such a solver phase as the first phase.
-
 
 image::RepeatedPlanning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
 

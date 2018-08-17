@@ -770,6 +770,47 @@ A <<logging,logging level>> of `debug` or `trace` might cause congestion multith
 and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 ====
 
+[[planningId]]
+=== @PlanningId
+
+For some functionality (such as multithreaded solving and real-time planning),
+Planner needs to map problem facts and planning entities to an ID.
+Planner uses that ID to rebase moves from one thread's solution state to another's.
+
+To enable such functionality, specify the `@PlanningId` annotation on the identification field or getter method:
+
+[source,java,options="nowrap"]
+----
+public class CloudComputer {
+
+    @PlanningId
+    private Long id;
+
+    ...
+}
+----
+
+[source,java,options="nowrap"]
+----
+public class User {
+
+    @PlanningId
+    private String username;
+
+    ...
+}
+----
+
+An `@PlanningId` property must be:
+
+* Unique for that specific class
+** It does not need to be unique across different problem fact classes
+(unless in that rare case that those classes are mixed in the same value range or planning entity collection).
+* An instance of a type that implements `Object.hashCode()` and `Object.equals()`.
+** Types such as `Integer`, `Long`, `String`, `UUID`, ... are preferred.
+* Never `null` when `Solver.solve()` is called.
+
+
 [[customThreadFactory]]
 === Custom Thread Factory (WildFly, Android, GAE, ...)
 
@@ -791,7 +832,9 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 [[multithreadedIncrementalSolving]]
 === Multithreaded Incremental Solving
 
-Enable multithreaded incremental solving by configuring a `moveThreadCount`:
+Enable multithreaded incremental solving by <<planningId,adding a @PlanningId annotation>>
+on every planning entity class planning value class.
+Then configure a `moveThreadCount`:
 
 [source,xml,options="nowrap"]
 ----

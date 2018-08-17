@@ -21,7 +21,6 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class NoneLookUpStrategy implements LookUpStrategy {
 
@@ -38,13 +37,11 @@ public class NoneLookUpStrategy implements LookUpStrategy {
     @Override
     public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         throw new IllegalArgumentException("The externalObject (" + externalObject
-                + ") cannot be looked up.\n"
-                + "Maybe give the class (" + externalObject.getClass()
-                + ") a " + PlanningId.class.getSimpleName() + " annotation"
-                + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
-                + LookUpStrategyType.class.getSimpleName()
-                + " or don't rely on functionality that depends on "
-                + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
+                + ") cannot be looked up. Some functionality, such as multithreaded solving, requires this ability.\n"
+                + "Maybe add an @" + PlanningId.class.getSimpleName()
+                + " annotation on an identifier property of the class (" + externalObject.getClass() + ").\n"
+                + "Or otherwise, maybe change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
+                + LookUpStrategyType.class.getSimpleName()+ " (not recommended).");
     }
 
 }
