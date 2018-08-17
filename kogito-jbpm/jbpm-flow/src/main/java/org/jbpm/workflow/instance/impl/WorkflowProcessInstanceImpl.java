@@ -529,6 +529,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 List<String> events = ((EventSubProcessNode) node).getEvents();
                 for (String type : events) {
                     addEventListener(type, EMPTY_EVENT_LISTENER, true);
+                    if (isVariableExpression(type)) {
+                        addEventListener(resolveVariable(type), EMPTY_EVENT_LISTENER, true);
+                    }
                 }
             }  else if (node instanceof DynamicNode) {
                 if (((DynamicNode) node).getActivationEventName() != null) {
@@ -767,7 +770,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public String[] getEventTypes() {
-		return externalEventListeners.keySet().toArray(new String[externalEventListeners.size()]);
+		return externalEventListeners.keySet().stream().map(type -> resolveVariable(type)).collect(Collectors.toList()).toArray(new String[externalEventListeners.size()]);
 	}
 
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
@@ -951,6 +954,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void internalSetSlaTimerId(Long slaTimerId) {
         this.slaTimerId = slaTimerId;
     }
-    
+
+    private boolean isVariableExpression(String eventType) {
+        if (eventType == null ){
+            return false;
+        }
+        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(eventType);
+        if (matcher.find()) {
+            return true;
+        }
+
+        return false;
+    }
     
 }

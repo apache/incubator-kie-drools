@@ -33,6 +33,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemHandler;
@@ -63,6 +64,7 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -81,6 +83,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(Parameterized.class)
@@ -2756,5 +2759,165 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance);
 
+    }
+    
+    @Test
+    public void testDynamicCatchEventSignal() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/dynamic-signal-parent.bpmn2", "subprocess/dynamic-signal-child.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        final List<Long> instances = new ArrayList<>();
+        
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                instances.add(event.getProcessInstance().getId());
+            }
+            
+        });
+        
+        ProcessInstance processInstance = ksession.startProcess("src.father");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        assertThat(instances).hasSize(4);
+        
+        // remove the parent process instance
+        instances.remove(processInstance.getId());
+        
+        for (Long id : instances) {
+            ProcessInstance child = ksession.getProcessInstance(id);
+            assertProcessInstanceActive(child);
+        }
+        
+        // now complete user task to signal all child instances to stop
+        WorkItem workItem = handler.getWorkItem();
+        assertThat(workItem).isNotNull();
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        for (Long id : instances) {            
+            assertNull("Child process instance has not been finished.", ksession.getProcessInstance(id));
+        }
+    }
+    
+    @Test
+    public void testDynamicCatchEventSignalWithVariableUpdated() throws Exception {        
+        KieBase kbase = createKnowledgeBase("subprocess/dynamic-signal-parent.bpmn2", "subprocess/dynamic-signal-child.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        final List<Long> instances = new ArrayList<>();
+        
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                instances.add(event.getProcessInstance().getId());
+            }
+            
+        });
+        
+        ProcessInstance processInstance = ksession.startProcess("src.father");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        assertThat(instances).hasSize(4);
+        
+        // remove the parent process instance
+        instances.remove(processInstance.getId());
+        
+        for (Long id : instances) {
+            ProcessInstance child = ksession.getProcessInstance(id);
+            assertProcessInstanceActive(child);
+        }
+        
+        // change one child process instance variable (fatherId) to something else then original fatherId
+        Long changeProcessInstanceId = instances.remove(0);
+        Map<String, Object> updatedVariables = new HashMap<>();
+        updatedVariables.put("fatherId", 999L);
+        ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
+        
+        // now complete user task to signal all child instances to stop
+        WorkItem workItem = handler.getWorkItem();
+        assertThat(workItem).isNotNull();
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        for (Long id : instances) {            
+            assertNull("Child process instance has not been finished.", ksession.getProcessInstance(id));
+        }
+        
+        ProcessInstance updatedChild = ksession.getProcessInstance(changeProcessInstanceId);
+        assertProcessInstanceActive(updatedChild);
+        
+        ksession.signalEvent("stopChild:999", null, changeProcessInstanceId);
+        assertProcessInstanceFinished(updatedChild, ksession);
+    }
+    
+    @RequirePersistence
+    @Test
+    public void testDynamicCatchEventSignalWithVariableUpdatedBroadcastSignal() throws Exception {        
+        KieBase kbase = createKnowledgeBase("subprocess/dynamic-signal-parent.bpmn2", "subprocess/dynamic-signal-child.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        final List<Long> instances = new ArrayList<>();
+        
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                instances.add(event.getProcessInstance().getId());
+            }
+            
+        });
+        
+        ProcessInstance processInstance = ksession.startProcess("src.father");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        assertThat(instances).hasSize(4);
+        
+        // remove the parent process instance
+        instances.remove(processInstance.getId());
+        
+        for (Long id : instances) {
+            ProcessInstance child = ksession.getProcessInstance(id);
+            assertProcessInstanceActive(child);
+        }
+        
+        // change one child process instance variable (fatherId) to something else then original fatherId
+        Long changeProcessInstanceId = instances.remove(0);
+        Map<String, Object> updatedVariables = new HashMap<>();
+        updatedVariables.put("fatherId", 999L);
+        ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
+        
+        // now complete user task to signal all child instances to stop
+        WorkItem workItem = handler.getWorkItem();
+        assertThat(workItem).isNotNull();
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        for (Long id : instances) {            
+            assertNull("Child process instance has not been finished.", ksession.getProcessInstance(id));
+        }
+        
+        ProcessInstance updatedChild = ksession.getProcessInstance(changeProcessInstanceId);
+        assertProcessInstanceActive(updatedChild);
+        
+        ksession.signalEvent("stopChild:999", null);
+        assertProcessInstanceFinished(updatedChild, ksession);
     }
 }
