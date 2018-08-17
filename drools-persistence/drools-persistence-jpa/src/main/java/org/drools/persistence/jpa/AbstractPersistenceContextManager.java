@@ -122,14 +122,7 @@ public abstract class AbstractPersistenceContextManager {
     }
 
     public void dispose() {
-        if ( this.internalAppScopedEntityManagerFlag ) {
-            if (  this.appScopedEntityManager != null && this.appScopedEntityManager.isOpen() ) {
-                this.appScopedEntityManager.close();
-            }
-            this.internalAppScopedEntityManagerFlag = false;
-            this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER, null );
-            this.appScopedEntityManager = null;
-        }
+        resetApplicationScopedPersistenceContext();
         
         if ( this.internalCmdScopedEntityManagerFlag ) {
             EntityManager cmdScopedEntityManager = getInternalCommandScopedEntityManager();
@@ -139,6 +132,17 @@ public abstract class AbstractPersistenceContextManager {
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
             this.txm.putResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
             this.internalCmdScopedEntityManagerFlag = false;
+        }
+    }
+    
+    public void resetApplicationScopedPersistenceContext() {
+        if ( this.internalAppScopedEntityManagerFlag ) {
+            if ( this.appScopedEntityManager != null && this.appScopedEntityManager.isOpen() ) {
+                this.appScopedEntityManager.close();
+            }
+            this.internalAppScopedEntityManagerFlag = false;
+            this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER, null );
+            this.appScopedEntityManager = null;
         }
     }
 
