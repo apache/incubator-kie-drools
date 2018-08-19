@@ -27,7 +27,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              org.kie.dmn.model.v1_1.*
+              org.kie.dmn.model.*
             </Export-Package>
             <Import-Package>
               javax.xml,
