@@ -166,6 +166,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per missing preferred tag in a talk's room");
             readIntConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::setTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
+            readIntConstraintLine(SAME_DAY_TALKS, parametrization::setSameDayTalks,
+                    "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
 
             readIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::setTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");
@@ -725,6 +727,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per missing preferred tag in a talk's room");
             writeIntConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::getTalkUndesiredRoomTag,
                     "Soft penalty per undesired tag in a talk's room");
+            writeIntConstraintLine(SAME_DAY_TALKS, parametrization::getSameDayTalks,
+                    "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
+
             nextRow();
             writeIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::getTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");

@@ -67,6 +67,13 @@ public class Timeslot extends AbstractPersistable {
         return tagSet.contains(tag);
     }
 
+    public boolean isOnSameDayAs(Timeslot other) {
+        return startDateTime.getYear() == other.startDateTime.getYear()
+                && startDateTime.getDayOfYear() == other.startDateTime.getDayOfYear()
+                && endDateTime.getYear() == other.endDateTime.getYear()
+                && endDateTime.getDayOfYear() == other.endDateTime.getDayOfYear();
+    }
+
     @Override
     public String toString() {
         return startDateTime + "-" + endDateTime.toLocalTime();

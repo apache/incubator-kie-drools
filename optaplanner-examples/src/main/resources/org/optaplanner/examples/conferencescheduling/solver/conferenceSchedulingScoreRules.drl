@@ -348,3 +348,14 @@ rule "Talk undesired room tag"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
+
+rule "Same day talks"
+    when
+        ConferenceParametrization($weight : sameDayTalks != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
+        $rightTalk :  Talk(timeslot != null, id > $leftId, !timeslot.isOnSameDayAs($timeslot),
+            overlappingContentCount($leftTalk) > 0 || overlappingThemeTrackCount($leftTalk) > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * ($rightTalk.overlappingThemeTrackCount($leftTalk)
+            + $rightTalk.overlappingContentCount($leftTalk)));
+end
