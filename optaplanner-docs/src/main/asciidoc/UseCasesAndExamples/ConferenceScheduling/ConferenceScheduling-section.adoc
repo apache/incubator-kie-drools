@@ -25,6 +25,8 @@ Hard constraints:
 ** Speaker prohibited room tag: If a speaker has a prohibited room tag, then all his/her talks cannot be assigned to a room with that tag.
 ** Talk required room tag: If a talk has a required room tag, then it must be assigned to a room with that tag.
 ** Talk prohibited room tag: If a talk has a prohibited room tag, then it cannot be assigned to a room with that tag.
+* Talk mutually-exclusive-talks tag: Talks that share such a tag must not be scheduled in overlapping timeslots.
+* Talk prerequisite talks: A talk must be scheduled after all its prerequisite talks.
 
 Soft constraints:
 
@@ -42,6 +44,8 @@ Soft constraints:
 ** Speaker undesired room tag: If a speaker has a undesired room tag, then all his/her talks should not be assigned to a room with that tag.
 ** Talk preferred room tag: If a talk has a preferred room tag, then it should be assigned to a room with that tag.
 ** Talk undesired room tag: If a talk has a undesired room tag, then it should not be assigned to a room with that tag.
+* Same day talks: All talks that share a same theme tag or content tag should be scheduled in the minimum number of days
+(ideally in the same day).
 
 
 [[conferenceSchedulingValueProposition]]
