@@ -20,13 +20,13 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.TBusinessKnowledgeModel;
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
 public class BusinessKnowledgeModelConverter extends DRGElementConverter {
     public static final String ENCAPSULATED_LOGIC = "encapsulatedLogic";

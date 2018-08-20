@@ -39,13 +39,13 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.model.v1x.DMNElement;
-import org.kie.dmn.model.v1x.DecisionRule;
-import org.kie.dmn.model.v1x.DecisionTable;
-import org.kie.dmn.model.v1x.InputClause;
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -101,7 +101,7 @@ public class DTableModel {
     }
 
     private void validate() {
-        if ( dt.getHitPolicy().equals( org.kie.dmn.model.v1x.HitPolicy.PRIORITY) && !hasOutputValues() ) {
+        if ( dt.getHitPolicy().equals( org.kie.dmn.model.api.HitPolicy.PRIORITY) && !hasOutputValues() ) {
             MsgUtil.reportMessage( ExecModelDMNEvaluatorCompiler.logger,
                                    DMNMessage.Severity.ERROR,
                                    dt.getParent(),

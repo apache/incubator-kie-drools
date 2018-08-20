@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.NamedElement;
+import org.kie.dmn.model.api.NamedElement;
 
 public class TNamedElement extends TDMNElement implements NamedElement {
 

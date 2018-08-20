@@ -18,10 +18,10 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.DecisionRule;
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.RuleAnnotation;
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.RuleAnnotation;
+import org.kie.dmn.model.api.UnaryTests;
 
 public class TDecisionRule extends TDMNElement implements DecisionRule {
 

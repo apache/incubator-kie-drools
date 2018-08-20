@@ -15,8 +15,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
 
 public class TAuthorityRequirement extends KieDMNModelInstrumentedBase implements AuthorityRequirement, NotADMNElementInV11 {
 

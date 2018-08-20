@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1x.Expression;
+import org.kie.dmn.model.api.Expression;
 
 public abstract class ExpressionConverter
         extends DMNElementConverter {

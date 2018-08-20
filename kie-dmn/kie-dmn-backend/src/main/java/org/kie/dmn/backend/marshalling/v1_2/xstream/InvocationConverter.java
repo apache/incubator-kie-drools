@@ -20,11 +20,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Invocation;
 import org.kie.dmn.model.v1_2.TInvocation;
-import org.kie.dmn.model.v1x.Binding;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.Invocation;
 
 public class InvocationConverter extends ExpressionConverter {
     public static final String BINDING = "binding";

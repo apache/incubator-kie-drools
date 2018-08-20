@@ -20,10 +20,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.ImportedValues;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_1.TLiteralExpression;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.ImportedValues;
-import org.kie.dmn.model.v1x.LiteralExpression;
 
 public class LiteralExpressionConverter
         extends ExpressionConverter {

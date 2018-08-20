@@ -20,12 +20,12 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.v1_2.TFunctionDefinition;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.FunctionKind;
-import org.kie.dmn.model.v1x.InformationItem;
 
 public class FunctionDefinitionConverter extends ExpressionConverter {
 

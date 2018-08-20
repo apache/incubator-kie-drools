@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-public abstract class Diagram extends DiagramElement implements org.kie.dmn.model.v1x.dmndi.Diagram {
+public abstract class Diagram extends DiagramElement implements org.kie.dmn.model.api.dmndi.Diagram {
 
     protected String name;
     protected String documentation;

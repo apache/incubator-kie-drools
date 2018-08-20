@@ -18,7 +18,7 @@ package org.kie.dmn.model.v1_2.dmndi;
 
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
-public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Dimension {
+public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.Dimension {
 
     protected double width;
     protected double height;

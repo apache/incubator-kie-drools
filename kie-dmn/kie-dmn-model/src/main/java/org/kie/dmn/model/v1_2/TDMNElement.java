@@ -19,7 +19,7 @@ package org.kie.dmn.model.v1_2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.DMNElement;
+import org.kie.dmn.model.api.DMNElement;
 
 public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNElement {
 

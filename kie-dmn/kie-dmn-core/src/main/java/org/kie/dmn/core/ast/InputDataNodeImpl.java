@@ -19,7 +19,7 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.model.v1x.InputData;
+import org.kie.dmn.model.api.InputData;
 
 public class InputDataNodeImpl extends DMNBaseNode
         implements InputDataNode {

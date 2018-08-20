@@ -16,9 +16,9 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.InputClause;
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.UnaryTests;
 
 public class TInputClause extends TDMNElement implements InputClause {
 

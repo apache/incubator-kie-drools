@@ -36,9 +36,9 @@ import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.v1x.Context;
-import org.kie.dmn.model.v1x.ContextEntry;
-import org.kie.dmn.model.v1x.FunctionDefinition;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
+import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

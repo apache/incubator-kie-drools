@@ -17,7 +17,7 @@ package org.kie.dmn.model.v1_1;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.Expression;
+import org.kie.dmn.model.api.Expression;
 
 public abstract class TExpression extends TDMNElement implements Expression {
 

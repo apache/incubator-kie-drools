@@ -18,9 +18,9 @@ package org.kie.dmn.model.v1_2.dmndi;
 
 import javax.xml.namespace.QName;
 
-public class DMNEdge extends Edge implements org.kie.dmn.model.v1x.dmndi.DMNEdge {
+public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge {
 
-    protected org.kie.dmn.model.v1x.dmndi.DMNLabel dmnLabel;
+    protected org.kie.dmn.model.api.dmndi.DMNLabel dmnLabel;
     protected QName dmnElementRef;
 
     /**
@@ -31,7 +31,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.v1x.dmndi.DMNEdge
      *     {@link DMNLabel }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.DMNLabel getDMNLabel() {
+    public org.kie.dmn.model.api.dmndi.DMNLabel getDMNLabel() {
         return dmnLabel;
     }
 
@@ -43,7 +43,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.v1x.dmndi.DMNEdge
      *     {@link DMNLabel }
      *     
      */
-    public void setDMNLabel(org.kie.dmn.model.v1x.dmndi.DMNLabel value) {
+    public void setDMNLabel(org.kie.dmn.model.api.dmndi.DMNLabel value) {
         this.dmnLabel = value;
     }
 

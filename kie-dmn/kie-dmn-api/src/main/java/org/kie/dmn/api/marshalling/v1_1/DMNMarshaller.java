@@ -20,6 +20,6 @@ package org.kie.dmn.api.marshalling.v1_1;
  * @deprecated use {@link #org.kie.dmn.api.marshalling.v1x.DMNMarshaller instead.
  */
 @Deprecated
-public interface DMNMarshaller extends org.kie.dmn.api.marshalling.v1x.DMNMarshaller {
+public interface DMNMarshaller extends org.kie.dmn.api.marshalling.DMNMarshaller {
 
 }

@@ -18,10 +18,10 @@ package org.kie.dmn.model.v1_2.dmndi;
 
 import javax.xml.namespace.QName;
 
-public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNShape {
+public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNShape {
 
-    protected org.kie.dmn.model.v1x.dmndi.DMNLabel dmnLabel;
-    protected org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine dmnDecisionServiceDividerLine;
+    protected org.kie.dmn.model.api.dmndi.DMNLabel dmnLabel;
+    protected org.kie.dmn.model.api.dmndi.DMNDecisionServiceDividerLine dmnDecisionServiceDividerLine;
     protected QName dmnElementRef;
     protected Boolean isListedInputData;
     protected Boolean isCollapsed;
@@ -34,7 +34,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNSh
      *     {@link DMNLabel }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.DMNLabel getDMNLabel() {
+    public org.kie.dmn.model.api.dmndi.DMNLabel getDMNLabel() {
         return dmnLabel;
     }
 
@@ -46,7 +46,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNSh
      *     {@link DMNLabel }
      *     
      */
-    public void setDMNLabel(org.kie.dmn.model.v1x.dmndi.DMNLabel value) {
+    public void setDMNLabel(org.kie.dmn.model.api.dmndi.DMNLabel value) {
         this.dmnLabel = value;
     }
 
@@ -58,7 +58,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNSh
      *     {@link DMNDecisionServiceDividerLine }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine getDMNDecisionServiceDividerLine() {
+    public org.kie.dmn.model.api.dmndi.DMNDecisionServiceDividerLine getDMNDecisionServiceDividerLine() {
         return dmnDecisionServiceDividerLine;
     }
 
@@ -70,7 +70,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNSh
      *     {@link DMNDecisionServiceDividerLine }
      *     
      */
-    public void setDMNDecisionServiceDividerLine(org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine value) {
+    public void setDMNDecisionServiceDividerLine(org.kie.dmn.model.api.dmndi.DMNDecisionServiceDividerLine value) {
         this.dmnDecisionServiceDividerLine = value;
     }
 

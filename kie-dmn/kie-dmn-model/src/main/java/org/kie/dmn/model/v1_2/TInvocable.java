@@ -16,8 +16,8 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.Invocable;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.Invocable;
 
 
 public class TInvocable extends TDRGElement implements Invocable {

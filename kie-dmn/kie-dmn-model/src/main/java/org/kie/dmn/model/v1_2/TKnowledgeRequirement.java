@@ -16,8 +16,8 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.KnowledgeRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 
 public class TKnowledgeRequirement extends TDMNElement implements KnowledgeRequirement {
 

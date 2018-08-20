@@ -19,8 +19,8 @@ package org.kie.dmn.model.v1_2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.DecisionService;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DecisionService;
 
 public class TDecisionService extends TInvocable implements DecisionService {
 

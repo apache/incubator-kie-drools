@@ -18,7 +18,7 @@ package org.kie.dmn.model.v1_2.dmndi;
 
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
-public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Bounds {
+public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.Bounds {
 
     protected double x;
     protected double y;

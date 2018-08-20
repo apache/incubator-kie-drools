@@ -28,11 +28,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
-import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

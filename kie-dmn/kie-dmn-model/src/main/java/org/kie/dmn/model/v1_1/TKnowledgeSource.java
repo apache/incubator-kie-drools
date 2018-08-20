@@ -18,9 +18,9 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.KnowledgeSource;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.KnowledgeSource;
 
 public class TKnowledgeSource extends TDRGElement implements KnowledgeSource {
 

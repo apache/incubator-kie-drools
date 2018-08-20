@@ -23,10 +23,10 @@ import javax.xml.bind.JAXBElement;
 
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
-public abstract class DiagramElement extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.DiagramElement {
+public abstract class DiagramElement extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.DiagramElement {
 
-    protected org.kie.dmn.model.v1x.dmndi.DiagramElement.Extension extension;
-    protected org.kie.dmn.model.v1x.dmndi.Style style;
+    protected org.kie.dmn.model.api.dmndi.DiagramElement.Extension extension;
+    protected org.kie.dmn.model.api.dmndi.Style style;
     protected Object sharedStyle;
     protected String id;
 
@@ -38,7 +38,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link DiagramElement.Extension }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.DiagramElement.Extension getExtension() {
+    public org.kie.dmn.model.api.dmndi.DiagramElement.Extension getExtension() {
         return extension;
     }
 
@@ -50,7 +50,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link DiagramElement.Extension }
      *     
      */
-    public void setExtension(org.kie.dmn.model.v1x.dmndi.DiagramElement.Extension value) {
+    public void setExtension(org.kie.dmn.model.api.dmndi.DiagramElement.Extension value) {
         this.extension = value;
     }
 
@@ -63,7 +63,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link JAXBElement }{@code <}{@link Style }{@code >}
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Style getStyle() {
+    public org.kie.dmn.model.api.dmndi.Style getStyle() {
         return style;
     }
 
@@ -76,7 +76,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link JAXBElement }{@code <}{@link Style }{@code >}
      *     
      */
-    public void setStyle(org.kie.dmn.model.v1x.dmndi.Style value) {
+    public void setStyle(org.kie.dmn.model.api.dmndi.Style value) {
         this.style = value;
     }
 
@@ -130,7 +130,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
 
 
 
-    public static class Extension implements org.kie.dmn.model.v1x.dmndi.DiagramElement.Extension {
+    public static class Extension implements org.kie.dmn.model.api.dmndi.DiagramElement.Extension {
 
         protected List<Object> any;
 

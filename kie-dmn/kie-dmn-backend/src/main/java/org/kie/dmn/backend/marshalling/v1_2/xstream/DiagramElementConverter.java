@@ -20,8 +20,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1x.dmndi.DiagramElement;
-import org.kie.dmn.model.v1x.dmndi.Style;
+import org.kie.dmn.model.api.dmndi.DiagramElement;
+import org.kie.dmn.model.api.dmndi.Style;
 
 public abstract class DiagramElementConverter extends DMNModelInstrumentedBaseConverter {
 

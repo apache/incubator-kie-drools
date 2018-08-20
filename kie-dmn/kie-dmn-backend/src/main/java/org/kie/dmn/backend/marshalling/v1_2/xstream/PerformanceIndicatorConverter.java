@@ -20,10 +20,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.PerformanceIndicator;
 import org.kie.dmn.model.v1_2.TPerformanceIndicator;
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.PerformanceIndicator;
 
 public class PerformanceIndicatorConverter extends BusinessContextElementConverter {
     public static final String IMPACTING_DECISION = "impactingDecision";

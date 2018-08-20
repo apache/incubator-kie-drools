@@ -16,8 +16,8 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.InformationRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.InformationRequirement;
 
 public class TInformationRequirement extends TDMNElement implements InformationRequirement {
 

@@ -39,7 +39,7 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.model.v1x.DMNElement.ExtensionElements;
+import org.kie.dmn.model.api.DMNElement.ExtensionElements;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
 public class MultiInstanceDecisionLogic {

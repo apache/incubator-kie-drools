@@ -15,7 +15,7 @@
 
 package org.kie.dmn.validation.DMNv1x;
 
-import org.kie.dmn.model.v1x.*;
+import org.kie.dmn.model.api.*;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.core.util.MsgUtil;
@@ -160,9 +160,9 @@ end
 
 rule RELATION_ROW_CELL_NOT_LITERAL
 when
-  $e : Expression( parent instanceof org.kie.dmn.model.v1x.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
+  $e : Expression( parent instanceof org.kie.dmn.model.api.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
 then
-  org.kie.dmn.model.v1x.List row = (org.kie.dmn.model.v1x.List) $e.getParent();
+  org.kie.dmn.model.api.List row = (org.kie.dmn.model.api.List) $e.getParent();
   Relation relation = (Relation) row.getParent();
   reporter.report( DMNMessage.Severity.ERROR,  $e , Msg.RELATION_CELL_NOT_LITERAL,
                    relation.getRow().indexOf(row)+1,
@@ -172,7 +172,7 @@ end
 rule RELATION_ROW_CELLCOUNTMISMATCH
 when
   $rel : Relation()
-  $row : org.kie.dmn.model.v1x.List( expression.size != $rel.column.size ) from $rel.row
+  $row : org.kie.dmn.model.api.List( expression.size != $rel.column.size ) from $rel.row
 then
   reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_CELL_COUNT_MISMATCH,
                    $rel.getRow().indexOf($row)+1,

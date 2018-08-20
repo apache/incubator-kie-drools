@@ -25,8 +25,8 @@ import java.util.Optional;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.RowLocation;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.RowLocation;
 
 public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumentedBase {
 

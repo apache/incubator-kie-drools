@@ -20,16 +20,16 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.BuiltinAggregator;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.DecisionTableOrientation;
+import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.RuleAnnotationClause;
 import org.kie.dmn.model.v1_2.TDecisionTable;
-import org.kie.dmn.model.v1x.BuiltinAggregator;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.DecisionRule;
-import org.kie.dmn.model.v1x.DecisionTable;
-import org.kie.dmn.model.v1x.DecisionTableOrientation;
-import org.kie.dmn.model.v1x.HitPolicy;
-import org.kie.dmn.model.v1x.InputClause;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
 
 public class DecisionTableConverter extends ExpressionConverter {
     public static final String RULE = "rule";

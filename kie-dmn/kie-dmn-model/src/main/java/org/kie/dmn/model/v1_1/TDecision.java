@@ -18,13 +18,13 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.Decision;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.InformationRequirement;
-import org.kie.dmn.model.v1x.KnowledgeRequirement;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 
 public class TDecision extends TDRGElement implements Decision {
 

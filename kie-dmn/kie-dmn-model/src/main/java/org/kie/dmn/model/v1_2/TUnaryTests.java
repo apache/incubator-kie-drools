@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.UnaryTests;
 
 public class TUnaryTests extends TDMNElement implements UnaryTests {
 

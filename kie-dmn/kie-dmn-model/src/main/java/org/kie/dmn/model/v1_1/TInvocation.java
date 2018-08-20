@@ -18,9 +18,9 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.Binding;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.Invocation;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Invocation;
 
 public class TInvocation extends TExpression implements Invocation {
 

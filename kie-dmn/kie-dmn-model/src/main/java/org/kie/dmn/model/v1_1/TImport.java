@@ -17,7 +17,7 @@ package org.kie.dmn.model.v1_1;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.Import;
+import org.kie.dmn.model.api.Import;
 
 public class TImport extends KieDMNModelInstrumentedBase implements Import, NotADMNElementInV11 {
 

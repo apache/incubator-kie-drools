@@ -19,9 +19,9 @@ package org.kie.dmn.model.v1_2.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Edge extends DiagramElement implements org.kie.dmn.model.v1x.dmndi.Edge {
+public abstract class Edge extends DiagramElement implements org.kie.dmn.model.api.dmndi.Edge {
 
-    protected List<org.kie.dmn.model.v1x.dmndi.Point> waypoint;
+    protected List<org.kie.dmn.model.api.dmndi.Point> waypoint;
 
     /**
      * Gets the value of the waypoint property.
@@ -45,7 +45,7 @@ public abstract class Edge extends DiagramElement implements org.kie.dmn.model.v
      * 
      * 
      */
-    public List<org.kie.dmn.model.v1x.dmndi.Point> getWaypoint() {
+    public List<org.kie.dmn.model.api.dmndi.Point> getWaypoint() {
         if (waypoint == null) {
             waypoint = new ArrayList<>();
         }

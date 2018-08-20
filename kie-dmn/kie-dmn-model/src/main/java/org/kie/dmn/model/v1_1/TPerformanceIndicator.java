@@ -18,8 +18,8 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.PerformanceIndicator;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.PerformanceIndicator;
 
 public class TPerformanceIndicator extends TBusinessContextElement implements PerformanceIndicator {
 

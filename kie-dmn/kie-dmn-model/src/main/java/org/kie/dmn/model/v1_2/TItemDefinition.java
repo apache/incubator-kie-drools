@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.ItemDefinition;
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.api.UnaryTests;
 
 public class TItemDefinition extends TNamedElement implements ItemDefinition {
 

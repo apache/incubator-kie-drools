@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.model.api.Artifact;
+import org.kie.dmn.model.api.BusinessContextElement;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.ElementCollection;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.api.dmndi.DMNDI;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
-import org.kie.dmn.model.v1x.Artifact;
-import org.kie.dmn.model.v1x.BusinessContextElement;
-import org.kie.dmn.model.v1x.DRGElement;
-import org.kie.dmn.model.v1x.DecisionService;
-import org.kie.dmn.model.v1x.Definitions;
-import org.kie.dmn.model.v1x.ElementCollection;
-import org.kie.dmn.model.v1x.Import;
-import org.kie.dmn.model.v1x.ItemDefinition;
-import org.kie.dmn.model.v1x.dmndi.DMNDI;
 
 public class TDefinitions extends TNamedElement implements Definitions {
 

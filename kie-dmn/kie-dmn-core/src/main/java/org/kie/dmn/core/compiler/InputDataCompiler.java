@@ -20,8 +20,8 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.model.v1x.DRGElement;
-import org.kie.dmn.model.v1x.InputData;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.InputData;
 
 public class InputDataCompiler implements DRGElementCompiler {
     @Override

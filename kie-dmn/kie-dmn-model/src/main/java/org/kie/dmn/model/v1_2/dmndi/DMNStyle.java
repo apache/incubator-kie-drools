@@ -16,14 +16,14 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-import org.kie.dmn.model.v1x.dmndi.AlignmentKind;
+import org.kie.dmn.model.api.dmndi.AlignmentKind;
 
 
-public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNStyle {
+public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNStyle {
 
-    protected org.kie.dmn.model.v1x.dmndi.Color fillColor;
-    protected org.kie.dmn.model.v1x.dmndi.Color strokeColor;
-    protected org.kie.dmn.model.v1x.dmndi.Color fontColor;
+    protected org.kie.dmn.model.api.dmndi.Color fillColor;
+    protected org.kie.dmn.model.api.dmndi.Color strokeColor;
+    protected org.kie.dmn.model.api.dmndi.Color fontColor;
     protected String fontFamily;
     protected Double fontSize;
     protected Boolean fontItalic;
@@ -41,7 +41,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Color getFillColor() {
+    public org.kie.dmn.model.api.dmndi.Color getFillColor() {
         return fillColor;
     }
 
@@ -53,7 +53,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public void setFillColor(org.kie.dmn.model.v1x.dmndi.Color value) {
+    public void setFillColor(org.kie.dmn.model.api.dmndi.Color value) {
         this.fillColor = value;
     }
 
@@ -65,7 +65,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Color getStrokeColor() {
+    public org.kie.dmn.model.api.dmndi.Color getStrokeColor() {
         return strokeColor;
     }
 
@@ -77,7 +77,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public void setStrokeColor(org.kie.dmn.model.v1x.dmndi.Color value) {
+    public void setStrokeColor(org.kie.dmn.model.api.dmndi.Color value) {
         this.strokeColor = value;
     }
 
@@ -89,7 +89,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Color getFontColor() {
+    public org.kie.dmn.model.api.dmndi.Color getFontColor() {
         return fontColor;
     }
 
@@ -101,7 +101,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.v1x.dmndi.DMNSt
      *     {@link Color }
      *     
      */
-    public void setFontColor(org.kie.dmn.model.v1x.dmndi.Color value) {
+    public void setFontColor(org.kie.dmn.model.api.dmndi.Color value) {
         this.fontColor = value;
     }
 

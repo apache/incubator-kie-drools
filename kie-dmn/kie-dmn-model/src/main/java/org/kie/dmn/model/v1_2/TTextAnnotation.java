@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.TextAnnotation;
+import org.kie.dmn.model.api.TextAnnotation;
 
 public class TTextAnnotation extends TArtifact implements TextAnnotation {
 

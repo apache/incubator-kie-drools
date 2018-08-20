@@ -31,9 +31,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Test;
-import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

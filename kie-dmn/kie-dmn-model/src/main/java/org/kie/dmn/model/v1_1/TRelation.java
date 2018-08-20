@@ -17,9 +17,9 @@ package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.List;
-import org.kie.dmn.model.v1x.Relation;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.List;
+import org.kie.dmn.model.api.Relation;
 
 public class TRelation extends TExpression implements Relation {
 

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.Import;
+import org.kie.dmn.model.api.Import;
 
 public class TImport extends TNamedElement implements Import {
 

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.ImportedValues;
+import org.kie.dmn.model.api.ImportedValues;
 
 public class TImportedValues extends TImport implements ImportedValues {
 

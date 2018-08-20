@@ -28,8 +28,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
-import org.kie.dmn.model.v1x.ItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_2.dmndi;
 
-public class DMNLabel extends Shape implements org.kie.dmn.model.v1x.dmndi.DMNLabel {
+public class DMNLabel extends Shape implements org.kie.dmn.model.api.dmndi.DMNLabel {
 
     protected String text;
 

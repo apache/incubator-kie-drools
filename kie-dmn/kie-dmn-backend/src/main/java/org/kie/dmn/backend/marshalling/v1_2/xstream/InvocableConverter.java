@@ -20,8 +20,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.Invocable;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.Invocable;
 
 public abstract class InvocableConverter extends DRGElementConverter {
 

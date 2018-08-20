@@ -17,7 +17,7 @@ package org.kie.dmn.model.v1_1;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.api.InformationItem;
 
 public class TInformationItem extends TNamedElement implements InformationItem {
 

@@ -20,10 +20,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.dmndi.AlignmentKind;
-import org.kie.dmn.model.v1x.dmndi.Color;
-import org.kie.dmn.model.v1x.dmndi.DMNStyle;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.dmndi.AlignmentKind;
+import org.kie.dmn.model.api.dmndi.Color;
+import org.kie.dmn.model.api.dmndi.DMNStyle;
 
 public class DMNStyleConverter extends StyleConverter {
 

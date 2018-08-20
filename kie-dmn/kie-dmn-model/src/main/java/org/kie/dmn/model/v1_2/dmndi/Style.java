@@ -23,9 +23,9 @@ import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.w3c.dom.Element;
 
 
-public abstract class Style extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.v1x.dmndi.Style {
+public abstract class Style extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.Style {
 
-    protected org.kie.dmn.model.v1x.dmndi.Style.Extension extension;
+    protected org.kie.dmn.model.api.dmndi.Style.Extension extension;
     protected String id;
 
     /**
@@ -36,7 +36,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
      *     {@link Style.Extension }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Style.Extension getExtension() {
+    public org.kie.dmn.model.api.dmndi.Style.Extension getExtension() {
         return extension;
     }
 
@@ -48,7 +48,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
      *     {@link Style.Extension }
      *     
      */
-    public void setExtension(org.kie.dmn.model.v1x.dmndi.Style.Extension value) {
+    public void setExtension(org.kie.dmn.model.api.dmndi.Style.Extension value) {
         this.extension = value;
     }
 
@@ -77,7 +77,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
     }
 
 
-    public static class Extension implements org.kie.dmn.model.v1x.dmndi.Style.Extension {
+    public static class Extension implements org.kie.dmn.model.api.dmndi.Style.Extension {
 
         protected List<Object> any;
 

@@ -22,10 +22,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.dmndi.DMNDecisionServiceDividerLine;
+import org.kie.dmn.model.api.dmndi.DMNLabel;
 import org.kie.dmn.model.v1_2.dmndi.DMNShape;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.dmndi.DMNDecisionServiceDividerLine;
-import org.kie.dmn.model.v1x.dmndi.DMNLabel;
 
 public class DMNShapeConverter extends ShapeConverter {
 

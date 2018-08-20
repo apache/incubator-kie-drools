@@ -15,7 +15,7 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.api.DMNElementReference;
 
 public class TDMNElementReference extends KieDMNModelInstrumentedBase implements DMNElementReference {
 

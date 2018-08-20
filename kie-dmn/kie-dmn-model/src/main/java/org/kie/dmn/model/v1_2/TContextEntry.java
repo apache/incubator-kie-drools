@@ -16,9 +16,9 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.ContextEntry;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.api.ContextEntry;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.InformationItem;
 
 public class TContextEntry extends TDMNElement implements ContextEntry {
 

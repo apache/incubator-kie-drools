@@ -21,10 +21,10 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-public class DMNDiagram extends Diagram implements org.kie.dmn.model.v1x.dmndi.DMNDiagram {
+public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.DMNDiagram {
 
-    protected org.kie.dmn.model.v1x.dmndi.Dimension size;
-    protected List<org.kie.dmn.model.v1x.dmndi.DiagramElement> dmnDiagramElement;
+    protected org.kie.dmn.model.api.dmndi.Dimension size;
+    protected List<org.kie.dmn.model.api.dmndi.DiagramElement> dmnDiagramElement;
 
     /**
      * Gets the value of the size property.
@@ -34,7 +34,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.v1x.dmndi.D
      *     {@link Dimension }
      *     
      */
-    public org.kie.dmn.model.v1x.dmndi.Dimension getSize() {
+    public org.kie.dmn.model.api.dmndi.Dimension getSize() {
         return size;
     }
 
@@ -46,7 +46,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.v1x.dmndi.D
      *     {@link Dimension }
      *     
      */
-    public void setSize(org.kie.dmn.model.v1x.dmndi.Dimension value) {
+    public void setSize(org.kie.dmn.model.api.dmndi.Dimension value) {
         this.size = value;
     }
 
@@ -74,7 +74,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.v1x.dmndi.D
      * 
      * 
      */
-    public List<org.kie.dmn.model.v1x.dmndi.DiagramElement> getDMNDiagramElement() {
+    public List<org.kie.dmn.model.api.dmndi.DiagramElement> getDMNDiagramElement() {
         if (dmnDiagramElement == null) {
             dmnDiagramElement = new ArrayList<>();
         }

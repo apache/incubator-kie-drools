@@ -20,15 +20,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.kie.dmn.model.v1_1.TDecision;
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Decision;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.InformationRequirement;
-import org.kie.dmn.model.v1x.KnowledgeRequirement;
 
 public class DecisionConverter extends DRGElementConverter {
     public static final String QUESTION = "question";

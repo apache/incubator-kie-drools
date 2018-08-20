@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.QNameMap;
-import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 

@@ -20,9 +20,9 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.TextAnnotation;
 import org.kie.dmn.model.v1_2.TTextAnnotation;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.TextAnnotation;
 
 public class TextAnnotationConverter extends ArtifactConverter {
     public static final String TEXT = "text";

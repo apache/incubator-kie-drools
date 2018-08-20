@@ -20,10 +20,10 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.FunctionKind;
-import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.api.InformationItem;
 
 public class TFunctionDefinition extends TExpression implements FunctionDefinition {
 

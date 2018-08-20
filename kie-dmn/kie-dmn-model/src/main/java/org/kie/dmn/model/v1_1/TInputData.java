@@ -15,8 +15,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.InputData;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InputData;
 
 public class TInputData extends TDRGElement implements InputData {
 

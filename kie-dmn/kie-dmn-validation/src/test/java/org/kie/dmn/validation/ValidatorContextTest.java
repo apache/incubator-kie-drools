@@ -28,8 +28,8 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
-import org.kie.dmn.model.v1x.Context;
-import org.kie.dmn.model.v1x.ContextEntry;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
 
 public class ValidatorContextTest extends AbstractValidatorTest {
 

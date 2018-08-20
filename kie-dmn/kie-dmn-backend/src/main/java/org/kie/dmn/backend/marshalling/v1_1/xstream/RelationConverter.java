@@ -20,10 +20,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.Relation;
 import org.kie.dmn.model.v1_1.TRelation;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.Relation;
 
 public class RelationConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";
@@ -37,7 +37,7 @@ public class RelationConverter extends ExpressionConverter {
         if (COLUMN.equals(nodeName)) {
             r.getColumn().add((InformationItem) child);
         } else if (ROW.equals(nodeName)) {
-            r.getRow().add((org.kie.dmn.model.v1x.List) child);
+            r.getRow().add((org.kie.dmn.model.api.List) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -58,7 +58,7 @@ public class RelationConverter extends ExpressionConverter {
         for (InformationItem c : r.getColumn()) {
             writeChildrenNode(writer, context, c, COLUMN);
         }
-        for (org.kie.dmn.model.v1x.List row : r.getRow()) {
+        for (org.kie.dmn.model.api.List row : r.getRow()) {
             writeChildrenNode(writer, context, row, ROW);
         }
     }

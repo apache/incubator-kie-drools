@@ -18,8 +18,8 @@ package org.kie.dmn.backend.marshalling.v1x;
 
 import java.util.List;
 
-import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
-import org.kie.dmn.api.marshalling.v1x.DMNMarshaller;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
 
 public final class DMNMarshallerFactory {
 

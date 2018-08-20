@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_1.TImport;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Import;
 
 public class ImportDMNResolverUtil {
 

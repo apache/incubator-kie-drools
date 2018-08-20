@@ -18,11 +18,11 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.AuthorityRequirement;
-import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.KnowledgeRequirement;
+import org.kie.dmn.model.api.AuthorityRequirement;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 
 public class TBusinessKnowledgeModel extends TDRGElement implements BusinessKnowledgeModel {
 

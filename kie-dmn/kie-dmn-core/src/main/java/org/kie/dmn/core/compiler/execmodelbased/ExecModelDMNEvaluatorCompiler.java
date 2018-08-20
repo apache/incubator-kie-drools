@@ -34,8 +34,8 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.v1x.DRGElement;
-import org.kie.dmn.model.v1x.DecisionTable;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

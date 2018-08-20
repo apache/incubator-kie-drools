@@ -15,7 +15,7 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.BusinessContextElement;
+import org.kie.dmn.model.api.BusinessContextElement;
 
 public abstract class TBusinessContextElement extends TNamedElement implements BusinessContextElement {
 

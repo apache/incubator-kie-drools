@@ -15,8 +15,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.ImportedValues;
-import org.kie.dmn.model.v1x.LiteralExpression;
+import org.kie.dmn.model.api.ImportedValues;
+import org.kie.dmn.model.api.LiteralExpression;
 
 public class TLiteralExpression extends TExpression implements LiteralExpression {
 

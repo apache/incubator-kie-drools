@@ -19,14 +19,14 @@ package org.kie.dmn.model.v1_2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.BuiltinAggregator;
-import org.kie.dmn.model.v1x.DecisionRule;
-import org.kie.dmn.model.v1x.DecisionTable;
-import org.kie.dmn.model.v1x.DecisionTableOrientation;
-import org.kie.dmn.model.v1x.HitPolicy;
-import org.kie.dmn.model.v1x.InputClause;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.RuleAnnotationClause;
+import org.kie.dmn.model.api.BuiltinAggregator;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.DecisionTableOrientation;
+import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.RuleAnnotationClause;
 
 
 public class TDecisionTable extends TExpression implements DecisionTable {

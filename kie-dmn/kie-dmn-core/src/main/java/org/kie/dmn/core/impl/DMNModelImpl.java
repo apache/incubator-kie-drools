@@ -46,7 +46,7 @@ import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
@@ -57,9 +57,9 @@ import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.TDefinitions;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.Definitions;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {

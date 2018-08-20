@@ -17,8 +17,8 @@ package org.kie.dmn.model.v1_1;
 
 import java.util.ArrayList;
 
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.List;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.List;
 
 /**
  * Representation for DMN XSD tList type.

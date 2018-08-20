@@ -16,7 +16,7 @@
 
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.DMNElement;
+import org.kie.dmn.model.api.DMNElement;
 
 public interface NotADMNElementInV11 extends DMNElement {
 

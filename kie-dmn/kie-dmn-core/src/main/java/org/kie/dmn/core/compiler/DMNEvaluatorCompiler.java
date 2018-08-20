@@ -39,26 +39,26 @@ import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TLiteralExpression;
-import org.kie.dmn.model.v1x.Binding;
-import org.kie.dmn.model.v1x.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1x.Context;
-import org.kie.dmn.model.v1x.ContextEntry;
-import org.kie.dmn.model.v1x.DMNElement;
-import org.kie.dmn.model.v1x.Decision;
-import org.kie.dmn.model.v1x.DecisionRule;
-import org.kie.dmn.model.v1x.DecisionTable;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.FunctionDefinition;
-import org.kie.dmn.model.v1x.FunctionKind;
-import org.kie.dmn.model.v1x.HitPolicy;
-import org.kie.dmn.model.v1x.InformationItem;
-import org.kie.dmn.model.v1x.InputClause;
-import org.kie.dmn.model.v1x.Invocation;
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.Relation;
-import org.kie.dmn.model.v1x.UnaryTests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,8 +113,8 @@ public class DMNEvaluatorCompiler {
             return compileFunctionDefinition( ctx, model, node, exprName, (FunctionDefinition) expression );
         } else if ( expression instanceof Context ) {
             return compileContext( ctx, model, node, exprName, (Context) expression );
-        } else if ( expression instanceof org.kie.dmn.model.v1x.List ) {
-            return compileList( ctx, model, node, exprName, (org.kie.dmn.model.v1x.List) expression );
+        } else if ( expression instanceof org.kie.dmn.model.api.List ) {
+            return compileList( ctx, model, node, exprName, (org.kie.dmn.model.api.List) expression );
         } else if ( expression instanceof Relation ) {
             return compileRelation( ctx, model, node, exprName, (Relation) expression );
         } else if ( expression instanceof Invocation ) {
@@ -188,7 +188,7 @@ public class DMNEvaluatorCompiler {
             DMNCompilerHelper.checkVariableName( model, col, col.getName() );
             relationEval.addColumn( col.getName() );
         }
-        for ( org.kie.dmn.model.v1x.List row : relationDef.getRow() ) {
+        for ( org.kie.dmn.model.api.List row : relationDef.getRow() ) {
             java.util.List<DMNExpressionEvaluator> values = new ArrayList<>();
             for ( Expression expr : row.getExpression() ) {
                 if (expr instanceof LiteralExpression) {
@@ -219,8 +219,8 @@ public class DMNEvaluatorCompiler {
         return relationEval;
     }
 
-    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.v1x.List expression) {
-        org.kie.dmn.model.v1x.List listDef = expression;
+    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.api.List expression) {
+        org.kie.dmn.model.api.List listDef = expression;
         DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef );
         for ( Expression expr : listDef.getExpression() ) {
             listEval.addElement( compileExpression( ctx, model, node, listName, expr ) );

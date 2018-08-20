@@ -20,11 +20,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TOutputClause;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.UnaryTests;
 
 public class OutputClauseConverter extends DMNElementConverter {
     public static final String DEFAULT_OUTPUT_ENTRY = "defaultOutputEntry";

@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.MarshallingUtils;
-import org.kie.dmn.model.v1x.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

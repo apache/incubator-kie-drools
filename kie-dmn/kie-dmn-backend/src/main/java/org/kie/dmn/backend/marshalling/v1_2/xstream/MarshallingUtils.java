@@ -22,13 +22,14 @@ import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1x.*;import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.api.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.v1_2.*;
 
 public final class MarshallingUtils {
 

@@ -17,9 +17,9 @@ package org.kie.dmn.model.v1_1;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1x.LiteralExpression;
-import org.kie.dmn.model.v1x.OutputClause;
-import org.kie.dmn.model.v1x.UnaryTests;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
 
 public class TOutputClause extends TDMNElement implements OutputClause {
 

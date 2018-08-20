@@ -15,9 +15,9 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.v1x.Association;
-import org.kie.dmn.model.v1x.AssociationDirection;
-import org.kie.dmn.model.v1x.DMNElementReference;
+import org.kie.dmn.model.api.Association;
+import org.kie.dmn.model.api.AssociationDirection;
+import org.kie.dmn.model.api.DMNElementReference;
 
 public class TAssociation extends TArtifact implements Association {
 

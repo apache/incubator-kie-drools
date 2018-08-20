@@ -18,8 +18,8 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1x.DMNElementReference;
-import org.kie.dmn.model.v1x.OrganizationUnit;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.OrganizationUnit;
 
 public class TOrganizationUnit extends TBusinessContextElement implements OrganizationUnit {
 

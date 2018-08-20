@@ -16,9 +16,9 @@
 
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.v1x.Binding;
-import org.kie.dmn.model.v1x.Expression;
-import org.kie.dmn.model.v1x.InformationItem;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.InformationItem;
 
 public class TBinding extends KieDMNModelInstrumentedBase implements Binding {
 
