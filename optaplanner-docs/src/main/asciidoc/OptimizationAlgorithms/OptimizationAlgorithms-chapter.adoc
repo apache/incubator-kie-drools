@@ -775,9 +775,10 @@ and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 
 For some functionality (such as multithreaded solving and real-time planning),
 Planner needs to map problem facts and planning entities to an ID.
-Planner uses that ID to rebase moves from one thread's solution state to another's.
+Planner uses that ID to _rebase_ a move from one thread's solution state to another's.
 
-To enable such functionality, specify the `@PlanningId` annotation on the identification field or getter method:
+To enable such functionality, specify the `@PlanningId` annotation on the identification field or getter method,
+for example on the database ID:
 
 [source,java,options="nowrap"]
 ----
@@ -789,6 +790,8 @@ public class CloudComputer {
     ...
 }
 ----
+
+Or alternatively, on another type of ID:
 
 [source,java,options="nowrap"]
 ----
@@ -807,8 +810,8 @@ An `@PlanningId` property must be:
 ** It does not need to be unique across different problem fact classes
 (unless in that rare case that those classes are mixed in the same value range or planning entity collection).
 * An instance of a type that implements `Object.hashCode()` and `Object.equals()`.
-** Types such as `Integer`, `Long`, `String`, `UUID`, ... are preferred.
-* Never `null` when `Solver.solve()` is called.
+** It's recommended to use the type `Integer`, `Long`, `String` or `UUID`.
+* Never `null` by the time `Solver.solve()` is called.
 
 
 [[customThreadFactory]]
@@ -833,7 +836,7 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 === Multithreaded Incremental Solving
 
 Enable multithreaded incremental solving by <<planningId,adding a @PlanningId annotation>>
-on every planning entity class planning value class.
+on every planning entity class and planning value class.
 Then configure a `moveThreadCount`:
 
 [source,xml,options="nowrap"]

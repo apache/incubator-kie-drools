@@ -46,7 +46,7 @@ Simplest configuration:
   </partitionedSearch>
 ----
 
-Also <<planningId,add a @PlanningId annotations>> on every planning entity class planning value class.
+Also <<planningId,add a @PlanningId annotations>> on every planning entity class and planning value class.
 There are several ways to <<partitioningASolution,partition a solution>>.
 
 Advanced configuration:
