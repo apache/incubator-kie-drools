@@ -27,32 +27,14 @@ public class ConferenceSchedulingScoreHardConstraintTest {
 
     @Test
     public void talkTypeOfTimeSlot() {
-        Talk talk1 = new Talk(1L)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk2 = new Talk(2L)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Timeslot slot1 = new Timeslot(1L);
-        Timeslot slot2 = new Timeslot(2L);
+        Talk talk1 = createTalk(1L);
+        Talk talk2 = createTalk(2L);
+        Timeslot slot1 = new Timeslot(1L)
+                .withStartDateTime(LocalDateTime.of(2018, 1, 1, 9, 0))
+                .withEndDateTime(LocalDateTime.of(2018, 1, 1, 10, 0));
+        Timeslot slot2 = new Timeslot(2L)
+                .withStartDateTime(LocalDateTime.of(2018, 1, 1, 9, 0))
+                .withEndDateTime(LocalDateTime.of(2018, 1, 1, 10, 0));
         TalkType talkType1 = new TalkType(0L, "type1");
         TalkType talkType2 = new TalkType(1L, "type2");
         ConferenceSolution solution = new ConferenceSolution(1L)
@@ -76,38 +58,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
     @Test
     public void talkHasUnavailableRoom() {
         TalkType talkType = new TalkType(0L, "type1");
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk2 = new Talk(2L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+        Talk talk2 = createTalk(2L).withTalkType(talkType);
         Timeslot slot1 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
         Timeslot slot2 = new Timeslot(2L).withTalkTypeSet(Collections.singleton(talkType));
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
@@ -138,38 +90,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
     @Test
     public void roomConflict() {
         TalkType talkType = new TalkType(0L, "type1");
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk2 = new Talk(2L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+        Talk talk2 = createTalk(2L).withTalkType(talkType);
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
@@ -233,18 +155,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
         Timeslot slot1 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
         Timeslot slot2 = new Timeslot(1L).withTalkTypeSet(Collections.singleton(talkType));
-        Talk talk1 = new Talk(1L)
-                .withSpeakerList(Collections.emptyList())
-                .withTalkType(talkType)
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(new ConferenceParametrization(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
@@ -286,30 +198,9 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk1 = new Talk(1L)
-                .withSpeakerList(Collections.emptyList())
-                .withTalkType(talkType)
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk2 = new Talk(2L)
-                .withSpeakerList(Collections.emptyList())
-                .withTalkType(talkType)
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+        Talk talk2 = createTalk(2L).withTalkType(talkType);
+
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         LocalDateTime start2 = LocalDateTime.of(2018, 1, 1, 9, 30);
@@ -331,8 +222,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(new ConferenceParametrization(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
-                .withTalkList(Arrays.asList(talk1,talk2))
-                .withTimeslotList(Arrays.asList(slot1,slot2,slot3))
+                .withTalkList(Arrays.asList(talk1, talk2))
+                .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Arrays.asList(speaker1));
         scoreVerifier.assertHardWeight(SPEAKER_CONFLICT, 0, solution);
@@ -363,18 +254,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
@@ -454,18 +335,8 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withPreferredTimeslotTagSet(Collections.emptySet())
                 .withProhibitedTimeslotTagSet(Collections.emptySet())
                 .withUndesiredTimeslotTagSet(Collections.emptySet());
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
+
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
@@ -534,18 +405,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L);
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
@@ -592,18 +452,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withProhibitedTimeslotTagSet(Collections.emptySet())
-                .withUndesiredTimeslotTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L);
         LocalDateTime start1 = LocalDateTime.of(2018, 1, 1, 9, 0);
         LocalDateTime end1 = LocalDateTime.of(2018, 1, 1, 10, 0);
         Timeslot slot1 = new Timeslot(1L)
@@ -652,19 +501,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag3 = "tag3";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.singleton(talkType));
-        Talk talk1 = new Talk(1L)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L);
         Speaker speaker1 = new Speaker(1L)
                 .withUnavailableTimeslotSet(Collections.emptySet())
                 .withRequiredTimeslotTagSet(Collections.emptySet())
@@ -741,19 +578,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag3 = "tag3";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.singleton(talkType));
-        Talk talk1 = new Talk(1L)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L);
         Speaker speaker1 = new Speaker(1L)
                 .withUnavailableTimeslotSet(Collections.emptySet())
                 .withRequiredTimeslotTagSet(Collections.emptySet())
@@ -830,20 +655,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(new ConferenceParametrization(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
@@ -883,20 +695,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
-        Talk talk1 = new Talk(1L)
-                .withTalkType(talkType)
-                .withSpeakerList(Collections.emptyList())
-                .withThemeTrackTagSet(Collections.emptySet())
-                .withSectorTagSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withAudienceTypeSet(Collections.emptySet())
-                .withContentTagSet(Collections.emptySet())
-                .withPreferredTimeslotTagSet(Collections.emptySet())
-                .withRequiredTimeslotTagSet(Collections.emptySet())
-                .withPreferredRoomTagSet(Collections.emptySet())
-                .withRequiredRoomTagSet(Collections.emptySet())
-                .withProhibitedRoomTagSet(Collections.emptySet())
-                .withUndesiredRoomTagSet(Collections.emptySet());
+        Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
                 .withParametrization(new ConferenceParametrization(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
@@ -928,5 +727,25 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         scoreVerifier.assertHardWeight(TALK_PROHIBITED_ROOM_TAG, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         scoreVerifier.assertHardWeight(TALK_PROHIBITED_ROOM_TAG, -2, solution);
+    }
+
+    private Talk createTalk(long id) {
+        return new Talk(id)
+                .withSpeakerList(Collections.emptyList())
+                .withThemeTrackTagSet(Collections.emptySet())
+                .withSectorTagSet(Collections.emptySet())
+                .withAudienceTypeSet(Collections.emptySet())
+                .withAudienceTypeSet(Collections.emptySet())
+                .withContentTagSet(Collections.emptySet())
+                .withRequiredRoomTagSet(Collections.emptySet())
+                .withPreferredRoomTagSet(Collections.emptySet())
+                .withProhibitedRoomTagSet(Collections.emptySet())
+                .withUndesiredRoomTagSet(Collections.emptySet())
+                .withRequiredTimeslotTagSet(Collections.emptySet())
+                .withPreferredTimeslotTagSet(Collections.emptySet())
+                .withProhibitedTimeslotTagSet(Collections.emptySet())
+                .withUndesiredTimeslotTagSet(Collections.emptySet())
+                .withMutuallyExclusiveTalksTagSet(Collections.emptySet())
+                .withPrerequisiteTalksCodesSet(Collections.emptySet());
     }
 }
