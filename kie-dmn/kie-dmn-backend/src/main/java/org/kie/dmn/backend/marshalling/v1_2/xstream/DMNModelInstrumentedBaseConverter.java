@@ -29,9 +29,13 @@ import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.TDefinitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNModelInstrumentedBaseConverter.class);
 
     public DMNModelInstrumentedBaseConverter(XStream xstream) {
         super( xstream.getMapper() );
@@ -72,8 +76,7 @@ public abstract class DMNModelInstrumentedBaseConverter
                     staxWriter.writeNamespace(kv.getKey(), kv.getValue());
                 }
             } catch (Exception e) {
-                //TODO what to do?
-                e.printStackTrace();
+                LOG.warn("The XML driver writer failed to manage writing namespace, namespaces prefixes could be wrong in the resulting file.", e);
             }
         }
         

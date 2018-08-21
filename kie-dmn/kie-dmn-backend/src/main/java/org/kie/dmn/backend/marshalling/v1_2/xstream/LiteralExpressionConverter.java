@@ -74,7 +74,6 @@ public class LiteralExpressionConverter
         LiteralExpression le = (LiteralExpression) parent;
         
         if ( le.getText() != null ) writeChildrenNodeAsValue(writer, context, le.getText(), TEXT);
-        // TODO Or if-else ?
         if ( le.getImportedValues() != null ) writeChildrenNode(writer, context, le.getImportedValues(), IMPORTED_VALUES);
     }
 

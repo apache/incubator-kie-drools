@@ -69,7 +69,6 @@ public class InformationRequirementConverter extends DMNElementConverter {
         if ( ir.getRequiredDecision() != null ) {
             writeChildrenNode(writer, context, ir.getRequiredDecision(), REQUIRED_DECISION);
         }
-        // TODO or if else ?
         if ( ir.getRequiredInput() != null ) {
             writeChildrenNode(writer, context, ir.getRequiredInput(), REQUIRED_INPUT);
         }

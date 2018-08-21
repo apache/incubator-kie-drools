@@ -58,7 +58,6 @@ public class AuthorityRequirementConverter extends DMNElementConverter {
         AuthorityRequirement ar = (AuthorityRequirement) parent;
         
         if (ar.getRequiredDecision() != null) writeChildrenNode(writer, context, ar.getRequiredDecision(), REQUIRED_DECISION); 
-        // TODO or if else?
         if (ar.getRequiredInput() != null) writeChildrenNode(writer, context, ar.getRequiredInput(), REQUIRED_INPUT);
         if (ar.getRequiredAuthority() != null) writeChildrenNode(writer, context, ar.getRequiredAuthority(), REQUIRED_AUTHORITY);
     }

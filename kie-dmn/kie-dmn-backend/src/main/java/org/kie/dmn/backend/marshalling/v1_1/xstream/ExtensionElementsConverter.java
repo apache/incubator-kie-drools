@@ -26,12 +26,16 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
-import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TDMNElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ExtensionElementsConverter.class);
 
     private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
 
@@ -74,6 +78,7 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
                     assignChildElement(obj, nodeName, object);
                 } catch (CannotResolveClassException e) {
                     // do nothing; I tried to convert the extension element child with the converters, but no converter is registered for this child.
+                    LOG.debug("Tried to convert the extension element child {}, but no converter is registered for this child.", nodeName);
                 }
                 reader.moveUp();
             }

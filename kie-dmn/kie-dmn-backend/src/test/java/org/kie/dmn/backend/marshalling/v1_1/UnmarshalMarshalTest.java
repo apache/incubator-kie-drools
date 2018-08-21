@@ -147,17 +147,6 @@ public class UnmarshalMarshalTest {
     public void testFAILforMissingNamespaces() {
         fail("PERFORM A MANUAL CHECK: does now the Stax driver do output the namespace for 'feel:' ?? ");
     }
-    
-    @Ignore("WIP")
-    @Test
-    public void testV12_ch11example() throws Exception {
-        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ch11example.dmn");
-    }
-
-    public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
-        DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1_2.xstream.XStreamMarshaller();
-        testRoundTrip(subdir, xmlfile, marshaller);
-    }
 
     public void testRoundTrip(String subdir, String xmlfile) throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
