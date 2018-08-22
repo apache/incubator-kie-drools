@@ -58,7 +58,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private transient InternalKnowledgeRuntime kruntime;
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private String outcome;
-    private long parentProcessInstanceId;
+    private long parentProcessInstanceId = -1;
     private String description;
 
     public void setId(final long id) {
