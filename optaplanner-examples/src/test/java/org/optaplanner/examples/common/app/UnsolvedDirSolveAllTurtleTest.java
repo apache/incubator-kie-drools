@@ -18,7 +18,6 @@ package org.optaplanner.examples.common.app;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -32,7 +31,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(CommonApp<Solution_> commonApp) {
+    protected static <Solution_> List<Object[]> getUnsolvedDirFilesAsParameters(CommonApp<Solution_> commonApp) {
         List<Object[]> filesAsParameters = new ArrayList<>();
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");

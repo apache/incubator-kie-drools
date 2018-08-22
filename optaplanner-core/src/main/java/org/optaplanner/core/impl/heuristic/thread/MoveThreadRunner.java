@@ -46,6 +46,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     private final boolean assertShadowVariablesAreNotStaleAfterStep;
 
     private InnerScoreDirector<Solution_> scoreDirector = null;
+    private volatile long calculationCount = -1L;
 
     public MoveThreadRunner(String logIndentation, int moveThreadIndex, boolean evaluateDoable,
             BlockingQueue<MoveThreadOperation<Solution_>> operationQueue,
@@ -98,6 +99,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                 } else if (operation instanceof DestroyOperation) {
                     logger.trace("{}            Move thread ({}) destroy: step index ({}).",
                             logIndentation, moveThreadIndex, stepIndex);
+                    calculationCount = scoreDirector.getCalculationCount();
                     break;
                 } else if (operation instanceof ApplyStepOperation) {
                     // TODO Performance gain with specialized 2-phase cyclic barrier:
@@ -153,7 +155,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                 }
                 // TODO checkYielding();
             }
-            logger.trace("{}            Move thread finished.", logIndentation);
+            logger.trace("{}            Move thread ({}) finished.", logIndentation, moveThreadIndex);
         } catch (RuntimeException | Error throwable) {
             // Any Exception or even Error that happens here (on a move thread) must be stored
             // in the resultQueue in order to be propagated to the solver thread.
@@ -181,8 +183,17 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         }
     }
 
+    /**
+     * This method is thread-safe.
+     * @return at least 0
+     */
     public long getCalculationCount() {
-        return scoreDirector.getCalculationCount();
+        if (calculationCount == -1L) {
+            logger.info("{}Score calculation speed will be too low"
+                    + " because move thread ({})'s destroy wasn't processed soon enough.", logIndentation);
+            return 0L;
+        }
+        return calculationCount;
     }
 
     @Override
