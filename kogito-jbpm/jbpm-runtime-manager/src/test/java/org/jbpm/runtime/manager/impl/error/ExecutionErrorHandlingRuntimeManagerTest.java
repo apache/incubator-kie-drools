@@ -284,7 +284,7 @@ public class ExecutionErrorHandlingRuntimeManagerTest extends AbstractBaseTest {
         
         List<ExecutionError> errors = storage.list(0, 10);
         assertNotNull(errors);
-        assertEquals(expectedErrors, errors.size());
+        assertTrue(errors.size() >= expectedErrors);
         assertExecutionError(errors.get(0), "DB", "UserTaskWithRollback", "Hello");      
 
     }
