@@ -803,3 +803,10 @@
 
     create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
     create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+
+    create index IDX_AuditTaskImpl_taskId on AuditTaskImpl(taskId);
+    create index IDX_AuditTaskImpl_processInstanceId on AuditTaskImpl(processInstanceId);
+    create index IDX_AuditTaskImpl_workItemId on AuditTaskImpl(workItemId);
+    create index IDX_AuditTaskImpl_name on AuditTaskImpl(name);
+    create index IDX_AuditTaskImpl_processId on AuditTaskImpl(processId);
+    create index IDX_AuditTaskImpl_status on AuditTaskImpl(status);
