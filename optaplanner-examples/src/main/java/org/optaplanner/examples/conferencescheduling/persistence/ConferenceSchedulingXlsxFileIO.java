@@ -95,7 +95,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
         private Set<String> totalRoomTagSet;
-        private Set<String> totalTalkCodeSet;
+        private Map<String, Talk> totalTalkCodeMap;
 
         public ConferenceSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook);
@@ -107,7 +107,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             totalTalkTypeMap = new HashMap<>();
             totalTimeslotTagSet = new HashSet<>();
             totalRoomTagSet = new HashSet<>();
-            totalTalkCodeSet = new HashSet<>();
+            totalTalkCodeMap = new HashMap<>();
             readConfiguration();
             readTimeslotList();
             readRoomList();
@@ -456,11 +456,12 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             Function.identity()));
             Map<String, Room> roomMap = solution.getRoomList().stream().collect(
                     Collectors.toMap(Room::getName, Function.identity()));
+            Map<Talk, Set<String>> talkToPrerequisiteTalkSetMap = new HashMap<>();
             while (nextRow()) {
                 Talk talk = new Talk();
                 talk.setId(id++);
                 talk.setCode(nextStringCell().getStringCellValue());
-                totalTalkCodeSet.add(talk.getCode());
+                totalTalkCodeMap.put(talk.getCode(), talk);
                 if (strict && !VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The talk code (" + talk.getCode()
                             + ") must match to the regular expression (" + VALID_CODE_PATTERN + ").");
@@ -549,7 +550,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 verifyRoomTags(talk.getUndesiredRoomTagSet());
                 talk.setMutuallyExclusiveTalksTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
-                talk.setPrerequisiteTalksCodesSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                talkToPrerequisiteTalkSetMap.put(talk, Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
                 String dateString = nextStringCell().getStringCellValue();
@@ -590,8 +591,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 }
                 talkList.add(talk);
             }
+            setPrerequisiteTalkSets(talkToPrerequisiteTalkSetMap);
             solution.setTalkList(talkList);
-            verifyPrerequisiteTalkCodesSet();
         }
 
         private void verifyTimeslotTags(Set<String> timeslotTagSet) {
@@ -613,14 +614,19 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             }
         }
 
-        private void verifyPrerequisiteTalkCodesSet() {
-            for (Talk talk : solution.getTalkList()) {
-                for (String code : talk.getPrerequisiteTalksCodesSet()) {
-                    if (!totalTalkCodeSet.contains(code)) {
-                        throw new IllegalStateException("The talk with code (" + talk.getCode() + ") contains a prerequisite "
-                                + "talk code (" + code + ") that doesn't exist in the talk codes set.");
+        private void setPrerequisiteTalkSets(Map<Talk, Set<String>> talkToPrerequisiteTalkSetMap) {
+            for (Map.Entry<Talk, Set<String>> entry : talkToPrerequisiteTalkSetMap.entrySet()) {
+                Talk currentTalk = entry.getKey();
+                Set<Talk> prerequisiteTalkSet = new HashSet<>();
+                for (String prerequisiteTalkCode : entry.getValue()) {
+                    Talk prerequisiteTalk = totalTalkCodeMap.get(prerequisiteTalkCode);
+                    if (prerequisiteTalk == null) {
+                        throw new IllegalStateException("The talk (" + currentTalk.getCode()
+                                + ") has a prerequisite talk (" + prerequisiteTalkCode + ") that doesn't exist in the talk list.");
                     }
+                    prerequisiteTalkSet.add(prerequisiteTalk);
                 }
+                currentTalk.setPrerequisiteTalkSet(prerequisiteTalkSet);
             }
         }
 
@@ -904,7 +910,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(String.join(", ", talk.getProhibitedRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getMutuallyExclusiveTalksTagSet()));
-                nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalksCodesSet()));
+                nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalkSet().stream().map(Talk::getCode).collect(toList())));
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));

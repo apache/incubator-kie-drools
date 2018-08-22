@@ -47,7 +47,7 @@ public class Talk extends AbstractPersistable {
     private Set<String> prohibitedRoomTagSet;
     private Set<String> undesiredRoomTagSet;
     private Set<String> mutuallyExclusiveTalksTagSet;
-    private Set<String> prerequisiteTalksCodesSet;
+    private Set<Talk> prerequisiteTalkSet;
 
     @PlanningPin
     private boolean pinnedByUser = false;
@@ -228,8 +228,8 @@ public class Talk extends AbstractPersistable {
         return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
     }
 
-    public boolean hasPrerequisite(String code) {
-        return prerequisiteTalksCodesSet.contains(code);
+    public boolean hasPrerequisite(Talk talk) {
+        return prerequisiteTalkSet.contains(talk);
     }
 
     @Override
@@ -427,12 +427,12 @@ public class Talk extends AbstractPersistable {
         this.mutuallyExclusiveTalksTagSet = mutuallyExclusiveTalksTagSet;
     }
 
-    public Set<String> getPrerequisiteTalksCodesSet() {
-        return prerequisiteTalksCodesSet;
+    public Set<Talk> getPrerequisiteTalkSet() {
+        return prerequisiteTalkSet;
     }
 
-    public void setPrerequisiteTalksCodesSet(Set<String> prerequisiteTalksCodesSet) {
-        this.prerequisiteTalksCodesSet = prerequisiteTalksCodesSet;
+    public void setPrerequisiteTalkSet(Set<Talk> prerequisiteTalkSet) {
+        this.prerequisiteTalkSet = prerequisiteTalkSet;
     }
 
     // ************************************************************************
@@ -524,8 +524,8 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
-    public Talk withPrerequisiteTalksCodesSet(Set<String> prerequisiteTalksCodesSet) {
-        this.prerequisiteTalksCodesSet = prerequisiteTalksCodesSet;
+    public Talk withPrerequisiteTalksCodesSet(Set<Talk> prerequisiteTalksCodesSet) {
+        this.prerequisiteTalkSet = prerequisiteTalksCodesSet;
         return this;
     }
 
