@@ -19,6 +19,7 @@ package org.drools.core.fluent.impl;
 import java.util.List;
 
 import org.drools.core.command.impl.NotTransactionalCommand;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.kie.api.runtime.Executable;
 
 public interface InternalExecutable extends Executable {
@@ -29,5 +30,11 @@ public interface InternalExecutable extends Executable {
         return getBatches().stream()
                 .flatMap(batch -> batch.getCommands().stream())
                 .noneMatch(NotTransactionalCommand.class::isInstance);
+    }
+    
+    default boolean requiresDispose() {
+        return getBatches().stream()
+                .flatMap(batch -> batch.getCommands().stream())
+                .anyMatch(DisposeCommand.class::isInstance);
     }
 }

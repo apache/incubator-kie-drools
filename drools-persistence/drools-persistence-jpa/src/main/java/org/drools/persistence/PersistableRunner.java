@@ -486,10 +486,9 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         public void afterCompletion(int status) {
             if ( status != TransactionManager.STATUS_COMMITTED ) {
-                this.service.rollback();
+                this.service.rollback();                
             }
-
-
+            
             if (this.service.txm != null) {
                 ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) this.service.env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
 
@@ -514,6 +513,9 @@ public class PersistableRunner implements SingleSessionCommandService {
                     internalProcessRuntime.clearProcessInstances();
                 }
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
+            }
+            if (status != TransactionManager.STATUS_COMMITTED) {
+                this.service.jpm.resetApplicationScopedPersistenceContext();
             }
 
         }
@@ -568,7 +570,9 @@ public class PersistableRunner implements SingleSessionCommandService {
         public RequestContext execute( Executable executable, RequestContext context ) {
             if ( !( (InternalExecutable) executable ).canRunInTransaction() ) {
                 executeNext(executable, context);
-                jpm.dispose();
+                if (((InternalExecutable) executable ).requiresDispose()) {
+                    jpm.dispose();
+                }
                 return context;
             }
 
