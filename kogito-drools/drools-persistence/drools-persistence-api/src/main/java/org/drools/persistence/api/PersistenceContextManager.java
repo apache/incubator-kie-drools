@@ -63,4 +63,8 @@ public interface PersistenceContextManager {
      * Executes the necessary actions in order to clean up and dispose of the internal fields of this instance.
      */
     void dispose();
+    
+    default void resetApplicationScopedPersistenceContext() {
+        
+    }
 }
