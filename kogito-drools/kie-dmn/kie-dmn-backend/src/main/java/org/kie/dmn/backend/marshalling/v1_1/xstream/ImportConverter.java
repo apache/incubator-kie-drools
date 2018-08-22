@@ -16,13 +16,13 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Import;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.v1_1.TImport;
 
 public class ImportConverter extends DMNModelInstrumentedBaseConverter {
     public static final String NAMESPACE = "namespace";
@@ -69,12 +69,12 @@ public class ImportConverter extends DMNModelInstrumentedBaseConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Import();
+        return new TImport();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Import.class );
+        return clazz.equals(TImport.class);
     }
 
 }

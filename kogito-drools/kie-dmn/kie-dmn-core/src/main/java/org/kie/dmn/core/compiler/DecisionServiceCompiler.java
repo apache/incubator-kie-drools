@@ -30,8 +30,8 @@ import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DecisionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

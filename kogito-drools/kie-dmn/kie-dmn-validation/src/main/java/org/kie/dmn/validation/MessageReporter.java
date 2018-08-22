@@ -6,7 +6,7 @@ import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 /**
  * A helper class to report messages

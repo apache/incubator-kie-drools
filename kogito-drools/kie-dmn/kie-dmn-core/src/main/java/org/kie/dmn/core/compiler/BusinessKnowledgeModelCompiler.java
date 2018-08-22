@@ -24,9 +24,9 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.FunctionDefinition;
 
 public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
     @Override

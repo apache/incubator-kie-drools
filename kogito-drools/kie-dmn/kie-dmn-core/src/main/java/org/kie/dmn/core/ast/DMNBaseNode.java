@@ -27,13 +27,13 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-import org.kie.dmn.model.v1_1.KnowledgeRequirement;
-import org.kie.dmn.model.v1_1.NamedElement;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.KnowledgeRequirement;
+import org.kie.dmn.model.api.NamedElement;
 
 public abstract class DMNBaseNode implements DMNNode {
 

@@ -21,9 +21,12 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TDMNElementReference;
+import org.kie.dmn.model.v1_1.TDecisionService;
 
 public class DecisionServiceConverter extends NamedElementConverter {
 
@@ -41,12 +44,12 @@ public class DecisionServiceConverter extends NamedElementConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new DecisionService();
+        return new TDecisionService();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals(DecisionService.class);
+        return clazz.equals(TDecisionService.class);
     }
 
     @Override
@@ -57,7 +60,7 @@ public class DecisionServiceConverter extends NamedElementConverter {
             String nodeName = reader.getNodeName();
             if (nodeName.equals(INPUT_DATA)) {
                 // Patch because the tag name inputData is used in both decision services and as a DRG Element
-                DMNElementReference ref = new DMNElementReference();
+                DMNElementReference ref = new TDMNElementReference();
                 ref.setHref(reader.getAttribute("href"));
                 object = ref;
             } else {
@@ -65,8 +68,8 @@ public class DecisionServiceConverter extends NamedElementConverter {
                 object = readItem(reader, context, null);
             }
             if (object instanceof DMNModelInstrumentedBase) {
-                ((DMNModelInstrumentedBase) object).setParent((DMNModelInstrumentedBase) parent);
-                ((DMNModelInstrumentedBase) parent).addChildren((DMNModelInstrumentedBase) object);
+                ((KieDMNModelInstrumentedBase) object).setParent((KieDMNModelInstrumentedBase) parent);
+                ((KieDMNModelInstrumentedBase) parent).addChildren((KieDMNModelInstrumentedBase) object);
             }
             reader.moveUp();
             assignChildElement(parent, nodeName, object);

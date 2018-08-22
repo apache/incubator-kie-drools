@@ -20,8 +20,9 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.DMNModelInstrumentedBaseConverter;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 
 public class DecisionServicesConverter extends DMNModelInstrumentedBaseConverter {
@@ -48,7 +49,7 @@ public class DecisionServicesConverter extends DMNModelInstrumentedBaseConverter
 
         // We need to clear the namespace prefix for drools:KIE because DMNModelInstrumentedBaseConverter#writeAttributes will try to write it again.
         // The namespace is registered in the XStreamMapper#configureQNameMap method by the extension register
-        decisionServices.getNsContext().remove("drools", DMNModelInstrumentedBase.URI_KIE);
+        decisionServices.getNsContext().remove("drools", KieDMNModelInstrumentedBase.URI_KIE);
 
         switch (nodeName) {
         case DECISION_SERVICE:

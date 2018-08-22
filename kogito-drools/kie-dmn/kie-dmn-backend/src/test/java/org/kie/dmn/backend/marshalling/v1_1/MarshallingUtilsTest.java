@@ -16,17 +16,17 @@
 
 package org.kie.dmn.backend.marshalling.v1_1;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.MarshallingUtils;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 
 public class MarshallingUtilsTest {

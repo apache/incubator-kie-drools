@@ -37,7 +37,7 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
-import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

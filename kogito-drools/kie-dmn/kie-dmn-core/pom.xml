@@ -128,7 +128,6 @@
               org.kie.dmn.core.*
             </Export-Package>
             <Import-Package>
-              org.kie.dmn.model.v1_1,
               *
             </Import-Package>
             <Bundle-Activator>org.kie.dmn.core.osgi.Activator</Bundle-Activator>

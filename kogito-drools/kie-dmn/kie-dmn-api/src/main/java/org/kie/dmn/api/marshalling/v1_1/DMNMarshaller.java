@@ -16,19 +16,10 @@
 
 package org.kie.dmn.api.marshalling.v1_1;
 
-import java.io.Reader;
-import java.io.Writer;
-
-import org.kie.dmn.model.v1_1.Definitions;
-
-public interface DMNMarshaller {
-
-    Definitions unmarshal(final Reader isr);
-
-    Definitions unmarshal(final String xml);
-
-    String marshal(Object o);
-
-    void marshal(Object o, Writer out);
+/**
+ * @deprecated use {@link #org.kie.dmn.api.marshalling.v1x.DMNMarshaller instead.
+ */
+@Deprecated
+public interface DMNMarshaller extends org.kie.dmn.api.marshalling.DMNMarshaller {
 
 }

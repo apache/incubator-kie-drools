@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.kie.api.io.Resource;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 
 public interface DMNCompiler {
 

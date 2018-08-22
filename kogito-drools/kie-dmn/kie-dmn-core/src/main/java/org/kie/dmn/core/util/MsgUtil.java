@@ -10,7 +10,7 @@ import org.kie.dmn.core.util.Msg.Message1;
 import org.kie.dmn.core.util.Msg.Message2;
 import org.kie.dmn.core.util.Msg.Message3;
 import org.kie.dmn.core.util.Msg.Message4;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 
 public final class MsgUtil {

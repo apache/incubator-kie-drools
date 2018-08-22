@@ -25,7 +25,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 
 public interface DMNModel extends DMNMessageContainer {
 

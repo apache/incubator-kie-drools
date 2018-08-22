@@ -28,7 +28,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.utils.ChainedProperties;
 
 import static org.hamcrest.CoreMatchers.notNullValue;

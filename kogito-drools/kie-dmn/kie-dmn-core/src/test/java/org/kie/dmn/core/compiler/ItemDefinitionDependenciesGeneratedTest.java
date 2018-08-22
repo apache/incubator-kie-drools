@@ -28,7 +28,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.v1_1.TItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +133,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
                                                                      final int maxNumberOfDepsPerItemDefinition,
                                                                      final Set<String> usedNames) {
         // New ItemDefinition is created, so the original one stays untouched.
-        final ItemDefinition it = new ItemDefinition();
+        final ItemDefinition it = new TItemDefinition();
         it.setName(itemDefinitionTemplate.getName());
         final List<ItemDefinition> possibleDependencies =
                 dependencies.stream().filter(item -> !item.getName().equals(it.getName())).collect(Collectors.toList());
@@ -158,7 +159,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
     }
 
     private static void createAndAddDependency(final ItemDefinition itemDefinition, final ItemDefinition dependency) {
-        ItemDefinition newDependency = new ItemDefinition();
+        ItemDefinition newDependency = new TItemDefinition();
         newDependency.setName("_" + itemDefinition.getName() + "-" + dependency.getName());
         newDependency.setTypeRef(new QName(TEST_NS, dependency.getName()));
         itemDefinition.getItemComponent().add(newDependency);
@@ -167,7 +168,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
     private static List<ItemDefinition> getBaseListOfItemDefinitions(final int nameIndexFrom) {
         final List<ItemDefinition> itemDefinitions = new ArrayList<>();
         for (int i = nameIndexFrom; i < NUMBER_OF_BASE_ITEM_DEFINITIONS + nameIndexFrom; i++) {
-            final ItemDefinition it = new ItemDefinition();
+            final ItemDefinition it = new TItemDefinition();
             it.setName(ITEM_DEFINITION_NAME_BASE + i);
             itemDefinitions.add(it);
         }

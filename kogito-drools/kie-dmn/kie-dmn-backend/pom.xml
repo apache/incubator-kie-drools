@@ -80,7 +80,6 @@
               org.kie.dmn.backend.*
             </Export-Package>
             <Import-Package>
-              org.kie.dmn.model.v1_1,
               *
             </Import-Package>
             <_removeheaders>Private-Package</_removeheaders>

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -38,9 +39,7 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.kie.dmn.model.api.DMNElement.ExtensionElements;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
 public class MultiInstanceDecisionLogic {

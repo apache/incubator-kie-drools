@@ -18,14 +18,14 @@ package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.ItemDefinition;
-import org.kie.dmn.model.v1_1.UnaryTests;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.model.v1_1.TItemDefinition;
 
 public class ItemDefinitionConverter extends NamedElementConverter {
     public static final String ITEM_COMPONENT = "itemComponent";
@@ -88,12 +88,12 @@ public class ItemDefinitionConverter extends NamedElementConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new ItemDefinition();
+        return new TItemDefinition();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( ItemDefinition.class );
+        return clazz.equals(TItemDefinition.class);
     }
 
 }

@@ -34,13 +34,12 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.DecisionTable;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
@@ -64,16 +63,16 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     private ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
 
-    public ExecModelDMNEvaluatorCompiler( DMNCompilerImpl compiler, DMNFEELHelper feel ) {
-        super( compiler, feel );
+    public ExecModelDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
+        super(compiler);
     }
 
     @Override
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
         String decisionName = dt.getParent() instanceof DRGElement ? dtName : ( dt.getId() != null ? dt.getId() :  "_" + UUID.randomUUID().toString() );
-        DTableModel dTableModel = new DTableModel( feel, model, dtName, decisionName, dt );
+        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
         AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        evaluator.initParameters( feel, ctx, dTableModel, node );
+        evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
         return evaluator;
     }
 
@@ -89,7 +88,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = pkgName + "." + clasName + generator.type;
             sources[i] = "src/main/java" + className.replace( '.', '/' ) + ".java";
-            String javaSource = generator.sourceGenerator.generate( ctx, feel, dTableModel );
+            String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             srcMfs.write( sources[i], javaSource.getBytes() );
         }
 

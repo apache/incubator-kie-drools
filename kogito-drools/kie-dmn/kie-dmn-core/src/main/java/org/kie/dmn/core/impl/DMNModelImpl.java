@@ -46,17 +46,20 @@ import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.v1_1.TDefinitions;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
@@ -80,7 +83,7 @@ public class DMNModelImpl
     // these are messages created at loading/compilation time
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
-    private DMNTypeRegistry types = new DMNTypeRegistry();
+    private DMNTypeRegistry types;
     /**
      * a compile-time preference to indicate if type-check should be performed during runtime evaluation. 
      */
@@ -93,6 +96,15 @@ public class DMNModelImpl
 
     public DMNModelImpl(Definitions definitions) {
         this.definitions = definitions;
+        wireTypeRegistry(definitions);
+    }
+
+    private void wireTypeRegistry(Definitions definitions) {
+        if (definitions instanceof TDefinitions) {
+            types = new DMNTypeRegistryV11();
+        } else {
+            types = new DMNTypeRegistryV12();
+        }
     }
     
     public DMNTypeRegistry getTypeRegistry() {
@@ -399,6 +411,7 @@ public class DMNModelImpl
         Definitions definitions = DMNMarshallerFactory.newMarshallerWithExtensions(dmnRegisteredExtensions).unmarshal(xml);
         
         this.definitions = definitions;
+        this.wireTypeRegistry(definitions);
         
         DMNModelImpl compiledModel = (DMNModelImpl) compiler.compile(definitions);
         this.inputs    = compiledModel.inputs    ;

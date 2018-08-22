@@ -16,13 +16,13 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TDMNElementReference;
 
 public class DMNElementReferenceConverter
         extends DMNModelInstrumentedBaseConverter {
@@ -34,7 +34,7 @@ public class DMNElementReferenceConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( DMNElementReference.class );
+        return clazz.equals(TDMNElementReference.class);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DMNElementReferenceConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new DMNElementReference();
+        return new TDMNElementReference();
     }
 
     @Override

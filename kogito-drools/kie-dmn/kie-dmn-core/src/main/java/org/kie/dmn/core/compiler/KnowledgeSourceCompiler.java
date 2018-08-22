@@ -17,8 +17,8 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.KnowledgeSource;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.KnowledgeSource;
 
 public class KnowledgeSourceCompiler implements DRGElementCompiler {
     @Override

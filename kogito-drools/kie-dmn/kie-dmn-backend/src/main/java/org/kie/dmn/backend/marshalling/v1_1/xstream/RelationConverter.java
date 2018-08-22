@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.Relation;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.v1_1.TRelation;
 
 public class RelationConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";
@@ -37,7 +37,7 @@ public class RelationConverter extends ExpressionConverter {
         if (COLUMN.equals(nodeName)) {
             r.getColumn().add((InformationItem) child);
         } else if (ROW.equals(nodeName)) {
-            r.getRow().add((org.kie.dmn.model.v1_1.List) child);
+            r.getRow().add((org.kie.dmn.model.api.List) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -58,7 +58,7 @@ public class RelationConverter extends ExpressionConverter {
         for (InformationItem c : r.getColumn()) {
             writeChildrenNode(writer, context, c, COLUMN);
         }
-        for (org.kie.dmn.model.v1_1.List row : r.getRow()) {
+        for (org.kie.dmn.model.api.List row : r.getRow()) {
             writeChildrenNode(writer, context, row, ROW);
         }
     }
@@ -76,12 +76,12 @@ public class RelationConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Relation();
+        return new TRelation();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Relation.class );
+        return clazz.equals(TRelation.class);
     }
 
 }

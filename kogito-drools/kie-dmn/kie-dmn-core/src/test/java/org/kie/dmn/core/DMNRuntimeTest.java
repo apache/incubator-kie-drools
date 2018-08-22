@@ -45,7 +45,13 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.event.*;
+import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
@@ -55,9 +61,11 @@ import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.v1_1.TDecision;
+import org.kie.dmn.model.v1_1.TDefinitions;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,9 +84,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -1519,10 +1527,10 @@ public class DMNRuntimeTest {
     }
 
     private Definitions buildSimplifiedDefinitions(String namespace, String... decisions) {
-        Definitions def = new Definitions();
+        Definitions def = new TDefinitions();
         def.setNamespace(namespace);
         for (String d : decisions) {
-            Decision dec = new Decision();
+            Decision dec = new TDecision();
             dec.setName(d);
             def.getDrgElement().add(dec);
             def.addChildren(dec);
@@ -2222,6 +2230,37 @@ public class DMNRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("Not working"), is(false));
+    }
+
+    @Test
+    public void testDMNv1_2_ch11Modified() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DMNv1_2/ch11MODIFIED.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f81f47", "DMN Specification Chapter 11 Example");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("Applicant data", mapOf(entry("Age", new BigDecimal(51)),
+                                            entry("MaritalStatus", "M"),
+                                            entry("EmploymentStatus", "EMPLOYED"),
+                                            entry("ExistingCustomer", false),
+                                            entry("Monthly", mapOf(entry("Income", new BigDecimal(100_000)),
+                                                                   entry("Repayments", new BigDecimal(2_500)),
+                                                                   entry("Expenses", new BigDecimal(10_000)))))); // DMN v1.2 spec page 181, first image: errata corrige values for Income and Expenses are likely inverted, corrected here.
+        context.set("Bureau data", mapOf(entry("Bankrupt", false),
+                                         entry("CreditScore", new BigDecimal(600))));
+        context.set("Requested product", mapOf(entry("ProductType", "STANDARD LOAN"),
+                                               entry("Rate", new BigDecimal(0.08)),
+                                               entry("Term", new BigDecimal(36)),
+                                               entry("Amount", new BigDecimal(100_000))));
+        context.set("Supporting documents", null);
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Strategy"), is("THROUGH"));
+        assertThat(result.get("Routing"), is("ACCEPT"));
     }
 }
 

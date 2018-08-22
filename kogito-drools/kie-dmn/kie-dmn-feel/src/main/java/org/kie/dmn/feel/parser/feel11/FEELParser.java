@@ -39,7 +39,7 @@ import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.types.BuiltInTypeSymbol;
-import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
+import org.kie.dmn.feel.parser.feel11.profiles.FEELv12Profile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.Msg;
@@ -60,7 +60,7 @@ public class FEELParser {
 
         ParserHelper parserHelper = new ParserHelper(eventsManager);
         additionalFunctions.forEach(f -> parserHelper.getSymbolTable().getBuiltInScope().define(f.getSymbol()));
-        profiles.stream().filter(KieExtendedFEELProfile.class::isInstance).forEach(dc -> {
+        profiles.stream().filter(FEELv12Profile.class::isInstance).forEach(dc -> {
             parserHelper.setFeatDMN12EnhancedForLoopEnabled(true);
             parserHelper.setFeatDMN12weekday(true);
         });

@@ -27,7 +27,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -40,17 +39,16 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DecisionRule;
-import org.kie.dmn.model.v1_1.DecisionTable;
-import org.kie.dmn.model.v1_1.InputClause;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-
 import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
@@ -103,7 +101,7 @@ public class DTableModel {
     }
 
     private void validate() {
-        if ( dt.getHitPolicy().equals( org.kie.dmn.model.v1_1.HitPolicy.PRIORITY) && !hasOutputValues() ) {
+        if ( dt.getHitPolicy().equals( org.kie.dmn.model.api.HitPolicy.PRIORITY) && !hasOutputValues() ) {
             MsgUtil.reportMessage( ExecModelDMNEvaluatorCompiler.logger,
                                    DMNMessage.Severity.ERROR,
                                    dt.getParent(),
@@ -163,7 +161,7 @@ public class DTableModel {
         if (outputValuesText != null) {
             return feel.evaluateUnaryTests( outputValuesText, variableTypes );
         }
-        if ( output.typeRef != DMNTypeRegistry.UNKNOWN && output.typeRef.getAllowedValuesFEEL() != null) {
+        if (output.typeRef != model.getTypeRegistry().unknown() && output.typeRef.getAllowedValuesFEEL() != null) {
             return output.typeRef.getAllowedValuesFEEL();
         }
         return Collections.emptyList();

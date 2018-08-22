@@ -16,15 +16,15 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.Association;
-import org.kie.dmn.model.v1_1.AssociationDirection;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.Association;
+import org.kie.dmn.model.api.AssociationDirection;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TAssociation;
 
 public class AssociationConverter extends ArtifactConverter {
     public static final String TARGET_REF = "targetRef";
@@ -37,12 +37,12 @@ public class AssociationConverter extends ArtifactConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Association();
+        return new TAssociation();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Association.class );
+        return clazz.equals(TAssociation.class);
     }
 
     @Override

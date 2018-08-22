@@ -29,12 +29,12 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -323,5 +323,28 @@ public class ValidatorTest extends AbstractValidatorTest {
         // DROOLS-2813 DMN boxed invocation missing expression NPE and Validator issue
         List<DMNMessage> validate = validator.validate(getReader("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", DMNRuntimeTest.class), VALIDATE_MODEL);
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
+    }
+
+    @Test
+    public void testDMNv1_2_ch11Modified() {
+        // DROOLS-2832
+        List<DMNMessage> validate = validator.validate(getReader("DMNv1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class),
+                                                       // DROOLS-2893: VALIDATE_SCHEMA, 
+                                                       VALIDATE_MODEL,
+                                                       VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testDMNv1_2_ch11() {
+        // DROOLS-2832
+        List<DMNMessage> validate = validator.validate(getReader("DMNv12_ch11.dmn"),
+                                                       // DROOLS-2893: VALIDATE_SCHEMA, 
+                                                       VALIDATE_MODEL);
+
+        // DMN v1.2 CH11 example for Adjudication does not define decision logic nor typeRef:
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
     }
 }

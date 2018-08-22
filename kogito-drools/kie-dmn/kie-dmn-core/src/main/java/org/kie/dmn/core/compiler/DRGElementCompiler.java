@@ -18,7 +18,7 @@ package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.v1_1.DRGElement;
+import org.kie.dmn.model.api.DRGElement;
 
 public interface DRGElementCompiler {
     

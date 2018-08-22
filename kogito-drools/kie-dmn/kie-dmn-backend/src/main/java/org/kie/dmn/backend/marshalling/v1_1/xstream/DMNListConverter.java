@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.List;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.List;
+import org.kie.dmn.model.v1_1.TList;
 
 public class DMNListConverter extends ExpressionConverter {
 
@@ -68,12 +68,12 @@ public class DMNListConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new List();
+        return new TList();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( List.class );
+        return clazz.equals(TList.class);
     }
 
 }

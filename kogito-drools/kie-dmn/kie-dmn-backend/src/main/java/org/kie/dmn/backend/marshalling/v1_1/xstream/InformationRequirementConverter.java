@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.v1_1.TInformationRequirement;
 
 public class InformationRequirementConverter
         extends DMNModelInstrumentedBaseConverter {
@@ -36,7 +36,7 @@ public class InformationRequirementConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( InformationRequirement.class );
+        return clazz.equals(TInformationRequirement.class);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class InformationRequirementConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new InformationRequirement();
+        return new TInformationRequirement();
     }
 
     @Override
@@ -70,7 +70,6 @@ public class InformationRequirementConverter
         if ( ir.getRequiredDecision() != null ) {
             writeChildrenNode(writer, context, ir.getRequiredDecision(), REQUIRED_DECISION);
         }
-        // TODO or if else ?
         if ( ir.getRequiredInput() != null ) {
             writeChildrenNode(writer, context, ir.getRequiredInput(), REQUIRED_INPUT);
         }

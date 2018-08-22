@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20151101/DC" xmlns:di="http://www.omg.org/spec/DMN/20151101/DI" xmlns:dmndi="http://www.omg.org/spec/DMN/20151101/DMNDI" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101" id="_946a2145-89ae-4197-88b4-40e6f88c8101" namespace="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101"          exporter="DMN Modeler" exporterVersion="6.0.3.201803061110" name="Null in relations" triso:logoChoice="Default">
+<semantic:definitions
+xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+xmlns:dc="http://www.omg.org/spec/DMN/20151101/DC"
+xmlns:di="http://www.omg.org/spec/DMN/20151101/DI"
+xmlns:dmndi="http://www.omg.org/spec/DMN/20151101/DMNDI"
+xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+xmlns:trisofeed="http://trisotech.com/feed"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101" id="_946a2145-89ae-4197-88b4-40e6f88c8101" namespace="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101"          exporter="DMN Modeler" exporterVersion="6.0.3.201803061110" name="Null in relations" triso:logoChoice="Default">
     <semantic:extensionElements>
         <triso:dmnInputs>[{"name":"Value","id":"_67bf0d5b-fa84-4c3a-828b-e8d1b37fad1a","type":"string"}]</triso:dmnInputs>
     </semantic:extensionElements>

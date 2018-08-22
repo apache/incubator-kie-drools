@@ -16,12 +16,27 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.Artifact;
+import org.kie.dmn.model.api.Association;
+import org.kie.dmn.model.api.BusinessContextElement;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.ElementCollection;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.InputData;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.api.KnowledgeSource;
+import org.kie.dmn.model.api.OrganizationUnit;
+import org.kie.dmn.model.api.PerformanceIndicator;
+import org.kie.dmn.model.api.TextAnnotation;
+import org.kie.dmn.model.v1_1.TDefinitions;
 
 public class DefinitionsConverter
         extends NamedElementConverter {
@@ -43,7 +58,7 @@ public class DefinitionsConverter
     }
 
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Definitions.class );
+        return clazz.equals(TDefinitions.class);
     }
 
     @Override
@@ -86,7 +101,7 @@ public class DefinitionsConverter
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Definitions();
+        return new TDefinitions();
     }
 
     @Override

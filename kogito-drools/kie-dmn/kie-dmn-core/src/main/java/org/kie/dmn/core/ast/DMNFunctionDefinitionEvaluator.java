@@ -35,7 +35,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
