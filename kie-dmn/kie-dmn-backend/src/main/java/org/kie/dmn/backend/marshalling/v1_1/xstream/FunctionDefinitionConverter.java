@@ -20,10 +20,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
-import org.kie.dmn.model.v1_1.InformationItem;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.v1_1.TFunctionDefinition;
 
 public class FunctionDefinitionConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";
@@ -73,12 +74,12 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new FunctionDefinition();
+        return new TFunctionDefinition();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( FunctionDefinition.class );
+        return clazz.equals(TFunctionDefinition.class);
     }
 
 }

@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.Context;
-import org.kie.dmn.model.v1_1.ContextEntry;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TContext;
 
 public class ContextConverter extends ExpressionConverter {
     public static final String CONTEXT_ENTRY = "contextEntry";
@@ -69,12 +69,12 @@ public class ContextConverter extends ExpressionConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new Context();
+        return new TContext();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Context.class );
+        return clazz.equals(TContext.class);
     }
 
 }

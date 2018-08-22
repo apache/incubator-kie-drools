@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.ItemDefinition;
 
 public final class ValidatorUtil {
 

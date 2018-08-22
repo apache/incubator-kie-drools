@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -46,9 +47,9 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
@@ -62,26 +63,30 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.profiles.FEELv12Profile;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.DecisionService;
-import org.kie.dmn.model.v1_1.DecisionTable;
-import org.kie.dmn.model.v1_1.Definitions;
-import org.kie.dmn.model.v1_1.Import;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.InformationRequirement;
-import org.kie.dmn.model.v1_1.ItemDefinition;
-import org.kie.dmn.model.v1_1.KnowledgeRequirement;
-import org.kie.dmn.model.v1_1.NamedElement;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.api.KnowledgeRequirement;
+import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +96,6 @@ public class DMNCompilerImpl implements DMNCompiler {
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
 
     private final DMNEvaluatorCompiler evaluatorCompiler;
-    private final DMNFEELHelper feel;
     private DMNCompilerConfiguration dmnCompilerConfig;
     private Deque<DRGElementCompiler> drgCompilers = new LinkedList<>();
     {
@@ -109,10 +113,9 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.feel = new DMNFEELHelper(cc.getRootClassLoader(), cc.getFeelProfiles());
         this.evaluatorCompiler = cc.isUseExecModelCompiler() ?
-                new ExecModelDMNEvaluatorCompiler( this, feel ) :
-                new DMNEvaluatorCompiler( this, feel );
+                new ExecModelDMNEvaluatorCompiler( this ) :
+                new DMNEvaluatorCompiler( this );
     }
     
     private void addDRGElementCompiler(DRGElementCompiler compiler) {
@@ -169,7 +172,15 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
-        DMNCompilerContext ctx = new DMNCompilerContext();
+        DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
+        List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
+        if (dmndefs instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase && !helperFEELProfiles.stream().anyMatch(FEELv12Profile.class::isInstance)) {
+            helperFEELProfiles.clear();
+            helperFEELProfiles.add(new FEELv12Profile());
+            helperFEELProfiles.addAll(cc.getFeelProfiles());
+        }
+        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
+        DMNCompilerContext ctx = new DMNCompilerContext(feel);
 
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
@@ -188,7 +199,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         return null;
                     }, Function.identity());
                     if (located != null) {
-                        String iAlias = Optional.ofNullable(i.getAdditionalAttributes().get(Import.NAME_QNAME)).orElse(located.getName());
+                        String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                         importFromModel(model, located, iAlias);
                     }
@@ -205,8 +216,8 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
 
-        processItemDefinitions(ctx, feel, model, dmndefs);
-        processDrgElements(ctx, feel, model, dmndefs);
+        processItemDefinitions(ctx, model, dmndefs);
+        processDrgElements(ctx, model, dmndefs);
         return model;
     }
 
@@ -225,20 +236,20 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
-        Definitions.normalize(dmndefs);
+    private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
+        dmndefs.normalize();
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
-            DMNType type = buildTypeDef( ctx, feel, model, idn, id, true );
+            DMNType type = buildTypeDef(ctx, model, idn, id, true);
             idn.setType( type );
             model.addItemDefinition( idn );
         }
     }
 
-    private void processDrgElements(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
+    private void processDrgElements(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             boolean foundIt = false;
             for( DRGElementCompiler dc : drgCompilers ) {
@@ -269,7 +280,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 for (DecisionService ds : dss.getDecisionService()) {
                     // compatibility with DMN v1.1, create Decision Service's variable:
                     if (ds.getVariable() == null) {
-                        InformationItem variable = new InformationItem();
+                        InformationItem variable = new TInformationItem();
                         variable.setId(UUID.randomUUID().toString());
                         variable.setName(ds.getName());
                         variable.setParent(ds);
@@ -418,7 +429,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return href.startsWith("#") ? href.substring(1) : href;
     }
 
-    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {
+    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {
         BaseDMNTypeImpl type = null;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
@@ -445,7 +456,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
                     type.setAllowedValues(null);
                     if ( allowedValuesStr != null ) {
-                        List<UnaryTest> av = feel.evaluateUnaryTests(
+                        List<UnaryTest> av = ctx.getFeelHelper().evaluateUnaryTests(
                                 ctx,
                                 allowedValuesStr.getText(),
                                 dmnModel,
@@ -480,8 +491,8 @@ public class DMNCompilerImpl implements DMNCompiler {
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
                 DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
-                DMNType fieldType = buildTypeDef( ctx, feel, dmnModel, node, fieldDef, false );
-                fieldType = fieldType != null ? fieldType : DMNTypeRegistry.UNKNOWN;
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
+                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
                 compType.addField( fieldDef.getName(), fieldType );
             }
             type = compType;
@@ -507,7 +518,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-            if (type == null && DMNModelInstrumentedBase.URI_FEEL.equals(nsAndName.getNamespaceURI())) {
+            if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
                 if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
                     DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
                     if ( dt.getOutput().size() > 1 ) {
@@ -536,7 +547,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
             return type;
         }
-        return dmnModel.getTypeRegistry().resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
+        return dmnModel.getTypeRegistry().unknown();
     }
 
     /**
@@ -548,17 +559,41 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param typeRef the typeRef to be resolved.
      * @return
      */
-    private QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
-        if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+    public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
+        if (localElement instanceof KieDMNModelInstrumentedBase) {
+            if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            } else {
+                for (Entry<String, QName> alias : importAliases.entrySet()) {
+                    String prefix = alias.getKey() + ".";
+                    if (typeRef.getLocalPart().startsWith(prefix)) {
+                        return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
+                    }
+                }
+                return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            }
         } else {
+            // FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time,
+            // and date and time.
+            // Was missing from spec document: date
+            switch (typeRef.getLocalPart()) {
+                case "number":
+                case "string":
+                case "boolean":
+                case "days and time duration":
+                case "years and months duration":
+                case "date":
+                case "time":
+                case "date and time":
+                    return new QName(localElement.getURIFEEL(), typeRef.getLocalPart());
+            }
             for (Entry<String, QName> alias : importAliases.entrySet()) {
                 String prefix = alias.getKey() + ".";
                 if (typeRef.getLocalPart().startsWith(prefix)) {
                     return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
                 }
             }
-            return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
+            return new QName(localElement.getNamespaceURI(""), typeRef.getLocalPart());
         }
     }
 

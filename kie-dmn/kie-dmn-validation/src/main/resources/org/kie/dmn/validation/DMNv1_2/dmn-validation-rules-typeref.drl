@@ -1,0 +1,112 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.kie.dmn.validation.DMNv1_2;
+
+import org.kie.dmn.model.api.*;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.util.Msg;
+
+import function org.kie.dmn.core.compiler.DMNCompilerImpl.getNamespaceAndName;
+import function java.util.Collections.emptyMap;
+
+import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
+
+global org.kie.dmn.validation.MessageReporter reporter;
+
+rule VARIABLE_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, !(parent instanceof BusinessKnowledgeModel || parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_VARIABLE, $ce1.getName(), $ce1.getParentDRDElement().getIdentifierString() );
+end
+
+rule PARAMETER_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, parent instanceof FunctionDefinition )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_PARAMETER, $ce1.getName(), $ce1.getParentDRDElement().getIdentifierString() );
+end
+
+rule COLUMN_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, parent instanceof Relation )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_COLUMN, $ce1.getName(), $ce1.getParentDRDElement().getIdentifierString() );
+end
+
+/* Rules TYPEREF_NO_FEEL_TYPE_p[x] are not needed on DMN v1.2 */
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p1
+when
+  $o: Expression( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : name, $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p2
+when
+  $o: InformationItem( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : name, $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p3
+when
+  $o: ItemDefinition( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : name, $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p4
+when
+  $o: OutputClause( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
+       (not (and Import($importName : name, $importedNS : namespace )
+                 $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
+                 ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
+            )
+       )
+  )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
+end

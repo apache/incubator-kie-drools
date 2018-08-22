@@ -18,10 +18,10 @@ package org.kie.dmn.model.v1_1.extensions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 
-public class DecisionServices extends DMNModelInstrumentedBase {
+public class DecisionServices extends KieDMNModelInstrumentedBase {
 
     private List<DecisionService> decisionService;
 

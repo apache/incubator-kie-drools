@@ -30,7 +30,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private DMNContext context;

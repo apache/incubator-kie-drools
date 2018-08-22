@@ -32,8 +32,8 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.model.v1_1.DRGElement;
-import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
 
 public class DecisionCompiler implements DRGElementCompiler {
     @Override

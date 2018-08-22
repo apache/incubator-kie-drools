@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.KnowledgeRequirement;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.KnowledgeRequirement;
+import org.kie.dmn.model.v1_1.TKnowledgeRequirement;
 
 public class KnowledgeRequirementConverter extends DMNModelInstrumentedBaseConverter {
     public static final String REQUIRED_KNOWLEDGE = "requiredKnowledge";
@@ -67,12 +67,12 @@ public class KnowledgeRequirementConverter extends DMNModelInstrumentedBaseConve
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new KnowledgeRequirement();
+        return new TKnowledgeRequirement();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( KnowledgeRequirement.class );
+        return clazz.equals(TKnowledgeRequirement.class);
     }
 
 }

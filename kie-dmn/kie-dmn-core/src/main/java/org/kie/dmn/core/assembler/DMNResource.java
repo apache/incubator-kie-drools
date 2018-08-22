@@ -6,7 +6,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 
 public class DMNResource {
 

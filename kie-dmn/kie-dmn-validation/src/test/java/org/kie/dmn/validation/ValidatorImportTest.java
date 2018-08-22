@@ -31,7 +31,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.v1_1.DMNElementReference;
+import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.validation.DMNValidator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

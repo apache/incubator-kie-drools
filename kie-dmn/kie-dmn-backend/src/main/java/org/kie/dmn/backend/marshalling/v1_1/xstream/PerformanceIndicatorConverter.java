@@ -16,14 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNElementReference;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.PerformanceIndicator;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.PerformanceIndicator;
+import org.kie.dmn.model.v1_1.TPerformanceIndicator;
 
 public class PerformanceIndicatorConverter extends BusinessContextElementConverter {
     public static final String IMPACTING_DECISION = "impactingDecision";
@@ -69,12 +69,12 @@ public class PerformanceIndicatorConverter extends BusinessContextElementConvert
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new PerformanceIndicator();
+        return new TPerformanceIndicator();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( PerformanceIndicator.class );
+        return clazz.equals(TPerformanceIndicator.class);
     }
 
 }

@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.api.Definitions;
 
 public interface DMNValidator {
 

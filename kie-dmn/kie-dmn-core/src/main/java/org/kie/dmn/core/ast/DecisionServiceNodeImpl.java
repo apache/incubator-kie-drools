@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.model.v1_1.DecisionService;
+import org.kie.dmn.model.api.DecisionService;
 
 public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServiceNode {
 

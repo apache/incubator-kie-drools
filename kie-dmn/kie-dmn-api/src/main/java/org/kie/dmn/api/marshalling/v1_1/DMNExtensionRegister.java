@@ -16,15 +16,10 @@
 
 package org.kie.dmn.api.marshalling.v1_1;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.QNameMap;
+/**
+ * @deprecated use {@link #org.kie.dmn.api.marshalling.v1x.DMNExtensionRegister instead.
+ */
+@Deprecated
+public interface DMNExtensionRegister extends org.kie.dmn.api.marshalling.DMNExtensionRegister {
 
-
-public interface DMNExtensionRegister {
-
-    public void registerExtensionConverters(XStream xstream);
-
-    default void beforeMarshal(Object o, QNameMap qmap) {
-        // do nothing.
-    }
 }

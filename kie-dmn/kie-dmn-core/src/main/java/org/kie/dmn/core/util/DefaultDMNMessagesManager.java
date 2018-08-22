@@ -5,7 +5,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.impl.DMNMessageImpl;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;

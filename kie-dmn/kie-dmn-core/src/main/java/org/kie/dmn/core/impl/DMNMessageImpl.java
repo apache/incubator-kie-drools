@@ -19,8 +19,8 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 public class DMNMessageImpl
         implements DMNMessage {

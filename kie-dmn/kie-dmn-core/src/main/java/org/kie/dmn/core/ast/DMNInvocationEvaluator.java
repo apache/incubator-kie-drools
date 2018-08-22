@@ -43,8 +43,8 @@ import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.impl.RootExecutionFrame;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.Invocation;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.Invocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

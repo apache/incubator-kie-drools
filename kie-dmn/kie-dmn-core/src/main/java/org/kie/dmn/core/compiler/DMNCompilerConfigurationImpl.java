@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.kie.api.conf.Option;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 

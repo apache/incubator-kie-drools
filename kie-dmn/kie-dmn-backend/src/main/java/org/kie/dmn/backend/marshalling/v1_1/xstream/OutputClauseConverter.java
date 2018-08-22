@@ -16,15 +16,15 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.UnaryTests;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.model.v1_1.TOutputClause;
 
 public class OutputClauseConverter extends DMNElementConverter {
     public static final String DEFAULT_OUTPUT_ENTRY = "defaultOutputEntry";
@@ -81,12 +81,12 @@ public class OutputClauseConverter extends DMNElementConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new OutputClause();
+        return new TOutputClause();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( OutputClause.class );
+        return clazz.equals(TOutputClause.class);
     }
 
 }

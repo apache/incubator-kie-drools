@@ -32,11 +32,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -146,7 +147,7 @@ public class UnmarshalMarshalTest {
     public void testFAILforMissingNamespaces() {
         fail("PERFORM A MANUAL CHECK: does now the Stax driver do output the namespace for 'feel:' ?? ");
     }
-    
+
     public void testRoundTrip(String subdir, String xmlfile) throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
         testRoundTrip(subdir, xmlfile, marshaller);
@@ -277,7 +278,7 @@ public class UnmarshalMarshalTest {
     }
 
     private String safeStripDMNPRefix(Node target) {
-        if ( DMNModelInstrumentedBase.URI_DMN.equals( target.getNamespaceURI() ) ) {
+        if (KieDMNModelInstrumentedBase.URI_DMN.equals(target.getNamespaceURI())) {
             return target.getLocalName();
         } 
         return null;

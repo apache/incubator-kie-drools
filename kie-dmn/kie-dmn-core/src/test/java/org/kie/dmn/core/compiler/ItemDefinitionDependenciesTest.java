@@ -22,9 +22,10 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
-import org.kie.dmn.model.v1_1.ItemDefinition;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.v1_1.TItemDefinition;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -38,10 +39,10 @@ public class ItemDefinitionDependenciesTest {
     private static final DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
     private ItemDefinition build(String name, ItemDefinition... components) {
-        ItemDefinition res = new ItemDefinition();
+        ItemDefinition res = new TItemDefinition();
         res.setName(name);
         for ( ItemDefinition ic : components ) {
-            ItemDefinition c = new ItemDefinition();
+            ItemDefinition c = new TItemDefinition();
             c.setName("_" + name + "-" + ic.getName());
             c.setTypeRef(new QName(TEST_NS, ic.getName()));
             res.getItemComponent().add(c);

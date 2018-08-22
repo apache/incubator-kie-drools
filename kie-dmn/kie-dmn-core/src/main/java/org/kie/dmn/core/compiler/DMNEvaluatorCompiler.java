@@ -2,6 +2,7 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,25 +39,26 @@ import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
-import org.kie.dmn.model.v1_1.Binding;
-import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.model.v1_1.Context;
-import org.kie.dmn.model.v1_1.ContextEntry;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_1.Decision;
-import org.kie.dmn.model.v1_1.DecisionRule;
-import org.kie.dmn.model.v1_1.DecisionTable;
-import org.kie.dmn.model.v1_1.Expression;
-import org.kie.dmn.model.v1_1.FunctionDefinition;
-import org.kie.dmn.model.v1_1.HitPolicy;
-import org.kie.dmn.model.v1_1.InformationItem;
-import org.kie.dmn.model.v1_1.InputClause;
-import org.kie.dmn.model.v1_1.Invocation;
-import org.kie.dmn.model.v1_1.LiteralExpression;
-import org.kie.dmn.model.v1_1.OutputClause;
-import org.kie.dmn.model.v1_1.Relation;
-import org.kie.dmn.model.v1_1.UnaryTests;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
+import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.model.v1_1.TLiteralExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,12 +68,10 @@ public class DMNEvaluatorCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNEvaluatorCompiler.class );
 
-    protected final DMNFEELHelper feel;
     protected final DMNCompilerImpl compiler;
 
-    public DMNEvaluatorCompiler( DMNCompilerImpl compiler, DMNFEELHelper feel ) {
+    public DMNEvaluatorCompiler(DMNCompilerImpl compiler) {
         this.compiler = compiler;
-        this.feel = feel;
     }
 
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
@@ -113,8 +113,8 @@ public class DMNEvaluatorCompiler {
             return compileFunctionDefinition( ctx, model, node, exprName, (FunctionDefinition) expression );
         } else if ( expression instanceof Context ) {
             return compileContext( ctx, model, node, exprName, (Context) expression );
-        } else if ( expression instanceof org.kie.dmn.model.v1_1.List ) {
-            return compileList( ctx, model, node, exprName, (org.kie.dmn.model.v1_1.List) expression );
+        } else if ( expression instanceof org.kie.dmn.model.api.List ) {
+            return compileList( ctx, model, node, exprName, (org.kie.dmn.model.api.List) expression );
         } else if ( expression instanceof Relation ) {
             return compileRelation( ctx, model, node, exprName, (Relation) expression );
         } else if ( expression instanceof Invocation ) {
@@ -148,7 +148,7 @@ public class DMNEvaluatorCompiler {
             return null;
         }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation, null, feel.newFEELInstance() );
+        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, invocation, null, ctx.getFeelHelper().newFEELInstance());
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
                 // error, missing binding parameter
@@ -188,14 +188,14 @@ public class DMNEvaluatorCompiler {
             DMNCompilerHelper.checkVariableName( model, col, col.getName() );
             relationEval.addColumn( col.getName() );
         }
-        for ( org.kie.dmn.model.v1_1.List row : relationDef.getRow() ) {
+        for ( org.kie.dmn.model.api.List row : relationDef.getRow() ) {
             java.util.List<DMNExpressionEvaluator> values = new ArrayList<>();
             for ( Expression expr : row.getExpression() ) {
                 if (expr instanceof LiteralExpression) {
                     // DROOLS-2439
                     LiteralExpression literalExpression = (LiteralExpression) expr;
                     if (literalExpression.getText() == null || literalExpression.getText().isEmpty()) {
-                        LiteralExpression nullProxy = new LiteralExpression();
+                        LiteralExpression nullProxy = (literalExpression instanceof TLiteralExpression) ? new TLiteralExpression() : new org.kie.dmn.model.v1_2.TLiteralExpression();
                         nullProxy.setText("null");
                         nullProxy.setImportedValues(literalExpression.getImportedValues());
                         nullProxy.setExpressionLanguage(literalExpression.getExpressionLanguage());
@@ -219,8 +219,8 @@ public class DMNEvaluatorCompiler {
         return relationEval;
     }
 
-    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.v1_1.List expression) {
-        org.kie.dmn.model.v1_1.List listDef = expression;
+    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.api.List expression) {
+        org.kie.dmn.model.api.List listDef = expression;
         DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef );
         for ( Expression expr : listDef.getExpression() ) {
             listEval.addElement( compileExpression( ctx, model, node, listName, expr ) );
@@ -277,8 +277,7 @@ public class DMNEvaluatorCompiler {
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition expression) {
         FunctionDefinition funcDef = expression;
 
-        String kindStr = funcDef.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME);
-        FunctionDefinition.Kind kind = kindStr != null ? FunctionDefinition.Kind.determineFromString( kindStr ) :FunctionDefinition.Kind.FEEL;
+        FunctionKind kind = funcDef.getKind();
 
         if( kind == null ) {
             // unknown function kind
@@ -289,10 +288,10 @@ public class DMNEvaluatorCompiler {
                                    null,
                                    null,
                                    Msg.FUNC_DEF_INVALID_KIND,
-                                   kindStr,
+                                  kind,
                                    node.getIdentifierString() );
             return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
-        } else if( kind.equals( FunctionDefinition.Kind.FEEL ) ) {
+        } else if (kind.equals(FunctionKind.FEEL)) {
             ctx.enterFrame();
             try {
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
@@ -307,12 +306,12 @@ public class DMNEvaluatorCompiler {
                 if( eval instanceof DMNLiteralExpressionEvaluator && ((DMNLiteralExpressionEvaluator)eval).isFunctionDefinition() ) {
                     // we need to resolve the function and eliminate the indirection
                     CompiledExpression fexpr = ((DMNLiteralExpressionEvaluator) eval).getExpression();
-                    FEELFunction feelFunction = feel.evaluateFunctionDef( ctx, fexpr, model, funcDef,
+                    FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, fexpr, model, funcDef,
                                                                           Msg.FUNC_DEF_COMPILATION_ERR,
                                                                           functionName,
                                                                           node.getIdentifierString() );
-                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                 ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
+                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                                (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                     for( InformationItem p : funcDef.getFormalParameter() ) {
                         invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
@@ -325,7 +324,7 @@ public class DMNEvaluatorCompiler {
             } finally {
                 ctx.exitFrame();
             }
-        } else if( kind.equals( FunctionDefinition.Kind.JAVA ) ) {
+        } else if (kind.equals(FunctionKind.JAVA)) {
             if( funcDef.getExpression() instanceof Context ) {
                 // proceed
                 Context context = (Context) funcDef.getExpression();
@@ -345,7 +344,7 @@ public class DMNEvaluatorCompiler {
                     String expr = String.format( "function(%s) external { java: { class: \"%s\", method signature: \"%s\" }}", params, clazz, method );
 
                     try {
-                        FEELFunction feelFunction = feel.evaluateFunctionDef( ctx, expr, model, funcDef,
+                        FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, expr, model, funcDef,
                                                                               Msg.FUNC_DEF_COMPILATION_ERR,
                                                                               functionName,
                                                                               node.getIdentifierString() );
@@ -353,8 +352,8 @@ public class DMNEvaluatorCompiler {
                             ((BaseFEELFunction)feelFunction).setName( functionName );
                         }
 
-                        DMNInvocationEvaluator invoker = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, new Invocation(),
-                                                                                     ( fctx, fname ) -> feelFunction, null ); // feel can be null as anyway is hardcoded to `feelFunction`
+                        DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                                    (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {
@@ -399,7 +398,7 @@ public class DMNEvaluatorCompiler {
                                        Msg.FUNC_DEF_BODY_NOT_CONTEXT,
                                        node.getIdentifierString() );
             }
-        } else if( kind.equals( FunctionDefinition.Kind.PMML ) ) {
+        } else if (kind.equals(FunctionKind.PMML)) {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.WARN,
                                    funcDef,
@@ -416,7 +415,7 @@ public class DMNEvaluatorCompiler {
                                    null,
                                    null,
                                    Msg.FUNC_DEF_INVALID_KIND,
-                                   kindStr,
+                                  kind,
                                    node.getIdentifierString() );
         }
         return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
@@ -426,10 +425,10 @@ public class DMNEvaluatorCompiler {
         return trim.startsWith( "\"" ) && trim.endsWith( "\"" ) && trim.length() >= 2 ? trim.substring( 1, trim.length()-1 ) : trim;
     }
 
-    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement) {
+    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement, Map<String, QName> importsFromEnclosingnode) {
         if ( typeRef.getNamespaceURI() == null || typeRef.getNamespaceURI().isEmpty() ) {
-            // TODO this could have actually been populated during unmarshalling, but requires throughout customization of the Stax reader.
-            String namespaceURI = fromElement.getNamespaceURI(typeRef.getPrefix());
+            // here is could be a typeRef defined in the Input/OutputClauses of a Decision Table, which is not normalized by the marshaller.
+            String namespaceURI = DMNCompilerImpl.getNamespaceAndName(fromElement, importsFromEnclosingnode, typeRef).getNamespaceURI();
             return namespaceURI;
         } else {
             return typeRef.getNamespaceURI();
@@ -445,7 +444,7 @@ public class DMNEvaluatorCompiler {
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
             java.util.List<UnaryTest> inputValues = null;
-            DMNType inputType = DMNTypeRegistry.UNKNOWN;
+            DMNType inputType = model.getTypeRegistry().unknown();
             if ( inputValuesText != null ) {
                 inputValues = textToUnaryTestList( ctx,
                                                    inputValuesText,
@@ -457,11 +456,14 @@ public class DMNEvaluatorCompiler {
                                                    index );
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef,
+                                                                                                                           ic.getInputExpression(),
+                                                                                                                           model.getImportAliasesForNS()),
+                                                                                                inputExpressionTypeRef.getLocalPart());
                 inputType = typeRef;
                 inputValues = typeRef.getAllowedValuesFEEL();
             }
-            CompiledExpression compiledInput = feel.compileFeelExpression(
+            CompiledExpression compiledInput = ctx.getFeelHelper().compileFeelExpression(
                     ctx,
                     inputExpressionText,
                     model,
@@ -496,7 +498,7 @@ public class DMNEvaluatorCompiler {
                                                     outputValuesText,
                                                     node.getIdentifierString(),
                                                     ++index );
-            } else if ( typeRef != DMNTypeRegistry.UNKNOWN ) {
+            } else if (typeRef != model.getTypeRegistry().unknown()) {
                 outputValues = typeRef.getAllowedValuesFEEL();
             }
 
@@ -557,7 +559,7 @@ public class DMNEvaluatorCompiler {
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
                 String expressionText = le.getText();
-                CompiledExpression compiledExpression = feel.compileFeelExpression(
+                CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(
                         ctx,
                         expressionText,
                         model,
@@ -572,12 +574,12 @@ public class DMNEvaluatorCompiler {
             index++;
         }
         String policy = dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : "");
-        org.kie.dmn.feel.runtime.decisiontables.HitPolicy hp = org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString( policy );
+        org.kie.dmn.feel.runtime.decisiontables.HitPolicy hp = org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString(policy);
         java.util.List<String> parameterNames = getParameters(model, node, dt);
         // DROOLS-2799 DMN Optimize DT parameter binding for compilation:
         java.util.List<CompiledExpression> compiledParameterNames = new ArrayList<>();
         for (String pName : parameterNames) {
-            CompiledExpression compiledExpression = feel.compileFeelExpression(ctx,
+            CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(ctx,
                                                                                pName,
                                                                                model,
                                                                                dt,
@@ -588,7 +590,7 @@ public class DMNEvaluatorCompiler {
         }
 
         // creates a FEEL instance which will be used by the invoker/impl (s)
-        FEEL feelInstance = feel.newFEELInstance();
+        FEEL feelInstance = ctx.getFeelHelper().newFEELInstance();
 
         DecisionTableImpl dti = new DecisionTableImpl(dtName, parameterNames, inputs, outputs, rules, hp, feelInstance);
         dti.setCompiledParameterNames(compiledParameterNames);
@@ -598,18 +600,18 @@ public class DMNEvaluatorCompiler {
     }
 
     public static BaseDMNTypeImpl inferTypeRef( DMNModelImpl model, DecisionTable dt, OutputClause oc ) {
-        BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+        BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
         if ( oc.getTypeRef() != null ) {
             QName outputExpressionTypeRef = oc.getTypeRef();
-            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
+            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc, model.getImportAliasesForNS()), outputExpressionTypeRef.getLocalPart());
             if( typeRef == null ) {
-                typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
             }
         } else if (dt.getOutput().size() == 1 && (dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry)) {
             QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
             // if inferredTypeRef is null, a std err will have been reported
             if (inferredTypeRef != null) {
-                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc, model.getImportAliasesForNS()), inferredTypeRef.getLocalPart());
             }
         }
         return typeRef;
@@ -729,11 +731,11 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
         DMNLiteralExpressionEvaluator evaluator = null;
-        if ( expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals( DMNModelInstrumentedBase.URI_FEEL ) ) {
+        if (expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals(expression.getURIFEEL())) {
             String exprText = expression.getText();
             if( exprText != null ) {
                 try {
-                    CompiledExpression compiledExpression = feel.compileFeelExpression( ctx,
+                    CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(ctx,
                                                                                         exprText,
                                                                                         model,
                                                                                         expression,
@@ -774,7 +776,7 @@ public class DMNEvaluatorCompiler {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
-        return feel.evaluateUnaryTests( ctx, text, model, element, errorMsg, msgParams );
+        return ctx.getFeelHelper().evaluateUnaryTests(ctx, text, model, element, errorMsg, msgParams);
     }
 
 }

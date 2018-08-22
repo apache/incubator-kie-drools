@@ -1,15 +1,18 @@
 package org.kie.dmn.core.compiler;
 
-import org.kie.dmn.api.core.DMNType;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.kie.dmn.api.core.DMNType;
+
 public class DMNCompilerContext {
+
+    private final DMNFEELHelper feelHelper;
     private Stack<DMNScope> stack = new Stack();
 
-    public DMNCompilerContext() {
+    public DMNCompilerContext(DMNFEELHelper feelHelper) {
+        this.feelHelper = feelHelper;
         this.stack.push( new DMNScope(  ) );
     }
 
@@ -36,4 +39,9 @@ public class DMNCompilerContext {
         }
         return variables;
     }
+
+    public DMNFEELHelper getFeelHelper() {
+        return feelHelper;
+    }
+
 }

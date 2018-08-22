@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.v1_1.Import;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.v1_1.TImport;
+import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
 public class ImportDMNResolverUtil {
 
@@ -18,8 +20,8 @@ public class ImportDMNResolverUtil {
 
     public static <T> Either<String, T> resolveImportDMN(Import _import, Collection<T> all, Function<T, QName> idExtractor) {
         final String iNamespace = _import.getNamespace();
-        final String iName = _import.getAdditionalAttributes().get(Import.NAME_QNAME);
-        final String iModelName = _import.getAdditionalAttributes().get(Import.MODELNAME_QNAME);
+        final String iName = _import.getName();
+        final String iModelName = _import.getAdditionalAttributes().get(TImport.MODELNAME_QNAME);
         List<T> allInNS = all.stream()
                              .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(iNamespace))
                              .collect(Collectors.toList());
@@ -57,9 +59,9 @@ public class ImportDMNResolverUtil {
 
     public static ImportType whichImportType(Import _import) {
         switch (_import.getImportType()) {
-            case "http://www.omg.org/spec/DMN/20151101/dmn.xsd":
+            case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN:
             case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
-            case "http://www.omg.org/spec/DMN/20180521/MODEL/":
+            case KieDMNModelInstrumentedBase.URI_DMN:
                 return ImportType.DMN;
             default:
                 return ImportType.UNKNOWN;

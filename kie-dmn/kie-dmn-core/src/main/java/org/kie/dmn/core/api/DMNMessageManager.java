@@ -1,13 +1,12 @@
 package org.kie.dmn.core.api;
 
+import java.util.List;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageContainer;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
-
-import java.util.List;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 /**
  * An internal interface for objects that also support
