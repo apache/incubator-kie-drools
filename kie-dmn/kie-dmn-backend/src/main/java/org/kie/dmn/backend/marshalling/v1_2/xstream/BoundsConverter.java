@@ -62,10 +62,10 @@ public class BoundsConverter extends DMNModelInstrumentedBaseConverter {
 
         Bounds abs = (Bounds) parent;
 
-        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()).toString());
-        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()).toString());
-        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()).toString());
-        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()).toString());
+        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()));
+        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()));
+        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()));
+        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()));
     }
 
     @Override

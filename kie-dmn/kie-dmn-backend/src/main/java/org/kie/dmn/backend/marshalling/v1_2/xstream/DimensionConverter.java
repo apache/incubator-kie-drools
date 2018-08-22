@@ -57,8 +57,8 @@ public class DimensionConverter extends DMNModelInstrumentedBaseConverter {
         super.writeAttributes(writer, parent);
         Dimension abs = (Dimension) parent;
 
-        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()).toString());
-        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()).toString());
+        writer.addAttribute(WIDTH, FormatUtils.manageDouble(abs.getWidth()));
+        writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()));
     }
 
     @Override

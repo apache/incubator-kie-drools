@@ -58,8 +58,8 @@ public class PointConverter extends DMNModelInstrumentedBaseConverter {
 
         Point abs = (Point) parent;
 
-        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()).toString());
-        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()).toString());
+        writer.addAttribute(X, FormatUtils.manageDouble(abs.getX()));
+        writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()));
     }
 
     @Override
