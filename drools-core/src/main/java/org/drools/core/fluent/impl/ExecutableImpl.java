@@ -16,13 +16,14 @@
 
 package org.drools.core.fluent.impl;
 
-import org.kie.api.command.Command;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.builder.ExecutableBuilder;
+
 public class ExecutableImpl implements InternalExecutable {
+
     private FluentComponentFactory factory;
     private ExecutableBuilder executableBuilder;
 
@@ -38,12 +39,12 @@ public class ExecutableImpl implements InternalExecutable {
         return executableBuilder;
     }
 
-    public void setExecutableBuilder( ExecutableBuilder executableBuilder ) {
+    public void setExecutableBuilder(ExecutableBuilder executableBuilder) {
         this.executableBuilder = executableBuilder;
     }
 
     public FluentComponentFactory getFactory() {
-        if ( factory == null ) {
+        if (factory == null) {
             factory = new FluentComponentFactory();
         }
         return factory;
@@ -53,8 +54,8 @@ public class ExecutableImpl implements InternalExecutable {
         this.factory = factory;
     }
 
-    public void addCommand(Command cmd) {
-        if ( batch == null ) {
+    public void addCommand(ExecutableCommand cmd) {
+        if (batch == null) {
             batch = new BatchImpl();
             addBatch(batch);
         }
