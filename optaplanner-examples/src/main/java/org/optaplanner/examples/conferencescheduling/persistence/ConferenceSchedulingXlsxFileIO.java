@@ -444,6 +444,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readHeaderCell("Undesired room tags");
             readHeaderCell("Mutually exclusive talks tags");
             readHeaderCell("Prerequisite talks codes");
+            readHeaderCell("Number of likes");
+            readHeaderCell("Crowd control risk");
             readHeaderCell("Pinned by user");
             readHeaderCell("Timeslot day");
             readHeaderCell("Start");
@@ -509,12 +511,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                                 + ") must match to the regular expression (" + VALID_TAG_PATTERN + ").");
                     }
                 }
-                double audienceLevelDouble = nextNumericCell().getNumericCellValue();
-                if (strict && (audienceLevelDouble <= 0 || audienceLevelDouble != Math.floor(audienceLevelDouble))) {
-                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                            + ")'s has an audience level (" + audienceLevelDouble + ") that isn't a strictly positive integer number.");
-                }
-                talk.setAudienceLevel((int) audienceLevelDouble);
+                talk.setAudienceLevel(getNextStrictlyPositiveIntegerCell(talk.getCode(), "an audience level"));
                 talk.setContentTagSet(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(toCollection(LinkedHashSet::new)));
                 for (String tag : talk.getContentTagSet()) {
@@ -552,6 +549,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 talkToPrerequisiteTalkSetMap.put(talk, Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
+                talk.setNumberOfLikes(getNextPositiveIntegerCell(talk.getCode(), "a number of likes"));
+                talk.setCrowdControlRisk(getNextPositiveIntegerCell(talk.getCode(), "a crowd control risk"));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
                 String dateString = nextStringCell().getStringCellValue();
                 String startTimeString = nextStringCell().getStringCellValue();
@@ -593,6 +592,24 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             }
             setPrerequisiteTalkSets(talkToPrerequisiteTalkSetMap);
             solution.setTalkList(talkList);
+        }
+
+        private int getNextStrictlyPositiveIntegerCell(String talkCode, String columnName) {
+            double cellValueDouble = nextNumericCell().getNumericCellValue();
+            if (strict && (cellValueDouble <= 0 || cellValueDouble != Math.floor(cellValueDouble))) {
+                throw new IllegalStateException(currentPosition() + ": The talk with code (" + talkCode
+                        + ")'s has " + columnName + " (" + cellValueDouble + ") that isn't a strictly positive integer number.");
+            }
+            return (int) cellValueDouble;
+        }
+
+        private int getNextPositiveIntegerCell(String talkCode, String columnName) {
+            double cellValueDouble = nextNumericCell().getNumericCellValue();
+            if (strict && (cellValueDouble < 0 || cellValueDouble != Math.floor(cellValueDouble))) {
+                throw new IllegalStateException(currentPosition() + ": The talk with code (" + talkCode
+                        + ")'s has " + columnName + " (" + cellValueDouble + ") that isn't a positive integer number.");
+            }
+            return (int) cellValueDouble;
         }
 
         private void verifyTimeslotTags(Set<String> timeslotTagSet) {
@@ -883,6 +900,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextHeaderCell("Undesired room tags");
             nextHeaderCell("Mutually exclusive talks tags");
             nextHeaderCell("Prerequisite talks codes");
+            nextHeaderCell("Number of likes");
+            nextHeaderCell("Crowd control risk");
             nextHeaderCell("Pinned by user");
             nextHeaderCell("Timeslot day");
             nextHeaderCell("Start");
@@ -911,6 +930,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getMutuallyExclusiveTalksTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalkSet().stream().map(Talk::getCode).collect(toList())));
+                nextCell().setCellValue(talk.getNumberOfLikes());
+                nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));

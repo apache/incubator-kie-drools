@@ -457,6 +457,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setUndesiredRoomTagSet(new LinkedHashSet<>());
             talk.setMutuallyExclusiveTalksTagSet(new LinkedHashSet<>());
             talk.setPrerequisiteTalkSet(new LinkedHashSet<>());
+            talk.setNumberOfLikes(random.nextInt(1000));
+            talk.setCrowdControlRisk(random.nextInt(5));
             logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
                     talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);
