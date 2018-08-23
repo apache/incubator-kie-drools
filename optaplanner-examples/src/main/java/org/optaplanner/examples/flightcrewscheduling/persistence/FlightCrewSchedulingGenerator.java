@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,8 +67,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
     public static void main(String[] args) {
         FlightCrewSchedulingGenerator generator = new FlightCrewSchedulingGenerator();
         generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 10, 7);
-        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 50, 7);
         generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 10, 4 * 7);
+        generator.writeFlightCrewSolution("Europe", LocationDataGenerator.EUROPE_BUSIEST_AIRPORTS, 50, 7);
         generator.writeFlightCrewSolution("US", LocationDataGenerator.US_MAINLAND_STATE_CAPITALS, 10, 7);
     }
 
@@ -111,7 +112,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
         createSkillList(solution);
         createAirportList(solution, locationDataArray);
-        createFlightListAndFlightAssignmentList(solution, flightRoundTripsPerDay, dayCount);
+        createFlightList(solution, flightRoundTripsPerDay, dayCount);
+        createFlightAssignmentList(solution);
         createEmployeeList(solution, flightRoundTripsPerDay, dayCount);
 
         int employeeListSize = solution.getEmployeeList().size();
@@ -168,11 +170,9 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         solution.setAirportList(airportList);
     }
 
-    private void createFlightListAndFlightAssignmentList(FlightCrewSolution solution, int flightRoundTripsPerDay, int dayCount) {
+    private void createFlightList(FlightCrewSolution solution, int flightRoundTripsPerDay, int dayCount) {
         int flightListSize = flightRoundTripsPerDay * dayCount;
         List<Flight> flightList = new ArrayList<>(flightListSize);
-        List<FlightAssignment> flightAssignmentList = new ArrayList<>(flightListSize * EMPLOYEE_COUNT_PER_FLIGHT);
-
         List<Airport> airportList = solution.getAirportList();
         Airport centerAirport = airportList.get(0);
         int homeAirportListSize = Math.min(airportList.size() / 10, flightRoundTripsPerDay / 5);
@@ -184,7 +184,6 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         LocalDate lastDate = solution.getScheduleLastUTCDate();
         int flightNumberSuffix = 1;
         long flightId = 0L;
-        long flightAssignmentId = 0L;
         for (int i = 0; i < flightRoundTripsPerDay; i++) {
             int flightCount = i % 2 == 0 ? 2 : 3;
             ArrayList<Airport> selectedAirports = new ArrayList<>(flightCount);
@@ -213,16 +212,6 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                     flight.setDepartureUTCDateTime(date.atTime(departureMinute / 60, departureMinute % 60));
                     flight.setArrivalAirport(arrivalAirport);
                     flight.setArrivalUTCDateTime(date.atTime(arrivalMinute / 60, arrivalMinute % 60));
-                    for (int indexInFlight = 0; indexInFlight < EMPLOYEE_COUNT_PER_FLIGHT; indexInFlight++) {
-                        FlightAssignment flightAssignment = new FlightAssignment();
-                        flightAssignment.setId((long) flightAssignmentId);
-                        flightAssignmentId++;
-                        flightAssignment.setFlight(flight);
-                        flightAssignment.setIndexInFlight(indexInFlight);
-                        Skill requiredSkill = indexInFlight < PILOT_COUNT_PER_FLIGHT ? pilotSkill : flightAttendantSkill;
-                        flightAssignment.setRequiredSkill(requiredSkill);
-                        flightAssignmentList.add(flightAssignment);
-                    }
                     logger.trace("Created flight ({}).", flight);
                     flightList.add(flight);
                 }
@@ -234,6 +223,24 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 .thenComparing(Flight::getArrivalAirport)
                 .thenComparing(Flight::getArrivalUTCDateTime));
         solution.setFlightList(flightList);
+    }
+
+    private void createFlightAssignmentList(FlightCrewSolution solution) {
+        List<Flight> flightList = solution.getFlightList();
+        List<FlightAssignment> flightAssignmentList = new ArrayList<>(flightList.size() * EMPLOYEE_COUNT_PER_FLIGHT);
+        long flightAssignmentId = 0L;
+        for (Flight flight : flightList) {
+            for (int indexInFlight = 0; indexInFlight < EMPLOYEE_COUNT_PER_FLIGHT; indexInFlight++) {
+                FlightAssignment flightAssignment = new FlightAssignment();
+                flightAssignment.setId((long) flightAssignmentId);
+                flightAssignmentId++;
+                flightAssignment.setFlight(flight);
+                flightAssignment.setIndexInFlight(indexInFlight);
+                Skill requiredSkill = indexInFlight < PILOT_COUNT_PER_FLIGHT ? pilotSkill : flightAttendantSkill;
+                flightAssignment.setRequiredSkill(requiredSkill);
+                flightAssignmentList.add(flightAssignment);
+            }
+        }
         solution.setFlightAssignmentList(flightAssignmentList);
     }
 
@@ -244,11 +251,11 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         employeeNameGenerator.predictMaximumSizeAndReset(employeeListSize);
         LocalDate firstDate = solution.getScheduleFirstUTCDate();
         LocalDate lastDate = solution.getScheduleLastUTCDate();
-        List<LocalDate> allDayList = new ArrayList<>((int) DAYS.between(firstDate, lastDate) + 1);
+        List<LocalDate> allDateList = new ArrayList<>((int) DAYS.between(firstDate, lastDate) + 1);
         for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
-            allDayList.add(date);
+            allDateList.add(date);
         }
-        List<LocalDate> unavailableDayPool = new ArrayList<>(allDayList);
+        List<LocalDate> unavailableDayPool = new ArrayList<>(allDateList);
         Collections.shuffle(unavailableDayPool, random);
         long id = 0L;
         for (int i = 0; i < employeeListSize; i++) {
@@ -264,35 +271,36 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                     unavailableDayCount++;
                 }
             }
-            Set<LocalDate> unavailableDaySet = new LinkedHashSet<>();
-            if (unavailableDayPool.size() >= unavailableDayCount) {
-                List<LocalDate> selection = unavailableDayPool.subList(0, unavailableDayCount);
-                unavailableDaySet.addAll(selection);
-                selection.clear();
-            } else {
-                unavailableDaySet.addAll(unavailableDayPool);
-                unavailableDayPool.clear();
-                unavailableDayPool.addAll(allDayList);
-                Collections.shuffle(unavailableDayPool, random);
-                for (int j = 0; j < unavailableDayPool.size() && unavailableDaySet.size() < unavailableDayCount; j++) {
-                    if (unavailableDaySet.add(unavailableDayPool.get(j))) {
-                        unavailableDayPool.remove(j);
-                    }
-                }
-            }
-            for (int j = 0; j < unavailableDayCount; j++) {
-                if (unavailableDayPool.isEmpty()) {
-                    unavailableDayPool.addAll(allDayList);
-                    Collections.shuffle(unavailableDayPool, random);
-                }
-                unavailableDaySet.add(unavailableDayPool.remove(0));
-            }
-            employee.setUnavailableDaySet(unavailableDaySet);
+            employee.setUnavailableDaySet(generateUnavailableDaySet(unavailableDayCount, allDateList, unavailableDayPool));
             employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
             logger.trace("Created employee ({}).", employee);
             employeeList.add(employee);
         }
         solution.setEmployeeList(employeeList);
 
+    }
+
+    private Set<LocalDate> generateUnavailableDaySet(int size, List<LocalDate> allDateList, List<LocalDate> pool) {
+        Set<LocalDate> unavailableDaySet = new LinkedHashSet<>(size);
+        if (pool.size() < size) {
+            // There are not enough left in the pool, so provision more
+            unavailableDaySet.addAll(pool);
+            pool.clear();
+            pool.addAll(allDateList);
+            Collections.shuffle(pool, random);
+            // Add those that haven't been added yet
+            for (Iterator<LocalDate> it = pool.iterator(); it.hasNext() && unavailableDaySet.size() < size; ) {
+                LocalDate date = it.next();
+                if (unavailableDaySet.add(date)) {
+                    it.remove();
+                }
+            }
+        } else {
+            // There are enough left in the pool
+            List<LocalDate> selection = pool.subList(0, size);
+            unavailableDaySet.addAll(selection);
+            selection.clear();
+        }
+        return unavailableDaySet;
     }
 }

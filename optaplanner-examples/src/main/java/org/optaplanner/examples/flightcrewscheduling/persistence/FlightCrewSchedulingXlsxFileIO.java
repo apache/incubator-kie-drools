@@ -551,25 +551,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                             .thenComparing(FlightAssignment::getId));
                     for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                         boolean unavailable = employee.getUnavailableDaySet().contains(date);
-                        Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = new HashMap<>(
-                                employeeAssignmentList.size());
-                        int previousArrivalHour = -1;
-                        List<FlightAssignment> previousFlightAssignmentList = null;
-                        for (FlightAssignment flightAssignment : employeeAssignmentList) {
-                            Flight flight = flightAssignment.getFlight();
-                            if (flight.getDepartureUTCDate().equals(date)) {
-                                int departureHour = flight.getDepartureUTCTime().getHour();
-                                int arrivalHour = flight.getArrivalUTCTime().getHour();
-                                if (previousArrivalHour < departureHour) {
-                                    previousFlightAssignmentList = new ArrayList<>(24);
-                                    hourToAssignmentListMap.put(departureHour, previousFlightAssignmentList);
-                                    previousArrivalHour = arrivalHour;
-                                } else {
-                                    previousArrivalHour = Math.max(previousArrivalHour, arrivalHour);
-                                }
-                                previousFlightAssignmentList.add(flightAssignment);
-                            }
-                        }
+                        Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = extractHourToAssignmentListMap(employeeAssignmentList, date);
                         for (int departureHour = minimumHour; departureHour <= maximumHour; departureHour++) {
                             List<FlightAssignment> flightAssignmentList = hourToAssignmentListMap.get(departureHour);
                             if (flightAssignmentList != null) {
@@ -598,6 +580,30 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             setSizeColumnsWithHeader(1500);
             currentSheet.autoSizeColumn(0);
             currentSheet.autoSizeColumn(1);
+        }
+
+        private Map<Integer, List<FlightAssignment>> extractHourToAssignmentListMap(
+                List<FlightAssignment> employeeAssignmentList, LocalDate date) {
+            Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = new HashMap<>(
+                    employeeAssignmentList.size());
+            int previousArrivalHour = -1;
+            List<FlightAssignment> previousFlightAssignmentList = null;
+            for (FlightAssignment flightAssignment : employeeAssignmentList) {
+                Flight flight = flightAssignment.getFlight();
+                if (flight.getDepartureUTCDate().equals(date)) {
+                    int departureHour = flight.getDepartureUTCTime().getHour();
+                    int arrivalHour = flight.getArrivalUTCTime().getHour();
+                    if (previousArrivalHour < departureHour) {
+                        previousFlightAssignmentList = new ArrayList<>(24);
+                        hourToAssignmentListMap.put(departureHour, previousFlightAssignmentList);
+                        previousArrivalHour = arrivalHour;
+                    } else {
+                        previousArrivalHour = Math.max(previousArrivalHour, arrivalHour);
+                    }
+                    previousFlightAssignmentList.add(flightAssignment);
+                }
+            }
+            return hourToAssignmentListMap;
         }
 
         private void writeScoreView() {
