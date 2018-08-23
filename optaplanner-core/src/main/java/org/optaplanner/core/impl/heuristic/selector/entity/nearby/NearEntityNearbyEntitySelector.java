@@ -84,7 +84,9 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
             // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
             int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
             if (discardNearbyIndexZero) {
-                overallSizeMaximum++;
+                if (overallSizeMaximum != Integer.MAX_VALUE) {
+                    overallSizeMaximum++;
+                }
             }
             if (destinationSize > overallSizeMaximum) {
                 destinationSize = overallSizeMaximum;
