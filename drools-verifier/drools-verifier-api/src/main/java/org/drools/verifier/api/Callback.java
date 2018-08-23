@@ -21,6 +21,5 @@ package org.drools.verifier.api;
  */
 public interface Callback<T> {
 
-    void callback( T result );
-
+    void callback(final T result);
 }

@@ -40,11 +40,11 @@ public class MultipleValuesForOneActionIssue
         this.conflictingItem = conflictingItem;
     }
 
-    public void setConflictedItem(String conflictedItem) {
+    public void setConflictedItem(final String conflictedItem) {
         this.conflictedItem = conflictedItem;
     }
 
-    public void setConflictingItem(String conflictingItem) {
+    public void setConflictingItem(final String conflictingItem) {
         this.conflictingItem = conflictingItem;
     }
 
@@ -57,7 +57,7 @@ public class MultipleValuesForOneActionIssue
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return super.equals(o);
     }
 

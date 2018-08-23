@@ -22,10 +22,9 @@ public abstract class InspectorFactory<Result, Input> {
 
     protected AnalyzerConfiguration configuration;
 
-    public InspectorFactory( final AnalyzerConfiguration configuration ) {
+    public InspectorFactory(final AnalyzerConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public abstract Result make( final Input input );
-
+    public abstract Result make(final Input input);
 }

@@ -37,19 +37,19 @@ public class Status {
         this.totalCheckCount = totalCheckCount;
     }
 
-    public void setWebWorkerUUID(String webWorkerUUID) {
+    public void setWebWorkerUUID(final String webWorkerUUID) {
         this.webWorkerUUID = webWorkerUUID;
     }
 
-    public void setStartCheckIndex(int startCheckIndex) {
+    public void setStartCheckIndex(final int startCheckIndex) {
         this.startCheckIndex = startCheckIndex;
     }
 
-    public void setEndCheckIndex(int endCheckIndex) {
+    public void setEndCheckIndex(final int endCheckIndex) {
         this.endCheckIndex = endCheckIndex;
     }
 
-    public void setTotalCheckCount(int totalCheckCount) {
+    public void setTotalCheckCount(final int totalCheckCount) {
         this.totalCheckCount = totalCheckCount;
     }
 

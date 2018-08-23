@@ -19,7 +19,6 @@ package org.drools.verifier.core.main;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.verifier.core.util.PortablePreconditions;
 import org.drools.verifier.api.Command;
 import org.drools.verifier.api.Status;
 import org.drools.verifier.api.StatusUpdate;
@@ -32,6 +31,7 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Rule;
+import org.drools.verifier.core.util.PortablePreconditions;
 
 public class Analyzer {
 

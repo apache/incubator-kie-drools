@@ -24,36 +24,36 @@ class ChangeHelper<T> {
     private final Select<T> addedSelector;
     private final Select<T> removedSelector;
 
-    ChangeHelper( final MultiMapChangeHandler.ChangeSet<Value, T> changeSet,
-                  final Matcher matcher ) {
-        addedSelector = new Select<T>( changeSet.getAdded(),
-                                       matcher );
-        removedSelector = new Select<T>( changeSet.getRemoved(),
-                                         matcher );
+    ChangeHelper(final MultiMapChangeHandler.ChangeSet<Value, T> changeSet,
+                 final Matcher matcher) {
+        addedSelector = new Select<T>(changeSet.getAdded(),
+                                      matcher);
+        removedSelector = new Select<T>(changeSet.getRemoved(),
+                                        matcher);
     }
 
-    boolean firstChanged( final Select.Entry first ) {
-        if ( containsEntry( removedSelector,
-                            first ) ) {
+    boolean firstChanged(final Select.Entry first) {
+        if (containsEntry(removedSelector,
+                          first)) {
             return true;
-        } else if ( addedSelector.exists() ) {
-            return first.getKey().compareTo( addedSelector.firstEntry().getKey() ) > 0;
+        } else if (addedSelector.exists()) {
+            return first.getKey().compareTo(addedSelector.firstEntry().getKey()) > 0;
         } else {
             return false;
         }
     }
 
-    private boolean containsEntry( final Select<T> select,
-                                   final Select.Entry entry ) {
-        return select.asMap().keySet().contains( entry.getKey() ) && select.all().contains( entry.getValue() );
+    private boolean containsEntry(final Select<T> select,
+                                  final Select.Entry entry) {
+        return select.asMap().keySet().contains(entry.getKey()) && select.all().contains(entry.getValue());
     }
 
-    boolean lastChanged( final Select.Entry last ) {
-        if ( containsEntry( removedSelector,
-                            last ) ) {
+    boolean lastChanged(final Select.Entry last) {
+        if (containsEntry(removedSelector,
+                          last)) {
             return true;
-        } else if ( addedSelector.exists() ) {
-            return last.getKey().compareTo( addedSelector.lastEntry().getKey() ) < 0;
+        } else if (addedSelector.exists()) {
+            return last.getKey().compareTo(addedSelector.lastEntry().getKey()) < 0;
         } else {
             return false;
         }

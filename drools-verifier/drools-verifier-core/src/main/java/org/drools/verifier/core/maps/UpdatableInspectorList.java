@@ -31,35 +31,35 @@ public class UpdatableInspectorList<InspectorType extends HasUUID, InspectedType
 
     private HashMap<UUIDKey, InspectorType> map = new HashMap<>();
 
-    public UpdatableInspectorList( final InspectorFactory<InspectorType, InspectedType> inspectorFactory,
-                                   final AnalyzerConfiguration configuration ) {
-        super( configuration );
+    public UpdatableInspectorList(final InspectorFactory<InspectorType, InspectedType> inspectorFactory,
+                                  final AnalyzerConfiguration configuration) {
+        super(configuration);
         this.inspectorFactory = inspectorFactory;
     }
 
-    public void update( final Collection<InspectedType> updates ) {
+    public void update(final Collection<InspectedType> updates) {
 
-        final ArrayList<UUIDKey> originalItems = new ArrayList<>( map.keySet() );
+        final ArrayList<UUIDKey> originalItems = new ArrayList<>(map.keySet());
 
-        for ( final InspectedType updatable : updates ) {
+        for (final InspectedType updatable : updates) {
 
-            final InspectorType inspector = map.get( updatable.getUuidKey() );
+            final InspectorType inspector = map.get(updatable.getUuidKey());
 
-            if ( inspector != null ) {
+            if (inspector != null) {
                 // Everything up to date.
-                originalItems.remove( updatable.getUuidKey() );
+                originalItems.remove(updatable.getUuidKey());
                 continue;
             } else {
-                final InspectorType newInspector = inspectorFactory.make( updatable );
-                add( newInspector );
-                map.put( updatable.getUuidKey(),
-                         newInspector );
+                final InspectorType newInspector = inspectorFactory.make(updatable);
+                add(newInspector);
+                map.put(updatable.getUuidKey(),
+                        newInspector);
             }
         }
 
         // Remove left overs, they were not in updates
-        for ( final UUIDKey originalItem : originalItems ) {
-            remove( map.remove( originalItem ) );
+        for (final UUIDKey originalItem : originalItems) {
+            remove(map.remove(originalItem));
         }
     }
 }

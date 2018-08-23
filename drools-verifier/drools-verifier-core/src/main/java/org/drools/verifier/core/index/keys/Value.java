@@ -20,7 +20,7 @@ public class Value
 
     private final Comparable comparable;
 
-    public Value( final Comparable comparable ) {
+    public Value(final Comparable comparable) {
         this.comparable = comparable;
     }
 
@@ -34,18 +34,18 @@ public class Value
     }
 
     @Override
-    public int compareTo( final Value value ) {
-        if ( comparable == null && value.comparable == null ) {
+    public int compareTo(final Value value) {
+        if (comparable == null && value.comparable == null) {
             return 0;
-        } else if ( comparable == null ) {
+        } else if (comparable == null) {
             return -1;
-        } else if ( value.comparable == null ) {
+        } else if (value.comparable == null) {
             return 1;
         } else {
             try {
-                return this.comparable.compareTo( value.comparable );
-            } catch ( final ClassCastException cce ) {
-                return this.comparable.toString().compareTo( value.comparable.toString() );
+                return this.comparable.compareTo(value.comparable);
+            } catch (final ClassCastException cce) {
+                return this.comparable.toString().compareTo(value.comparable.toString());
             }
         }
     }

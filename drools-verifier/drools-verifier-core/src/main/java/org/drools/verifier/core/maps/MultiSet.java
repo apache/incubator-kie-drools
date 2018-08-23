@@ -32,41 +32,41 @@ public class MultiSet<K, V> {
         return map.isEmpty();
     }
 
-    public boolean containsKey( K key ) {
-        return map.containsKey( key );
+    public boolean containsKey(K key) {
+        return map.containsKey(key);
     }
 
-    public boolean put( K key,
-                        V value ) {
-        if ( map.containsKey( key ) ) {
-            return map.get( key ).add( value );
+    public boolean put(K key,
+                       V value) {
+        if (map.containsKey(key)) {
+            return map.get(key).add(value);
         } else {
             HashSet<V> list = new HashSet<V>();
-            list.add( value );
-            map.put( key, list );
+            list.add(value);
+            map.put(key, list);
             return true;
         }
     }
 
-    public void putAllValues( K key,
-                              HashSet<V> values ) {
-        map.put( key, values );
+    public void putAllValues(K key,
+                             HashSet<V> values) {
+        map.put(key, values);
     }
 
-    public boolean addAllValues( K key,
-                                 Collection<V> values ) {
-        if ( map.containsKey( key ) ) {
-            return map.get( key ).addAll( values );
+    public boolean addAllValues(K key,
+                                Collection<V> values) {
+        if (map.containsKey(key)) {
+            return map.get(key).addAll(values);
         } else {
             HashSet<V> set = new HashSet<V>();
-            set.addAll( values );
-            map.put( key, set );
+            set.addAll(values);
+            map.put(key, set);
             return true;
         }
     }
 
-    public Collection<V> remove( K key ) {
-        return map.remove( key );
+    public Collection<V> remove(K key) {
+        return map.remove(key);
     }
 
     public int size() {
@@ -77,8 +77,8 @@ public class MultiSet<K, V> {
         return map.keySet();
     }
 
-    public Collection<V> get( K key ) {
-        return map.get( key );
+    public Collection<V> get(K key) {
+        return map.get(key);
     }
 
     public void clear() {
@@ -88,15 +88,15 @@ public class MultiSet<K, V> {
     public List<V> allValues() {
         ArrayList<V> allValues = new ArrayList<V>();
 
-        for ( K k : keys() ) {
-            allValues.addAll( get( k ) );
+        for (K k : keys()) {
+            allValues.addAll(get(k));
         }
 
         return allValues;
     }
 
-    public void removeValue( K k,
-                             V v ) {
-        get( k ).remove( v );
+    public void removeValue(K k,
+                            V v) {
+        get(k).remove(v);
     }
 }

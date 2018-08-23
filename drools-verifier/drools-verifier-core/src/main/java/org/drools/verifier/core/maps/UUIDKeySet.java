@@ -27,7 +27,7 @@ public class UUIDKeySet
 
     private KeyTreeMap keyTreeMap;
 
-    public UUIDKeySet( final KeyTreeMap keyTreeMap ) {
+    public UUIDKeySet(final KeyTreeMap keyTreeMap) {
         this.keyTreeMap = keyTreeMap;
     }
 
@@ -35,24 +35,24 @@ public class UUIDKeySet
     }
 
     @Override
-    public boolean add( final UUIDKey uuidKey ) {
+    public boolean add(final UUIDKey uuidKey) {
 
-        uuidKey.addRetractHandler( this );
+        uuidKey.addRetractHandler(this);
 
-        return super.add( uuidKey );
+        return super.add(uuidKey);
     }
 
     @Override
-    public boolean addAll( final Collection<? extends UUIDKey> keys ) {
-        for ( final UUIDKey uuidKey : keys ) {
-            uuidKey.addRetractHandler( this );
+    public boolean addAll(final Collection<? extends UUIDKey> keys) {
+        for (final UUIDKey uuidKey : keys) {
+            uuidKey.addRetractHandler(this);
         }
 
-        return super.addAll( keys );
+        return super.addAll(keys);
     }
 
     @Override
-    public void retract( final UUIDKey uuidKey ) {
-        keyTreeMap.remove( uuidKey );
+    public void retract(final UUIDKey uuidKey) {
+        keyTreeMap.remove(uuidKey);
     }
 }

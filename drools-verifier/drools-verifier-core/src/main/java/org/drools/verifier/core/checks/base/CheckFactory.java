@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.verifier.core.util.PortablePreconditions;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.checks.DetectConflictingRowsCheck;
 import org.drools.verifier.core.checks.DetectDeficientRowsCheck;
@@ -37,6 +36,7 @@ import org.drools.verifier.core.checks.DetectRedundantRowsCheck;
 import org.drools.verifier.core.checks.SingleHitCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.configuration.CheckConfiguration;
+import org.drools.verifier.core.util.PortablePreconditions;
 
 /**
  * Creates checks. Uses a white list to make sure the only the checks the user wants are used.

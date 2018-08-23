@@ -29,18 +29,18 @@ public class LeafInspectorList<T extends IsConflicting & IsRedundant>
         implements HasConflicts,
                    HasRedundancy {
 
-    public LeafInspectorList( final AnalyzerConfiguration configuration ) {
-        super( configuration );
+    public LeafInspectorList(final AnalyzerConfiguration configuration) {
+        super(configuration);
     }
 
     @Override
     public Conflict hasConflicts() {
         int index = 1;
-        for ( final T inspector : this ) {
-            for ( int j = index; j < size(); j++ ) {
-                if ( inspector.conflicts( get( j ) ) ) {
-                    return new Conflict( inspector,
-                                         get( j ) );
+        for (final T inspector : this) {
+            for (int j = index; j < size(); j++) {
+                if (inspector.conflicts(get(j))) {
+                    return new Conflict(inspector,
+                                        get(j));
                 }
             }
             index++;
@@ -52,15 +52,15 @@ public class LeafInspectorList<T extends IsConflicting & IsRedundant>
     @Override
     public RedundancyResult hasRedundancy() {
 
-        for ( int i = 0; i < size(); i++ ) {
+        for (int i = 0; i < size(); i++) {
 
-            final T inspector = get( i );
+            final T inspector = get(i);
 
-            for ( int j = i + 1; j < size(); j++ ) {
-                final T other = get( j );
-                if ( inspector.isRedundant( other ) ) {
-                    return new RedundancyResult( inspector,
-                                                 get( j ) );
+            for (int j = i + 1; j < size(); j++) {
+                final T other = get(j);
+                if (inspector.isRedundant(other)) {
+                    return new RedundancyResult(inspector,
+                                                get(j));
                 }
             }
         }

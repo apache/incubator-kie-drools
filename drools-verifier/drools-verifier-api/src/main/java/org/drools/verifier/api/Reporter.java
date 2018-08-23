@@ -22,9 +22,9 @@ import org.drools.verifier.api.reporting.Issue;
 
 public interface Reporter {
 
-    void sendReport( Set<Issue> issues );
+    void sendReport(final Set<Issue> issues);
 
-    void sendStatus( Status status );
+    void sendStatus(final Status status);
 
     void activate();
 }

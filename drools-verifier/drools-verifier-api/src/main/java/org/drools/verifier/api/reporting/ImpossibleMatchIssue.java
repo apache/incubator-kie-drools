@@ -49,23 +49,23 @@ public class ImpossibleMatchIssue
         this.conflictingItem = conflictingItem;
     }
 
-    public void setFieldFactType(String fieldFactType) {
+    public void setFieldFactType(final String fieldFactType) {
         this.fieldFactType = fieldFactType;
     }
 
-    public void setFieldName(String fieldName) {
+    public void setFieldName(final String fieldName) {
         this.fieldName = fieldName;
     }
 
-    public void setConflictedItem(String conflictedItem) {
+    public void setConflictedItem(final String conflictedItem) {
         this.conflictedItem = conflictedItem;
     }
 
-    public void setConflictingItem(String conflictingItem) {
+    public void setConflictingItem(final String conflictingItem) {
         this.conflictingItem = conflictingItem;
     }
 
-    public void setRuleId(String ruleId) {
+    public void setRuleId(final String ruleId) {
         this.ruleId = ruleId;
     }
 

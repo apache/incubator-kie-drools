@@ -45,19 +45,19 @@ public class ValueForFactFieldIsSetTwiceIssue
         this.secondItem = secondItem;
     }
 
-    public void setBoundName(String boundName) {
+    public void setBoundName(final String boundName) {
         this.boundName = boundName;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setFirstItem(String firstItem) {
+    public void setFirstItem(final String firstItem) {
         this.firstItem = firstItem;
     }
 
-    public void setSecondItem(String secondItem) {
+    public void setSecondItem(final String secondItem) {
         this.secondItem = secondItem;
     }
 

@@ -34,11 +34,11 @@ public class Issues {
         this.set = set;
     }
 
-    public void setWebWorkerUUID(String webWorkerUUID) {
+    public void setWebWorkerUUID(final String webWorkerUUID) {
         this.webWorkerUUID = webWorkerUUID;
     }
 
-    public void setSet(Set<Issue> set) {
+    public void setSet(final Set<Issue> set) {
         this.set = set;
     }
 

@@ -20,6 +20,5 @@ import org.drools.verifier.core.index.keys.UUIDKey;
 
 public interface RetractHandler {
 
-    void retract( final UUIDKey uuidKey );
-
+    void retract(final UUIDKey uuidKey);
 }

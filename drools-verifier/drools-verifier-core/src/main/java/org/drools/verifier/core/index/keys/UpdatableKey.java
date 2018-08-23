@@ -26,32 +26,32 @@ public class UpdatableKey<T>
 
     private List<KeyChangeListener<T>> keyChangeListeners = new ArrayList<>();
 
-    public UpdatableKey( final KeyDefinition keyDefinition,
-                         final Comparable value ) {
-        super( keyDefinition,
-               value );
+    public UpdatableKey(final KeyDefinition keyDefinition,
+                        final Comparable value) {
+        super(keyDefinition,
+              value);
     }
 
-    public UpdatableKey( final KeyDefinition keyDefinition,
-                         final Values values ) {
-        super( keyDefinition,
-               values );
+    public UpdatableKey(final KeyDefinition keyDefinition,
+                        final Values values) {
+        super(keyDefinition,
+              values);
     }
 
-    public void update( final UpdatableKey newKey,
-                        final T t ) {
-        for ( final KeyChangeListener<T> keyChangeListener : keyChangeListeners ) {
-            keyChangeListener.update( this,
-                                      newKey,
-                                      t );
+    public void update(final UpdatableKey newKey,
+                       final T t) {
+        for (final KeyChangeListener<T> keyChangeListener : keyChangeListeners) {
+            keyChangeListener.update(this,
+                                     newKey,
+                                     t);
         }
     }
 
-    public void addKeyChangeListener( final KeyChangeListener<T> keyChangeListener ) {
-        keyChangeListeners.add( keyChangeListener );
+    public void addKeyChangeListener(final KeyChangeListener<T> keyChangeListener) {
+        keyChangeListeners.add(keyChangeListener);
     }
 
-    public void removeListener( final KeyChangeListener<T> keyChangeListener ) {
-        keyChangeListeners.remove( keyChangeListener );
+    public void removeListener(final KeyChangeListener<T> keyChangeListener) {
+        keyChangeListeners.remove(keyChangeListener);
     }
 }

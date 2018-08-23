@@ -29,24 +29,24 @@ public class RedundancyResult<Parent, Item extends IsRedundant & HumanReadable> 
     protected final List<Item> list = new ArrayList<>();
     private Parent parent;
 
-    public RedundancyResult( final Item... items ) {
-        for ( final Item item : items ) {
-            list.add( item );
+    public RedundancyResult(final Item... items) {
+        for (final Item item : items) {
+            list.add(item);
         }
     }
 
-    public RedundancyResult( final Parent parent,
-                             final RedundancyResult<Object, Item> result ) {
+    public RedundancyResult(final Parent parent,
+                            final RedundancyResult<Object, Item> result) {
         this.parent = parent;
-        list.addAll( result.list );
+        list.addAll(result.list);
     }
 
     public boolean isTrue() {
         return !list.isEmpty();
     }
 
-    public Item get( final int i ) {
-        return list.get( i );
+    public Item get(final int i) {
+        return list.get(i);
     }
 
     public Parent getParent() {

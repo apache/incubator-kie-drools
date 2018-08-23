@@ -21,5 +21,4 @@ import org.drools.verifier.core.relations.Conflict;
 public interface HasConflicts<T> {
 
     Conflict hasConflicts();
-
 }

@@ -20,6 +20,5 @@ public interface HasIndex {
 
     int getIndex();
 
-    void setIndex( final int index );
-
+    void setIndex(final int index);
 }

@@ -44,24 +44,23 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
 
     private MultiMap<GroupBy, Value, LeafInspectorList<Value>> map;
 
-    public InspectorMultiMap( final AnalyzerConfiguration configuration ) {
-        uuidKey = configuration.getUUID( this );
-        map = MultiMapFactory.make( true,
-                                    new NewSubMapProvider<Value, LeafInspectorList<Value>>() {
-                                        @Override
-                                        public LeafInspectorList<Value> getNewSubMap() {
-                                            return new LeafInspectorList<>( configuration );
-                                        }
-                                    } );
-
+    public InspectorMultiMap(final AnalyzerConfiguration configuration) {
+        uuidKey = configuration.getUUID(this);
+        map = MultiMapFactory.make(true,
+                                   new NewSubMapProvider<Value, LeafInspectorList<Value>>() {
+                                       @Override
+                                       public LeafInspectorList<Value> getNewSubMap() {
+                                           return new LeafInspectorList<>(configuration);
+                                       }
+                                   });
     }
 
     @Override
     public Conflict hasConflicts() {
-        for ( final GroupBy groupBy : map.keySet() ) {
-            final Conflict result = map.get( groupBy )
+        for (final GroupBy groupBy : map.keySet()) {
+            final Conflict result = map.get(groupBy)
                     .hasConflicts();
-            if ( result.foundIssue() ) {
+            if (result.foundIssue()) {
                 return result;
             }
         }
@@ -71,12 +70,12 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
 
     @Override
     public RedundancyResult<GroupBy, Value> hasRedundancy() {
-        for ( final GroupBy groupBy : map.keySet() ) {
-            final RedundancyResult result = map.get( groupBy )
+        for (final GroupBy groupBy : map.keySet()) {
+            final RedundancyResult result = map.get(groupBy)
                     .hasRedundancy();
-            if ( result.isTrue() ) {
-                return new RedundancyResult<>( groupBy,
-                                               result );
+            if (result.isTrue()) {
+                return new RedundancyResult<>(groupBy,
+                                              result);
             }
         }
 
@@ -84,14 +83,14 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
     }
 
     @Override
-    public boolean conflicts( final Object other ) {
+    public boolean conflicts(final Object other) {
 
-        if ( other instanceof InspectorMultiMap ) {
-            for ( final GroupBy groupBy : map.keySet() ) {
-                final InspectorList list = (InspectorList) ( (InspectorMultiMap) other ).map.get( groupBy );
+        if (other instanceof InspectorMultiMap) {
+            for (final GroupBy groupBy : map.keySet()) {
+                final InspectorList list = (InspectorList) ((InspectorMultiMap) other).map.get(groupBy);
 
-                if ( list instanceof InspectorList && map.get( groupBy )
-                        .conflicts( list ) ) {
+                if (list instanceof InspectorList && map.get(groupBy)
+                        .conflicts(list)) {
                     return true;
                 }
             }
@@ -101,13 +100,13 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
     }
 
     @Override
-    public boolean isRedundant( final Object other ) {
+    public boolean isRedundant(final Object other) {
 
-        if ( other instanceof InspectorMultiMap ) {
-            for ( final GroupBy groupBy : map.keySet() ) {
+        if (other instanceof InspectorMultiMap) {
+            for (final GroupBy groupBy : map.keySet()) {
 
-                if ( !map.get( groupBy )
-                        .isRedundant( ( (InspectorMultiMap<GroupBy, Value>) other ).map.get( groupBy ) ) ) {
+                if (!map.get(groupBy)
+                        .isRedundant(((InspectorMultiMap<GroupBy, Value>) other).map.get(groupBy))) {
                     return false;
                 }
             }
@@ -118,14 +117,14 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
     }
 
     @Override
-    public boolean subsumes( final Object other ) {
+    public boolean subsumes(final Object other) {
 
-        if ( other instanceof InspectorMultiMap ) {
+        if (other instanceof InspectorMultiMap) {
 
-            for ( final Object groupBy : ( (InspectorMultiMap) other ).map.keySet() ) {
-                final InspectorList otherCollection = ( (InspectorMultiMap<GroupBy, Value>) other ).map.get( (GroupBy) groupBy );
-                final LeafInspectorList<Value> collection = map.get( (GroupBy) groupBy );
-                if ( !otherCollection.subsumes( collection ) ) {
+            for (final Object groupBy : ((InspectorMultiMap) other).map.keySet()) {
+                final InspectorList otherCollection = ((InspectorMultiMap<GroupBy, Value>) other).map.get((GroupBy) groupBy);
+                final LeafInspectorList<Value> collection = map.get((GroupBy) groupBy);
+                if (!otherCollection.subsumes(collection)) {
                     return false;
                 }
             }
@@ -151,30 +150,29 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
         return map.keySet();
     }
 
-    public LeafInspectorList<Value> get( final GroupBy groupBy ) {
-        return map.get( groupBy );
+    public LeafInspectorList<Value> get(final GroupBy groupBy) {
+        return map.get(groupBy);
     }
 
-    public void putAllValues( final GroupBy groupBy,
-                              final LeafInspectorList<Value> values ) {
-        map.putAllValues( groupBy,
-                          values );
+    public void putAllValues(final GroupBy groupBy,
+                             final LeafInspectorList<Value> values) {
+        map.putAllValues(groupBy,
+                         values);
     }
 
-    public void put( final GroupBy groupBy,
-                     final Value value ) {
-        map.put( groupBy,
-                 value );
+    public void put(final GroupBy groupBy,
+                    final Value value) {
+        map.put(groupBy,
+                value);
     }
 
-    public void addAllValues( final GroupBy groupBy,
-                              final InspectorList<Value> list ) {
-        map.addAllValues( groupBy,
-                          list );
+    public void addAllValues(final GroupBy groupBy,
+                             final InspectorList<Value> list) {
+        map.addAllValues(groupBy,
+                         list);
     }
 
     public Collection<Value> allValues() {
         return map.allValues();
     }
-
 }

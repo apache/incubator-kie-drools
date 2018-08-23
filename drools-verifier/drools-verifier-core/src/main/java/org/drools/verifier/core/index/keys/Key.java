@@ -24,22 +24,22 @@ public class Key
 
     private Values<Value> values = new Values<>();
 
-    public Key( final KeyDefinition keyDefinition,
-                final Comparable value ) {
+    public Key(final KeyDefinition keyDefinition,
+               final Comparable value) {
         this.keyDefinition = keyDefinition;
 
-        this.values.add( new Value( value ) );
+        this.values.add(new Value(value));
     }
 
-    public Key( final KeyDefinition keyDefinition,
-                final Values values ) {
+    public Key(final KeyDefinition keyDefinition,
+               final Values values) {
         this.keyDefinition = keyDefinition;
 
-        for ( final Object value : values ) {
-            try{
+        for (final Object value : values) {
+            try {
 
-            this.values.add( new Value( ( Comparable ) value ) );
-            }catch ( ClassCastException  cce){
+                this.values.add(new Value((Comparable) value));
+            } catch (ClassCastException cce) {
                 cce.printStackTrace();
             }
         }
@@ -58,12 +58,11 @@ public class Key
     }
 
     public Value getSingleValue() {
-        return ( Value ) values.iterator().next();
+        return (Value) values.iterator().next();
     }
 
     @Override
-    public int compareTo( final Key key ) {
-        return keyDefinition.compareTo( key.keyDefinition );
+    public int compareTo(final Key key) {
+        return keyDefinition.compareTo(key.keyDefinition);
     }
-
 }

@@ -22,5 +22,4 @@ public interface HasKeys
         extends HasUUID {
 
     Key[] keys();
-
 }

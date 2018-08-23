@@ -39,11 +39,11 @@ public class ValueForActionIsSetTwiceIssue
         this.secondItem = secondItem;
     }
 
-    public void setFirstItem(String firstItem) {
+    public void setFirstItem(final String firstItem) {
         this.firstItem = firstItem;
     }
 
-    public void setSecondItem(String secondItem) {
+    public void setSecondItem(final String secondItem) {
         this.secondItem = secondItem;
     }
 

@@ -18,12 +18,12 @@ package org.drools.verifier.core.checks.base;
 
 import java.util.Optional;
 
-import org.drools.verifier.core.util.PortablePreconditions;
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.configuration.CheckConfiguration;
+import org.drools.verifier.core.util.PortablePreconditions;
 
 public abstract class CheckBase
         implements Check {

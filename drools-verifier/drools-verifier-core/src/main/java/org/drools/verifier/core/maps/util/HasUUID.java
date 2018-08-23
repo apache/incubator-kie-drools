@@ -21,5 +21,4 @@ import org.drools.verifier.core.index.keys.UUIDKey;
 public interface HasUUID {
 
     UUIDKey getUuidKey();
-
 }

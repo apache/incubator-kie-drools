@@ -23,16 +23,16 @@ public abstract class Relation<T extends Relation> {
     protected final T origin;
     protected T parent = null;
 
-    public Relation( final T origin ) {
+    public Relation(final T origin) {
         this.origin = origin;
-        if ( origin != null ) {
-            origin.setParent( this );
+        if (origin != null) {
+            origin.setParent(this);
         }
     }
 
     public T getOrigin() {
-        if ( origin == null ) {
-            return ( T ) this;
+        if (origin == null) {
+            return (T) this;
         } else {
             return origin;
         }
@@ -44,8 +44,7 @@ public abstract class Relation<T extends Relation> {
 
     public abstract boolean doesRelationStillExist();
 
-    protected void setParent( final T parent ) {
+    protected void setParent(final T parent) {
         this.parent = parent;
     }
-
 }

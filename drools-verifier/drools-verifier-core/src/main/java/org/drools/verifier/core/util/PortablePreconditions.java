@@ -3,12 +3,11 @@ package org.drools.verifier.core.util;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.verifier.core.index.model.ObjectField;
-
 /**
  * Created by tonirikkola on 7.8.2018.
  */
 public class PortablePreconditions {
+
     /**
      * Should not be instantiated
      */
@@ -18,8 +17,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is marked as valid by the condition passed as parameter.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param condition itself
      */
     public static void checkCondition(final String name,
@@ -31,9 +29,8 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not null, as also each item of the array is not null.
-     *
-     * @param <T>        parameter type
-     * @param name       of parameter
+     * @param <T> parameter type
+     * @param name of parameter
      * @param parameters itself
      */
     public static <T> void checkEachParameterNotNull(final String name,
@@ -50,8 +47,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param parameter itself
      */
     public static <T extends Collection<?>> T checkNotEmpty(final String name,
@@ -64,8 +60,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param parameter itself
      */
     public static void checkNotEmpty(final String name,
@@ -77,8 +72,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not empty. It trims the parameter to see if have any valid data on that.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param parameter itself
      */
     public static String checkNotEmpty(final String name,
@@ -91,9 +85,8 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
-     *
-     * @param <T>       type of the array
-     * @param name      of parameter
+     * @param <T> type of the array
+     * @param name of parameter
      * @param parameter itself
      */
     public static <T> T[] checkNotEmpty(final String name,
@@ -106,8 +99,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is not null.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param parameter itself
      */
     public static <T> T checkNotNull(final String name,
@@ -120,8 +112,7 @@ public class PortablePreconditions {
 
     /**
      * Assert that this parameter is null.
-     *
-     * @param name      of parameter
+     * @param name of parameter
      * @param parameter itself
      */
     public static void checkNullMandatory(final String name,

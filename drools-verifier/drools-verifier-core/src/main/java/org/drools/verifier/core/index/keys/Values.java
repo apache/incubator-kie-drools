@@ -22,11 +22,11 @@ import static java.util.stream.Collectors.joining;
 public class Values<T extends Comparable>
         extends HashSet<T> {
 
-    public Values( final Comparable... list ) {
+    public Values(final Comparable... list) {
         super();
 
-        for ( final Comparable comparable : list ) {
-            add( ( T ) comparable );
+        for (final Comparable comparable : list) {
+            add((T) comparable);
         }
     }
 
@@ -35,41 +35,41 @@ public class Values<T extends Comparable>
 
     @Override
     public String toString() {
-        return stream().map( Object::toString ).collect( joining(", ") );
+        return stream().map(Object::toString).collect(joining(", "));
     }
 
-    public boolean isThereChanges( final Values otherValues ) {
-        if ( this.isEmpty() && !otherValues.isEmpty() ) {
+    public boolean isThereChanges(final Values otherValues) {
+        if (this.isEmpty() && !otherValues.isEmpty()) {
             return true;
-        } else if ( !this.isEmpty() && otherValues.isEmpty() ) {
+        } else if (!this.isEmpty() && otherValues.isEmpty()) {
             return true;
-        } else if ( this.isEmpty() && otherValues.isEmpty() ) {
+        } else if (this.isEmpty() && otherValues.isEmpty()) {
             return false;
-        } else if ( this.size() != otherValues.size() ) {
+        } else if (this.size() != otherValues.size()) {
             return true;
-        } else if ( !areValuesEqual( otherValues ) ) {
+        } else if (!areValuesEqual(otherValues)) {
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean areValuesEqual( final Values otherValues ) {
+    private boolean areValuesEqual(final Values otherValues) {
 
-        if ( !otherValues.containsAll( this ) ) {
+        if (!otherValues.containsAll(this)) {
             return false;
         }
 
-        if ( !containsAll( otherValues ) ) {
+        if (!containsAll(otherValues)) {
             return false;
         }
 
         return true;
     }
 
-    public boolean containsAny( final Values values ) {
-        for ( final Object value : values ) {
-            if ( contains( value ) ) {
+    public boolean containsAny(final Values values) {
+        for (final Object value : values) {
+            if (contains(value)) {
                 return true;
             }
         }
@@ -79,7 +79,7 @@ public class Values<T extends Comparable>
 
     public static <T extends Comparable> Values<T> nullValue() {
         final Values<T> comparables = new Values<>();
-        comparables.add( null );
+        comparables.add(null);
         return comparables;
     }
 }

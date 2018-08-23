@@ -28,29 +28,29 @@ public class ArrayMultiMap<Key extends Comparable, Value>
         implements MultiMap<Key, Value, ArrayList<Value>> {
 
     public ArrayMultiMap() {
-        super( new ArrayListSubMapProvider<Value>() );
+        super(new ArrayListSubMapProvider<Value>());
     }
 
     protected ArrayMultiMap(
 //            @MapsTo("map")
-            final SortedMap<Key, ArrayList<Value>> map ) {
-        super( map,
-               new ArrayListSubMapProvider<Value>() );
+            final SortedMap<Key, ArrayList<Value>> map) {
+        super(map,
+              new ArrayListSubMapProvider<Value>());
     }
 
     @Override
-    public void addChangeListener( final MultiMapChangeHandler<Key, Value> multiMapChangeHandler ) {
-        throw new UnsupportedOperationException( "This map " + this.getClass().getName() + " can not have change handlers." );
+    public void addChangeListener(final MultiMapChangeHandler<Key, Value> multiMapChangeHandler) {
+        throw new UnsupportedOperationException("This map " + this.getClass().getName() + " can not have change handlers.");
     }
 
     @Override
-    public ArrayMultiMap<Key, Value> subMap( final Key fromKey,
-                                             final boolean fromInclusive,
-                                             final Key toKey,
-                                             final boolean toInclusive ) {
-        return new ArrayMultiMap<>( map.subMap( fromKey,
-                                                fromInclusive,
-                                                toKey,
-                                                toInclusive ) );
+    public ArrayMultiMap<Key, Value> subMap(final Key fromKey,
+                                            final boolean fromInclusive,
+                                            final Key toKey,
+                                            final boolean toInclusive) {
+        return new ArrayMultiMap<>(map.subMap(fromKey,
+                                              fromInclusive,
+                                              toKey,
+                                              toInclusive));
     }
 }

@@ -18,8 +18,8 @@ package org.drools.verifier.core.checks.base;
 
 import java.util.List;
 
-import org.drools.verifier.core.util.PortablePreconditions;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.verifier.core.util.PortablePreconditions;
 
 public class PairCheckBundle
         extends PriorityListCheck {

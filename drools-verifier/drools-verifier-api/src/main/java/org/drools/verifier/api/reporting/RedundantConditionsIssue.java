@@ -45,19 +45,19 @@ public class RedundantConditionsIssue
         this.secondItem = secondItem;
     }
 
-    public void setFactType(String factType) {
+    public void setFactType(final String factType) {
         this.factType = factType;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setFirstItem(String firstItem) {
+    public void setFirstItem(final String firstItem) {
         this.firstItem = firstItem;
     }
 
-    public void setSecondItem(String secondItem) {
+    public void setSecondItem(final String secondItem) {
         this.secondItem = secondItem;
     }
 

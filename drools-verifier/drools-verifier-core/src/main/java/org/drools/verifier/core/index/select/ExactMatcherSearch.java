@@ -23,32 +23,31 @@ import org.drools.verifier.core.maps.MultiMap;
 
 public class ExactMatcherSearch<T> {
 
-    private ExactMatcher                matcher;
+    private ExactMatcher matcher;
     private MultiMap<Value, T, List<T>> map;
 
-    public ExactMatcherSearch( final ExactMatcher matcher,
-                               final MultiMap<Value, T, List<T>> map ) {
+    public ExactMatcherSearch(final ExactMatcher matcher,
+                              final MultiMap<Value, T, List<T>> map) {
         this.matcher = matcher;
         this.map = map;
     }
 
     public MultiMap<Value, T, List<T>> search() {
 
-        if ( matcher.isNegate() ) {
+        if (matcher.isNegate()) {
 
-            if ( map.containsKey( matcher.getValue() ) ) {
+            if (map.containsKey(matcher.getValue())) {
 
-                return MultiMap.merge( map.subMap( map.firstKey(), true,
-                                                   matcher.getValue(), false ),
-                                       map.subMap( matcher.getValue(), false,
-                                                   map.lastKey(), true ) );
-
+                return MultiMap.merge(map.subMap(map.firstKey(), true,
+                                                 matcher.getValue(), false),
+                                      map.subMap(matcher.getValue(), false,
+                                                 map.lastKey(), true));
             } else {
                 return map;
             }
         } else {
-            return map.subMap( matcher.getValue(), true,
-                               matcher.getValue(), true );
+            return map.subMap(matcher.getValue(), true,
+                              matcher.getValue(), true);
         }
     }
 }

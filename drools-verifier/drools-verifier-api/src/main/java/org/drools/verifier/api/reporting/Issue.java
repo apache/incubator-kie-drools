@@ -53,7 +53,7 @@ public class Issue {
         return checkType;
     }
 
-    public void setCheckType(CheckType checkType) {
+    public void setCheckType(final CheckType checkType) {
         this.checkType = checkType;
     }
 
@@ -66,16 +66,16 @@ public class Issue {
         return this;
     }
 
-    public void setSeverity(Severity severity) {
+    public void setSeverity(final Severity severity) {
         this.severity = severity;
     }
 
-    public void setRowNumbers(Set<Integer> rowNumbers) {
+    public void setRowNumbers(final Set<Integer> rowNumbers) {
         this.rowNumbers = rowNumbers;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
