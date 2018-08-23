@@ -23,6 +23,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Room extends AbstractPersistable {
 
     private String name;
+    private int capacity;
 
     private Set<TalkType> talkTypeSet;
     private Set<Timeslot> unavailableTimeslotSet;
@@ -54,6 +55,14 @@ public class Room extends AbstractPersistable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public Set<TalkType> getTalkTypeSet() {
@@ -93,5 +102,4 @@ public class Room extends AbstractPersistable {
         this.unavailableTimeslotSet = unavailableTimeslotTest;
         return this;
     }
-
 }

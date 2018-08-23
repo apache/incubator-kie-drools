@@ -316,6 +316,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
+            room.setCapacity((1 + random.nextInt(100)) * 10);
             TalkType talkType;
             if (i % 5 == 4) {
                 talkType = labTalkType;
