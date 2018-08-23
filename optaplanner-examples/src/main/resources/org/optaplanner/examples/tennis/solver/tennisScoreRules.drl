@@ -25,8 +25,8 @@ import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 
 import org.apache.commons.lang3.tuple.Pair;
-import accumulate org.optaplanner.examples.tennis.solver.drools.functions.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
-import accumulate org.optaplanner.examples.tennis.solver.drools.functions.LoadBalanceAccumulateFunction loadBalance;
+import accumulate org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
+import accumulate org.optaplanner.examples.common.solver.drools.functions.LoadBalanceAccumulateFunction loadBalance;
 
 global HardMediumSoftScoreHolder scoreHolder;
 
