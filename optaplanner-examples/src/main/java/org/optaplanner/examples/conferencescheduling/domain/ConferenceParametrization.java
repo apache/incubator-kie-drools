@@ -26,15 +26,15 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String ROOM_CONFLICT = "Room conflict";
     public static final String SPEAKER_UNAVAILABLE_TIMESLOT = "Speaker unavailable timeslot";
     public static final String SPEAKER_CONFLICT = "Speaker conflict";
-    public static final String SPEAKER_REQUIRED_TIMESLOT_TAG = "Speaker required timeslot tag";
-    public static final String SPEAKER_PROHIBITED_TIMESLOT_TAG = "Speaker prohibited timeslot tag";
-    public static final String TALK_REQUIRED_TIMESLOT_TAG = "Talk required timeslot tag";
-    public static final String TALK_PROHIBITED_TIMESLOT_TAG = "Talk prohibited timeslot tag";
-    public static final String SPEAKER_REQUIRED_ROOM_TAG = "Speaker required room tag";
-    public static final String SPEAKER_PROHIBITED_ROOM_TAG = "Speaker prohibited room tag";
-    public static final String TALK_REQUIRED_ROOM_TAG = "Talk required room tag";
-    public static final String TALK_PROHIBITED_ROOM_TAG = "Talk prohibited room tag";
-    public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG = "Talk mutually-exclusive-talks tag";
+    public static final String SPEAKER_REQUIRED_TIMESLOT_TAGS = "Speaker required timeslot tag";
+    public static final String SPEAKER_PROHIBITED_TIMESLOT_TAGs = "Speaker prohibited timeslot tag";
+    public static final String TALK_REQUIRED_TIMESLOT_TAGS = "Talk required timeslot tag";
+    public static final String TALK_PROHIBITED_TIMESLOT_TAGS = "Talk prohibited timeslot tag";
+    public static final String SPEAKER_REQUIRED_ROOM_TAGS = "Speaker required room tag";
+    public static final String SPEAKER_PROHIBITED_ROOM_TAGS = "Speaker prohibited room tag";
+    public static final String TALK_REQUIRED_ROOM_TAGS = "Talk required room tag";
+    public static final String TALK_PROHIBITED_ROOM_TAGS = "Talk prohibited room tag";
+    public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS = "Talk mutually-exclusive-talks tag";
     public static final String TALK_PREREQUISITE_TALKS = "Talk prerequisite talks";
 
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
@@ -45,14 +45,14 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION = "Audience level flow per content violation";
     public static final String CONTENT_CONFLICT = "Content conflict";
     public static final String LANGUAGE_DIVERSITY = "Language diversity";
-    public static final String SPEAKER_PREFERRED_TIMESLOT_TAG = "Speaker preferred timeslot tag";
-    public static final String SPEAKER_UNDESIRED_TIMESLOT_TAG = "Speaker undesired timeslot tag";
-    public static final String TALK_PREFERRED_TIMESLOT_TAG = "Talk preferred timeslot tag";
-    public static final String TALK_UNDESIRED_TIMESLOT_TAG = "Talk undesired timeslot tag";
-    public static final String SPEAKER_PREFERRED_ROOM_TAG = "Speaker preferred room tag";
-    public static final String SPEAKER_UNDESIRED_ROOM_TAG = "Speaker undesired room tag";
-    public static final String TALK_PREFERRED_ROOM_TAG = "Talk preferred room tag";
-    public static final String TALK_UNDESIRED_ROOM_TAG = "Talk undesired room tag";
+    public static final String SPEAKER_PREFERRED_TIMESLOT_TAGS = "Speaker preferred timeslot tag";
+    public static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS = "Speaker undesired timeslot tag";
+    public static final String TALK_PREFERRED_TIMESLOT_TAGS = "Talk preferred timeslot tag";
+    public static final String TALK_UNDESIRED_TIMESLOT_TAGS = "Talk undesired timeslot tag";
+    public static final String SPEAKER_PREFERRED_ROOM_TAGS = "Speaker preferred room tag";
+    public static final String SPEAKER_UNDESIRED_ROOM_TAGS = "Speaker undesired room tag";
+    public static final String TALK_PREFERRED_ROOM_TAGS = "Talk preferred room tag";
+    public static final String TALK_UNDESIRED_ROOM_TAGS = "Talk undesired room tag";
     public static final String SAME_DAY_TALKS = "Same day talks";
 
     private int talkTypeOfTimeslot = 10000;
@@ -61,15 +61,15 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int roomConflict = 10;
     private int speakerUnavailableTimeslot = 1;
     private int speakerConflict = 1;
-    private int speakerRequiredTimeslotTag = 1;
-    private int speakerProhibitedTimeslotTag = 1;
-    private int talkRequiredTimeslotTag = 1;
-    private int talkProhibitedTimeslotTag = 1;
-    private int speakerRequiredRoomTag = 1;
-    private int speakerProhibitedRoomTag = 1;
-    private int talkRequiredRoomTag = 1;
-    private int talkProhibitedRoomTag = 1;
-    private int talkMutuallyExclusiveTalksTag = 1;
+    private int speakerRequiredTimeslotTags = 1;
+    private int speakerProhibitedTimeslotTags = 1;
+    private int talkRequiredTimeslotTags = 1;
+    private int talkProhibitedTimeslotTags = 1;
+    private int speakerRequiredRoomTags = 1;
+    private int speakerProhibitedRoomTags = 1;
+    private int talkRequiredRoomTags = 1;
+    private int talkProhibitedRoomTags = 1;
+    private int talkMutuallyExclusiveTalksTags = 1;
     private int talkPrerequisiteTalks = 1;
 
     private int themeTrackConflict = 10;
@@ -80,14 +80,14 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int audienceLevelFlowPerContentViolation = 10;
     private int contentConflict = 100;
     private int languageDiversity = 10;
-    private int speakerPreferredTimeslotTag = 20;
-    private int speakerUndesiredTimeslotTag = 20;
-    private int talkPreferredTimeslotTag = 20;
-    private int talkUndesiredTimeslotTag = 20;
-    private int speakerPreferredRoomTag = 20;
-    private int speakerUndesiredRoomTag = 20;
-    private int talkPreferredRoomTag = 20;
-    private int talkUndesiredRoomTag = 20;
+    private int speakerPreferredTimeslotTags = 20;
+    private int speakerUndesiredTimeslotTags = 20;
+    private int talkPreferredTimeslotTags = 20;
+    private int talkUndesiredTimeslotTags = 20;
+    private int speakerPreferredRoomTags = 20;
+    private int speakerUndesiredRoomTags = 20;
+    private int talkPreferredRoomTags = 20;
+    private int talkUndesiredRoomTags = 20;
     private int sameDayTalks = 10;
 
     public ConferenceParametrization() {
@@ -149,68 +149,68 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.speakerConflict = speakerConflict;
     }
 
-    public int getSpeakerRequiredTimeslotTag() {
-        return speakerRequiredTimeslotTag;
+    public int getSpeakerRequiredTimeslotTags() {
+        return speakerRequiredTimeslotTags;
     }
 
-    public void setSpeakerRequiredTimeslotTag(int speakerRequiredTimeslotTag) {
-        this.speakerRequiredTimeslotTag = speakerRequiredTimeslotTag;
+    public void setSpeakerRequiredTimeslotTags(int speakerRequiredTimeslotTags) {
+        this.speakerRequiredTimeslotTags = speakerRequiredTimeslotTags;
     }
 
-    public int getSpeakerProhibitedTimeslotTag() {
-        return speakerProhibitedTimeslotTag;
+    public int getSpeakerProhibitedTimeslotTags() {
+        return speakerProhibitedTimeslotTags;
     }
 
-    public void setSpeakerProhibitedTimeslotTag(int speakerProhibitedTimeslotTag) {
-        this.speakerProhibitedTimeslotTag = speakerProhibitedTimeslotTag;
+    public void setSpeakerProhibitedTimeslotTags(int speakerProhibitedTimeslotTags) {
+        this.speakerProhibitedTimeslotTags = speakerProhibitedTimeslotTags;
     }
 
-    public int getTalkRequiredTimeslotTag() {
-        return talkRequiredTimeslotTag;
+    public int getTalkRequiredTimeslotTags() {
+        return talkRequiredTimeslotTags;
     }
 
-    public void setTalkRequiredTimeslotTag(int talkRequiredTimeslotTag) {
-        this.talkRequiredTimeslotTag = talkRequiredTimeslotTag;
+    public void setTalkRequiredTimeslotTags(int talkRequiredTimeslotTags) {
+        this.talkRequiredTimeslotTags = talkRequiredTimeslotTags;
     }
 
-    public int getTalkProhibitedTimeslotTag() {
-        return talkProhibitedTimeslotTag;
+    public int getTalkProhibitedTimeslotTags() {
+        return talkProhibitedTimeslotTags;
     }
 
-    public void setTalkProhibitedTimeslotTag(int talkProhibitedTimeslotTag) {
-        this.talkProhibitedTimeslotTag = talkProhibitedTimeslotTag;
+    public void setTalkProhibitedTimeslotTags(int talkProhibitedTimeslotTags) {
+        this.talkProhibitedTimeslotTags = talkProhibitedTimeslotTags;
     }
 
-    public int getSpeakerRequiredRoomTag() {
-        return speakerRequiredRoomTag;
+    public int getSpeakerRequiredRoomTags() {
+        return speakerRequiredRoomTags;
     }
 
-    public void setSpeakerRequiredRoomTag(int speakerRequiredRoomTag) {
-        this.speakerRequiredRoomTag = speakerRequiredRoomTag;
+    public void setSpeakerRequiredRoomTags(int speakerRequiredRoomTags) {
+        this.speakerRequiredRoomTags = speakerRequiredRoomTags;
     }
 
-    public int getSpeakerProhibitedRoomTag() {
-        return speakerProhibitedRoomTag;
+    public int getSpeakerProhibitedRoomTags() {
+        return speakerProhibitedRoomTags;
     }
 
-    public void setSpeakerProhibitedRoomTag(int speakerProhibitedRoomTag) {
-        this.speakerProhibitedRoomTag = speakerProhibitedRoomTag;
+    public void setSpeakerProhibitedRoomTags(int speakerProhibitedRoomTags) {
+        this.speakerProhibitedRoomTags = speakerProhibitedRoomTags;
     }
 
-    public int getTalkRequiredRoomTag() {
-        return talkRequiredRoomTag;
+    public int getTalkRequiredRoomTags() {
+        return talkRequiredRoomTags;
     }
 
-    public void setTalkRequiredRoomTag(int talkRequiredRoomTag) {
-        this.talkRequiredRoomTag = talkRequiredRoomTag;
+    public void setTalkRequiredRoomTags(int talkRequiredRoomTags) {
+        this.talkRequiredRoomTags = talkRequiredRoomTags;
     }
 
-    public int getTalkProhibitedRoomTag() {
-        return talkProhibitedRoomTag;
+    public int getTalkProhibitedRoomTags() {
+        return talkProhibitedRoomTags;
     }
 
-    public void setTalkProhibitedRoomTag(int talkProhibitedRoomTag) {
-        this.talkProhibitedRoomTag = talkProhibitedRoomTag;
+    public void setTalkProhibitedRoomTags(int talkProhibitedRoomTags) {
+        this.talkProhibitedRoomTags = talkProhibitedRoomTags;
     }
 
     public int getThemeTrackConflict() {
@@ -277,76 +277,76 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.languageDiversity = languageDiversity;
     }
 
-    public int getSpeakerPreferredTimeslotTag() {
-        return speakerPreferredTimeslotTag;
+    public int getSpeakerPreferredTimeslotTags() {
+        return speakerPreferredTimeslotTags;
     }
 
-    public void setSpeakerPreferredTimeslotTag(int speakerPreferredTimeslotTag) {
-        this.speakerPreferredTimeslotTag = speakerPreferredTimeslotTag;
+    public void setSpeakerPreferredTimeslotTags(int speakerPreferredTimeslotTags) {
+        this.speakerPreferredTimeslotTags = speakerPreferredTimeslotTags;
     }
 
-    public int getSpeakerUndesiredTimeslotTag() {
-        return speakerUndesiredTimeslotTag;
+    public int getSpeakerUndesiredTimeslotTags() {
+        return speakerUndesiredTimeslotTags;
     }
 
-    public void setSpeakerUndesiredTimeslotTag(int speakerUndesiredTimeslotTag) {
-        this.speakerUndesiredTimeslotTag = speakerUndesiredTimeslotTag;
+    public void setSpeakerUndesiredTimeslotTags(int speakerUndesiredTimeslotTags) {
+        this.speakerUndesiredTimeslotTags = speakerUndesiredTimeslotTags;
     }
 
-    public int getTalkPreferredTimeslotTag() {
-        return talkPreferredTimeslotTag;
+    public int getTalkPreferredTimeslotTags() {
+        return talkPreferredTimeslotTags;
     }
 
-    public void setTalkPreferredTimeslotTag(int talkPreferredTimeslotTag) {
-        this.talkPreferredTimeslotTag = talkPreferredTimeslotTag;
+    public void setTalkPreferredTimeslotTags(int talkPreferredTimeslotTags) {
+        this.talkPreferredTimeslotTags = talkPreferredTimeslotTags;
     }
 
-    public int getTalkUndesiredTimeslotTag() {
-        return talkUndesiredTimeslotTag;
+    public int getTalkUndesiredTimeslotTags() {
+        return talkUndesiredTimeslotTags;
     }
 
-    public void setTalkUndesiredTimeslotTag(int talkUndesiredTimeslotTag) {
-        this.talkUndesiredTimeslotTag = talkUndesiredTimeslotTag;
+    public void setTalkUndesiredTimeslotTags(int talkUndesiredTimeslotTags) {
+        this.talkUndesiredTimeslotTags = talkUndesiredTimeslotTags;
     }
 
-    public int getSpeakerPreferredRoomTag() {
-        return speakerPreferredRoomTag;
+    public int getSpeakerPreferredRoomTags() {
+        return speakerPreferredRoomTags;
     }
 
-    public void setSpeakerPreferredRoomTag(int speakerPreferredRoomTag) {
-        this.speakerPreferredRoomTag = speakerPreferredRoomTag;
+    public void setSpeakerPreferredRoomTags(int speakerPreferredRoomTags) {
+        this.speakerPreferredRoomTags = speakerPreferredRoomTags;
     }
 
-    public int getSpeakerUndesiredRoomTag() {
-        return speakerUndesiredRoomTag;
+    public int getSpeakerUndesiredRoomTags() {
+        return speakerUndesiredRoomTags;
     }
 
-    public void setSpeakerUndesiredRoomTag(int speakerUndesiredRoomTag) {
-        this.speakerUndesiredRoomTag = speakerUndesiredRoomTag;
+    public void setSpeakerUndesiredRoomTags(int speakerUndesiredRoomTags) {
+        this.speakerUndesiredRoomTags = speakerUndesiredRoomTags;
     }
 
-    public int getTalkPreferredRoomTag() {
-        return talkPreferredRoomTag;
+    public int getTalkPreferredRoomTags() {
+        return talkPreferredRoomTags;
     }
 
-    public void setTalkPreferredRoomTag(int talkPreferredRoomTag) {
-        this.talkPreferredRoomTag = talkPreferredRoomTag;
+    public void setTalkPreferredRoomTags(int talkPreferredRoomTags) {
+        this.talkPreferredRoomTags = talkPreferredRoomTags;
     }
 
-    public int getTalkUndesiredRoomTag() {
-        return talkUndesiredRoomTag;
+    public int getTalkUndesiredRoomTags() {
+        return talkUndesiredRoomTags;
     }
 
-    public void setTalkUndesiredRoomTag(int talkUndesiredRoomTag) {
-        this.talkUndesiredRoomTag = talkUndesiredRoomTag;
+    public void setTalkUndesiredRoomTags(int talkUndesiredRoomTags) {
+        this.talkUndesiredRoomTags = talkUndesiredRoomTags;
     }
 
-    public int getTalkMutuallyExclusiveTalksTag() {
-        return talkMutuallyExclusiveTalksTag;
+    public int getTalkMutuallyExclusiveTalksTags() {
+        return talkMutuallyExclusiveTalksTags;
     }
 
-    public void setTalkMutuallyExclusiveTalksTag(int talkMutuallyExclusiveTalksTag) {
-        this.talkMutuallyExclusiveTalksTag = talkMutuallyExclusiveTalksTag;
+    public void setTalkMutuallyExclusiveTalksTags(int talkMutuallyExclusiveTalksTags) {
+        this.talkMutuallyExclusiveTalksTags = talkMutuallyExclusiveTalksTags;
     }
 
     public int getTalkPrerequisiteTalks() {

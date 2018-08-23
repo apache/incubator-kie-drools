@@ -150,21 +150,21 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per common content of 2 talks that have an overlapping timeslot");
             readIntConstraintLine(LANGUAGE_DIVERSITY, parametrization::setLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
-            readIntConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::setSpeakerPreferredTimeslotTag,
+            readIntConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAGS, parametrization::setSpeakerPreferredTimeslotTags,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            readIntConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAG, parametrization::setSpeakerUndesiredTimeslotTag,
+            readIntConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAGS, parametrization::setSpeakerUndesiredTimeslotTags,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            readIntConstraintLine(TALK_PREFERRED_TIMESLOT_TAG, parametrization::setTalkPreferredTimeslotTag,
+            readIntConstraintLine(TALK_PREFERRED_TIMESLOT_TAGS, parametrization::setTalkPreferredTimeslotTags,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            readIntConstraintLine(TALK_UNDESIRED_TIMESLOT_TAG, parametrization::setTalkUndesiredTimeslotTag,
+            readIntConstraintLine(TALK_UNDESIRED_TIMESLOT_TAGS, parametrization::setTalkUndesiredTimeslotTags,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            readIntConstraintLine(SPEAKER_PREFERRED_ROOM_TAG, parametrization::setSpeakerPreferredRoomTag,
+            readIntConstraintLine(SPEAKER_PREFERRED_ROOM_TAGS, parametrization::setSpeakerPreferredRoomTags,
                     "Soft penalty per missing preferred tag in a talk's room");
-            readIntConstraintLine(SPEAKER_UNDESIRED_ROOM_TAG, parametrization::setSpeakerUndesiredRoomTag,
+            readIntConstraintLine(SPEAKER_UNDESIRED_ROOM_TAGS, parametrization::setSpeakerUndesiredRoomTags,
                     "Soft penalty per undesired tag in a talk's room");
-            readIntConstraintLine(TALK_PREFERRED_ROOM_TAG, parametrization::setTalkPreferredRoomTag,
+            readIntConstraintLine(TALK_PREFERRED_ROOM_TAGS, parametrization::setTalkPreferredRoomTags,
                     "Soft penalty per missing preferred tag in a talk's room");
-            readIntConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::setTalkUndesiredRoomTag,
+            readIntConstraintLine(TALK_UNDESIRED_ROOM_TAGS, parametrization::setTalkUndesiredRoomTags,
                     "Soft penalty per undesired tag in a talk's room");
             readIntConstraintLine(SAME_DAY_TALKS, parametrization::setSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
@@ -181,23 +181,23 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per talk with an unavailable speaker at its timeslot");
             readIntConstraintLine(SPEAKER_CONFLICT, parametrization::setSpeakerConflict,
                     "Hard penalty per pair of talks with the same speaker in overlapping timeslots");
-            readIntConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAG, parametrization::setSpeakerRequiredTimeslotTag,
+            readIntConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAGS, parametrization::setSpeakerRequiredTimeslotTags,
                     "Hard penalty per missing required tag in a talk's timeslot");
-            readIntConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAG, parametrization::setSpeakerProhibitedTimeslotTag,
+            readIntConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAGs, parametrization::setSpeakerProhibitedTimeslotTags,
                     "Hard penalty per prohibited tag in a talk's timeslot");
-            readIntConstraintLine(TALK_REQUIRED_TIMESLOT_TAG, parametrization::setTalkRequiredTimeslotTag,
+            readIntConstraintLine(TALK_REQUIRED_TIMESLOT_TAGS, parametrization::setTalkRequiredTimeslotTags,
                     "Hard penalty per missing required tag in a talk's timeslot");
-            readIntConstraintLine(TALK_PROHIBITED_TIMESLOT_TAG, parametrization::setTalkProhibitedTimeslotTag,
+            readIntConstraintLine(TALK_PROHIBITED_TIMESLOT_TAGS, parametrization::setTalkProhibitedTimeslotTags,
                     "Hard penalty per prohibited tag in a talk's timeslot");
-            readIntConstraintLine(SPEAKER_REQUIRED_ROOM_TAG, parametrization::setSpeakerRequiredRoomTag,
+            readIntConstraintLine(SPEAKER_REQUIRED_ROOM_TAGS, parametrization::setSpeakerRequiredRoomTags,
                     "Hard penalty per missing required tag in a talk's room");
-            readIntConstraintLine(SPEAKER_PROHIBITED_ROOM_TAG, parametrization::setSpeakerProhibitedRoomTag,
+            readIntConstraintLine(SPEAKER_PROHIBITED_ROOM_TAGS, parametrization::setSpeakerProhibitedRoomTags,
                     "Hard penalty per prohibited tag in a talk's room");
-            readIntConstraintLine(TALK_REQUIRED_ROOM_TAG, parametrization::setTalkRequiredRoomTag,
+            readIntConstraintLine(TALK_REQUIRED_ROOM_TAGS, parametrization::setTalkRequiredRoomTags,
                     "Hard penalty per missing required tag in a talk's room");
-            readIntConstraintLine(TALK_PROHIBITED_ROOM_TAG, parametrization::setTalkProhibitedRoomTag,
+            readIntConstraintLine(TALK_PROHIBITED_ROOM_TAGS, parametrization::setTalkProhibitedRoomTags,
                     "Hard penalty per prohibited tag in a talk's room");
-            readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG, parametrization::setTalkMutuallyExclusiveTalksTag,
+            readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::setTalkMutuallyExclusiveTalksTags,
                     "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
             readIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::setTalkPrerequisiteTalks,
                     "Hard penalty per talk that is scheduled before any of its prerequisite talks");
@@ -735,21 +735,21 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per common content of 2 talks that have an overlapping timeslot");
             writeIntConstraintLine(LANGUAGE_DIVERSITY, parametrization::getLanguageDiversity,
                     "Soft reward per 2 talks that have the same timeslot and a different language");
-            writeIntConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAG, parametrization::getSpeakerPreferredTimeslotTag,
+            writeIntConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAGS, parametrization::getSpeakerPreferredTimeslotTags,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            writeIntConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAG, parametrization::getSpeakerUndesiredTimeslotTag,
+            writeIntConstraintLine(SPEAKER_UNDESIRED_TIMESLOT_TAGS, parametrization::getSpeakerUndesiredTimeslotTags,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            writeIntConstraintLine(TALK_PREFERRED_TIMESLOT_TAG, parametrization::getTalkPreferredTimeslotTag,
+            writeIntConstraintLine(TALK_PREFERRED_TIMESLOT_TAGS, parametrization::getTalkPreferredTimeslotTags,
                     "Soft penalty per missing preferred tag in a talk's timeslot");
-            writeIntConstraintLine(TALK_UNDESIRED_TIMESLOT_TAG, parametrization::getTalkUndesiredTimeslotTag,
+            writeIntConstraintLine(TALK_UNDESIRED_TIMESLOT_TAGS, parametrization::getTalkUndesiredTimeslotTags,
                     "Soft penalty per undesired tag in a talk's timeslot");
-            writeIntConstraintLine(SPEAKER_PREFERRED_ROOM_TAG, parametrization::getSpeakerPreferredRoomTag,
+            writeIntConstraintLine(SPEAKER_PREFERRED_ROOM_TAGS, parametrization::getSpeakerPreferredRoomTags,
                     "Soft penalty per missing preferred tag in a talk's room");
-            writeIntConstraintLine(SPEAKER_UNDESIRED_ROOM_TAG, parametrization::getSpeakerUndesiredRoomTag,
+            writeIntConstraintLine(SPEAKER_UNDESIRED_ROOM_TAGS, parametrization::getSpeakerUndesiredRoomTags,
                     "Soft penalty per undesired tag in a talk's room");
-            writeIntConstraintLine(TALK_PREFERRED_ROOM_TAG, parametrization::getTalkPreferredRoomTag,
+            writeIntConstraintLine(TALK_PREFERRED_ROOM_TAGS, parametrization::getTalkPreferredRoomTags,
                     "Soft penalty per missing preferred tag in a talk's room");
-            writeIntConstraintLine(TALK_UNDESIRED_ROOM_TAG, parametrization::getTalkUndesiredRoomTag,
+            writeIntConstraintLine(TALK_UNDESIRED_ROOM_TAGS, parametrization::getTalkUndesiredRoomTags,
                     "Soft penalty per undesired tag in a talk's room");
             writeIntConstraintLine(SAME_DAY_TALKS, parametrization::getSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
@@ -768,23 +768,23 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per talk with an unavailable speaker at its timeslot");
             writeIntConstraintLine(SPEAKER_CONFLICT, parametrization::getSpeakerConflict,
                     "Hard penalty per pair of talks with the same speaker in overlapping timeslots");
-            writeIntConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAG, parametrization::getSpeakerRequiredTimeslotTag,
+            writeIntConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAGS, parametrization::getSpeakerRequiredTimeslotTags,
                     "Hard penalty per missing required tag in a talk's timeslot");
-            writeIntConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAG, parametrization::getSpeakerProhibitedTimeslotTag,
+            writeIntConstraintLine(SPEAKER_PROHIBITED_TIMESLOT_TAGs, parametrization::getSpeakerProhibitedTimeslotTags,
                     "Hard penalty per prohibited tag in a talk's timeslot");
-            writeIntConstraintLine(TALK_REQUIRED_TIMESLOT_TAG, parametrization::getTalkRequiredTimeslotTag,
+            writeIntConstraintLine(TALK_REQUIRED_TIMESLOT_TAGS, parametrization::getTalkRequiredTimeslotTags,
                     "Hard penalty per missing required tag in a talk's timeslot");
-            writeIntConstraintLine(TALK_PROHIBITED_TIMESLOT_TAG, parametrization::getTalkProhibitedTimeslotTag,
+            writeIntConstraintLine(TALK_PROHIBITED_TIMESLOT_TAGS, parametrization::getTalkProhibitedTimeslotTags,
                     "Hard penalty per prohibited tag in a talk's timeslot");
-            writeIntConstraintLine(SPEAKER_REQUIRED_ROOM_TAG, parametrization::getSpeakerRequiredRoomTag,
+            writeIntConstraintLine(SPEAKER_REQUIRED_ROOM_TAGS, parametrization::getSpeakerRequiredRoomTags,
                     "Hard penalty per missing required tag in a talk's room");
-            writeIntConstraintLine(SPEAKER_PROHIBITED_ROOM_TAG, parametrization::getSpeakerProhibitedRoomTag,
+            writeIntConstraintLine(SPEAKER_PROHIBITED_ROOM_TAGS, parametrization::getSpeakerProhibitedRoomTags,
                     "Hard penalty per prohibited tag in a talk's room");
-            writeIntConstraintLine(TALK_REQUIRED_ROOM_TAG, parametrization::getTalkRequiredRoomTag,
+            writeIntConstraintLine(TALK_REQUIRED_ROOM_TAGS, parametrization::getTalkRequiredRoomTags,
                     "Hard penalty per missing required tag in a talk's room");
-            writeIntConstraintLine(TALK_PROHIBITED_ROOM_TAG, parametrization::getTalkProhibitedRoomTag,
+            writeIntConstraintLine(TALK_PROHIBITED_ROOM_TAGS, parametrization::getTalkProhibitedRoomTags,
                     "Hard penalty per prohibited tag in a talk's room");
-            writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAG, parametrization::getTalkMutuallyExclusiveTalksTag,
+            writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::getTalkMutuallyExclusiveTalksTags,
                     "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
             writeIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::getTalkPrerequisiteTalks,
                     "Hard penalty per talk that is scheduled before any of its prerequisite talks");
@@ -1047,10 +1047,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextSheet("Speakers view", 1, 2, true);
             String[] filteredConstraintNames = {
                     SPEAKER_UNAVAILABLE_TIMESLOT, SPEAKER_CONFLICT,
-                    SPEAKER_REQUIRED_TIMESLOT_TAG, SPEAKER_PROHIBITED_TIMESLOT_TAG,
-                    SPEAKER_PREFERRED_TIMESLOT_TAG, SPEAKER_UNDESIRED_TIMESLOT_TAG,
-                    SPEAKER_REQUIRED_ROOM_TAG, SPEAKER_PROHIBITED_ROOM_TAG,
-                    SPEAKER_PREFERRED_ROOM_TAG, SPEAKER_UNDESIRED_ROOM_TAG};
+                    SPEAKER_REQUIRED_TIMESLOT_TAGS, SPEAKER_PROHIBITED_TIMESLOT_TAGs,
+                    SPEAKER_PREFERRED_TIMESLOT_TAGS, SPEAKER_UNDESIRED_TIMESLOT_TAGS,
+                    SPEAKER_REQUIRED_ROOM_TAGS, SPEAKER_PROHIBITED_ROOM_TAGS,
+                    SPEAKER_PREFERRED_ROOM_TAGS, SPEAKER_UNDESIRED_ROOM_TAGS};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();

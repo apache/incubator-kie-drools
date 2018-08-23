@@ -2,7 +2,6 @@ package org.optaplanner.examples.conferencescheduling.solver;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -217,62 +216,62 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerPreferredTimeslotTag(1);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        parametrization.setSpeakerPreferredTimeslotTags(1);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker without preferred time slot tag
         slot1.setTagSet(Collections.emptySet());
         talk1.withSpeakerList(Arrays.asList(speaker1)).withTimeslot(slot1);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with preferred time slot tag, time slot without matching tag
         slot1.setTagSet(Collections.emptySet());
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -1, solution);
         // talk with 1 speaker, speaker with preferred time slot tag, time slot without matching tag, weight = 2
-        parametrization.setSpeakerPreferredTimeslotTag(2);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -2, solution);
+        parametrization.setSpeakerPreferredTimeslotTags(2);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         // talk with 1 speaker, speaker with preferred time slot tag, time slot with matching tag
-        parametrization.setSpeakerPreferredTimeslotTag(1);
+        parametrization.setSpeakerPreferredTimeslotTags(1);
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with 2 preferred time slot tags
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         //talk with 2 speakers
         talk1.withSpeakerList(Arrays.asList(speaker1, speaker2));
         slot1.setTagSet(Collections.emptySet());
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(Collections.emptySet());
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         speaker2.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -4, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -4, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(Collections.emptySet());
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         speaker2.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -4, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -4, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, -3, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -3, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
     }
 
     @Test
@@ -295,35 +294,35 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkPreferredTimeslotTag(1);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, 0, solution);
+        parametrization.setTalkPreferredTimeslotTags(1);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk without preferred time slot tags
         slot1.setTagSet(Collections.emptySet());
         talk1.withTimeslot(slot1);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with preferred time slot tag, time slot without matching tag
         talk1.withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -1, solution);
         // talk with preferred time slot tag, time slot without matching tag, weight = 2
-        parametrization.setTalkPreferredTimeslotTag(2);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, -2, solution);
+        parametrization.setTalkPreferredTimeslotTags(2);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -2, solution);
         // talk with required time slot tag, time slot with matching tag
-        parametrization.setTalkPreferredTimeslotTag(1);
+        parametrization.setTalkPreferredTimeslotTags(1);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 2 preferred time slot tags
         slot1.setTagSet(Collections.emptySet());
         talk1.withPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
     }
 
     @Test
@@ -359,56 +358,56 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerUndesiredTimeslotTag(1);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        parametrization.setSpeakerUndesiredTimeslotTags(1);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker without undesired time slot tag
         slot1.setTagSet(Collections.emptySet());
         talk1.withSpeakerList(Arrays.asList(speaker1)).withTimeslot(slot1);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with undesired time slot tag, time slot without matching tag
         slot1.setTagSet(Collections.emptySet());
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with undesired time slot tag, time slot with matching tag
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         // talk with 1 speaker, speaker with undesired time slot tag, time slot with matching tag, weight = 2
-        parametrization.setSpeakerUndesiredTimeslotTag(2);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        parametrization.setSpeakerUndesiredTimeslotTags(2);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         // talk with 1 speaker, speaker with 2 undesired time slot tags
-        parametrization.setSpeakerUndesiredTimeslotTag(1);
+        parametrization.setSpeakerUndesiredTimeslotTags(1);
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         // talk with 2 speakers
         talk1.withSpeakerList(Arrays.asList(speaker1, speaker2));
         slot1.setTagSet(Collections.emptySet());
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         speaker2.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -4, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -4, solution);
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         speaker2.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -3, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -3, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2, tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAG, -4, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -4, solution);
     }
 
     @Test
@@ -431,37 +430,37 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkUndesiredTimeslotTag(1);
+        parametrization.setTalkUndesiredTimeslotTags(1);
         // talk without undesired time slot tags
         slot1.setTagSet(Collections.emptySet());
         talk1.withTimeslot(slot1);
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight("Talk required timeslot tag", 0, solution);
         // talk with undesired time slot tag, time slot without matching tag
         slot1.setTagSet(Collections.emptySet());
         talk1.withTimeslot(slot1).withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         // talk with undesired time slot tag, time slot with matching tag
         talk1.withTimeslot(slot1).withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         // talk with undesired time slot tag, time slot with matching tag, weight = 2
-        parametrization.setTalkUndesiredTimeslotTag(2);
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        parametrization.setTalkUndesiredTimeslotTags(2);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         // talk with 2 undesired time slot tags
-        parametrization.setTalkUndesiredTimeslotTag(1);
+        parametrization.setTalkUndesiredTimeslotTags(1);
         talk1.withTimeslot(slot1).withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -2, solution);
     }
 
     @Test
@@ -495,54 +494,54 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Arrays.asList(room1))
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerPreferredRoomTag(1);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        parametrization.setSpeakerPreferredRoomTags(1);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker without preferred room tag
         room1.setTagSet(Collections.emptySet());
         talk1.withSpeakerList(Arrays.asList(speaker1)).withRoom(room1);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker with preferred room tag, room without matching tag
         speaker1.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         // talk with 1 speaker, speaker with preferred room tag, room without matching tag, weight = 2
-        parametrization.setSpeakerPreferredRoomTag(2);
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -2, solution);
+        parametrization.setSpeakerPreferredRoomTags(2);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -2, solution);
         // talk with 1 speaker, speaker with required room tag, room with matching tag
-        parametrization.setSpeakerPreferredRoomTag(1);
+        parametrization.setSpeakerPreferredRoomTags(1);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker with 2 required room tags
         speaker1.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -2, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 2 speakers
         talk1.withSpeakerList(Arrays.asList(speaker1, speaker2));
         speaker1.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -2, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         speaker2.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -2, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         speaker2.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -3, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -3, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
     }
 
     @Test
@@ -560,35 +559,35 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkPreferredRoomTag(1);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, 0, solution);
+        parametrization.setTalkPreferredRoomTags(1);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         // talk without preferred room tags
         room1.setTagSet(Collections.emptySet());
         talk1.withRoom(room1);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with preferred room tag, room without matching tag
         talk1.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -1, solution);
         // talk with preferred room tag, room without matching tag, weight = 2
-        parametrization.setTalkPreferredRoomTag(2);
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, -2, solution);
+        parametrization.setTalkPreferredRoomTags(2);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -2, solution);
         // talk with preferred room tag, room with matching tag
-        parametrization.setTalkPreferredRoomTag(1);
+        parametrization.setTalkPreferredRoomTags(1);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with two preferred room tags
         room1.setTagSet(Collections.emptySet());
         talk1.withPreferredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -2, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
     }
 
     @Test
@@ -623,56 +622,56 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Arrays.asList(room1))
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerUndesiredRoomTag(1);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        parametrization.setSpeakerUndesiredRoomTags(1);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker without undesired room tags
         room1.setTagSet(Collections.emptySet());
         talk1.withSpeakerList(Arrays.asList(speaker1)).withRoom(room1);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker with undesired room tag, room without matching tag
         speaker1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag3)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker with undesired room tag, room with matching tag
         speaker1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -1, solution);
         // talk with 1 speaker, speaker with undesired room tag, room with matching tag, weight = 2
-        parametrization.setSpeakerUndesiredRoomTag(2);
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -2, solution);
+        parametrization.setSpeakerUndesiredRoomTags(2);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         // talk with 1 speaker, speaker with 2 undesired room tags
-        parametrization.setSpeakerUndesiredRoomTag(1);
+        parametrization.setSpeakerUndesiredRoomTags(1);
         speaker1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         // talk with 2 speakers
         talk1.withSpeakerList(Arrays.asList(speaker1, speaker2)).withRoom(room1);
         speaker1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         speaker2.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         speaker2.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAG, -3, solution);
+        scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -3, solution);
     }
 
     @Test
@@ -690,35 +689,35 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkUndesiredRoomTag(1);
+        parametrization.setTalkUndesiredRoomTags(1);
         // talk without undesired room tags
         room1.setTagSet(Collections.emptySet());
         talk1.withRoom(room1);
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with undesired room tag, room without matching tag
         talk1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with undesired room tag, room with matching tag
         talk1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1)));
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -1, solution);
         // talk with undesired room tag, room with matching tag, weight = 2
-        parametrization.setTalkUndesiredRoomTag(2);
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, -2, solution);
+        parametrization.setTalkUndesiredRoomTags(2);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -2, solution);
         // talk with 2 undesired room tags
-        parametrization.setTalkUndesiredRoomTag(1);
+        parametrization.setTalkUndesiredRoomTags(1);
         room1.setTagSet(Collections.emptySet());
         talk1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, 0, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, -1, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -1, solution);
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAG, -2, solution);
+        scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -2, solution);
     }
 
     private Talk createTalk(long id) {
