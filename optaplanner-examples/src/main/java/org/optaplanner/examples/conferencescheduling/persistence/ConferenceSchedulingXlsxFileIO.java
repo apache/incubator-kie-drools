@@ -168,6 +168,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per undesired tag in a talk's room");
             readIntConstraintLine(SAME_DAY_TALKS, parametrization::setSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
+            readIntConstraintLine(POPULAR_TALKS, parametrization::setPopularTalks,
+                    "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
 
             readIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::setTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");
@@ -275,6 +277,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         private void readRoomList() {
             nextSheet("Rooms");
             nextRow(false);
+            readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
             readHeaderCell("");
@@ -753,6 +756,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per undesired tag in a talk's room");
             writeIntConstraintLine(SAME_DAY_TALKS, parametrization::getSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
+            writeIntConstraintLine(POPULAR_TALKS, parametrization::getPopularTalks,
+                    "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
 
             nextRow();
             writeIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::getTalkTypeOfTimeslot,
@@ -813,6 +818,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         private void writeRoomList() {
             nextSheet("Rooms", 1, 2, false);
             nextRow();
+            nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");
             nextHeaderCell("");

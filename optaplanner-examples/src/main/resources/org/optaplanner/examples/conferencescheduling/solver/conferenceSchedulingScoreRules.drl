@@ -359,3 +359,12 @@ rule "Same day talks"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * ($rightTalk.overlappingThemeTrackCount($leftTalk)
             + $rightTalk.overlappingContentCount($leftTalk)));
 end
+
+rule "Popular talks"
+    when
+        ConferenceParametrization($weight : popularTalks != 0)
+        Talk(room != null, $leftRoom : room, $leftNumberOfLikes : numberOfLikes)
+        Talk(room != null, numberOfLikes < $leftNumberOfLikes, room.getCapacity() > $leftRoom.getCapacity)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+end

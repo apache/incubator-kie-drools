@@ -54,6 +54,7 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String TALK_PREFERRED_ROOM_TAGS = "Talk preferred room tag";
     public static final String TALK_UNDESIRED_ROOM_TAGS = "Talk undesired room tag";
     public static final String SAME_DAY_TALKS = "Same day talks";
+    public static final String POPULAR_TALKS = "Popular talks";
 
     private int talkTypeOfTimeslot = 10000;
     private int talkTypeOfRoom = 10000;
@@ -89,6 +90,7 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int talkPreferredRoomTags = 20;
     private int talkUndesiredRoomTags = 20;
     private int sameDayTalks = 10;
+    private int popularTalks = 10;
 
     public ConferenceParametrization() {
     }
@@ -363,5 +365,13 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setSameDayTalks(int sameDayTalks) {
         this.sameDayTalks = sameDayTalks;
+    }
+
+    public int getPopularTalks() {
+        return popularTalks;
+    }
+
+    public void setPopularTalks(int popularTalks) {
+        this.popularTalks = popularTalks;
     }
 }
