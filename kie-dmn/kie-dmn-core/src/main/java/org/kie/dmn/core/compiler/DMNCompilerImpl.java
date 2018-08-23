@@ -544,6 +544,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                        Msg.UNKNOWN_TYPE_REF_ON_NODE,
                                        typeRef.toString(),
                                        localElement.getParentDRDElement().getIdentifierString() );
+                type = dmnModel.getTypeRegistry().unknown();
             }
             return type;
         }
