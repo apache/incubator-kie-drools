@@ -230,8 +230,10 @@ public class Talk extends AbstractPersistable {
         return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
     }
 
-    public boolean hasPrerequisite(Talk talk) {
-        return prerequisiteTalkSet.contains(talk);
+    public int missingPrerequisiteCount() {
+        return (int) prerequisiteTalkSet.stream()
+                .filter(prerequisite -> prerequisite.getTimeslot() == null || timeslot.endsBefore(prerequisite.getTimeslot()))
+                .count();
     }
 
     @Override

@@ -167,12 +167,11 @@ end
 rule "Talk prerequisite talks"
     when
         ConferenceParametrization($weight : talkPrerequisiteTalks != 0)
-        $talk : Talk(timeslot != null, $timeslot : timeslot)
-        $prerequisite : Talk($talk.hasPrerequisite(this), timeslot == null || $timeslot.endsBefore(getTimeslot()))
+        $talk : Talk(timeslot != null, missingPrerequisiteCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
-
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $talk.missingPrerequisiteCount());
 end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
