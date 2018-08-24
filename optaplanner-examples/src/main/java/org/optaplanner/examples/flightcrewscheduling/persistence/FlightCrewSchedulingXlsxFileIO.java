@@ -110,8 +110,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("Description");
             FlightCrewParametrization parametrization = new FlightCrewParametrization();
             parametrization.setId(0L);
-//            readIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::setNightsAwayFromBaseFairness,
-//                    "Soft penalty to load balance the nights away from base");
+            readLongConstraintLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
+                    parametrization::setLoadBalanceFlightDurationTotalPerEmployee,
+                    "Soft penalty per 0.001 minute difference with the average flight duration total per employee.");
             readIntConstraintLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");
             readIntConstraintLine(FLIGHT_CONFLICT, null,
@@ -380,8 +381,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextHeaderCell("Description");
             FlightCrewParametrization parametrization = solution.getParametrization();
 
-//            writeIntConstraintLine(NIGHTS_AWAY_FROM_BASE_FAIRNESS, parametrization::getNightsAwayFromBaseFairness,
-//                    "Soft penalty to load balance the nights away from base");
+            writeLongConstraintLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
+                    parametrization::getLoadBalanceFlightDurationTotalPerEmployee,
+                    "Soft penalty per 0.001 minute difference with the average flight duration total per employee.");
             nextRow();
             writeIntConstraintLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");

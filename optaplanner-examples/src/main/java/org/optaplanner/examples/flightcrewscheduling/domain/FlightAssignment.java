@@ -41,6 +41,10 @@ public class FlightAssignment extends AbstractPersistable {
     public FlightAssignment() {
     }
 
+    public long getFlightDurationInMinutes() {
+        return flight.getDurationInMinutes();
+    }
+
     @Override
     public String toString() {
         return flight + "-" + indexInFlight;

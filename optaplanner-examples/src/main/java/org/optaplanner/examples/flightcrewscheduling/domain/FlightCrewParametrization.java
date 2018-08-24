@@ -25,9 +25,9 @@ public class FlightCrewParametrization extends AbstractPersistable {
     public static final String TRANSFER_BETWEEN_TWO_FLIGHTS = "Transfer between two flights";
     public static final String EMPLOYEE_UNAVAILABILITY = "Employee unavailability";
 
-//    public static final String NIGHTS_AWAY_FROM_BASE_FAIRNESS = "Nights away from base fairness";
+    public static final String LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE = "Load balance flight duration total per employee";
 
-//    private int nightsAwayFromBaseFairness = 10;
+    private long loadBalanceFlightDurationTotalPerEmployee = 1;
 
     public FlightCrewParametrization() {
     }
@@ -36,12 +36,12 @@ public class FlightCrewParametrization extends AbstractPersistable {
     // Simple getters and setters
     // ************************************************************************
 
-//    public int getNightsAwayFromBaseFairness() {
-//        return nightsAwayFromBaseFairness;
-//    }
-//
-//    public void setNightsAwayFromBaseFairness(int nightsAwayFromBaseFairness) {
-//        this.nightsAwayFromBaseFairness = nightsAwayFromBaseFairness;
-//    }
+    public long getLoadBalanceFlightDurationTotalPerEmployee() {
+        return loadBalanceFlightDurationTotalPerEmployee;
+    }
+
+    public void setLoadBalanceFlightDurationTotalPerEmployee(long loadBalanceFlightDurationTotalPerEmployee) {
+        this.loadBalanceFlightDurationTotalPerEmployee = loadBalanceFlightDurationTotalPerEmployee;
+    }
 
 }

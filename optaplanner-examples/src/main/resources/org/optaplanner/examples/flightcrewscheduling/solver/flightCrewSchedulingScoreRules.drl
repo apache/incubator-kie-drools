@@ -26,6 +26,9 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 
+import accumulate org.optaplanner.examples.common.solver.drools.functions.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
+import accumulate org.optaplanner.examples.common.solver.drools.functions.LoadBalanceAccumulateFunction loadBalance;
+
 global HardSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
@@ -75,12 +78,23 @@ rule "First assignment departing from home"
     when
         Employee(!isFirstAssignmentDepartingFromHome())
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -1);
+        scoreHolder.addSoftConstraintMatch(kcontext, -1_000_000);
 end
 
 rule "Last assignment arriving at home"
     when
         Employee(!isLastAssignmentArrivingAtHome())
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -1);
+        scoreHolder.addSoftConstraintMatch(kcontext, -1_000_000);
 end
+
+//rule "Load balance flight duration total per employee"
+//    when
+//        FlightCrewParametrization($weight : loadBalanceFlightDurationTotalPerEmployee != 0)
+//        accumulate(
+//            Employee($total : getFlightDurationTotalInMinutes());
+//            $result : loadBalance($total)
+//        )
+//    then
+//        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $result.getMeanDeviationSquaredSumRootMillis());
+//end

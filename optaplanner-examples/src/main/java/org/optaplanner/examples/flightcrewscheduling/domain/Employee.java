@@ -82,6 +82,14 @@ public class Employee extends AbstractPersistable {
         return count;
     }
 
+    public long getFlightDurationTotalInMinutes() {
+        long total = 0L;
+        for (FlightAssignment flightAssignment : flightAssignmentSet) {
+            total += flightAssignment.getFlightDurationInMinutes();
+        }
+        return total;
+    }
+
     @Override
     public String toString() {
         return name;
