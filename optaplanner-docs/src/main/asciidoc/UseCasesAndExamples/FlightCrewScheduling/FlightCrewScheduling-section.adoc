@@ -22,6 +22,7 @@ Soft constraints:
 
 * First assignment departing from home
 * Last assignment arriving at home
+* Load balance flight duration total per employee
 
 
 [[flightCrewSchedulingProblemSize]]
