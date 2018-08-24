@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.thread;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -46,7 +47,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     private final boolean assertShadowVariablesAreNotStaleAfterStep;
 
     private InnerScoreDirector<Solution_> scoreDirector = null;
-    private volatile long calculationCount = -1L;
+    private AtomicLong calculationCount = new AtomicLong(-1);
 
     public MoveThreadRunner(String logIndentation, int moveThreadIndex, boolean evaluateDoable,
             BlockingQueue<MoveThreadOperation<Solution_>> operationQueue,
@@ -99,7 +100,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                 } else if (operation instanceof DestroyOperation) {
                     logger.trace("{}            Move thread ({}) destroy: step index ({}).",
                             logIndentation, moveThreadIndex, stepIndex);
-                    calculationCount = scoreDirector.getCalculationCount();
+                    calculationCount.set(scoreDirector.getCalculationCount());
                     break;
                 } else if (operation instanceof ApplyStepOperation) {
                     // TODO Performance gain with specialized 2-phase cyclic barrier:
@@ -188,6 +189,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
      * @return at least 0
      */
     public long getCalculationCount() {
+        long calculationCount = this.calculationCount.get();
         if (calculationCount == -1L) {
             logger.info("{}Score calculation speed will be too low"
                     + " because move thread ({})'s destroy wasn't processed soon enough.", logIndentation);
