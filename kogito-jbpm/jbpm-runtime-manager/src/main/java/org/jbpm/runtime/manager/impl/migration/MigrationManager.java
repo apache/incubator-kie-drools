@@ -41,7 +41,6 @@ import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.persistence.api.SessionNotFoundException;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerFactory;
-import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -329,15 +328,18 @@ public class MigrationManager {
         String auditPu = manager.getDeploymentDescriptor().getAuditPersistenceUnit();
 
         EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(auditPu);
-
-        JPAAuditLogService auditService = new JPAAuditLogService(emf);
+        EntityManager em = emf.createEntityManager();
         try {
-            ProcessInstanceLog log = auditService.findProcessInstance(migrationSpec.getProcessInstanceId());
+            
+            ProcessInstanceLog log = (ProcessInstanceLog) em.createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
+                                                            .setParameter("processInstanceId", migrationSpec.getProcessInstanceId())
+                                                            .getSingleResult();
+            
             if (log == null || log.getStatus() != ProcessInstance.STATE_ACTIVE) {
                 report.addEntry(Type.ERROR, "No process instance found or it is not active (id " + migrationSpec.getProcessInstanceId() + " in status " + (log == null ? "-1" : log.getStatus()));
             }
         } finally {
-            auditService.dispose();
+            em.close();
         }
     }
 
