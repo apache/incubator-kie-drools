@@ -513,6 +513,10 @@ public class DMNCompilerImpl implements DMNCompiler {
         return type;
     }
 
+    /**
+     * Resolve the QName typeRef accordingly to definition of builtin (FEEL) types, local model ItemDef or imported definitions.
+     * If the typeRef cannot be resolved, (FEEL) UNKNOWN is returned and an error logged using standard DMN message logging. 
+     */
     public DMNType resolveTypeRef(DMNModelImpl dmnModel, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
@@ -544,6 +548,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                        Msg.UNKNOWN_TYPE_REF_ON_NODE,
                                        typeRef.toString(),
                                        localElement.getParentDRDElement().getIdentifierString() );
+                type = dmnModel.getTypeRegistry().unknown();
             }
             return type;
         }

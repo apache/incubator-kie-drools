@@ -2262,5 +2262,20 @@ public class DMNRuntimeTest {
         assertThat(result.get("Strategy"), is("THROUGH"));
         assertThat(result.get("Routing"), is("ACCEPT"));
     }
+
+    @Test
+    public void testWrongTypeRefForDRGElement() {
+        // DROOLS-2917 DMN resolveTypeRef returning null in BKM causes NPE during KieContainer compilation
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("WrongTypeRefForDRGElement.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        
+        DMNRuntimeUtil.formatMessages(dmnModel.getMessages());
+        assertThat(dmnModel.hasErrors(), is(true));
+        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)), is(true));
+        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_561d31ba-a34b-4cf3-b9a4-537e21ce1013")), is(true));
+        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_45fa8674-f4f0-4c06-b2fd-52bbd17d8550")), is(true));
+    }
+
 }
 
