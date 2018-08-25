@@ -41,13 +41,13 @@ public class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<F
     @Test(timeout = 600000)
     public void solveModel() {
         File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft");
+        runSpeedTest(unsolvedDataFile, "0hard/-129000000soft");
     }
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.FAST_ASSERT);
+        runSpeedTest(unsolvedDataFile, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }
