@@ -2277,5 +2277,26 @@ public class DMNRuntimeTest {
         assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_45fa8674-f4f0-4c06-b2fd-52bbd17d8550")), is(true));
     }
 
+    @Test
+    public void testDecisionTableInputClauseImportingItemDefinition() {
+        // DROOLS-2927 DMN DecisionTable inputClause importing ItemDefinition throws NPE at compilation
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("imports/Imported_Model.dmn",
+                                                                                 this.getClass(),
+                                                                                 "imports/Importing_Person_DT_with_Person.dmn");
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_3d586cb1-3ed0-4bc4-a1a7-070b70ece398", "Importing Person DT with Person");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("A Person here", mapOf(entry("age", new BigDecimal(17)),
+                                           entry("name", "John")));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("A Decision Table"), is("NOT Allowed"));
+    }
 }
 

@@ -2,7 +2,6 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -425,16 +424,6 @@ public class DMNEvaluatorCompiler {
         return trim.startsWith( "\"" ) && trim.endsWith( "\"" ) && trim.length() >= 2 ? trim.substring( 1, trim.length()-1 ) : trim;
     }
 
-    private static String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement, Map<String, QName> importsFromEnclosingnode) {
-        if ( typeRef.getNamespaceURI() == null || typeRef.getNamespaceURI().isEmpty() ) {
-            // here is could be a typeRef defined in the Input/OutputClauses of a Decision Table, which is not normalized by the marshaller.
-            String namespaceURI = DMNCompilerImpl.getNamespaceAndName(fromElement, importsFromEnclosingnode, typeRef).getNamespaceURI();
-            return namespaceURI;
-        } else {
-            return typeRef.getNamespaceURI();
-        }
-    }
-
     protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         java.util.List<DTInputClause> inputs = new ArrayList<>();
         java.util.List<DMNType> inputTypes = new ArrayList<>();
@@ -456,10 +445,8 @@ public class DMNEvaluatorCompiler {
                                                    index );
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef,
-                                                                                                                           ic.getInputExpression(),
-                                                                                                                           model.getImportAliasesForNS()),
-                                                                                                inputExpressionTypeRef.getLocalPart());
+                QName resolvedInputExpressionTypeRef = DMNCompilerImpl.getNamespaceAndName(ic.getInputExpression(), model.getImportAliasesForNS(), inputExpressionTypeRef);
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolvedInputExpressionTypeRef.getNamespaceURI(), resolvedInputExpressionTypeRef.getLocalPart());
                 inputType = typeRef;
                 inputValues = typeRef.getAllowedValuesFEEL();
             }
@@ -603,7 +590,8 @@ public class DMNEvaluatorCompiler {
         BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
         if ( oc.getTypeRef() != null ) {
             QName outputExpressionTypeRef = oc.getTypeRef();
-            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc, model.getImportAliasesForNS()), outputExpressionTypeRef.getLocalPart());
+            QName resolvedOutputExpressionTypeRef = DMNCompilerImpl.getNamespaceAndName(oc, model.getImportAliasesForNS(), outputExpressionTypeRef);
+            typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolvedOutputExpressionTypeRef.getNamespaceURI(), resolvedOutputExpressionTypeRef.getLocalPart());
             if( typeRef == null ) {
                 typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().unknown();
             }
@@ -611,7 +599,8 @@ public class DMNEvaluatorCompiler {
             QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
             // if inferredTypeRef is null, a std err will have been reported
             if (inferredTypeRef != null) {
-                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc, model.getImportAliasesForNS()), inferredTypeRef.getLocalPart());
+                QName resolvedInferredTypeRef = DMNCompilerImpl.getNamespaceAndName(oc, model.getImportAliasesForNS(), inferredTypeRef);
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolvedInferredTypeRef.getNamespaceURI(), resolvedInferredTypeRef.getLocalPart());
             }
         }
         return typeRef;
