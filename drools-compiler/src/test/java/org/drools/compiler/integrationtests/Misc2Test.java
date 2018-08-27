@@ -130,6 +130,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
@@ -141,6 +142,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9109,5 +9111,27 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(2, fired);
+    }
+
+
+    @Test
+    public void testMvelJitDivision() {
+        // DROOLS-2928
+        String drl = "import " + Person.class.getName() + ";\n"
+                + "rule R1 when\n"
+                + "  Person( name == \"John\", $age1 : age )\n"
+                + "  Person( name == \"Paul\", age > ((2*$age1)/3) )\n"
+                + "then end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        Person john = new Person("John", 20);
+        ksession.insert(john);
+        Person paul = new Person("Paul", 20);
+        ksession.insert(paul);
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
     }
 }
