@@ -67,6 +67,12 @@
         <exclude>**/*.css</exclude>
       </excludes>
     </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>src/main/docker</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
     <fileSet filtered="false" encoding="UTF-8">
       <directory>src/main/resources</directory>
       <includes>
