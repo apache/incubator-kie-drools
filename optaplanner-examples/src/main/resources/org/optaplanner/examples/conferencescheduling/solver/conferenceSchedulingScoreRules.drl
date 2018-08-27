@@ -89,7 +89,7 @@ rule "Speaker conflict"
         scoreHolder.addHardConstraintMatch(kcontext, -$weight);
 end
 
-rule "Speaker required timeslot tag"
+rule "Speaker required timeslot tags"
     when
         ConferenceParametrization($weight : speakerRequiredTimeslotTags != 0)
         Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
@@ -97,7 +97,7 @@ rule "Speaker required timeslot tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Speaker prohibited timeslot tag"
+rule "Speaker prohibited timeslot tags"
     when
         ConferenceParametrization($weight : speakerProhibitedTimeslotTags != 0)
         Talk($count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
@@ -105,7 +105,7 @@ rule "Speaker prohibited timeslot tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk required timeslot tag"
+rule "Talk required timeslot tags"
     when
         ConferenceParametrization($weight : talkRequiredTimeslotTags != 0)
         Talk($count : missingRequiredTimeslotTagCount() > 0)
@@ -113,7 +113,7 @@ rule "Talk required timeslot tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk prohibited timeslot tag"
+rule "Talk prohibited timeslot tags"
     when
         ConferenceParametrization($weight : talkProhibitedTimeslotTags != 0)
         Talk($count : prevailingProhibitedTimeslotTagCount() > 0)
@@ -121,7 +121,7 @@ rule "Talk prohibited timeslot tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Speaker required room tag"
+rule "Speaker required room tags"
     when
         ConferenceParametrization($weight : speakerRequiredRoomTags != 0)
         Talk($count : missingSpeakerRequiredRoomTagCount() > 0)
@@ -129,7 +129,7 @@ rule "Speaker required room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Speaker prohibited room tag"
+rule "Speaker prohibited room tags"
     when
         ConferenceParametrization($weight : speakerProhibitedRoomTags != 0)
         Talk($count : prevailingSpeakerProhibitedRoomTagCount() > 0)
@@ -137,7 +137,7 @@ rule "Speaker prohibited room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk required room tag"
+rule "Talk required room tags"
     when
         ConferenceParametrization($weight : talkRequiredRoomTags != 0)
         Talk($count : missingRequiredRoomTagCount() > 0)
@@ -145,7 +145,7 @@ rule "Talk required room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk prohibited room tag"
+rule "Talk prohibited room tags"
     when
         ConferenceParametrization($weight : talkProhibitedRoomTags != 0)
         Talk($count : prevailingProhibitedRoomTagCount() > 0)
@@ -153,7 +153,7 @@ rule "Talk prohibited room tag"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk mutually-exclusive-talks tag"
+rule "Talk mutually-exclusive-talks tags"
     when
         ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
@@ -284,7 +284,7 @@ rule "Language diversity"
         scoreHolder.addSoftConstraintMatch(kcontext, $weight);
 end
 
-rule "Speaker preferred timeslot tag"
+rule "Speaker preferred timeslot tags"
     when
         ConferenceParametrization($weight : speakerPreferredTimeslotTags != 0)
         Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
@@ -292,7 +292,7 @@ rule "Speaker preferred timeslot tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Talk preferred timeslot tag"
+rule "Talk preferred timeslot tags"
     when
         ConferenceParametrization($weight : talkPreferredTimeslotTags != 0)
         Talk($count : missingPreferredTimeslotTagCount() > 0)
@@ -300,7 +300,7 @@ rule "Talk preferred timeslot tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Speaker undesired timeslot tag"
+rule "Speaker undesired timeslot tags"
     when
         ConferenceParametrization($weight : speakerUndesiredTimeslotTags != 0)
         Talk($count : prevailingSpeakerUndesiredTimeslotTagCount() > 0)
@@ -308,7 +308,7 @@ rule "Speaker undesired timeslot tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Talk undesired timeslot tag"
+rule "Talk undesired timeslot tags"
     when
         ConferenceParametrization($weight : talkUndesiredTimeslotTags != 0)
         Talk($count : prevailingUndesiredTimeslotTagCount() > 0)
@@ -316,7 +316,7 @@ rule "Talk undesired timeslot tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Speaker preferred room tag"
+rule "Speaker preferred room tags"
     when
         ConferenceParametrization($weight : speakerPreferredRoomTags != 0)
         Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
@@ -324,7 +324,7 @@ rule "Speaker preferred room tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Talk preferred room tag"
+rule "Talk preferred room tags"
     when
         ConferenceParametrization($weight : talkPreferredRoomTags != 0)
         Talk($count : missingPreferredRoomTagCount() > 0)
@@ -332,7 +332,7 @@ rule "Talk preferred room tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Speaker undesired room tag"
+rule "Speaker undesired room tags"
     when
         ConferenceParametrization($weight : speakerUndesiredRoomTags != 0)
         Talk($count : prevailingSpeakerUndesiredRoomTagCount() > 0)
@@ -340,7 +340,7 @@ rule "Speaker undesired room tag"
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
 end
 
-rule "Talk undesired room tag"
+rule "Talk undesired room tags"
     when
         ConferenceParametrization($weight : talkUndesiredRoomTags != 0)
         Talk($count : prevailingUndesiredRoomTagCount() > 0)
