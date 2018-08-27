@@ -330,6 +330,10 @@ public class EvalHelper {
             .orElse( getAccessor( clazz, field ) ));
     }
 
+    public static void clearGenericAccessorCache() {
+        accessorCache.clear();
+    }
+
     /**
      * JavaBean -spec compliant accessor.
      * @param clazz

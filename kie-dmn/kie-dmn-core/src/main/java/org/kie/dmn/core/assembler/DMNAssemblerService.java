@@ -52,6 +52,7 @@ import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -73,6 +74,7 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+        EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
