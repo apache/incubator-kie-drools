@@ -31,7 +31,7 @@ import org.kie.internal.task.api.AuditTask;
 @Entity
 @Table(name = "AuditTaskImpl", indexes = {
         @Index(name = "IDX_AuditTaskImpl_taskId", columnList = "taskId"),
-        @Index(name = "IDX_AuditTaskImpl_processInstanceId", columnList = "processInstanceId"),
+        @Index(name = "IDX_AuditTaskImpl_pInstId", columnList = "processInstanceId"),
         @Index(name = "IDX_AuditTaskImpl_workItemId", columnList = "workItemId"),
         @Index(name = "IDX_AuditTaskImpl_name", columnList = "name"),
         @Index(name = "IDX_AuditTaskImpl_processId", columnList = "processId"),
