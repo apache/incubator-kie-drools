@@ -367,3 +367,15 @@ rule "Popular talks"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
 end
+
+rule "Crowd control"
+    when
+        ConferenceParametrization($weight : crowdControl != 0)
+        $talk : Talk(timeslot != null, crowdControlRisk > 0)
+        $overlappingNonZeroCrowdControlRiskTalksCount : Number(this != 1) from accumulate(
+            $overlappingTalk : Talk(timeslot != null, id != $talk.getId(), crowdControlRisk > 0, timeslot.overlaps($talk.getTimeslot)),
+            count($overlappingTalk)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+end

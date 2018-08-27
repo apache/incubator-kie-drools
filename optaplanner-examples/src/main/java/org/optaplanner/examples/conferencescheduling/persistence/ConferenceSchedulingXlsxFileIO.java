@@ -170,6 +170,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
             readIntConstraintLine(POPULAR_TALKS, parametrization::setPopularTalks,
                     "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
+            readIntConstraintLine(CROWD_CONTROL, parametrization::setCrowdControl,
+                    "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
 
             readIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::setTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");
@@ -758,6 +760,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
             writeIntConstraintLine(POPULAR_TALKS, parametrization::getPopularTalks,
                     "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
+            writeIntConstraintLine(CROWD_CONTROL, parametrization::getCrowdControl,
+                    "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
 
             nextRow();
             writeIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::getTalkTypeOfTimeslot,
