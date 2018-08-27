@@ -15,6 +15,21 @@
 
 package org.drools.core.rule.constraint;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.rule.Declaration;
 import org.mvel2.Operator;
@@ -25,6 +40,10 @@ import org.mvel2.ast.BinaryOperation;
 import org.mvel2.ast.BooleanNode;
 import org.mvel2.ast.Contains;
 import org.mvel2.ast.Instance;
+import org.mvel2.ast.IntAdd;
+import org.mvel2.ast.IntDiv;
+import org.mvel2.ast.IntMult;
+import org.mvel2.ast.IntSub;
 import org.mvel2.ast.LiteralNode;
 import org.mvel2.ast.Negation;
 import org.mvel2.ast.NewObjectNode;
@@ -62,23 +81,31 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.IADD;
+import static org.mvel2.asm.Opcodes.IAND;
+import static org.mvel2.asm.Opcodes.IDIV;
+import static org.mvel2.asm.Opcodes.IMUL;
+import static org.mvel2.asm.Opcodes.INEG;
+import static org.mvel2.asm.Opcodes.IOR;
+import static org.mvel2.asm.Opcodes.IREM;
+import static org.mvel2.asm.Opcodes.ISHL;
+import static org.mvel2.asm.Opcodes.ISHR;
+import static org.mvel2.asm.Opcodes.ISUB;
+import static org.mvel2.asm.Opcodes.IUSHR;
+import static org.mvel2.asm.Opcodes.IXOR;
+import static org.mvel2.asm.Opcodes.LADD;
+import static org.mvel2.asm.Opcodes.LAND;
+import static org.mvel2.asm.Opcodes.LDIV;
+import static org.mvel2.asm.Opcodes.LMUL;
+import static org.mvel2.asm.Opcodes.LNEG;
+import static org.mvel2.asm.Opcodes.LOR;
+import static org.mvel2.asm.Opcodes.LREM;
+import static org.mvel2.asm.Opcodes.LSHL;
+import static org.mvel2.asm.Opcodes.LSHR;
+import static org.mvel2.asm.Opcodes.LSUB;
+import static org.mvel2.asm.Opcodes.LUSHR;
+import static org.mvel2.asm.Opcodes.LXOR;
 
 public class ConditionAnalyzer {
 
@@ -204,7 +231,7 @@ public class ConditionAnalyzer {
 
         if (node instanceof BinaryOperation) {
             BinaryOperation op = (BinaryOperation)node;
-            return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
+            return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op), analyzeNode(op.getRight()));
         }
 
         if (node instanceof TypeCast) {
@@ -1205,7 +1232,17 @@ public class ConditionAnalyzer {
             return longOp;
         }
 
-        public static AritmeticOperator fromMvelOpCode(int opCode) {
+        public static AritmeticOperator fromMvelOpCode(BinaryOperation op) {
+            if (op instanceof IntAdd ) {
+                return ADD;
+            } else if (op instanceof IntSub ) {
+                return SUB;
+            } else if (op instanceof IntMult ) {
+                return MUL;
+            } else if (op instanceof IntDiv ) {
+                return DIV;
+            }
+            int opCode = op.getOperation();
             switch (opCode) {
                 case Operator.ADD: return ADD;
                 case Operator.SUB: return SUB;
