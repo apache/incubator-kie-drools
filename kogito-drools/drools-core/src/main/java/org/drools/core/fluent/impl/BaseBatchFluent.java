@@ -16,12 +16,17 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.*;
-import org.kie.api.command.Command;
+import org.drools.core.command.EndConversationCommand;
+import org.drools.core.command.JoinConversationCommand;
+import org.drools.core.command.LeaveConversationCommand;
+import org.drools.core.command.OutCommand;
+import org.drools.core.command.StartConversationCommand;
+import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.builder.ContextFluent;
 import org.kie.api.runtime.builder.Scope;
 
 public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
+
     protected ExecutableImpl fluentCtx;
 
     public BaseBatchFluent(ExecutableImpl fluentCtx) {
@@ -32,17 +37,16 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
         return fluentCtx;
     }
 
-    public T addCommand(Command command) {
+    @Override
+    public T addCommand(ExecutableCommand command) {
         fluentCtx.addCommand(command);
         return (T) this;
     }
-
 
     public T after(long distance) {
         fluentCtx.addBatch(new BatchImpl(distance));
         return (T) this;
     }
-
 
     public T relativeAfter(long duration) {
         return (T) this;
@@ -50,38 +54,37 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
 
     @Override
     public T out() {
-        fluentCtx.addCommand( new OutCommand<Object>());
+        fluentCtx.addCommand(new OutCommand<Object>());
         return (T) this;
     }
 
     @Override
     public T out(String name) {
-        fluentCtx.addCommand( new OutCommand<Object>(name));
+        fluentCtx.addCommand(new OutCommand<Object>(name));
         return (T) this;
     }
 
-
     @Override
     public T set(String name, Scope scope) {
-        fluentCtx.addCommand( new SetCommand<Object>(name, scope));
+        fluentCtx.addCommand(new SetCommand<Object>(name, scope));
         return (T) this;
     }
 
     @Override
     public T set(String name) {
-        fluentCtx.addCommand( new SetCommand<Object>(name));
+        fluentCtx.addCommand(new SetCommand<Object>(name));
         return (T) this;
     }
 
     @Override
     public T get(String name) {
-        fluentCtx.addCommand( new GetCommand(name));
+        fluentCtx.addCommand(new GetCommand(name));
         return (T) this;
     }
 
     @Override
     public T get(String name, Scope scope) {
-        fluentCtx.addCommand( new GetCommand(name, scope));
+        fluentCtx.addCommand(new GetCommand(name, scope));
         return (T) this;
     }
 
@@ -96,12 +99,11 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
             Class imlpCls = getFluentContext().getFactory().getImplClass(cls.getName());
             object = (K) imlpCls.getDeclaredConstructor(ExecutableImpl.class).newInstance(getFluentContext());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to instantiate fluent " + cls.getName(), e) ;
+            throw new RuntimeException("Unable to instantiate fluent " + cls.getName(), e);
         }
 
         return object;
     }
-
 
     @Override
     public T newApplicationContext(String name) {
@@ -143,5 +145,4 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
     public E end() {
         return (E) fluentCtx.getExecutableBuilder();
     }
-
 }
