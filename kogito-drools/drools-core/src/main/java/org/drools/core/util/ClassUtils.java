@@ -744,12 +744,15 @@ public final class ClassUtils {
     public static boolean isWindows() {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "WINDOWS" );
-       
     }
 
     public static boolean isOSX() {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "MAC OS X" );
+    }
+
+    public static boolean isJboss() {
+        return System.getProperty("jboss.server.name") != null;
     }
 
     /**
