@@ -217,6 +217,15 @@
           "code": "java.method.addedToInterface",
           "new": "method org.kie.api.runtime.manager.RuntimeEnvironmentBuilder org.kie.api.runtime.manager.RuntimeEnvironmentBuilder::userInfo(org.kie.api.task.UserInfo)",
           "justification": "add UserInfo to the runtime environment builder (for completeness)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method T org.kie.api.runtime.builder.ContextFluent<T, E>::addCommand(org.kie.api.command.ExecutableCommand<?>)",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "ContextFluent",
+          "methodName": "addCommand",
+          "elementKind": "method",
+          "justification": "move to public API addCommand to support custom commands"
         }
       ]
     }

@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.builder;
 
+import org.kie.api.command.ExecutableCommand;
+
 public interface ContextFluent<T, E>{
 
     /**
@@ -55,6 +57,8 @@ public interface ContextFluent<T, E>{
      * @return this
      */
     T out(String name);
+
+    T addCommand(ExecutableCommand<?> command);
 
     T newApplicationContext(String name);
 
