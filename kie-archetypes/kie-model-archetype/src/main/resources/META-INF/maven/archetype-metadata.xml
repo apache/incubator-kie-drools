@@ -8,24 +8,21 @@
       <defaultValue>org.kie.businessapp</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>mybusinessapp</defaultValue>
+      <defaultValue>mybusinessapp-model</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
       <defaultValue>1.0</defaultValue>
     </requiredProperty>
+    <requiredProperty key="package">
+      <defaultValue>${groupId}</defaultValue>
+    </requiredProperty>
     <requiredProperty key="archetypeCatalog">
       <defaultValue>local</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="caseProject">
-      <defaultValue>false</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="kieVersion">
-      <defaultValue>${project.version}</defaultValue>
     </requiredProperty>
   </requiredProperties>
 
   <fileSets>
-    <fileSet packaged="true" encoding="UTF-8">
+    <fileSet packaged="true" filtered="true" encoding="UTF-8">
       <directory>src/main/java</directory>
       <includes>
         <include>**/*.*</include>
@@ -33,12 +30,6 @@
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
       <directory>src/main/resources</directory>
-      <includes>
-        <include>**/*.*</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" encoding="UTF-8">
-      <directory>src/main/assembly</directory>
       <includes>
         <include>**/*.*</include>
       </includes>
@@ -54,26 +45,7 @@
       <includes>
         <include>**/*.*</include>
       </includes>
-    </fileSet>
-    <fileSet encoding="UTF-8">
-      <directory>global</directory>
-      <includes>
-        <include>**/*.gif</include>
-        <include>**/*.png</include>
-        <include>**/*.json</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" encoding="UTF-8">
-      <directory></directory>
-      <includes>
-        <include>package-names-white-list</include>
-        <include>project.imports</include>
-        <include>project.repositories</include>
-        <include>.caseproject</include>
-        <include>readme.md</include>
-      </includes>
-    </fileSet>
-
+    </fileSet>    
   </fileSets>
 
 </archetype-descriptor>

@@ -1,5 +1,5 @@
-def quietMode = false;
-if(System.getenv('MAVEN_CMD_LINE_ARGS').contains("-q") || System.getenv('MAVEN_CMD_LINE_ARGS').contains("-quiet")) {
+def quietMode = true;
+if(System.getenv('MAVEN_CMD_LINE_ARGS') != null && !System.getenv('MAVEN_CMD_LINE_ARGS').contains("-q") && !System.getenv('MAVEN_CMD_LINE_ARGS').contains("-quiet")) {
     quietMode = true;
 }
 
@@ -14,6 +14,8 @@ logOut("[Running post-generation script]", quietMode);
 
 def appType = "${appType}";
 def myAppArtifactId = "${artifactId}";
+def myAppVersion = "${version}";
+def myAppPortId = "${appServerPort}";
 def kjarArtifactId = "${kjarArtifactId}";
 def kjarVersion = "${kjarVersion}";
 def kjarContainerId = "";
@@ -44,6 +46,8 @@ def indexIconMarkerDM = "INDEX_ICON_MARKER_DM";
 def indexCSSMarkerBO = "INDEX_CSS_MARKER_BO";
 def indexIconMarkerBO = "INDEX_ICON_MARKER_BO";
 def myServiceNameMarker = 'MYSERVICE_NAME_MARKER';
+def myServiceVersionMarker = 'MYSERVICE_VERSION_MARKER';
+def myServicePortMarker = 'MYSERVICE_PORT_MARKER';
 def kjarContainerIdMarker = "KJAR_CONTAINER_ID_MARKER"
 
 def BPMSpringBootStarterDepends = """
@@ -281,6 +285,8 @@ def launchFileContent = launchFile.getText('UTF-8');
 def devLaunchFileContent = devLaunchFile.getText('UTF-8');
 
 launchFileContent = launchFileContent.replaceAll(myServiceNameMarker, myAppArtifactId);
+launchFileContent = launchFileContent.replaceAll(myServiceVersionMarker, myAppVersion);
+launchFileContent = launchFileContent.replaceAll(myServicePortMarker, myAppPortId);
 devLaunchFileContent = devLaunchFileContent.replaceAll(myServiceNameMarker, myAppArtifactId);
 
 launchFile.newWriter().withWriter { w ->

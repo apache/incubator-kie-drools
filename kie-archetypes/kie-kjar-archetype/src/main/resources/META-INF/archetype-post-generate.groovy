@@ -1,6 +1,6 @@
-def quietMode = false;
-if(System.getenv('MAVEN_CMD_LINE_ARGS').contains("-q") || System.getenv('MAVEN_CMD_LINE_ARGS').contains("-quiet")) {
-    quietMode = true;
+def quietMode = true;
+if(System.getenv('MAVEN_CMD_LINE_ARGS') != null && !System.getenv('MAVEN_CMD_LINE_ARGS').contains("-q") && !System.getenv('MAVEN_CMD_LINE_ARGS').contains("-quiet")) {
+    quietMode = false;
 }
 
 def logOut(log, quietMode) {

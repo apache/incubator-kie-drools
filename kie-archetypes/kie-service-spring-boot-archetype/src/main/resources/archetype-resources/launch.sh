@@ -56,11 +56,20 @@ if [ "$MVN_ARG_LINE" != "" ] ; then
 
 else
     echo "No Maven arguments skipping maven build"
+        
 fi
 
-echo "Launching the appliction"
-pattern="MYSERVICE_NAME_MARKER"
-files=( $pattern )
-cd ${files[0]}
-executable="$(ls  *target/*.jar | tail -n1)"
-java -jar "$executable"
+
+if [[ "$@" =~ "docker" ]]; then
+    echo "Launching the application as docker container..."
+    
+    docker run -d -p MYSERVICE_PORT_MARKER:MYSERVICE_PORT_MARKER --name MYSERVICE_NAME_MARKER apps/MYSERVICE_NAME_MARKER:MYSERVICE_VERSION_MARKER
+else
+
+	echo "Launching the application locally..."
+	pattern="MYSERVICE_NAME_MARKER"
+	files=( $pattern )
+	cd ${files[0]}
+	executable="$(ls  *target/*.jar | tail -n1)"
+	java -jar "$executable"
+fi

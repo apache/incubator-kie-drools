@@ -17,6 +17,7 @@
 
   <modules>
     <module>kie-drools-archetype</module>
+    <module>kie-model-archetype</module>
     <module>kie-kjar-archetype</module>
     <module>kie-service-spring-boot-archetype</module>
   </modules>
