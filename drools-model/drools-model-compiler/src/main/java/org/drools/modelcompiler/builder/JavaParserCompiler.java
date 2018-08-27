@@ -39,11 +39,15 @@ import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.util.ClassUtils.isJboss;
+
 public class JavaParserCompiler {
 
     private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = JavaDialectConfiguration.CompilerType.NATIVE;
+    private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
+            JavaDialectConfiguration.CompilerType.ECLIPSE :
+            JavaDialectConfiguration.CompilerType.NATIVE;
 
     private static final JavaCompiler JAVA_COMPILER = createCompiler();
 
