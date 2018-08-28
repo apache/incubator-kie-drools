@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
@@ -47,6 +48,8 @@ import org.slf4j.LoggerFactory;
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
     private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
+
+    private static final Map<String, Method> accessorCache = new ConcurrentHashMap<>();
 
     public static String normalizeVariableName(String name) {
         return SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
@@ -313,13 +316,22 @@ public class EvalHelper {
      */
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
-        return Stream.of( clazz.getMethods() )
-                .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
-                        .map( ann -> ann.value().equals( field ) )
-                        .orElse( false )
-                )
-                .findFirst()
-                .orElse( getAccessor( clazz, field ) );
+
+        String accessorQualifiedName = new StringBuilder(clazz.getCanonicalName())
+			.append(".").append(field).toString();
+
+        return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
+        	Stream.of( clazz.getMethods() )
+            .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
+                    .map( ann -> ann.value().equals( field ) )
+                    .orElse( false )
+            )
+            .findFirst()
+            .orElse( getAccessor( clazz, field ) ));
+    }
+
+    public static void clearGenericAccessorCache() {
+        accessorCache.clear();
     }
 
     /**
