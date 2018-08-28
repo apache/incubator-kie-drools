@@ -362,8 +362,8 @@ end
 rule "Popular talks"
     when
         ConferenceParametrization($weight : popularTalks != 0)
-        Talk(room != null, $leftRoom : room, $leftNumberOfLikes : numberOfLikes)
-        Talk(room != null, numberOfLikes < $leftNumberOfLikes, room.getCapacity() > $leftRoom.getCapacity)
+        Talk(room != null, $leftRoom : room, $leftFavoriteCount : favoriteCount)
+        Talk(room != null, favoriteCount < $leftFavoriteCount, room.getCapacity() > $leftRoom.getCapacity)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
 end

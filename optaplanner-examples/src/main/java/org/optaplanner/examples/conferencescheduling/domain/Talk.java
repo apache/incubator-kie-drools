@@ -48,7 +48,7 @@ public class Talk extends AbstractPersistable {
     private Set<String> undesiredRoomTagSet;
     private Set<String> mutuallyExclusiveTalksTagSet;
     private Set<Talk> prerequisiteTalkSet;
-    private int numberOfLikes;
+    private int favoriteCount;
     private int crowdControlRisk;
 
     @PlanningPin
@@ -439,12 +439,12 @@ public class Talk extends AbstractPersistable {
         this.prerequisiteTalkSet = prerequisiteTalkSet;
     }
 
-    public int getNumberOfLikes() {
-        return numberOfLikes;
+    public int getFavoriteCount() {
+        return favoriteCount;
     }
 
-    public void setNumberOfLikes(int numberOfLikes) {
-        this.numberOfLikes = numberOfLikes;
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 
     public int getCrowdControlRisk() {

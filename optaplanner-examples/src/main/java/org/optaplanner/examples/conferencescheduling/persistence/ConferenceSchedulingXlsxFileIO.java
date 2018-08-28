@@ -169,7 +169,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readIntConstraintLine(SAME_DAY_TALKS, parametrization::setSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
             readIntConstraintLine(POPULAR_TALKS, parametrization::setPopularTalks,
-                    "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
+                    "Soft penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk");
             readIntConstraintLine(CROWD_CONTROL, parametrization::setCrowdControl,
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
 
@@ -450,7 +450,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readHeaderCell("Undesired room tags");
             readHeaderCell("Mutually exclusive talks tags");
             readHeaderCell("Prerequisite talks codes");
-            readHeaderCell("Number of likes");
+            readHeaderCell("Favorite count");
             readHeaderCell("Crowd control risk");
             readHeaderCell("Pinned by user");
             readHeaderCell("Timeslot day");
@@ -555,7 +555,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
                 talkToPrerequisiteTalkSetMap.put(talk, Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                         .filter(tag -> !tag.isEmpty()).collect(Collectors.toCollection(LinkedHashSet::new)));
-                talk.setNumberOfLikes(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a number of likes"));
+                talk.setFavoriteCount(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a Favorite count"));
                 talk.setCrowdControlRisk(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a crowd control risk"));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
                 String dateString = nextStringCell().getStringCellValue();
@@ -759,7 +759,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeIntConstraintLine(SAME_DAY_TALKS, parametrization::getSameDayTalks,
                     "Soft penalty per common content/theme of 2 talks that are scheduled on different days");
             writeIntConstraintLine(POPULAR_TALKS, parametrization::getPopularTalks,
-                    "Soft penalty per 2 talks where the less popular one (has lower number of likes) is assigned a larger room than the more popular talk");
+                    "Soft penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk");
             writeIntConstraintLine(CROWD_CONTROL, parametrization::getCrowdControl,
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
 
@@ -913,7 +913,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextHeaderCell("Undesired room tags");
             nextHeaderCell("Mutually exclusive talks tags");
             nextHeaderCell("Prerequisite talks codes");
-            nextHeaderCell("Number of likes");
+            nextHeaderCell("Favorite count");
             nextHeaderCell("Crowd control risk");
             nextHeaderCell("Pinned by user");
             nextHeaderCell("Timeslot day");
@@ -943,7 +943,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(String.join(", ", talk.getUndesiredRoomTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getMutuallyExclusiveTalksTagSet()));
                 nextCell().setCellValue(String.join(", ", talk.getPrerequisiteTalkSet().stream().map(Talk::getCode).collect(toList())));
-                nextCell().setCellValue(talk.getNumberOfLikes());
+                nextCell().setCellValue(talk.getFavoriteCount());
                 nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
