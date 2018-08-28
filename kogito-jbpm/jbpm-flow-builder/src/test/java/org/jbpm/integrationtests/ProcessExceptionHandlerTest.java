@@ -304,7 +304,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
         session.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(1, list.size());
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
 }

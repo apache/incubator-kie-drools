@@ -392,7 +392,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	            return;
 	        }
 	    }
-	    if (nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
+	    if (nodeInstance instanceof FaultNodeInstance || nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
             if (getCompositeNode().isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     triggerCompleted(

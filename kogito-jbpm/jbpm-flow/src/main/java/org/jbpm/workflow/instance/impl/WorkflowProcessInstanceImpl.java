@@ -65,6 +65,7 @@ import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
+import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -782,7 +783,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	            return;
 	        }
 	    }
-	    if (nodeInstance instanceof EndNodeInstance ||
+	    if (nodeInstance instanceof FaultNodeInstance || nodeInstance instanceof EndNodeInstance ||
         		((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()
         		|| nodeInstance instanceof CompositeNodeInstance) {
             if (((org.jbpm.workflow.core.WorkflowProcess) getProcess()).isAutoComplete()) {

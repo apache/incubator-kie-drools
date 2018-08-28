@@ -267,4 +267,15 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
         assertProcessVarValue(processInstance, "Property_3", "java.lang.RuntimeException");
     }
+    
+    @Test
+    public void testHandledEscalationEndEventProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("escalation/BPMN2-EscalationEndEventHandling.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("hello", 70);
+        ProcessInstance processInstance = ksession.startProcess("helloWorld.Escalation", parameters);
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 }
