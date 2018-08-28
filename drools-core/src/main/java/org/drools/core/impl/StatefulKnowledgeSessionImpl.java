@@ -771,14 +771,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public String getEntryPointId() {
         return EntryPointId.DEFAULT.getEntryPointId();
     }
-    
+
     /**
-     * (This shall NOT be exposed on public API)  
+     * (This shall NOT be exposed on public API)
      */
     public QueryResultsImpl getQueryResultsFromRHS(String queryName, Object... arguments) {
     	return internalGetQueryResult(true, queryName, arguments);
     }
-    
+
     public QueryResultsImpl getQueryResults(String queryName, Object... arguments) {
     	return internalGetQueryResult(false, queryName, arguments);
     }
@@ -945,7 +945,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             done(tnodes);
         }
-        
+
         @Override
         public boolean isCalledFromRHS() {
         	return calledFromRHS;
