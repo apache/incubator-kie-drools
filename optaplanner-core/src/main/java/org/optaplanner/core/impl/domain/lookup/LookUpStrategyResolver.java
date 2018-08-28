@@ -66,6 +66,9 @@ public class LookUpStrategyResolver {
     public LookUpStrategy determineLookUpStrategy(Object object) {
         Class<?> objectClass = object.getClass();
         return decisionCache.computeIfAbsent(objectClass, key -> {
+            if (object.getClass().isEnum()) {
+                return new ImmutableLookUpStrategy();
+            }
             switch (lookUpStrategyType) {
                 case PLANNING_ID_OR_NONE:
                     MemberAccessor memberAccessor1 = ConfigUtils.findPlanningIdMemberAccessor(objectClass);

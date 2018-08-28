@@ -45,12 +45,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
         // Filter out every immovable ShiftAssignment
         List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(
                 nurseRoster.getShiftAssignmentList());
-        for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(); it.hasNext(); ) {
-            ShiftAssignment shiftAssignment = it.next();
-            if (!filter.accept(nurseRoster, shiftAssignment)) {
-                it.remove();
-            }
-        }
+        shiftAssignmentList.removeIf(shiftAssignment -> !filter.accept(nurseRoster, shiftAssignment));
 
         // Hash the assignments per employee
         Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap

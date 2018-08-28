@@ -47,7 +47,7 @@ public class LookUpStrategyEqualityTest {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
-        // the removed object cannot be looked up
+        // The removed object cannot be looked up
         assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 

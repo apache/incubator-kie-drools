@@ -47,9 +47,9 @@ public class LookUpManagerTest {
     public void resetWorkingObjects() {
         TestdataObjectId o = new TestdataObjectId(0);
         TestdataObjectId p = new TestdataObjectId(1);
-        // the objects should be added during the reset
+        // The objects should be added during the reset
         lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
-        // so it's possible to look up and remove them
+        // So it's possible to look up and remove them
         Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectId(0)));
         Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
         lookUpManager.removeWorkingObject(o);
