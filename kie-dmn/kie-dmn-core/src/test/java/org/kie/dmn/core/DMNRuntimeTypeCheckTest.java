@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class DMNRuntimeTypeCheckTest {
 
@@ -196,9 +198,19 @@ public class DMNRuntimeTypeCheckTest {
         // please notice an end-user of the API might not having checked the result of the previous call is not a null.
 
         DMNContext emptyContext = DMNFactory.newContext();
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        try {
+            DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+            LOG.debug("{}", dmnResult);
 
-        LOG.debug("{}", dmnResult);
+            fail("");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("'model'"));
+            /* java.lang.NullPointerException: Kie DMN API parameter 'model' cannot be null.
+                at java.util.Objects.requireNonNull(Objects.java:290)
+                at org.kie.dmn.core.impl.DMNRuntimeImpl.evaluateAll(DMNRuntimeImpl.java:123)
+                at org.kie.dmn.core.DMNRuntimeTypeCheckTest.testMisleadingNPEbyAPIusage(DMNRuntimeTypeCheckTest.java:199)
+             */
+        }
     }
 }
 
