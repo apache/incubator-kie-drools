@@ -130,7 +130,7 @@ public class MigrationManager {
 
         validate();
         KieSession current = null;
-        KieSession tobe = null;
+        KieSession tobe = null;      
         TransactionManager txm = null;
         boolean transactionOwner = false;
         InternalRuntimeManager currentManager = (InternalRuntimeManager) RuntimeManagerRegistry.get().getManager(migrationSpec.getDeploymentId());
@@ -236,8 +236,7 @@ public class MigrationManager {
                 }
 
                 current = JPAKnowledgeService.newStatefulKnowledgeSession(currentManager.getEnvironment().getKieBase(), null, currentManager.getEnvironment().getEnvironment());
-                tobe = JPAKnowledgeService.newStatefulKnowledgeSession(toBeManager.getEnvironment().getKieBase(), null, toBeManager.getEnvironment().getEnvironment());
-
+                tobe = toBeManager.getEnvironment().getKieBase().newKieSession();
                 upgradeProcessInstance(current, tobe, migrationSpec.getProcessInstanceId(), migrationSpec.getToProcessId(), nodeMapping, em, toBeManager.getIdentifier());
 
                 if (!timerMigrated.isEmpty()) {
