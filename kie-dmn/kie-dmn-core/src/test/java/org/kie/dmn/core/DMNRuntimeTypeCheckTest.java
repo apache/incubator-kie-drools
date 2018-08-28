@@ -16,10 +16,6 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import java.util.UUID;
 
 import org.junit.Test;
@@ -42,8 +38,16 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class DMNRuntimeTypeCheckTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypeCheckTest.class);
 
     private static final KieServices ks = KieServices.Factory.get();
 
@@ -180,6 +184,21 @@ public class DMNRuntimeTypeCheckTest {
 
         DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
         assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
+    }
+
+    @Test
+    public void testMisleadingNPEbyAPIusage() {
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("simple-item-def.dmn", this.getClass()));
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNModel dmnModel = runtime.getModel("<wrong>", "<wrong>");
+        // please notice an end-user of the API might not having checked the result of the previous call is not a null.
+
+        DMNContext emptyContext = DMNFactory.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+
+        LOG.debug("{}", dmnResult);
     }
 }
 
