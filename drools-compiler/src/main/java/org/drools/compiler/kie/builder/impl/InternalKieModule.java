@@ -93,7 +93,7 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     ResourceProvider createResourceProvider();
 
-    Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
+    Map<String, byte[]> getClassesMap();
 
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName);
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs);

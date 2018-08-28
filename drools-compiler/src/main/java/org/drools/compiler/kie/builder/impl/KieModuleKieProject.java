@@ -63,19 +63,14 @@ public class KieModuleKieProject extends AbstractKieProject {
             kieModules = new ArrayList<InternalKieModule>();
             kieModules.addAll( depKieModules );
             kieModules.add( kieModule );
-            initClassLoader( cl );
+            cl.storeClasses( getClassesMap() );
         }
-    }
-
-    private void initClassLoader(ProjectClassLoader projectCL) {
-        projectCL.storeClasses( getClassesMap() );
     }
 
     private Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules ) {
-            // avoid to take type declarations defined directly in this kieModule since they have to be recompiled
-            classes.putAll( kModule.getClassesMap( kModule != this.kieModule ) );
+            classes.putAll( kModule.getClassesMap() );
         }
         return classes;
     }

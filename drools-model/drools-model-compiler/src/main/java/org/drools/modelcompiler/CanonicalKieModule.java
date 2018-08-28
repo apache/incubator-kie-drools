@@ -118,8 +118,8 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
-        return internalKieModule.getClassesMap( true );
+    public Map<String, byte[]> getClassesMap() {
+        return internalKieModule.getClassesMap();
     }
 
     @Override
@@ -224,7 +224,7 @@ public class CanonicalKieModule implements InternalKieModule {
     public ProjectClassLoader getModuleClassLoader() {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader( null );
-            moduleClassLoader.storeClasses( getClassesMap( true ) );
+            moduleClassLoader.storeClasses( getClassesMap() );
         }
         return moduleClassLoader;
     }
