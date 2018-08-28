@@ -364,7 +364,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public Map<String, byte[]> getClassesMap( boolean includeTypeDeclarations ) {
+        public Map<String, byte[]> getClassesMap() {
             throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getClassesMap -> TODO" );
         }
 

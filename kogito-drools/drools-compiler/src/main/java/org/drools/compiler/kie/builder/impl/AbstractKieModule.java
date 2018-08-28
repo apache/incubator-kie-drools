@@ -74,7 +74,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
         implements
@@ -175,22 +174,14 @@ public abstract class AbstractKieModule
         resultsCache.put(kieBaseName, results);
     }
 
-    public Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations) {
+    public Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for (String fileName : getFileNames()) {
             if (fileName.endsWith(".class")) {
-                if (includeTypeDeclarations || !isTypeDeclaration(fileName)) {
-                    classes.put(fileName, getBytes(fileName));
-                }
+                classes.put(fileName, getBytes(fileName));
             }
         }
         return classes;
-    }
-
-    private boolean isTypeDeclaration(String fileName) {
-        Map<String, TypeMetaInfo> info = getTypesMetaInfo();
-        TypeMetaInfo typeInfo = info == null ? null : info.get(convertResourceToClassName(fileName));
-        return typeInfo != null && typeInfo.isDeclaredType();
     }
 
     private Map<String, TypeMetaInfo> getTypesMetaInfo() {

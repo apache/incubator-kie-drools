@@ -146,7 +146,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             classLoader = ProjectClassLoader.createProjectClassLoader(new URLClassLoader(urls, getClass().getClassLoader()));
 
             if (kieModule != null) {
-                Map<String, byte[]> classes = kieModule.getClassesMap(true);
+                Map<String, byte[]> classes = kieModule.getClassesMap();
                 for (Map.Entry<String, byte[]> entry : classes.entrySet()) {
                     classLoader.storeClass(convertResourceToClassName(entry.getKey()), entry.getKey(), entry.getValue());
                 }
