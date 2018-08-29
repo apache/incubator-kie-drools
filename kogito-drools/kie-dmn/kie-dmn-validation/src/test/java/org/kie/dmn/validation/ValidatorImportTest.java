@@ -85,6 +85,14 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
+    public void testBaseModel_ImportModelName__FileInput() throws IOException {
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
+                                                   .theseModels(getFile("import/Import-base-model-modelnameattribute.dmn"), // DROOLS-2938
+                                                                getFile("import/Base-model.dmn"));
+        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+    }
+
+    @Test
     public void testBaseModel_OK__DefinitionsInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(// VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
                                                                   Validation.VALIDATE_MODEL,
