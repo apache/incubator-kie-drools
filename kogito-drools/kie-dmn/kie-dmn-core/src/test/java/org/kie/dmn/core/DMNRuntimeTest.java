@@ -56,6 +56,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -2261,6 +2262,26 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat(result.get("Strategy"), is("THROUGH"));
         assertThat(result.get("Routing"), is("ACCEPT"));
+    }
+    
+    @Test(timeout = 30_000L)
+    public void testAccessorCache() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("20180731-pr1997.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        for (int i = 0; i < 10_000; i++) {
+            DMNContext context = DMNFactory.newContext();
+            context.set("a Person", new Person("John", "Doe", i));
+
+            DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+            LOG.debug("{}", dmnResult);
+            assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+            DMNContext result = dmnResult.getContext();
+            assertThat(result.get("Say hello and age"), is(new StringBuilder("Hello John Doe, your age is: ").append(i).toString()));
+        }
     }
 
     @Test
