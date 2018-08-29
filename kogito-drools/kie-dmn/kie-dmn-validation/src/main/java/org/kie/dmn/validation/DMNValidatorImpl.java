@@ -312,6 +312,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
         private List<Definitions> internalValidatorSortModels(List<Definitions> ms) {
             List<DMNResource> dmnResources = ms.stream().map(d -> new DMNResource(new QName(d.getNamespace(), d.getName()), null, d)).collect(Collectors.toList());
+            DMNAssemblerService.enrichDMNResourcesWithImportsDependencies(dmnResources);
             List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
             return sortedDmnResources.stream().map(d -> d.getDefinitions()).collect(Collectors.toList());
         }

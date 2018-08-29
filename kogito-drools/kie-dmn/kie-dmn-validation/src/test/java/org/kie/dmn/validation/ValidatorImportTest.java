@@ -79,8 +79,8 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         final List<DMNMessage> messages = validator.validateUsing(// VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
                                                                   Validation.VALIDATE_MODEL,
                                                                   Validation.VALIDATE_COMPILATION)
-                                                   .theseModels(getFile("import/Base-model.dmn"),
-                                                                getFile("import/Import-base-model.dmn"));
+                                                   .theseModels(getFile("import/Import-base-model.dmn"), // switch order for DROOLS-2936 
+                                                                getFile("import/Base-model.dmn"));
         assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
     }
 
