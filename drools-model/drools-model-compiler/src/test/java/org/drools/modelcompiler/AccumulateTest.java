@@ -34,6 +34,7 @@ import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
@@ -865,36 +866,70 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    @Ignore
-    public void testUseAccumulateFunctionWithArrayAccessOperation() {
+        @Test
+        @Ignore
+        public void testUseAccumulateFunctionWithArrayAccessOperation() {
 
-        String str = "import " + Adult.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "  accumulate (\n" +
-                "       $p : Adult(), $result : sum( $p.getChildrenA()[0].getAge() + 10) "+
-                "         )" +
-                "then\n" +
-                "  insert($result);\n" +
-                "end";
+            String str = "import " + Adult.class.getCanonicalName() + ";\n" +
+                    "rule R when\n" +
+                    "  accumulate (\n" +
+                    "       $p : Adult(), $result : sum( $p.getChildrenA()[0].getAge() + 10) "+
+                    "         )" +
+                    "then\n" +
+                    "  insert($result);\n" +
+                    "end";
 
-        KieSession ksession = getKieSession(str);
+            KieSession ksession = getKieSession(str);
 
-        ksession.insert("x");
-        Adult luca = new Adult("Luca", 33);
-        Person leonardo = new Person("Leonardo", 1);
-        luca.setChildrenA(new Person[] { leonardo} );
+            ksession.insert("x");
+            Adult luca = new Adult("Luca", 33);
+            Person leonardo = new Person("Leonardo", 1);
+            luca.setChildrenA(new Person[] { leonardo} );
 
-        ksession.insert(luca);
-        ksession.insert(leonardo);
+            ksession.insert(luca);
+            ksession.insert(leonardo);
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        List<Number> results = getObjectsIntoList(ksession, Number.class);
-        assertEquals(1, results.size());
-        assertEquals(11, results.get(0).intValue());
+            List<Number> results = getObjectsIntoList(ksession, Number.class);
+            assertEquals(1, results.size());
+            assertEquals(11, results.get(0).intValue());
 
-    }
+        }
+
+        @Test
+        @Ignore
+        public void testUseAccumulateFunctionWithListMvelDialect() throws Exception {
+            String str = "package org.test;" +
+                    "import java.util.*; " +
+                    "declare Data " +
+                    "  values : List " +
+                    "  bias : int = 0 " +
+                    "end " +
+                    "rule R " +
+                    "  dialect 'mvel' " +
+                    "when\n" +
+                    "    accumulate ( $data : Data( $bias : bias )," +
+                    "                 $tot : sum( $data.values[ 0 ] + $bias ) ) " +
+                    "then\n" +
+                    "  insert($tot);\n" +
+                    "end";
+
+            KieSession ksession = getKieSession(str);
+
+            FactType dataType = ksession.getKieBase().getFactType("org.test", "Data");
+            Object data1 = dataType.newInstance();
+            dataType.set(data1, "values", Arrays.asList(2, 3, 4));
+            dataType.set(data1, "bias", 100);
+            ksession.insert(data1);
+
+            ksession.fireAllRules();
+
+            List<Number> results = getObjectsIntoList(ksession, Number.class);
+            assertEquals(1, results.size());
+            assertEquals(102, results.get(0).intValue());
+
+        }
 
     @Test
     public void testTypedResultOnAccumulate() {
