@@ -228,6 +228,8 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void reset() {
         this.linkedSegmentMask = 0L;
+        // TODO we could reset the agandaItem instead of throwing it away
+        this.agendaItem = null;
     }
 
     public InternalAgenda getActualAgenda(InternalWorkingMemory wm) {
