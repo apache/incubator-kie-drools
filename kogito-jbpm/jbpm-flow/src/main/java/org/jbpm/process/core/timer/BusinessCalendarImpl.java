@@ -42,12 +42,12 @@ import org.slf4j.LoggerFactory;
  * Default implementation of BusinessCalendar interface that is configured with properties.
  * Following are supported properties:
  * <ul>
- *  <li>business.hours.per.week - specifies number of working days per week (default 5)</li>
+ *  <li>business.days.per.week - specifies number of working days per week (default 5)</li>
  *  <li>business.hours.per.day - specifies number of working hours per day (default 8)</li>
  *  <li>business.start.hour - specifies starting hour of work day (default 9AM)</li>
  *  <li>business.end.hour - specifies ending hour of work day (default 5PM)</li>
  *  <li>business.holidays - specifies holidays (see format section for details on how to configure it)</li>
- *  <li>business.holiday.date.format - specifies holiday date format used (default yyyy-DD-mm)</li>
+ *  <li>business.holiday.date.format - specifies holiday date format used (default yyyy-MM-dd)</li>
  *  <li>business.weekend.days - specifies days of the weekend (default Saturday and Sunday)</li>
  *  <li>business.cal.timezone - specifies time zone to be used (if not given uses default of the system it runs on)</li>
  * </ul>
@@ -92,7 +92,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     private static final int     SIM_SEC = 11;
 
     
-    public static final String DAYS_PER_WEEK = "business.hours.per.week";
+    public static final String DAYS_PER_WEEK = "business.days.per.week";
     public static final String HOURS_PER_DAY = "business.hours.per.day";
     public static final String START_HOUR = "business.start.hour";
     public static final String END_HOUR = "business.end.hour";
