@@ -101,10 +101,10 @@ public class Miningmodel extends AbstractModel<MiningModel> {
     }
     
     public String getTargetField() {
-    	return this.getMiningFields().stream()
-    	.filter(mf -> mf.getFieldUsageType() == FIELDUSAGETYPE.TARGET || mf.getFieldUsageType() == FIELDUSAGETYPE.PREDICTED)
-    	.map(mf -> { return helper.compactAsJavaId(mf.getName(),true); })
-    	.findFirst().orElse(null);
+        return this.getMiningFields().stream()
+        .filter(mf -> mf.getFieldUsageType() == FIELDUSAGETYPE.TARGET || mf.getFieldUsageType() == FIELDUSAGETYPE.PREDICTED)
+        .map(mf -> { return helper.compactAsJavaId(mf.getName(),true); })
+        .findFirst().orElse(null);
     }
     
     
@@ -121,6 +121,12 @@ public class Miningmodel extends AbstractModel<MiningModel> {
             if (type == null || type.trim().isEmpty()) {
                 fields.remove(field);
             }
+        }
+        if (this.segmentation != null) {
+            segmentation.getMiningSegments().stream()
+                    .flatMap(ms -> ms.getModel().getMiningFields().stream() )
+                    .filter(fld -> !fields.contains(fld))
+                    .forEach(fields::add);
         }
         return fields;
     }

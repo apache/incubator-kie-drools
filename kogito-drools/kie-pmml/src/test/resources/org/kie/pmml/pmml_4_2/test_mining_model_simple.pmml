@@ -38,7 +38,6 @@
          <MiningField name="fld3" />
          <MiningField name="fld4" />
          <MiningField name="fld6" />
-         <MiningField name="fld5" usageType="predicted" />
       </MiningSchema>
       <Segmentation multipleModelMethod="selectFirst">
          <Segment id="1">

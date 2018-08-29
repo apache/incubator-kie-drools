@@ -23,12 +23,14 @@ import java.util.Map;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
@@ -55,6 +57,7 @@ public class PMML4ExecutionHelper {
     private PMML4Result baseResultHolder;
     private boolean includeMiningDataSources;
     private boolean used;
+    private String loggerFileName;
 
     public static class PMML4ExecutionHelperFactory {
 
@@ -264,10 +267,19 @@ public class PMML4ExecutionHelper {
             used = false;
             initRuleUnitExecutor();
         }
-        requestData.insert(request);
-        baseResultHolder = new PMML4Result(request.getCorrelationId());
-        resultData.insert(baseResultHolder);
-        executor.run(ruleUnitClass);
+
+        KieRuntimeLogger logger = loggerFileName != null ?
+                ((InternalRuleUnitExecutor)executor).addFileLogger(loggerFileName) : null;
+        try {
+            requestData.insert(request);
+            baseResultHolder = new PMML4Result(request.getCorrelationId());
+            resultData.insert(baseResultHolder);
+            executor.run(ruleUnitClass);
+        } finally {
+            if (logger != null) {
+                logger.close();
+            }
+        }
         used = true;
         return baseResultHolder;
     }
@@ -309,5 +321,13 @@ public class PMML4ExecutionHelper {
         }
         packageNames.add(PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId);
         return packageNames;
+    }
+
+    public void turnOnFileLogger(String loggerFileName) {
+        this.loggerFileName = loggerFileName;
+    }
+
+    public void turnOffFileLogger() {
+        this.loggerFileName = null;
     }
 }
