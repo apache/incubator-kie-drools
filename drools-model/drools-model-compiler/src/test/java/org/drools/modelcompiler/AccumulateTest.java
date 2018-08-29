@@ -923,11 +923,48 @@ public class AccumulateTest extends BaseModelTest {
             dataType.set(data1, "bias", 100);
             ksession.insert(data1);
 
+            Object data2 = dataType.newInstance();
+            dataType.set(data2, "values", Arrays.asList(10));
+            dataType.set(data2, "bias", 100);
+            ksession.insert(data2);
+
             ksession.fireAllRules();
 
             List<Number> results = getObjectsIntoList(ksession, Number.class);
             assertEquals(1, results.size());
-            assertEquals(102, results.get(0).intValue());
+            assertEquals(212, results.get(0).intValue());
+
+        }
+
+        @Test
+        @Ignore
+        public void testUseAccumulateFunctionWithListMvelDialectWithoutBias() throws Exception {
+            String str = "package org.test;" +
+                    "import java.util.*; " +
+                    "declare Data " +
+                    "  values : List " +
+                    "end " +
+                    "rule R " +
+                    "  dialect 'mvel' " +
+                    "when\n" +
+                    "    accumulate ( $data : Data( )," +
+                    "                 $tot : sum( $data.values[ 0 ] ) ) " +
+                    "then\n" +
+                    "  insert($tot);\n" +
+                    "end";
+
+            KieSession ksession = getKieSession(str);
+
+            FactType dataType = ksession.getKieBase().getFactType("org.test", "Data");
+            Object data1 = dataType.newInstance();
+            dataType.set(data1, "values", Arrays.asList(2, 3, 4));
+            ksession.insert(data1);
+
+            ksession.fireAllRules();
+
+            List<Number> results = getObjectsIntoList(ksession, Number.class);
+            assertEquals(1, results.size());
+            assertEquals(2, results.get(0).intValue());
 
         }
 
