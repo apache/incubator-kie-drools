@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -80,12 +81,76 @@ public class ReteDumper {
     }
 
     public void dump(Rete rete) {
+        traverseRete(rete, this::dumpNode);
+    }
+
+    public static Set<BaseNode> collectRete(KieBase kbase ) {
+        return new ReteDumper().collect((InternalKnowledgeBase) kbase);
+    }
+
+    public static Set<BaseNode> collectRete(KieRuntime session ) {
+        return new ReteDumper().collect((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public static Set<BaseNode> collectRete(KieSession session) {
+        return new ReteDumper().collect((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public static Set<BaseNode> collectRete(InternalKnowledgeBase kBase) {
+        return new ReteDumper().collect(kBase.getRete());
+    }
+
+    public static Set<BaseNode> collectRete(Rete rete) {
+        return new ReteDumper().collect(rete);
+    }
+
+    public Set<BaseNode> collect(KieBase kbase ) {
+        return collect((InternalKnowledgeBase) kbase);
+    }
+
+    public Set<BaseNode> collect(KieRuntime session ) {
+        return collect((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public Set<BaseNode> collect(KieSession session) {
+        return collect((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public Set<BaseNode> collect(InternalKnowledgeBase kBase) {
+        return collect(kBase.getRete());
+    }
+
+    public Set<BaseNode> collect(Rete rete) {
+        Set<BaseNode> nodes = new HashSet<>();
+        traverseRete(rete, (node, s) -> nodes.add(node));
+        return nodes;
+    }
+
+    public void traverseRete(Rete rete, BiConsumer<BaseNode, String> consumer) {
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-            dumpNode( entryPointNode, "", new HashSet<BaseNode>() );
+            dumpNode( entryPointNode, "", new HashSet<BaseNode>(), consumer);
         }
     }
 
-    private void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
+    private void dumpNode( BaseNode node, String ident, Set<BaseNode> visitedNodes, BiConsumer<BaseNode, String> consumer ) {
+        consumer.accept( node, ident );
+        if (!visitedNodes.add( node )) {
+            return;
+        }
+        Sink[] sinks = node.getSinks();
+        if (sinks != null) {
+            for (Sink sink : sinks) {
+                if (sink instanceof BaseNode) {
+                    BaseNode sinkNode = ( BaseNode ) sink;
+                    if ( nodesFilter.test( sinkNode ) ) {
+                        dumpNode( sinkNode, ident + "    ", visitedNodes, consumer );
+                    }
+                }
+            }
+        }
+    }
+
+    private void dumpNode( BaseNode node, String ident ) {
         System.out.print(ident + node + " on " + node.getPartitionId());
         try {
             Object declaredMask = node.getClass().getMethod("getDeclaredMask").invoke(node);
@@ -109,19 +174,5 @@ public class ReteDumper {
             // do nothing.
         }
         System.out.print("\n");
-        if (!visitedNodes.add( node )) {
-            return;
-        }
-        Sink[] sinks = node.getSinks();
-        if (sinks != null) {
-            for (Sink sink : sinks) {
-                if (sink instanceof BaseNode) {
-                    BaseNode sinkNode = ( BaseNode ) sink;
-                    if ( nodesFilter.test( sinkNode ) ) {
-                        dumpNode( sinkNode, ident + "    ", visitedNodes );
-                    }
-                }
-            }
-        }
     }
 }
