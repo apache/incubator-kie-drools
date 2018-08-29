@@ -25,7 +25,7 @@
 @declare{'scorecardOutputGeneration'}
 
 
-rule "Scorecard @{context} output"
+rule "Scorecard @{context} output - @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -5
 when
@@ -39,7 +39,7 @@ then
     insertLogical( x );
 end
 
-rule "Add PMMLResult with Scorecard output @{context}"
+rule "Add PMMLResult with Scorecard output @{context} - @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "java"
 when
@@ -52,13 +52,13 @@ then
 end
 
 
-rule "Update PMMLResult containing Scorecard output @{context}"
+rule "Update PMMLResult containing Scorecard output @{context} - @{target}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 no-loop
 when
    $reslt: PMML4Result( "@{target}" memberOf resultVariables.keySet() ) from results
    $told: @{target}( $v: value ) from $reslt.resultVariables["@{target}"]
-   $tgt: @{target}( value != null )
+   $tgt: @{target}( value != null && value != $v )
 then
    $reslt.updateResultVariable("@{target}",$tgt);
    update($reslt);
