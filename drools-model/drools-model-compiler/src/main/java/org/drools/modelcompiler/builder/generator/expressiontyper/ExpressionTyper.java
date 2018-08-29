@@ -464,7 +464,7 @@ public class ExpressionTyper {
                 scope = new NameExpr( "_this" );
             }
 
-            result = arrayAccesExpr((ArrayAccessExpr) firstNode, type, scope);
+            result = arrayAccessExpr((ArrayAccessExpr) firstNode, type, scope);
 
         } else {
             result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, context.getUsedDeclarations() ) ));
@@ -573,10 +573,18 @@ public class ExpressionTyper {
         return new TypedExpressionCursor(methodCallExpr, m.getGenericReturnType());
     }
 
-    private Optional<TypedExpressionCursor> arrayAccesExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
-        Optional<TypedExpressionCursor> nameExprOpt = nameExpr(null, (NameExpr) arrayAccessExpr.getName(), false, originalTypeCursor);
+    private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
+        Expression getNameExpression = arrayAccessExpr.getName();
+        Optional<TypedExpressionCursor> nameExprOpt = Optional.empty();
+        if(getNameExpression.isNameExpr()) {
+            nameExprOpt = nameExpr(null, getNameExpression.asNameExpr(), false, originalTypeCursor);
+
+        } else if (getNameExpression.isMethodCallExpr()) {
+            nameExprOpt = Optional.of(methodCallExpr(getNameExpression.asMethodCallExpr(), originalTypeCursor, scope));
+        }
+
         if (!nameExprOpt.isPresent()) {
-            return nameExprOpt;
+            return Optional.empty();
         }
 
         TypedExpressionCursor nameExpr = nameExprOpt.get();
