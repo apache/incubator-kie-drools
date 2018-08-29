@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import java.util.function.UnaryOperator;
+import java.util.function.BiFunction;
 
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.builder.ReleaseId;
@@ -32,7 +32,7 @@ public class NewKieSessionCommand extends AbstractNewKieContainerCommand
     private static final long serialVersionUID = 8748826714594402049L;
     private String sessionId;
     private ReleaseId releaseId;
-    private UnaryOperator<KieContainer> beforeSessionCreation = kieContainer -> kieContainer;
+    private BiFunction<String, KieContainer, KieContainer> beforeSessionCreation = (a, b) -> b;
 
     public NewKieSessionCommand(String sessionId) {
         this.sessionId = sessionId;
@@ -48,7 +48,7 @@ public class NewKieSessionCommand extends AbstractNewKieContainerCommand
 
         KieContainer kieContainer = getKieContainer((RegistryContext) context, releaseId);
 
-        kieContainer = beforeSessionCreation.apply(kieContainer);
+        kieContainer = beforeSessionCreation.apply(sessionId, kieContainer);
 
         KieSession ksession = sessionId != null ? kieContainer.newKieSession(sessionId) : kieContainer.newKieSession();
 
@@ -57,7 +57,7 @@ public class NewKieSessionCommand extends AbstractNewKieContainerCommand
         return ksession;
     }
 
-    public NewKieSessionCommand setBeforeSessionCreation(UnaryOperator<KieContainer> beforeSessionCreation) {
+    public NewKieSessionCommand setBeforeSessionCreation(BiFunction<String, KieContainer, KieContainer> beforeSessionCreation) {
         this.beforeSessionCreation = beforeSessionCreation;
         return this;
     }
