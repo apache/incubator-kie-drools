@@ -17,23 +17,30 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.GetKieContainerCommand;
+import org.drools.core.command.SetKieContainerCommand;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.KieContainerFluent;
 
 public class ExecutableBuilderImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements ExecutableBuilder {
 
-
     public ExecutableBuilderImpl() {
         super(new ExecutableImpl());
-        getFluentContext().setExecutableBuilder( this );
-
+        getFluentContext().setExecutableBuilder(this);
     }
 
     @Override
     public KieContainerFluent getKieContainer(ReleaseId releaseId) {
-        addCommand( new GetKieContainerCommand(releaseId) );
+        addCommand(new GetKieContainerCommand(releaseId));
+        KieContainerFluentImpl fluent = new KieContainerFluentImpl(fluentCtx);
+        return fluent;
+    }
+
+    @Override
+    public KieContainerFluent setKieContainer(KieContainer kieContainer) {
+        addCommand(new SetKieContainerCommand(kieContainer));
         KieContainerFluentImpl fluent = new KieContainerFluentImpl(fluentCtx);
         return fluent;
     }
