@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
@@ -18,6 +20,13 @@ import static org.drools.modelcompiler.builder.generator.expressiontyper.Flatten
 import static org.junit.Assert.*;
 
 public class FlattenScopeTest {
+
+    @Test
+    public void flattenUnaryExpression() {
+        List<Node> actual = flattenScope(expr("getMessageId"));
+        List<Node> expected = Collections.singletonList(new NameExpr("getMessageId"));
+        compareArrays(actual, expected);
+    }
 
     @Test
     public void flattenFields() {
@@ -36,9 +45,12 @@ public class FlattenScopeTest {
     }
 
     @Test
-    public void flattenUnaryExpression() {
-        List<Node> actual = flattenScope(expr("getMessageId"));
-        List<Node> expected = Collections.singletonList(new NameExpr("getMessageId"));
+    public void flattenArrayAccess() {
+        List<Node> actual = flattenScope(expr("$p.getChildrenA()[0]"));
+
+        NameExpr name = new NameExpr("$p");
+        final MethodCallExpr mc = new MethodCallExpr(name, "getChildrenA", nodeList());
+        List<Node> expected = asList(name, mc, new ArrayAccessExpr(mc, new IntegerLiteralExpr(0)));
         compareArrays(actual, expected);
     }
 
@@ -46,6 +58,11 @@ public class FlattenScopeTest {
         Expression expr = DrlxParseUtil.parseExpression(inputExpr).getExpr();
         // This is because parsing doesn't set type arguments.
         expr.ifMethodCallExpr(m -> m.setTypeArguments(nodeList()));
+        expr.getChildNodes().forEach((Node e) -> {
+            if (e instanceof Expression) {
+                ((Expression) e).ifMethodCallExpr(m -> m.setTypeArguments(nodeList()));
+            }
+        });
         return expr;
     }
 

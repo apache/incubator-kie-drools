@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
+import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -25,13 +26,16 @@ public class FlattenScope {
             res.add(methodCallExpr);
         } else if (expressionWithScope instanceof InlineCastExpr && ((InlineCastExpr) expressionWithScope).getExpression() instanceof FieldAccessExpr) {
             InlineCastExpr inlineCastExpr = (InlineCastExpr) expressionWithScope;
-            Expression internalScope = ((FieldAccessExpr)inlineCastExpr.getExpression()).getScope();
+            Expression internalScope = ((FieldAccessExpr) inlineCastExpr.getExpression()).getScope();
             res.addAll(flattenScope((internalScope)));
             res.add(expressionWithScope);
+        } else if (expressionWithScope instanceof ArrayAccessExpr) {
+            ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr) expressionWithScope;
+            res.addAll(flattenScope(arrayAccessExpr.getName()));
+            res.add(arrayAccessExpr);
         } else {
             res.add(expressionWithScope);
         }
         return res;
     }
-
 }
