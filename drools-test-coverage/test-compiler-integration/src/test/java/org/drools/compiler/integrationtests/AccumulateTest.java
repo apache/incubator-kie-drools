@@ -95,7 +95,7 @@ public class AccumulateTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test(timeout = 10000)
