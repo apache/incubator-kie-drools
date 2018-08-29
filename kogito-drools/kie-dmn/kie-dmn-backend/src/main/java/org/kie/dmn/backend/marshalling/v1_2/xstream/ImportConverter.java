@@ -24,7 +24,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_2.TImport;
 
-public class ImportConverter extends DMNModelInstrumentedBaseConverter {
+public class ImportConverter extends NamedElementConverter {
     public static final String NAMESPACE = "namespace";
     public static final String LOCATION_URI = "locationURI"; 
     public static final String IMPORT_TYPE = "importType";  
