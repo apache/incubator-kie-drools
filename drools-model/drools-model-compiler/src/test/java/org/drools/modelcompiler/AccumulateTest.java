@@ -32,6 +32,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -861,6 +862,37 @@ public class AccumulateTest extends BaseModelTest {
         List<Number> results = getObjectsIntoList(ksession, Number.class);
         assertEquals(1, results.size());
         assertEquals(112, results.get(0).intValue());
+
+    }
+
+    @Test
+    @Ignore
+    public void testUseAccumulateFunctionWithArrayAccessOperation() {
+
+        String str = "import " + Adult.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate (\n" +
+                "       $p : Adult(), $result : sum( $p.getChildrenA()[0].getAge() + 10) "+
+                "         )" +
+                "then\n" +
+                "  insert($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        Adult luca = new Adult("Luca", 33);
+        Person leonardo = new Person("Leonardo", 1);
+        luca.setChildrenA(new Person[] { leonardo} );
+
+        ksession.insert(luca);
+        ksession.insert(leonardo);
+
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, results.size());
+        assertEquals(11, results.get(0).intValue());
 
     }
 
