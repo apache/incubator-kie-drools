@@ -229,6 +229,10 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         Assertions.assertThat(rankingMap.get("reasonCh2")).isEqualTo(-6);
     }
 
+    /**
+     * The scorecard used in the following test contains multiple outputs
+     * and thus tests to make sure that no duplicate rule names are generated
+     */
     @Test
     public void testScorecardWithCompoundPredicate() {
         PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("ScorecardCompoundPredicate",
