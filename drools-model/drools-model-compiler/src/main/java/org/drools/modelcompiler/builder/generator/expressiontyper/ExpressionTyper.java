@@ -2,7 +2,6 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,7 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -70,6 +68,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class ExpressionTyper {
@@ -757,30 +756,6 @@ public class ExpressionTyper {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
     }
-
-    private static List<Node> flattenScope(Expression expressionWithScope) {
-        List<Node> res = new ArrayList<>();
-        if (expressionWithScope instanceof FieldAccessExpr) {
-            FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expressionWithScope;
-            res.addAll(flattenScope(fieldAccessExpr.getScope()));
-            res.add(fieldAccessExpr.getName());
-        } else if (expressionWithScope instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = (MethodCallExpr) expressionWithScope;
-            if (methodCallExpr.getScope().isPresent()) {
-                res.addAll(flattenScope(methodCallExpr.getScope().get()));
-            }
-            res.add(methodCallExpr);
-        } else if (expressionWithScope instanceof InlineCastExpr && ((InlineCastExpr) expressionWithScope).getExpression() instanceof FieldAccessExpr) {
-            InlineCastExpr inlineCastExpr = (InlineCastExpr) expressionWithScope;
-            Expression internalScope = ((FieldAccessExpr)inlineCastExpr.getExpression()).getScope();
-            res.addAll(flattenScope((internalScope)));
-            res.add(expressionWithScope);
-        } else {
-            res.add(expressionWithScope);
-        }
-        return res;
-    }
-
 
     static class TypedExpressionCursor {
         public final Expression expressionCursor;

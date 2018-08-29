@@ -867,7 +867,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
         @Test
-        @Ignore
         public void testUseAccumulateFunctionWithArrayAccessOperation() {
 
             String str = "import " + Adult.class.getCanonicalName() + ";\n" +
