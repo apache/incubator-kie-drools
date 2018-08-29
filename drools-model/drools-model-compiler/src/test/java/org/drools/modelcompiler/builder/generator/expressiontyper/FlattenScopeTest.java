@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.javaparser.ast.Node;
@@ -23,7 +24,7 @@ public class FlattenScopeTest {
         List<Node> actual = flattenScope(expr("Field.INT"));
         List<Node> expected = asList(new NameExpr("Field"), new SimpleName("INT"));
 
-        assertArrayEquals(expected.toArray(), actual.toArray());
+        compareArrays(actual, expected);
     }
 
     @Test
@@ -31,7 +32,14 @@ public class FlattenScopeTest {
         List<Node> actual = flattenScope(expr("name.startsWith(\"M\")"));
         List<Node> expected = asList(new NameExpr("name"), new MethodCallExpr(new NameExpr("name"), "startsWith",
                                                                               nodeList(new StringLiteralExpr("M"))));
-        assertArrayEquals(expected.toArray(), actual.toArray());
+        compareArrays(actual, expected);
+    }
+
+    @Test
+    public void flattenUnaryExpression() {
+        List<Node> actual = flattenScope(expr("getMessageId"));
+        List<Node> expected = Collections.singletonList(new NameExpr("getMessageId"));
+        compareArrays(actual, expected);
     }
 
     private Expression expr(String inputExpr) {
@@ -39,5 +47,9 @@ public class FlattenScopeTest {
         // This is because parsing doesn't set type arguments.
         expr.ifMethodCallExpr(m -> m.setTypeArguments(nodeList()));
         return expr;
+    }
+
+    private void compareArrays(List<Node> actual, List<Node> expected) {
+        assertArrayEquals(expected.toArray(), actual.toArray());
     }
 }
