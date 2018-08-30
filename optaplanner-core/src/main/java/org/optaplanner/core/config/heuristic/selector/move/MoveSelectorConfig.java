@@ -194,6 +194,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         MoveSelector moveSelector = buildBaseMoveSelector(configPolicy,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
+        validateResolvedCacheType(resolvedCacheType, moveSelector);
 
         moveSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, moveSelector);
@@ -202,6 +203,15 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         return moveSelector;
+    }
+
+    private void validateResolvedCacheType(SelectionCacheType resolvedCacheType, MoveSelector moveSelector) {
+        if (!moveSelector.supportsPhaseAndSolverCaching()
+                && resolvedCacheType.compareTo(SelectionCacheType.PHASE) >= 0) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") has a resolvedCacheType (" + resolvedCacheType + ") that is not supported.\n"
+                    + "Maybe don't use a <cacheType> on this type of moveSelector.");
+        }
     }
 
     /**

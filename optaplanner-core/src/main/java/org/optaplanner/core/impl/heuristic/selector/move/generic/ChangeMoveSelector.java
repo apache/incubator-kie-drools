@@ -52,6 +52,11 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     }
 
     @Override
+    public boolean supportsPhaseAndSolverCaching() {
+        return !chained;
+    }
+
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
         if (chained) {

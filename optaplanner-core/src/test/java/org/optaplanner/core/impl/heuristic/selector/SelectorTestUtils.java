@@ -171,6 +171,7 @@ public class SelectorTestUtils {
         when(moveSelector.isNeverEnding()).thenReturn(false);
         when(moveSelector.getCacheType()).thenReturn(SelectionCacheType.JUST_IN_TIME);
         when(moveSelector.getSize()).thenReturn((long) moveList.size());
+        when(moveSelector.supportsPhaseAndSolverCaching()).thenReturn(true);
         return moveSelector;
     }
 

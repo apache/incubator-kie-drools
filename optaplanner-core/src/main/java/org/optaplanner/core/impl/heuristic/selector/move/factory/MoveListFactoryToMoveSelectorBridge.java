@@ -57,6 +57,11 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
         return cacheType;
     }
 
+    @Override
+    public boolean supportsPhaseAndSolverCaching() {
+        return true;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

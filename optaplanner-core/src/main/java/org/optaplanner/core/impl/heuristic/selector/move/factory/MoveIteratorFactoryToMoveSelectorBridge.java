@@ -39,6 +39,11 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
         this.randomSelection = randomSelection;
     }
 
+    @Override
+    public boolean supportsPhaseAndSolverCaching() {
+        return true;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

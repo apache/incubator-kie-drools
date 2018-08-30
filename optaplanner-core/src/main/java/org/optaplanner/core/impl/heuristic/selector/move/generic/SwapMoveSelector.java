@@ -82,6 +82,11 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
+    public boolean supportsPhaseAndSolverCaching() {
+        return !anyChained;
+    }
+
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
         if (anyChained) {

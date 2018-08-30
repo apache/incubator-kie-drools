@@ -25,4 +25,8 @@ import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
  */
 public interface MoveSelector extends IterableSelector<Move> {
 
+    default boolean supportsPhaseAndSolverCaching() {
+        return false;
+    }
+
 }

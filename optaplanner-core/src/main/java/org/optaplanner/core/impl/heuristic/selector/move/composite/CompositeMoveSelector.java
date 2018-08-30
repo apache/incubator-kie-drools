@@ -67,6 +67,11 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         return childMoveSelectorList;
     }
 
+    @Override
+    public boolean supportsPhaseAndSolverCaching() {
+        return true;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
