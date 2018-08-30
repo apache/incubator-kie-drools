@@ -1,0 +1,9 @@
+[#feel_semantics_datatypes_boolean]
+= Boolean Values
+
+FEEL uses the literal symbols `true` and `false` to represent boolean values.
+
+WARNING: FEEL uses 3-valued boolean logic, so a boolean logic expression may have results
+ `true`, `false` or `null`.
+
+

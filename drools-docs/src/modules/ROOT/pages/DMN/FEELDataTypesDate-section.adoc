@@ -1,0 +1,17 @@
+[#feel_semantics_datatypes_date]
+= Dates
+
+FEEL does not have date literals, but the built-in `date()` function can be used to construct
+date values. For example,
+
+```
+date( "2017-06-23" )
+```
+
+The date strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#date[XML Schema Part 2 Datatypes]
+document. The format is `"YYYY-MM-DD"` where `YYYY` is the year with 4 digits, `MM` is the number of the month with
+2 digits (such as January is 01, February is 02), and `DD` is the number of the day.
+
+Date objects have time part equal to `"00:00:00"`, which is midnight. The dates are considered to be local, without a timezone.
+
+

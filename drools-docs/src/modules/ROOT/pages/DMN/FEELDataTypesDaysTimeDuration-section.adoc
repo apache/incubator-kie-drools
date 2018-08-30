@@ -1,0 +1,20 @@
+[#feel_semantics_datatypes_daystimeduration]
+= Days and Time Duration
+
+FEEL does not have _days and time duration_ literals, but the built-in `duration()` function can be used to construct
+_days and time duration_ values. For example,
+
+```
+duration( "P1DT23H12M30S" )
+duration( "P23D" )
+duration( "PT12H" )
+duration( "PT35M" )
+```
+
+_Days and Time Duration_ strings in FEEL follow the format defined in the
+https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2 Datatypes] document, but restricted to only days,
+hours, minutes and seconds. Months and years are not allowed.
+
+IMPORTANT: The keyword `dayTimeDuration` is a synonym of `days and time duration`. It is useful when defining a
+_days and time duration_ variable in DMN, as the XML schema does not support type names that contain spaces.
+

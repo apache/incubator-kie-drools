@@ -1,0 +1,19 @@
+[#feel_semantics_datatypes_function]
+= Functions
+
+FEEL allows the creation of functions through function literals (or anonymous functions). For example, the following
+FEEL expression creates a function that adds the parameters `a` and `b` and returns the result:
+
+```
+function(a, b) a + b
+```
+
+There is no explicit way of declaring a variable as a `function` in the DMN specification. Drools extends the
+DMN built-in types with the function type for that reason.
+
+WARNING: A `function` datatype is an extension of the specification and is subject to change if the DMN specification
+provides a standard way to declare functions in the future.
+
+
+
+

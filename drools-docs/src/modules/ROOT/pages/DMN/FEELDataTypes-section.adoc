@@ -1,0 +1,22 @@
+[#feel_semantics_datatypes]
+= Data Types
+
+FEEL explicitly defines several built-in data types:
+
+* <<feel_semantics_datatypes_number,number>>
+* <<feel_semantics_datatypes_string,string>>
+* <<feel_semantics_datatypes_boolean,boolean>>
+* <<feel_semantics_datatypes_date,date>>
+* <<feel_semantics_datatypes_time,time>>
+* <<feel_semantics_datatypes_datetime,date and time>>
+* <<feel_semantics_datatypes_daystimeduration,days and time duration>>
+* <<feel_semantics_datatypes_yearsmonthsduration,years and month duration>>
+
+FEEL also implicitly defines a few other built-in data types. These types are not a
+consensus between different implementations but are supported by Drools:
+
+* <<feel_semantics_datatypes_function,function>>
+* <<feel_semantics_datatypes_context,context>>
+* <<feel_semantics_datatypes_range,range>>
+* <<feel_semantics_datatypes_range,list>>
+* unary test

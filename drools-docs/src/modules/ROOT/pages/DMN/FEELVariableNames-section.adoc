@@ -1,0 +1,54 @@
+[#feel_semantics_names]
+= Variable and Function Names
+
+One of the biggest differences between FEEL and traditional languages is the support for
+spaces and a few special characters as part of variable and function names in FEEL.
+
+A FEEL name must start with a `letter`, `?` or `_`. The unicode letter characters are also allowed.
+The remaining characters in the name can be any of the starting characters, as well as `digits`,
+white spaces, and special characters like `+`, `-`, `/`, `*`, `'` and `.`. The following names are all valid
+FEEL names:
+
+* Age
+* Birth Date
+* Flight 234 pre-check procedure
+
+Note that, a variable name can not start with a language keyword, like `and`, `true`, `every`, etc.
+
+[IMPORTANT]
+.Ambiguity
+====
+The use of spaces, keywords and other special characters as part of names makes the language
+ambiguous. The ambiguities are resolved in the context of the expression, matching names from
+left to right. The parser resolves the variable name as the longest name matched in scope.
+The user can use `( )` to disambiguate names if necessary.
+====
+
+[IMPORTANT]
+.Spaces in Names
+====
+The specification limits the use of spaces in FEEL names. According to the specification,
+names can contain multiple spaces as long as there are no two consecutive spaces.
+
+The use of spaces in names makes expressions easier to read for non-technical users, However, this
+might lead to problems that are difficult to find. For instance, it might be difficult for a user to visually
+distinguish one space from two consecutive spaces.
+
+In order to make the language easier to use and avoid common errors due to spaces, Drools
+removed the limitation on the use of consecutive spaces. Instead, Drools supports variable
+names with any number of consecutive spaces, but normalizes them into a single space. For
+instance, the two variable references `First Name` and `First  Name` are equivalent.
+
+Drools also normalizes the use of other white spaces, like the `non-breakable white space` that
+is common in web pages (html), tabs, and line breaks. From a Drools FEEL engine perspective,
+all of these characters are normalized into a single white space before processing.
+====
+
+[IMPORTANT]
+.The keyword `in`
+====
+The keyword `in` is the only keyword in the language that *cannot* be used as part of a variable
+name. Although the specifications allow the use of keywords in the middle of variable names, the
+use of `in` in variable names conflicts with the grammar definition of `for`, `every` and `some`
+expression constructs.
+====

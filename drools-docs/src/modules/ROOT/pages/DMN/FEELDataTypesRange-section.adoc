@@ -1,0 +1,51 @@
+[#feel_semantics_datatypes_range]
+= Ranges (or Intervals)
+
+FEEL allows the creation of ranges, also known as intervals, through `range literals`. A `range` in FEEL is a
+value that defines a lower and an upper bound, where either can be open or closed. The syntax of a range is defined
+as:
+
+```
+range          := interval_start endpoint '..' endpoint interval_end
+interval_start := open_start | closed_start
+open_start     := '(' | ']'
+closed_start   := '['
+interval_end   := open_end | closed_end
+open_end       := ')' | '['
+closed_end     := ']'
+endpoint       := expression
+```
+
+The expression for the endpoint must return a comparable value, and the lower bound endpoint must be lower than the
+upper bound endpoint.
+
+For instance, the following literal expression defines an interval between 1 and 10, including the boundaries (that is,
+a closed interval on both endpoints):
+
+```
+[ 1 .. 10 ]
+```
+
+The following literal expression defines an interval between 1 hour and 12 hours, including the lower boundary (that is,
+a closed interval), but excluding the upper boundary (an open interval):
+
+```
+[ duration("PT1H") .. duration("PT12H") [
+```
+
+Ranges are specially useful in decision tables when testing for ranges of value, but can also be used in simple
+literal expressions. For instance, the following literal expression returns true if the value of a variable x is
+between 0 and 100:
+
+```
+x in [ 1 .. 100 ]
+```
+
+WARNING: A range literal is not a valid expression in the FEEL specification. It has to always be contained within
+ other expressions. Drools extends the specification and allows range values to be defined directly and even assigned
+ to variables.
+
+
+
+
+

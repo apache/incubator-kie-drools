@@ -1,0 +1,65 @@
+[#executing_decision_services_on_the_kie_execution_server]
+= Executing DMN services remotely on the Kie Server
+
+This section explain how to interact with a Kie Container deployed on a Kie Execution Server, in order to execute decision services for the DMN models available inside the Kie Container. 
+
+.Prerequisites
+
+* Kie Execution Server installed and configured
+
+* a Kie Container deployed in the Kie Execution Server, for a KJAR containing the DMN model to be executed
+
+* a Kie Server Java Client connected to the related Kie Execution Server
+
+.Procedure
+
+. Obtain a DMNServicesClient from the Kie Server Java Client connected to the related Kie Execution Server
++
+This can be obtained invoking the method `getServicesClient()` on the Kie Server Java client instance, as shown in the following snippet:
++
+[source,java]
+----
+DMNServicesClient dmnClient = kieServicesClient.getServicesClient( DMNServicesClient.class );
+----
++
+The `dmnClient` can now be used to execute decision services on the Kie Execution Server.
+
+. Execute the decision services for the desired model
++
+The following snippet provides a basic example:
++
+[source,java]
+----
+DMNContext dmnContext = dmnClient.newContext();   // <1>
+dmnContext.set( "Full Name", "John Doe" );        // <2>
+
+ServiceResponse<DMNResult> serverResp = dmnClient.evaluateAll($containerId, // <3>
+        $modelnamespace, $modelname,                                         
+        dmnContext);
+        
+DMNResult dmnResult = serverResp.getResult();     // <4>
+----
+<1> Instantiate a new DMN Context to be the input for the model evaluation
+<2> Assign input variables for the input DMN Context 
+<3> Evaluate all the DMN Decisions defined in the DMN model
+<4> The DMN Result object is available from the server response
++
+where `$containerId` is the ID of the container where the kjar containing the DMN model is deployed, 
+`$modelnamespace` the namespace for the model, 
+`$modelname` is the name for the model.
++
+At this point, the `dmnResult` contains all the decision results from the evaluated DMN model. 
++
+NOTE: It is possible to execute only a specific DMN Decision in the model, by making use of alternative methods of the `DMNServicesClient`.
++
+TIP: If the Kie Container contains 1 and only 1 DMN Model, it is possible to omit `$modelnamespace` and `$modelname`; the only model available will be the one referenced by default in order to execute the decision services.
+
+.Related Information
+
+* Installing the KIE Server. Ref. <<_installing_the_kie_server>>
+
+* Creating a Kie Container. Ref. <<_creating_a_kie_container>>
+
+* Kie Server Java Client API, describes also the required dependencies. Ref. <<_kie_server_java_client_api>>
+
+* Available Clients for the Decision Server. Ref. <<_available_clients_for_the_decision_server>>

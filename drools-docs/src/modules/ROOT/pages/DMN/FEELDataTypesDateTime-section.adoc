@@ -1,0 +1,25 @@
+[#feel_semantics_datatypes_datetime]
+= Date and Time
+
+FEEL does not have _date and time_ literals, but the built-in `date and time()` function can be used to construct
+_date and time_ values. For example,
+
+```
+date and time( "2017-10-22T23:59:00" )
+date and time( "2017-06-13T14:10:00+02:00" )
+date and time( "2017-02-05T22:35:40.345-05:00" )
+date and time( "2017-06-13T15:00:30z" )
+```
+
+_Date and Time_ strings in FEEL follow the format defined in the
+https://www.w3.org/TR/xmlschema-2/#dateTime[XML Schema Part 2 Datatypes]document. The format is a
+_date_ string and a _time_ concatenated with a character "T" dividing the _date_ part from the _time_ part. See
+the sections in _<<FEELDataTypesDate-section.adoc#feel_semantics_datatypes_date,FEEL date>>_ and
+_<<FEELDataTypesTime-section.adoc#feel_semantics_datatypes_time,FEEL time>>_ for details.
+
+_Date and Time_ values that define an offset/timezone cannot be compared to local _date and time_ values
+that do not define an offset/timezone.
+
+IMPORTANT: the keyword `dateTime` is a synonym of `date and time`. It is useful when defining a _date and time_
+variable in DMN, as the XML schema does not support type names that contain spaces.
+

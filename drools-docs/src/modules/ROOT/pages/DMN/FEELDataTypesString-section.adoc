@@ -1,0 +1,6 @@
+[#feel_semantics_datatypes_string]
+= Strings
+
+Strings in FEEL are any sequence of characters delimited by double quotes. For example, `"John Doe"`.
+
+

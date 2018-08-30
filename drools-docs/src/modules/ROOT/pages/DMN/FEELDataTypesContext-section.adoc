@@ -1,0 +1,23 @@
+[#feel_semantics_datatypes_context]
+= Contexts
+
+FEEL allows creating contexts through `context literals`. A `context` in FEEL is a list of key/value pairs,
+similar to Maps in languages like Java. For example, the following literal expression creates a context with two entries,
+x and y, representing a coordinate in a chart:
+
+```
+{ x : 5, y : 3 }
+```
+
+There is no explicit way of declaring a variable as a `context` in the DMN specification. Drools extends the
+DMN built-in types with the `context` type for that reason.
+
+WARNING: A `context` datatype is an extension of the specification and is subject to change if the DMN specification
+provides a standard way to declare contexts in the future. In DMN 1.1, the recommended way of declaring contexts is to
+create an item definition that contains the list of keys as attributes, and then declare the variable as having that
+item definition type.
+
+
+
+
+

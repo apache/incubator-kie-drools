@@ -1,0 +1,24 @@
+[#feel_semantics_datatypes_time]
+= Time
+
+FEEL does not have time literals, but the built-in `time()` function can be used to construct
+time values. For example,
+
+```
+time( "04:25:12" )
+time( "14:10:00+02:00" )
+time( "22:35:40.345-05:00" )
+time( "15:00:30z" )
+```
+
+Time strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#time[XML Schema Part 2 Datatypes]
+document. I.e., the format is `"hh:mm:ss[.uuu][(+-)hh:mm]"` where `hh` is the hour of the day (from 00 to 24), `mm` is the
+minutes in the hour and `ss` is the number of seconds in the minute. Optionally, the string may define the
+number of milliseconds (`uuu`) within the second and/or contain a positive (`+`)
+or negative (`-`) offset from UTC time to define it's timezone.  Instead of an offset, the letter "z" can be
+used to represent the UTC time, that is same as offset -00:00. If no offset is defined, the time is considered
+to be local.
+
+Time values that define an offset/timezone cannot be compared to local times that do not define an offset/timezone.
+
+
