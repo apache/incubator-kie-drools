@@ -65,9 +65,15 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
         assertNotNull(kbase);
     }
 
+    /**
+     * This test uses the Applicant.java and ApplicantAttribute.java files
+     * that are in the src/test/org/drools/workbench/models/guided/scorecard/backend/test1 directory.
+     * It does not require the files be placed into the kfs in order to compile and run the
+     * scorecard
+     */
     @Test
     public void testCompletedScoreCardCompilation() {
-        String xml1 = Helper.createGuidedScoreCardXML();
+        String xml1 = Helper.createGuidedScoreCardXML(false);
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -75,10 +81,6 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
                   Helper.getPom());
         kfs.write("src/main/resources/META-INF/kmodule.xml",
                   Helper.getKModule());
-        kfs.write("src/main/java/org/drools/workbench/models/guided/scorecard/backend/test2/Applicant.java",
-                  Helper.getApplicant());
-        kfs.write("src/main/java/org/drools/workbench/models/guided/scorecard/backend/test2/ApplicantAttribute.java",
-                  Helper.getApplicantAttribute());
         kfs.write("src/main/resources/org/drools/workbench/models/guided/scorecard/test2/backend/sc1.scgd",
                   xml1);
 
@@ -119,10 +121,67 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
         System.out.println(resultHolder);
     }
 
+    /**
+     * This test uses the generated Applicant.java and ApplicantAttribute.java files.
+     */
+    @Test
+    public void testScoreCardCompileWithShortFact() {
+        String xml1 = Helper.createGuidedScoreCardXML(true);
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("pom.xml",
+                  Helper.getPom());
+        kfs.write("src/main/resources/META-INF/kmodule.xml",
+                  Helper.getKModule());
+        kfs.write("src/main/java/org/drools/workbench/models/guided/scorecard/backend/test2/Applicant.java",
+                  Helper.getApplicant());
+        kfs.write("src/main/java/org/drools/workbench/models/guided/scorecard/backend/test2/ApplicantAttribute.java",
+                  Helper.getApplicantAttribute());
+        kfs.write("src/main/resources/org/drools/workbench/models/guided/scorecard/test2/backend/sc1.scgd",
+                  xml1);
+
+        //Add complete Score Card
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final List<Message> messages = kieBuilder.getResults().getMessages();
+        Helper.dumpMessages(messages);
+        assertEquals(0,
+                     messages.size());
+
+        KieContainer container = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+        assertNotNull(container);
+        KieBase kbase = container.newKieBase(null);
+        assertNotNull(kbase);
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+
+        DataSource<PMMLRequestData> data = executor.newDataSource("request");
+        DataSource<PMML4Result> resultData = executor.newDataSource("results");
+        DataSource<PMML4Data> pmmlData = executor.newDataSource("pmmlData");
+        DataSource<ApplicantAttribute> applicantData = executor.newDataSource("externalBeanApplicantAttribute");
+
+        PMMLRequestData request = new PMMLRequestData("123", "test");
+        ApplicantAttribute appAttrib = new ApplicantAttribute();
+        appAttrib.setAttribute(10);
+
+        PMML4Result resultHolder = new PMML4Result("123");
+
+        List<String> possiblePackages = calculatePossiblePackageNames("Test_short", "org.drools.workbench.models.guided.scorecard.backend.test2");
+        Class<? extends RuleUnit> ruleUnitClass = getStartingRuleUnit("RuleUnitIndicator", (InternalKnowledgeBase) kbase, possiblePackages);
+        assertNotNull(ruleUnitClass);
+
+        data.insert(request);
+        applicantData.insert(appAttrib);
+        resultData.insert(resultHolder);
+
+        int count = executor.run(ruleUnitClass);
+        assertTrue(count > 0);
+        System.out.println(resultHolder);
+    }
+
     @Test
     public void testIncrementalCompilation() {
         String xml1_1 = Helper.createEmptyGuidedScoreCardXML();
-        String xml1_2 = Helper.createGuidedScoreCardXML();
+        String xml1_2 = Helper.createGuidedScoreCardXML(false);
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();

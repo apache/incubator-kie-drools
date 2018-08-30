@@ -116,6 +116,9 @@ public abstract class AbstractModel<T> implements PMML4Model {
                     ExternalBeanRef ref;
                     try {
                         ref = new ExternalBeanRef(field.getName(), ext.getValue(), ModelUsage.MINING);
+                        if (ExternalBeanDefinition.DEFAULT_BEAN_PKG.equals(ref.getBeanPackageName()) && this.getOwner().getRootPackage() != null) {
+                            ref.setBeanPackageName(this.getOwner().getRootPackage());
+                        }
                         externalMiningFields.add(ref);
                     } catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException("Error while initializing the MiningField map. ",e);
