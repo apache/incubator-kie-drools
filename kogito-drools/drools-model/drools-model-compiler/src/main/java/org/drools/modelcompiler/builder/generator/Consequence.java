@@ -151,9 +151,13 @@ public class Consequence {
     }
 
     public static boolean containsWord(String word, String body) {
-        final String withoutSpecialCharacters = word.replace("$", "");
-        Pattern p = Pattern.compile("\\b" + withoutSpecialCharacters + "\\b");
-        Matcher m = p.matcher(body);
+        // $ is quite a common character for a drools binding but it's not considered a word for the regexp engine
+        // By converting to a character is easier to write the regexp
+        final String wordWithDollarReplaced = word.replace("$", "犬");
+        final String bodyWithDollarReplaced = body.replace("$", "犬");
+
+        Pattern p = Pattern.compile("\\b" + wordWithDollarReplaced + "\\b");
+        Matcher m = p.matcher(bodyWithDollarReplaced);
         return m.find();
     }
 

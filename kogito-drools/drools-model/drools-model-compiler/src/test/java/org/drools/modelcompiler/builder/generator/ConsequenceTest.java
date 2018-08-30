@@ -11,5 +11,6 @@ public class ConsequenceTest {
     public void containsWordTest() throws Exception {
         assertFalse(containsWord("$cheesery", "results.add($cheeseryResult);\n"));
         assertTrue(containsWord("$cheeseryResult", "results.add($cheeseryResult);\n"));
+        assertFalse(containsWord("cheesery", "results.add($cheesery);\n"));
     }
 }
