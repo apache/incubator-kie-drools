@@ -260,5 +260,21 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Model C Decision based on Bs").getResult(), is("B: Evaluating Say Hello to: Hello, B.A.John; B2:Evaluating Say Hello to: Hello, B2.A.John2"));
     }
 
+    @Test
+    public void testImportingID() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "Importing_ID.dmn");
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_24bac498-2a5a-403d-8b44-d407628784c4", "Importing ID");
+
+        DMNContext context = runtime.newContext();
+        context.set("my import hello", mapOf(entry("Person name", "DROOLS-")));
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        assertThat(evaluateAll.getDecisionResultByName("Hello decision using imported InputData").getResult(), is("Hello, DROOLS-"));
+    }
 }
 
