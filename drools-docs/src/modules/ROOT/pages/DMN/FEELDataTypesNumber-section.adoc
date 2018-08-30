@@ -1,0 +1,27 @@
+[#feel_semantics_datatypes_number]
+= Numbers
+
+Numbers in FEEL are based on the http://ieeexplore.ieee.org/document/4610935/[IEEE 754-2008] Decimal 128
+format, with 34 digits of precision. Internally they are represented in Java as
+https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html[`BigDecimals`] with MathContext DECIMAL128.
+There is only one "type" of numbers in FEEL, so the same type is used to represent both integers and floating
+point numbers.
+
+FEEL numbers use '.' (dot) as its decimal separator. There is no support for `-INF`, `+INF` or `NaN`. FEEL uses
+`null` to represent invalid numbers.
+
+[NOTE]
+.Additional Supported Number Syntaxes
+====
+Drools extends the specification and supports additional number notations:
+
+* *scientific*: scientific notation can be used with the sufix `e<exp>` or `E<exp>`. E.g.: `1.2e3` is the same as writing the
+expression `1.2*10**3` , but it is a literal instead of an expression.
+
+* *hexadecimal*: hexadecimal numbers can be written using the preffix `0x`. E.g: `0xff` is the same as the decimal
+number 255. Both uppercase and lowercase letters are supported. E.g.: `0XFF` is the same as `0xff`.
+
+* *type suffixes*: type suffixes `f`, `F, `d`, `D`, `l` and `L` are supported, but ignored.
+====
+
+

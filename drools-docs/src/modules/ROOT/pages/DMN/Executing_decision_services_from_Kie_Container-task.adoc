@@ -1,0 +1,93 @@
+[#executing_decision_services_from_kie_container]
+= Executing DMN services embedded in the application
+
+This section explains how to interact with a Kie Container in order to execute decision services for the DMN models.
+
+.Prerequisites
+
+* a KJAR containing the DMN model to be executed
+
+* the following dependencies are required:
++
+[source,xml]
+----
+<dependency>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-ci</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-dmn-core</artifactId>
+</dependency>
+----
+
+.Procedure
+
+. Create a Kie Container, either from ReleaseId or classpath:
++
+The following snippet provides a basic example:
++
+.Creating a Kie Container from ReleaseId
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+
+ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "my-kjar", "1.0.0" );
+KieContainer kieContainer = kieServices.newKieContainer( releaseId );
+----
++
+or alternatively:
++
+.Creating a Kie Container from classpath
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+
+KieContainer kieContainer = kieServices.getKieClasspathContainer();
+----
++
+TIP: in case the Kie Container is created from the classpath, the dependency `kie-ci` is not required.
+
+. Obtain `DMNRuntime` from the Kie Container, and in turn a reference to the DMN model to be evaluated, by using the _model namespace_ and _model name_.
++
+[source,java]
+----
+DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime( DMNRuntime.class );
+
+DMNModel dmnModel = dmnRuntime.getModel(
+        "https://github.com/kiegroup/kie-dmn/input-data-string",  // model namespace
+        "input-data-string"                                       // model name
+        );
+----
+
+. Execute the decision services for the desired model
++
+The following snippet provides a basic example:
++
+[source,java]
+----
+DMNContext dmnContext = dmnRuntime.newContext();  // <1>
+dmnContext.set( "Full Name", "John Doe" );        // <2>
+
+DMNResult dmnResult = dmnRuntime.evaluateAll( dmnModel, dmnContext );  // <3>
+
+for ( DMNDecisionResult dr : dmnResult.getDecisionResults() ) {
+    System.out.println( "Decision '" + dr.getDecisionName() + "' : " + dr.getResult() );
+}
+----
+<1> Instantiate a new DMN Context to be the input for the model evaluation
+<2> Assign input variables for the input DMN Context 
+<3> Evaluate all the DMN Decisions defined in the DMN model; the DMN Result contains the result of all the evluations
++
+and would print the following output:
++
+[source]
+----
+Decision 'Greeting Message' : Hello John Doe
+----
++
+It is also possible to cycle over all the evaluations, in order to get the result for each decision respectively as shown in the example
+
+.Related Information
+
+* For creating a KJAR and for creating a Kie Container, reference "Build, Deploy, Utilize and Run". Ref. <<_builddeployutilizeandrunsection>>

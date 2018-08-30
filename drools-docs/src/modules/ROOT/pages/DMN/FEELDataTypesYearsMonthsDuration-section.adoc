@@ -1,0 +1,20 @@
+[#feel_semantics_datatypes_yearsmonthsduration]
+= Years and Months Duration
+
+FEEL does not have _years and months duration_ literals, but the built-in `duration()` function can be used to construct
+_days and time duration_ values. For example,
+
+```
+duration( "P3Y5M" )
+duration( "P2Y" )
+duration( "P10M" )
+duration( "P25M" )
+```
+
+_Years and Months Duration_ strings in FEEL follow the format defined in the
+https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2 Datatypes] document, but restricted to only years and
+months. Days, hours, minutes, or seconds are not allowed.
+
+IMPORTANT: The keyword `yearMonthDuration` is a synonym of `years and months duration`. It is useful when defining a
+_years and months duration_ variable in DMN, as the XML schema does not support type names that contain spaces.
+

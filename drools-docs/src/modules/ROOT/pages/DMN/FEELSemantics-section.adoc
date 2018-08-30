@@ -1,0 +1,17 @@
+[#feel_language_reference_semantics]
+= FEEL Language Semantics
+
+include::FEELVariableNames-section.adoc[leveloffset=+1]
+include::FEELDataTypes-section.adoc[leveloffset=+1]
+include::FEELDataTypesNumber-section.adoc[leveloffset=+1]
+include::FEELDataTypesString-section.adoc[leveloffset=+1]
+include::FEELDataTypesBoolean-section.adoc[leveloffset=+1]
+include::FEELDataTypesDate-section.adoc[leveloffset=+1]
+include::FEELDataTypesTime-section.adoc[leveloffset=+1]
+include::FEELDataTypesDateTime-section.adoc[leveloffset=+1]
+include::FEELDataTypesDaysTimeDuration-section.adoc[leveloffset=+1]
+include::FEELDataTypesYearsMonthsDuration-section.adoc[leveloffset=+1]
+include::FEELDataTypesFunction-section.adoc[leveloffset=+1]
+include::FEELDataTypesContext-section.adoc[leveloffset=+1]
+include::FEELDataTypesRange-section.adoc[leveloffset=+1]
+include::FEELDataTypesList-section.adoc[leveloffset=+1]

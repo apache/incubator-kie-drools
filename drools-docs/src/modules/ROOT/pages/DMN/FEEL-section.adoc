@@ -1,0 +1,9 @@
+[#feel_language_reference]
+= FEEL Language Reference
+
+Friendly Enough Expression Language (FEEL) is an expression language defined by the DMN specification. Any user capable of authoring expressions in a spreadsheet can easily write FEEL expressions.
+
+DMN completely defines the semantics of FEEL execution. Any expression that does not invoke externally defined functions should produce the exact same result in any compliant implementation. The FEEL language is side-effect free and any externally defined function should be side-effect free as well.
+
+include::FEELSemantics-section.adoc[leveloffset=+1]
+

@@ -1,0 +1,29 @@
+[#feel_semantics_datatypes_list]
+= Lists
+
+Lists in FEEL are represented by a comma separated list of values enclosed in square brackets. For instance:
+```
+[ 2, 3, 4, 5 ]
+```
+
+All lists in FEEL are homogeneous (that is, all elements in a list are of the same type) and immutable. Elements in a list
+can be accessed by index, where the first element is 1. Negative indexes can be used to access elements starting from the
+end of the list, so -1 is the last element. For instance, the following expression returns the second element of a list x:
+
+```
+x[2]
+```
+
+The following expression returns the second to last element:
+
+```
+x[-2]
+```
+
+WARNING: The DMN specification does not allow a variable to be defined as a generic list type. Drools extends the
+specification to support that.
+
+
+
+
+
