@@ -1,0 +1,9 @@
+[[_kiedeploycheatsheets]]
+= Installation and Deployment Cheat Sheets
+
+.Installation Overview
+image::KIE/BuildDeployUtilizeAndRun/cheatsheet1.png[align="center"]
+
+.Deployment Overview
+image::KIE/BuildDeployUtilizeAndRun/cheatsheet2.png[align="center"]
+
