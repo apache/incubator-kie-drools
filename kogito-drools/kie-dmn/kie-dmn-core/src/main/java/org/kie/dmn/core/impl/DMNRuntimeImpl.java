@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -93,6 +94,8 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNModel getModel(String namespace, String modelName) {
+        Objects.requireNonNull(namespace, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "namespace"));
+        Objects.requireNonNull(modelName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "modelName"));
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
         if( kpkg == null ) {
             return null;
@@ -104,6 +107,8 @@ public class DMNRuntimeImpl
     
     @Override
     public DMNModel getModelById(String namespace, String modelId) {
+        Objects.requireNonNull(namespace, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "namespace"));
+        Objects.requireNonNull(modelId, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "modelId"));
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
         if( kpkg == null ) {
             return null;
@@ -115,6 +120,8 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = createResult( model, context );
         // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
@@ -126,17 +133,28 @@ public class DMNRuntimeImpl
     }
 
     @Override
+    @Deprecated
     public DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(decisionName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionName"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         return evaluateByName(model, context, decisionName);
     }
 
     @Override
+    @Deprecated
     public DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(decisionId, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionId"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         return evaluateById(model, context, decisionId);
     }
 
     @Override
     public DMNResult evaluateByName( DMNModel model, DMNContext context, String... decisionNames ) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
+        Objects.requireNonNull(decisionNames, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionNames"));
         final DMNResultImpl result = createResult( model, context );
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
@@ -163,6 +181,9 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateById( DMNModel model, DMNContext context, String... decisionIds ) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
+        Objects.requireNonNull(decisionIds, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionIds"));
         final DMNResultImpl result = createResult( model, context );
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
@@ -219,6 +240,9 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
+        Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
+        Objects.requireNonNull(decisionServiceName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionServiceName"));
         boolean typeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = new DMNResultImpl(model);
         result.setContext(context.clone());
@@ -619,6 +643,7 @@ public class DMNRuntimeImpl
     }
 
     public boolean performRuntimeTypeCheck(DMNModel model) {
+        Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         return overrideRuntimeTypeCheck || ((DMNModelImpl) model).isRuntimeTypeCheck();
     }
 

@@ -1,6 +1,7 @@
 package org.kie.dmn.api.core;
 
 public enum DMNMessageType {
+    KIE_API("Error calling Kie DMN API interface", Tag.RUNTIME, Tag.DMN_CORE),
     UNSUPPORTED_ELEMENT( "The referenced element is not supported by the implementation", Tag.COMPILATION, Tag.DMN_CORE ),
     REQ_NOT_FOUND( "The referenced node was not found", Tag.COMPILATION, Tag.DMN_CORE ),
     IMPORT_NOT_FOUND("The referenced import was not found", Tag.COMPILATION, Tag.DMN_CORE),
