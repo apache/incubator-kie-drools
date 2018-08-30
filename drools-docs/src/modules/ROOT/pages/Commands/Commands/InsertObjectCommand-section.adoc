@@ -1,0 +1,88 @@
+
+= InsertObjectCommand
+
+
+
+* Description: Insert an object in the knowledge session.
+* Attributes
++
+
+.InsertObjectCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|object
+|The object to be inserted
+|true
+
+|outIdentifier
+|Id to identify the FactHandle created in the object
+              insertion and added to the execution results
+|false
+
+|returnObject
+|Boolean to establish if the object must be returned in
+              the execution results. Default value: true
+|false
+
+|entryPoint
+|Entrypoint for the insertion
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+List<Command> cmds = ArrayList<Command>();
+
+Command insertObjectCommand = CommandFactory.newInsert(new Person("john", 25), "john", false, null);
+cmds.add( insertObjectCommand );
+
+BatchExecutionCommand command = CommandFactory.createBatchExecution(cmds, "ksession1" );
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <insert out-identifier="john" entry-point="my stream" return-object="false">
+    <org.drools.compiler.test.Person>
+      <name>john</name>
+      <age>25</age>
+    </org.drools.compiler.test.Person>
+  </insert>
+</batch-execution>
+----
++
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"insert":{"entry-point":"my stream", "out-identifier":"john","return-object":false,"object":{"org.drools.compiler.test.Person":{"name":"john","age":25}}}}}}
+----
++
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <insert out-identifier="john" entry-point="my stream" >
+        <object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <age>25</age>
+            <name>john</name>
+        </object>
+    </insert>
+</batch-execution>
+----
++
+

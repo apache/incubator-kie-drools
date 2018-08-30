@@ -1,0 +1,75 @@
+
+= FireAllRulesCommand
+
+
+
+* Description: Allow execution of the rules activations created.
+* Attributes
++
+
+.FireAllRulesCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|max
+|The max number of rules activations to be executed.
+              default is -1 and will not put any restriction on
+              execution
+|false
+
+|outIdentifier
+|Add the number of rules activations fired on the
+              execution results
+|false
+
+|agendaFilter
+|Allow the rules execution using an Agenda Filter
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
+fireAllRulesCommand.setMax(10);
+fireAllRulesCommand.setOutIdentifier("firedActivations");
+command.getCommands().add(fireAllRulesCommand);
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <fire-all-rules max="10" out-identifier="firedActivations"/>
+</batch-execution>
+----
++
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"fire-all-rules":{"max":10,"out-identifier":"firedActivations"}}}}
+----
++
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+   <fire-all-rules out-identifier="firedActivations" max="10"/>
+</batch-execution>
+----
++
+

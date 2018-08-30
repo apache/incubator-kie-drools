@@ -1,0 +1,99 @@
+
+= InsertElementsCommand
+
+
+
+* Description: Used to insert a list of objects.
+* Attributes
++
+
+.InsertElementsCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|objects
+|The list of objects to be inserted on the knowledge
+              session
+|true
+
+|outIdentifier
+|Id to identify the FactHandle created in the object
+              insertion and added to the execution results
+|false
+
+|returnObject
+|Boolean to establish if the object must be returned in
+              the execution results. Default value: true
+|false
+
+|entryPoint
+|Entrypoint for the insertion
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+List<Command> cmds = ArrayList<Command>();
+
+List<Object> objects = new ArrayList<Object>();
+objects.add(new Person("john", 25));
+objects.add(new Person("sarah", 35));
+
+Command insertElementsCommand = CommandFactory.newInsertElements( objects );
+cmds.add( insertElementsCommand );
+
+BatchExecutionCommand command = CommandFactory.createBatchExecution(cmds, "ksession1" );
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <insert-elements>
+    <org.drools.compiler.test.Person>
+      <name>john</name>
+      <age>25</age>
+    </org.drools.compiler.test.Person>
+    <org.drools.compiler.test.Person>
+      <name>sarah</name>
+      <age>35</age>
+    </org.drools.compiler.test.Person>
+  </insert-elements>
+</batch-execution>
+----
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"insert-elements":{"objects":[{"containedObject":{"@class":"org.drools.compiler.test.Person","name":"john","age":25}},{"containedObject":{"@class":"Person","name":"sarah","age":35}}]}}}}
+----
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <insert-elements return-objects="true">
+        <list>
+            <element xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <age>25</age>
+                <name>john</name>
+            </element>
+            <element xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <age>35</age>
+                <name>sarah</name>
+            </element>
+        <list>
+    </insert-elements>
+</batch-execution>
+----
