@@ -18,15 +18,6 @@
 @declare{'inputBinding'}
 
 
- rule "Bind @{fieldName} Input from Fact @{factType}"
- @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
- dialect "mvel"
- when
-    @{factType}( $val : @{fieldName} )
- then
-    drools.getEntryPoint("in_@{compactUpperCase(fieldName)}").insert( $val );
- end
-
 @end{}
 
 

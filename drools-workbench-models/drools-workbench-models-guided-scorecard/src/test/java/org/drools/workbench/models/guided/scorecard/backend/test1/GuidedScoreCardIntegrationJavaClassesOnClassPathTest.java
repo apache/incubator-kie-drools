@@ -53,7 +53,7 @@ public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
 
     @Test
     public void testCompletedScoreCardCompilation() throws Exception {
-        String xml1 = Helper.createGuidedScoreCardXML();
+        String xml1 = Helper.createGuidedScoreCardXML(false);
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -75,7 +75,7 @@ public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
     @Test
     public void testIncrementalCompilation() throws Exception {
         String xml1_1 = Helper.createEmptyGuidedScoreCardXML();
-        String xml1_2 = Helper.createGuidedScoreCardXML();
+        String xml1_2 = Helper.createGuidedScoreCardXML(false);
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();

@@ -26,6 +26,9 @@ import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Sprinkler;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.ReteDumper;
+import org.drools.core.reteoo.TerminalNode;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
@@ -39,7 +42,11 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SegmentMemoryPrototypeTest {
     private static final String DRL =
@@ -204,5 +211,52 @@ public class SegmentMemoryPrototypeTest {
                 ksession.dispose();
             }
         }
+    }
+
+    @Test
+    public void testSessionReset() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $i : Integer()\n" +
+                "    String( length == $i )\n" +
+                "    Long()\n" +
+                "then end\n" +
+                "rule R2 when\n" +
+                "    $i : Integer()\n" +
+                "    String( length == $i )\n" +
+                "    Boolean()\n" +
+                "then end";
+
+        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+
+        List<TerminalNode> terminalNodes = ReteDumper.collectRete( kbase ).stream()
+                .filter( TerminalNode.class::isInstance )
+                .map( TerminalNode.class::cast ).collect( toList() );
+
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
+
+        ksession.insert( 4 );
+        ksession.insert( 4L );
+        ksession.insert( true );
+        ksession.insert( "test" );
+        assertEquals( 2, ksession.fireAllRules() );
+
+
+        assertTrue( terminalNodes.stream().map( ksession::getNodeMemory ).map( PathMemory.class::cast )
+                .allMatch( PathMemory::isRuleLinked ) );
+
+        ksession.reset();
+
+        assertFalse( terminalNodes.stream().map( ksession::getNodeMemory ).map( PathMemory.class::cast )
+                .anyMatch( PathMemory::isRuleLinked ) );
+
+        ksession.insert( 4 );
+        ksession.insert( 4L );
+        ksession.insert( "test" );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

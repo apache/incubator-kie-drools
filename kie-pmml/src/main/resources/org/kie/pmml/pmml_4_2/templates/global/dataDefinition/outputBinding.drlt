@@ -17,17 +17,6 @@
 
 @declare{'outputBinding'}
 
-
- rule "Bind @{fieldName} Output into Fact @{factType}"
- @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
- dialect "mvel"
- when
-    @{compactUpperCase(fieldName)}( $val : value)
-    $x : @{factType}( @{fieldName} != $val )
- then
-    modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
- end
-
 @end{}
 
 

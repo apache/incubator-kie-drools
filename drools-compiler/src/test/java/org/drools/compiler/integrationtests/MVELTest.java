@@ -1024,6 +1024,30 @@ public class MVELTest extends CommonTestMethodBase {
         assertEquals( 10, h.getAge() );
     }
 
+    @Test
+    public void testModifyObjectWithMutableHashCodeInEqualityMode2() {
+        // DROOLS-2828
+        String str = "package com.sample\n" +
+                "import " + Human.class.getCanonicalName() + ";\n" +
+                "rule \"Step A\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    e : Human()\n" +
+                "    not String()\n" +
+                "then\t\n" +
+                "    insert(\"test\");\n" +
+                "    modify( e ) {\n" +
+                "        setAge( 10 );\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
+        Human h = new Human(2);
+        ksession.insert(h);
+        ksession.fireAllRules();
+        assertEquals( 10, h.getAge() );
+    }
+
     public static class Human {
 
         private int age;
