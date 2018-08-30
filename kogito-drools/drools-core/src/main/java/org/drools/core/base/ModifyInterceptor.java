@@ -96,7 +96,7 @@ public class ModifyInterceptor
         if (isEqualityMode) {
             Tuple tuple = knowledgeHelper.getTuple();
             InternalFactHandle modifiedFh = tuple.getFactHandle();
-            while (modifiedFh.getObject() != value) {
+            while (modifiedFh == null || modifiedFh.getObject() != value) {
                 tuple = tuple.getParent();
                 modifiedFh = tuple.getFactHandle();
             }
