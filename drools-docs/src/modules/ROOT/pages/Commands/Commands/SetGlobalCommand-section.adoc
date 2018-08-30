@@ -1,0 +1,86 @@
+
+= SetGlobalCommand
+
+
+
+* Description: Allows you to set a global.
+* Attributes
++
+
+.SetGlobalCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|identifier
+|The identifier of the global defined in the knowledge
+              base
+|true
+
+|object
+|The object to be set into the global
+|false
+
+|out
+|A boolean to add, or not, the set global result into the
+              execution results
+|false
+
+|outIdentifier
+|The identifier of the global execution result
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+SetGlobalCommand setGlobalCommand = new SetGlobalCommand();
+setGlobalCommand.setIdentifier("helper");
+setGlobalCommand.setObject(new Person("kyle", 30));
+setGlobalCommand.setOut(true);
+setGlobalCommand.setOutIdentifier("output");
+command.getCommands().add(setGlobalCommand);
+----
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <set-global identifier="helper" out-identifier="output">
+    <org.drools.compiler.test.Person>
+      <name>kyle</name>
+      <age>30</age>
+    </org.drools.compiler.test.Person>
+  </set-global>
+</batch-execution>
+----
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"set-global":{"identifier":"helper","out-identifier":"output","object":{"org.drools.compiler.test.Person":{"name":"kyle","age":30}}}}}}
+----
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <set-global out="true" out-identifier="output" identifier="helper">
+        <object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <age>30</age>
+            <name>kyle</name>
+        </object>
+    </set-global>
+</batch-execution>
+----
+

@@ -1,0 +1,70 @@
+
+= GetGlobalCommand
+
+
+
+* Description: Allows you to get a global previously defined.
+* Attributes
++
+
+.GetGlobalCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|identifier
+|The identifier of the global defined in the knowledge
+              base
+|true
+
+|outIdentifier
+|The identifier to be used in the execution
+              results
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+GetGlobalCommand getGlobalCommand = new GetGlobalCommand();
+getGlobalCommand.setIdentifier("helper");
+getGlobalCommand.setOutIdentifier("helperOutput");
+command.getCommands().add(getGlobalCommand);
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <get-global identifier="helper" out-identifier="helperOutput"/>
+</batch-execution>
+----
++
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"get-global":{"identifier":"helper","out-identifier":"helperOutput"}}}}
+----
++
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <get-global out-identifier="helperOutput" identifier="helper"/>
+</batch-execution>
+----
++
+

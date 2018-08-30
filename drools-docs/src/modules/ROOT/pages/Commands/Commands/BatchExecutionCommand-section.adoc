@@ -1,0 +1,81 @@
+
+= BatchExecutionCommand
+
+
+
+* Description: The command that contains a list of commands, which will be sent and executed.
+* Attributes
++
+
+.BatchExecutionCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|lookup
+|Sets the knowledge session id on which the commands are
+              going to be executed
+|true
+
+|commands
+|List of commands to be executed
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
+FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
+command.getCommands().add(insertObjectCommand);
+command.getCommands().add(fireAllRulesCommand);
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <insert>
+    <org.drools.compiler.test.Person>
+      <name>john</name>
+      <age>25</age>
+    </org.drools.compiler.test.Person>
+  </insert>
+  <fire-all-rules/>
+</batch-execution>
+----
++
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":[{"insert":{"object":{"org.drools.compiler.test.Person":{"name":"john","age":25}}}},{"fire-all-rules":""}]}}
+----
++
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <insert>
+        <object xsi:type="person" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <age>25</age>
+            <name>john</name>
+        </object>
+    </insert>
+    <fire-all-rules max="-1"/>
+</batch-execution>
+----
++
+

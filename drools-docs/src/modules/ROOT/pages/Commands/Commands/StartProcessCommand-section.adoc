@@ -1,0 +1,70 @@
+
+= StartProcessCommand
+
+
+
+* Description: Allows you to start a process using the ID. Also you can pass parameters and initial data to be inserted.
+* Attributes
++
+
+.StartProcessCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|processId
+|The ID of the process to be started
+|true
+
+|parameters
+|A Map<String, Object> to pass parameters in the
+              process startup
+|false
+
+|data
+|A list of objects to be inserted in the knowledge session
+              before the process startup
+|false
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+StartProcessCommand startProcessCommand = new StartProcessCommand();
+startProcessCommand.setProcessId("org.drools.task.processOne");
+command.getCommands().add(startProcessCommand);
+----
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <start-process processId="org.drools.task.processOne"/>
+</batch-execution>
+----
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"start-process":{"process-id":"org.drools.task.processOne"}}}}
+----
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <start-process processId="org.drools.task.processOne">
+        <parameter/>
+    </start-process>
+</batch-execution>
+----

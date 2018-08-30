@@ -1,0 +1,63 @@
+
+= AbortWorkItemCommand
+
+
+
+* Description: Allows you abort an WorkItem. The same as session.getWorkItemManager().abortWorkItem(workItemId)
+* Attributes
++
+
+.AbortWorkItemCommand attributes
+[cols="1,1,1", options="header"]
+|===
+| Name
+| Description
+| required
+
+|workItemId
+|The ID of the WorkItem to be completed
+|true
+|===
+* Command creation
++
+
+[source,java]
+----
+BatchExecutionCommand command = new BatchExecutionCommand();
+command.setLookup("ksession1");
+AbortWorkItemCommand abortWorkItemCommand = new AbortWorkItemCommand();
+abortWorkItemCommand.setWorkItemId(1001);
+command.getCommands().add(abortWorkItemCommand);
+----
++
+* XML output
+** XStream
++
+
+[source,xml]
+----
+<batch-execution lookup="ksession1">
+  <abort-work-item id="1001"/>
+</batch-execution>
+----
++
+** JSON
++
+
+[source]
+----
+{"batch-execution":{"lookup":"ksession1","commands":{"abort-work-item":{"id":1001}}}}
+----
++
+** JAXB
++
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch-execution lookup="ksession1">
+    <abort-work-item id="1001"/>
+</batch-execution>
+----
++
+

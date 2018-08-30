@@ -1,0 +1,99 @@
+
+[[_commandsapisection]]
+= API
+
+
+XML marshalling/unmarshalling of the Drools Commands requires the use of special classes, which are going to be described in the following sections.
+
+The following urls show sample script examples for jaxb, xstream and json marshalling using:
+
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/jaxb.mvt?r=HEAD
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/jaxb.mvt?r=HEAD
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/xstream.mvt?r=HEAD
+
+
+== XStream
+
+
+To use the XStream commands marshaller you need to use the DroolsHelperProvider to obtain an XStream instance.
+We need to use this because it has the commands converters registered.
+
+* Marshalling
++
+[source,java]
+----
+BatchExecutionHelperProviderImpl.newXStreamMarshaller().toXML(command);
+----
+
+* Unmarshalling
++
+[source,java]
+----
+BatchExecutionHelperProviderImpl.newXStreamMarshaller().fromXML(xml)
+----
+
+== JSON
+
+
+JSON API to marshalling/unmarshalling is similar to XStream API:
+
+* Marshalling
++
+[source,java]
+----
+BatchExecutionHelper.newJSonMarshaller().toXML(command);
+----
+
+* Unmarshalling
++
+[source,java]
+---- 
+BatchExecutionHelper.newJSonMarshaller().fromXML(xml)
+----
+
+== JAXB
+
+
+There are two options for using JAXB, you can define your model in an XSD file or you can have a POJO model.
+In both cases you have to declare your model inside JAXBContext, and in order to do that you need to use Drools Helper classes.
+Once you have the JAXBContext you need to create the Unmarshaller/Marshaller as needed.
+
+=== Using an XSD file to define the model
+
+
+With your model defined in a XSD file you need to have a KnowledgeBase that has your XSD model added as a resource.
+
+To do this, the XSD file must be added as a XSD ResourceType into the KnowledgeBuilder.
+Finally you can create the JAXBContext using the KnowledgeBase created with the KnowledgeBuilder  
+
+[source,java]
+----
+Options xjcOpts = new Options();
+xjcOpts.setSchemaLanguage(Language.XMLSCHEMA);
+JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd" );
+kbuilder.add(ResourceFactory.newClassPathResource("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+
+List<String> classesName = new ArrayList<String>();
+classesName.add("org.drools.compiler.test.Person");
+   
+JAXBContext jaxbContext = KnowledgeBuilderHelper.newJAXBContext(classesName.toArray(new String[classesName.size()]), kbase);
+----
+
+=== Using a POJO model
+
+
+In this case you need to use DroolsJaxbHelperProviderImpl to create the JAXBContext.
+This class has two parameters:
+
+. classNames: A List with the canonical name of the classes that you want to use in the marshalling/unmarshalling process.
+. properties: JAXB custom properties
+
+
+[source,java]
+----
+List<String> classNames = new ArrayList<String>();
+classNames.add("org.drools.compiler.test.Person");
+JAXBContext jaxbContext = DroolsJaxbHelperProviderImpl.createDroolsJaxbContext(classNames, null);
+Marshaller marshaller = jaxbContext.createMarshaller();
+----
