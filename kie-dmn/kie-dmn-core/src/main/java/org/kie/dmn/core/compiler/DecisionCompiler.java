@@ -83,7 +83,16 @@ public class DecisionCompiler implements DRGElementCompiler {
                         }
                     }
                 } else if( dep instanceof InputDataNode ) {
-                    ctx.setVariable( dep.getName(), ((InputDataNode) dep).getType() );
+                    if (dep.getModelNamespace().equals(model.getNamespace())) {
+                        ctx.setVariable(dep.getName(), ((InputDataNode) dep).getType());
+                    } else {
+                        // then the InputData dependency is an imported InputData.
+                        Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
+                        if (alias.isPresent()) {
+                            CompositeTypeImpl importedComposite = (CompositeTypeImpl) importedTypes.computeIfAbsent(alias.get(), a -> new CompositeTypeImpl());
+                            importedComposite.addField(dep.getName(), ((InputDataNode) dep).getType());
+                        }
+                    }
                 } else if( dep instanceof BusinessKnowledgeModelNode ) {
                     if (dep.getModelNamespace().equals(model.getNamespace())) {
                         // might need to create a DMNType for "functions" and replace the type here by that
