@@ -32,7 +32,7 @@ public class AbstractNewKieContainerCommand {
         } else {
             kieContainer = context.lookup(KieContainer.class);
             if (kieContainer == null) {
-                throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
+                throw new RuntimeException("ReleaseId was not specified, nor was an existing KieContainer assigned to the Registry");
             }
         }
         return kieContainer;
