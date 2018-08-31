@@ -41,11 +41,7 @@ public class ArrayElements {
     }
 
     public ArrayElements(final Object[] elements) {
-        if ( elements != null ) {
-            this.elements = elements;
-        } else {
-            this.elements = EMPTY_ELEMENTS;
-        }
+        setElements( elements );
     }
 
     public Object[] getElements() {
@@ -53,7 +49,7 @@ public class ArrayElements {
     }
 
     public void setElements(Object[] elements) {
-        this.elements = elements;
+        this.elements = elements != null ? elements : EMPTY_ELEMENTS;
     }
 
     @Override
