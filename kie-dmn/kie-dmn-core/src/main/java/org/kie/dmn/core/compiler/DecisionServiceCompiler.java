@@ -31,19 +31,27 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DecisionServiceCompiler {
+public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DecisionServiceCompiler.class);
 
-    public void compileNode(DecisionService drge, DMNCompilerImpl compiler, DMNModelImpl model) {
-        DecisionService ds = (DecisionService) drge;
+    @Override
+    public boolean accept(DRGElement de) {
+        return de instanceof DecisionService;
+    }
+
+    /** backport of DMN v1.1
+     * 
+     */
+    public void compileNode(DecisionService ds, DMNCompilerImpl compiler, DMNModelImpl model) {
         DMNType type = null;
         if (ds.getVariable() == null) { // even for the v1.1 backport, variable creation is taken care in DMNCompiler.
-            DMNCompilerHelper.reportMissingVariable(model, drge, ds, Msg.MISSING_VARIABLE_FOR_DS);
+            DMNCompilerHelper.reportMissingVariable(model, ds, ds, Msg.MISSING_VARIABLE_FOR_DS);
             return;
         }
         DMNCompilerHelper.checkVariableName(model, ds, ds.getName());
@@ -57,10 +65,18 @@ public class DecisionServiceCompiler {
         model.addDecisionService(bkmn);
     }
 
+    @Override
+    public void compileNode(DRGElement drge, DMNCompilerImpl compiler, DMNModelImpl model) {
+        DecisionService ds = (DecisionService) drge;
+        compileNode(ds, compiler, model);
+    }
+
+    @Override
     public boolean accept(DMNNode node) {
         return node instanceof DecisionServiceNodeImpl;
     }
 
+    @Override
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
 
