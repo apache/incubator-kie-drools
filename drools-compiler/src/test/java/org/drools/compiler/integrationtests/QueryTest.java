@@ -1299,4 +1299,120 @@ public class QueryTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testOpenQueryNoParams() throws Exception {
+        // RHDM-717
+        String str = "";
+        str += "package org.drools.compiler.test  \n";
+        str += "import org.drools.compiler.Cheese \n";
+        str += "query cheeses \n";
+        str += "    stilton : Cheese(type == 'stilton') \n";
+        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
+        str += "end\n";
+
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
+
+        Cheese stilton1 = new Cheese( "stilton", 1 );
+        Cheese cheddar1 = new Cheese( "cheddar", 1 );
+        Cheese stilton2 = new Cheese( "stilton", 2 );
+        Cheese cheddar2 = new Cheese( "cheddar", 2 );
+        Cheese stilton3 = new Cheese( "stilton", 3 );
+        Cheese cheddar3 = new Cheese( "cheddar", 3 );
+
+        FactHandle s1Fh = ksession.insert( stilton1 );
+        ksession.insert( stilton2 );
+        ksession.insert( stilton3 );
+        ksession.insert( cheddar1 );
+        ksession.insert( cheddar2 );
+        FactHandle c3Fh = ksession.insert( cheddar3 );
+
+        final List<Object[]> updated = new ArrayList<Object[]>();
+        final List<Object[]> removed = new ArrayList<Object[]>();
+        final List<Object[]> added = new ArrayList<Object[]>();
+
+        ViewChangedEventListener listener = new ViewChangedEventListener() {
+            public void rowUpdated( Row row ) {
+                Object[] array = new Object[2];
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                updated.add( array );
+            }
+
+            public void rowDeleted( Row row ) {
+                Object[] array = new Object[2];
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                removed.add( array );
+            }
+
+            public void rowInserted( Row row ) {
+                Object[] array = new Object[2];
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                added.add( array );
+            }
+        };
+
+        // Open the LiveQuery
+        LiveQuery query = ksession.openLiveQuery( "cheeses",null, listener );
+
+        ksession.fireAllRules();
+
+        // Assert that on opening we have three rows added
+        assertEquals( 3, added.size() );
+        assertEquals( 0, removed.size() );
+        assertEquals( 0, updated.size() );
+
+        // Do an update that causes a match to become untrue, thus triggering a removed
+        cheddar3.setPrice( 4 );
+        ksession.update( c3Fh, cheddar3 );
+        ksession.fireAllRules();
+
+        assertEquals( 3, added.size() );
+        assertEquals( 1, removed.size() );
+        assertEquals( 0, updated.size() );
+
+        // Now make that partial true again, and thus another added
+        cheddar3.setPrice( 3 );
+        ksession.update( c3Fh, cheddar3 );
+        ksession.fireAllRules();
+
+        assertEquals( 4, added.size() );
+        assertEquals( 1, removed.size() );
+        assertEquals( 0, updated.size() );
+
+        // check a standard update
+        cheddar3.setOldPrice( 0 );
+        ksession.update( c3Fh, cheddar3 );
+        ksession.fireAllRules();
+
+        assertEquals( 4, added.size() );
+        assertEquals( 1, removed.size() );
+        assertEquals( 1, updated.size() );
+
+        // Check a standard retract
+        ksession.retract( s1Fh );
+        ksession.fireAllRules();
+
+        assertEquals( 4, added.size() );
+        assertEquals( 2, removed.size() );
+        assertEquals( 1, updated.size() );
+
+        // Close the query, we should get removed events for each row
+        query.close();
+
+        ksession.fireAllRules();
+
+        assertEquals( 4, added.size() );
+        assertEquals( 4, removed.size() );
+        assertEquals( 1, updated.size() );
+
+        // Check that updates no longer have any impact.
+        ksession.update( c3Fh, cheddar3 );
+        assertEquals( 4, added.size() );
+        assertEquals( 4, removed.size() );
+        assertEquals( 1, updated.size() );
+    }
 }
