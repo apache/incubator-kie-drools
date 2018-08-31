@@ -2235,7 +2235,7 @@ public class DMNRuntimeTest {
 
     @Test
     public void testDMNv1_2_ch11Modified() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DMNv1_2/ch11MODIFIED.dmn", this.getClass());
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_2/ch11MODIFIED.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f81f47", "DMN Specification Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

@@ -33,6 +33,7 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.DMNRuntimeTest;
+import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.Definitions;
 
@@ -328,7 +329,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testDMNv1_2_ch11Modified() {
         // DROOLS-2832
-        List<DMNMessage> validate = validator.validate(getReader("DMNv1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class),
+        List<DMNMessage> validate = validator.validate(getReader("v1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class),
                                                        // DROOLS-2893: VALIDATE_SCHEMA, 
                                                        VALIDATE_MODEL,
                                                        VALIDATE_COMPILATION);
@@ -346,5 +347,26 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF)));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
+    }
+
+    @Test
+    public void testDecisionServiceCompiler20180830() {
+        // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
+        List<DMNMessage> validate = validator.validate(getReader("DecisionServiceABC.dmn", DMNDecisionServicesTest.class),
+                                                       VALIDATE_MODEL,
+                                                       VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void testDecisionServiceCompiler20180830DMNV12() {
+        // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
+        List<DMNMessage> validate = validator.validate(getReader("DecisionServiceABC_DMN12.dmn", org.kie.dmn.core.v1_2.DMNDecisionServicesTest.class),
+                                                       VALIDATE_MODEL,
+                                                       VALIDATE_COMPILATION);
+
+        // DMNMessage{ severity=WARN, type=MISSING_TYPE_REF, message='Variable named 'Decision Service ABC' is missing its type reference on node 'Decision Service ABC'', sourceId='_63d05cff-8e3b-4dad-a355-fd88f8bcd613', exception='', feelEvent=''}
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF) && p.getSourceId().equals("_63d05cff-8e3b-4dad-a355-fd88f8bcd613")));
     }
 }

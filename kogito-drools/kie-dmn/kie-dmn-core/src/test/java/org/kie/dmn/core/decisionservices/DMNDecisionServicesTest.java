@@ -510,4 +510,44 @@ public class DMNDecisionServicesTest {
         assertThat(result.getAll(), not(hasEntry(is("L2 Invoking the L1 import"), anything()))); // Decision Service will encapsulate this decision
         assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed"));
     }
+
+    @Test
+    public void testDecisionServiceCompiler20180830() {
+        // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServiceABC.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        testDecisionServiceCompiler20180830_testEvaluateDS(runtime, dmnModel);
+        testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
+    }
+
+    public static void testDecisionServiceCompiler20180830_testEvaluateAll(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("ABC"), is("abc"));
+        assertThat(result.get("Invoking Decision"), is("abc"));
+    }
+
+    public static void testDecisionServiceCompiler20180830_testEvaluateDS(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Decision Service ABC");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        // NOTE: Decision Service "Decision Service ABC" does NOT encapsulate any decision. 
+        assertThat(result.getAll(), not(hasEntry(is("Invoking Decision"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(result.get("ABC"), is("abc"));
+    }
+
 }

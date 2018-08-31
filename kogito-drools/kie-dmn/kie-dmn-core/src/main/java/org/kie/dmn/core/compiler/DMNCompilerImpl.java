@@ -102,6 +102,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         drgCompilers.add( new InputDataCompiler() );
         drgCompilers.add( new BusinessKnowledgeModelCompiler() );
         drgCompilers.add( new DecisionCompiler() );
+        drgCompilers.add( new DecisionServiceCompiler() );
         drgCompilers.add( new KnowledgeSourceCompiler() ); // keep last as it's a void compiler
     }
 
