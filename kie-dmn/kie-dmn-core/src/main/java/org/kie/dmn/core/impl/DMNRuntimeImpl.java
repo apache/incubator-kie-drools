@@ -644,14 +644,14 @@ public class DMNRuntimeImpl
 
     private static String getDependencyIdentifier(DMNNode callerNode, DMNNode node) {
         if (node.getModelNamespace().equals(callerNode.getModelNamespace())) {
-            return node.getName() != null ? node.getName() : node.getId();
+            return getIdentifier(node);
         } else {
             Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
             String prefix = "{" + node.getModelNamespace() + "}";
             if (importAlias.isPresent()) {
                 prefix = importAlias.get();
             }
-            return prefix + "." + (node.getName() != null ? node.getName() : node.getId());
+            return prefix + "." + getIdentifier(node);
         }
 
     }
