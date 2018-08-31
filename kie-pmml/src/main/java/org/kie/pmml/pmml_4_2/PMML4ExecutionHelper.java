@@ -17,6 +17,7 @@ package org.kie.pmml.pmml_4_2;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public class PMML4ExecutionHelper {
     private DataSource<PMML4Data> pmmlData;
     private DataSource<SegmentExecution> childModelSegments;
     private DataSource<? extends AbstractPMMLData> miningModelPojo;
+    private Map<String, DataSource<? extends Object>> externalDataSources;
     private PMML4Result baseResultHolder;
     private boolean includeMiningDataSources;
     private boolean used;
@@ -110,6 +112,7 @@ public class PMML4ExecutionHelper {
                                                               boolean includeMiningDataSources) {
             return new PMML4ExecutionHelper(modelName, resource, kieBaseConf, includeMiningDataSources);
         }
+
     }
 
     private PMML4ExecutionHelper(String modelName, KieBase kbase, boolean includeMiningDataSources) {
@@ -136,10 +139,11 @@ public class PMML4ExecutionHelper {
         this.modelName = modelName;
         this.possiblePackageNames = new ArrayList<>();
         this.includeMiningDataSources = includeMiningDataSources;
+        this.externalDataSources = new HashMap<>();
         initRuleUnitExecutor();
     }
 
-    protected void initRuleUnitExecutor() throws IllegalStateException {
+    protected synchronized void initRuleUnitExecutor() throws IllegalStateException {
         if (kbase == null) {
             throw new IllegalStateException("Unable to create executor: KieBase is null or invalid");
         }
@@ -158,6 +162,15 @@ public class PMML4ExecutionHelper {
             childModelSegments = executor.newDataSource("childModelSegments");
             miningModelPojo = executor.newDataSource("miningModelPojo");
             startingRuleName = "Start Mining - " + modelName;
+        }
+        if (externalDataSources != null && !externalDataSources.isEmpty()) {
+            Map<String,DataSource<? extends Object>> tmpMap = new HashMap<>();
+            for (String key: externalDataSources.keySet()) {
+                DataSource<? extends Object> ds = executor.newDataSource(key);
+                tmpMap.put(key, ds);
+            }
+            externalDataSources.clear();
+            externalDataSources.putAll(tmpMap);
         }
 
         ruleUnitClass = getStartingRuleUnit(startingRuleName);
@@ -244,16 +257,8 @@ public class PMML4ExecutionHelper {
         initRuleUnitExecutor();
     }
 
-    /**
-     * Submits a request to the rule unit executor and the model gets applied
-     * NOTE: The results of previous submissions will be overwritten
-     * @param request
-     * @return
-     * @throws InvalidParameterException
-     * @throws IllegalStateException
-     */
-    public synchronized PMML4Result submitRequest(PMMLRequestData request)
-            throws InvalidParameterException, IllegalStateException {
+    public synchronized PMML4Result submitRequest(PMMLRequestData request, Map<String,List<Object>> externalData) 
+           throws InvalidParameterException, IllegalStateException {
         if (request == null) {
             throw new InvalidParameterException("PMML model cannot be applied to a null request");
         }
@@ -274,6 +279,14 @@ public class PMML4ExecutionHelper {
             requestData.insert(request);
             baseResultHolder = new PMML4Result(request.getCorrelationId());
             resultData.insert(baseResultHolder);
+            if (externalData != null && !externalData.isEmpty()) {
+                externalData.entrySet().forEach(entry -> {
+                    DataSource ds = externalDataSources.get(entry.getKey());
+                    if (ds != null) {
+                        entry.getValue().forEach(value -> { ds.insert(value); });
+                    }
+                });
+            }
             executor.run(ruleUnitClass);
         } finally {
             if (logger != null) {
@@ -282,6 +295,20 @@ public class PMML4ExecutionHelper {
         }
         used = true;
         return baseResultHolder;
+
+    }
+
+    /**
+     * Submits a request to the rule unit executor and the model gets applied
+     * NOTE: The results of previous submissions will be overwritten
+     * @param request
+     * @return
+     * @throws InvalidParameterException
+     * @throws IllegalStateException
+     */
+    public synchronized PMML4Result submitRequest(PMMLRequestData request)
+            throws InvalidParameterException, IllegalStateException {
+        return submitRequest(request,null);
     }
 
     protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule) throws IllegalStateException {
@@ -329,5 +356,11 @@ public class PMML4ExecutionHelper {
 
     public void turnOffFileLogger() {
         this.loggerFileName = null;
+    }
+
+    public synchronized void addExternalDataSource(String dataSourceName) {
+        if (!externalDataSources.containsKey(dataSourceName)) {
+            externalDataSources.put(dataSourceName, null);
+        }
     }
 }
