@@ -530,6 +530,10 @@ public class DMNDecisionServicesTest {
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("ABC"), is("abc"));
+        assertThat(result.get("Invoking Decision"), is("abc"));
     }
 
     public static void testDecisionServiceCompiler20180830_testEvaluateDS(DMNRuntime runtime, DMNModel dmnModel) {
@@ -539,6 +543,11 @@ public class DMNDecisionServicesTest {
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        // NOTE: Decision Service "Decision Service ABC" does NOT encapsulate any decision. 
+        assertThat(result.getAll(), not(hasEntry(is("Invoking Decision"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(result.get("ABC"), is("abc"));
     }
 
 }
