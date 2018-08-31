@@ -345,6 +345,10 @@ public class DrlxParseUtil {
 
     public static Optional<Expression> findRootNodeViaScope(Expression expr) {
 
+        if(expr.isArrayAccessExpr()) {
+            return findRootNodeViaScope(expr.asArrayAccessExpr().getName());
+        }
+
         if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
@@ -365,7 +369,7 @@ public class DrlxParseUtil {
 
             parent.ifPresent(p -> p.remove(root));
 
-            return new RemoveRootNodeResult( rootNode, (Expression) parent.orElse(expr));
+            return new RemoveRootNodeResult( rootNode, expr);
         }
         return new RemoveRootNodeResult(rootNode, expr);
     }
@@ -385,6 +389,14 @@ public class DrlxParseUtil {
 
         public Expression getWithoutRootNode() {
             return withoutRootNode;
+        }
+
+        @Override
+        public String toString() {
+            return "RemoveRootNodeResult{" +
+                    "rootNode=" + rootNode +
+                    ", withoutRootNode=" + withoutRootNode +
+                    '}';
         }
     }
 
