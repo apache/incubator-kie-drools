@@ -29,6 +29,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -361,17 +362,23 @@ public class DrlxParseUtil {
     }
 
     public static RemoveRootNodeResult removeRootNode(Expression expr) {
+        System.out.println("==== RemoveRootNode");
+        System.out.println("expr = " + expr);
         Optional<Expression> rootNode = findRootNodeViaScope(expr);
 
+        RemoveRootNodeResult result;
         if(rootNode.isPresent()) {
             Expression root = rootNode.get();
             Optional<Node> parent = root.getParentNode();
 
             parent.ifPresent(p -> p.remove(root));
 
-            return new RemoveRootNodeResult( rootNode, expr);
+            result = new RemoveRootNodeResult(rootNode, (Expression) parent.orElse(expr));
         }
-        return new RemoveRootNodeResult(rootNode, expr);
+        result = new RemoveRootNodeResult(rootNode, expr);
+        System.out.println("result = " + result);
+        System.out.println("===");
+        return result;
     }
 
     public static class RemoveRootNodeResult {
@@ -397,6 +404,24 @@ public class DrlxParseUtil {
                     "rootNode=" + rootNode +
                     ", withoutRootNode=" + withoutRootNode +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            RemoveRootNodeResult that = (RemoveRootNodeResult) o;
+            return Objects.equals(rootNode, that.rootNode) &&
+                    Objects.equals(withoutRootNode, that.withoutRootNode);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(rootNode, withoutRootNode);
         }
     }
 
@@ -587,7 +612,7 @@ public class DrlxParseUtil {
     /**
      * Mutates expression
      * such that, if it contains a <pre>nameRef</pre>, it is replaced and forcibly casted with <pre>(type) nameRef</pre>.
-     * 
+     *
      * @param expression a mutated expression
      */
     public static void forceCastForName(String nameRef, Type type, Expression expression) {
