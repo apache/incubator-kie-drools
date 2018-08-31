@@ -375,6 +375,12 @@ public class ExpressionTyper {
                 final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), inlineCastExprPart.getType());
                 previous = addCastToExpression(castClass, toMethodCallExpr.getExpression(), false);
 
+            } else if (part instanceof ArrayAccessExpr) {
+                final ArrayAccessExpr inlineCastExprPart = (ArrayAccessExpr) part;
+                TypedExpressionCursor typedExpr = arrayAccessExpr(inlineCastExprPart, typeCursor, previous).get();
+                typeCursor = typedExpr.typeCursor;
+                previous = typedExpr.expressionCursor;
+
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -573,20 +579,20 @@ public class ExpressionTyper {
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
-        Expression getNameExpression = arrayAccessExpr.getName();
-        Optional<TypedExpressionCursor> nameExprOpt = Optional.empty();
-        if(getNameExpression.isNameExpr()) {
-            nameExprOpt = nameExpr(null, getNameExpression.asNameExpr(), false, originalTypeCursor);
+        Expression expression = arrayAccessExpr.getName();
+        Optional<TypedExpressionCursor> expressionCursor = Optional.empty();
+        if(expression.isNameExpr()) {
+            expressionCursor = nameExpr(null, expression.asNameExpr(), false, originalTypeCursor);
 
-        } else if (getNameExpression.isMethodCallExpr()) {
-            nameExprOpt = Optional.of(methodCallExpr(getNameExpression.asMethodCallExpr(), originalTypeCursor, scope));
+        } else if (expression.isMethodCallExpr()) {
+            expressionCursor = Optional.of(new TypedExpressionCursor(expression, originalTypeCursor));
         }
 
-        if (!nameExprOpt.isPresent()) {
+        if (!expressionCursor.isPresent()) {
             return Optional.empty();
         }
 
-        TypedExpressionCursor nameExpr = nameExprOpt.get();
+        TypedExpressionCursor nameExpr = expressionCursor.get();
         java.lang.reflect.Type arrayType = nameExpr.typeCursor;
         Class<?> rawClass = toRawClass( arrayType );
         TypedExpression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get();
