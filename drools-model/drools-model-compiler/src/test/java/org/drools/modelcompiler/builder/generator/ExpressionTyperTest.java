@@ -13,19 +13,18 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.modelcompiler.domain.Overloaded;
+import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.inlinecast.ICA;
 import org.drools.modelcompiler.inlinecast.ICAbstractA;
 import org.drools.modelcompiler.inlinecast.ICAbstractB;
 import org.drools.modelcompiler.inlinecast.ICAbstractC;
 import org.drools.modelcompiler.inlinecast.ICB;
 import org.drools.modelcompiler.inlinecast.ICC;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.drools.modelcompiler.domain.Overloaded;
-import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -137,9 +136,8 @@ public class ExpressionTyperTest {
     }
 
     @Test
-    @Ignore
-    public void arrayAccessExprNotWorking() {
-        final TypedExpression expected = typedResult("$data.values[0]", Integer.class);
+    public void arrayAccessExprDeclaration() {
+        final TypedExpression expected = typedResult("$data.values.get(0)", Object.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
                                                          new DeclarationSpec("$data", Data.class));
         assertEquals(expected, actual);
@@ -177,6 +175,11 @@ public class ExpressionTyperTest {
     private TypedExpression typedResult(String expressionResult, Class<?> classResult) {
         Expression resultExpression = DrlxParseUtil.parseExpression(expressionResult).getExpr();
         return new TypedExpression(resultExpression, classResult);
+    }
+
+    private TypedExpression typedResult(String expressionResult, Class<?> classResult, String fieldName) {
+        Expression resultExpression = DrlxParseUtil.parseExpression(expressionResult).getExpr();
+        return new TypedExpression(resultExpression, classResult, fieldName);
     }
 
     private DeclarationSpec aPersonDecl(String $mark) {

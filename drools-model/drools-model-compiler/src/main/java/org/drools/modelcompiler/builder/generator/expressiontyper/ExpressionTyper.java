@@ -208,6 +208,8 @@ public class ExpressionTyper {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
             if (Map.class.isAssignableFrom( typeCursor )) {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
+            } else if (arrayAccessExpr.getName() instanceof FieldAccessExpr ) {
+                return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
             } else {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
@@ -584,7 +586,7 @@ public class ExpressionTyper {
         if(expression.isNameExpr()) {
             expressionCursor = nameExpr(null, expression.asNameExpr(), false, originalTypeCursor);
 
-        } else if (expression.isMethodCallExpr()) {
+        } else {
             expressionCursor = Optional.of(new TypedExpressionCursor(expression, originalTypeCursor));
         }
 
