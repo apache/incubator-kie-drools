@@ -2,6 +2,8 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -23,6 +25,7 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressio
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -115,6 +118,42 @@ public class ExpressionTyperTest {
 
         public Integer getPrice() {
             return price;
+        }
+    }
+
+    @Test
+    public void arrayAccessExpr() {
+        final TypedExpression expected = typedResult("_this.getItems().get(1)", Object.class);
+        final TypedExpression actual = toTypedExpression("items[1]", Person.class);
+        assertEquals(expected, actual);
+
+        final TypedExpression expected2 = typedResult("_this.getItems().get(((Integer)1))", Object.class);
+        final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
+        assertEquals(expected2, actual2);
+
+        final TypedExpression expected3 = typedResult("_this.get(\"type\")", Object.class);
+        final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
+        assertEquals(expected3, actual3);
+    }
+
+    @Test
+    @Ignore
+    public void arrayAccessExprNotWorking() {
+        final TypedExpression expected = typedResult("$data.values[0]", Integer.class);
+        final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
+                                                         new DeclarationSpec("$data", Data.class));
+        assertEquals(expected, actual);
+    }
+
+    public static class Data {
+        private List<Integer> values;
+
+        public Data(List<Integer> values) {
+            this.values = values;
+        }
+
+        public List<Integer> getValues() {
+            return values;
         }
     }
 
