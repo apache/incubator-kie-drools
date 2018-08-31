@@ -130,7 +130,7 @@ public class DMNModelImpl
     }
 
     public void addInput(InputDataNode idn) {
-        inputs.put( idn.getId(), idn );
+        inputs.put(computeDRGElementModelLocalId(idn), idn);
     }
 
     @Override
