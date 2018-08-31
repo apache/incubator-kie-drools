@@ -21,10 +21,18 @@ import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.scorecards.example.Applicant;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Assert;
@@ -40,13 +48,24 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.DataSource;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ScoreCardConfiguration;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +76,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
 
-@Ignore
+//@Ignore
 public class ExternalObjectModelTest {
     private static ScorecardCompiler scorecardCompiler;
     private static ScoreCardProvider scorecardProvider;
@@ -112,6 +131,7 @@ public class ExternalObjectModelTest {
 
 
     @Test
+    @Ignore(value="Test is duplicate of ScorecardProviderTest.testDrlGenerationWithExternalTypes")
     public void testDRLExecution() throws Exception {
         PMML pmmlDocument = null;
         String drl = null;
@@ -170,140 +190,161 @@ public class ExternalObjectModelTest {
         assertEquals(41.0,applicant.getTotalScore(), 0.0);
     }
 
+
+
     @Test
     public void testWithInitialScore() throws Exception {
-        ScorecardCompiler scorecardCompiler2 = new ScorecardCompiler(EXTERNAL_OBJECT_MODEL);
-        PMML pmmlDocument2 = null;
-        String drl2 = null;
-        if ( scorecardCompiler2.compileFromExcel( PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls" ), "scorecards_initialscore" ) ) {
-            pmmlDocument2 = scorecardCompiler2.getPMMLDocument();
-            assertNotNull(pmmlDocument2);
-            drl2 = scorecardCompiler2.getDRL();
-            PMML4Compiler.dumpModel( pmmlDocument2, System.out );
-        } else {
-            fail("failed to parse scoremodel Excel.");
-        }
-        assertNotNull( pmmlDocument2 );
-        assertTrue( drl2 != null && ! drl2.isEmpty() );
+        Map<String,List<Object>> externalData = new HashMap<>();
+        List<Object> applicantValues = new ArrayList<>();
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources().newByteArrayResource( drl2.getBytes() )
-                           .setSourcePath( "test_scorecard_rules.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        Results res = kieBuilder.buildAll().getResults();
-        System.err.println( res.getMessages() );
-        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
-
-        KieBase kbase = kieContainer.getKieBase();
-        KieSession session = kbase.newKieSession();
+        Resource resource = ResourceFactory.newClassPathResource("scoremodel_externalmodel.xls");
+        assertNotNull(resource);
+        ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
+        scconf.setUsingExternalTypes(true);
+        scconf.setWorksheetName("scorecards_initialscore");
+        resource.setConfiguration(scconf);
+        resource.setResourceType(ResourceType.SCARD);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("Sample Score", resource, null, false);
+        helper.addExternalDataSource("externalBeanApplicant");
+        helper.addPossiblePackageName("org.drools.scorecards.example");
 
         Applicant applicant = new Applicant();
-        applicant.setAge(10);
-        session.insert(applicant);
-        //session.addEventListener(new DebugWorkingMemoryEventListener());
-        session.fireAllRules();
-        session.dispose();
-        //occupation = 0, age = 30, validLicence -1, initialScore=100
-        assertEquals(129.0,applicant.getTotalScore(), 0.0);
+        applicant.setAge(10.0);
+        applicantValues.add(applicant);
+        externalData.put("externalBeanApplicant", applicantValues);
 
-        session = kbase.newKieSession();
+        PMMLRequestData request = new PMMLRequestData("123","Sample Score");
+        PMML4Result resultHolder = helper.submitRequest(request, externalData);
+
+        //occupation = 0, age = 30, validLicence -1, initialScore=100
+        checkResults(129.0,resultHolder);
+
         applicant = new Applicant();
         applicant.setOccupation("SKYDIVER");
         applicant.setAge(0);
-        session.insert( applicant );
-        session.fireAllRules();
-        session.dispose();
-        //occupation = -10, age = +10, validLicense = -1, initialScore=100;
-        assertEquals(99.0, applicant.getTotalScore(), 0.0);
+        applicantValues.clear();
+        applicantValues.add(applicant);
 
-        session = kbase.newKieSession();
+        request = new PMMLRequestData("234", "Sample Score");
+        resultHolder = helper.submitRequest(request, externalData);
+
+        //occupation = -10, age = +10, validLicense = -1, initialScore=100;
+        checkResults(99.0, resultHolder);
+
         applicant = new Applicant();
         applicant.setResidenceState("AP");
         applicant.setOccupation("TEACHER");
         applicant.setAge(20);
         applicant.setValidLicense(true);
-        session.insert( applicant );
-        session.fireAllRules();
-        session.dispose();
+        applicantValues.clear();
+        applicantValues.add(applicant);
+
+        request = new PMMLRequestData("345", "Sample Score");
+        resultHolder = helper.submitRequest(request, externalData);
+
         //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore=100
-        assertEquals(141.0,applicant.getTotalScore(), 0.0);
+        checkResults(141.0, resultHolder);
     }
+
 
     @Test
     public void testWithReasonCodes() throws Exception {
-        ScorecardCompiler scorecardCompiler2 = new ScorecardCompiler(EXTERNAL_OBJECT_MODEL);
-        PMML pmmlDocument2 = null;
-        String drl2 = null;
-        if (scorecardCompiler2.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_externalmodel.xls"), "scorecards_reasoncode") ) {
-            pmmlDocument2 = scorecardCompiler2.getPMMLDocument();
-            PMML4Compiler.dumpModel( pmmlDocument2, System.out );
-            assertNotNull( pmmlDocument2 );
-            drl2 = scorecardCompiler2.getDRL();
-            //System.out.println(drl2);
-        } else {
-            for (ScorecardError error : scorecardCompiler2.getScorecardParseErrors()){
-                System.out.println(error.getErrorLocation()+":"+error.getErrorMessage());
-            }
-            fail("failed to parse scoremodel Excel (scorecards_reasoncode).");
-        }
-        assertNotNull( pmmlDocument2 );
-        assertTrue( drl2 != null && ! drl2.isEmpty() );
+        Map<String,List<Object>> externalData = new HashMap<>();
+        List<Object> applicantValues = new ArrayList<>();
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources().newByteArrayResource( drl2.getBytes() )
-                           .setSourcePath( "test_scorecard_rules.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        Results res = kieBuilder.buildAll().getResults();
-        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
-
-        KieBase kbase = kieContainer.getKieBase();
-        KieSession session = kbase.newKieSession();
-
-        FactType scorecardInternalsType = kbase.getFactType( PMML4Helper.pmmlDefaultPackageName(),"ScoreCard" );
+        Resource resource = ResourceFactory.newClassPathResource("scoremodel_externalmodel.xls");
+        assertNotNull(resource);
+        ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
+        scconf.setUsingExternalTypes(true);
+        scconf.setWorksheetName("scorecards_reasoncode");
+        resource.setConfiguration(scconf);
+        resource.setResourceType(ResourceType.SCARD);
+        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper("Sample Score", resource, null, false);
+        helper.addExternalDataSource("externalBeanApplicant");
+        helper.addPossiblePackageName("org.drools.scorecards.example");
 
         Applicant applicant = new Applicant();
         applicant.setAge(10);
-        session.insert(applicant);
-        //session.addEventListener(new DebugWorkingMemoryEventListener());
-        session.fireAllRules();
+        applicantValues.add(applicant);
+        externalData.put("externalBeanApplicant", applicantValues);
+
+        PMMLRequestData request = new PMMLRequestData("123","Sample Score");
+        PMML4Result resultHolder = helper.submitRequest(request, externalData);
+
         //occupation = 0, age = 30, validLicence -1, initialScore=100
-        assertEquals( 129.0,applicant.getTotalScore(), 0.0 );
-        assertEquals( "VL0099", applicant.getReasonCodes() );
+        checkResults(129.0,"VL0099",Arrays.asList("VL0099", "AGE02"),resultHolder);
 
-        Object scorecardInternals = session.getObjects( new ClassObjectFilter( scorecardInternalsType.getFactClass() ) ).iterator().next();
-        Assert.assertEquals( 129.0, scorecardInternalsType.get( scorecardInternals, "score" ) );
-        Map reasonCodesMap = (Map) scorecardInternalsType.get( scorecardInternals, "ranking" );
-        Assert.assertNotNull( reasonCodesMap );
-        Assert.assertEquals( Arrays.asList( "VL0099", "AGE02" ), new ArrayList( reasonCodesMap.keySet() ) );
-
-
-
-        session.dispose();
-
-        session = kbase.newKieSession();
         applicant = new Applicant();
         applicant.setOccupation("SKYDIVER");
         applicant.setAge(0);
-        session.insert( applicant );
-        session.fireAllRules();
-        session.dispose();
-        //occupation = -10, age = +10, validLicense = -1, initialScore=100;
-        assertEquals(99.0, applicant.getTotalScore(), 0.0);
+        applicantValues.clear();
+        applicantValues.add(applicant);
+        request = new PMMLRequestData("234","Sample Score");
+        resultHolder = helper.submitRequest(request, externalData);
 
-        session = kbase.newKieSession();
+        //occupation = -10, age = +10, validLicense = -1, initialScore=100;
+        checkResults(99.0,"OC0099",Arrays.asList("OC0099", "VL0099", "AGE01"),resultHolder);
+
         applicant = new Applicant();
         applicant.setResidenceState("AP");
         applicant.setOccupation("TEACHER");
         applicant.setAge(20);
         applicant.setValidLicense(true);
-        session.insert( applicant );
-        session.fireAllRules();
-        session.dispose();
+        applicantValues.clear();
+        applicantValues.add(applicant);
+        request = new PMMLRequestData("234","Sample Score");
+        resultHolder = helper.submitRequest(request, externalData);
+
         //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore=100
-        assertEquals(141.0,applicant.getTotalScore(), 0.0);
+        checkResults(141.0,"RS001",Arrays.asList("RS001", "VL001", "OC0099", "AGE03"),resultHolder);
+    }
+
+
+    private void checkResults(Double expectedTotalScore, PMML4Result resultHolder) {
+        assertEquals("OK",resultHolder.getResultCode());
+        Double totalScore = resultHolder.getResultValue("TotalScore", "value", Double.class).orElse(null);
+        assertEquals(expectedTotalScore,totalScore,1e-6);
+    }
+
+    private void checkResults(Double expectedTotalScore, String expectedReasonCode, List<String> expectedRanking, PMML4Result resultHolder) {
+        Double totalScore = resultHolder.getResultValue("TotalScore", "value", Double.class).orElse(null);
+        assertEquals(expectedTotalScore, totalScore, 1e-6);
+        String reasonCode = resultHolder.getResultValue("ReasonCodes", "value", String.class).orElse(null);
+        assertEquals( expectedReasonCode, reasonCode );
+        Map reasonCodesMap = (Map)resultHolder.getResultValue("ScoreCard", "ranking");
+        assertNotNull( reasonCodesMap );
+        assertEquals( expectedRanking, new ArrayList( reasonCodesMap.keySet() ) );
+    }
+
+    protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
+        RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
+        Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
+        RuleImpl ruleImpl = null;
+        for (String pkgName : possiblePackages) {
+            if (pkgs.containsKey(pkgName)) {
+                InternalKnowledgePackage pkg = pkgs.get(pkgName);
+                ruleImpl = pkg.getRule(startingRule);
+                if (ruleImpl != null) {
+                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+                    if (descr != null) {
+                        return descr.getRuleUnitClass();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
+        List<String> packageNames = new ArrayList<>();
+        String javaModelId = modelId.replaceAll("\\s", "");
+        if (knownPackageNames != null && knownPackageNames.length > 0) {
+            for (String knownPkgName : knownPackageNames) {
+                packageNames.add(knownPkgName + "." + javaModelId);
+            }
+        }
+        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
+        packageNames.add(basePkgName);
+        return packageNames;
     }
 }
