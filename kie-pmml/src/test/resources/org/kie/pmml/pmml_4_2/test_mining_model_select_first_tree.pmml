@@ -1,0 +1,85 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://www.dmg.org/PMML-4_2">
+  <Header />
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="input1" optype="continuous" />
+    <DataField dataType="double" name="input2" optype="continuous" />
+    <DataField dataType="string" name="input3" optype="ordinal"/>
+    <DataField dataType="string" name="output" optype="ordinal"/>
+  </DataDictionary>
+  
+  <MiningModel modelName="SampleMiningModel" functionName="classification">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" />
+      <MiningField name="input2" usageType="active" />
+      <MiningField name="input3" usageType="active" />
+      <MiningField name="output" usageType="predicted" />
+    </MiningSchema>
+    
+    <Segmentation multipleModelMethod="selectFirst">
+      <Segment>
+        <SimplePredicate field="input1" operator="lessThan" value="20" />
+        <TreeModel modelName="tree1" functionName="classification">
+          <MiningSchema>
+            <MiningField name="input2" usageType="active" />
+            <MiningField name="output" usageType="predicted" />        
+          </MiningSchema>
+          <Node>
+            <True />
+            <Node  score="class_1">
+              <SimplePredicate field="input2" operator="lessThan" value="20" />
+            </Node>
+            <Node score="class_2">
+              <SimplePredicate field="input2" operator="greaterOrEqual" value="20" />
+            </Node>
+          </Node>
+        </TreeModel>     
+      </Segment>
+
+      <Segment>
+        <SimplePredicate field="input1" operator="greaterThan" value="30" />
+        <TreeModel modelName="tree2" functionName="classification">
+          <MiningSchema>
+            <MiningField name="input2" usageType="active" />
+            <MiningField name="input3" usageType="active" />
+            <MiningField name="output" usageType="predicted" />        
+          </MiningSchema>
+          <Node>
+            <True />
+            <Node score="class_3">
+              <CompoundPredicate booleanOperator="and">
+                <SimplePredicate field="input2" operator="lessThan" value="50" />
+                <SimplePredicate field="input3" operator="equal" value="value1" />
+              </CompoundPredicate>
+            </Node>
+            <Node score="class_4">
+              <True />
+            </Node>
+          </Node>
+        </TreeModel>     
+      </Segment>
+      
+      <Segment>
+        <True />
+        <!--
+        <SimplePredicate field="input3" operator="equal" value="value2" />
+        -->
+        <TreeModel modelName="tree3" functionName="classification">
+          <MiningSchema>
+            <MiningField name="input3" usageType="active" />
+            <MiningField name="output" usageType="predicted" />        
+          </MiningSchema>
+          <Node>
+            <True />
+            <Node score="class_5">
+              <SimplePredicate field="input3" operator="equal" value="value1" />
+            </Node>
+            <Node score="class_6">
+              <True />
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>
