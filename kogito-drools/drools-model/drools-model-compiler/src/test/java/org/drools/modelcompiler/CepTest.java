@@ -16,12 +16,15 @@
 
 package org.drools.modelcompiler;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
@@ -662,5 +665,63 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexTimestamp() {
+        final String str =
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+                "   @role( event ) \n" +
+                "   @timestamp( getProperties().get( 'timestamp' ) - 1 ) \n" +
+                "   @duration( getProperties().get( 'duration' ) + 1 ) \n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+
+        try {
+            final Message msg = new Message();
+            final Properties props = new Properties();
+            props.put("timestamp", 99);
+            props.put("duration", 52);
+            msg.setProperties(props);
+
+            final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
+            assertEquals(98, efh.getStartTimestamp());
+            assertEquals(53, efh.getDuration());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class Message {
+
+        private Properties properties;
+        private Timestamp timestamp;
+        private Long duration;
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public void setProperties(final Properties properties) {
+            this.properties = properties;
+        }
+
+        public Timestamp getStartTime() {
+            return timestamp;
+        }
+
+        public void setStartTime(final Timestamp timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public Long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(final Long duration) {
+            this.duration = duration;
+        }
     }
 }

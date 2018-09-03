@@ -85,7 +85,7 @@ public class POJOGenerator {
 
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
-                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getTypeName() ));
+                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getFullTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(builder, typeDescr, packageDescr, pkg.getTypeResolver()));
                 packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
@@ -112,8 +112,8 @@ public class POJOGenerator {
             typeMetaDataCall.addArgument( new StringLiteralExpr( ann.getName() ) );
             for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
                 MethodCallExpr annotationValueCall = new MethodCallExpr(null, ANNOTATION_VALUE_CALL);
-                annotationValueCall.addArgument( new StringLiteralExpr(entry.getKey()) );
-                annotationValueCall.addArgument( new StringLiteralExpr(entry.getValue().toString()) );
+                annotationValueCall.addArgument( new StringLiteralExpr( entry.getKey() ) );
+                annotationValueCall.addArgument( quote( entry.getValue().toString()) );
                 typeMetaDataCall.addArgument( annotationValueCall );
             }
         }
