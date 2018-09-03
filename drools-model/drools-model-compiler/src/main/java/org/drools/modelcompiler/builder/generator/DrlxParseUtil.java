@@ -384,7 +384,7 @@ public class DrlxParseUtil {
 
                 return new RemoveRootNodeResult(Optional.of(expr), acc.getFirst());
             } else {
-                return new RemoveRootNodeResult(Optional.empty(), expr);
+                return new RemoveRootNodeResult(Optional.of(expr), expr);
             }
 
         }
