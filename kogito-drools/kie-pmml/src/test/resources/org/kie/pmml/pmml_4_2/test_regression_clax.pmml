@@ -29,20 +29,20 @@
     <RegressionTable intercept="0.1" targetCategory="catA">
       <NumericPredictor coefficient="1" exponent="1" name="fld1"/>
       <NumericPredictor coefficient="1" exponent="1" name="fld2"/>
-      <CategoricalPredictor coefficient="1" name="fld3" value="0"/>
-      <CategoricalPredictor coefficient="1" name="fld3" value="1"/>
+      <CategoricalPredictor coefficient="-3" name="fld3" value="x"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="y"/>
     </RegressionTable>
     <RegressionTable intercept="0.2" targetCategory="catB">
       <NumericPredictor coefficient="2" exponent="1" name="fld1"/>
       <NumericPredictor coefficient="2" exponent="1" name="fld2"/>
-      <CategoricalPredictor coefficient="2" name="fld3" value="0"/>
-      <CategoricalPredictor coefficient="2" name="fld3" value="1"/>
+      <CategoricalPredictor coefficient="-3" name="fld3" value="x"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="y"/>
     </RegressionTable>
     <RegressionTable intercept="0.3" targetCategory="catC">
       <NumericPredictor coefficient="3" exponent="1" name="fld1"/>
       <NumericPredictor coefficient="3" exponent="1" name="fld2"/>
-      <CategoricalPredictor coefficient="3" name="fld3" value="0"/>
-      <CategoricalPredictor coefficient="3" name="fld3" value="1"/>
+      <CategoricalPredictor coefficient="-3" name="fld3" value="x"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="y"/>
     </RegressionTable>
     <RegressionTable intercept="5.0" targetCategory="catD"/>
   </RegressionModel>
