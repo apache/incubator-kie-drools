@@ -362,9 +362,7 @@ public class DrlxParseUtil {
     }
 
     public static RemoveRootNodeResult removeRootNode(Expression expr) {
-        System.out.println("==== RemoveRootNode");
-        System.out.println("expr = " + expr);
-        Optional<Expression> rootNode = findRootNodeViaScope(expr);
+        final Optional<Expression> rootNode = findRootNodeViaScope(expr);
 
         RemoveRootNodeResult result;
         if(rootNode.isPresent()) {
@@ -374,10 +372,9 @@ public class DrlxParseUtil {
             parent.ifPresent(p -> p.remove(root));
 
             result = new RemoveRootNodeResult(rootNode, (Expression) parent.orElse(expr));
+        } else {
+            result = new RemoveRootNodeResult(rootNode, expr);
         }
-        result = new RemoveRootNodeResult(rootNode, expr);
-        System.out.println("result = " + result);
-        System.out.println("===");
         return result;
     }
 
