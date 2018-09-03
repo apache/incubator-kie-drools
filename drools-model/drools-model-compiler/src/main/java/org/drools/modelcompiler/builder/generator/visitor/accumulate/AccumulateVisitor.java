@@ -212,7 +212,17 @@ public abstract class AccumulateVisitor {
                 });
             } else if (accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr()) {
 
-                final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(accumulateFunctionParameter);
+                final Expression parameterConverted;
+                if(accumulateFunctionParameter.isArrayAccessExpr()) {
+                    parameterConverted = new ExpressionTyper(context, Object.class, null, false)
+                            .toTypedExpression(accumulateFunctionParameter)
+                    .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
+                    .getExpression();
+                } else {
+                    parameterConverted = accumulateFunctionParameter;
+                }
+
+                final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
 
                 final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
