@@ -346,9 +346,7 @@ public class DrlxParseUtil {
     }
 
     public static RemoveRootNodeResult findRemoveRootNodeViaScope(Expression expr) {
-        LinkedList<Expression> acc = new LinkedList<>();
-        Optional<RemoveRootNodeResult> rootNodeViaScope2Rec = findRootNodeViaScope2Rec(expr, acc);
-        return rootNodeViaScope2Rec.orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
+        return findRootNodeViaScope2Rec(expr, new LinkedList<>());
     }
 
     public static Optional<Expression> findRootNodeViaScope(Expression expr) {
@@ -359,7 +357,7 @@ public class DrlxParseUtil {
         return findRemoveRootNodeViaScope(expr);
     }
 
-    private static Optional<RemoveRootNodeResult> findRootNodeViaScope2Rec(Expression expr, LinkedList<Expression> acc) {
+    private static RemoveRootNodeResult findRootNodeViaScope2Rec(Expression expr, LinkedList<Expression> acc) {
 
         if (expr.isArrayAccessExpr()) {
             throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
@@ -371,7 +369,7 @@ public class DrlxParseUtil {
             return exprWithScope.traverseScope().map((Expression scope) -> {
                 acc.addLast(expr.clone());
                 return findRootNodeViaScope2Rec(scope, acc);
-            }).orElse(of(new RemoveRootNodeResult(Optional.of(expr), expr)));
+            }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
         } else if (expr instanceof NameExpr) {
             if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
                 ((NodeWithOptionalScope) acc.getLast()).setScope(null);
@@ -384,14 +382,14 @@ public class DrlxParseUtil {
                     }
                 }
 
-                return of(new RemoveRootNodeResult(Optional.of(expr), acc.getFirst()));
+                return new RemoveRootNodeResult(Optional.of(expr), acc.getFirst());
             } else {
-                return of(new RemoveRootNodeResult(Optional.of(expr), expr));
+                return new RemoveRootNodeResult(Optional.empty(), expr);
             }
 
         }
 
-        return Optional.empty();
+        return new RemoveRootNodeResult(Optional.empty(), expr);
     }
 
     public static class RemoveRootNodeResult {
