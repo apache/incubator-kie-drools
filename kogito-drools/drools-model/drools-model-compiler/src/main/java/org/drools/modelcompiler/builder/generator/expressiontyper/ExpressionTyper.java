@@ -168,11 +168,13 @@ public class ExpressionTyper {
             final PointFreeExpr pointFreeExpr = (PointFreeExpr)drlxExpr;
 
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
+            Optional<TypedExpression> optRight = pointFreeExpr.getRight().size() == 1 ? toTypedExpressionRec(pointFreeExpr.getRight().get( 0 )) : Optional.empty();
             OperatorSpec opSpec = getOperatorSpec(drlxExpr, pointFreeExpr.getRight(), pointFreeExpr.getOperator());
 
             return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left, this), left.getType())
                     .setStatic(opSpec.isStatic())
-                    .setLeft(left) );
+                    .setLeft(left)
+                    .setRight( optRight.orElse( null ) ) );
 
         } else if (drlxExpr instanceof HalfPointFreeExpr) {
 

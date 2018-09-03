@@ -810,4 +810,48 @@ public class PatternDSLTest {
         ksession.fireAllRules();
         assertEquals(list, Arrays.asList("test", 3, "ok", 1));
     }
+
+    @Test
+    public void testAfterOnLongFields() throws Exception {
+        Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a");
+        Variable<StockTick> var_$b = declarationOf(StockTick.class, "$b");
+
+        Rule rule = rule("R").build(
+                pattern(var_$a)
+                        .expr("$expr$1$",
+                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "DROO"),
+                                reactOn("company")),
+                pattern(var_$b)
+                        .expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                                alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
+                                reactOn("company"))
+                        .expr("$expr$3$",
+                                _this -> _this.getTimeFieldAsLong(),
+                                var_$a,
+                                $a -> $a.getTimeFieldAsLong(),
+                                after(5, java.util.concurrent.TimeUnit.MILLISECONDS, 8, java.util.concurrent.TimeUnit.MILLISECONDS)),
+                execute(() -> {
+                    System.out.println("fired");
+                }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ).setTimeField( 0 ) );
+        clock.advanceTime( 6, TimeUnit.MILLISECONDS );
+        ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
+        ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
+
+        assertEquals( 0, ksession.fireAllRules() );    }
 }

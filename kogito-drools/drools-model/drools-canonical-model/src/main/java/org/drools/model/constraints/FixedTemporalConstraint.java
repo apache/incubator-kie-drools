@@ -17,21 +17,24 @@
 package org.drools.model.constraints;
 
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.FixedTemporalExprViewItem;
 
 public class FixedTemporalConstraint<A> extends TemporalConstraint {
 
+    private final Function1<?,?> func;
     private final long value;
 
-    public FixedTemporalConstraint( String exprId, Variable<A> var1, long value, TemporalPredicate temporalPredicate ) {
+    public FixedTemporalConstraint( String exprId, Variable<A> var1, Function1<?,?> func, long value, TemporalPredicate temporalPredicate ) {
         super(exprId, var1, temporalPredicate);
+        this.func = func;
         this.value = value;
     }
 
     public FixedTemporalConstraint( FixedTemporalExprViewItem<A> expr ) {
-        this( expr.getExprId(), expr.getFirstVariable(), expr.getValue(), expr.getTemporalPredicate() );
+        this( expr.getExprId(), expr.getFirstVariable(), expr.getF1(), expr.getValue(), expr.getTemporalPredicate() );
     }
 
     @Override
@@ -51,7 +54,18 @@ public class FixedTemporalConstraint<A> extends TemporalConstraint {
         FixedTemporalConstraint<?> that = ( FixedTemporalConstraint<?> ) o;
 
         if ( !ModelComponent.areEqualInModel( var1, that.var1 ) ) return false;
+        if ( !ModelComponent.areEqualInModel( func, that.func ) ) return false;
         if ( value != that.value ) return false;
         return temporalPredicate.equals( that.temporalPredicate );
+    }
+
+    @Override
+    public Function1<?, ?> getF1() {
+        return func;
+    }
+
+    @Override
+    public Function1<?, ?> getF2() {
+        return null;
     }
 }

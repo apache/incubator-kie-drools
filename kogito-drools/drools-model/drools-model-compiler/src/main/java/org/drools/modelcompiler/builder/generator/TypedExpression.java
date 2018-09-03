@@ -33,6 +33,7 @@ public class TypedExpression {
     private Optional<String> unificationName = Optional.empty();
     private Boolean staticExpr;
     private TypedExpression left;
+    private TypedExpression right;
 
     public TypedExpression( Expression expression ) {
         this(expression, null);
@@ -109,7 +110,16 @@ public class TypedExpression {
         return left;
     }
 
-    public TypedExpression cloneWithNewExpression(Expression newExpression) {
+    public TypedExpression setRight( TypedExpression right ) {
+        this.right = right;
+        return this;
+    }
+
+    public TypedExpression getRight() {
+        return right;
+    }
+
+    public TypedExpression cloneWithNewExpression( Expression newExpression) {
         final TypedExpression cloned = new TypedExpression(newExpression, type, fieldName);
         cloned.unificationName = unificationName;
         cloned.unificationVariable = unificationVariable;

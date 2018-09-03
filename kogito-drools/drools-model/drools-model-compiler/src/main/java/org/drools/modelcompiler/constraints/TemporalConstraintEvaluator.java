@@ -23,10 +23,14 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
+import org.drools.model.Global;
 import org.drools.model.SingleConstraint;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
+
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
@@ -34,35 +38,45 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
     public TemporalConstraintEvaluator( Declaration[] declarations, Pattern pattern, SingleConstraint constraint ) {
         super( declarations, pattern, constraint );
-        TemporalPredicate temporalPredicate = getTemporalPredicate();
+        TemporalPredicate temporalPredicate = ((TemporalConstraint) constraint).getTemporalPredicate();
         this.interval = new Interval( temporalPredicate.getInterval().getLowerBound(), temporalPredicate.getInterval().getUpperBound() );
-    }
-
-    private TemporalPredicate getTemporalPredicate() {
-        return ((TemporalConstraint) constraint).getTemporalPredicate();
     }
 
     @Override
     public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory  ) {
+        TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
         InternalFactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
-        long start1 = ( (EventFactHandle) fhs[0] ).getStartTimestamp();
+        long start1 = getStartTimestamp( fhs[0], temporalConstraint.getF1() );
         long duration1 = ( (EventFactHandle) fhs[0] ).getDuration();
         long end1 = start1 + duration1;
-        long start2 = ( (EventFactHandle) fhs[1] ).getStartTimestamp();
+        long start2 = getStartTimestamp( fhs[1], temporalConstraint.getF2() );
         long duration2 = ( (EventFactHandle) fhs[1] ).getDuration();
         long end2 = start2 + duration2;
-        return getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+        return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+    }
+
+    private long getStartTimestamp( InternalFactHandle fh, Function1<Object, ?> f ) {
+        return f != null ? getTimestampFromDate( f.apply( fh.getObject() ) ) : ( (EventFactHandle ) fh).getStartTimestamp();
     }
 
     @Override
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-        long start1 = ( (EventFactHandle) handle ).getStartTimestamp();
+        TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
+        long start1 = getStartTimestamp( handle, temporalConstraint.getF1() );
         long duration1 = ( (EventFactHandle) handle ).getDuration();
         long end1 = start1 + duration1;
-        long start2 = (( FixedTemporalConstraint ) constraint).getValue();
+        long start2 = getNonEventTimestamp(temporalConstraint, workingMemory);
         long duration2 = 0;
         long end2 = start2 + duration2;
-        return getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+        return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+    }
+
+    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalWorkingMemory workingMemory) {
+        if (temporalConstraint.getVariables().length == 2 && temporalConstraint.getVariables()[1] instanceof Global) {
+            Object value = workingMemory.getGlobal( (( Global ) temporalConstraint.getVariables()[1]).getName() );
+            return getTimestampFromDate( temporalConstraint.getF2() != null ? temporalConstraint.getF2().apply( value ) : value );
+        }
+        return (( FixedTemporalConstraint ) constraint).getValue();
     }
 
     @Override
