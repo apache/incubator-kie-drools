@@ -209,7 +209,13 @@ public class ExpressionTyper {
             if (Map.class.isAssignableFrom( typeCursor )) {
                 return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
             } else if (arrayAccessExpr.getName() instanceof FieldAccessExpr ) {
-                return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
+                Optional<TypedExpression> typedExpression = toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
+                typedExpression.map(te -> {
+                    final Expression originalExpression = te.getExpression();
+                    final Expression withoutRootNode = DrlxParseUtil.removeRootNode(originalExpression).getWithoutRootNode();
+                    return new TypedExpression(withoutRootNode, typeCursor);
+                });
+                return typedExpression;
             } else {
                 final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
@@ -581,12 +587,14 @@ public class ExpressionTyper {
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
-        Expression expression = arrayAccessExpr.getName();
-        Optional<TypedExpressionCursor> expressionCursor = Optional.empty();
+        final Expression expression = arrayAccessExpr.getName();
+        final Optional<TypedExpressionCursor> expressionCursor;
         if(expression.isNameExpr()) {
             expressionCursor = nameExpr(null, expression.asNameExpr(), false, originalTypeCursor);
 
-        } else {
+        } else if(expression instanceof FieldAccessExpr){
+            expressionCursor = Optional.of(new TypedExpressionCursor(scope, originalTypeCursor));
+        }else {
             expressionCursor = Optional.of(new TypedExpressionCursor(expression, originalTypeCursor));
         }
 
