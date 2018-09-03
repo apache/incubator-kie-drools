@@ -5,7 +5,7 @@
   <parent>
     <artifactId>test-kjar-parent</artifactId>
     <groupId>org.jbpm</groupId>
-    <version>7.11.0-SNAPSHOT</version>
+    <version>7.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>test-kjar-bpmn-build</artifactId>
