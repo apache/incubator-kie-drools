@@ -132,14 +132,15 @@ public class ASTBuilderVisitor
         return visit( ctx.expression() );
     }
 
-    @Override
-    public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN );
-        BaseNode node = visit( ctx.unaryExpression() );
-        ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
-
-        return buildFunctionCall( ctx, name, params );
-    }
+// FIXME
+//    @Override
+//    public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
+//        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN );
+//        BaseNode node = visit( ctx.unaryExpression() );
+//        ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
+//
+//        return buildFunctionCall( ctx, name, params );
+//    }
 
     @Override
     public BaseNode visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
@@ -207,17 +208,18 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
-    @Override
-    public BaseNode visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
-        List<BaseNode> tests = new ArrayList<>();
-        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
-            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ||
-                    ctx.getChild( i ) instanceof FEEL_1_1Parser.PrimaryContext) {
-                tests.add( visit( ctx.getChild( i ) ) );
-            }
-        }
-        return ASTBuilderFactory.newListNode( ctx, tests );
-    }
+// FIXME OLD
+//    @Override
+//    public BaseNode visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
+//        List<BaseNode> tests = new ArrayList<>();
+//        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
+//            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ||
+//                    ctx.getChild( i ) instanceof FEEL_1_1Parser.PrimaryContext) {
+//                tests.add( visit( ctx.getChild( i ) ) );
+//            }
+//        }
+//        return ASTBuilderFactory.newListNode( ctx, tests );
+//    }
 
     @Override
     public BaseNode visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
@@ -233,10 +235,11 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newInNode( ctx, value, test );
     }
 
-    @Override
-    public BaseNode visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
-        return ASTBuilderFactory.newNullNode( ctx );
-    }
+// FIXME OLD
+//    @Override
+//    public BaseNode visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
+//        return ASTBuilderFactory.newNullNode( ctx );
+//    }
 
     @Override
     public BaseNode visitPositiveUnaryTestDash(FEEL_1_1Parser.PositiveUnaryTestDashContext ctx) {
@@ -584,10 +587,11 @@ public class ASTBuilderVisitor
         return visit( ctx.expression() );
     }
 
-    @Override
-    public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
-        ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
-        return buildFunctionCall( ctx, name, value );
-    }
+// FIXME
+//    @Override
+//    public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
+//        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
+//        ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
+//        return buildFunctionCall( ctx, name, value );
+//    }
 }

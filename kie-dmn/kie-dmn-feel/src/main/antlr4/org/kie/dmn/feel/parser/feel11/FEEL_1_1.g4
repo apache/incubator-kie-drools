@@ -247,9 +247,10 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:   not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
-	|	not_key unaryExpression           #logicalNegation
-	|   primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
+	:   //not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
+	//|	not_key unaryExpression           #logicalNegation
+//	|
+	  primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary
@@ -261,7 +262,7 @@ primary
     | list                        #primaryList
     | context                     #primaryContext
     | '(' expression ')'          #primaryParens
-    | simpleUnaryTest             #primaryUnaryTest
+    | simplePositiveUnaryTest     #primaryUnaryTest
     | qualifiedName parameters?   #primaryName
     ;
 
@@ -282,13 +283,9 @@ booleanLiteral
 /**************************
  *    OTHER CONSTRUCTS
  **************************/
-// #13
-simpleUnaryTests
-    : (simpleUnaryTest|primary) ( ',' (simpleUnaryTest|primary) )*
-    ;
 
 // #7
-simpleUnaryTest
+simplePositiveUnaryTest
     : op='<'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='>'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='<=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
@@ -296,8 +293,40 @@ simpleUnaryTest
     | op='='  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='!=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
-    | null_key           #positiveUnaryTestNull
-    | '-'                #positiveUnaryTestDash
+    //| null_key           #positiveUnaryTestNull
+    //| '-'                #positiveUnaryTestDash
+    ;
+
+
+// #13
+simplePositiveUnaryTests
+    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )* 
+    ;
+
+
+// #14
+simpleUnaryTests
+    : simplePositiveUnaryTests                     #positiveSimplePositiveUnaryTests
+    | Not_Key '(' simplePositiveUnaryTests ')'     #negatedSimplePositiveUnaryTests
+    | '-'                                          #positiveUnaryTestDash
+    ;
+
+// #15
+positiveUnaryTest
+    : expression
+    ;
+
+// #16
+positiveUnaryTests
+    : positiveUnaryTest ( ',' positiveUnaryTest )* 
+    ;
+
+
+// #17 (root for decision tables)
+unaryTests
+    : positiveUnaryTests
+    | Not_Key '(' positiveUnaryTests ')'
+    | '-'
     ;
 
 // #18
@@ -338,7 +367,8 @@ qualifiedName
     ;
 
 nameRef
-    : st=Identifier { helper.startVariable( $st ); } nameRefOtherToken*
+    : ( st=Identifier { helper.startVariable( $st ); }
+       | not_st=Not_Key { helper.startVariable( $not_st ); } )  nameRefOtherToken*
     ;
 
 nameRefOtherToken
@@ -364,7 +394,7 @@ reusableKeywords
     | or_key
     | and_key
     | between_key
-    | not_key
+    | Not_Key
     | null_key
     | true_key
     | false_key
@@ -435,7 +465,7 @@ between_key
     : 'between'
     ;
 
-not_key
+Not_Key
     : 'not'
     ;
 

@@ -250,18 +250,19 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(result, expr.resultType, expr.getFieldDeclarations());
     }
 
-    @Override
-    public DirectCompilerResult visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
-        DirectCompilerResult unary = visit(ctx.unaryExpression());
-
-        // FEEL spec Table 39: Semantics of negation
-        // this is actually not delegated to the builtin FEEL function not(), but doesn't look like a problem for visitLogicalNegation.
-        if (unary.resultType == BuiltInType.BOOLEAN) {
-            return DirectCompilerResult.of(new UnaryExpr(unary.getExpression(), UnaryExpr.Operator.LOGICAL_COMPLEMENT), BuiltInType.BOOLEAN, unary.getFieldDeclarations());
-        } else {
-            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, unary.getFieldDeclarations());
-        }
-    }
+// FIXME
+//    @Override
+//    public DirectCompilerResult visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
+//        DirectCompilerResult unary = visit(ctx.unaryExpression());
+//
+//        // FEEL spec Table 39: Semantics of negation
+//        // this is actually not delegated to the builtin FEEL function not(), but doesn't look like a problem for visitLogicalNegation.
+//        if (unary.resultType == BuiltInType.BOOLEAN) {
+//            return DirectCompilerResult.of(new UnaryExpr(unary.getExpression(), UnaryExpr.Operator.LOGICAL_COMPLEMENT), BuiltInType.BOOLEAN, unary.getFieldDeclarations());
+//        } else {
+//            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, unary.getFieldDeclarations());
+//        }
+//    }
 
     @Override
     public DirectCompilerResult visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
@@ -702,28 +703,29 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return directCompilerResult;
     }
 
-    @Override
-    public DirectCompilerResult visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
-        List<DirectCompilerResult> tests =
-                Stream.concat(
-                        ctx.primary().stream(),
-                        ctx.simpleUnaryTest().stream())
-                        .map(this::visit)
-                        .collect(Collectors.toList());
-
-        MethodCallExpr testList = new MethodCallExpr(
-                null,
-                "list",
-                new NodeList<>(
-                    tests.stream()
-                            .map(DirectCompilerResult::getExpression)
-                            .collect(Collectors.toList())));
-
-        return DirectCompilerResult.of(
-                testList,
-                BuiltInType.LIST,
-                mergeFDs(tests));
-    }
+// FIXME OLD
+//    @Override
+//    public DirectCompilerResult visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
+//        List<DirectCompilerResult> tests =
+//                Stream.concat(
+//                        ctx.primary().stream(),
+//                        ctx.simpleUnaryTest().stream())
+//                        .map(this::visit)
+//                        .collect(Collectors.toList());
+//
+//        MethodCallExpr testList = new MethodCallExpr(
+//                null,
+//                "list",
+//                new NodeList<>(
+//                    tests.stream()
+//                            .map(DirectCompilerResult::getExpression)
+//                            .collect(Collectors.toList())));
+//
+//        return DirectCompilerResult.of(
+//                testList,
+//                BuiltInType.LIST,
+//                mergeFDs(tests));
+//    }
 
     // <<the following code is deliberately unnecessary for the DirectCompilerVisitor
 //    @Override
@@ -769,10 +771,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 mergeFDs(value, expr));
     }
 
-    @Override
-    public DirectCompilerResult visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
-        return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN);
-    }
+// FIXME OLD
+//    @Override
+//    public DirectCompilerResult visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
+//        return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN);
+//    }
 
     @Override
     public DirectCompilerResult visitPositiveUnaryTestDash(FEEL_1_1Parser.PositiveUnaryTestDashContext ctx) {
@@ -1240,7 +1243,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private String getFunctionName(DirectCompilerResult name) {
         Expression expression = name.getExpression();
         if (expression.toString().contains("not")) {
-            return ((NameExpr)expression).getName().asString();
+            return "not";//fixme ((NameExpr)expression).getName().asString();
         }
         return null;
     }
@@ -1363,10 +1366,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return visit( ctx.expression() );
     }
 
-    @Override
-    public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        FEEL_1_1Parser.SimpleUnaryTestsContext child = (FEEL_1_1Parser.SimpleUnaryTestsContext) ctx.getChild(2);
-        DirectCompilerResult notExpr = DirectCompilerResult.of(new NameExpr("not"), BuiltInType.BOOLEAN);
-        return buildFunctionCall(ctx, notExpr, child);
-    }
+// FIXME
+//    @Override
+//    public DirectCompilerResult visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
+//        FEEL_1_1Parser.SimpleUnaryTestsContext child = (FEEL_1_1Parser.SimpleUnaryTestsContext) ctx.getChild(2);
+//        DirectCompilerResult notExpr = DirectCompilerResult.of(new NameExpr("not"), BuiltInType.BOOLEAN);
+//        return buildFunctionCall(ctx, notExpr, child);
+//    }
 }
