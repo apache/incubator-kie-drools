@@ -345,27 +345,18 @@ public class DrlxParseUtil {
         return drlxExpr;
     }
 
-    public static Optional<Expression> findRootNodeViaScope(Expression expr) {
-
-        if(expr.isArrayAccessExpr()) {
-            return findRootNodeViaScope(expr.asArrayAccessExpr().getName());
-        }
-
-        if (expr instanceof NodeWithTraversableScope) {
-            final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
-
-            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNodeViaScope).orElse(of(expr));
-        } else if(expr instanceof NameExpr) {
-            return of(expr);
-        }
-
-        return Optional.empty();
-    }
-
-    public static RemoveRootNodeResult findRootNodeViaScope2(Expression expr) {
+    public static RemoveRootNodeResult findRemoveRootNodeViaScope(Expression expr) {
         LinkedList<Expression> acc = new LinkedList<>();
         Optional<RemoveRootNodeResult> rootNodeViaScope2Rec = findRootNodeViaScope2Rec(expr, acc);
         return rootNodeViaScope2Rec.orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
+    }
+
+    public static Optional<Expression> findRootNodeViaScope(Expression expr) {
+        return findRemoveRootNodeViaScope(expr).rootNode;
+    }
+
+    public static RemoveRootNodeResult removeRootNode(Expression expr) {
+        return findRemoveRootNodeViaScope(expr);
     }
 
     private static Optional<RemoveRootNodeResult> findRootNodeViaScope2Rec(Expression expr, LinkedList<Expression> acc) {
@@ -395,23 +386,6 @@ public class DrlxParseUtil {
         }
 
         return Optional.empty();
-    }
-
-    public static RemoveRootNodeResult removeRootNode(Expression expr) {
-        final Optional<Expression> rootNode = findRootNodeViaScope(expr);
-
-        RemoveRootNodeResult result;
-        if(rootNode.isPresent()) {
-            Expression root = rootNode.get();
-            Optional<Node> parent = root.getParentNode();
-
-            parent.ifPresent(p -> p.remove(root));
-
-            result = new RemoveRootNodeResult(rootNode, (Expression) parent.orElse(expr));
-        } else {
-            result = new RemoveRootNodeResult(rootNode, expr);
-        }
-        return result;
     }
 
     public static class RemoveRootNodeResult {

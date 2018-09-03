@@ -24,10 +24,9 @@ import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope2;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.removeRootNode;
 import static org.junit.Assert.*;
 
 public class DrlxParseUtilTest {
@@ -115,10 +114,10 @@ public class DrlxParseUtilTest {
 
     @Test
     public void removeRootNodeTest() {
-        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()")), findRootNodeViaScope2(expr("$a.getAge()")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)")), findRootNodeViaScope2(expr("$c.convert($length)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)")), findRootNodeViaScope2(expr("$data.getValues().get(0)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)")), findRootNodeViaScope2(expr("$data.getIndexes().getValues().get(0)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()")), findRemoveRootNodeViaScope(expr("$a.getAge()")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)")), findRemoveRootNodeViaScope(expr("$c.convert($length)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getValues().get(0)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)")));
     }
 
     private Expression expr(String $a) {
