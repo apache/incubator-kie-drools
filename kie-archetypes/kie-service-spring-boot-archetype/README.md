@@ -12,12 +12,12 @@ app from this archetype.
 mvn archetype:generate 
    -DarchetypeGroupId=org.kie 
    -DarchetypeArtifactId=kie-service-spring-boot-archetype 
-   -DarchetypeVersion=7.11.0-SNAPSHOT
+   -DarchetypeVersion=7.12.0-SNAPSHOT
 ```
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-service-spring-boot-archetype -DarchetypeVersion=7.11.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-service-spring-boot-archetype -DarchetypeVersion=7.12.0-SNAPSHOT
 ```
 4. Change the prompted values during the generation as needed (or leave the defaults)
 5. Compile and test your generated base kjar project with 
@@ -104,7 +104,7 @@ So to build an "planner" service app you would use the command:
 mvn archetype:generate 
    -DarchetypeGroupId=org.kie 
    -DarchetypeArtifactId=kie-service-spring-boot-archetype 
-   -DarchetypeVersion=7.11.0-SNAPSHOT
+   -DarchetypeVersion=7.12.0-SNAPSHOT
    -DappType=planner
 ```
 And similar for the other two available options.
