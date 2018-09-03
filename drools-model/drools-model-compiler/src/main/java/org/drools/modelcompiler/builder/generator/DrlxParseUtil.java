@@ -124,12 +124,16 @@ public class DrlxParseUtil {
     }
 
     public static Expression findLeftLeafOfMethodCall(Expression expression) {
-        if(expression instanceof BinaryExpr) {
-            BinaryExpr be = (BinaryExpr)expression;
+        if (expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr) expression;
             return findLeftLeafOfMethodCall(be.getLeft());
-        } else if(expression instanceof MethodCallExpr) {
+        }
+        if (expression instanceof CastExpr) {
+            CastExpr ce = (CastExpr) expression;
+            return findLeftLeafOfMethodCall(ce.getExpression());
+        } else if (expression instanceof MethodCallExpr) {
             return expression;
-        } else if(expression instanceof FieldAccessExpr) {
+        } else if (expression instanceof FieldAccessExpr) {
             return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
