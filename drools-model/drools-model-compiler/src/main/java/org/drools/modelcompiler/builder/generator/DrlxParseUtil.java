@@ -373,16 +373,22 @@ public class DrlxParseUtil {
                 return findRootNodeViaScope2Rec(scope, acc);
             }).orElse(of(new RemoveRootNodeResult(Optional.of(expr), expr)));
         } else if (expr instanceof NameExpr) {
-            ((NodeWithOptionalScope)acc.getLast()).setScope(null);
-            for (ListIterator<Expression> iterator = acc.listIterator(); iterator.hasNext(); ) {
-                Expression e = iterator.next();
-                NodeWithOptionalScope node = (NodeWithOptionalScope)e;
-                if(iterator.hasNext()) {
-                    node.setScope(acc.get(iterator.nextIndex()));
+            if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
+                ((NodeWithOptionalScope) acc.getLast()).setScope(null);
+
+                for (ListIterator<Expression> iterator = acc.listIterator(); iterator.hasNext(); ) {
+                    Expression e = iterator.next();
+                    NodeWithOptionalScope node = (NodeWithOptionalScope)e;
+                    if(iterator.hasNext()) {
+                        node.setScope(acc.get(iterator.nextIndex()));
+                    }
                 }
+
+                return of(new RemoveRootNodeResult(Optional.of(expr), acc.getFirst()));
+            } else {
+                return of(new RemoveRootNodeResult(Optional.of(expr), expr));
             }
 
-            return of(new RemoveRootNodeResult(Optional.of(expr), acc.getFirst()));
         }
 
         return Optional.empty();
