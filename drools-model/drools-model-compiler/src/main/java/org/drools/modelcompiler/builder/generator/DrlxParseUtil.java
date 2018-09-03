@@ -29,6 +29,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -356,6 +357,41 @@ public class DrlxParseUtil {
             return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNodeViaScope).orElse(of(expr));
         } else if(expr instanceof NameExpr) {
             return of(expr);
+        }
+
+        return Optional.empty();
+    }
+
+    public static RemoveRootNodeResult findRootNodeViaScope2(Expression expr) {
+        LinkedList<Expression> acc = new LinkedList<>();
+        Optional<RemoveRootNodeResult> rootNodeViaScope2Rec = findRootNodeViaScope2Rec(expr, acc);
+        return rootNodeViaScope2Rec.orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
+    }
+
+    private static Optional<RemoveRootNodeResult> findRootNodeViaScope2Rec(Expression expr, LinkedList<Expression> acc) {
+
+        if (expr.isArrayAccessExpr()) {
+            throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
+        }
+
+        if (expr instanceof NodeWithTraversableScope) {
+            final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
+
+            return exprWithScope.traverseScope().map((Expression scope) -> {
+                acc.addLast(expr.clone());
+                return findRootNodeViaScope2Rec(scope, acc);
+            }).orElse(of(new RemoveRootNodeResult(Optional.of(expr), expr)));
+        } else if (expr instanceof NameExpr) {
+            ((NodeWithOptionalScope)acc.getLast()).setScope(null);
+            for (ListIterator<Expression> iterator = acc.listIterator(); iterator.hasNext(); ) {
+                Expression e = iterator.next();
+                NodeWithOptionalScope node = (NodeWithOptionalScope)e;
+                if(iterator.hasNext()) {
+                    node.setScope(acc.get(iterator.nextIndex()));
+                }
+            }
+
+            return of(new RemoveRootNodeResult(Optional.of(expr), acc.getFirst()));
         }
 
         return Optional.empty();
