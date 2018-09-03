@@ -346,7 +346,7 @@ public class DrlxParseUtil {
     }
 
     public static RemoveRootNodeResult findRemoveRootNodeViaScope(Expression expr) {
-        return findRootNodeViaScope2Rec(expr, new LinkedList<>());
+        return findRootNodeViaScopeRec(expr, new LinkedList<>());
     }
 
     public static Optional<Expression> findRootNodeViaScope(Expression expr) {
@@ -357,7 +357,7 @@ public class DrlxParseUtil {
         return findRemoveRootNodeViaScope(expr);
     }
 
-    private static RemoveRootNodeResult findRootNodeViaScope2Rec(Expression expr, LinkedList<Expression> acc) {
+    private static RemoveRootNodeResult findRootNodeViaScopeRec(Expression expr, LinkedList<Expression> acc) {
 
         if (expr.isArrayAccessExpr()) {
             throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
@@ -368,7 +368,7 @@ public class DrlxParseUtil {
 
             return exprWithScope.traverseScope().map((Expression scope) -> {
                 acc.addLast(expr.clone());
-                return findRootNodeViaScope2Rec(scope, acc);
+                return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
         } else if (expr instanceof NameExpr) {
             if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
