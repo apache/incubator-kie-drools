@@ -23,7 +23,9 @@ public interface ModelComponent {
     boolean isEqualTo(ModelComponent other);
 
     static boolean areEqualInModel( Object o1, Object o2 ) {
-        return o1 == null ? o2 == null : (( ModelComponent ) o1).isEqualTo( (( ModelComponent ) o2) );
+        return o1 == null ? o2 == null :
+                ( o1 instanceof ModelComponent ? (( ModelComponent ) o1).isEqualTo( ( ModelComponent ) o2 ) :
+                                                 o1.equals( o2 ) );
     }
 
     static boolean areEqualInModel( Object[] array1, Object[] array2 ) {
