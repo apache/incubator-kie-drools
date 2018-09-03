@@ -20,7 +20,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -57,19 +57,26 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
                 exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
             }
         }
+
+        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
+        }
+
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
         usedDeclarationsWithUnification.stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
+
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
+        } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
         }
+
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
         return exprDSL;
     }
-
-
 
     public MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult ) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);

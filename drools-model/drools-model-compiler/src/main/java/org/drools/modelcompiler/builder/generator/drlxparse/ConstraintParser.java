@@ -223,15 +223,10 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parsePointFreeExpr( PointFreeExpr pointFreeExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, boolean hasBind, boolean isPositional, String exprId ) {
-        boolean isTemporal = ModelGenerator.temporalOperators.contains(pointFreeExpr.getOperator().asString());
-
-        if (isTemporal && !(pointFreeExpr.getLeft() instanceof ThisExpr)) {
-            return getDrlxParseResult(patternType, bindingId, constraint, DrlxParseUtil.parseExpression( rewriteTemporalExpression( pointFreeExpr ) ).getExpr(), hasBind, isPositional );
-        }
-
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(pointFreeExpr);
 
         return typedExpressionResult.getTypedExpression().<DrlxParseResult>map(typedExpression -> {
+            boolean isTemporal = ModelGenerator.temporalOperators.contains(pointFreeExpr.getOperator().asString());
             Object rightLiteral = null;
             if (isTemporal && pointFreeExpr.getRight().size() == 1) {
                 Expression rightExpr = pointFreeExpr.getRight().get(0);
@@ -246,24 +241,12 @@ public class ConstraintParser {
                     .setUsedDeclarationsOnLeft( Collections.emptyList())
                     .setReactOnProperties(typedExpressionResult.getReactOnProperties())
                     .setLeft(typedExpression.getLeft())
+                    .setRight(typedExpression.getRight())
                     .setRightLiteral(rightLiteral)
                     .setStatic(typedExpression.isStatic())
+                    .setTemporal( isTemporal )
                     .setValidExpression(true);
         }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(pointFreeExpr) ));
-    }
-
-    private String rewriteTemporalExpression( PointFreeExpr pointFreeExpr ) {
-        String operator;
-        if ( pointFreeExpr.getOperator().asString().equals( "after" )) {
-            operator = " > ";
-        } else if ( pointFreeExpr.getOperator().asString().equals( "before" )) {
-            operator = " < ";
-        } else if ( pointFreeExpr.getOperator().asString().equals( "coincides" )) {
-            operator = " == ";
-        } else {
-            throw new RuntimeException( "Cannot convert temporal operator '" + pointFreeExpr.getOperator().asString() + "' to a comparison operator" );
-        }
-        return pointFreeExpr.getLeft() + operator + pointFreeExpr.getRight().get(0);
     }
 
     private DrlxParseResult parseUnaryExpr( UnaryExpr unaryExpr, Class<?> patternType, String bindingId, boolean isPositional, String exprId ) {

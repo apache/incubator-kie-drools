@@ -52,6 +52,7 @@ public class DrlxParseSuccess implements DrlxParseResult {
     private boolean isBetaNode;
     private boolean requiresSplit;
     private boolean unification;
+    private boolean temporal;
 
     public DrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
@@ -137,6 +138,11 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public DrlxParseSuccess setStatic(boolean isStatic ) {
         this.isStatic = isStatic;
+        return this;
+    }
+
+    public DrlxParseSuccess setTemporal(boolean temporal) {
+        this.temporal = temporal;
         return this;
     }
 
@@ -237,6 +243,10 @@ public class DrlxParseSuccess implements DrlxParseResult {
 
     public boolean isStatic() {
         return isStatic;
+    }
+
+    public boolean isTemporal() {
+        return temporal;
     }
 
     public boolean isValidExpression( ) {
