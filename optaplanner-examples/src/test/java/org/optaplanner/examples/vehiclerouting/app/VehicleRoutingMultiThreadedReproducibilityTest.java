@@ -40,6 +40,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
 
     @Before
     public void createUninitializedSolutions() {
+        checkRunTurtleTests();
         final VehicleRoutingImporter importer = new VehicleRoutingImporter();
         for (int i = 0; i < REPETITION_COUNT; i++) {
             File dataSetFile = new File(CommonApp.determineDataDir(vehicleRoutingApp.getDataDirName()), DATA_SET);
@@ -61,6 +62,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
 
     @Test
     public void multiThreadedSolvingIsReproducible() {
+        checkRunTurtleTests();
         IntStream.range(0, REPETITION_COUNT).forEach(iteration -> solveAndCompareWithPrevious(iteration));
     }
 
