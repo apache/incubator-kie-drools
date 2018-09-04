@@ -926,7 +926,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("this should use a strongly typed declared type")
     public void testUseAccumulateFunctionWithListMvelDialect() throws Exception {
         String str = "package org.test;" +
                 "import java.util.*; " +
