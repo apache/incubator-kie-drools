@@ -17,19 +17,30 @@ package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -146,4 +157,112 @@ public class AccumulateUnsupportedWithModelTest {
             wm1.dispose();
         }
     }
+
+
+    @Test
+    public void testAccFunctionOpaqueJoins() {
+        // DROOLS-661
+        testAccFunctionOpaqueJoins(PropertySpecificOption.ALLOWED);
+    }
+
+    @Test
+    public void testAccFunctionOpaqueJoinsWithPropertyReactivity() {
+        // DROOLS-1445
+        testAccFunctionOpaqueJoins(PropertySpecificOption.ALWAYS);
+    }
+
+    // This is unsupported as the declared type Data is loosely typed
+    private void testAccFunctionOpaqueJoins(final PropertySpecificOption propertySpecificOption) {
+        final String drl = "package org.test; " +
+                "import java.util.*; " +
+                "global List list; " +
+                "global List list2; " +
+
+                "declare Tick " +
+                "  tick : int " +
+                "end " +
+
+                "declare Data " +
+                "  values : List " +
+                "  bias : int = 0 " +
+                "end " +
+
+                "rule Init " +
+                "when " +
+                "then " +
+                "  insert( new Data( Arrays.asList( 1, 2, 3 ), 1 ) ); " +
+                "  insert( new Data( Arrays.asList( 4, 5, 6 ), 2 ) ); " +
+                "  insert( new Tick( 0 ) );" +
+                "end " +
+
+                "rule Update " +
+                "  no-loop " +
+                "when " +
+                "  $i : Integer() " +
+                "  $t : Tick() " +
+                "then " +
+                "  System.out.println( 'Set tick to ' + $i ); " +
+                "  modify( $t ) { " +
+                "      setTick( $i ); " +
+                "  } " +
+                "end " +
+
+                "rule M " +
+                "  dialect 'mvel' " +
+                "when " +
+                "    Tick( $index : tick ) " +
+                "    accumulate ( $data : Data( $bias : bias )," +
+                "                 $tot : sum( $data.values[ $index ] + $bias ) ) " +
+                "then " +
+                "    System.out.println( $tot + ' for J ' + $index ); " +
+                "    list.add( $tot ); " +
+                "end " +
+
+                "rule J " +
+                "when " +
+                "    Tick( $index : tick ) " +
+                "    accumulate ( $data : Data( $bias : bias )," +
+                "                 $tot : sum( ((Integer)$data.getValues().get( $index )) + $bias ) ) " +
+                "then " +
+                "    System.out.println( $tot + ' for M ' + $index ); " +
+                "    list2.add( $tot ); " +
+                "end ";
+
+        final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "accumulate-test", "1");
+        final Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(PropertySpecificOption.PROPERTY_NAME, propertySpecificOption.toString());
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls(releaseId1,
+                                                                 kieBaseTestConfiguration,
+                                                                 KieSessionTestConfiguration.STATEFUL_REALTIME,
+                                                                 kieModuleConfigurationProperties,
+                                                                 drl);
+        final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
+        final KieBase kbase = kieContainer.getKieBase();
+        final KieSession ks = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            ks.setGlobal("list", list);
+            final List list2 = new ArrayList();
+            ks.setGlobal("list2", list2);
+
+            // init data
+            ks.fireAllRules();
+            assertEquals(Collections.singletonList(8.0), list);
+            assertEquals(Collections.singletonList(8.0), list2);
+
+            ks.insert(1);
+            ks.fireAllRules();
+            assertEquals(asList(8.0, 10.0), list);
+            assertEquals(asList(8.0, 10.0), list2);
+
+            ks.insert(2);
+            ks.fireAllRules();
+            assertEquals(asList(8.0, 10.0, 12.0), list);
+            assertEquals(asList(8.0, 10.0, 12.0), list2);
+        } finally {
+            ks.dispose();
+        }
+    }
+
 }
