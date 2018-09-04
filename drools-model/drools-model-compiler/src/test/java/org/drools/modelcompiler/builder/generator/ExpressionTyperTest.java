@@ -137,7 +137,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void arrayAccessExprDeclaration() {
-        final TypedExpression expected = typedResult("$data.values.get(0)", Object.class, "$data.values[0]");
+        final TypedExpression expected = typedResult("$data.getValues().get(0)", Object.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
                                                          new DeclarationSpec("$data", Data.class));
         assertEquals(expected, actual);
