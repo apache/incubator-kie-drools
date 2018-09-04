@@ -117,15 +117,6 @@ public class CoercedExpressionTest {
         assertEquals(expr("$one << $shift", long.class), coerce.getCoercedRight());
     }
 
-    @Test
-    public void onTheRight() {
-        final TypedExpression left = expr("$data.getValues().get(0)", java.lang.Object.class);
-        final TypedExpression right = expr("$bias", int.class);
-        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
-        assertEquals(expr("(int)$data.getValues().get(0)", java.lang.Object.class), coerce.getCoercedLeft());
-        assertEquals(expr("$bias", int.class), coerce.getCoercedRight());
-    }
-
     @Test(expected = CoercedExpression.CoercedExpressionException.class)
     public void testException() {
         final TypedExpression left = expr("_this.getAge()", int.class);

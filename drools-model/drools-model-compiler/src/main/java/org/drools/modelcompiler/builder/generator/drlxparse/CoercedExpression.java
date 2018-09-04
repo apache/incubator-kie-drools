@@ -60,23 +60,23 @@ public class CoercedExpression {
         final Class<?> rightClass = right.getRawClass();
 
         final boolean leftIsPrimitive = leftClass.isPrimitive();
-        final boolean canCoerceLiteralNumberExprLeft = canCoerceLiteralNumberExpr(leftClass);
+        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
-        if (leftIsPrimitive && canCoerceLiteralNumberExprLeft) {
+        if (leftIsPrimitive && canCoerceLiteralNumberExpr) {
             if (!rightClass.isPrimitive() && !Number.class.isAssignableFrom(rightClass) &&
                     !Boolean.class.isAssignableFrom(rightClass) && !String.class.isAssignableFrom(rightClass)) {
                 throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
             }
         }
 
-        if (leftIsPrimitive && canCoerceLiteralNumberExprLeft && rightExpression instanceof LiteralStringValueExpr) {
+        if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
         } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass)) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(leftClass, rightClass.isPrimitive()), right.getExpression()));
-        } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class & rightExpression instanceof LiteralStringValueExpr) {
+        } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(Object.class, rightClass.isPrimitive()), right.getExpression()));
         } else if (leftClass == long.class && rightClass == int.class) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
@@ -86,14 +86,8 @@ public class CoercedExpression {
             coercedRight = right;
         }
 
-
-        final boolean rightIsPrimitive = rightClass.isPrimitive();
-        final boolean canCoerceLiteralNumberExprRight = canCoerceLiteralNumberExpr(rightClass);
-
         final TypedExpression coercedLeft;
-        if (isNotBinaryExpression(left) && rightIsPrimitive && canCoerceLiteralNumberExprRight) {
-            coercedLeft = left.cloneWithNewExpression(new CastExpr(toJavaParserType(rightClass, rightClass.isPrimitive()), left.getExpression()));
-        } else if (toNonPrimitiveType(leftClass) == Character.class && shouldCoerceBToString(right, left)) {
+        if (toNonPrimitiveType(leftClass) == Character.class && shouldCoerceBToString(right, left)) {
             coercedLeft = coerceToString(left);
         } else {
             coercedLeft = left;
