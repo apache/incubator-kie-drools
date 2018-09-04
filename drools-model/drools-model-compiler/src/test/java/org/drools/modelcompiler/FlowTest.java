@@ -68,7 +68,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.FlowDSL.accFunction;
 import static org.drools.model.FlowDSL.accumulate;
 import static org.drools.model.FlowDSL.and;
@@ -94,11 +93,7 @@ import static org.drools.model.FlowDSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FlowTest {
 
@@ -1287,54 +1282,6 @@ public class FlowTest {
         public int getBias() {
             return bias;
         }
-    }
-
-
-    @Test
-    public void testArrayAccessBias() {
-        final org.drools.model.Variable<Data> var_$data = declarationOf(Data.class,
-                                                                                   "$data");
-        final org.drools.model.Variable<Integer> var_$bias = declarationOf(Integer.class,
-                                                                             "$bias");
-        final org.drools.model.Variable<java.lang.Object> var_$tot = declarationOf(java.lang.Object.class,
-                                                                                     "$tot");
-        final org.drools.model.Variable<java.lang.Object> var_$expr$3$ = declarationOf(java.lang.Object.class,
-                                                                                         "$expr$3$");
-        org.drools.model.Rule rule = rule("org.test",
-                                            "R").build(bind(var_$expr$3$).as(var_$data,
-                                                                               var_$bias,
-                                                                               ($data, $bias) -> (int) $data.getValues()
-                                                                                       .get(0) + $bias),
-                                                       accumulate(bind(var_$bias).as(var_$data,
-                                                                                         (_this) -> _this.getBias())
-                                                                            .reactOn("bias"),
-                                                                    accFunction(org.drools.core.base.accumulators.SumAccumulateFunction.class,
-                                                                                  var_$expr$3$).as(var_$tot)),
-                                                       on(var_$tot).executeScript("mvel",
-                                                                                    this.getClass(),
-                                                                                    new java.lang.StringBuilder().append("import java.util.*;\n")
-                                                                                            .append("insert($tot);\n")
-                                                                                            .toString()));
-
-
-
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        KieSession ksession = kieBase.newKieSession();
-
-
-        Data data1 = new Data(Arrays.asList(2, 3, 4), 100);
-        ksession.insert(data1);
-
-        Data data2 = new Data(Arrays.asList(10), 100);
-        ksession.insert(data2);
-
-        ksession.fireAllRules();
-
-        List<Number> results = getObjectsIntoList(ksession, Number.class);
-        assertEquals(1, results.size());
-        assertEquals(212, results.get(0).intValue());
     }
 
     @Test
