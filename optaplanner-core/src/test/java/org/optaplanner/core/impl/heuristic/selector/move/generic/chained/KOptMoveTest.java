@@ -244,7 +244,7 @@ public class KOptMoveTest {
         // TODO
     }
 
-    @Test
+    @Test @Ignore("https://issues.jboss.org/browse/PLANNER-1250") // TODO https://issues.jboss.org/browse/PLANNER-1250
     public void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
 
