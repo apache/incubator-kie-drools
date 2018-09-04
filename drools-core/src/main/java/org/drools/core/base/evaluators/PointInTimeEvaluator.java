@@ -96,6 +96,9 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
     }
 
     public static long getTimestampFromDate( Object obj ) {
+        if (obj instanceof Long ) {
+            return ( Long ) obj;
+        }
         if (obj instanceof Date ) {
             return ( (Date) obj ).getTime();
         }

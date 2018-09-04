@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -73,6 +72,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
+import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
@@ -90,6 +90,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
@@ -399,6 +400,11 @@ public class DrlxParseUtil {
         return generateLambdaWithoutParameters(usedDeclarations, expr, false);
     }
 
+    public static Expression generateLambdaWithoutParameters(Expression expr) {
+        Collection<String> usedDeclarations = expr.findAll( NameExpr.class ).stream().map( NameExpr::getName ).map( SimpleName::getIdentifier ).collect( toList() );
+        return generateLambdaWithoutParameters(usedDeclarations, expr, true);
+    }
+
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
         if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
             return expr;
@@ -638,7 +644,7 @@ public class DrlxParseUtil {
                 Stream.of(watchAnn.getValue().toString().split(","))
                         .map( String::trim )
                         .map( StringUtils::lcFirst )
-                        .collect( Collectors.toList() );
+                        .collect( toList() );
     }
 
     public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, String patternBinding, List<Expression> expressions) {
@@ -657,7 +663,7 @@ public class DrlxParseUtil {
             final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals(PATTERN_CALL));
             return pattern.stream();
         });
-        final List<MethodCallExpr> collect = patterns.collect(Collectors.toList());
+        final List<MethodCallExpr> collect = patterns.collect(toList());
         if (collect.isEmpty()) {
             return Optional.empty();
         } else {

@@ -102,6 +102,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         drgCompilers.add( new InputDataCompiler() );
         drgCompilers.add( new BusinessKnowledgeModelCompiler() );
         drgCompilers.add( new DecisionCompiler() );
+        drgCompilers.add( new DecisionServiceCompiler() );
         drgCompilers.add( new KnowledgeSourceCompiler() ); // keep last as it's a void compiler
     }
 
@@ -224,6 +225,9 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
+        }
+        for (InputDataNode idn : m.getInputs()) {
+            model.addInput(idn);
         }
         for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
             model.addBusinessKnowledgeModel(bkm);

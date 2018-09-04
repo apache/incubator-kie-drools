@@ -24,7 +24,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 
 import static java.util.Optional.of;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 
@@ -56,19 +56,28 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     private MethodCallExpr buildExpression(DrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
+
+        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
+        }
+
         usedDeclarationsWithUnification.stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
+
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
+        } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
         }
+
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
         return exprDSL;
     }
 
     private Optional<MethodCallExpr> buildReactOn(DrlxParseSuccess drlxParseResult) {
-        if (!drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
+        if (!drlxParseResult.isTemporal() && !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)

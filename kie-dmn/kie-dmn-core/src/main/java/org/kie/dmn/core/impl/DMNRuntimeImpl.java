@@ -262,7 +262,7 @@ public class DMNRuntimeImpl
                                                                null,
                                                                null,
                                                                Msg.REQ_INPUT_NOT_FOUND_FOR_DS,
-                                                               dep.getName(),
+                                                               getDependencyIdentifier(decisionService, dep),
                                                                getIdentifier(decisionService));
                     result.getContext().set(dep.getName(), null);
                 }
@@ -340,7 +340,7 @@ public class DMNRuntimeImpl
                                            null,
                                            Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                            getIdentifier( bkm ),
-                                           getIdentifier( dep ),
+                                           getDependencyIdentifier(bkm, dep),
                                            MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
                                            ((DMNBaseNode) dep).getType()
                                            );
@@ -360,7 +360,7 @@ public class DMNRuntimeImpl
                                                null,
                                                null,
                                                Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
-                                               getIdentifier( dep ),
+                                               getDependencyIdentifier(bkm, dep),
                                                getIdentifier( bkm )
                         );
                         return;
@@ -400,7 +400,7 @@ public class DMNRuntimeImpl
                 Object aliasContext = result.getContext().get(importAlias.get());
                 if (aliasContext != null && (aliasContext instanceof Map<?, ?>)) {
                     Map<?, ?> map = (Map<?, ?>) aliasContext;
-                    map.containsKey(node.getName());
+                    return map.containsKey(node.getName());
                 }
             }
             return false;
@@ -491,7 +491,7 @@ public class DMNRuntimeImpl
                                 null,
                                 Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                 getIdentifier( decision ),
-                                getIdentifier( dep ),
+                                getDependencyIdentifier(decision, dep),
                                 MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
                                 ((DMNBaseNode) dep).getType()
                                 );
@@ -505,7 +505,7 @@ public class DMNRuntimeImpl
                                            e,
                                            null,
                                            Msg.ERROR_CHECKING_ALLOWED_VALUES,
-                                           getIdentifier( dep ),
+                                           getDependencyIdentifier(decision, dep),
                                            e.getMessage() );
                 }
                 if (!isNodeValueDefined(result, decision, dep)) {
@@ -521,7 +521,7 @@ public class DMNRuntimeImpl
                                                                         null,
                                                                         Msg.UNABLE_TO_EVALUATE_DECISION_REQ_DEP,
                                                                         getIdentifier( decision ),
-                                                                        getIdentifier( dep ) );
+                                                                        getDependencyIdentifier(decision, dep) );
                             reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                         }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
@@ -537,7 +537,7 @@ public class DMNRuntimeImpl
                                                                     null,
                                                                     null,
                                                                     Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
-                                                                    getIdentifier( dep ),
+                                                                    getDependencyIdentifier(decision, dep),
                                                                     getIdentifier( decision )
                                                                     );
                         reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
@@ -638,8 +638,22 @@ public class DMNRuntimeImpl
         return true;
     }
 
-    private String getIdentifier(DMNNode node) {
+    private static String getIdentifier(DMNNode node) {
         return node.getName() != null ? node.getName() : node.getId();
+    }
+
+    private static String getDependencyIdentifier(DMNNode callerNode, DMNNode node) {
+        if (node.getModelNamespace().equals(callerNode.getModelNamespace())) {
+            return getIdentifier(node);
+        } else {
+            Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
+            String prefix = "{" + node.getModelNamespace() + "}";
+            if (importAlias.isPresent()) {
+                prefix = importAlias.get();
+            }
+            return prefix + "." + getIdentifier(node);
+        }
+
     }
 
     public boolean performRuntimeTypeCheck(DMNModel model) {

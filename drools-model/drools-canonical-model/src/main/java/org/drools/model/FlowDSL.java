@@ -145,12 +145,24 @@ public class FlowDSL extends DSL {
 
     // -- Temporal Constraints --
 
-    public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Variable<?> var2, TemporalPredicate temporalPredicate ) {
-        return new VariableTemporalExprViewItem<>( exprId, var1, var2, temporalPredicate);
+    public static <T,U> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Variable<U> var2, TemporalPredicate temporalPredicate ) {
+        return new VariableTemporalExprViewItem<>( exprId, var1, null, var2, null, temporalPredicate);
+    }
+    public static <T,U> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Variable<U> var2, Function1<U,?> f2, TemporalPredicate temporalPredicate ) {
+        return new VariableTemporalExprViewItem<>( exprId, var1, null, var2, new Function1.Impl<>( f2 ), temporalPredicate);
+    }
+    public static <T,U> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Function1<T,?> f1, Variable<U> var2, TemporalPredicate temporalPredicate ) {
+        return new VariableTemporalExprViewItem<>( exprId, var1, new Function1.Impl<>( f1 ), var2, null, temporalPredicate);
+    }
+    public static <T,U> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Function1<T,?> f1, Variable<U> var2, Function1<U,?> f2, TemporalPredicate temporalPredicate ) {
+        return new VariableTemporalExprViewItem<>( exprId, var1, new Function1.Impl<>( f1 ), var2, new Function1.Impl<>( f2 ), temporalPredicate);
     }
 
     public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, long value, TemporalPredicate temporalPredicate ) {
-        return new FixedTemporalExprViewItem<>( exprId, var1, value, temporalPredicate);
+        return new FixedTemporalExprViewItem<>( exprId, var1, null, value, temporalPredicate);
+    }
+    public static <T> TemporalExprViewItem<T> expr( String exprId, Variable<T> var1, Function1<?,?> func, long value, TemporalPredicate temporalPredicate ) {
+        return new FixedTemporalExprViewItem<>( exprId, var1, new Function1.Impl<>( func ), value, temporalPredicate);
     }
 
     // -- Conditional Named Consequnce --

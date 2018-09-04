@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler.domain;
 
+import java.util.Date;
+
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Role;
 
@@ -23,11 +25,26 @@ import org.kie.api.definition.type.Role;
 @Duration("duration")
 public class StockTick extends StockFact {
 
+    private long timeField;
+
     public StockTick( String company ) {
         super( company );
     }
 
     public StockTick( String company, long duration ) {
         super( company, duration );
+    }
+
+    public long getTimeFieldAsLong() {
+        return timeField;
+    }
+
+    public Date getTimeFieldAsDate() {
+        return new Date(timeField);
+    }
+
+    public StockTick setTimeField( long timeField ) {
+        this.timeField = timeField;
+        return this;
     }
 }
