@@ -36,15 +36,28 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final SubChain subChain;
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
-    protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final Object toPlanningValue;
+
+    protected final Object oldTrailingLastEntity;
+    protected final Object newTrailingEntity;
 
     public SubChainChangeMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
-        this.inverseVariableSupply = inverseVariableSupply;
         this.toPlanningValue = toPlanningValue;
+        oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(subChain.getLastEntity());
+        newTrailingEntity = toPlanningValue == null ? null
+                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
+    }
+
+    public SubChainChangeMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
+            Object toPlanningValue, Object oldTrailingLastEntity, Object newTrailingEntity) {
+        this.subChain = subChain;
+        this.variableDescriptor = variableDescriptor;
+        this.toPlanningValue = toPlanningValue;
+        this.oldTrailingLastEntity = oldTrailingLastEntity;
+        this.newTrailingEntity = newTrailingEntity;
     }
 
     public String getVariableName() {
@@ -75,7 +88,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public SubChainChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainChangeMove<>(subChain, variableDescriptor, inverseVariableSupply, oldFirstValue);
+        return new SubChainChangeMove<>(subChain, variableDescriptor, oldFirstValue, newTrailingEntity, oldTrailingLastEntity);
     }
 
     @Override
@@ -83,9 +96,6 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
-        Object oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(lastEntity);
-        Object newTrailingEntity = toPlanningValue == null ? null
-                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
         // Close the old chain
         if (oldTrailingLastEntity != null) {
             scoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
@@ -101,8 +111,10 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public SubChainChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         return new SubChainChangeMove<>(subChain.rebase(destinationScoreDirector),
-                variableDescriptor, inverseVariableSupply,
-                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+                variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue),
+                destinationScoreDirector.lookUpWorkingObject(oldTrailingLastEntity),
+                destinationScoreDirector.lookUpWorkingObject(newTrailingEntity));
     }
 
     // ************************************************************************

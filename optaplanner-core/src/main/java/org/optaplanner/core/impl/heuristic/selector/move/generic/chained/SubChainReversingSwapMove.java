@@ -37,17 +37,30 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     private final GenuineVariableDescriptor<Solution_> variableDescriptor;
-    protected final SingletonInverseVariableSupply inverseVariableSupply;
 
-    private final SubChain leftSubChain;
-    private final SubChain rightSubChain;
+    protected final SubChain leftSubChain;
+    protected final Object leftTrailingLastEntity;
+    protected final SubChain rightSubChain;
+    protected final Object rightTrailingLastEntity;
 
-    public SubChainReversingSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
+    public SubChainReversingSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply,
             SubChain leftSubChain, SubChain rightSubChain) {
         this.variableDescriptor = variableDescriptor;
-        this.inverseVariableSupply = inverseVariableSupply;
+        this.leftSubChain = leftSubChain;
+        leftTrailingLastEntity = inverseVariableSupply.getInverseSingleton(leftSubChain.getLastEntity());
+        this.rightSubChain = rightSubChain;
+        rightTrailingLastEntity = inverseVariableSupply.getInverseSingleton(rightSubChain.getLastEntity());
+    }
+
+    public SubChainReversingSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
+            SubChain leftSubChain, Object leftTrailingLastEntity,
+            SubChain rightSubChain, Object rightTrailingLastEntity) {
+        this.variableDescriptor = variableDescriptor;
         this.leftSubChain = leftSubChain;
         this.rightSubChain = rightSubChain;
+        this.leftTrailingLastEntity = leftTrailingLastEntity;
+        this.rightTrailingLastEntity = rightTrailingLastEntity;
     }
 
     public SubChain getLeftSubChain() {
@@ -75,8 +88,9 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public SubChainReversingSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new SubChainReversingSwapMove<>(variableDescriptor, inverseVariableSupply,
-                rightSubChain.reverse(), leftSubChain.reverse());
+        return new SubChainReversingSwapMove<>(variableDescriptor,
+                rightSubChain.reverse(), leftTrailingLastEntity,
+                leftSubChain.reverse(), rightTrailingLastEntity);
     }
 
     @Override
@@ -84,11 +98,9 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         Object leftFirstEntity = leftSubChain.getFirstEntity();
         Object leftFirstValue = variableDescriptor.getValue(leftFirstEntity);
         Object leftLastEntity = leftSubChain.getLastEntity();
-        Object leftTrailingLastEntity = inverseVariableSupply.getInverseSingleton(leftLastEntity);
         Object rightFirstEntity = rightSubChain.getFirstEntity();
         Object rightFirstValue = variableDescriptor.getValue(rightFirstEntity);
         Object rightLastEntity = rightSubChain.getLastEntity();
-        Object rightTrailingLastEntity = inverseVariableSupply.getInverseSingleton(rightLastEntity);
         Object leftLastEntityValue = variableDescriptor.getValue(leftLastEntity);
         Object rightLastEntityValue = variableDescriptor.getValue(rightLastEntity);
         // Change the entities
@@ -129,9 +141,11 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public SubChainReversingSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new SubChainReversingSwapMove<>(variableDescriptor, inverseVariableSupply,
+        return new SubChainReversingSwapMove<>(variableDescriptor,
                 leftSubChain.rebase(destinationScoreDirector),
-                rightSubChain.rebase(destinationScoreDirector));
+                destinationScoreDirector.lookUpWorkingObject(leftTrailingLastEntity),
+                rightSubChain.rebase(destinationScoreDirector),
+                destinationScoreDirector.lookUpWorkingObject(rightTrailingLastEntity));
     }
 
     // ************************************************************************

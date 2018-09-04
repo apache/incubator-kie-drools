@@ -36,15 +36,28 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
 
     protected final SubChain subChain;
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
-    protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final Object toPlanningValue;
+
+    protected final Object oldTrailingLastEntity;
+    protected final Object newTrailingEntity;
 
     public SubChainReversingChangeMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
-        this.inverseVariableSupply = inverseVariableSupply;
         this.toPlanningValue = toPlanningValue;
+        oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(subChain.getLastEntity());
+        newTrailingEntity = toPlanningValue == null ? null
+                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
+    }
+
+    public SubChainReversingChangeMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
+            Object toPlanningValue, Object oldTrailingLastEntity, Object newTrailingEntity) {
+        this.subChain = subChain;
+        this.variableDescriptor = variableDescriptor;
+        this.toPlanningValue = toPlanningValue;
+        this.oldTrailingLastEntity = oldTrailingLastEntity;
+        this.newTrailingEntity = newTrailingEntity;
     }
 
     public String getVariableName() {
@@ -75,7 +88,14 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
     @Override
     public SubChainReversingChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainReversingChangeMove<>(subChain.reverse(), variableDescriptor, inverseVariableSupply, oldFirstValue);
+        boolean unmovedReverse = toPlanningValue == oldFirstValue;
+        if (!unmovedReverse) {
+            return new SubChainReversingChangeMove<>(subChain.reverse(), variableDescriptor, oldFirstValue,
+                    newTrailingEntity, oldTrailingLastEntity);
+        } else {
+            return new SubChainReversingChangeMove<>(subChain.reverse(), variableDescriptor, oldFirstValue,
+                    oldTrailingLastEntity, newTrailingEntity);
+        }
     }
 
     @Override
@@ -83,10 +103,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
-        Object oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(lastEntity);
-        Object newTrailingEntity = toPlanningValue == null ? null
-                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
-        boolean unmovedReverse = newTrailingEntity == firstEntity;
+        boolean unmovedReverse = toPlanningValue == oldFirstValue;
         // Close the old chain
         if (!unmovedReverse) {
             if (oldTrailingLastEntity != null) {
@@ -122,8 +139,10 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
     @Override
     public SubChainReversingChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         return new SubChainReversingChangeMove<>(subChain.rebase(destinationScoreDirector),
-                variableDescriptor, inverseVariableSupply,
-                destinationScoreDirector.lookUpWorkingObject(toPlanningValue));
+                variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(toPlanningValue),
+                destinationScoreDirector.lookUpWorkingObject(oldTrailingLastEntity),
+                destinationScoreDirector.lookUpWorkingObject(newTrailingEntity));
     }
 
     // ************************************************************************

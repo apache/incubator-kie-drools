@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,12 +31,26 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
-    protected final List<SingletonInverseVariableSupply> inverseVariableSupplyList;
+    protected final List<Object> oldLeftTrailingEntityList;
+    protected final List<Object> oldRightTrailingEntityList;
 
     public ChainedSwapMove(List<GenuineVariableDescriptor<Solution_>> variableDescriptorList,
             List<SingletonInverseVariableSupply> inverseVariableSupplyList, Object leftEntity, Object rightEntity) {
         super(variableDescriptorList, leftEntity, rightEntity);
-        this.inverseVariableSupplyList = inverseVariableSupplyList;
+        oldLeftTrailingEntityList = new ArrayList<>(inverseVariableSupplyList.size());
+        oldRightTrailingEntityList = new ArrayList<>(inverseVariableSupplyList.size());
+        for (SingletonInverseVariableSupply inverseVariableSupply : inverseVariableSupplyList) {
+            oldLeftTrailingEntityList.add(inverseVariableSupply.getInverseSingleton(leftEntity));
+            oldRightTrailingEntityList.add(inverseVariableSupply.getInverseSingleton(rightEntity));
+        }
+    }
+
+    public ChainedSwapMove(List<GenuineVariableDescriptor<Solution_>> genuineVariableDescriptors,
+            Object leftEntity, Object rightEntity,
+            List<Object> oldLeftTrailingEntityList, List<Object> oldRightTrailingEntityList) {
+        super(genuineVariableDescriptors, leftEntity, rightEntity);
+        this.oldLeftTrailingEntityList = oldLeftTrailingEntityList;
+        this.oldRightTrailingEntityList = oldRightTrailingEntityList;
     }
 
     // ************************************************************************
@@ -44,7 +59,7 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
     @Override
     public ChainedSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList, rightEntity, leftEntity);
+        return new ChainedSwapMove<>(variableDescriptorList, rightEntity, leftEntity, oldLeftTrailingEntityList, oldRightTrailingEntityList);
     }
 
     @Override
@@ -58,9 +73,8 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
                     scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                     scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                 } else {
-                    SingletonInverseVariableSupply inverseVariableSupply = inverseVariableSupplyList.get(i);
-                    Object oldLeftTrailingEntity = inverseVariableSupply.getInverseSingleton(leftEntity);
-                    Object oldRightTrailingEntity = inverseVariableSupply.getInverseSingleton(rightEntity);
+                    Object oldLeftTrailingEntity = oldLeftTrailingEntityList.get(i);
+                    Object oldRightTrailingEntity = oldRightTrailingEntityList.get(i);
                     if (oldRightValue == leftEntity) {
                         // Change the right entity
                         scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
@@ -100,9 +114,11 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
     @Override
     public ChainedSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList,
+        return new ChainedSwapMove<>(variableDescriptorList,
                 destinationScoreDirector.lookUpWorkingObject(leftEntity),
-                destinationScoreDirector.lookUpWorkingObject(rightEntity));
+                destinationScoreDirector.lookUpWorkingObject(rightEntity),
+                rebaseList(oldLeftTrailingEntityList, destinationScoreDirector),
+                rebaseList(oldRightTrailingEntityList, destinationScoreDirector));
     }
 
 }

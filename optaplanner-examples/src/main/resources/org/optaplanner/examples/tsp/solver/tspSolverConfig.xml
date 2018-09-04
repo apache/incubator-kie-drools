@@ -25,7 +25,7 @@
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector>
-        <cacheType>PHASE</cacheType>
+        <cacheType>STEP</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
       <!--<swapMoveSelector>-->

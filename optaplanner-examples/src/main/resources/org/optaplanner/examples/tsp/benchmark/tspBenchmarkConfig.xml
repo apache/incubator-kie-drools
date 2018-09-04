@@ -47,7 +47,7 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
+            <cacheType>STEP</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
           </swapMoveSelector>
           <subChainChangeMoveSelector>
