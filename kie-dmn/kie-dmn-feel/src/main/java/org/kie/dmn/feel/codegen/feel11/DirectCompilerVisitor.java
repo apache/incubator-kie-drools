@@ -846,7 +846,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         initializer.addParameter(new Parameter(new UnknownType(), "left"));
         Statement lambdaBody = null;
 
-        lambdaBody = new ExpressionStmt(new CastExpr(TYPE_BOOLEAN, new EnclosedExpr(endpoint.getExpression())));
+        lambdaBody = new ExpressionStmt(new MethodCallExpr(
+                null,
+                "coerceToBoolean",
+                new NodeList<>(
+                        new NameExpr("feelExprCtx"),
+                        endpoint.getExpression())));
 
         initializer.setBody(lambdaBody);
         String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
@@ -1323,6 +1328,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
         String nameRefText = ParserHelper.getOriginalText(ctx);
         Type type = scopeHelper.resolveType(nameRefText).orElse(BuiltInType.UNKNOWN);
+        if (nameRefText.equals("?")) {
+            this.subExpressionContainsWildcard = true;
+        }
         NameExpr scope = new NameExpr("feelExprCtx");
         MethodCallExpr getFromScope = new MethodCallExpr(scope, "getValue");
         getFromScope.addArgument(new StringLiteralExpr(nameRefText));
@@ -1389,7 +1397,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
         DirectCompilerResult name = visit(ctx.qualifiedName());
         // fixme this should be handled in DirectCompilerResult but we should bring it up the entire tree. use global for now -ev
-        this.subExpressionContainsWildcard = ctx.qualifiedName().n1.getText().equals("?");
+//        this.subExpressionContainsWildcard = ctx.qualifiedName().n1.getText().equals("?");
         if (ctx.parameters() != null) {
             return buildFunctionCall(ctx, name, ctx.parameters());
         } else {
