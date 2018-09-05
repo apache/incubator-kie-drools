@@ -95,7 +95,7 @@ public class AccumulateTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test(timeout = 10000)
@@ -2485,7 +2485,7 @@ public class AccumulateTest {
         // JBRULES-3538
         final String drl =
                 "import java.util.*;\n" +
-                        "import " + MyPerson.class.getName() + ";\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
                         "global java.util.Map map;\n" +
                         "dialect \"mvel\"\n" +
                         "\n" +
@@ -2542,7 +2542,7 @@ public class AccumulateTest {
 
             assertEquals(2, map.get("count"));
             Map pMap = (Map) map.get("Jos Jr Jr");
-            assertEquals(50.0, pMap.get("total"));
+            assertEquals(50.0, ((Number)pMap.get("total")).doubleValue(), 1);
             List kids = (List) pMap.get("k");
             assertEquals(1, kids.size());
             assertEquals("John Jr Jrx", ((MyPerson) kids.get(0)).getName());
@@ -2550,7 +2550,7 @@ public class AccumulateTest {
             assertEquals(josJr, pMap.get("r"));
 
             pMap = (Map) map.get("Jos");
-            assertEquals(50.0, pMap.get("total"));
+            assertEquals(50.0, ((Number)pMap.get("total")).doubleValue(), 1);
             kids = (List) pMap.get("k");
             assertEquals(1, kids.size());
             assertEquals("John Jr Jrx", ((MyPerson) kids.get(0)).getName());
