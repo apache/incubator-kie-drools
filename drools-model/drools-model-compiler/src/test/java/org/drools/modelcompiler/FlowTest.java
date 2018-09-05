@@ -68,7 +68,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.FlowDSL.accFunction;
 import static org.drools.model.FlowDSL.accumulate;
 import static org.drools.model.FlowDSL.and;
@@ -94,11 +93,7 @@ import static org.drools.model.FlowDSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FlowTest {
 
@@ -1269,6 +1264,24 @@ public class FlowTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+    public static class Data {
+        private List values;
+        private int bias;
+
+        public Data(List values, int bias) {
+            this.values = values;
+            this.bias = bias;
+        }
+
+        public List getValues() {
+            return values;
+        }
+
+        public int getBias() {
+            return bias;
+        }
     }
 
     @Test

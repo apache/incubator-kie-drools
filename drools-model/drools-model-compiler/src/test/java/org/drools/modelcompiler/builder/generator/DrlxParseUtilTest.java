@@ -16,14 +16,18 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static java.util.Optional.of;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.junit.Assert.assertEquals;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseExpression;
+import static org.junit.Assert.*;
 
 public class DrlxParseUtilTest {
 
@@ -33,11 +37,9 @@ public class DrlxParseUtilTest {
         final Expression expr = JavaParser.parseExpression("getAddressName().startsWith(\"M\")");
         final NameExpr nameExpr = new NameExpr("_this");
 
-
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
         assertEquals("_this.getAddressName().startsWith(\"M\")", concatenated.toString());
-
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -46,7 +48,6 @@ public class DrlxParseUtilTest {
         final Expression expr = JavaParser.parseExpression("this");
 
         DrlxParseUtil.prepend(null, expr);
-
     }
 
     final TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
@@ -109,5 +110,18 @@ public class DrlxParseUtilTest {
             return expr.toString();
         };
         assertEquals("new Integer(nscope.total)", c.apply("new Integer(total) "));
+    }
+
+    @Test
+    public void removeRootNodeTest() {
+        assertEquals(new RemoveRootNodeResult(of(expr("sum")), expr("sum")), findRemoveRootNodeViaScope(expr("sum")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()")), findRemoveRootNodeViaScope(expr("$a.getAge()")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)")), findRemoveRootNodeViaScope(expr("$c.convert($length)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getValues().get(0)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)")));
+    }
+
+    private Expression expr(String $a) {
+        return parseExpression($a).getExpr();
     }
 }

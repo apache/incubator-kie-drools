@@ -2,6 +2,8 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -11,17 +13,17 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.modelcompiler.domain.Overloaded;
+import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.inlinecast.ICA;
 import org.drools.modelcompiler.inlinecast.ICAbstractA;
 import org.drools.modelcompiler.inlinecast.ICAbstractB;
 import org.drools.modelcompiler.inlinecast.ICAbstractC;
 import org.drools.modelcompiler.inlinecast.ICB;
 import org.drools.modelcompiler.inlinecast.ICC;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.drools.modelcompiler.domain.Overloaded;
-import org.drools.modelcompiler.domain.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
@@ -118,6 +120,41 @@ public class ExpressionTyperTest {
         }
     }
 
+    @Test
+    public void arrayAccessExpr() {
+        final TypedExpression expected = typedResult("_this.getItems().get(1)", Object.class);
+        final TypedExpression actual = toTypedExpression("items[1]", Person.class);
+        assertEquals(expected, actual);
+
+        final TypedExpression expected2 = typedResult("_this.getItems().get(((Integer)1))", Object.class);
+        final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
+        assertEquals(expected2, actual2);
+
+        final TypedExpression expected3 = typedResult("_this.get(\"type\")", Object.class);
+        final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
+        assertEquals(expected3, actual3);
+    }
+
+    @Test
+    public void arrayAccessExprDeclaration() {
+        final TypedExpression expected = typedResult("$data.getValues().get(0)", Object.class, "$data.values[0]");
+        final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
+                                                         new DeclarationSpec("$data", Data.class));
+        assertEquals(expected, actual);
+    }
+
+    public static class Data {
+        private List<Integer> values;
+
+        public Data(List<Integer> values) {
+            this.values = values;
+        }
+
+        public List<Integer> getValues() {
+            return values;
+        }
+    }
+
 
     @Test
     public void testAssignment2() {
@@ -138,6 +175,11 @@ public class ExpressionTyperTest {
     private TypedExpression typedResult(String expressionResult, Class<?> classResult) {
         Expression resultExpression = DrlxParseUtil.parseExpression(expressionResult).getExpr();
         return new TypedExpression(resultExpression, classResult);
+    }
+
+    private TypedExpression typedResult(String expressionResult, Class<?> classResult, String fieldName) {
+        Expression resultExpression = DrlxParseUtil.parseExpression(expressionResult).getExpr();
+        return new TypedExpression(resultExpression, classResult, fieldName);
     }
 
     private DeclarationSpec aPersonDecl(String $mark) {
