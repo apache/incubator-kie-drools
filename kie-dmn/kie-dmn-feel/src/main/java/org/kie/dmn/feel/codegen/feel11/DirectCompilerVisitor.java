@@ -111,9 +111,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
     private static final org.drools.javaparser.ast.type.Type TYPE_BIG_DECIMAL =
             JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
+    private static final org.drools.javaparser.ast.type.Type TYPE_BOOLEAN =
+            JavaParser.parseType(Boolean.class.getCanonicalName());
 
     private ScopeHelper scopeHelper; // as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but presently keeping the same strategy as interpreted-AST-visitor
     private boolean replaceEqualForUnaryTest = false;
+    /**
+     * true when an identifier in the subexpression begins with '?'
+     */
+    private boolean subExpressionContainsWildcard = false;
 
     private static class ScopeHelper {
 
@@ -225,11 +231,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return unaryExpr;
     }
 
-    @Override
-    public DirectCompilerResult visitNonSignedUnaryExpression(FEEL_1_1Parser.NonSignedUnaryExpressionContext ctx) {
-        DirectCompilerResult directCompilerResult = super.visitNonSignedUnaryExpression(ctx);
-        return directCompilerResult;
-    }
+// FIXME
+//    @Override
+//    public DirectCompilerResult visitNonSignedUnaryExpression(FEEL_1_1Parser.NonSignedUnaryExpressionContext ctx) {
+//        DirectCompilerResult directCompilerResult = super.visitNonSignedUnaryExpression(ctx);
+//        return directCompilerResult;
+//    }
 
     @Override
     public DirectCompilerResult visitNullLiteral(FEEL_1_1Parser.NullLiteralContext ctx) {
@@ -466,53 +473,95 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
 
+//    @Override
+//    public DirectCompilerResult visitUnaryTests(FEEL_1_1Parser.UnaryTestsContext ctx) {
+//
+//        ParseTree children = ctx.getChild(0);
+//        // "empty cell / don't care"
+//        if (children.getText().equals("-")) {
+//            DirectCompilerResult t = createEmptyUnaryTestExpression();
+//            MethodCallExpr list = new MethodCallExpr(
+//                    null, "list", new NodeList<>(t.getExpression()));
+//            return DirectCompilerResult.of(list, BuiltInType.LIST, t.getFieldDeclarations());
+//        }
+//
+//        List<DirectCompilerResult> exprs = new ArrayList<>();
+//        for (int i = 0; i < children.getChildCount(); i++) {
+//            ParseTree c = children.getChild(i);
+//            if (c instanceof FEEL_1_1Parser.PositiveUnaryTestContext) {
+//                FEEL_1_1Parser.PositiveUnaryTestContext childCtx = (FEEL_1_1Parser.PositiveUnaryTestContext) c;
+//                DirectCompilerResult child = visit(childCtx);
+//                if (child.resultType == BuiltInType.UNARY_TEST) {
+//                    // is already a unary test, so we can add it as-is
+//                    exprs.add(child);
+//                } else if (child.resultType == BuiltInType.RANGE) {
+//                    // being a range, need the `in` operator.
+//                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
+//                    exprs.add(replaced);
+//                } else {
+//                    // implied a unarytest for the `=` equal operator.
+//                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
+//                    exprs.add(replaced);
+//                }
+//            }
+//        }
+//
+//        MethodCallExpr list = new MethodCallExpr(null, "list");
+//        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
+//        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
+//    }
+
     @Override
-    public DirectCompilerResult visitUnaryTests(FEEL_1_1Parser.UnaryTestsContext ctx) {
-
-        ParseTree children = ctx.getChild(0);
-        if (children.getText().equals("-")) {
-            DirectCompilerResult t = createEmptyUnaryTestExpression();
-            MethodCallExpr list = new MethodCallExpr(
-                    null, "list", new NodeList<>(t.getExpression()));
-            return DirectCompilerResult.of(list, BuiltInType.LIST, t.getFieldDeclarations());
-        }
-        List<DirectCompilerResult> exprs = new ArrayList<>();
-        for (int i = 0; i < children.getChildCount(); i++) {
-            ParseTree c = children.getChild(i);
-            if (c instanceof FEEL_1_1Parser.PositiveUnaryTestContext) {
-                FEEL_1_1Parser.PositiveUnaryTestContext childCtx = (FEEL_1_1Parser.PositiveUnaryTestContext) c;
-                DirectCompilerResult child = visit(childCtx);
-                if (child.resultType == BuiltInType.UNARY_TEST) {
-                    // is already a unary test, so we can add it as-is
-                    exprs.add(child);
-                } else if (child.resultType == BuiltInType.RANGE) {
-                    // being a range, need the `in` operator.
-                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
-                    exprs.add(replaced);
-                } else {
-                    // implied a unarytest for the `=` equal operator.
-                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
-                    exprs.add(replaced);
-                }
-            }
-        }
-
-        MethodCallExpr list = new MethodCallExpr(null, "list");
-        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
-        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
+    public DirectCompilerResult visitUnaryTests_empty(FEEL_1_1Parser.UnaryTests_emptyContext ctx) {
+        DirectCompilerResult t = createEmptyUnaryTestExpression();
+        MethodCallExpr list = new MethodCallExpr(
+                null, "list", new NodeList<>(t.getExpression()));
+        return DirectCompilerResult.of(list, BuiltInType.LIST, t.getFieldDeclarations());
     }
 
     @Override
-    public DirectCompilerResult visitPositiveUnaryTests(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
-        List<DirectCompilerResult> rs = new ArrayList<>();
-        for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTest()) {
-            DirectCompilerResult visit = visit(positiveUnaryTestContext);
-            if (visit.resultType == BuiltInType.UNARY_TEST) {
-                rs.add(visit);
-            } else {
-                DirectCompilerResult unaryTestExpression = createUnaryTestExpression(positiveUnaryTestContext, visit, UnaryOperator.EQ);
+    public DirectCompilerResult visitUnaryTests_negated(FEEL_1_1Parser.UnaryTests_negatedContext ctx) {
+        DirectCompilerResult positiveTests = visit(ctx.positiveUnaryTests());
+        DirectCompilerResult result = createUnaryTestExpression(ctx, positiveTests, UnaryOperator.NOT);
+
+        MethodCallExpr expression =
+                new MethodCallExpr(
+                        null,
+                        "list",
+                        new NodeList<>(result.getExpression()));
+
+        return DirectCompilerResult.of(expression, BuiltInType.UNARY_TEST, result.getFieldDeclarations());
+    }
+
+    @Override
+    public DirectCompilerResult visitUnaryTests_positive(FEEL_1_1Parser.UnaryTests_positiveContext ctx) {
+        ArrayList<DirectCompilerResult> rs = new ArrayList<>();
+
+        // fixme:
+        // this should be handled as a field in the DirectCompilerResult class,
+        // but for now it is cumbersome to bring it up the tree, let's remember to do this refactoring
+        for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTests().positiveUnaryTest()) {
+//            DirectCompilerResult result = visit(positiveUnaryTestContext);
+            this.subExpressionContainsWildcard = false;
+            DirectCompilerResult result = visit(positiveUnaryTestContext);
+            if (result.resultType == BuiltInType.UNARY_TEST) {
+                rs.add(result);
+            } else if (this.subExpressionContainsWildcard) {
+                DirectCompilerResult unaryTestExpression = createWildcardUnaryTestExpression(positiveUnaryTestContext, result);
                 rs.add(unaryTestExpression);
+            } else if (result.resultType == BuiltInType.RANGE) {
+                // being a range, need the `in` operator.
+                DirectCompilerResult replaced = createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.IN);
+                rs.add(replaced);
+            } else if (result.resultType == BuiltInType.LIST) {
+                DirectCompilerResult replaced = createListUnaryTestExpression(positiveUnaryTestContext, result);
+                rs.add(replaced);
+            } else {
+                DirectCompilerResult unaryTestExpression = createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.EQ);
+                rs.add(unaryTestExpression);
+
             }
+
         }
         MethodCallExpr expression =
                 new MethodCallExpr(
@@ -521,6 +570,52 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                         new NodeList<>(rs.stream().map(DirectCompilerResult::getExpression).collect(Collectors.toList())));
         return DirectCompilerResult.of(expression, BuiltInType.UNARY_TEST, DirectCompilerResult.mergeFDs(rs));
     }
+
+    @Override
+    public DirectCompilerResult visitPositiveUnaryTests(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
+        List<DirectCompilerResult> rs = new ArrayList<>();
+        for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTest()) {
+            DirectCompilerResult result = visit(positiveUnaryTestContext);
+            if (result.resultType == BuiltInType.UNARY_TEST) {
+                rs.add(result);
+            }
+            else if (result.resultType == BuiltInType.RANGE) {
+                // being a range, need the `in` operator.
+                DirectCompilerResult replaced = createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.IN);
+                rs.add(replaced);
+            } else if (result.resultType == BuiltInType.LIST) {
+                DirectCompilerResult replaced = createListUnaryTestExpression(positiveUnaryTestContext, result);
+                rs.add(replaced);
+            } else {
+                DirectCompilerResult unaryTestExpression = createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.EQ);
+                rs.add(unaryTestExpression);
+            }
+            rs.add(result);
+        }
+        MethodCallExpr expression =
+                new MethodCallExpr(
+                        null,
+                        "list",
+                        new NodeList<>(rs.stream().map(DirectCompilerResult::getExpression).collect(Collectors.toList())));
+        return DirectCompilerResult.of(expression, BuiltInType.UNARY_TEST, DirectCompilerResult.mergeFDs(rs));
+    }
+
+//    @Override
+//    public DirectCompilerResult visitPositiveUnaryTest(FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext) {
+//        DirectCompilerResult result = visit(positiveUnaryTestContext.expression());
+//        if (result.resultType == BuiltInType.UNARY_TEST) {
+//            return result;
+////        } else if (result.resultType == BuiltInType.BOOLEAN) { //fixme TEMP
+////            return result;
+//        } else if (result.resultType == BuiltInType.RANGE) {
+//            // being a range, need the `in` operator.
+//            return createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.IN);
+//        } else if (result.resultType == BuiltInType.LIST) {
+//            return createListUnaryTestExpression(positiveUnaryTestContext, result);
+//        } else {
+//            return createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.EQ);
+//        }
+//    }
 
     @Override
     public DirectCompilerResult visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
@@ -710,6 +805,65 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return directCompilerResult;
     }
 
+    private DirectCompilerResult createListUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint) {
+        String originalText = ParserHelper.getOriginalText(ctx);
+
+        LambdaExpr initializer = new LambdaExpr();
+        initializer.setEnclosingParameters(true);
+        initializer.addParameter(new Parameter(new UnknownType(), "feelExprCtx"));
+        initializer.addParameter(new Parameter(new UnknownType(), "left"));
+        Statement lambdaBody = null;
+
+        MethodCallExpr expression = new MethodCallExpr(endpoint.getExpression(), "contains");
+        expression.addArgument(new NameExpr("left"));
+        lambdaBody = new ExpressionStmt(expression);
+
+        initializer.setBody(lambdaBody);
+        String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.UNARY_TEST, endpoint.getFieldDeclarations());
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;
+    }
+
+    private DirectCompilerResult createWildcardUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint) {
+        String originalText = ParserHelper.getOriginalText(ctx);
+
+        LambdaExpr initializer = new LambdaExpr();
+        initializer.setEnclosingParameters(true);
+        initializer.addParameter(new Parameter(new UnknownType(), "feelExprCtx"));
+        initializer.addParameter(new Parameter(new UnknownType(), "left"));
+        Statement lambdaBody = null;
+
+        lambdaBody = new ExpressionStmt(new CastExpr(TYPE_BOOLEAN, new EnclosedExpr(endpoint.getExpression())));
+
+        initializer.setBody(lambdaBody);
+        String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.UNARY_TEST, endpoint.getFieldDeclarations());
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;
+    }
+
+
     private DirectCompilerResult createEmptyUnaryTestExpression() {
         LambdaExpr initializer = new LambdaExpr();
         initializer.setEnclosingParameters(true);
@@ -750,7 +904,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         return DirectCompilerResult.of(
                 expression,
-                BuiltInType.LIST,
+                BuiltInType.BOOLEAN,
                 mergeFDs(relationalExpression, unaryTests));
     }
 
@@ -794,7 +948,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         return DirectCompilerResult.of(
                 expression,
-                BuiltInType.UNARY_TEST,
+                BuiltInType.BOOLEAN,
                 mergeFDs(value, expr));
     }
 
@@ -1231,8 +1385,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
-        String originalTextOfName = ParserHelper.getOriginalText(ctx.qualifiedName());
         DirectCompilerResult name = visit(ctx.qualifiedName());
+        // fixme this should be handled in DirectCompilerResult but we should bring it up the entire tree. use global for now -ev
+        this.subExpressionContainsWildcard = ctx.qualifiedName().n1.getText().equals("?");
         if (ctx.parameters() != null) {
             return buildFunctionCall(ctx, name, ctx.parameters());
         } else {

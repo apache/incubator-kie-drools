@@ -154,10 +154,19 @@ public class CompilerBytecodeLoader {
         }
         ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
 
-        fieldDeclarations.stream().sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+        fieldDeclarations.stream()
+                .filter(fd -> !isUnaryTest(fd))
+                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+        fieldDeclarations.stream()
+                .filter(fd -> isUnaryTest(fd))
+                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
         LOG.debug("{}", cu);
         return cu;
+    }
+
+    private boolean isUnaryTest(FieldDeclaration fd) {
+        return fd.getVariable(0).getName().asString().startsWith("UT");
     }
 
     private String generateRandomPackage() {
@@ -171,7 +180,7 @@ public class CompilerBytecodeLoader {
         public int compare(FieldDeclaration o1, FieldDeclaration o2) {
             String s1 = o1.getVariable(0).getNameAsString();
             String s2 = o2.getVariable(0).getNameAsString();
-            return s1.compareTo(s2);
+            return s1.length() - s2.length() < 5 ? s1.compareTo(s2) : s1.length() - s2.length() ;
         }
 
     }

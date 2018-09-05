@@ -319,9 +319,9 @@ positiveUnaryTests
 // #17 (root for decision tables)
 unaryTests
     :
-    Not_Key '(' positiveUnaryTests ')'
-    | positiveUnaryTests
-    | '-'
+    Not_Key '(' positiveUnaryTests ')' #unaryTests_negated
+    | positiveUnaryTests               #unaryTests_positive
+    | '-'                              #unaryTests_empty
     ;
 
 // #18

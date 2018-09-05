@@ -22,6 +22,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -256,7 +257,8 @@ public class DMNFEELHelper {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
         ParseTree tree = parser.unaryTests();
         DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
-        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, v.visit(tree));
+        DirectCompilerResult result = v.visit(tree);
+        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
     }
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
