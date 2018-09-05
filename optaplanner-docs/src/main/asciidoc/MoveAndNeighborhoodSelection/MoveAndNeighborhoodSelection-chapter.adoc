@@ -143,9 +143,12 @@ A `ChangeMove` is the finest grained move.
 
 [IMPORTANT]
 ====
-Almost every `moveSelector` configuration injected into a metaheuristic algorithm should include a changeMoveSelector or a custom implementation.
-This guarantees that every possible `Solution` can be reached through applying a number of moves in sequence (not taking <<scoreTrap,score traps>> into account). Of course, normally it is unioned with other, more coarse grained move selectors.
+Almost every `moveSelector` configuration injected into a metaheuristic algorithm should include a `changeMoveSelector`.
+This guarantees that every possible `Solution` can be reached in theory through applying a number of moves in sequence.
+Of course, normally it is unioned with other, more coarse grained move selectors.
 ====
+
+This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on a <<chainedPlanningVariable,chained>> variable.
 
 
 [[swapMoveSelector]]
@@ -155,7 +158,9 @@ The `SwapMove` selects two different planning entities and swaps the planning va
 
 image::MoveAndNeighborhoodSelection/swapMove.png[align="center"]
 
-Although a `SwapMove` on a single variable is essentially just two ``ChangeMove``s, it's often the winning step where the first of the two ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
+Although a `SwapMove` on a single variable is essentially just two ``ChangeMove``s,
+it's often the winning step in cases that the first of the two ``ChangeMove``s would not win
+because it leaves the solution in a state with broken hard constraints.
 For example: swapping the room of two lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
 
 Simplest configuration:
@@ -192,6 +197,7 @@ The `secondaryEntitySelector` is rarely needed: if it is not specified, entities
 If one or more `variableNameInclude` properties are specified, not all planning variables will be swapped, but only those specified.
 For example for course scheduling, specifying only `variableNameInclude` room will make it only swap room, not period.
 
+This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on any <<chainedPlanningVariable,chained>> variables.
 
 [[pillarChangeMoveSelector]]
 === pillarChangeMoveSelector
@@ -243,6 +249,8 @@ Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT rando
 ====
 
 The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
+This move selector does not support <<cacheType,phase or solver caching>>
+and step caching scales badly memory wise.
 
 
 [[pillarSwapMoveSelector]]
@@ -288,6 +296,8 @@ Advanced configuration:
 The `secondaryPillarSelector` is rarely needed: if it is not specified, entities from the same `pillarSelector` are swapped.
 
 The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and <<pillarChangeMoveSelector,pillarChangeMoveSelector>>.
+This move selector does not support <<cacheType,phase or solver caching>>
+and step caching scales badly memory wise.
 
 
 [[tailChainSwapMoveSelector]]
@@ -331,6 +341,7 @@ It uses a `valueSelector` instead of a `secondaryEntitySelector` to be able to i
 Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include almost every possible ``tailChainSwapMove``, experiments have shown that focusing on ``tailChainSwapMove``s increases efficiency.
 ====
 
+This move selector does not support <<cacheType,phase or solver caching>>.
 
 [[subChainChangeMoveSelector]]
 === subChainChangeMoveSelector (chained variables only)
@@ -372,10 +383,13 @@ The `subChainSelector` selects a number of entities, no less than `minimumSubCha
 ====
 If `minimumSubChainSize` is `1` (which is the default), this selector might select the same move as a ``ChangeMoveSelector``, at a far lower selection probability (because each move _type_ has the same selection chance by default (not every move instance) and there are far more `SubChainChangeMove` instances than `ChangeMove` instances). However, don't just remove the ``ChangeMoveSelector``, because experiments show that it's good to focus on ``ChangeMove``s.
 
-Furthermore, in a ``SubChainSwapMoveSelector``, setting `minimumSubChainSize` prevents swapping a subchain of size `1` with a subchain of at least size ``2``.
+Furthermore, in a ``SubChainSwapMoveSelector``, setting `minimumSubChainSize` prevents swapping a subchain of size `1` with a subchain of size ``2`` or more.
 ====
 
 The `selectReversingMoveToo` property (defaults to true) enables selecting the reverse of every subchain too.
+
+This move selector does not support <<cacheType,phase or solver caching>>
+and step caching scales badly memory wise.
 
 
 [[subChainSwapMoveSelector]]
@@ -418,6 +432,8 @@ Advanced configuration:
 The `secondarySubChainSelector` is rarely needed: if it is not specified, entities from the same `subChainSelector` are swapped.
 
 The other properties are explained in <<subChainChangeMoveSelector,subChainChangeMoveSelector>>.
+This move selector does not support <<cacheType,phase or solver caching>>
+and step caching scales badly memory wise.
 
 
 [[combiningMultipleMoveSelectors]]
@@ -606,7 +622,8 @@ If a selected entity cannot be downcasted, the `ValueSelector` is empty for that
 [[cacheType]]
 === ``CacheType``: Create Moves Ahead of Time or Just In Time
 
-A ``Selector``'s `cacheType` determines when a selection (such as a ``Move``, an entity, a value, ...) is created and how long it lives.
+A ``Selector``'s `cacheType` determines when a selection (such as a ``Move``, an entity, a value, ...)
+is created and how long it lives.
 
 Almost every `Selector` supports setting a ``cacheType``:
 
@@ -620,10 +637,14 @@ Almost every `Selector` supports setting a ``cacheType``:
 
 The following ``cacheType``s are supported:
 
-* `JUST_IN_TIME` (default): Not cached. Construct each selection (``Move``, ...) just before it's used. This scales up well in memory footprint.
-* ``STEP``: Cached. Create each selection (``Move``, ...) at the beginning of a step and cache them in a list for the remainder of the step. This scales up badly in memory footprint.
-* ``PHASE``: Cached. Create each selection (``Move``, ...) at the beginning of a solver phase and cache them in a list for the remainder of the phase. Some selections cannot be phase cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
-* ``SOLVER``: Cached. Create each selection (``Move``, ...) at the beginning of a `Solver` and cache them in a list for the remainder of the ``Solver``. Some selections cannot be solver cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
+* `JUST_IN_TIME` (default, recommended): Not cached. Construct each selection (``Move``, ...) just before it's used.
+This scales up well in memory footprint.
+* ``STEP``: Cached. Create each selection (``Move``, ...) at the beginning of a step and cache them in a list for the remainder of the step.
+This scales up badly in memory footprint.
+* ``PHASE``: Cached. Create each selection (``Move``, ...) at the beginning of a solver phase and cache them in a list for the remainder of the phase. Some selections cannot be phase cached because the list changes every step.
+This scales up badly in memory footprint, but has a slight performance gain.
+* ``SOLVER``: Cached. Create each selection (``Move``, ...) at the beginning of a `Solver` and cache them in a list for the remainder of the ``Solver``. Some selections cannot be solver cached because the list changes every step.
+This scales up badly in memory footprint, but has a slight performance gain.
 
 A `cacheType` can be set on composite selectors too:
 
@@ -638,7 +659,8 @@ A `cacheType` can be set on composite selectors too:
 ----
 
 Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher ``cacheType``.
-For example: a `STEP` cached `unionMoveSelector` can hold a `PHASE` cached ``changeMoveSelector``, but not a `STEP` cached ``changeMoveSelector``.
+For example: a `STEP` cached `unionMoveSelector` can contain a `PHASE` cached ``changeMoveSelector``,
+but it cannot contain a `STEP` cached ``changeMoveSelector``.
 
 
 [[selectionOrder]]
@@ -714,7 +736,8 @@ Notice that *it never creates a list of ``**Move**``s* and it generates random n
 [[cachedShuffledSelection]]
 ==== Cached Shuffled Selection
 
-This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it scales up badly in memory footprint and performance.
+This combination often wins for small use cases (1000 entities or less).
+Beyond that size, it scales up badly in memory footprint and performance.
 
 [source,xml,options="nowrap"]
 ----
@@ -775,8 +798,13 @@ This combination is often a worthy competitor for medium use cases, especially w
 
 There can be certain moves that you don't want to select, because:
 
-* The move is pointless and would only waste CPU time. For example, swapping two lectures of the same course will result in the same score and the same schedule because all lectures of one course are interchangeable (same teacher, same students, same topic).
-* Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>, so the solution would be infeasible but the score function doesn't check built-in hard constraints (for performance gain). For example, don't change a gym lecture to a room which is not a gym room.
+* The move is pointless and would only waste CPU time.
+For example, swapping two lectures of the same course will result in the same score and the same schedule because all lectures of one course are interchangeable (same teacher, same students, same topic).
+* Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>,
+so the solution would be infeasible but the score function doesn't check built-in hard constraints for performance reasons.
+For example, don't change a gym lecture to a room which is not a gym room.
+It's usually better to not use move filtering for such cases,
+because it allows the metaheuristics to temporarily break hard constraints to escape local optima.
 +
 [NOTE]
 ====
