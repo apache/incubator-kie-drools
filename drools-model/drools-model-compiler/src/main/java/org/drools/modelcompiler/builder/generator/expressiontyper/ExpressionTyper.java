@@ -589,17 +589,10 @@ public class ExpressionTyper {
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
         final Expression expression = arrayAccessExpr.getName();
         final Optional<TypedExpressionCursor> expressionCursor;
-        if(expression.isNameExpr()) {
-            expressionCursor = nameExpr(null, expression.asNameExpr(), false, originalTypeCursor);
-
-        } else if(expression instanceof FieldAccessExpr){
+        if (expression.isNameExpr() || expression.isFieldAccessExpr()) {
             expressionCursor = Optional.of(new TypedExpressionCursor(scope, originalTypeCursor));
-        }else {
+        } else {
             expressionCursor = Optional.of(new TypedExpressionCursor(expression, originalTypeCursor));
-        }
-
-        if (!expressionCursor.isPresent()) {
-            return Optional.empty();
         }
 
         TypedExpressionCursor nameExpr = expressionCursor.get();
