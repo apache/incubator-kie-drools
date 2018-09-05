@@ -1,7 +1,9 @@
 package org.drools.modelcompiler.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.phreak.AbstractReactiveObject;
@@ -19,6 +21,9 @@ public class Person extends AbstractReactiveObject {
     private int id = 0;
     private String likes;
     private Boolean employed;
+
+    private List<Address> addresses = new ArrayList<>();
+
 
     private BigDecimal money;
 
@@ -123,6 +128,19 @@ public class Person extends AbstractReactiveObject {
     public Map<Integer, Integer> getItems() {
         return items;
     }
+
+    public void addAddress(final Address address) {
+        addresses.add(address);
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(final List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
 
     @Override
     public boolean equals(Object o) {
