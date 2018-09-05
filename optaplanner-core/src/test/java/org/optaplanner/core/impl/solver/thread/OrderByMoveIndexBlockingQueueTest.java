@@ -137,10 +137,10 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
+        exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet or the next task finishes earlier
         executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.valueOf(-2)));
         assertResult("b0", false, queue.take());
         assertResult("b1", -1, queue.take());
-        exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
         try {
             queue.take();
             fail("There was no RuntimeException thrown.");

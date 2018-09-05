@@ -43,9 +43,9 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
      */
     public void startNextStep(int stepIndex) {
         synchronized (this) {
-            if (filterStepIndex == stepIndex) {
-                throw new IllegalStateException("The filterStepIndex (" + filterStepIndex
-                        + ") cannot be the same as the stepIndex (" + stepIndex + ")");
+            if (filterStepIndex >= stepIndex) {
+                throw new IllegalStateException("The old filterStepIndex (" + filterStepIndex
+                        + ") must be less than the stepIndex (" + stepIndex + ")");
             }
             filterStepIndex = stepIndex;
             MoveResult<Solution_> exceptionResult = innerQueue.stream().filter(MoveResult::hasThrownException)
