@@ -31,6 +31,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -250,7 +251,7 @@ public class DMNFEELHelper {
     public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx, Type columntype) {
         Map<String, Type> variableTypes = new HashMap<>();
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-            variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
+            variableTypes.put( entry.getKey(), dmnToFeelType((BaseDMNTypeImpl) entry.getValue()) );
         }
         variableTypes.put( "?", columntype );
 
@@ -259,6 +260,12 @@ public class DMNFEELHelper {
         DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
         DirectCompilerResult result = v.visit(tree);
         return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
+    }
+
+
+    public static Type dmnToFeelType(BaseDMNTypeImpl v) {
+        if (v.isCollection()) return BuiltInType.LIST;
+        else return v.getFeelType();
     }
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
