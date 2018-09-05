@@ -42,11 +42,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -1351,6 +1347,24 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(mario);
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testArrayAccess() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule test1\n" +
+                        "when\n" +
+                        "   $p1  : Person($name : name )\n" +
+                        "   Person(addresses[0].street == $p1.name)\n" +  // indexed
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(drl);
+
+        assertEquals(0, ksession.fireAllRules());
     }
 
     @Test

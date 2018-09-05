@@ -29,6 +29,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -122,12 +124,16 @@ public class DrlxParseUtil {
     }
 
     public static Expression findLeftLeafOfMethodCall(Expression expression) {
-        if(expression instanceof BinaryExpr) {
-            BinaryExpr be = (BinaryExpr)expression;
+        if (expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr) expression;
             return findLeftLeafOfMethodCall(be.getLeft());
-        } else if(expression instanceof MethodCallExpr) {
+        }
+        if (expression instanceof CastExpr) {
+            CastExpr ce = (CastExpr) expression;
+            return findLeftLeafOfMethodCall(ce.getExpression());
+        } else if (expression instanceof MethodCallExpr) {
             return expression;
-        } else if(expression instanceof FieldAccessExpr) {
+        } else if (expression instanceof FieldAccessExpr) {
             return expression;
         } else {
             throw new UnsupportedOperationException("Unknown expression: " + expression);
@@ -343,31 +349,51 @@ public class DrlxParseUtil {
         return drlxExpr;
     }
 
+    public static RemoveRootNodeResult findRemoveRootNodeViaScope(Expression expr) {
+        return findRootNodeViaScopeRec(expr, new LinkedList<>());
+    }
+
     public static Optional<Expression> findRootNodeViaScope(Expression expr) {
+        return findRemoveRootNodeViaScope(expr).rootNode;
+    }
+
+    public static RemoveRootNodeResult removeRootNode(Expression expr) {
+        return findRemoveRootNodeViaScope(expr);
+    }
+
+    private static RemoveRootNodeResult findRootNodeViaScopeRec(Expression expr, LinkedList<Expression> acc) {
+
+        if (expr.isArrayAccessExpr()) {
+            throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
+        }
 
         if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
-            return exprWithScope.traverseScope().map(DrlxParseUtil::findRootNodeViaScope).orElse(of(expr));
-        } else if(expr instanceof NameExpr) {
-            return of(expr);
+            return exprWithScope.traverseScope().map((Expression scope) -> {
+                acc.addLast(expr.clone());
+                return findRootNodeViaScopeRec(scope, acc);
+            }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
+        } else if (expr instanceof NameExpr) {
+            if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
+                ((NodeWithOptionalScope) acc.getLast()).setScope(null);
+
+                for (ListIterator<Expression> iterator = acc.listIterator(); iterator.hasNext(); ) {
+                    Expression e = iterator.next();
+                    NodeWithOptionalScope node = (NodeWithOptionalScope)e;
+                    if(iterator.hasNext()) {
+                        node.setScope(acc.get(iterator.nextIndex()));
+                    }
+                }
+
+                return new RemoveRootNodeResult(Optional.of(expr), acc.getFirst());
+            } else {
+                return new RemoveRootNodeResult(Optional.of(expr), expr);
+            }
+
         }
 
-        return Optional.empty();
-    }
-
-    public static RemoveRootNodeResult removeRootNode(Expression expr) {
-        Optional<Expression> rootNode = findRootNodeViaScope(expr);
-
-        if(rootNode.isPresent()) {
-            Expression root = rootNode.get();
-            Optional<Node> parent = root.getParentNode();
-
-            parent.ifPresent(p -> p.remove(root));
-
-            return new RemoveRootNodeResult( rootNode, (Expression) parent.orElse(expr));
-        }
-        return new RemoveRootNodeResult(rootNode, expr);
+        return new RemoveRootNodeResult(Optional.empty(), expr);
     }
 
     public static class RemoveRootNodeResult {
@@ -385,6 +411,32 @@ public class DrlxParseUtil {
 
         public Expression getWithoutRootNode() {
             return withoutRootNode;
+        }
+
+        @Override
+        public String toString() {
+            return "RemoveRootNodeResult{" +
+                    "rootNode=" + rootNode +
+                    ", withoutRootNode=" + withoutRootNode +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            RemoveRootNodeResult that = (RemoveRootNodeResult) o;
+            return Objects.equals(rootNode, that.rootNode) &&
+                    Objects.equals(withoutRootNode, that.withoutRootNode);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(rootNode, withoutRootNode);
         }
     }
 
@@ -575,7 +627,7 @@ public class DrlxParseUtil {
     /**
      * Mutates expression
      * such that, if it contains a <pre>nameRef</pre>, it is replaced and forcibly casted with <pre>(type) nameRef</pre>.
-     * 
+     *
      * @param expression a mutated expression
      */
     public static void forceCastForName(String nameRef, Type type, Expression expression) {

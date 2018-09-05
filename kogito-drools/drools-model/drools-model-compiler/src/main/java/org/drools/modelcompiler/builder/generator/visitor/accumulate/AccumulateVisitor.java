@@ -210,9 +210,19 @@ public abstract class AccumulateVisitor {
                         return Optional.empty();
                     }
                 });
-            } else if (accumulateFunctionParameter instanceof MethodCallExpr) {
+            } else if (accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr()) {
 
-                final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(accumulateFunctionParameter);
+                final Expression parameterConverted;
+                if(accumulateFunctionParameter.isArrayAccessExpr()) {
+                    parameterConverted = new ExpressionTyper(context, Object.class, null, false)
+                            .toTypedExpression(accumulateFunctionParameter)
+                    .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
+                    .getExpression();
+                } else {
+                    parameterConverted = accumulateFunctionParameter;
+                }
+
+                final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
 
                 final String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
 
@@ -236,16 +246,25 @@ public abstract class AccumulateVisitor {
 
                 final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, accumulateFunctionParameterStr);
 
-                newBinding = drlxParseResult.acceptWithReturnValue(result -> {
+                newBinding = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
+                       @Override
+                       public Optional<NewBinding> onSuccess(DrlxParseSuccess result) {
 
-                    result.setExprBinding(bindExpressionVariable);
-                    final MethodCallExpr binding = expressionBuilder.buildBinding(result);
-                    context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
-                    functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
+                           result.setExprBinding(bindExpressionVariable);
+                           final MethodCallExpr binding = expressionBuilder.buildBinding(result);
+                           context.addDeclarationReplacing(new DeclarationSpec(bindExpressionVariable, methodCallExprType));
+                           functionDSL.addArgument(context.getVarExpr(bindExpressionVariable));
 
-                    context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-                    return Optional.of(new NewBinding(Optional.of(result.getPatternBinding()), binding));
-                });
+                           context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
+                           return Optional.of(new NewBinding(Optional.of(result.getPatternBinding()), binding));
+                       }
+
+                       @Override
+                       public Optional<NewBinding> onFail(DrlxParseFail failure) {
+                           return Optional.empty();
+                       }
+                   }
+                );
 
             } else if (accumulateFunctionParameter instanceof NameExpr ) {
                 final Class<?> declarationClass = context
@@ -281,7 +300,7 @@ public abstract class AccumulateVisitor {
 
                 addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
             } else {
-                context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression" + accumulateFunctionParameterStr));
+                context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr));
                 return Optional.empty();
             }
         }
