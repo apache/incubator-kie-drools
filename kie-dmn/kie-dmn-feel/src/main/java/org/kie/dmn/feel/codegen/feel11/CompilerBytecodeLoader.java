@@ -158,7 +158,7 @@ public class CompilerBytecodeLoader {
                 .filter(fd -> !isUnaryTest(fd))
                 .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
         fieldDeclarations.stream()
-                .filter(fd -> isUnaryTest(fd))
+                .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
                 .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
         LOG.debug("{}", cu);
@@ -180,7 +180,9 @@ public class CompilerBytecodeLoader {
         public int compare(FieldDeclaration o1, FieldDeclaration o2) {
             String s1 = o1.getVariable(0).getNameAsString();
             String s2 = o2.getVariable(0).getNameAsString();
-            return s1.length() - s2.length() < 5 ? s1.compareTo(s2) : s1.length() - s2.length() ;
+            // heuristic to sort longest field names at the bottom.
+            // Should be substituted with proper dependency tracking
+            return s1.length() < 5 && s2.length() < 5 ? s1.compareTo(s2) : s1.length() - s2.length() ;
         }
 
     }

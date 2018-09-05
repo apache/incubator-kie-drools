@@ -150,7 +150,7 @@ public class CompiledFEELSemanticMappings {
 
         for (Object test : tests) {
             Boolean r = applyUnaryTest(ctx, test, target);
-            if (r == null || r) return false;
+            if (r != null && r) return false;
         }
 
         return true;

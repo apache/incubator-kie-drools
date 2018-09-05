@@ -814,7 +814,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         initializer.addParameter(new Parameter(new UnknownType(), "left"));
         Statement lambdaBody = null;
 
-        MethodCallExpr expression = new MethodCallExpr(endpoint.getExpression(), "contains");
+        MethodCallExpr expression = new MethodCallExpr(
+                new EnclosedExpr(new CastExpr(TYPE_LIST, endpoint.getExpression())),
+                "contains");
         expression.addArgument(new NameExpr("left"));
         lambdaBody = new ExpressionStmt(expression);
 
