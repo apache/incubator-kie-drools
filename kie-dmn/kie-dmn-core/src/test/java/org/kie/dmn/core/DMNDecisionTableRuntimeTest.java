@@ -56,7 +56,11 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-public class DMNDecisionTableRuntimeTest {
+public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
+
+    public DMNDecisionTableRuntimeTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testDecisionTableWithCalculatedResult() {

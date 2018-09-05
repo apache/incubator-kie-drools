@@ -185,12 +185,13 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newListNode( ctx, exprs );
     }
 
-    @Override
-    public BaseNode visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
-        BaseNode value = visit( ctx.val );
-        BaseNode list = visit( ctx.expressionList() );
-        return ASTBuilderFactory.newInNode( ctx, value, list );
-    }
+//    FIXME
+//    @Override
+//    public BaseNode visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
+//        BaseNode value = visit( ctx.val );
+//        BaseNode list = visit( ctx.expressionList() );
+//        return ASTBuilderFactory.newInNode( ctx, value, list );
+//    }
 
     @Override
     public BaseNode visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
@@ -208,23 +209,23 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
-// FIXME OLD
-//    @Override
-//    public BaseNode visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
-//        List<BaseNode> tests = new ArrayList<>();
-//        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
-//            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ||
-//                    ctx.getChild( i ) instanceof FEEL_1_1Parser.PrimaryContext) {
-//                tests.add( visit( ctx.getChild( i ) ) );
-//            }
-//        }
-//        return ASTBuilderFactory.newListNode( ctx, tests );
-//    }
+    @Override
+    public BaseNode visitPositiveUnaryTests(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
+        List<BaseNode> tests = new ArrayList<>();
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
+            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.PositiveUnaryTestContext ||
+                    ctx.getChild( i ) instanceof FEEL_1_1Parser.PrimaryContext) {
+                tests.add( visit( ctx.getChild( i ) ) );
+            }
+        }
+        return ASTBuilderFactory.newListNode( ctx, tests );
+    }
 
+//    FIXME
     @Override
     public BaseNode visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
         BaseNode value = visit( ctx.val );
-        BaseNode list = visit( ctx.simpleUnaryTests() );
+        BaseNode list = visit( ctx.positiveUnaryTests() );
         return ASTBuilderFactory.newInNode( ctx, value, list );
     }
     
@@ -491,47 +492,7 @@ public class ASTBuilderVisitor
 
     private BaseNode buildFunctionCall(ParserRuleContext ctx, BaseNode name, ListNode params) {
         String functionName = getFunctionName( name );
-        if( "not".equals( functionName ) ) {
-            return buildNotCall( ctx, name, params );
-        } else {
-            return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-        }
-    }
-
-    private BaseNode buildNotCall(ParserRuleContext ctx, BaseNode name, ListNode params) {
-        // if a not() call is found, we have to differentiate between the boolean function
-        // and the unary tests operator
-        if( params.getElements().size() == 1 ) {
-            // if it is a single parameter, we need to check if the type is boolean
-            BaseNode param = params.getElements().get( 0 );
-            if( param instanceof UnaryTestNode ) {
-                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
-            } else if( param instanceof BooleanNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof NameRefNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof QuantifiedExpressionNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof InstanceOfNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof BetweenNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof InNode ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if( param instanceof InfixOpNode && ((InfixOpNode)param).isBoolean() ) {
-                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-            } else if (param instanceof FunctionInvocationNode) {
-                return ASTBuilderFactory.newFunctionInvocationNode(ctx, name, params);
-            } else if( param instanceof RangeNode ) {
-                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
-            } else if( param instanceof DashNode ) {
-                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
-            } else {
-                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
-            }
-        } else {
-            return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
-        }
+        return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
     }
 
     @Override

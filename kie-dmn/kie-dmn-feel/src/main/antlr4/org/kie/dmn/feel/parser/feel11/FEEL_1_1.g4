@@ -208,8 +208,7 @@ comparisonExpression
 relationalExpression
 	:	additiveExpression                                                                           #relExpressionAdd
 	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
-	|   val=relationalExpression in_key '(' expressionList ')'                                       #relExpressionValueList
-	|   val=relationalExpression in_key '(' simpleUnaryTests ')'                                     #relExpressionTestList
+	|   val=relationalExpression in_key '(' positiveUnaryTests ')'                                     #relExpressionTestList
     |   val=relationalExpression in_key expression                                                   #relExpressionValue        // includes simpleUnaryTest
     |   val=relationalExpression instance_key of_key type                                            #relExpressionInstanceOf
 	;
@@ -247,10 +246,7 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:   //not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
-	//|	not_key unaryExpression           #logicalNegation
-//	|
-	  primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
+	: primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary
@@ -293,14 +289,12 @@ simplePositiveUnaryTest
     | op='='  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='!=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
-    //| null_key           #positiveUnaryTestNull
-    //| '-'                #positiveUnaryTestDash
     ;
 
 
 // #13
 simplePositiveUnaryTests
-    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )* 
+    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
     ;
 
 
@@ -324,8 +318,9 @@ positiveUnaryTests
 
 // #17 (root for decision tables)
 unaryTests
-    : positiveUnaryTests
-    | Not_Key '(' positiveUnaryTests ')'
+    :
+    Not_Key '(' positiveUnaryTests ')'
+    | positiveUnaryTests
     | '-'
     ;
 
@@ -368,11 +363,12 @@ qualifiedName
 
 nameRef
     : ( st=Identifier { helper.startVariable( $st ); }
-       | not_st=Not_Key { helper.startVariable( $not_st ); } )  nameRefOtherToken*
+       | not_st=Not_Key { helper.startVariable( $not_st ); }
+       )  nameRefOtherToken*
     ;
 
-nameRefOtherToken
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!')
+nameRefOtherToken // added some special cases here: we should rework a bit the lexing part, though --ev
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!'|'/'|'*'|'in'|',')
     ;
 
 /********************************

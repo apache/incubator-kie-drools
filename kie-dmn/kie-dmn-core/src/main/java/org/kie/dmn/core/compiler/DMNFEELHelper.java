@@ -254,7 +254,7 @@ public class DMNFEELHelper {
         variableTypes.put( "?", columntype );
 
         FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
-        ParseTree tree = parser.expressionList();
+        ParseTree tree = parser.unaryTests();
         DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
         return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, v.visit(tree));
     }
