@@ -104,6 +104,7 @@ import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
+import org.drools.model.patterns.ExistentialPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.attributes.LambdaEnabled;
@@ -447,11 +448,11 @@ public class KiePackagesBuilder {
                 RuleConditionElement source;
                 if(accumulatePattern.isCompositePatterns()) {
                     CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
-                    GroupElement ge = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
+                    GroupElement allSubConditions = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
                     for(Condition c : compositePatterns.getSubConditions()) {
-                        ge.addChild(buildPattern(ctx, group, c));
+                        recursivelyAddConditions(ctx, group, allSubConditions, c);
                     }
-                    source = ge;
+                    source = allSubConditions;
                 } else {
                     source = buildPattern(ctx, group, condition );
                 }
@@ -496,6 +497,16 @@ public class KiePackagesBuilder {
                 }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private void recursivelyAddConditions(RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition c) {
+        if (c instanceof CompositePatterns) {
+            buildCompositePatterns(ctx, group, allSubConditions, c);
+        } else if (c instanceof ExistentialPatternImpl) {
+            buildExistentialPatternImpl(ctx, group, allSubConditions, c);
+        } else if (c instanceof PatternImpl) {
+            allSubConditions.addChild(buildPattern(ctx, group, c));
+        }
     }
 
     private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
@@ -574,7 +585,7 @@ public class KiePackagesBuilder {
                                  false ); // TODO: query.isAbductive() );
     }
 
-    private Pattern buildPattern( RuleContext ctx, GroupElement group, Condition condition ) {
+    private Pattern buildPattern(RuleContext ctx, GroupElement group, Condition condition) {
         org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable() );
 
@@ -598,6 +609,16 @@ public class KiePackagesBuilder {
         addConstraintsToPattern( ctx, pattern, modelPattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
         return pattern;
+    }
+
+    private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
+        ExistentialPatternImpl existentialPattern = (ExistentialPatternImpl) condition;
+        recursivelyAddConditions(ctx, group, allSubConditions, existentialPattern.getSubConditions().iterator().next());
+    }
+
+    private void buildCompositePatterns( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
+        CompositePatterns compositePatterns = (CompositePatterns) condition;
+        compositePatterns.getSubConditions().forEach(sc ->  recursivelyAddConditions(ctx, group, allSubConditions, sc));
     }
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
