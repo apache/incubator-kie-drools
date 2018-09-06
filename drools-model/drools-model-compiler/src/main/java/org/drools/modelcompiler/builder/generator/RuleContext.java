@@ -177,7 +177,7 @@ public class RuleContext {
     public void addGlobalDeclarations(Map<String, Class<?>> globals) {
         for(Map.Entry<String, Class<?>> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
-            addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue()));
+            addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
     }
 
@@ -198,7 +198,7 @@ public class RuleContext {
     }
 
     public DeclarationSpec addDeclaration( String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
-        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, pattern, declarationSource, Optional.empty()));
+        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, pattern, declarationSource, Optional.empty(), false));
     }
 
     public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, String variableName) {
