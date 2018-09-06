@@ -32,6 +32,7 @@ import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class ScorecardsKModuleTest {
 
     @Before
