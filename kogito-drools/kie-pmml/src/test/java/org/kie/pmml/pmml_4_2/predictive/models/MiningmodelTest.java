@@ -307,9 +307,9 @@ public class MiningmodelTest extends DroolsAbstractPMMLTest {
                 .build();
         PMML4Result resultHolder = helper.submitRequest(request);
 
-        Double sepal_length = resultHolder.getResultValue("WeightedAvg_Sepal_length", "value",Double.class).orElse(null);
+        Double sepal_length = resultHolder.getResultValue("Sepal_length", "value",Double.class).orElse(null);
         assertEquals(7.1833385,sepal_length,1e-6);
-        Double weight = resultHolder.getResultValue("WeightedAvg_Sepal_length", "weight", Double.class).orElse(null);
+        Double weight = resultHolder.getResultValue("Sepal_length", "weight", Double.class).orElse(null);
         assertEquals(1.00, weight, 1e-2);
     }
 

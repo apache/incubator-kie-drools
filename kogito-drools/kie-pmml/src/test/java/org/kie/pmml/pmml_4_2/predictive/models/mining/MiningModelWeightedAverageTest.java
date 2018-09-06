@@ -16,11 +16,13 @@
 
 package org.kie.pmml.pmml_4_2.predictive.models.mining;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,11 +32,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(Parameterized.class)
-@Ignore("RHPAM-1500")
 public class MiningModelWeightedAverageTest {
 
     private static final String PMML_SOURCE = "org/kie/pmml/pmml_4_2/test_mining_model_weighted_avg_regression.pmml";
@@ -79,6 +77,7 @@ public class MiningModelWeightedAverageTest {
         input2.ifPresent(x -> rdb.addParameter(INPUT2_FIELD_NAME, x, Double.class));
         input3.ifPresent(x -> rdb.addParameter(INPUT3_FIELD_NAME, x, Double.class));
         PMMLRequestData request = rdb.build();
+
         helper.submitRequest(request);
         helper.getResultData().iterator().forEachRemaining(rd -> {
             assertEquals(request.getCorrelationId(), rd.getCorrelationId());
