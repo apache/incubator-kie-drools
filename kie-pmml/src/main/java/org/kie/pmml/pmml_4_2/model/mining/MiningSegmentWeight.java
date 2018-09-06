@@ -63,12 +63,16 @@ public class MiningSegmentWeight {
 		return segmentValue;
 	}
 
+	public Double getSegmentValueAsDouble() {
+		return segmentValue != null ? segmentValue.doubleValue() : null;
+	}
+
 	public void setSegmentValue(Number segmentValue) {
 		this.segmentValue = segmentValue;
 	}
 	
 	public Number getWeightedSegmentValue() {
-		return this.segmentValue.doubleValue() * this.weight;
+		return segmentValue != null ? segmentValue.doubleValue() * weight : null;
 	}
 
 	@Override
