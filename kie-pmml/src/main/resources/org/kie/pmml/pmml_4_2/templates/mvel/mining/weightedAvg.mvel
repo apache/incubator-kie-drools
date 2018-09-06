@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.FactHandle;
 @code{ int salienceValue; }
 @code{ String nextSegmentId; }
 
-declare WeightedAvg_@{miningModel.targetField}
+declare @{miningModel.targetField}
    value: Number
    weight: Double
 end
@@ -74,7 +74,7 @@ end
 rule "Set result value for segment"
 when
    $segExec: SegmentExecution( $segmId: segmentationId, $segId: segmentId, state == SegmentExecutionState.COMPLETE, $res: result != null ) from childModelSegments
-   $result: PMML4Result( this == $res, resultVariables != null ) from results
+   $result: PMML4Result( segmentationId != null, segmentId != null, this == $res, resultVariables != null ) from results
    $msw: MiningSegmentWeight( segmentationId == $segmId, segmentId == $segId, $targ: targetName != null )
 then
    Number n = $result.getResultValue($targ,"value",Number.class).orElse(null);
@@ -83,22 +83,42 @@ then
    }
 end
 
-
 rule "Calculate weighted average"
 salience -100
 when
    forall( SegmentExecution( state == SegmentExecutionState.COMPLETE || == SegmentExecutionState.ERROR ) )
-   accumulate( MiningSegmentWeight( $wt: weight, $val: weightedSegmentValue ); $sweight: sum($wt), $svalue: sum($val) )
-   $reslt: PMML4Result( segmentId == null, resultVariables == null || "WeightedAvg_@{miningModel.targetField}" not memberOf resultVariables.keySet() ) from results
+   accumulate( MiningSegmentWeight( $wt: weight != null, segmentValue != null ); $sweight: sum($wt) )
+   accumulate( MiningSegmentWeight( $w: weight != null, segmentValue != null, $val: segmentValueAsDouble ); $svalue: sum( $w / $sweight * $val ) )
+   $reslt: PMML4Result( segmentId == null, resultVariables == null ) from results
 then
-   WeightedAvg_@{miningModel.targetField} target = new WeightedAvg_@{miningModel.targetField}();
+   @{miningModel.targetField} target = new @{miningModel.targetField}();
    target.setValue($svalue);
    target.setWeight($sweight);
    FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
    $reslt.setResultCode("OK");
-   $reslt.addResultVariable("WeightedAvg_@{miningModel.targetField}",target);
+   $reslt.addResultVariable("@{miningModel.targetField}",target);
    results.update(fh,$reslt);
 end
+
+rule "Calculate weighted average updating @{miningModel.targetField}"
+salience -100
+when
+   forall( SegmentExecution( state == SegmentExecutionState.COMPLETE || == SegmentExecutionState.ERROR ) )
+   accumulate( MiningSegmentWeight( $wt: weight != null, segmentValue != null ); $sweight: sum($wt) )
+   accumulate( MiningSegmentWeight( $w: weight != null, segmentValue != null, $val: segmentValueAsDouble ); $svalue: sum( $w / $sweight * $val ) )
+   $reslt: PMML4Result( segmentId == null, $res: resultVariables ) from results
+   not @{packageName}.@{miningModel.targetField}() from $res["@{miningModel.targetField}"]
+then
+   @{miningModel.targetField} target = new @{miningModel.targetField}();
+   target.setValue($svalue);
+   target.setWeight($sweight);
+   FactHandle fh = ((org.drools.core.datasources.InternalDataSource)results).getFactHandleForObject($reslt);
+   $reslt.setResultCode("OK");
+   $reslt.addResultVariable("@{miningModel.targetField}",target);
+   results.update(fh,$reslt);
+end
+
+
 
 
 rule "Insert Segment Weights"
@@ -107,6 +127,23 @@ when
 then
    @foreach{ childSegment: childSegments }
    insert( new MiningSegmentWeight( "@{childSegment.owner.segmentationId}", "@{childSegment.segmentId}", "@{childSegment.targetForWeighting}", @{childSegment.weight} ) );
+   @end{}
+end
+
+rule "Insert Segment Executions"
+salience 1000
+when
+   model: @{miningModel.miningPojoClassName}( ) from miningModelPojo
+then
+   SegmentExecution segEx = null;
+   @foreach{ childSegment: childSegments }
+   segEx = new SegmentExecution( model.getCorrelationId(),
+                                 "@{childSegment.owner.segmentationId}",
+                                 "@{childSegment.segmentId}",
+                                 @{childSegment.segmentIndex},
+                                 "@{childSegment.segmentRuleUnit}");
+   segEx.setState(SegmentExecutionState.UNKNOWN);
+   childModelSegments.insert(segEx);
    @end{}
 end
 
@@ -144,18 +181,16 @@ rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 salience @{salienceValue}
 when
    model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} ) from miningModelPojo
+   segEx: SegmentExecution( segmentId == "@{childSegment.segmentId}", state == SegmentExecutionState.UNKNOWN ) from childModelSegments
 then
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
    @foreach{ field: childSegment.model.miningFields }
    rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );
    @end{}
-   SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
-                                                  "@{childSegment.owner.segmentationId}",
-                                                  "@{childSegment.segmentId}",
-                                                   @{childSegment.segmentIndex},
-                                                  "@{childSegment.segmentRuleUnit}");
-   segEx.setRequestData(rqstData);
-   childModelSegments.insert(segEx);
+   modify( segEx ) {
+      setRequestData(rqstData),
+      setState(SegmentExecutionState.WAITING)
+   };
 end
 
 
