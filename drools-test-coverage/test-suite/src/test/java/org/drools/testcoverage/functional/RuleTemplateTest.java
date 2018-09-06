@@ -19,7 +19,6 @@ package org.drools.testcoverage.functional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Customer;
+import org.drools.testcoverage.common.model.Food;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -45,6 +45,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class RuleTemplateTest {
@@ -140,5 +142,20 @@ public class RuleTemplateTest {
         final Collection messages = kSession.getObjects(object -> object instanceof Message);
         Assertions.assertThat(messages).hasSize(1);
         Assertions.assertThat(messages).hasOnlyOneElementSatisfying(message -> ((Message) message).getMessage().compareTo("Peter satisfied"));
+    }
+
+    @Test
+    public void testGuidedRuleTemplateWithVarOnlyInLHS() throws Exception {
+        // RHDM-719
+        final String resourceName = "food.template";
+        final KieResources kieResources = KieServices.get().getResources();
+        final Resource resource = kieResources.newClassPathResource( resourceName, RuleTemplateTest.class );
+        resource.setResourceType( ResourceType.TEMPLATE );
+        final KieBase kBase = KieBaseUtil.getKieBaseFromResources( kieBaseTestConfiguration, resource );
+
+        final KieSession kSession = kBase.newKieSession();
+
+        kSession.insert(new Food( "Orange", 1 ));
+        assertEquals(1, kSession.fireAllRules());
     }
 }
