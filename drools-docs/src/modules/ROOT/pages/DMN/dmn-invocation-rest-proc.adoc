@@ -1,0 +1,243 @@
+[id='dmn-invocation-rest-proc']
+= Calling a DMN service on a remote server using REST APIs
+
+Directly interacting with the REST endpoints of {KIE_SERVER} provides the most separation between the calling code and the decision logic definition. The calling code is completely free of direct dependencies, and you can implement it in an entirely different development platform such as `node.js` or `.net`. The examples in this section demonstrate Nix-style curl commands but provide relevant information to adapt to any REST client.
+
+.Prerequisites
+* {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
+ifdef::DM,PAM[]
+{URL_PLANNING_INSTALL}[_{PLANNING_INSTALL}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_installationandsetup>>.
+endif::[]
+* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model. For information about project packaging and deployment, see
+ifdef::DM,PAM[]
+{URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]
+* You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
+
+.Procedure
+. Determine the base URL for accessing the {KIE_SERVER} REST API endpoints. This requires knowing the following values (with the default local deployment values as an example):
++
+--
+* Host (`localhost`)
+* Port (`8080`)
+* Root context (`kie-server`)
+* Base REST path (`services/rest/server`)
+
+Local deployment example URL:
+[source]
+----
+http://localhost:8080/kie-server/services/rest/server
+----
+--
+. Determine user authentication requirements.
++
+When users are defined directly in the {KIE_SERVER} configuration, BasicAuth is used which requires the user name and password. Successful requests require that the user have the `kie-server` role.
++
+The following example demonstrates how to add credentials to a curl request:
++
+[source]
+----
+curl -u username:password <request>
+----
++
+If {KIE_SERVER} is configured with Red Hat Single Sign-On, the request must include a bearer token:
++
+[source,java]
+----
+curl -H "Authorization: bearer $TOKEN" <request>
+----
+
+. Specify the format of the request and response. The REST API endpoints work with both JSON and XML formats and are set using request headers:
++
+.JSON
+[source]
+----
+curl -H "accept: application/json" -H "content-type: application/json"
+----
++
+.XML
+[source]
+----
+curl -H "accept: application/xml" -H "content-type: application/xml"
+----
+
+. (Optional) Query the container for a list of deployed decision models:
++
+--
+*[GET]* `/containers/_CONTAINER_ID_/dmn`
+
+Example curl request:
+
+[source]
+----
+curl -u krisv:krisv -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/MovieDMNContainer/dmn"
+----
+
+Sample XML output:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK models successfully retrieved from container 'MovieDMNContainer'">
+    <dmn-model-info-list>
+        <model>
+            <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+            <model-name>dmn-movieticket-ageclassification</model-name>
+            <model-id>_99</model-id>
+            <decisions>
+                <dmn-decision-info>
+                    <decision-id>_3</decision-id>
+                    <decision-name>AgeClassification</decision-name>
+                </dmn-decision-info>
+            </decisions>
+        </model>
+    </dmn-model-info-list>
+</response>
+----
+
+Sample JSON output:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK models successfully retrieved from container 'MovieDMNContainer'",
+  "result" : {
+    "dmn-model-info-list" : {
+      "models" : [ {
+        "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+        "model-name" : "dmn-movieticket-ageclassification",
+        "model-id" : "_99",
+        "decisions" : [ {
+          "decision-id" : "_3",
+          "decision-name" : "AgeClassification"
+        } ]
+      } ]
+    }
+  }
+}
+----
+--
+. Execute the model:
++
+--
+*[POST]* `/containers/_CONTAINER_ID_/dmn`
+
+Example curl request:
+
+[source]
+----
+curl -u krisv:krisv -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/MovieDMNContainer/dmn" -d "{ \"model-namespace\" : \"http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a\", \"model-name\" : \"dmn-movieticket-ageclassification\", \"decision-name\" : [ ], \"decision-id\" : [ ], \"dmn-context\" : {\"Age\" : 66}}"
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+  "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+  "model-name" : "dmn-movieticket-ageclassification",
+  "decision-name" : [ ],
+  "decision-id" : [ ],
+  "dmn-context" : {"Age" : 66}
+}
+----
+
+Example XML request (JAXB style):
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn-evaluation-context>
+    <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+    <model-name>dmn-movieticket-ageclassification</model-name>
+    <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <type>MAP</type>
+        <element xsi:type="jaxbStringObjectPair" key="Age">
+            <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">66</value>
+        </element>
+    </dmn-context>
+</dmn-evaluation-context>
+----
+
+[NOTE]
+====
+Regardless of the request format, the request requires the following elements:
+
+* Model namespace
+* Model name
+* Context object containing input values
+====
+
+Example JSON response:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK from container 'MovieDMNContainer'",
+  "result" : {
+    "dmn-evaluation-result" : {
+      "messages" : [ ],
+      "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+      "model-name" : "dmn-movieticket-ageclassification",
+      "decision-name" : [ ],
+      "dmn-context" : {
+        "Age" : 66,
+        "AgeClassification" : "Senior"
+      },
+      "decision-results" : {
+        "_3" : {
+          "messages" : [ ],
+          "decision-id" : "_3",
+          "decision-name" : "AgeClassification",
+          "result" : "Senior",
+          "status" : "SUCCEEDED"
+        }
+      }
+    }
+  }
+}
+----
+
+Example XML (JAXB format) response:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK from container 'MovieDMNContainer'">
+      <dmn-evaluation-result>
+            <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+            <model-name>dmn-movieticket-ageclassification</model-name>
+            <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                  <type>MAP</type>
+                  <element xsi:type="jaxbStringObjectPair" key="Age">
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">66</value>
+                  </element>
+                  <element xsi:type="jaxbStringObjectPair" key="AgeClassification">
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">Senior</value>
+                  </element>
+            </dmn-context>
+            <messages/>
+            <decisionResults>
+                  <entry>
+                        <key>_3</key>
+                        <value>
+                              <decision-id>_3</decision-id>
+                              <decision-name>AgeClassification</decision-name>
+                              <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Senior</result>
+                              <messages/>
+                              <status>SUCCEEDED</status>
+                        </value>
+                  </entry>
+            </decisionResults>
+      </dmn-evaluation-result>
+</response>
+----
+--
