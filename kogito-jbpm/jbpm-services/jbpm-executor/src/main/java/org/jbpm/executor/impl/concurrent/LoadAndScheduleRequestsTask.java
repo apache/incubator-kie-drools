@@ -44,29 +44,33 @@ public class LoadAndScheduleRequestsTask implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Load of jobs from storage started at {}", new Date());
-        List<RequestInfo> loaded = executorStoreService.loadRequests();
-        
-        if (!loaded.isEmpty()) {
-            logger.info("Found {} jobs that are waiting for execution, scheduling them...", loaded.size());
-            int scheduledCounter = 0;
-            for (RequestInfo request : loaded) {
-                
-                PrioritisedRunnable job = new PrioritisedRunnable(request.getId(), request.getPriority(), request.getTime(), jobProcessor);
-                long delay = request.getTime().getTime() - System.currentTimeMillis();
-                logger.debug("Scheduling with delay {} for request {}", delay, request.getId());
-                boolean scheduled = ((PrioritisedScheduledThreadPoolExecutor)scheduler).scheduleNoDuplicates(job, delay, TimeUnit.MILLISECONDS);
-                if (scheduled) {
-                    logger.debug("Request {} has been successfully scheduled", request.getId());
-                    scheduledCounter++;
-                } else {
-                    logger.debug("Request {} has not been scheduled as it's already there", request.getId());
+        try {
+            logger.info("Load of jobs from storage started at {}", new Date());
+            List<RequestInfo> loaded = executorStoreService.loadRequests();
+            
+            if (!loaded.isEmpty()) {
+                logger.info("Found {} jobs that are waiting for execution, scheduling them...", loaded.size());
+                int scheduledCounter = 0;
+                for (RequestInfo request : loaded) {
+                    
+                    PrioritisedRunnable job = new PrioritisedRunnable(request.getId(), request.getPriority(), request.getTime(), jobProcessor);
+                    long delay = request.getTime().getTime() - System.currentTimeMillis();
+                    logger.debug("Scheduling with delay {} for request {}", delay, request.getId());
+                    boolean scheduled = ((PrioritisedScheduledThreadPoolExecutor)scheduler).scheduleNoDuplicates(job, delay, TimeUnit.MILLISECONDS);
+                    if (scheduled) {
+                        logger.debug("Request {} has been successfully scheduled", request.getId());
+                        scheduledCounter++;
+                    } else {
+                        logger.debug("Request {} has not been scheduled as it's already there", request.getId());
+                    }
                 }
+                logger.info("{} jobs have been successfully scheduled", scheduledCounter);
             }
-            logger.info("{} jobs have been successfully scheduled", scheduledCounter);
+            
+            logger.info("Load of jobs from storage finished at {}", new Date());
+        } catch (Throwable e) {
+            logger.error("Unexpected error while synchronizing with data base for jobs", e);
         }
-        
-        logger.info("Load of jobs from storage finished at {}", new Date());
     }
 
 }
