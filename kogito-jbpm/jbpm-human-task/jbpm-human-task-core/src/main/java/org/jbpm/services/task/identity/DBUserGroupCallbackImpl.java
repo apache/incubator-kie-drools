@@ -146,7 +146,7 @@ public class DBUserGroupCallbackImpl extends AbstractUserGroupInfo implements Us
 				!this.config.containsKey(PRINCIPAL_QUERY) || !this.config.containsKey(ROLES_QUERY) 
 				|| !this.config.containsKey(USER_ROLES_QUERY)) {
 			throw new IllegalArgumentException("All properties must be given ("+ DS_JNDI_NAME + ","
-					+ USER_ROLES_QUERY +"," + ROLES_QUERY +"," +USER_ROLES_QUERY +")");
+					+ PRINCIPAL_QUERY +"," + ROLES_QUERY +"," +USER_ROLES_QUERY +")");
 		}
 		String jndiName = this.config.getProperty(DS_JNDI_NAME, "java:/DefaultDS");
 		try {
