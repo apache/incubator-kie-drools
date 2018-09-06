@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.ClockType;
 import org.drools.core.common.EventFactHandle;
@@ -724,4 +725,64 @@ public class CepTest extends BaseModelTest {
             this.duration = duration;
         }
     }
+
+    @Test
+    public void testTimerWithMillisPrecision() {
+        final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                "declare MyEvent\n" +
+                "    @role( event )\n" +
+                "    @timestamp( timestamp )\n" +
+                "    @expires( 10ms )\n" +
+                "end\n" +
+                "\n" +
+                "rule R\n" +
+                "    timer (int: 0 1; start=$startTime, repeat-limit=0 )\n" +
+                "    when\n" +
+                "       $event: MyEvent ($startTime : timestamp)\n" +
+                "       $counter : AtomicInteger(get() > 0)\n" +
+                "    then\n" +
+                "        System.out.println(\"RG_TEST_TIMER WITH \" + $event + \" AND \" + $counter);\n" +
+                "        modify($counter){\n" +
+                "            decrementAndGet()\n" +
+                "        }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), drl);
+
+        try {
+            final long now = 1000;
+            final PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            sessionClock.setStartupTime(now - 10);
+
+            final AtomicInteger counter = new AtomicInteger(1);
+            final MyEvent event1 = new MyEvent(now - 8);
+            final MyEvent event2 = new MyEvent(now - 7);
+            final MyEvent event3 = new MyEvent(now - 6);
+
+            ksession.insert(counter);
+            ksession.insert(event1);
+            ksession.insert(event2);
+            ksession.insert(event3);
+
+            ksession.fireAllRules(); // Nothing Happens
+            assertEquals(1, counter.get());
+
+            sessionClock.advanceTime(10, TimeUnit.MILLISECONDS);
+            ksession.fireAllRules();
+
+            assertEquals(0, counter.get());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class MyEvent {
+        private long timestamp;
+        public MyEvent(final long timestamp ) { this.timestamp = timestamp; }
+        public long getTimestamp() { return timestamp; }
+        public void setTimestamp(final long timestamp ) { this.timestamp = timestamp; }
+        public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
+    }
+
 }
