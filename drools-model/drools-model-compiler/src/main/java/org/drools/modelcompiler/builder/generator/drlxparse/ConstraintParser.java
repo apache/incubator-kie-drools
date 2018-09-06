@@ -105,8 +105,7 @@ public class ConstraintParser {
         String expression = constraint.getExpression();
         String exprId;
         if ( GENERATE_EXPR_ID ) {
-            String drlConstraint =  bindingId + "-" +(hasBind ? expression.substring(expression.indexOf(':') + 1).trim() : expression);
-            exprId = context.getExprId(patternType, drlConstraint);
+            exprId = context.getExprId( patternType, hasBind ? expression.substring( expression.indexOf( ':' )+1 ).trim() : expression );
         }
 
         if ( drlxExpr instanceof BinaryExpr ) {
