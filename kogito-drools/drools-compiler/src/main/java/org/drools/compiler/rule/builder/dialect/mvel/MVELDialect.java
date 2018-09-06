@@ -497,11 +497,11 @@ public class MVELDialect
                                  null);
     }
 
-    public AnalysisResult analyzeExpression(final PackageBuildContext context,
-                                            final BaseDescr descr,
-                                            final Object content,
-                                            final BoundIdentifiers availableIdentifiers,
-                                            final Map<String, Class<?>> localTypes) {
+    public static AnalysisResult analyzeExpression(final PackageBuildContext context,
+                                                   final BaseDescr descr,
+                                                   final Object content,
+                                                   final BoundIdentifiers availableIdentifiers,
+                                                   final Map<String, Class<?>> localTypes) {
 
         AnalysisResult result = null;
         // the following is required for proper error handling
@@ -554,16 +554,16 @@ public class MVELDialect
                                                   kcontextClass);
     }
 
-    public MVELCompilationUnit getMVELCompilationUnit(final String expression,
-                                                      final AnalysisResult analysis,
-                                                      Declaration[] previousDeclarations,
-                                                      Declaration[] localDeclarations,
-                                                      final Map<String, Class<?>> otherInputVariables,
-                                                      final PackageBuildContext context,
-                                                      String contextIndeifier,
-                                                      Class kcontextClass,
-                                                      boolean readLocalsFromTuple,
-                                                      MVELCompilationUnit.Scope scope) {
+    public static MVELCompilationUnit getMVELCompilationUnit(final String expression,
+                                                             final AnalysisResult analysis,
+                                                             Declaration[] previousDeclarations,
+                                                             Declaration[] localDeclarations,
+                                                             final Map<String, Class<?>> otherInputVariables,
+                                                             final PackageBuildContext context,
+                                                             String contextIndeifier,
+                                                             Class kcontextClass,
+                                                             boolean readLocalsFromTuple,
+                                                             MVELCompilationUnit.Scope scope) {
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
 
@@ -674,7 +674,6 @@ public class MVELDialect
                                        otherIdentifiers,
                                        inputIdentifiers,
                                        inputTypes,
-                                       languageLevel,
                                        ((MVELAnalysisResult) analysis).isTypesafe(),
                                        readLocalsFromTuple);
     }

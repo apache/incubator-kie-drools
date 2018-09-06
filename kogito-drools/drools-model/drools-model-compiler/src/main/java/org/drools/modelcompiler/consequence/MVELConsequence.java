@@ -118,7 +118,6 @@ public class MVELConsequence implements Consequence {
         String[] inputTypes = Stream.concat(Arrays.asList(default_inputTypes).stream(), Stream.of(vars).map(var -> var.getType().getName())).collect(Collectors.toList()).toArray(new String[]{});
         // ^^ please notice about inputTypes, it is to use the Class.getName(), because is later used by the Classloader internally in MVEL to load the class,
         //    do NOT replace with getCanonicalName() otherwise inner classes will not be loaded correctly.
-        int languageLevel = 4;
         boolean strictMode = true;
         boolean readLocalsFromTuple = false;
         EvaluatorWrapper[] operators = new EvaluatorWrapper[] {};
@@ -135,7 +134,6 @@ public class MVELConsequence implements Consequence {
                 otherIdentifiers,
                 inputIdentifiers,
                 inputTypes,
-                languageLevel,
                 strictMode,
                 readLocalsFromTuple );
 

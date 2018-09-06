@@ -139,4 +139,11 @@ public class RuleContext {
     public void setNeedStreamMode() {
         this.needStreamMode = true;
     }
+
+    public Map<String, Declaration> getDeclarations() {
+        Map<String, Declaration> decls = new HashMap<>();
+        innerDeclaration.forEach( (var, decl) -> decls.put( var.getName(), decl ) );
+        patterns.forEach( (var, pattern) -> decls.put( var.getName(), pattern.getDeclaration() ) );
+        return decls;
+    }
 }

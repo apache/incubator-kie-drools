@@ -79,7 +79,6 @@ public class MVELCompilationUnit
     private String[]                             inputIdentifiers;
     private String[]                             inputTypes;
 
-    private int                                  languageLevel;
     private boolean                              strictMode;
     
     private boolean                              readLocalsFromTuple;
@@ -141,7 +140,6 @@ public class MVELCompilationUnit
                                String[] otherIdentifiers,
                                String[] inputIdentifiers,
                                String[] inputTypes,
-                               int languageLevel,
                                boolean strictMode,
                                boolean readLocalsFromTuple ) {
         this.name = name;
@@ -157,7 +155,6 @@ public class MVELCompilationUnit
         this.inputIdentifiers = inputIdentifiers;
         this.inputTypes = inputTypes;
 
-        this.languageLevel = languageLevel;
         this.strictMode = strictMode;
         
         this.readLocalsFromTuple = readLocalsFromTuple;
@@ -205,7 +202,6 @@ public class MVELCompilationUnit
         out.writeObject( inputIdentifiers );
         out.writeObject( inputTypes );
 
-        out.writeInt( languageLevel );
         out.writeBoolean( strictMode );
         
         out.writeBoolean( readLocalsFromTuple );
@@ -226,7 +222,6 @@ public class MVELCompilationUnit
         inputIdentifiers = (String[]) in.readObject();
         inputTypes = (String[]) in.readObject();
 
-        languageLevel = in.readInt();
         strictMode = in.readBoolean();
         
         readLocalsFromTuple = in.readBoolean();
@@ -236,8 +231,15 @@ public class MVELCompilationUnit
         return getCompiledExpression(runtimeData, null);
     }
 
+    public Serializable getCompiledExpression(ParserConfiguration conf) {
+        return getCompiledExpression(conf, null);
+    }
+
     public Serializable getCompiledExpression(MVELDialectRuntimeData runtimeData, Object evaluationContext) {
-        ParserConfiguration conf = runtimeData.getParserConfiguration();
+        return getCompiledExpression(runtimeData.getParserConfiguration(), evaluationContext);
+    }
+
+    public Serializable getCompiledExpression(ParserConfiguration conf, Object evaluationContext) {
         final ParserContext parserContext = new ParserContext( conf, evaluationContext );
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
@@ -252,14 +254,14 @@ public class MVELCompilationUnit
         }
 
         parserContext.addIndexedInput( inputIdentifiers );
-                
+
         String identifier = null;
         String type = null;
         try {
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
                 identifier = inputIdentifiers[i];
                 type = inputTypes[i];
-                Class< ? > cls = loadClass( runtimeData.getParserConfiguration().getClassLoader(),
+                Class< ? > cls = loadClass( conf.getClassLoader(),
                                             inputTypes[i] );
                 parserContext.addInput( inputIdentifiers[i],
                                         cls );
@@ -271,9 +273,9 @@ public class MVELCompilationUnit
         parserContext.setSourceFile( name );
 
         String[] varNames = parserContext.getIndexedVarNames();
-        
+
         ExecutableStatement stmt = (ExecutableStatement) compile( expression, parserContext );
-        
+
         Set<String> localNames = parserContext.getVariables().keySet();
 
         parserContext.addIndexedLocals(localNames);
@@ -282,14 +284,14 @@ public class MVELCompilationUnit
         String[] allVars = new String[varNames.length + locals.length];
 
         System.arraycopy(varNames, 0, allVars, 0, varNames.length);
-        System.arraycopy(locals, 0, allVars, varNames.length, locals.length);        
-        
+        System.arraycopy(locals, 0, allVars, varNames.length, locals.length);
+
         this.varModel = new SimpleVariableSpaceModel(allVars);
         this.allVarsLength = allVars.length;
-        
+
         return stmt;
     }
-    
+
     public VariableResolverFactory createFactory() {
         Object[] vals = new Object[inputIdentifiers.length];
 
@@ -504,7 +506,6 @@ public class MVELCompilationUnit
                                                             otherIdentifiers,
                                                             inputIdentifiers,
                                                             inputTypes,
-                                                            languageLevel,
                                                             strictMode,
                                                             readLocalsFromTuple );
         unit.varModel = this.varModel;
@@ -547,10 +548,6 @@ public class MVELCompilationUnit
         return inputTypes;
     }
     
-    public int getLanguageLevel() {
-        return languageLevel;
-    }
-
     public boolean isStrictMode() {
         return strictMode;
     }

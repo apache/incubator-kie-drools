@@ -29,6 +29,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.MVELSafeHelper;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELObjectExpression
@@ -69,6 +70,10 @@ public class MVELObjectExpression
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expr = unit.getCompiledExpression( runtimeData );
+    }
+
+    public void compile(ParserConfiguration conf) {
+        expr = unit.getCompiledExpression( conf );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {

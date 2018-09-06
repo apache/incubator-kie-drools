@@ -137,6 +137,7 @@ import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
@@ -213,8 +214,6 @@ public class KiePackagesBuilder {
     private RuleImpl compileRule( KnowledgePackageImpl pkg, Rule rule ) {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
         ruleImpl.setPackage( pkg.getName() );
-        setRuleAttributes( rule, ruleImpl );
-        setRuleMetaAttributes(rule, ruleImpl);
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
@@ -226,10 +225,12 @@ public class KiePackagesBuilder {
         if (ctx.needsStreamMode()) {
             pkg.setNeedStreamMode();
         }
+        setRuleAttributes( rule, ruleImpl, ctx );
+        setRuleMetaAttributes( rule, ruleImpl );
         return ruleImpl;
     }
 
-    private void setRuleAttributes( Rule rule, RuleImpl ruleImpl ) {
+    private void setRuleAttributes( Rule rule, RuleImpl ruleImpl, RuleContext ctx ) {
         Boolean noLoop = setAttribute( rule, Rule.Attribute.NO_LOOP, ruleImpl::setNoLoop );
         Boolean lockOnActive = setAttribute( rule, Rule.Attribute.LOCK_ON_ACTIVE, ruleImpl::setLockOnActive );
         setAttribute( rule, Rule.Attribute.AUTO_FOCUS, ruleImpl::setAutoFocus );
@@ -245,8 +246,8 @@ public class KiePackagesBuilder {
         } );
 
         setAttribute( rule, Rule.Attribute.ACTIVATION_GROUP, ruleImpl::setActivationGroup );
-        setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t ) ) );
-        setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t ) ) );
+        setAttribute( rule, Rule.Attribute.DURATION, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t, ctx ) ) );
+        setAttribute( rule, Rule.Attribute.TIMER, t -> ruleImpl.setTimer( parseTimer( ruleImpl, t, ctx ) ) );
         setAttribute( rule, Rule.Attribute.CALENDARS, ruleImpl::setCalendars );
         setAttribute( rule, Rule.Attribute.DATE_EFFECTIVE, ruleImpl::setDateEffective );
         setAttribute( rule, Rule.Attribute.DATE_EXPIRES, ruleImpl::setDateExpires );
@@ -307,8 +308,8 @@ public class KiePackagesBuilder {
         }
     }
 
-    private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr ) {
-        return buildTimer(ruleImpl, timerExpr, null);
+    private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr, RuleContext ctx ) {
+        return buildTimer(ruleImpl, timerExpr, null, expr -> createMvelObjectExpression( expr, ctx.getClassLoader(), ctx.getDeclarations() ), null);
     }
 
     private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {

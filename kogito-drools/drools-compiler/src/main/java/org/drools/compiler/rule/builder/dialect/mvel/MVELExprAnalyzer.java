@@ -239,8 +239,8 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private static MVELAnalysisResult analyze(final Set<String> identifiers,
-                                              final BoundIdentifiers availableIdentifiers) {
+    public static MVELAnalysisResult analyze(final Set<String> identifiers,
+                                             final BoundIdentifiers availableIdentifiers) {
 
         MVELAnalysisResult result = new MVELAnalysisResult();
         result.setIdentifiers( identifiers );

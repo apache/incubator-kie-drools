@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -391,6 +393,11 @@ public class RuleBuilder {
     }
     
     public static Timer buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
+        return buildTimer( rule, timerString, context, expr -> createMVELExpr(expr, context), error -> registerError(error, rule, context) );
+    }
+
+    public static Timer buildTimer( RuleImpl rule, String timerString, RuleBuildContext context,
+                                    Function<String, MVELObjectExpression> exprCreator, Consumer<String> errorManager ) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();
         }
@@ -400,9 +407,7 @@ public class RuleBuilder {
         String protocol = "int"; // default protocol
         if ( colonPos == -1 ) {
             if ( timerString.startsWith( "int" ) || timerString.startsWith( "cron" ) || timerString.startsWith( "expr" ) ) {
-                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                      "Incorrect timer definition '" + timerString + "' - missing colon?" );
-                context.addError( err );
+                errorManager.accept( "Incorrect timer definition '" + timerString + "' - missing colon?" );
                 return null;
             }
         } else {
@@ -418,11 +423,9 @@ public class RuleBuilder {
         
         if ( "cron".equals( protocol ) ) {
             try {
-                return new CronTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, new CronExpression( body ) );
+                return new CronTimer( exprCreator.apply(startDate), exprCreator.apply(endDate), repeatLimit, new CronExpression( body ) );
             } catch ( ParseException e ) {
-                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                      "Unable to build set timer '" + timerString + "'" );                
-                context.addError( err );
+                errorManager.accept( "Unable to build set timer '" + timerString + "'" );
                 return null;
             }
         }
@@ -433,9 +436,7 @@ public class RuleBuilder {
             long period = 0;
 
             if ( times.length > 2 ) {
-                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                      "Incorrect number of arguments for interval timer '" + timerString + "'" );
-                context.addError( err );
+                errorManager.accept( "Incorrect number of arguments for interval timer '" + timerString + "'" );
                 return null;
             }
 
@@ -449,13 +450,11 @@ public class RuleBuilder {
                     period = TimeUtils.parseTimeString( times[1] );
                 }
             } catch (RuntimeException e) {
-                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                      "Incorrect timer definition '" + timerString + "' " + e.getMessage() );
-                context.addError( err );
+                errorManager.accept( "Incorrect timer definition '" + timerString + "' " + e.getMessage() );
                 return null;
             }
 
-            return new IntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, delay, period );
+            return new IntervalTimer( exprCreator.apply(startDate), exprCreator.apply(endDate), repeatLimit, delay, period );
         }
 
         if ( "expr".equals( protocol ) ) {
@@ -463,9 +462,7 @@ public class RuleBuilder {
             StringTokenizer tok = new StringTokenizer( body, ",;" );
 
             if ( tok.countTokens() > 2 ) {
-                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                        "Incorrect number of arguments for expression timer '" + timerString + "'" );
-                context.addError( err );
+                errorManager.accept( "Incorrect number of arguments for expression timer '" + timerString + "'" );
                 return null;
             }
 
@@ -474,12 +471,10 @@ public class RuleBuilder {
                                           MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context ) :
                                           MVELObjectExpressionBuilder.build( "0", context );
 
-            return new ExpressionIntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, times, period );
+            return new ExpressionIntervalTimer( exprCreator.apply(startDate), exprCreator.apply(endDate), repeatLimit, times, period );
         }
 
-        DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                              "Protocol for timer does not exist '" + timerString +"'" );
-        context.addError( err );
+        errorManager.accept( "Protocol for timer does not exist '" + timerString +"'" );
         return null;
     }
 
@@ -503,5 +498,10 @@ public class RuleBuilder {
             expr = "\"" + expr + "\""; // if expr is a valid date wrap in quotes
         } catch (Exception e) { }
         return MVELObjectExpressionBuilder.build( expr, context );
+    }
+
+    private static void registerError(String error, RuleImpl rule, RuleBuildContext context) {
+        DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null, error );
+        context.addError( err );
     }
 }
