@@ -301,7 +301,7 @@ simplePositiveUnaryTests
 // #14
 simpleUnaryTests
     : simplePositiveUnaryTests                     #positiveSimplePositiveUnaryTests
-    | Not_Key '(' simplePositiveUnaryTests ')'     #negatedSimplePositiveUnaryTests
+    | not_key '(' simplePositiveUnaryTests ')'     #negatedSimplePositiveUnaryTests
     | '-'                                          #positiveUnaryTestDash
     ;
 
@@ -319,7 +319,7 @@ positiveUnaryTests
 // #17 (root for decision tables)
 unaryTests
     :
-    Not_Key '(' positiveUnaryTests ')' #unaryTests_negated
+    not_key '(' positiveUnaryTests ')' #unaryTests_negated
     | positiveUnaryTests               #unaryTests_positive
     | '-'                              #unaryTests_empty
     ;
@@ -390,7 +390,7 @@ reusableKeywords
     | or_key
     | and_key
     | between_key
-    | Not_Key
+    | not_key
     | null_key
     | true_key
     | false_key
@@ -459,6 +459,10 @@ and_key
 
 between_key
     : 'between'
+    ;
+
+not_key
+    : Not_Key
     ;
 
 Not_Key
