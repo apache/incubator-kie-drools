@@ -22,6 +22,7 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jbpm.test.container.archive.EJBService;
@@ -95,9 +96,20 @@ public abstract class AbstractEJBServicesTest extends JbpmContainerTest {
             }
         }
     }
+ 
+    protected static Throwable catchRootCause(ThrowingCallable shouldRaiseThrowable) {
+        Throwable result = Assertions.catchThrowable(shouldRaiseThrowable);
+        Throwable cause = null; 
+
+        while(null != (cause = result.getCause())  && (result != cause) ) {
+            result = cause;
+        }
+        return result;
+    }
 
     // BASIC
     public static final String SCRIPT_TASK_PROCESS_ID = "org.jboss.qa.bpms.ScriptTask";
+    public static final String SCRIPT_THROW_EXCEPTION_TASK_PROCESS_ID = "org.jboss.qa.bpms.ScriptThrowExceptionTask";
     public static final String HUMAN_TASK_PROCESS_ID = "org.jboss.qa.bpms.HumanTask";
     public static final String SIGNAL_PROCESS_ID = "org.jboss.qa.bpms.IntermediateSignalProcess";
 

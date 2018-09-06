@@ -16,6 +16,8 @@
 
 package org.jbpm.test.container.test.ejbservices.tx;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +29,6 @@ import javax.naming.InitialContext;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
@@ -114,13 +115,25 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processDesc = runtimeDataService.getProcessInstanceById(processInstanceId);
-            Assertions.assertThat(processDesc).isNull();
+            assertThat(processDesc).isNull();
             processInstanceHistory = getProcessInstanceHistory(processInstanceId);
-            Assertions.assertThat(processInstanceHistory).isNullOrEmpty();
+            assertThat(processInstanceHistory).isNullOrEmpty();
         } catch (NullPointerException npe) {
             LOGGER.error("Non-XA database thrown NPE on process started before rollback", npe);
         }
     }
+
+    @Test
+    public void testStartProcessWithExceptionRollback() throws Throwable {
+ 
+        Long processInstanceId = startProcessInstance(SCRIPT_THROW_EXCEPTION_TASK_PROCESS_ID);
+
+        checkProcessInstanceIsActive(processInstanceId);
+        // the root cause is not instance of
+        assertThat(catchRootCause(() -> { startAndCompleteHumanTask(processInstanceId); })).isNotInstanceOf(NullPointerException.class);
+    }
+
+
 
     @Test
     public void testAbortProcessCommit() throws Exception {
@@ -145,8 +158,8 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         Collection<ProcessInstanceDesc> processInstances = runtimeDataService.getProcessInstances(states, null,
                 new QueryContext());
 
-        Assertions.assertThat(processInstances).isNotNull().hasSize(1);
-        Assertions.assertThat(processInstances.iterator().next().getId()).isEqualTo(processInstanceId);
+        assertThat(processInstances).isNotNull().hasSize(1);
+        assertThat(processInstances.iterator().next().getId()).isEqualTo(processInstanceId);
     }
 
     @Test
@@ -167,9 +180,9 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         ut.rollback();
 
         ProcessInstance processInstance = processService.getProcessInstance(processInstanceId);
-        Assertions.assertThat(processInstance).isNotNull();
-        Assertions.assertThat(processInstance.getId()).isEqualTo(processInstanceId);
-        Assertions.assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getId()).isEqualTo(processInstanceId);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
     }
 
     @Test
@@ -181,7 +194,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processService.signalProcessInstance(processInstanceId, "start", "script");
-            Assertions.assertThat(hasNodeLeft(processInstanceId, "script")).isTrue();
+            assertThat(hasNodeLeft(processInstanceId, "script")).isTrue();
 
         } catch (Exception e) {
             ut.rollback();
@@ -194,7 +207,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processService.signalProcessInstance(processInstanceId, "start", "script");
-            Assertions.assertThat(ut.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
+            assertThat(ut.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
 
         } catch (Exception e) {
             ut.rollback();
@@ -202,9 +215,9 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         }
         ut.commit();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "script")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "script")).isTrue();
         processService.signalProcessInstance(processInstanceId, "finish", null);
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
     }
 
     @Test
@@ -220,13 +233,13 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         ut.begin();
 
         processService.signalProcessInstance(processInstanceId, "start", "rfg");
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "rfg")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "rfg")).isTrue();
 
         ut.rollback();
         agenda.clear();
 
         processService.execute(kieJar, new FireAllRulesCommand());
-        Assertions.assertThat(agenda.isRuleFired("dummyRule")).isFalse();
+        assertThat(agenda.isRuleFired("dummyRule")).isFalse();
         agenda.clear();
 
         ut = InitialContext.doLookup(USER_TRANSACTION_NAME);
@@ -236,12 +249,12 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         ut.commit();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "rfg")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "rfg")).isTrue();
         processService.execute(kieJar, new FireAllRulesCommand());
         processService.signalProcessInstance(processInstanceId, "finish", null);
 
-        Assertions.assertThat(agenda.isRuleFired("dummyRule")).isTrue();
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
+        assertThat(agenda.isRuleFired("dummyRule")).isTrue();
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
     }
 
     @Test
@@ -265,7 +278,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processService.signalProcessInstance(processInstanceId, "start", "timer");
-            Assertions.assertThat(hasNodeLeft(processInstanceId, "timer")).isTrue();
+            assertThat(hasNodeLeft(processInstanceId, "timer")).isTrue();
         } catch (Exception e) {
             ut.rollback();
             throw e;
@@ -288,10 +301,10 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         listener.reset(1);
         listener.waitTillCompleted();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "timer")).isTrue();
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "Timer")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "timer")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "Timer")).isTrue();
         processService.signalProcessInstance(processInstanceId, "finish", null);
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isTrue();
     }
 
     @Test
@@ -311,8 +324,8 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         ut.rollback();
 
         taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
-        Assertions.assertThat(taskSummaries).isNotNull().hasSize(0);
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
+        assertThat(taskSummaries).isNotNull().hasSize(0);
+        assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
 
         ut.begin();
         try {
@@ -332,11 +345,11 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         }
         ut.rollback();
 
-        Assertions.assertThat(runtimeDataService.getTaskById(taskSummaries.get(0).getId())).isNotNull();
+        assertThat(runtimeDataService.getTaskById(taskSummaries.get(0).getId())).isNotNull();
         taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
-        Assertions.assertThat(taskSummaries).isNotNull().hasSize(1);
-        Assertions.assertThat(taskSummaries.get(0).getStatus()).isEqualTo(org.kie.api.task.model.Status.Reserved);
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
+        assertThat(taskSummaries).isNotNull().hasSize(1);
+        assertThat(taskSummaries.get(0).getStatus()).isEqualTo(org.kie.api.task.model.Status.Reserved);
+        assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
 
         ut.begin();
         try {
@@ -347,9 +360,9 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         }
         ut.commit();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isTrue();
-        Assertions.assertThat(hasTaskCompleted(taskSummaries.get(0).getId()));
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
+        assertThat(hasNodeLeft(processInstanceId, "User Task")).isTrue();
+        assertThat(hasTaskCompleted(taskSummaries.get(0).getId()));
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
 
     }
 
@@ -364,7 +377,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processService.signalProcessInstance(processInstanceId, "start", "forloop");
-            Assertions.assertThat(hasNodeLeft(processInstanceId, "forloop")).isTrue();
+            assertThat(hasNodeLeft(processInstanceId, "forloop")).isTrue();
         } catch (Exception e) {
             ut.rollback();
             throw e;
@@ -381,9 +394,9 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         }
         ut.commit();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "forloop")).isTrue();
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "Multiple Instances")).isTrue();
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
+        assertThat(hasNodeLeft(processInstanceId, "forloop")).isTrue();
+        assertThat(hasNodeLeft(processInstanceId, "Multiple Instances")).isTrue();
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
     }
 
     @Test
@@ -395,7 +408,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
         try {
             processService.signalProcessInstance(processInstanceId, "start", "embedded");
-            Assertions.assertThat(hasNodeLeft(processInstanceId, "embedded")).isTrue();
+            assertThat(hasNodeLeft(processInstanceId, "embedded")).isTrue();
 
         } catch (Exception e) {
             ut.rollback();
@@ -414,26 +427,26 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         }
         ut.commit();
 
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "embedded")).isTrue();
-        Assertions.assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
+        assertThat(hasNodeLeft(processInstanceId, "embedded")).isTrue();
+        assertThat(hasProcessInstanceCompleted(processInstanceId)).isFalse();
     }
 
     private void checkProcessInstanceIsActive(Long processInstanceId) {
         ProcessInstanceDesc processDesc = runtimeDataService.getProcessInstanceById(processInstanceId);
-        Assertions.assertThat(processDesc).isNotNull();
-        Assertions.assertThat(processDesc.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        assertThat(processDesc).isNotNull();
+        assertThat(processDesc.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         List<NodeInstanceDesc> processInstanceHistory = getProcessInstanceHistory(processInstanceId);
-        Assertions.assertThat(processInstanceHistory).isNotNull().isNotEmpty();
+        assertThat(processInstanceHistory).isNotNull().isNotEmpty();
     }
 
     private List<TaskSummary> startAndCompleteHumanTask(Long processInstanceId) {
         List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
-        Assertions.assertThat(taskSummaries).isNotNull().hasSize(1);
+        assertThat(taskSummaries).isNotNull().hasSize(1);
         long taskId = taskSummaries.get(0).getId();
         userTaskService.start(taskId, "john");
         userTaskService.complete(taskId, "john", new HashMap<String, Object>());
-        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isTrue();
-        Assertions.assertThat(hasTaskCompleted(taskId));
+        assertThat(hasNodeLeft(processInstanceId, "User Task")).isTrue();
+        assertThat(hasTaskCompleted(taskId));
 
         return taskSummaries;
     }

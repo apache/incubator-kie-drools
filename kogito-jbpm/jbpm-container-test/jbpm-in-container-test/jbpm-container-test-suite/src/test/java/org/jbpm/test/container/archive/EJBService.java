@@ -166,6 +166,7 @@ public class EJBService {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId(KieJar.TX.groupId, KieJar.TX.artifactId, KieJar.TX.version);
         List<String> assets = new ArrayList<String>();
+        assets.add("HumanTaskThrowException.bpmn2");
         assets.add("ScriptTask.bpmn2");
         assets.add("TxProcess.bpmn2");
         assets.add("TxRules.drl");
