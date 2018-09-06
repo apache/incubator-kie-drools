@@ -156,7 +156,7 @@ public abstract class AccumulateVisitor {
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
 
         final String optBindingId = Optional.ofNullable(function.getBind()).orElse(basePattern.getIdentifier());
-        final String bindingId = Optional.ofNullable(optBindingId).orElse(context.getOrCreateUnificationId(function.getFunction()));
+        final String bindingId = Optional.ofNullable(optBindingId).orElse(context.getOrCreateAccumulatorBindingId(function.getFunction()));
 
         Optional<AccumulateVisitorPatternDSL.NewBinding> newBinding = Optional.empty();
 
