@@ -1,0 +1,13 @@
+[id='dmn-elements-ref_{context}']
+= DMN elements
+
+DMN models consist of the following five elements:
+
+* *Decisions:* Nodes in the model where one or several inputs determine an output based on decision logic.
+* *Input data:* Information necessary to determine a decision. This information usually includes business-level concepts or objects relevant to the business, such as a restaurant’s peak business hours and staff availability.
+* *Business knowledge models:* Reusable pieces of decision logic. Decisions that have the same logic but depend on different sub-inputs or sub-decisions use business knowledge models to determine which procedure to follow.
+* *Knowledge sources:* External regulations, documents, committees, policies, and so on that shape decision logic. Knowledge sources are references to real-world factors rather than executable business rules.
+* *Decision service:* A decision service is a top-level decision, with well-defined inputs, that is published as a service for invocation. In the diagram it is represented by an overlay rectangle with round corners. The decision service can be invoked from an external application or business process (BPMN). For more information, see page 36 of the DMN specification document.
+
+.Basic decision requirements diagram
+image::dmn/dmn-drg.png[]

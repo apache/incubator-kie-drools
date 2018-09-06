@@ -1,0 +1,102 @@
+[id='dmn-invocation-remote-java-proc']
+= Executing DMN services remotely on {KIE_SERVER} (Java)
+
+The KIE remote API client provides a lightweight approach to invoking a remote DMN service either through the REST or JMS interfaces of {KIE_SERVER}. This approach reduces the number of runtime dependencies necessary to interact with a knowledge base. Decoupling the calling code from the decision definition also increases flexibility by enabling them to iterate independently at the appropriate pace.
+
+.Prerequisites
+* {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
+ifdef::DM,PAM[]
+{URL_PLANNING_INSTALL}[_{PLANNING_INSTALL}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_installationandsetup>>.
+endif::[]
+* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model. For information about project packaging and deployment, see
+ifdef::DM,PAM[]
+{URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]
+* You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
+* The following dependency is added to the `pom.xml` file of the project:
+
+[source,xml,subs="attributes+"]
+----
+<dependency>
+  <groupId>org.kie.server</groupId>
+  <artifactId>kie-server-client</artifactId>
+  <version>${{PRODUCT_INIT}.version}</version>
+</dependency>
+----
+
+NOTE: The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {MAVEN_ARTIFACT_VERSION}).
+
+.Procedure
+. Instantiate a `KieServicesClient` instance with the appropriate connection information.
++
+--
+Example:
+
+[source,java]
+----
+KieServicesConfiguration conf =
+    KieServicesFactory.newRestConfiguration(URL, USER, PASSWORD); // <1>
+
+conf.setMarshallingFormat(MarshallingFormat.JSON);  // <2>
+
+KieServicesClient kieServicesClient = KieServicesFactory.newKieServicesClient(conf);
+----
+<1> The connection information:
+* Example URL: http://localhost:8080/kie-server/services/rest/server
+* The credentials should reference a user with the `kie-server` role.
+<2> The Marshalling format is an instance of `org.kie.server.api.marshalling.MarshallingFormat`. It controls whether the messages will be JSON or XML. Options for Marshalling format are JSON, JAXB, or XSTREAM.
+--
+. Obtain a `DMNServicesClient` from the KIE server Java client connected to the related {KIE_SERVER} by invoking the method `getServicesClient()` on the KIE server Java client instance:
++
+[source,java]
+----
+DMNServicesClient dmnClient = kieServicesClient.getServicesClient(DMNServicesClient.class );
+----
++
+The `dmnClient` can now execute decision services on {KIE_SERVER}.
+
+. Execute the decision services for the desired model.
++
+--
+Example:
+
+[source,java]
+----
+for (Integer age : Arrays.asList(1,12,13,64,65,66)) {
+    DMNContext dmnContext = dmnClient.newContext(); // <1>
+    dmnContext.set("Age", age);  // <2>
+    ServiceResponse<DMNResult> serverResp =   // <3>
+        dmnClient.evaluateAll($kieContainerId,
+                              $modelNamespace,
+                              $modelName,
+                              dmnContext);
+
+    DMNResult dmnResult = serverResp.getResult();  // <4>
+    for (DMNDecisionResult dr : dmnResult.getDecisionResults()) {
+        log.info("Age: " + age + ", " +
+                 "Decision: '" + dr.getDecisionName() + "', " +
+                 "Result: " + dr.getResult());
+    }
+}
+----
+<1> Instantiate a new DMN Context to be the input for the model evaluation. Note that this example is looping through the Age Classification decision multiple times.
+<2> Assign input variables for the input DMN Context.
+<3> Evaluate all the DMN Decisions defined in the DMN model:
+* `$kieContainerId` is the ID of the container where the KJAR containing the DMN model is deployed
+* `$modelNamespace` is the namespace for the model.
+* `$modelName` is the name for the model.
+<4> The DMN Result object is available from the server response.
+
+At this point, the `dmnResult` contains all the decision results from the evaluated DMN model.
+
+You can also execute only a specific DMN decision in the model by using alternative methods of the `DMNServicesClient`.
+
+TIP: If the KIE container only contains one DMN model, you can omit `$modelNamespace` and `$modelName` because the {KIE_SERVER} API selects it by default.
+
+--

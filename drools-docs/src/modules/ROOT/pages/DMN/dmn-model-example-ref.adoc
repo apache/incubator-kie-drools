@@ -1,0 +1,80 @@
+[id='dmn-model-example-ref_{context}']
+= DMN model example
+
+DMN defines an XML schema that enables DMN models to be used between different DMN authoring platforms. The DMN specification enables multiple software platforms to work with the same file for authoring, testing, and production execution. You must use a third-party authoring platform such as Trisotech or Signavio if you require visual authoring capabilities.
+
+The following decision requirements diagram (DRD) example demonstrates a classification-type decision for the age categories of movie ticket purchases. This basic example demonstrates good form by creating classifications to avoid repeated calculations so that this mini-decision can be an input for other decisions.
+
+.Decision requirements diagram for the age classification decision
+image::dmn/dmn-age-classification-drd.png[]
+
+This example consists of a single numeric input value (`Age`), and produces a string output (`AgeClassification`). The inner workings of the `AgeClassification` decision is a basic table:
+
+.Decision table for the age classification decision
+image::dmn/dmn-age-classification-decision-table.png[]
+
+This table assigns a value to the `AgeClassification` output value using simple FEEL expressions to determine ranges on the age value. This decision model was created in the Trisotech DMN Authoring environment.
+
+The following output is the XML source of this decision model:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      namespace="http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a" <1>
+                      name="dmn-movieticket-ageclassification" <2>
+                      id="_99">
+  <semantic:extensionElements/>
+  <semantic:inputData displayName="Age" id="_1" name="Age">
+    <semantic:variable id="_2" name="Age" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision displayName="AgeClassification" id="_3" name="AgeClassification">
+    <semantic:variable id="_4" name="AgeClassification" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_5" outputLabel="AgeClassification">
+      <semantic:input id="_6">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Age</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_7"/>
+      <semantic:rule id="_8">
+        <semantic:inputEntry id="_9">
+          <semantic:text>&lt; 13</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_10">
+          <semantic:text>"Child"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_11">
+        <semantic:inputEntry id="_12">
+          <semantic:text>[13..65)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_13">
+          <semantic:text>"Adult"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_14">
+        <semantic:inputEntry id="_15">
+          <semantic:text>&gt;= 65</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_16">
+          <semantic:text>"Senior"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>
+----
+<1> Model namespace
+<2> Model name
+
+This basic file captures enough information to encapsulate the business logic, the input and outputs of the overall decision, and enough detail to enable software tools to graphically represent the relationships consistently.
+
+The `namespace` and `name` attributes of the root `definitions` tag uniquely identify this decision model. Like much XML, the `namespace` value appears as a unique URL associated with the organization or individual that authored the document.

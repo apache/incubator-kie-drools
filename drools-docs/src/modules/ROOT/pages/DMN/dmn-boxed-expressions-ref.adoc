@@ -1,0 +1,7 @@
+[id='dmn-boxed-expressions-ref_{context}']
+= Boxed expressions
+
+Boxed expressions are tabular representations of contexts, function definitions, function invocations, and other expressions in a DMN model. For example, the following boxed expression defines the function `Installment calculation` that uses four parameters (`Product`, `Rate`, `Term`, and `Amount`) and calculates the monthly installment amount.
+
+.Boxed expression example
+image::dmn/dmn-boxed-expression-example.png[]
