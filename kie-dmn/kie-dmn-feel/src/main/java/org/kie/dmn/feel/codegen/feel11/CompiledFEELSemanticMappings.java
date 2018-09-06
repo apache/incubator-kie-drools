@@ -360,6 +360,14 @@ public class CompiledFEELSemanticMappings {
         return EvalHelper.isEqual(left, right, null);
     }
 
+    public static Boolean gracefulEq(EvaluationContext ctx, Object left, Object right) {
+        if (left instanceof List) {
+            return ((List) left).contains(right);
+        } else {
+            return eq(left, right);
+        }
+    }
+
     public static Boolean between(EvaluationContext ctx,
                                   Object value, Object start, Object end) {
         if ( value == null ) { ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null) ); return null; }

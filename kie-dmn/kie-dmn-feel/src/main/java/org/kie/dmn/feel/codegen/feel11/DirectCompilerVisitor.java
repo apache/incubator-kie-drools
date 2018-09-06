@@ -67,6 +67,7 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -521,7 +522,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitUnaryTests_negated(FEEL_1_1Parser.UnaryTests_negatedContext ctx) {
-        DirectCompilerResult positiveTests = visit(ctx.positiveUnaryTests());
+        DirectCompilerResult positiveTests = common(ctx.positiveUnaryTests());
         DirectCompilerResult result = createUnaryTestExpression(ctx, positiveTests, UnaryOperator.NOT);
 
         MethodCallExpr expression =
@@ -536,11 +537,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitUnaryTests_positive(FEEL_1_1Parser.UnaryTests_positiveContext ctx) {
         ArrayList<DirectCompilerResult> rs = new ArrayList<>();
+        return common(ctx.positiveUnaryTests());
+    }
 
+    private DirectCompilerResult common(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
+        ArrayList<DirectCompilerResult> rs = new ArrayList<>();
         // fixme:
         // this should be handled as a field in the DirectCompilerResult class,
         // but for now it is cumbersome to bring it up the tree, let's remember to do this refactoring
-        for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTests().positiveUnaryTest()) {
+        for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTest()) {
 //            DirectCompilerResult result = visit(positiveUnaryTestContext);
             this.subExpressionContainsWildcard = false;
             DirectCompilerResult result = visit(positiveUnaryTestContext);
@@ -557,7 +562,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 DirectCompilerResult replaced = createListUnaryTestExpression(positiveUnaryTestContext, result);
                 rs.add(replaced);
             } else {
-                DirectCompilerResult unaryTestExpression = createUnaryTestExpression(positiveUnaryTestContext, result, UnaryOperator.EQ);
+                DirectCompilerResult unaryTestExpression = createRuntimeUnaryTestExpression(positiveUnaryTestContext, result);
                 rs.add(unaryTestExpression);
 
             }
@@ -804,6 +809,39 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         directCompilerResult.addFieldDesclaration(fd);
         return directCompilerResult;
     }
+
+    private DirectCompilerResult createRuntimeUnaryTestExpression(FEEL_1_1Parser.PositiveUnaryTestContext ctx, DirectCompilerResult endpoint) {
+        String originalText = ParserHelper.getOriginalText(ctx);
+
+        LambdaExpr initializer = new LambdaExpr();
+        initializer.setEnclosingParameters(true);
+        initializer.addParameter(new Parameter(new UnknownType(), "feelExprCtx"));
+        initializer.addParameter(new Parameter(new UnknownType(), "left"));
+        Statement lambdaBody = null;
+
+        MethodCallExpr expression = new MethodCallExpr(null, "gracefulEq");
+        expression.addArgument(new NameExpr("feelExprCtx"));
+        expression.addArgument(endpoint.getExpression());
+        expression.addArgument(new NameExpr("left"));
+        lambdaBody = new ExpressionStmt(expression);
+
+        initializer.setBody(lambdaBody);
+        String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.UNARY_TEST, endpoint.getFieldDeclarations());
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;    }
+
+
 
     private DirectCompilerResult createListUnaryTestExpression(ParserRuleContext ctx, DirectCompilerResult endpoint) {
         String originalText = ParserHelper.getOriginalText(ctx);
