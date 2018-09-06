@@ -578,11 +578,4 @@ public class ASTBuilderVisitor
         return visit( ctx.expression() );
     }
 
-// FIXME
-//    @Override
-//    public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-//        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
-//        ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
-//        return buildFunctionCall( ctx, name, value );
-//    }
 }

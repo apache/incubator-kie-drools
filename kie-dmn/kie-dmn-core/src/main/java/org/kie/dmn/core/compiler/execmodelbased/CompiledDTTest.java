@@ -17,7 +17,6 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests;

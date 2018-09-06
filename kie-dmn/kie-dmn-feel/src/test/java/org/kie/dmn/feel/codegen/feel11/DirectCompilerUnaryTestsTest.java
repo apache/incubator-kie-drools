@@ -55,7 +55,7 @@ public class DirectCompilerUnaryTestsTest {
     @Test
     public void test_Dash() {
         assertThat(parseCompileEvaluate("-", 1), is(Arrays.asList(true)));
-        //assertThat(parseCompileEvaluate("-, -", 1), is(Arrays.asList(true, true)));
+        // assertThat(parseCompileEvaluate("-, -", 1), is(Arrays.asList(true, true)));
     }
     
     @Test
@@ -82,7 +82,7 @@ public class DirectCompilerUnaryTestsTest {
 
     @Test @Ignore("all function not() evaluate to null when arg is not boolean")
     public void test_not() {
-        assertThat(parseCompileEvaluate("not(47), not(<1), not(not(1))", 1), is(Arrays.asList(true, true, true)));
+        assertThat(parseCompileEvaluate("not(47), not(<1), not(!=1)", 1), is(Arrays.asList(true, true, true)));
     }
 
     @Test

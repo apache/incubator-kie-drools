@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.ast.expr.Expression;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -170,14 +171,13 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("3 ** null"), nullValue());
     }
 
-// FIXME no more
-//    @Test
-//    public void test_logicalNegationExpression() {
-//        assertThat(parseCompileEvaluate("not true"), is(false));
-//        assertThat(parseCompileEvaluate("not false"), is(true));
-//        assertThat(parseCompileEvaluate("not null"), nullValue());
-//        assertThat(parseCompileEvaluate("not 3"), nullValue());
-//    }
+    @Test @Ignore("this is not valid syntax")
+    public void test_logicalNegationExpression() {
+        assertThat(parseCompileEvaluate("not true"), is(false));
+        assertThat(parseCompileEvaluate("not false"), is(true));
+        assertThat(parseCompileEvaluate("not null"), nullValue());
+        assertThat(parseCompileEvaluate("not 3"), nullValue());
+    }
 
     @Test
     public void test_listExpression() {
