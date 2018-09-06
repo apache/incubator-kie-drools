@@ -48,7 +48,6 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
@@ -57,7 +56,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -70,19 +68,14 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class AccumulateTest {
@@ -2485,7 +2478,7 @@ public class AccumulateTest {
         // JBRULES-3538
         final String drl =
                 "import java.util.*;\n" +
-                        "import " + MyPerson.class.getName() + ";\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
                         "global java.util.Map map;\n" +
                         "dialect \"mvel\"\n" +
                         "\n" +
@@ -2542,7 +2535,7 @@ public class AccumulateTest {
 
             assertEquals(2, map.get("count"));
             Map pMap = (Map) map.get("Jos Jr Jr");
-            assertEquals(50.0, pMap.get("total"));
+            assertEquals(50.0, ((Number)pMap.get("total")).doubleValue(), 1);
             List kids = (List) pMap.get("k");
             assertEquals(1, kids.size());
             assertEquals("John Jr Jrx", ((MyPerson) kids.get(0)).getName());
@@ -2550,7 +2543,7 @@ public class AccumulateTest {
             assertEquals(josJr, pMap.get("r"));
 
             pMap = (Map) map.get("Jos");
-            assertEquals(50.0, pMap.get("total"));
+            assertEquals(50.0, ((Number)pMap.get("total")).doubleValue(), 1);
             kids = (List) pMap.get("k");
             assertEquals(1, kids.size());
             assertEquals("John Jr Jrx", ((MyPerson) kids.get(0)).getName());

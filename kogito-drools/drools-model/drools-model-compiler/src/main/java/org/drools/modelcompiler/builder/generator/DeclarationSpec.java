@@ -18,25 +18,31 @@ public class DeclarationSpec {
     private final Optional<PatternDescr> optPattern;
     private final Optional<Expression> declarationSource;
     private final Optional<String> variableName;
+    private final Boolean isGlobal;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty());
+        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
+    }
+
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, Boolean isGlobal) {
+        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), isGlobal);
     }
 
     DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName));
+        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName), false);
     }
 
     DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty());
+        this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty(), false);
     }
 
-    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, Boolean isGlobal) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = pattern;
         this.declarationSource = declarationSource;
         this.variableName = variableName;
+        this.isGlobal = isGlobal;
     }
 
     Optional<String> getEntryPoint() {
@@ -59,10 +65,6 @@ public class DeclarationSpec {
         return declarationClass;
     }
 
-    public Optional<PatternDescr> getOptPattern() {
-        return optPattern;
-    }
-
     public Optional<Expression> getDeclarationSource() {
         return declarationSource;
     }
@@ -75,11 +77,16 @@ public class DeclarationSpec {
         return DrlxParseUtil.classToReferenceType(getDeclarationClass());
     }
 
+    public Boolean isGlobal() {
+        return isGlobal;
+    }
+
     @Override
     public String toString() {
         return "DeclarationSpec{" +
                 "bindingId='" + bindingId + '\'' +
                 ", declarationClass=" + declarationClass +
+                ", isGlobal=" + isGlobal +
                 '}';
     }
 

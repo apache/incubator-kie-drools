@@ -586,7 +586,14 @@ public abstract class AccumulateVisitor {
     }
 
     List<String> collectNamesInBlock(RuleContext context2, BlockStmt block) {
-        return block.findAll(NameExpr.class, n -> context2.hasDeclaration(n.getNameAsString())).stream().map(NameExpr::getNameAsString).distinct().collect(toList());
+        return block.findAll(NameExpr.class, n -> {
+            Optional<DeclarationSpec> optD = context2.getDeclarationById(n.getNameAsString());
+            return optD.filter(d -> !d.isGlobal()).isPresent(); // Global aren't supported
+        })
+                .stream()
+                .map(NameExpr::getNameAsString)
+                .distinct()
+                .collect(toList());
     }
     /*
         Since accumulate are always relative to the Pattern, it may happen that the declaration inside the accumulate
