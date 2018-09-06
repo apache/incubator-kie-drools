@@ -118,7 +118,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         @Override
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
-            if (accumulateObject instanceof SubnetworkTuple) {
+            if (accumulateObject instanceof SubnetworkTuple && declarations.length > 0) {
                 return (((SubnetworkTuple) accumulateObject)).getObject(declarations[0]);
             } else {
                 return accumulateObject;
