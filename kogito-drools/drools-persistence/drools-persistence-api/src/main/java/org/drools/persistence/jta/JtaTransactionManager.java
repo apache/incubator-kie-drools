@@ -262,8 +262,18 @@ public class JtaTransactionManager
             		this.ut.rollback();
         		}
         	} else {
-        		getUt().setRollbackOnly();
-        	}
+                // use transaction sync registry if available. this works if there is tx associated
+                if (this.tsr != null) {
+                    try {
+                        ((TransactionSynchronizationRegistry) this.tsr).setRollbackOnly();
+                    } catch ( IllegalStateException e) { 
+                        getUt().setRollbackOnly();
+                    }
+                } else {
+                    // if no transaction sync registry available fallback to user transaction
+                    getUt().setRollbackOnly();
+                }
+            }
         } catch ( Exception e ) {
             logger.warn( "Unable to rollback transaction", e);
             throw new RuntimeException( "Unable to rollback transaction",
