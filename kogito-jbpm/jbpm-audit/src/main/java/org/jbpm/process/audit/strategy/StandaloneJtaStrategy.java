@@ -16,13 +16,11 @@
 
 package org.jbpm.process.audit.strategy;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
 
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
@@ -56,13 +54,15 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
     @Override
     public Object joinTransaction(EntityManager em) {
         boolean newTx = false;
-        UserTransaction ut = findUserTransaction();
-        if( ut == null ) { 
+        
+        TransactionManager txm = TransactionManagerFactory.get().newTransactionManager();
+                
+        if( txm == null ) { 
             throw new IllegalStateException("Unable to find JTA transaction." );
         }
         try {
-            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
-                ut.begin();
+            if( txm.getStatus() == TransactionManager.STATUS_NO_TRANSACTION ) { 
+                txm.begin();
                 newTx = true;
                 // since new transaction was started em must join it
             } 
@@ -77,35 +77,9 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
         }
 
         if( newTx ) { 
-            return ut;
+            return txm;
         }
         return USER_MANAGED_TRANSACTION;
-    }
-
-    protected static UserTransaction findUserTransaction() {
-        InitialContext context = null;
-        try { 
-            context = new InitialContext();
-        } catch( Exception e ) { 
-           throw new IllegalStateException("Unable to initialized " + InitialContext.class.getName() + " instance.", e);
-        }
-        try {
-            return (UserTransaction) context.lookup( "java:comp/UserTransaction" );
-        } catch ( NamingException ex ) {
-            for (String utLookup : KNOWN_UT_JNDI_KEYS) {
-                if (utLookup != null) {
-                    try {
-                        UserTransaction ut = (UserTransaction) context.lookup(utLookup);
-                        return ut;
-                    } catch (NamingException e) {
-                        logger.debug("User Transaction not found in JNDI under {}", utLookup);
-                        
-                    }
-                }
-            }
-            logger.warn("No user transaction found under known names");
-            return null;
-        }
     }
 
     @Override
@@ -120,17 +94,13 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
         if( transaction == USER_MANAGED_TRANSACTION ) { 
             return;
         }
-        UserTransaction ut = null;
-        if( ! (transaction instanceof UserTransaction) ) { 
-           throw new IllegalStateException("This persistence strategy only deals with UserTransaction instances!" );
-        } else if( transaction != null ){ 
-           ut = (UserTransaction) transaction;
-        }
+        TransactionManager txm  = (TransactionManager) transaction;
+        
         
         try { 
-            if( ut != null ) { 
+            if( txm != null ) { 
                 // There's a tx running, close it.
-                ut.commit();
+                txm.commit(true);
             }
         } catch(Exception e) { 
             logger.error("Unable to commit transaction: ", e);
