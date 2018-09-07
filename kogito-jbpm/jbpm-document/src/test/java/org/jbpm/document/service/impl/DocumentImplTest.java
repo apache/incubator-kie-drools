@@ -17,18 +17,23 @@ package org.jbpm.document.service.impl;
 
 import java.util.Date;
 
+import java.io.File;
 import org.assertj.core.api.Assertions;
 import org.jbpm.document.Document;
 import org.junit.Assert;
 import org.junit.Test;
+import java.nio.file.Files;
 
 public class DocumentImplTest {
 
     private static final String ID = "1234567890";
-    private static final String NAME = "Document_Name.txt";
+    private static final String FILENAME = "Document_Name";
+    private static final String EXTENSION = ".txt";
+    private static final String NAME = FILENAME + EXTENSION;
     private static final Long SIZE = 1024l;
     private static final Date LAST_MODIFIED = new Date();
     private static final String LINK = "downloadLink";
+    private static final String CONTENT = "test content";
 
     @Test
     public void testDefaultConstructor() {
@@ -85,5 +90,24 @@ public class DocumentImplTest {
         } catch (Throwable th) {
             Assert.fail("toString method must not fire any exception: " + th.getMessage());
         }
+    }
+
+    @Test
+    public void testToFile() throws Exception {
+        Document document = new DocumentImpl(ID,
+                                             NAME,
+                                             SIZE,
+                                             LAST_MODIFIED,
+                                             LINK);
+        document.setContent(CONTENT.getBytes());
+
+        File file = document.toFile();
+        Assert.assertNotNull(file);
+        Assert.assertNotNull(file.getName());
+        Assert.assertTrue(file.getName().contains(FILENAME));
+        Assert.assertTrue(file.getName().contains(EXTENSION));
+        String fileContent = new String(Files.readAllBytes(file.toPath()));
+        Assert.assertNotNull(fileContent);
+        Assert.assertEquals(fileContent, CONTENT);
     }
 }

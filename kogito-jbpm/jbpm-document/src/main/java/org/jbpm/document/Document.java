@@ -15,6 +15,8 @@
  */
 package org.jbpm.document;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
@@ -47,7 +49,8 @@ public interface Document extends Serializable {
 
     String getAttribute(String attributeName);
 
-    void addAttribute(String attributeName, String attributeValue);
+    void addAttribute(String attributeName,
+                      String attributeValue);
 
     void setAttributes(Map<String, String> attributes);
 
@@ -56,4 +59,6 @@ public interface Document extends Serializable {
     public void setContent(byte[] content);
 
     byte[] getContent();
+
+    File toFile() throws IOException;
 }

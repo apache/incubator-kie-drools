@@ -16,6 +16,11 @@
 
 package org.jbpm.document.service.impl;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -172,6 +177,17 @@ public class DocumentImpl implements Document, LazyLoaded<DocumentStorageService
         load();
         
         return content;
+    }
+
+    @Override
+    public File toFile() throws IOException {
+        String[] nameParts = getName().split("\\.");
+        File file = File.createTempFile(nameParts[0], "." + nameParts[1]);
+        file.setLastModified(getLastModified().getTime());
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(getContent());
+        fos.close();
+        return file;
     }
 
     @Override
