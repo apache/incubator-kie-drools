@@ -23,12 +23,14 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.builder.Scope;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.KieSessionFluent;
+import org.kie.api.runtime.builder.Scope;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -37,32 +39,33 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class BatchRunFluentTest extends CommonTestMethodBase {
+
     String header = "package org.drools.compiler\n" +
-                    "import " + Message.class.getCanonicalName() + "\n";
+            "import " + Message.class.getCanonicalName() + "\n";
 
     String drl1 = "global String outS;\n" +
-                  "global Long timeNow;\n" +
-                  "rule R1 when\n" +
-                  "   s : String()\n" +
-                  "then\n" +
-                  "    kcontext.getKnowledgeRuntime().setGlobal(\"outS\", s);\n" +
-                  "    kcontext.getKnowledgeRuntime().setGlobal(\"timeNow\", kcontext.getKnowledgeRuntime().getSessionClock().getCurrentTime() );\n" +
-                  "end\n";
+            "global Long timeNow;\n" +
+            "rule R1 when\n" +
+            "   s : String()\n" +
+            "then\n" +
+            "    kcontext.getKnowledgeRuntime().setGlobal(\"outS\", s);\n" +
+            "    kcontext.getKnowledgeRuntime().setGlobal(\"timeNow\", kcontext.getKnowledgeRuntime().getSessionClock().getCurrentTime() );\n" +
+            "end\n";
 
-    ReleaseId    releaseId = SimulateTestBase.createKJarWithMultipleResources("org.kie", new String[]{header + drl1}, new ResourceType[] {ResourceType.DRL});
+    ReleaseId releaseId = SimulateTestBase.createKJarWithMultipleResources("org.kie", new String[]{header + drl1}, new ResourceType[]{ResourceType.DRL});
 
     @Test
     public void testOutName() {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").out("outS")
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS")
+                .dispose();
 
-        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         assertEquals("h1", requestContext.getOutputs().get("outS"));
     }
@@ -72,11 +75,11 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").set("outS").out()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").set("outS").out()
+                .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
@@ -111,18 +114,18 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").out()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out()
+                .dispose();
 
         try {
             RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
             assertEquals("h1", requestContext.get("out1"));
             fail("Must throw Exception, as no prior set was called and no name given to out");
-        } catch ( Exception e ) {
+        } catch (Exception e) {
 
         }
     }
@@ -132,23 +135,23 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         // create two sessions, and assign names
-         .getKieContainer(releaseId).newSession().set("s1").end()
-         .getKieContainer(releaseId).newSession().set("s2").end()
-         // initialise s1 with data
-         .get("s1", KieSessionFluent.class)
-         .insert("h1").fireAllRules().end()
+                // create two sessions, and assign names
+                .getKieContainer(releaseId).newSession().set("s1").end()
+                .getKieContainer(releaseId).newSession().set("s2").end()
+                // initialise s1 with data
+                .get("s1", KieSessionFluent.class)
+                .insert("h1").fireAllRules().end()
 
-         // initialise s2 with data
-         .get("s2", KieSessionFluent.class)
-         .insert("h2").fireAllRules().end()
+                // initialise s2 with data
+                .get("s2", KieSessionFluent.class)
+                .insert("h2").fireAllRules().end()
 
-         // assign s1 to out
-         .get("s1", KieSessionFluent.class)
-         .getGlobal("outS").out("outS1").dispose()
+                // assign s1 to out
+                .get("s1", KieSessionFluent.class)
+                .getGlobal("outS").out("outS1").dispose()
 
-         .get("s2", KieSessionFluent.class)
-         .getGlobal("outS").out("outS2").dispose();
+                .get("s2", KieSessionFluent.class)
+                .getGlobal("outS").out("outS2").dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
@@ -162,23 +165,23 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         // create two sessions, and assign names
-         .getKieContainer(releaseId).newSession().set("s1").end() // this end is needed, it's the get(String, Class) we are checking to see if it auto ends
-         .getKieContainer(releaseId).newSession().set("s2")
-         // initialise s1 with data
-         .get("s1", KieSessionFluent.class)
-         .insert("h1").fireAllRules()
+                // create two sessions, and assign names
+                .getKieContainer(releaseId).newSession().set("s1").end() // this end is needed, it's the get(String, Class) we are checking to see if it auto ends
+                .getKieContainer(releaseId).newSession().set("s2")
+                // initialise s1 with data
+                .get("s1", KieSessionFluent.class)
+                .insert("h1").fireAllRules()
 
-         // initialise s2 with data
-         .get("s2", KieSessionFluent.class)
-         .insert("h2").fireAllRules()
+                // initialise s2 with data
+                .get("s2", KieSessionFluent.class)
+                .insert("h2").fireAllRules()
 
-         // assign s1 to out
-         .get("s1", KieSessionFluent.class)
-         .getGlobal("outS").out("outS1").dispose()
+                // assign s1 to out
+                .get("s1", KieSessionFluent.class)
+                .getGlobal("outS").out("outS1").dispose()
 
-         .get("s2", KieSessionFluent.class)
-         .getGlobal("outS").out("outS2").dispose();
+                .get("s2", KieSessionFluent.class)
+                .getGlobal("outS").out("outS2").dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
@@ -186,7 +189,6 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals("h1", requestContext.getOutputs().get("outS1"));
         assertEquals("h2", requestContext.getOutputs().get("outS2"));
     }
-
 
     @Test
     public void testDifferentConversationIds() {
@@ -196,10 +198,10 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .dispose();
 
         runner.execute(f.getExecutable(), requestContext);
 
@@ -215,20 +217,20 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1") // Request is default
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1") // Request is default
+                .dispose();
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
         assertNull(requestContext.get("outS"));
         assertNull(requestContext.getOutputs().get("outS1"));
-        assertNull(requestContext.getApplicationContext().get("outS1") );
-        assertNull(requestContext.getConversationContext() );
-        assertEquals("h1", requestContext.get("outS1") );
+        assertNull(requestContext.getApplicationContext().get("outS1"));
+        assertNull(requestContext.getConversationContext());
+        assertEquals("h1", requestContext.get("outS1"));
     }
 
     @Test
@@ -238,33 +240,32 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1", Scope.APPLICATION)
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1", Scope.APPLICATION)
+                .dispose();
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
         assertEquals(null, requestContext.get("outS"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
+        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
 
         // Make another request, add to application context, assert old and new values are there.
-        f         = new ExecutableBuilderImpl();
+        f = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h2")
-         .fireAllRules()
-         .getGlobal("outS").set("outS2", Scope.APPLICATION)
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h2")
+                .fireAllRules()
+                .getGlobal("outS").set("outS2", Scope.APPLICATION)
+                .dispose();
 
         requestContext = (RequestContext) runner.execute(f.getExecutable());
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
-        assertEquals("h2", requestContext.getApplicationContext().get("outS2") );
+        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
+        assertEquals("h2", requestContext.getApplicationContext().get("outS2"));
     }
-
 
     @Test
     public void testConversationScope() {
@@ -273,11 +274,11 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1", Scope.CONVERSATION)
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1", Scope.CONVERSATION)
+                .dispose();
 
         RequestContext requestContext = (RequestContext) runner.execute(f.getExecutable());
 
@@ -286,24 +287,24 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         String conversationId = requestContext.getConversationContext().getName();
 
-        assertEquals("h1", requestContext.getConversationContext().get("outS1") );
+        assertEquals("h1", requestContext.getConversationContext().get("outS1"));
 
         // Make another request, add to conversation context, assert old and new values are there.
-        f         = new ExecutableBuilderImpl();
+        f = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").joinConversation(conversationId)
-         .getKieContainer(releaseId).newSession()
-         .insert("h2")
-         .fireAllRules()
-         .getGlobal("outS").set("outS2", Scope.CONVERSATION)
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h2")
+                .fireAllRules()
+                .getGlobal("outS").set("outS2", Scope.CONVERSATION)
+                .dispose();
 
         requestContext = (RequestContext) runner.execute(f.getExecutable());
-        assertEquals("h1", requestContext.getConversationContext().get("outS1") );
-        assertEquals("h2", requestContext.getConversationContext().get("outS2") );
+        assertEquals("h1", requestContext.getConversationContext().get("outS1"));
+        assertEquals("h2", requestContext.getConversationContext().get("outS2"));
 
         // End the conversation, check it's now null
-        f         = new ExecutableBuilderImpl();
+        f = new ExecutableBuilderImpl();
 
         f.endConversation(conversationId);
 
@@ -319,55 +320,52 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         // Check that get() will search up to Application, when no request or conversation values
         f.newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1", Scope.APPLICATION)
-         .get("outS1").out()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1", Scope.APPLICATION)
+                .get("outS1").out()
+                .dispose();
         RequestContext requestContext = runner.execute(f.getExecutable());
 
         assertEquals("h1", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
-        assertEquals("h1", requestContext.get("outS1") );
+        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
+        assertEquals("h1", requestContext.get("outS1"));
 
         // Check that get() will search up to Conversation, thus over-riding Application scope and ignoring Request when it has no value
-        f         = new ExecutableBuilderImpl();
+        f = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").startConversation()
-         .getKieContainer(releaseId).newSession()
-         .insert("h2")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1", Scope.CONVERSATION)
-         .get("outS1").out()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h2")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1", Scope.CONVERSATION)
+                .get("outS1").out()
+                .dispose();
         requestContext = runner.execute(f.getExecutable());
 
         assertEquals("h2", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
-        assertEquals("h2", requestContext.getConversationContext().get("outS1") );
-        assertEquals("h2", requestContext.get("outS1") );
-
+        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
+        assertEquals("h2", requestContext.getConversationContext().get("outS1"));
+        assertEquals("h2", requestContext.get("outS1"));
 
         // Check that get() will search directly to Request, thus over-riding Application and Conversation scoped values
-        f         = new ExecutableBuilderImpl();
+        f = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getName())
-         .getKieContainer(releaseId).newSession()
-         .insert("h3")
-         .fireAllRules()
-         .getGlobal("outS").set("outS1", Scope.REQUEST)
-         .get("outS1").out()
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h3")
+                .fireAllRules()
+                .getGlobal("outS").set("outS1", Scope.REQUEST)
+                .get("outS1").out()
+                .dispose();
         requestContext = runner.execute(f.getExecutable());
 
         assertEquals("h3", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
-        assertEquals("h2", requestContext.getConversationContext().get("outS1") );
-        assertEquals("h3", requestContext.get("outS1") );
+        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
+        assertEquals("h2", requestContext.getConversationContext().get("outS1"));
+        assertEquals("h3", requestContext.get("outS1"));
     }
-
-
 
     @Test
     public void testAfter() {
@@ -377,19 +375,19 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         // Check that get() will search up to Application, when no request or conversation values
         f.after(1000).newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").out("outS1")
-         .getGlobal("timeNow").out("timeNow1")
-         .dispose()
-         .after(2000).newApplicationContext("app1")
-         .getKieContainer(releaseId).newSession()
-         .insert("h1")
-         .fireAllRules()
-         .getGlobal("outS").out("outS2")
-         .getGlobal("timeNow").out("timeNow2")
-         .dispose();
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS1")
+                .getGlobal("timeNow").out("timeNow1")
+                .dispose()
+                .after(2000).newApplicationContext("app1")
+                .getKieContainer(releaseId).newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS2")
+                .getGlobal("timeNow").out("timeNow2")
+                .dispose();
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
@@ -397,11 +395,55 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals(2000l, requestContext.getOutputs().get("timeNow2"));
     }
 
-    public static KieModule createAndDeployJar( KieServices ks,
-                                                ReleaseId releaseId,
-                                                String... drls ) {
-        byte[] jar = createKJar( ks, releaseId, null, drls );
-        return deployJar( ks, jar );
+    @Test
+    public void testSetKieContainerTest() {
+        KieServices kieServices = KieServices.Factory.get();
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
+
+        ExecutableBuilder f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .setKieContainer(kieContainer)
+                .newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS1")
+                .dispose();
+
+        RequestContext requestContext = runner.execute(f.getExecutable());
+
+        assertEquals("h1", requestContext.getOutputs().get("outS1"));
     }
 
+    @Test
+    public void testKieSessionCustomizationTest() {
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
+
+        ExecutableBuilder f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .getKieContainer(releaseId)
+                .newSessionCustomized(null, ((sessionName, kieContainer) -> {
+                    KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(sessionName);
+                    kieSessionModel.setConsoleLogger("newConsoleLoggerName");
+                    return kieContainer;
+                }))
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS1")
+                .dispose();
+
+        RequestContext requestContext = runner.execute(f.getExecutable());
+
+        assertEquals("h1", requestContext.getOutputs().get("outS1"));
+    }
+
+    public static KieModule createAndDeployJar(KieServices ks,
+                                               ReleaseId releaseId,
+                                               String... drls) {
+        byte[] jar = createKJar(ks, releaseId, null, drls);
+        return deployJar(ks, jar);
+    }
 }
