@@ -226,6 +226,24 @@
           "methodName": "addCommand",
           "elementKind": "method",
           "justification": "move to public API addCommand to support custom commands"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.builder.KieContainerFluent org.kie.api.runtime.builder.ExecutableBuilder::setKieContainer(org.kie.api.runtime.KieContainer)",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "ExecutableBuilder",
+          "methodName": "setKieContainer",
+          "elementKind": "method",
+          "justification": "add the possibility to plug existing KieContainer in ExecutableBuilder"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.builder.KieSessionFluent org.kie.api.runtime.builder.KieContainerFluent::newSessionCustomized(java.lang.String, java.util.function.BiFunction<java.lang.String, org.kie.api.runtime.KieContainer, org.kie.api.runtime.KieContainer>)",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "KieContainerFluent",
+          "methodName": "newSessionCustomized",
+          "elementKind": "method",
+          "justification": "support session creation with customization"
         }
       ]
     }

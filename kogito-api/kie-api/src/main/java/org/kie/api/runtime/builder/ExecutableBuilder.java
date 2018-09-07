@@ -18,10 +18,13 @@ package org.kie.api.runtime.builder;
 
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.KieContainer;
 
 public interface ExecutableBuilder extends TimeFluent<ExecutableBuilder>, ContextFluent<ExecutableBuilder, ExecutableBuilder> {
 
     KieContainerFluent getKieContainer(ReleaseId releaseId);
+
+    KieContainerFluent setKieContainer(KieContainer kieContainer);
 
     Executable getExecutable();
 
