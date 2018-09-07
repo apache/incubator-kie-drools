@@ -16,8 +16,11 @@
 
 package org.drools.core.fluent.impl;
 
+import java.util.function.BiFunction;
+
 import org.drools.core.command.NewKieSessionCommand;
 import org.drools.core.command.NewRuleUnitExecutorCommand;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.builder.KieContainerFluent;
 import org.kie.api.runtime.builder.KieSessionFluent;
@@ -40,6 +43,14 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
     @Override
     public KieSessionFluent newSession(String sessionId) {
         NewKieSessionCommand cmd = new NewKieSessionCommand(sessionId);
+        ctx.addCommand(cmd);
+        return new KieSessionFluentImpl(ctx);
+    }
+
+    @Override
+    public KieSessionFluent newSessionCustomized(String sessionId, BiFunction<String, KieContainer, KieContainer> customizer) {
+        NewKieSessionCommand cmd = new NewKieSessionCommand(sessionId);
+        cmd.setBeforeSessionCreation(customizer);
         ctx.addCommand(cmd);
         return new KieSessionFluentImpl(ctx);
     }

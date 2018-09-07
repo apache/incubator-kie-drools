@@ -17,7 +17,6 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
@@ -25,7 +24,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 
-public class NewRuleUnitExecutorCommand
+public class NewRuleUnitExecutorCommand extends AbstractNewKieContainerCommand
         implements
         ExecutableCommand<RuleUnitExecutor> {
 
@@ -46,16 +45,7 @@ public class NewRuleUnitExecutorCommand
     public RuleUnitExecutor execute(Context context) {
         KieContainer kieContainer;
 
-        if (releaseId != null) {
-            // use the new API to retrieve the session by ID
-            KieServices kieServices = KieServices.Factory.get();
-            kieContainer = kieServices.newKieContainer(releaseId);
-        } else {
-            kieContainer = ((RegistryContext) context).lookup(KieContainer.class);
-            if (kieContainer == null) {
-                throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
-            }
-        }
+        kieContainer = getKieContainer((RegistryContext) context, releaseId);
 
         RuleUnitExecutor ruleUnitExecutor = sessionId != null ? kieContainer.newRuleUnitExecutor(sessionId) : kieContainer.newRuleUnitExecutor();
 

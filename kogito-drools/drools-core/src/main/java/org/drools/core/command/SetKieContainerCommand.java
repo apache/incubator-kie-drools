@@ -17,40 +17,30 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieContainer;
 
-public class GetKieContainerCommand
+public class SetKieContainerCommand
         implements
         ExecutableCommand<KieContainer> {
 
-    private static final long serialVersionUID = 8748826714594402049L;
-    private ReleaseId releaseId;
+    private static final long serialVersionUID = 2985535777825271597L;
+    private final KieContainer kieContainer;
 
-    public GetKieContainerCommand(ReleaseId releaseId) {
-        this.releaseId = releaseId;
+    public SetKieContainerCommand(KieContainer kieContainer) {
+        this.kieContainer = kieContainer;
     }
 
     public KieContainer execute(Context context) {
-        // use the new API to retrieve the session by ID
-        KieServices kieServices = KieServices.Factory.get();
-        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
-
         ((RegistryContext) context).register(KieContainer.class, kieContainer);
         return kieContainer;
     }
 
-    public ReleaseId getReleaseId() {
-        return releaseId;
-    }
-
     @Override
     public String toString() {
-        return "GetKieContainerCommand{" +
-                "releaseId=" + releaseId +
+        return "SetKieContainerCommand{" +
+                "kieContainer=" + kieContainer +
                 '}';
     }
 }
