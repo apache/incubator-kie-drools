@@ -16,9 +16,19 @@
 
 package org.kie.api.runtime.builder;
 
+import java.util.function.BiFunction;
+
+import org.kie.api.runtime.KieContainer;
+
 public interface KieContainerFluent {
+
     KieSessionFluent newSession();
-    KieSessionFluent newSession(String id);
+
+    KieSessionFluent newSession(String sessionName);
+
+    KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieContainer> customizer);
+
     RuleUnitExecutorFluent newRuleUnitExecutor();
+
     RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName);
 }
