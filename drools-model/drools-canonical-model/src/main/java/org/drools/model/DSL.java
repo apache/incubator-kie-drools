@@ -436,7 +436,10 @@ public class DSL {
 
     // -- Accumulate Functions --
 
-    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction... functions) {
+    public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        AccumulateFunction[] functions = new AccumulateFunction[otherFunctions.length+1];
+        functions[0] = firstFunction;
+        System.arraycopy( otherFunctions, 0, functions, 1, otherFunctions.length );
         return new AccumulateExprViewItem(viewItem, functions);
     }
 
