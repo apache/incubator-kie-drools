@@ -27,6 +27,7 @@ public class DRLIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new HashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateAccumulateBindingId = new HashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
         PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
@@ -53,6 +54,11 @@ public class DRLIdGenerator {
         return Optional.ofNullable(generateUnificationVariableId.get(key));
     }
 
+    public String getOrCreateAccumulateBindingId(String drlConstraint) {
+        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(Object.class, drlConstraint);
+        return generateAccumulateBindingId.computeIfAbsent(key, k -> generateAccumulatorBindingId());
+    }
+
     private String generateNewId() {
         return generateName("expr");
     }
@@ -69,14 +75,16 @@ public class DRLIdGenerator {
         return generateName("unificationExpr");
     }
 
+    private String generateAccumulatorBindingId() {
+        return generateName("accBindingId");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         generatedExprIds.forEach((k, v) -> sb.append(v+": "+k+"\n"));
         return sb.toString();
     }
-
-
 
     private static class PatternTypeDRLConstraint {
         public final Class<?> patternType;
