@@ -292,6 +292,10 @@ public class RuleContext {
         return idGenerator.getUnificationVariable(drlConstraint);
     }
 
+    public String getOrCreateAccumulatorBindingId(String drlConstraint) {
+        return idGenerator.getOrCreateAccumulateBindingId(drlConstraint);
+    }
+
     public void addNamedConsequence(String key, String value) {
         namedConsequences.put(key, value);
     }

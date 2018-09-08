@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -15,6 +16,25 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 
 public abstract class LambdaAccumulator implements Accumulator {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LambdaAccumulator that = (LambdaAccumulator) o;
+        return Objects.equals(accumulateFunction, that.accumulateFunction) &&
+                Objects.equals(sourceVariables, that.sourceVariables) &&
+                Objects.equals(reverseSupport, that.reverseSupport);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accumulateFunction, sourceVariables, reverseSupport);
+    }
 
     private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
     protected final List<String> sourceVariables;
@@ -118,7 +138,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         @Override
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
-            if (accumulateObject instanceof SubnetworkTuple) {
+            if (accumulateObject instanceof SubnetworkTuple && declarations.length > 0) {
                 return (((SubnetworkTuple) accumulateObject)).getObject(declarations[0]);
             } else {
                 return accumulateObject;

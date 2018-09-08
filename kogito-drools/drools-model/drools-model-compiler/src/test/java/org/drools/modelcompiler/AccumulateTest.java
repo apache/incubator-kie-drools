@@ -102,6 +102,34 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithLessParameter() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person (); \n" +
+                        "                count()  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result(\"fired\"));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        int numberOfRules = ksession.fireAllRules();
+
+        assertEquals(1, numberOfRules);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("fired", results.iterator().next().getValue());
+    }
+
+    @Test
     public void testAccumulateOverConstant() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
