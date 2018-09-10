@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.14.RELEASE</version>
+    <version>1.5.12.RELEASE</version>
   </parent>
 
   <properties>
@@ -41,60 +41,8 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>h2</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>mysql</id>
-      <activation>
-        <property>
-          <name>mysql</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>postgres</id>
-      <activation>
-        <property>
-          <name>postgres</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    
+  <profiles>  
+    DB_PROFILES_MARKER        
     <profile>
       <id>docker</id>
       <activation>
@@ -102,13 +50,6 @@
           <name>docker</name>
         </property>
       </activation>
-      
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-        </dependency>
-      </dependencies>
 
       <build>
         <plugins>
@@ -180,13 +121,6 @@
       <properties>
         <fabric8.mode>openshift</fabric8.mode>
       </properties>
-      
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-        </dependency>
-      </dependencies>
 
       <build>
         <plugins>
