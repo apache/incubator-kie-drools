@@ -20,8 +20,6 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironmen
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -35,11 +33,9 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.util.DroolsPersistenceUtil;
-import org.hibernate.StaleObjectStateException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.io.ResourceType;
@@ -76,46 +72,7 @@ public class JpaOptLockPersistentStatefulSessionTest {
     @After
     public void tearDown() throws Exception {
         DroolsPersistenceUtil.cleanUp(context);
-    }
-
-    @Test
-    public void testOptimisticLockInterceptor() throws InterruptedException {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        List<?> list = new ArrayList<>();
-        List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            Thread thread = new InsertAndFireThread(ksession.getIdentifier(), kbase, list);
-            threads.add(thread);
-            thread.start();
-        }
-        for (Thread thread : threads) {
-            thread.join();
-        }
-        assertEquals( 6, list.size() );
-        ksession.dispose();
-    }
+    }    
 
     @Test
     public void testOptimisticLockInterceptorMaxRetry() {
@@ -199,38 +156,5 @@ public class JpaOptLockPersistentStatefulSessionTest {
         }
 
         assertEquals(4, attempts.get());
-    }
-
-    private class InsertAndFireThread extends Thread {
-
-        private long ksessionId;
-        private KieBase kbase;
-        private List<?> list;
-
-        InsertAndFireThread(long ksessionId, KieBase kbase, List<?> list) {
-            this.ksessionId = ksessionId;
-            this.kbase = kbase;
-            this.list = list;
-        }
-
-        @Override
-        public void run() {
-            StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, createEnvironment(context) );
-            PersistableRunner sscs = (PersistableRunner)((CommandBasedStatefulKnowledgeSession) ksession2).getRunner();
-            OptimisticLockRetryInterceptor interceptor = new OptimisticLockRetryInterceptor();
-            // set higher delay so that the interceptor is not invoked multiple times on slow machines
-            interceptor.setDelay(500);
-            sscs.addInterceptor(interceptor);
-
-            ksession2.setGlobal( "list", list );
-            ksession2.insert( 1 );
-            ksession2.insert( 2 );
-            ksession2.insert( 3 );
-            ksession2.getWorkItemManager().completeWorkItem(0, null);
-            ksession2.fireAllRules();
-            logger.info("The above " + StaleObjectStateException.class.getSimpleName() + "'s were expected in this test.");
-
-            ksession2.dispose();
-        }
     }
 }
