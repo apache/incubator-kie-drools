@@ -60,12 +60,12 @@
     <module>drools-templates</module>
     <module>drools-decisiontables</module>
     <module>drools-examples</module>
-    <module>drools-scorecards</module>
     <module>kie-ci</module>
     <module>kie-ci-osgi</module>
     <module>drools-model</module>
     <module>kie-dmn</module>
     <module>kie-pmml</module>
+    <module>drools-scorecards</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>
