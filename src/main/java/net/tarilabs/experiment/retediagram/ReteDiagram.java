@@ -179,8 +179,9 @@ public class ReteDiagram {
             HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
             HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
             List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
+            Set<Integer> visitedNodesIDs = new HashSet<>();
             for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-                visitNodes( entryPointNode, "", new HashSet<>(), nodeMap, vertexes, levelMap, out);
+                visitNodes( entryPointNode, "", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
             }
             
             out.println("");
@@ -399,6 +400,9 @@ public class ReteDiagram {
     }
 
     private static void visitNodes(BaseNode node, String ident, Set<Integer> visitedNodesIDs, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+        if (node.getId() == 13) {
+            System.out.println(node);
+        }
         if (!visitedNodesIDs.add( node.getId() )) {
             return;
         }
@@ -407,6 +411,9 @@ public class ReteDiagram {
         Sink[] sinks = getSinks( node );
         if (sinks != null) {
             for (Sink sink : sinks) {
+                if (sink instanceof RuleTerminalNode) {
+                    System.out.println(node + " " + sink);
+                }
                 vertexes.add(Vertex.of(node, (BaseNode)sink));
                 if (sink instanceof BaseNode) {
                     visitNodes((BaseNode)sink, ident + " ", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
