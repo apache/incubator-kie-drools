@@ -49,6 +49,7 @@ def myServiceNameMarker = 'MYSERVICE_NAME_MARKER';
 def myServiceVersionMarker = 'MYSERVICE_VERSION_MARKER';
 def myServicePortMarker = 'MYSERVICE_PORT_MARKER';
 def kjarContainerIdMarker = "KJAR_CONTAINER_ID_MARKER"
+def dbProfilesMarker = "DB_PROFILES_MARKER"
 
 def BPMSpringBootStarterDepends = """
 <dependency>
@@ -105,6 +106,61 @@ jbpm.executor.enabled=false
 #jbpm.executor.timeUnit=SECONDS
 """;
 
+def DBProfilesConfig = """
+<profile>
+  <id>h2</id>
+  <activation>
+    <activeByDefault>true</activeByDefault>
+  </activation>
+  <dependencies>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+  </dependencies>
+</profile>
+
+<profile>
+  <id>mysql</id>
+  <activation>
+    <property>
+      <name>mysql</name>
+    </property>
+  </activation>
+  <dependencies>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</profile>
+
+<profile>
+  <id>postgres</id>
+  <activation>
+    <property>
+      <name>postgres</name>
+    </property>
+  </activation>
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</profile>
+""";
+
 logOut("Updating app configuration for app type: " + appType, quietMode);
 
 if( appType == "bpm" ) {
@@ -147,6 +203,7 @@ if( appType == "bpm" ) {
 
     logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, BPMSpringBootStarterDepends);
+    pomContent = pomContent.replace(dbProfilesMarker, DBProfilesConfig);
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
@@ -167,43 +224,33 @@ if( appType == "bpm" ) {
 } else if(appType == "brm") {
     logOut("Updating application properties...", quietMode);
     def appPropertiesContent = appPropertiesFile.getText('UTF-8');
-    def appPropertiesContentMySql = appPropertiesFileMySql.getText('UTF-8');
-    def appPropertiesContentPostgres = appPropertiesFilePostgres.getText('UTF-8');
     def devAppPropertiesContent = devAppPropertiesFile.getText('UTF-8');
 
     logOut("- adding server capabilities", quietMode);
     appPropertiesContent = appPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
-    appPropertiesContentMySql = appPropertiesContentMySql.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
-    appPropertiesContentPostgres = appPropertiesContentPostgres.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
     devAppPropertiesContent = devAppPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesBRM);
 
     logOut("- removing jbpm configuration", quietMode);
     appPropertiesContent = appPropertiesContent.replace(jbpmConfigMarker, '');
-    appPropertiesContentMySql = appPropertiesContentMySql.replace(jbpmConfigMarker, '');
-    appPropertiesContentPostgres = appPropertiesContentPostgres.replace(jbpmConfigMarker, '');
     devAppPropertiesContent = devAppPropertiesContent.replace(jbpmConfigMarker, '');
 
     appPropertiesFile.newWriter().withWriter { w ->
         w << appPropertiesContent
     }
 
-    appPropertiesFileMySql.newWriter().withWriter { w ->
-        w << appPropertiesContentMySql
-    }
-
-    appPropertiesFilePostgres.newWriter().withWriter { w ->
-        w << appPropertiesContentPostgres
-    }
-
     devAppPropertiesFile.newWriter().withWriter { w ->
         w << devAppPropertiesContent
     }
+    
+    appPropertiesFileMySql.delete();
+    appPropertiesFilePostgres.delete();
 
     logOut("Updating pom...", quietMode);
     def pomContent = pomFile.getText('UTF-8');
 
     logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, BRMSpringBootStarterDepends);
+    pomContent = pomContent.replace(dbProfilesMarker, '');
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
@@ -223,43 +270,34 @@ if( appType == "bpm" ) {
 } else if(appType == "planner") {
     logOut("Updating application properties...", quietMode);
     def appPropertiesContent = appPropertiesFile.getText('UTF-8');
-    def appPropertiesContentMySql = appPropertiesFileMySql.getText('UTF-8');
-    def appPropertiesContentPostgres = appPropertiesFilePostgres.getText('UTF-8');
     def devAppPropertiesContent = devAppPropertiesFile.getText('UTF-8');
 
     logOut("- adding server capabilities", quietMode);
     appPropertiesContent = appPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
-    appPropertiesContentMySql = appPropertiesContentMySql.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
-    appPropertiesContentPostgres = appPropertiesContentPostgres.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
     devAppPropertiesContent = devAppPropertiesContent.replace(kieServerCapabilitiesMarker, serverCapabilitiesPlanner);
 
     logOut("- removing jbpm configuration", quietMode);
     appPropertiesContent = appPropertiesContent.replace(jbpmConfigMarker, '');
-    appPropertiesContentMySql = appPropertiesContentMySql.replace(jbpmConfigMarker, '');
-    appPropertiesContentPostgres = appPropertiesContentPostgres.replace(jbpmConfigMarker, '');
     devAppPropertiesContent = devAppPropertiesContent.replace(jbpmConfigMarker, '');
 
     appPropertiesFile.newWriter().withWriter { w ->
         w << appPropertiesContent
     }
 
-    appPropertiesFileMySql.newWriter().withWriter { w ->
-        w << appPropertiesContentMySql
-    }
-
-    appPropertiesFilePostgres.newWriter().withWriter { w ->
-        w << appPropertiesContentPostgres
-    }
-
     devAppPropertiesFile.newWriter().withWriter { w ->
         w << devAppPropertiesContent
     }
+        
+    appPropertiesFileMySql.delete();
+    appPropertiesFilePostgres.delete();
+    
 
     logOut("Updating pom...", quietMode);
     def pomContent = pomFile.getText('UTF-8');
 
     logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, PlannerSpringBootStarterDepends);
+    pomContent = pomContent.replace(dbProfilesMarker, '');
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
