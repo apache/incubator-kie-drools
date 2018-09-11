@@ -32,7 +32,7 @@ public class CompoundSegmentPredicateTest {
 
 	@Before
 	public void setUp() throws Exception {
-		simplePredicate = new SimplePredicate[2];
+		simplePredicate = new SimplePredicate[3];
 		simpleSetPredicate = new SimpleSetPredicate[2];
 	}
 	
@@ -83,7 +83,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 == ABC) && (vTF2 > 4))");
+		assertEquals(text,"((( mTF1 == false ) && ( vTF1 == \"ABC\" )) && (( mTF2 == false ) && ( vTF2 > 4 )))");
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 == ABC) && (vTF2 in (  10,  12,  1 )))");
+		assertEquals(text,"((( mTF1 == false ) && ( vTF1 == \"ABC\" )) && (( mTF2 == false ) && ( vTF2 in (  10,  12,  1 ) )))");
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 <= 0) || (vTF1 > 4))");
+		assertEquals(text,"((( mTF1 == false ) && ( vTF1 <= 0 )) || (( mTF1 == false ) && ( vTF1 > 4 )))");
 	}
 
 	@Test
@@ -129,7 +129,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 > 100) || (vTF2 not in (  1,  8,  16,  21 )))");
+		assertEquals(text,"((( mTF1 == false ) && ( vTF1 > 100 )) || (( mTF2 == false ) && ( vTF2 not in (  1,  8,  16,  21 ) )))");
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(predicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 <= 0) ^ (vTF1 > 4))");
+		assertEquals(text,"((( mTF1 == false ) && ( vTF1 <= 0 )) ^ (( mTF1 == false ) && ( vTF1 > 4 )))");
 	}
 	
 	@Test
@@ -164,7 +164,12 @@ public class CompoundSegmentPredicateTest {
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(outerPredicate);
 		String text = testPredicate.getPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"((vTF1 <= 150) || (((vTF1 > 150) && (vTF2 in (  \"red\" ,  \"white\" ,  \"blue\"  )))))");
+		StringBuilder bldr = new StringBuilder("(");
+		bldr.append("(( mTF1 == false ) && ( vTF1 <= 150 )) || ((");
+		bldr.append("(( mTF1 == false ) && ( vTF1 > 150 )) && ");
+		bldr.append("(( mTF2 == false ) && ( vTF2 in (  \"red\" ,  \"white\" ,  \"blue\"  ) )))");
+		bldr.append("))");
+		assertEquals(bldr.toString(),text);
 	}
 	
 	@Test
@@ -175,19 +180,20 @@ public class CompoundSegmentPredicateTest {
 		outerPredicate.getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().add(simplePredicate[0]);
 		CompoundPredicate innerPredicate = new CompoundPredicate();
 		innerPredicate.setBooleanOperator("and");
-		setupSimplePredicate(1, "TF1", SimpleSegmentPredicate.GREATER, "150");
+		setupSimplePredicate(1, "TF2", SimpleSegmentPredicate.GREATER, "150");
 		Array valueSet = getNewArray("string", new BigInteger("3"), "red", "white", "blue");
-		setupSimpleSetPredicate(0, "TF2", "isIn", valueSet);
+		setupSimpleSetPredicate(0, "TF3", "isIn", valueSet);
+		setupSimplePredicate(2, "TF4", SimpleSegmentPredicate.GREATER_EQUAL,"10");
 		innerPredicate.getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().add(simplePredicate[1]);
 		innerPredicate.getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().add(simpleSetPredicate[0]);
 		outerPredicate.getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().add(innerPredicate);
+		outerPredicate.getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().add(simplePredicate[2]);
 		CompoundSegmentPredicate testPredicate = new CompoundSegmentPredicate(outerPredicate);
 		String text = testPredicate.getPrimaryPredicateRule();
 		assertNotNull(text);
-		assertEquals(text,"vTF1 <= 150");
-		for (int cnt = 0; cnt < testPredicate.getSubpredicateCount(); cnt++) {
-			text = testPredicate.getNextPredicateRule(cnt);
-			assertEquals(text,"( (mTF1==true) && ( ((vTF1 > 150) && (vTF2 in (  \"red\" ,  \"white\" ,  \"blue\"  ))) ) )");
-		}
+		assertEquals(text,"( mTF1 == false ) && ( vTF1 <= 150 )");
+		assertEquals(2,testPredicate.getSubpredicateCount());
+		text = testPredicate.getNextPredicateRule(0);
+		assertEquals(text,"( (mTF1 == true) && ( ((( mTF2 == false ) && ( vTF2 > 150 )) && (( mTF3 == false ) && ( vTF3 in (  \"red\" ,  \"white\" ,  \"blue\"  ) ))) ) )");
 	}
 }
