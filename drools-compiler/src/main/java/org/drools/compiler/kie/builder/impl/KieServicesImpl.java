@@ -190,7 +190,12 @@ public class KieServicesImpl implements InternalKieServices {
         }
         KieProject kProject = new KieModuleKieProject( kieModule, classLoader );
 
-    	if (containerId == null) {
+        if (classLoader != kProject.getClassLoader()) {
+            // if the new kproject has a different classloader than the original one it has to be initialized
+            kProject.init();
+        }
+
+        if (containerId == null) {
     	    KieContainerImpl newContainer = new KieContainerImpl( UUID.randomUUID().toString(), kProject, getRepository(), releaseId );
     		return newContainer;
     	}

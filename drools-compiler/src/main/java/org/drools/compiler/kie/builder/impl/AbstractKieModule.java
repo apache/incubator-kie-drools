@@ -15,6 +15,22 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -60,24 +76,7 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
         implements
@@ -175,22 +174,19 @@ public abstract class AbstractKieModule
         resultsCache.put(kieBaseName, results);
     }
 
-    public Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations) {
+    public Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for (String fileName : getFileNames()) {
             if (fileName.endsWith(".class")) {
-                if (includeTypeDeclarations || !isTypeDeclaration(fileName)) {
-                    classes.put(fileName, getBytes(fileName));
-                }
+                classes.put(fileName, getBytes(fileName));
             }
         }
         return classes;
     }
 
-    private boolean isTypeDeclaration(String fileName) {
-        Map<String, TypeMetaInfo> info = getTypesMetaInfo();
-        TypeMetaInfo typeInfo = info == null ? null : info.get(convertResourceToClassName(fileName));
-        return typeInfo != null && typeInfo.isDeclaredType();
+    @Deprecated
+    public Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations) {
+        return getClassesMap();
     }
 
     private Map<String, TypeMetaInfo> getTypesMetaInfo() {

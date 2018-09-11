@@ -15,6 +15,12 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
@@ -24,12 +30,6 @@ import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -93,8 +93,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     private Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules ) {
-            // avoid to take type declarations defined directly in this kieModule since they have to be recompiled
-            classes.putAll( kModule.getClassesMap( kModule != this.kieModule ) );
+            classes.putAll( kModule.getClassesMap() );
         }
         return classes;
     }

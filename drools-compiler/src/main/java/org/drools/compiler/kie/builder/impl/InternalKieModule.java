@@ -15,6 +15,11 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.common.ResourceProvider;
@@ -30,11 +35,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
 
@@ -76,6 +76,9 @@ public interface InternalKieModule extends KieModule {
 
     ResourceProvider createResourceProvider();
 
+    Map<String, byte[]> getClassesMap();
+
+    @Deprecated
     Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName);
