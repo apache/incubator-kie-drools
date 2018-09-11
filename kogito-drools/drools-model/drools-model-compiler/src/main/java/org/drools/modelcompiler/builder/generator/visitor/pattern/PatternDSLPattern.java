@@ -16,6 +16,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -42,7 +43,7 @@ class PatternDSLPattern extends PatternDSL {
                 additionalPatterns.add( expr );
             } else {
                 MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
-                (( MethodCallExpr ) expr).setScope( patternExpression );
+                findLastMethodInChain( currentExpr ).setScope( patternExpression );
                 patternExpression = currentExpr;
             }
         }

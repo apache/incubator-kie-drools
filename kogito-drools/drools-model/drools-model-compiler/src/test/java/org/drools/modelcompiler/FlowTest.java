@@ -57,6 +57,7 @@ import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -68,6 +69,8 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
+
+import static org.drools.model.DSL.after;
 import static org.drools.model.FlowDSL.accFunction;
 import static org.drools.model.FlowDSL.accumulate;
 import static org.drools.model.FlowDSL.and;
@@ -93,7 +96,11 @@ import static org.drools.model.FlowDSL.window;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class FlowTest {
 
@@ -1517,5 +1524,63 @@ public class FlowTest {
         kieSession.fireAllRules();
 
         Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
+
+    @Test
+    public void testAfterWithAnd() throws Exception {
+        Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a");
+        Variable<StockTick> var_$b = declarationOf(StockTick.class, "$b");
+
+        Rule rule = rule("R").build(expr("$expr$1$",
+                var_$a,
+                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(),
+                        "DROO")).indexedBy(java.lang.String.class,
+                org.drools.model.Index.ConstraintType.EQUAL,
+                0,
+                _this -> _this.getCompany(),
+                "DROO")
+                        .reactOn("company"),
+                and(
+                expr("$expr$2$",
+                        var_$b,
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(),
+                                "ACME")).indexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCompany(),
+                        "ACME")
+                        .reactOn("company"),
+                expr("$expr$3$",
+                        var_$b,
+                        var_$a,
+                        after(5L,
+                                java.util.concurrent.TimeUnit.SECONDS,
+                                8L,
+                                java.util.concurrent.TimeUnit.SECONDS))
+                ),
+                execute(() -> {
+                    System.out.println("fired");
+                }));
+
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }

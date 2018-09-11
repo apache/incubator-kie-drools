@@ -19,7 +19,7 @@ import org.drools.model.TupleHandle;
 import org.drools.model.Variable;
 import org.drools.model.View;
 import org.drools.model.consequences.NamedConsequenceImpl;
-import org.drools.model.constraints.AndConstraints;
+import org.drools.model.constraints.MultipleConstraints;
 import org.drools.model.constraints.OrConstraints;
 import org.drools.model.datasources.DataSource;
 import org.drools.model.datasources.DataStore;
@@ -160,8 +160,8 @@ public class BruteForceEngine {
                             throw new RuntimeException( e );
                         }
                 }
-            case AND:
-                AndConstraints andCon = (AndConstraints)constraint;
+            case MULTIPLE:
+                MultipleConstraints andCon = (MultipleConstraints )constraint;
                 return andCon.getChildren().stream().allMatch(con -> match(con, tuple));
             case OR:
                 OrConstraints orCon = (OrConstraints)constraint;

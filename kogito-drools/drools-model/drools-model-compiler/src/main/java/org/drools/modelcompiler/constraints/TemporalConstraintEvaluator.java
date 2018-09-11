@@ -23,7 +23,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
-import org.drools.model.Global;
 import org.drools.model.SingleConstraint;
 import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
@@ -46,37 +45,44 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory  ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
         InternalFactHandle[] fhs = getBetaInvocationFactHandles( handle, tuple );
-        long start1 = getStartTimestamp( fhs[0], temporalConstraint.getF1() );
-        long duration1 = ( (EventFactHandle) fhs[0] ).getDuration();
+        long start1 = getStartTimestamp( fhs[0], workingMemory, getDeclarations()[0], temporalConstraint.getF1() );
+        long duration1 = getDuration( fhs[0] );
         long end1 = start1 + duration1;
-        long start2 = getStartTimestamp( fhs[1], temporalConstraint.getF2() );
-        long duration2 = ( (EventFactHandle) fhs[1] ).getDuration();
+        long start2 = getStartTimestamp( fhs[1], workingMemory, getDeclarations()[1], temporalConstraint.getF2() );
+        long duration2 = getDuration( fhs[1] );
         long end2 = start2 + duration2;
         return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
     }
 
-    private long getStartTimestamp( InternalFactHandle fh, Function1<Object, ?> f ) {
-        return f != null ? getTimestampFromDate( f.apply( fh.getObject() ) ) : ( (EventFactHandle ) fh).getStartTimestamp();
+    private long getDuration( InternalFactHandle fh ) {
+        return fh instanceof EventFactHandle ? ( (EventFactHandle ) fh).getDuration() : 0L;
+    }
+
+    private long getStartTimestamp( InternalFactHandle fh, InternalWorkingMemory workingMemory, Declaration decl, Function1<Object, ?> f ) {
+        if (f != null) {
+            return getTimestampFromDate( f.apply( decl.getValue( workingMemory, fh.getObject() ) ) );
+        }
+        return fh instanceof EventFactHandle && !(decl.getExtractor() instanceof LambdaReadAccessor) ?
+                ( (EventFactHandle ) fh).getStartTimestamp() :
+                getTimestampFromDate( decl.getValue( workingMemory, fh.getObject() ) );
     }
 
     @Override
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
         TemporalConstraint temporalConstraint = (TemporalConstraint) constraint;
-        long start1 = getStartTimestamp( handle, temporalConstraint.getF1() );
-        long duration1 = ( (EventFactHandle) handle ).getDuration();
+        long start1 = getStartTimestamp( handle, workingMemory, getDeclarations()[0], temporalConstraint.getF1() );
+        long duration1 = getDuration( handle );
         long end1 = start1 + duration1;
-        long start2 = getNonEventTimestamp(temporalConstraint, workingMemory);
+        long start2 = getNonEventTimestamp(temporalConstraint, handle, workingMemory);
         long duration2 = 0;
         long end2 = start2 + duration2;
         return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
     }
 
-    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalWorkingMemory workingMemory) {
-        if (temporalConstraint.getVariables().length == 2 && temporalConstraint.getVariables()[1] instanceof Global) {
-            Object value = workingMemory.getGlobal( (( Global ) temporalConstraint.getVariables()[1]).getName() );
-            return getTimestampFromDate( temporalConstraint.getF2() != null ? temporalConstraint.getF2().apply( value ) : value );
-        }
-        return (( FixedTemporalConstraint ) constraint).getValue();
+    private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalFactHandle handle, InternalWorkingMemory workingMemory) {
+        return constraint instanceof FixedTemporalConstraint ?
+                (( FixedTemporalConstraint ) constraint).getValue() :
+                getStartTimestamp( handle, workingMemory, getDeclarations()[1], temporalConstraint.getF2() );
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
 import static java.util.Optional.of;
@@ -214,13 +215,15 @@ public class FromVisitor {
             DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
-                if ( drlxParseSuccess.getLeft() != null && !isCompatibleWithFromReturnType( patternType, drlxParseSuccess.getLeft().getRawClass() ) ) {
+                SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
+                TypedExpression left = singleResult.getLeft();
+                if ( left != null && !isCompatibleWithFromReturnType( patternType, left.getRawClass() ) ) {
                     context.addCompilationError( new InvalidExpressionErrorResult(
                             "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleName() +
-                                    "' is not compatible with type " + drlxParseSuccess.getLeft().getRawClass().getCanonicalName() + " returned by source" ) );
+                                    "' is not compatible with type " + left.getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
-                return generateLambdaWithoutParameters( drlxParseSuccess.getUsedDeclarations(), parsedExpression );
+                return generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression );
             } );
         } ).orElse( null );
     }

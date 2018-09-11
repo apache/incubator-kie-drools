@@ -8,15 +8,11 @@ public abstract class AbstractConstraint implements Constraint {
         return new OrConstraints(this, constraint);
     }
 
+    public MultipleConstraints with(Constraint constraint) {
+        return new MultipleConstraints(this, constraint);
+    }
+
     public AndConstraints and(Constraint constraint) {
         return new AndConstraints(this, constraint);
-    }
-
-    public static AndConstraints and(Constraint... constraints) {
-        return new AndConstraints(constraints);
-    }
-
-    public static OrConstraints or(Constraint... constraints) {
-        return new OrConstraints(constraints);
     }
 }

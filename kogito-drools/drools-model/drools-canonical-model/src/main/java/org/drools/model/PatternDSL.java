@@ -18,9 +18,12 @@ package org.drools.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
+import org.drools.model.constraints.AndConstraints;
 import org.drools.model.constraints.FixedTemporalConstraint;
+import org.drools.model.constraints.OrConstraints;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint10;
 import org.drools.model.constraints.SingleConstraint11;
@@ -67,6 +70,8 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 
 import static java.util.UUID.randomUUID;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class PatternDSL extends DSL {
 
@@ -94,6 +99,11 @@ public class PatternDSL extends DSL {
     }
 
     public interface PatternDef<T> extends ViewItem<T> {
+        PatternDef<T> and();
+        PatternDef<T> or();
+        PatternDef<T> endAnd();
+        PatternDef<T> endOr();
+
         PatternDef<T> expr( Predicate1<T> predicate );
         PatternDef<T> expr( String exprId, Predicate1<T> predicate );
         PatternDef<T> expr( String exprId, Predicate1<T> predicate, AlphaIndex<T, ?> index );
@@ -175,6 +185,7 @@ public class PatternDSL extends DSL {
 
         <U> PatternDef<T> expr( String exprId, Variable<U> var1, Function1<U,?> fVar, TemporalPredicate temporalPredicate );
         <U> PatternDef<T> expr( String exprId, Function1<T,?> fThis, Variable<U> var1, TemporalPredicate temporalPredicate );
+        PatternDef<T> expr( String exprId, Function1<T,?> fThis, Function1<T,?> fVar, TemporalPredicate temporalPredicate );
         <U> PatternDef<T> expr( String exprId, Function1<T,?> fThis, Variable<U> var1, Function1<U,?> fVar, TemporalPredicate temporalPredicate );
 
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f );
@@ -214,6 +225,26 @@ public class PatternDSL extends DSL {
 
         @Override
         public Variable<?>[] getVariables() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PatternDef<T> and() {
+            return new SubPatternDefImpl<>( this, LogicalCombiner.AND );
+        }
+
+        @Override
+        public PatternDef<T> or() {
+            return new SubPatternDefImpl<>( this, LogicalCombiner.OR );
+        }
+
+        @Override
+        public PatternDef<T> endAnd() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PatternDef<T> endOr() {
             throw new UnsupportedOperationException();
         }
 
@@ -464,6 +495,12 @@ public class PatternDSL extends DSL {
         }
 
         @Override
+        public PatternDef<T> expr( String exprId, Function1<T, ?> fThis, Function1<T, ?> fVar, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, new Function1.Impl<>( fThis ), getFirstVariable(), new Function1.Impl<>( fVar ), temporalPredicate) );
+            return this;
+        }
+
+        @Override
         public <U> PatternDef<T> expr( String exprId, Function1<T, ?> fThis, Variable<U> var1, Function1<U, ?> fVar, TemporalPredicate temporalPredicate ) {
             items.add( new TemporalPatternExpr<>( exprId, new Function1.Impl<>( fThis ), var1, new Function1.Impl<>( fVar ), temporalPredicate) );
             return this;
@@ -512,6 +549,49 @@ public class PatternDSL extends DSL {
         }
     }
 
+    public enum LogicalCombiner {
+        AND( "&&" ), OR( "||" );
+
+        private final String symbol;
+
+        LogicalCombiner( String symbol ) {
+            this.symbol = symbol;
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+    }
+
+    public static class SubPatternDefImpl<T> extends PatternDefImpl<T> {
+        private final PatternDefImpl<T> parent;
+        private final LogicalCombiner combiner;
+
+        public SubPatternDefImpl( PatternDefImpl<T> parent, LogicalCombiner combiner ) {
+            super(parent.variable);
+            this.parent = parent;
+            this.combiner = combiner;
+        }
+
+        @Override
+        public PatternDef<T> endAnd() {
+            if (combiner == LogicalCombiner.OR) {
+                throw new UnsupportedOperationException();
+            }
+            parent.items.add( new CombinedPatternExprItem<>( combiner, this.getItems() ));
+            return parent;
+        }
+
+        @Override
+        public PatternDef<T> endOr() {
+            if (combiner == LogicalCombiner.AND) {
+                throw new UnsupportedOperationException();
+            }
+            parent.items.add( new CombinedPatternExprItem<>( combiner, this.getItems() ));
+            return parent;
+        }
+    }
+
     public interface PatternItem<T> { }
 
     public static abstract class PatternExprImpl<T> implements PatternItem<T>  {
@@ -532,6 +612,30 @@ public class PatternDSL extends DSL {
         }
 
         public abstract Constraint asConstraint( PatternDefImpl patternDef );
+    }
+
+    public static class CombinedPatternExprItem<T> extends PatternExprImpl<T> {
+        private final LogicalCombiner combiner;
+        private final List<PatternItem<T>> items;
+
+        public CombinedPatternExprItem( LogicalCombiner combiner, List<PatternItem<T>> items ) {
+            super(null, null);
+            this.combiner = combiner;
+            this.items = items;
+        }
+
+        public String getExprId() {
+            return items.stream().map( PatternExprImpl.class::cast ).map( PatternExprImpl::getExprId ).collect( joining( combiner.getSymbol() ) );
+        }
+
+        public String[] getReactOn() {
+            return items.stream().map( PatternExprImpl.class::cast ).flatMap( e -> Stream.of( e.getReactOn() ) ).toArray( String[]::new );
+        }
+
+        public Constraint asConstraint( PatternDefImpl patternDef ) {
+            List<Constraint> combined = items.stream().map( PatternExprImpl.class::cast ).map( e -> e.asConstraint( patternDef ) ).collect( toList() );
+            return combiner == LogicalCombiner.OR ? new OrConstraints( combined ) : new AndConstraints( combined );
+        }
     }
 
     public static class PatternExpr1<T> extends PatternExprImpl<T> {

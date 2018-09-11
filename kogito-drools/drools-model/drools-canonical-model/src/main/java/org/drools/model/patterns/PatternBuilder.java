@@ -51,31 +51,31 @@ public class PatternBuilder {
             return this;
         }
 
-        public ConstrainedPatternBuilder<T> with(SingleConstraint constraint) {
+        public ConstrainedPatternBuilder<T> with( SingleConstraint constraint) {
             return new ConstrainedPatternBuilder(variable, (AbstractSingleConstraint)constraint, dataSourceDefinition);
         }
 
-        public ConstrainedPatternBuilder<T> with(Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> with( Predicate1<T> predicate) {
             return with(new SingleConstraint1<T>(variable, predicate));
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> with(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> with( Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return with(new SingleConstraint2<A, B>(var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> with(Variable<A> var2, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> with( Variable<A> var2, Predicate2<T, A> predicate) {
             return with(new SingleConstraint2<T, A>(variable, var2, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> with(String exprId, Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> with( String exprId, Predicate1<T> predicate) {
             return with(new SingleConstraint1<T>(exprId, variable, predicate));
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> with(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> with( String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return with(new SingleConstraint2<A, B>(exprId, var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> with(String exprId, Variable<A> var2, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> with( String exprId, Variable<A> var2, Predicate2<T, A> predicate) {
             return with(new SingleConstraint2<T, A>(exprId, variable, var2, predicate));
         }
 
@@ -91,82 +91,82 @@ public class PatternBuilder {
         private DataSourceDefinition dataSourceDefinition;
         private AbstractSingleConstraint lastConstraint;
 
-        private ConstrainedPatternBuilder(Variable<T> variable, AbstractSingleConstraint constraint, DataSourceDefinition dataSourceDefinition) {
+        private ConstrainedPatternBuilder( Variable<T> variable, AbstractSingleConstraint constraint, DataSourceDefinition dataSourceDefinition) {
             this.variable = variable;
             this.constraint = constraint;
             this.lastConstraint = constraint;
             this.dataSourceDefinition = dataSourceDefinition;
         }
 
-        public ConstrainedPatternBuilder<T> from(DataSourceDefinition dataSourceDefinition) {
+        public ConstrainedPatternBuilder<T> from( DataSourceDefinition dataSourceDefinition) {
             this.dataSourceDefinition = dataSourceDefinition;
             return this;
         }
 
-        public ConstrainedPatternBuilder<T> and(Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> and( Predicate1<T> predicate) {
             return and(new SingleConstraint1<T>(variable, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> and(String exprId, Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> and( String exprId, Predicate1<T> predicate) {
             return and(new SingleConstraint1<T>(exprId, variable, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> and(Constraint constraint) {
-            this.constraint = ((AbstractConstraint)this.constraint).and(constraint);
+        public ConstrainedPatternBuilder<T> and( Constraint constraint) {
+            this.constraint = ((AbstractConstraint)this.constraint).with(constraint);
             return this;
         }
 
-        public ConstrainedPatternBuilder<T> or(Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> or( Predicate1<T> predicate) {
             return or(new SingleConstraint1<T>(variable, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> or(String exprId, Predicate1<T> predicate) {
+        public ConstrainedPatternBuilder<T> or( String exprId, Predicate1<T> predicate) {
             return or(new SingleConstraint1<T>(exprId, variable, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> or(Constraint constraint) {
+        public ConstrainedPatternBuilder<T> or( Constraint constraint) {
             this.constraint = ((AbstractConstraint)this.constraint).or(constraint);
             return this;
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> and(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> and( Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return and(lastConstraint = new SingleConstraint2<A, B>(var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> and(Variable<A> var1, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> and( Variable<A> var1, Predicate2<T, A> predicate) {
             return and(lastConstraint = new SingleConstraint2<T, A>(variable, var1, predicate));
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> and(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> and( String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return and(lastConstraint = new SingleConstraint2<A, B>(exprId, var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> and(String exprId, Variable<A> var1, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> and( String exprId, Variable<A> var1, Predicate2<T, A> predicate) {
             return and(lastConstraint = new SingleConstraint2<T, A>(exprId, variable, var1, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> and(AbstractConstraint constraint) {
-            this.constraint = ((AbstractConstraint)this.constraint).and(constraint);
+        public ConstrainedPatternBuilder<T> and( AbstractConstraint constraint) {
+            this.constraint = ((AbstractConstraint)this.constraint).with(constraint);
             return this;
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> or(Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> or( Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return or(lastConstraint = new SingleConstraint2<A, B>(var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> or(Variable<A> var1, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> or( Variable<A> var1, Predicate2<T, A> predicate) {
             return or(lastConstraint = new SingleConstraint2<T, A>(variable, var1, predicate));
         }
 
-        public <A, B> ConstrainedPatternBuilder<T> or(String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
+        public <A, B> ConstrainedPatternBuilder<T> or( String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate) {
             return or(lastConstraint = new SingleConstraint2<A, B>(exprId, var1, var2, predicate));
         }
 
-        public <A> ConstrainedPatternBuilder<T> or(String exprId, Variable<A> var1, Predicate2<T, A> predicate) {
+        public <A> ConstrainedPatternBuilder<T> or( String exprId, Variable<A> var1, Predicate2<T, A> predicate) {
             return or(lastConstraint = new SingleConstraint2<T, A>(exprId, variable, var1, predicate));
         }
 
-        public ConstrainedPatternBuilder<T> or(AbstractConstraint constraint) {
+        public ConstrainedPatternBuilder<T> or( AbstractConstraint constraint) {
             this.constraint = ((AbstractConstraint)this.constraint).or(constraint);
             return this;
         }

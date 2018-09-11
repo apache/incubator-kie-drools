@@ -122,7 +122,7 @@ public class CepEspTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test(timeout=10000)

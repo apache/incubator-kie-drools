@@ -9,6 +9,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
@@ -36,7 +37,7 @@ class FlowAccumulateConstraint implements DSLNode {
                     .drlxParse(null, null, expression, false);
 
             drlxParseResult.accept(success -> {
-                success.setSkipThisAsParam(true);
+                (( SingleDrlxParseSuccess ) success).setSkipThisAsParam(true);
                 new FlowExpressionBuilder(context).processExpression(success );
             });
         }

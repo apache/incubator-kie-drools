@@ -53,9 +53,7 @@ public class MvelUtil {
         ParserConfiguration conf = new ParserConfiguration();
         conf.setClassLoader( classLoader );
 
-        MVELAnalysisResult analysis = analyzeExpression( expression, conf,
-                                                         new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ), null ),
-                                                         null, null, null );
+        MVELAnalysisResult analysis = analyzeExpression( expression, conf, new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ), null ) );
 
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
         int i = usedIdentifiers.getDeclrClasses().keySet().size();
@@ -82,12 +80,15 @@ public class MvelUtil {
         return expr;
     }
 
-    public static MVELAnalysisResult analyzeExpression(String expr,
-                                                       ParserConfiguration conf,
-                                                       BoundIdentifiers availableIdentifiers,
-                                                       Map<String, Class< ? >> localTypes,
-                                                       String contextIdentifier,
-                                                       Class kcontextClass) {
+    public static MVELAnalysisResult analyzeExpression(Class<?> thisClass, String expr) {
+        ParserConfiguration conf = new ParserConfiguration();
+        conf.setClassLoader( thisClass.getClassLoader() );
+        return analyzeExpression( expr, conf, new BoundIdentifiers( thisClass ) );
+    }
+
+    private static MVELAnalysisResult analyzeExpression(String expr,
+                                                        ParserConfiguration conf,
+                                                        BoundIdentifiers availableIdentifiers) {
         if ( expr.trim().length() <= 0 ) {
             MVELAnalysisResult result = analyze( (Set<String> ) Collections.EMPTY_SET, availableIdentifiers );
             result.setMvelVariables( new HashMap<String, Class< ? >>() );
@@ -101,17 +102,9 @@ public class MvelUtil {
         MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
 
         // first compilation is for verification only
-        // @todo proper source file name
         final ParserContext parserContext1 = new ParserContext( conf );
-        if ( localTypes != null ) {
-            for ( Map.Entry entry : localTypes.entrySet() ) {
-                parserContext1.addInput( (String) entry.getKey(),
-                        (Class) entry.getValue() );
-            }
-        }
         if ( availableIdentifiers.getThisClass() != null ) {
-            parserContext1.addInput( "this",
-                    availableIdentifiers.getThisClass() );
+            parserContext1.addInput( "this", availableIdentifiers.getThisClass() );
         }
 
         if ( availableIdentifiers.getOperators() != null ) {
@@ -125,21 +118,13 @@ public class MvelUtil {
         Class< ? > returnType;
 
         try {
-            returnType = MVEL.analyze( expr,
-                    parserContext1 );
+            returnType = MVEL.analyze( expr, parserContext1 );
         } catch ( Exception e ) {
             return null;
         }
 
-        Set<String> requiredInputs = new HashSet<String>();
-        requiredInputs.addAll( parserContext1.getInputs().keySet() );
-        HashMap<String, Class< ? >> variables = (HashMap<String, Class< ? >>) ((Map) parserContext1.getVariables());
-        if ( localTypes != null ) {
-            for ( String str : localTypes.keySet() ) {
-                // we have to do this due to mvel regressions on detecting true local vars
-                variables.remove( str );
-            }
-        }
+        Set<String> requiredInputs = new HashSet<>( parserContext1.getInputs().keySet() );
+        Map<String, Class> variables = parserContext1.getVariables();
 
         // MVEL includes direct fields of context object in non-strict mode. so we need to strip those
         if ( availableIdentifiers.getThisClass() != null ) {
@@ -162,12 +147,8 @@ public class MvelUtil {
 
             Class< ? > cls = availableIdentifiers.resolveType( input );
             if ( cls == null ) {
-                if ( input.equals( contextIdentifier ) || input.equals( "kcontext" ) ) {
-                    cls = kcontextClass;
-                } else if ( input.equals( "rule" ) ) {
+                if ( input.equals( "rule" ) ) {
                     cls = Rule.class;
-                } else if ( localTypes != null ) {
-                    cls = localTypes.get( input );
                 }
             }
             if ( cls != null ) {
@@ -185,20 +166,14 @@ public class MvelUtil {
             return null;
         }
 
-        requiredInputs = new HashSet<String>();
+        requiredInputs = new HashSet<>();
         requiredInputs.addAll( parserContext2.getInputs().keySet() );
         requiredInputs.addAll( variables.keySet() );
-        variables = (HashMap<String, Class< ? >>) ((Map) parserContext2.getVariables());
-        if ( localTypes != null ) {
-            for ( String str : localTypes.keySet() ) {
-                // we have to do this due to mvel regressions on detecting true local vars
-                variables.remove( str );
-            }
-        }
+        variables = parserContext2.getVariables();
 
         MVELAnalysisResult result = analyze( requiredInputs, availableIdentifiers );
         result.setReturnType( returnType );
-        result.setMvelVariables( variables );
+        result.setMvelVariables( (Map<String, Class< ? >>) (Map) variables );
         result.setTypesafe( true );
         return result;
     }

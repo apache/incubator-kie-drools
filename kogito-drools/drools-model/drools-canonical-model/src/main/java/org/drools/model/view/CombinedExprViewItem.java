@@ -29,6 +29,17 @@ public class CombinedExprViewItem<T> extends AbstractExprViewItem<T> {
     }
 
     @Override
+    public Variable<T> getFirstVariable() {
+        Variable<T> var = expressions[0].getFirstVariable();
+        for (int i = 1; i < expressions.length; i++) {
+            if (var != expressions[i].getFirstVariable()) {
+                return null;
+            }
+        }
+        return var;
+    }
+
+    @Override
     public Condition.Type getType() {
         return type;
     }

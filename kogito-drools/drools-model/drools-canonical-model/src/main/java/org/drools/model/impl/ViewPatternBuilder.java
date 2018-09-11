@@ -95,6 +95,8 @@ public class ViewPatternBuilder implements ViewBuilder {
                     pattern.addConstraint( (( PatternExprImpl ) patternItem).asConstraint( patternDef ) );
                 } else if ( patternItem instanceof PatternBindingImpl ) {
                     pattern.addBinding( (( PatternBindingImpl ) patternItem).asBinding( patternDef ) );
+                } else {
+                    throw new UnsupportedOperationException( "Unknown pattern item type: " + patternItem );
                 }
             }
             pattern.addWatchedProps(patternDef.getWatch());
