@@ -48,7 +48,7 @@ public class SimpleSetSegmentPredicateTest {
 		array.setContent("1 33 45");
 		array.setN(new BigInteger("3"));
 		predicate.setArray(array);
-		String expected = "vTF1 in (  1,  33,  45 )";
+		String expected = "( mTF1 == false ) && ( vTF1 in (  1,  33,  45 ) )";
 		doPredicateRetrieve(expected);
 	}
 	
@@ -59,7 +59,7 @@ public class SimpleSetSegmentPredicateTest {
 		array.setContent("3.14 29.5   17 71");
 		array.setN(new BigInteger("4"));
 		predicate.setArray(array);
-		String expected = "vTF1 in (  3.14,  29.5,  17.0,  71.0 )";
+		String expected = "( mTF1 == false ) && ( vTF1 in (  3.14,  29.5,  17.0,  71.0 ) )";
 		doPredicateRetrieve(expected);
 	}
 	
@@ -74,7 +74,7 @@ public class SimpleSetSegmentPredicateTest {
 		array.setContent(bldr.toString());
 		array.setN(new BigInteger("4"));
 		predicate.setArray(array);
-		String expected = "vTF1 in (  \"testValue 0\" ,  \"testValue 1\" ,  \"testValue 2\" ,  \"testValue 3\"  )";
+		String expected = "( mTF1 == false ) && ( vTF1 in (  \"testValue 0\" ,  \"testValue 1\" ,  \"testValue 2\" ,  \"testValue 3\"  ) )";
 		doPredicateRetrieve(expected);
 	}
 	
@@ -98,7 +98,7 @@ public class SimpleSetSegmentPredicateTest {
 		array.setN(new BigInteger("4"));
 		predicate.setArray(array);
 		predicate.setBooleanOperator("isNotIn");
-		String expected = "vTF1 not in (  3.14,  29.5,  17.0,  71.0 )";
+		String expected = "( mTF1 == false ) && ( vTF1 not in (  3.14,  29.5,  17.0,  71.0 ) )";
 		doPredicateRetrieve(expected);
 	}
 

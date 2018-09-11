@@ -21,4 +21,6 @@ public interface PredicateRuleProducer {
 	public String getPredicateRule();
 	public List<String> getPredicateFieldNames();
 	public List<String> getFieldMissingFieldNames();
+	public boolean isAlwaysTrue();
+	public boolean isAlwaysFalse();
 }

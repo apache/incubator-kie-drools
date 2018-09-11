@@ -17,6 +17,8 @@ package org.kie.pmml.pmml_4_2.model.mining;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
@@ -33,6 +35,7 @@ public class SimpleSegmentPredicate implements PredicateRuleProducer {
 	private String baseFieldName;
 	private String operator;
 	private String value;
+	private boolean stringLiteralValue;
 	private static PMML4Helper helper = new PMML4Helper();
 	
 	public SimpleSegmentPredicate() {
@@ -43,6 +46,7 @@ public class SimpleSegmentPredicate implements PredicateRuleProducer {
 		this.baseFieldName = predicate.getField();
 		this.operator = predicate.getOperator();
 		this.value = predicate.getValue();
+		this.stringLiteralValue = checkValueForStringLiteral(this.value);
 		if (this.operator == null) {
 			throw new IllegalStateException("PMML - SimplePredicate: Missing operator");
 		}
@@ -66,24 +70,51 @@ public class SimpleSegmentPredicate implements PredicateRuleProducer {
 
 	@Override
 	public String getPredicateRule() {
+		StringBuilder bldr = new StringBuilder();
+		bldr.append("( ").append(this.getMissingFieldName()).append(" == false )")
+		    .append(" && ( ").append(this.getValueFieldName());
 		if (operator.equalsIgnoreCase(GREATER)) {
-			return this.getValueFieldName()+" > "+this.value;
+			bldr.append(" > ").append(getValue()).append(" )");
+			return bldr.toString();
 		} else if (operator.equalsIgnoreCase(LESSER)) {
-			return this.getValueFieldName()+" < "+this.value;
+			bldr.append(" < ").append(getValue()).append(" )");
+			return bldr.toString();
 		} else if (operator.equalsIgnoreCase(EQUAL)) {
-			return this.getValueFieldName()+" == "+this.value;
+			bldr.append(" == ").append(getValue()).append(" )");
+			return bldr.toString();
 		} else if (operator.equalsIgnoreCase(NOT_EQUAL)) {
-			return this.getValueFieldName()+" != "+this.value;
+			bldr.append(" != ").append(getValue()).append(" )");
+			return bldr.toString();
 		} else if (operator.equalsIgnoreCase(MISSING)) {
 			return this.getMissingFieldName()+" == true";
 		} else if (operator.equalsIgnoreCase(NOT_MISSING)) {
 			return this.getMissingFieldName()+" == false";
 		} else if (operator.equalsIgnoreCase(GREATER_EQUAL)) {
-			return this.getValueFieldName()+" >= "+this.value;
+			bldr.append(" >= ").append(getValue()).append(" )");
+			return bldr.toString();
 		} else if (operator.equalsIgnoreCase(LESSER_EQUAL)) {
-			return this.getValueFieldName()+" <= "+this.value;
+			bldr.append(" <= ").append(getValue()).append(" )");
+			return bldr.toString();
 		}
 		throw new IllegalStateException("PMML - SimplePredicate: Unknown operator ("+operator+")");
+	}
+	
+	private boolean checkValueForStringLiteral(String value) {
+		Pattern p = Pattern.compile("[0-9]*\\.?+[0-9]*");
+		Matcher m = p.matcher(value.trim());
+		return !m.matches();
+	}
+	
+	private String getValue() {
+		return stringLiteralValue ? "\""+value+"\"" : value;
+	}
+	
+	public boolean isStringLiteralValue() {
+		return stringLiteralValue;
+	}
+	
+	public void setStringLiteralValue(boolean stringLiteralValue) {
+		this.stringLiteralValue = stringLiteralValue;
 	}
 
 	@Override
@@ -98,5 +129,15 @@ public class SimpleSegmentPredicate implements PredicateRuleProducer {
 		List<String> fieldNames = new ArrayList<>();
 		fieldNames.add(getMissingFieldName());
 		return fieldNames;
+	}
+
+	@Override
+	public boolean isAlwaysTrue() {
+		return false;
+	}
+
+	@Override
+	public boolean isAlwaysFalse() {
+		return false;
 	}
 }
