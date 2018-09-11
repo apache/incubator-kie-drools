@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -28,6 +29,7 @@ import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
 @Entity
 @Table(name="OrganizationalEntity")
+@Cacheable
 public abstract class OrganizationalEntityImpl implements InternalOrganizationalEntity {
     
     @Id
