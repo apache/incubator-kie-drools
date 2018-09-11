@@ -18,6 +18,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
@@ -95,7 +96,7 @@ public class OOPathExprGenerator {
                 if (context.isPatternDSL()) {
                     ooPathConditionExpressions.put(bindingId, Collections.emptyList());
                 } else {
-                    final DrlxParseSuccess drlxParseResult = new DrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
+                    final DrlxParseSuccess drlxParseResult = new SingleDrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
                     ooPathConditionExpressions.put(bindingId, Collections.singletonList(drlxParseResult));
                 }
             }

@@ -28,6 +28,7 @@ import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
+import org.drools.model.constraints.OrConstraints;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint10;
 import org.drools.model.constraints.SingleConstraint11;
@@ -143,6 +144,18 @@ public class ViewFlowBuilder implements ViewBuilder {
             ViewItem viewItem = (ViewItem) ruleItem;
             if ( viewItem instanceof CombinedExprViewItem ) {
                 CombinedExprViewItem combined = (CombinedExprViewItem) viewItem;
+                if (combined.getType() == Type.OR) {
+                    Condition condition = conditionMap.get(combined.getFirstVariable());
+                    if (condition instanceof PatternImpl) {
+                        PatternImpl pattern = ( PatternImpl ) condition;
+                        PatternImpl orPattern = new PatternImpl( pattern.getPatternVariable() );
+                        for (ViewItem expr : combined.getExpressions()) {
+                            orPattern = ( PatternImpl ) viewItem2Condition( expr, orPattern, ctx );
+                        }
+                        pattern.addConstraint( new OrConstraints(orPattern.getConstraint().getChildren()) );
+                        continue;
+                    }
+                }
                 conditions.add( viewItems2Condition( new BuildContext( ctx, combined.getExpressions(), scopedInputs ), combined.getType(), false ) );
                 continue;
             }

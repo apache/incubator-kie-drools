@@ -4,6 +4,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
@@ -26,7 +27,7 @@ class FlowDSLSimpleConstraint implements DSLNode {
         drlxParseResult.addAllWatchedProperties(DrlxParseUtil.getPatternListenedProperties(pattern) );
 
         if (pattern.isUnification()) {
-            drlxParseResult.setPatternBindingUnification(true);
+            (( SingleDrlxParseSuccess ) drlxParseResult).setPatternBindingUnification(true);
         }
 
         new FlowExpressionBuilder(context).processExpression(drlxParseResult);

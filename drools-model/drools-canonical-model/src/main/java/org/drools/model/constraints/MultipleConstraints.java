@@ -6,23 +6,23 @@ import java.util.List;
 import org.drools.model.Constraint;
 import org.drools.model.impl.ModelComponent;
 
-public class OrConstraints extends AbstractConstraint implements ModelComponent {
+public class MultipleConstraints extends AbstractConstraint implements ModelComponent {
 
     private final List<Constraint> constraints;
 
-    public OrConstraints(List<Constraint> constraints) {
+    public MultipleConstraints( List<Constraint> constraints) {
         this.constraints = constraints;
     }
 
-    public OrConstraints(Constraint... constraints) {
+    public MultipleConstraints( Constraint... constraints) {
         this.constraints = new ArrayList<>();
         for (Constraint constraint : constraints) {
-            or(constraint);
+            with(constraint);
         }
     }
 
     @Override
-    public OrConstraints or(Constraint constraint) {
+    public MultipleConstraints with( Constraint constraint) {
         constraints.add(constraint);
         return this;
     }
@@ -34,15 +34,15 @@ public class OrConstraints extends AbstractConstraint implements ModelComponent 
 
     @Override
     public Type getType() {
-        return Type.OR;
+        return Type.MULTIPLE;
     }
 
     @Override
     public boolean isEqualTo( ModelComponent o ) {
         if ( this == o ) return true;
-        if ( !(o instanceof OrConstraints) ) return false;
+        if ( !(o instanceof MultipleConstraints) ) return false;
 
-        OrConstraints that = ( OrConstraints ) o;
+        MultipleConstraints that = ( MultipleConstraints ) o;
 
         return ModelComponent.areEqualInModel( constraints, that.constraints );
     }

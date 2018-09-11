@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.util.MvelUtil;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
@@ -80,12 +83,14 @@ public class POJOGenerator {
         predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
     }
 
+    public static final List<String> exprAnnotations = Arrays.asList( "duration", "timestamp" );
+
     public static void generatePOJO(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
 
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
-                processType( packageModel, typeDescr, typeResolver.resolveType( typeDescr.getFullTypeName() ));
+                processType( builder, packageModel, typeDescr, typeResolver.resolveType( typeDescr.getFullTypeName() ));
             } catch (ClassNotFoundException e) {
                 packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(builder, typeDescr, packageDescr, pkg.getTypeResolver()));
                 packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
@@ -104,7 +109,7 @@ public class POJOGenerator {
         }
     }
 
-    private static void processType(PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
+    private static void processType(ModelBuilderImpl builder, PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
         MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getCanonicalName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
@@ -113,7 +118,11 @@ public class POJOGenerator {
             for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
                 MethodCallExpr annotationValueCall = new MethodCallExpr(null, ANNOTATION_VALUE_CALL);
                 annotationValueCall.addArgument( new StringLiteralExpr( entry.getKey() ) );
-                annotationValueCall.addArgument( quote( entry.getValue().toString()) );
+                String expr = entry.getValue().toString();
+                if (exprAnnotations.contains( ann.getName() ) && MvelUtil.analyzeExpression( type, expr ) == null) {
+                    builder.addBuilderResult( new InvalidExpressionErrorResult("Unable to analyze expression '" + expr + "' for " + ann.getName() + " attribute") );
+                }
+                annotationValueCall.addArgument( quote( expr ) );
                 typeMetaDataCall.addArgument( annotationValueCall );
             }
         }
@@ -312,10 +321,8 @@ public class POJOGenerator {
         return sortedTypes;
     }
 
-    private static Type addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
-        Type returnType = JavaParser.parseType( typeName );
-        addCtorArg( fullArgumentsCtor, returnType, fieldName );
-        return returnType;
+    private static void addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
+        addCtorArg( fullArgumentsCtor, JavaParser.parseType( typeName ), fieldName );
     }
 
     private static void addCtorArg( ConstructorDeclaration fullArgumentsCtor, Type fieldType, String fieldName ) {

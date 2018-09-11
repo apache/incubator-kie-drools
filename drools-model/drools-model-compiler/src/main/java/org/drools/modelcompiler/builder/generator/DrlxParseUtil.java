@@ -349,6 +349,10 @@ public class DrlxParseUtil {
         return drlxExpr;
     }
 
+    public static MethodCallExpr findLastMethodInChain(MethodCallExpr expr) {
+        return expr.getScope().filter( MethodCallExpr.class::isInstance ).map( MethodCallExpr.class::cast ).map( DrlxParseUtil::findLastMethodInChain ).orElse( expr );
+    }
+
     public static RemoveRootNodeResult findRemoveRootNodeViaScope(Expression expr) {
         return findRootNodeViaScopeRec(expr, new LinkedList<>());
     }

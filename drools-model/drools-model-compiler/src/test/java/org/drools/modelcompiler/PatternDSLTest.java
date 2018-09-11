@@ -853,5 +853,60 @@ public class PatternDSLTest {
         clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );    }
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testAfterWithAnd() throws Exception {
+        Variable<StockTick> var_$a = declarationOf(StockTick.class, "$a");
+        Variable<StockTick> var_$b = declarationOf(StockTick.class, "$b");
+
+        Rule rule = rule("R").build(
+                pattern(var_$a).expr("$expr$3$",
+                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                alphaIndexedBy(java.lang.String.class,
+                        org.drools.model.Index.ConstraintType.EQUAL,
+                        0,
+                        _this -> _this.getCompany(),
+                        "DROO"),
+                reactOn("company")),
+                pattern(var_$b).and().expr("$expr$5$",
+                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                        alphaIndexedBy(java.lang.String.class,
+                                org.drools.model.Index.ConstraintType.EQUAL,
+                                0,
+                                _this -> _this.getCompany(),
+                                "ACME"),
+                        reactOn("company"))
+                        .expr("$expr$6$",
+                                var_$a,
+                                after(5L,
+                                        java.util.concurrent.TimeUnit.SECONDS,
+                                        8L,
+                                        java.util.concurrent.TimeUnit.SECONDS)).endAnd(),
+                execute(() -> {
+                    System.out.println("fired");
+                }));
+
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ) );
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+        ksession.insert( new StockTick( "ACME" ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
+    }
 }
