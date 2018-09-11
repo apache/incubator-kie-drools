@@ -82,6 +82,7 @@ import org.kie.dmn.model.v1_2.TUnaryTests;
 import org.kie.dmn.model.v1_2.dmndi.Bounds;
 import org.kie.dmn.model.v1_2.dmndi.Color;
 import org.kie.dmn.model.v1_2.dmndi.DMNDI;
+import org.kie.dmn.model.v1_2.dmndi.DMNDecisionServiceDividerLine;
 import org.kie.dmn.model.v1_2.dmndi.DMNDiagram;
 import org.kie.dmn.model.v1_2.dmndi.DMNEdge;
 import org.kie.dmn.model.v1_2.dmndi.DMNLabel;
@@ -309,6 +310,8 @@ public class XStreamMarshaller
         xStream.registerConverter(new DMNLabelConverter(xStream));
         xStream.alias("DMNEdge", DMNEdge.class);
         xStream.registerConverter(new DMNEdgeConverter(xStream));
+        xStream.alias("DMNDecisionServiceDividerLine", DMNDecisionServiceDividerLine.class);
+        xStream.registerConverter(new DMNDecisionServiceDividerLineConverter(xStream));
         xStream.alias("waypoint", Point.class);
         xStream.registerConverter(new PointConverter(xStream));
 
