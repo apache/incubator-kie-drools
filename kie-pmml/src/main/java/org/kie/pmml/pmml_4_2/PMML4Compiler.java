@@ -546,20 +546,6 @@ public class PMML4Compiler {
         return javaClasses;
     }
 
-    public List<PMMLResource> precompile(String fileName, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
-        InputStream is = getInputStreamByFileName(fileName);
-        List<PMMLResource> resources = null;
-        if (is != null) {
-            try {
-                resources = precompile(is, classLoader, rootKieBaseModel);
-            } catch (Exception e) {
-                PMMLError err = new PMMLError("Unable to retrieve pre-compiled resources for PMML: " + e.getMessage());
-                this.results.add(err);
-            }
-        }
-        return (resources != null) ? resources : new ArrayList<>();
-    }
-
     public List<PMMLResource> precompile(InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
         List<PMMLResource> resources = new ArrayList<>();
         KieServices services = KieServices.Factory.get();
