@@ -22,96 +22,114 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SimpleSegmentPredicateTest {
-	private SimplePredicate predicate;
-	private static final String BAD_OP = "invalidOp";
-	
-	@Before
-	public void setUp() throws Exception {
-		predicate = new SimplePredicate();
-		predicate.setField("TF2");
-		predicate.setValue("123");
-	}
-	
-	
+    private SimplePredicate predicate;
+    private SimplePredicate stringPred;
+    private static final String BAD_OP = "invalidOp";
 
-	@Test
-	public void testEquals() {
-		predicate.setOperator(SimpleSegmentPredicate.EQUAL);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 == 123",text);
-	}
-	
-	@Test
-	public void testNotEquals() {
-		predicate.setOperator(SimpleSegmentPredicate.NOT_EQUAL);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 != 123",text);
-	}
-	
-	@Test
-	public void testGreaterThan() {
-		predicate.setOperator(SimpleSegmentPredicate.GREATER);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 > 123",text);
-	}
-	
-	@Test
-	public void testLessThan() {
-		predicate.setOperator(SimpleSegmentPredicate.LESSER);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 < 123",text);
-	}
-	
-	@Test
-	public void testMissing() {
-		predicate.setOperator(SimpleSegmentPredicate.MISSING);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("mTF2 == true",text);
-	}
-	
-	@Test
-	public void testGreaterEqual() {
-		predicate.setOperator(SimpleSegmentPredicate.GREATER_EQUAL);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 >= 123",text);
-	}
-	
-	@Test
-	public void testLesserEqual() {
-		predicate.setOperator(SimpleSegmentPredicate.LESSER_EQUAL);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("vTF2 <= 123",text);
-	}
-	
-	@Test
-	public void testNotMissing() {
-		predicate.setOperator(SimpleSegmentPredicate.NOT_MISSING);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNotNull(text);
-		assertEquals("mTF2 == false",text);
-	}
-	
-	@Test(expected=IllegalStateException.class)
-	public void testBadOperator() {
-		predicate.setOperator(BAD_OP);
-		SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
-		String text = ssp.getPredicateRule();
-		assertNull(text);
-	}
+    @Before
+    public void setUp() throws Exception {
+        predicate = new SimplePredicate();
+        predicate.setField("TF2");
+        predicate.setValue("123");
+
+        stringPred = new SimplePredicate();
+        stringPred.setField("TF3");
+        stringPred.setValue("optA");
+    }
+
+    @Test
+    public void testStringValue() {
+        stringPred.setOperator(SimpleSegmentPredicate.EQUAL);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(stringPred);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF3 == false ) && ( vTF3 == \"optA\" )",text);
+
+        predicate.setOperator(SimpleSegmentPredicate.EQUAL);
+        ssp = new SimpleSegmentPredicate(predicate);
+        text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 == 123 )",text);
+    }
+
+    @Test
+    public void testEquals() {
+        predicate.setOperator(SimpleSegmentPredicate.EQUAL);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 == 123 )",text);
+    }
+
+    @Test
+    public void testNotEquals() {
+        predicate.setOperator(SimpleSegmentPredicate.NOT_EQUAL);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 != 123 )",text);
+    }
+
+    @Test
+    public void testGreaterThan() {
+        predicate.setOperator(SimpleSegmentPredicate.GREATER);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 > 123 )",text);
+    }
+
+    @Test
+    public void testLessThan() {
+        predicate.setOperator(SimpleSegmentPredicate.LESSER);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 < 123 )",text);
+    }
+
+    @Test
+    public void testMissing() {
+        predicate.setOperator(SimpleSegmentPredicate.MISSING);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("mTF2 == true",text);
+    }
+
+    @Test
+    public void testGreaterEqual() {
+        predicate.setOperator(SimpleSegmentPredicate.GREATER_EQUAL);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 >= 123 )",text);
+    }
+
+    @Test
+    public void testLesserEqual() {
+        predicate.setOperator(SimpleSegmentPredicate.LESSER_EQUAL);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("( mTF2 == false ) && ( vTF2 <= 123 )",text);
+    }
+
+    @Test
+    public void testNotMissing() {
+        predicate.setOperator(SimpleSegmentPredicate.NOT_MISSING);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNotNull(text);
+        assertEquals("mTF2 == false",text);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void testBadOperator() {
+        predicate.setOperator(BAD_OP);
+        SimpleSegmentPredicate ssp = new SimpleSegmentPredicate(predicate);
+        String text = ssp.getPredicateRule();
+        assertNull(text);
+    }
 
 }
