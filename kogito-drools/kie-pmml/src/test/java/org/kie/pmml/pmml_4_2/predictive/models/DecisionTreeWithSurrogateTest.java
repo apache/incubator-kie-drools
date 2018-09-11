@@ -41,25 +41,27 @@ public class DecisionTreeWithSurrogateTest {
     private Optional<Double> temperature;
     private Optional<Double> humidity;
     private String decision;
+    private String correlationId;
 
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // { Optional.of(34.0), Optional.empty(), "sunglasses" }, bug - RHPAM-1492
-                { Optional.of(34.0), Optional.of(15.0), "sunglasses" },
-                { Optional.empty(), Optional.of(15.0), "sunglasses" },
-                // { Optional.empty(), Optional.of(85.0), "umbrella" }, bug - RHPAM-1492
-                { Optional.of(22.0), Optional.of(85.0), "umbrella" },
-                { Optional.of(22.0), Optional.of(35.0), "nothing" },
-                // { Optional.empty(), Optional.of(35.0), "nothing" }, bug - RHPAM-1492
-                { Optional.of(22.0), Optional.empty(), "nothing" },
+                 { Optional.of(34.0), Optional.empty(), "sunglasses", "1234" }, //bug - RHPAM-1492
+                { Optional.of(34.0), Optional.of(15.0), "sunglasses", "5678" },
+                { Optional.empty(), Optional.of(15.0), "sunglasses", "9012" },
+                { Optional.empty(), Optional.of(85.0), "umbrella", "3456" }, //bug - RHPAM-1492
+                { Optional.of(22.0), Optional.of(85.0), "umbrella", "7890" },
+                { Optional.of(22.0), Optional.of(35.0), "nothing", "4321" },
+                { Optional.empty(), Optional.of(35.0), "nothing", "0987" }, //bug - RHPAM-1492
+                { Optional.of(22.0), Optional.empty(), "nothing", "6543" },
         });
     }
 
-    public DecisionTreeWithSurrogateTest(Optional<Double> temperature, Optional<Double> humidity, String decision) {
+    public DecisionTreeWithSurrogateTest(Optional<Double> temperature, Optional<Double> humidity, String decision, String correlationId) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.decision = decision;
+        this.correlationId = correlationId;
     }
 
     @Test
@@ -67,14 +69,16 @@ public class DecisionTreeWithSurrogateTest {
         Resource res = ResourceFactory.newClassPathResource(treeWithSurrogate);
         PMML4ExecutionHelper helper = PMML4ExecutionHelper.PMML4ExecutionHelperFactory
                 .getExecutionHelper("SampleMine", res, null, false);
+        helper.initModel();
 
-        PMMLRequestDataBuilder rdb = new PMMLRequestDataBuilder("1234", "SampleMine");
+        PMMLRequestDataBuilder rdb = new PMMLRequestDataBuilder(correlationId, "SampleMine");
         temperature.ifPresent( t -> rdb.addParameter("temperature", t, Double.class));
         humidity.ifPresent( h -> rdb.addParameter("humidity", h, Double.class));
         PMMLRequestData request = rdb.build();
         helper.submitRequest(request);
         helper.getResultData().iterator().forEachRemaining(rd -> {
             assertEquals("OK",rd.getResultCode());
+            assertEquals(correlationId,rd.getCorrelationId());
             String value = rd.getResultValue("Decision", "value", String.class).orElse(null);
             assertEquals(decision, value);
         });

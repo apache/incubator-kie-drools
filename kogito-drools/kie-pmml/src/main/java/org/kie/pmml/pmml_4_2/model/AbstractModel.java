@@ -251,7 +251,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
                     .distinct()
                     .collect(Collectors.toList());
         }
-        return list != null ? list : Collections.emptyList();
+        return list != null ? list : new ArrayList<>();
     }
 
     public List<ExternalBeanRef> getExternalMiningFields() {

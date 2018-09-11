@@ -557,7 +557,7 @@ public class PMML4Compiler {
                 this.results.add(err);
             }
         }
-        return (resources != null) ? resources : Collections.emptyList();
+        return (resources != null) ? resources : new ArrayList<>();
     }
 
     public List<PMMLResource> precompile(InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {

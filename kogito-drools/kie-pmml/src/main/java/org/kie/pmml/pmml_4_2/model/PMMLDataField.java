@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class PMMLDataField {
     	if (dataDictionaryField != null) {
     		return dataDictionaryField.getIntervals();
     	}
-    	return Collections.emptyList();
+    	return new ArrayList<>();
     }
 
     public DataField getRawDataField() {

@@ -42,10 +42,11 @@ public class SimpleSetSegmentPredicate implements PredicateRuleProducer {
 	private static PMML4Helper helper = new PMML4Helper();
 	
 	private static String PREDICATE_TEMPLATE = ""
-			+ "@{fieldName} @{operator} ("
+			+ "( @{missingFieldName} == false ) && "
+			+ "( @{fieldName} @{operator} ("
 			+ "@foreach{value: values}"
 			+ "  @if{ setType==\"string\" }\"@{value}\" @elseif{ setType!=\"string\" }@{value}@end{}"
-			+ "@end{\",\"} )";
+			+ "@end{\",\"} ) )";
 	
 	public SimpleSetSegmentPredicate(SimpleSetPredicate predicate) {
 		this.setType = predicate.getArray().getType();
@@ -173,6 +174,7 @@ public class SimpleSetSegmentPredicate implements PredicateRuleProducer {
 		CompiledTemplate ct = getTemplate();
 		if (ct != null) {
 			Map<String,Object>vars = new HashMap<>();
+			vars.put("missingFieldName", this.getMissingFieldName());
 			vars.put("fieldName", this.getValueFieldName());
 			vars.put("operator", getOperatorText());
 			vars.put("setType", setType);
@@ -194,6 +196,16 @@ public class SimpleSetSegmentPredicate implements PredicateRuleProducer {
 		List<String> fieldNames = new ArrayList<>();
 		fieldNames.add(getMissingFieldName());
 		return fieldNames;
+	}
+
+	@Override
+	public boolean isAlwaysTrue() {
+		return false;
+	}
+
+	@Override
+	public boolean isAlwaysFalse() {
+		return false;
 	}
 
 	

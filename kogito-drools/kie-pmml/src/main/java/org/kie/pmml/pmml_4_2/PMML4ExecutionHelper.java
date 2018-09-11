@@ -257,6 +257,17 @@ public class PMML4ExecutionHelper {
         initRuleUnitExecutor();
     }
 
+    public synchronized void initModel() {
+        if (ruleUnitClass == null) {
+            throw new IllegalStateException("PMML model cannot be initialized. Missing ruleUnitClass.");
+        }
+        if (used) {
+            used = false;
+            initRuleUnitExecutor();
+        }
+        executor.run(ruleUnitClass);
+    }
+
     public synchronized PMML4Result submitRequest(PMMLRequestData request, Map<String,List<Object>> externalData) 
            throws InvalidParameterException, IllegalStateException {
         if (request == null) {

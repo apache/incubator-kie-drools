@@ -41,18 +41,25 @@ import org.dmg.pmml.pmml_4_2.descr.Attribute;
 import org.dmg.pmml.pmml_4_2.descr.COMPAREFUNCTION;
 import org.dmg.pmml.pmml_4_2.descr.Characteristic;
 import org.dmg.pmml.pmml_4_2.descr.ComplexPartialScore;
+import org.dmg.pmml.pmml_4_2.descr.CompoundPredicate;
 import org.dmg.pmml.pmml_4_2.descr.Constant;
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.False;
 import org.dmg.pmml.pmml_4_2.descr.FieldRef;
 import org.dmg.pmml.pmml_4_2.descr.GaussianDistribution;
+import org.dmg.pmml.pmml_4_2.descr.Node;
 import org.dmg.pmml.pmml_4_2.descr.PoissonDistribution;
 import org.dmg.pmml.pmml_4_2.descr.REGRESSIONNORMALIZATIONMETHOD;
 import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
+import org.dmg.pmml.pmml_4_2.descr.SimplePredicate;
+import org.dmg.pmml.pmml_4_2.descr.SimpleSetPredicate;
+import org.dmg.pmml.pmml_4_2.descr.True;
 import org.dmg.pmml.pmml_4_2.descr.UniformDistribution;
 import org.dmg.pmml.pmml_4_2.descr.Value;
 import org.kie.pmml.pmml_4_2.extensions.AggregationStrategy;
 import org.kie.pmml.pmml_4_2.model.mining.CompoundSegmentPredicate;
+import org.kie.pmml.pmml_4_2.model.mining.PredicateRuleFactory;
 import org.kie.pmml.pmml_4_2.model.mining.PredicateRuleProducer;
 import org.kie.pmml.pmml_4_2.model.mining.SimpleSegmentPredicate;
 import org.kie.pmml.pmml_4_2.model.mining.SimpleSetSegmentPredicate;
@@ -112,7 +119,7 @@ public class PMML4Helper {
     public String getPmmlPackageName() {
         return pmmlDefaultPackageName();
     }
-    
+
     public String getContext() {
         return context;
     }
@@ -216,6 +223,31 @@ public class PMML4Helper {
         } else {
             return false;
         }
+    }
+
+    public String getPredicate(Node node) {
+        String retVal = "";
+        if (node.getExtensionsAndSimplePredicatesAndCompoundPredicates() != null) {
+            Serializable serializable = node.getExtensionsAndSimplePredicatesAndCompoundPredicates().stream().
+                filter(ser -> (ser instanceof SimplePredicate
+                        || ser instanceof SimpleSetPredicate
+                        || ser instanceof CompoundPredicate
+                        || ser instanceof True
+                        || ser instanceof False))
+                .findFirst().orElse(null);
+            if (serializable != null) {
+                try {
+                    PredicateRuleProducer predicateProducer = PredicateRuleFactory.getPredicateProducer(serializable);
+                    if (predicateProducer != null) {
+                        return predicateProducer.getPredicateRule();
+                    }
+                } catch(IllegalArgumentException iax) {
+                    System.out.println(iax);
+                    retVal = "!!! PREDICATE GENERATION ERROR !!!";
+                }
+            }
+        }
+        return retVal;
     }
 
 
@@ -915,7 +947,7 @@ public class PMML4Helper {
     public String compactAsJavaId(String s) {
         return compactAsJavaId( s, false );
     }
-    
+
     public String compactAsJavaId(String s, boolean forceCapital) {
         s = s.replaceAll( ",", "_" );
         java.util.StringTokenizer tok = new java.util.StringTokenizer(s.trim());
