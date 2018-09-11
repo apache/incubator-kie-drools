@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Arrays;
 
+import junit.framework.Assert;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableDemand;
@@ -25,6 +26,7 @@ import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -278,4 +280,35 @@ public class TailChainSwapMoveTest {
                 inverseVariableSupply, anchorVariableSupply, a2, a0).toString());
     }
 
+    @Test
+    public void getPlanningEntitiesWithRightEntityNull() {
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", null);
+
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", null);
+
+        TestdataChainedSolution solution = new TestdataChainedSolution("solution");
+        solution.setChainedAnchorList(Arrays.asList(a0, b0));
+        solution.setChainedEntityList(Arrays.asList(a1, b1));
+
+        scoreDirector.setWorkingSolution(solution);
+        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
+                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+        AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
+                .demand(new AnchorVariableDemand(variableDescriptor));
+
+        TailChainSwapMove move =
+                new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, b0);
+        Assert.assertFalse(move.getPlanningEntities().contains(null));
+
+        move.doMoveOnGenuineVariables(scoreDirector);
+        Assert.assertFalse(move.getPlanningEntities().contains(null));
+
+        Move undoMove = move.createUndoMove(scoreDirector);
+        Assert.assertFalse(undoMove.getPlanningEntities().contains(null));
+    }
 }

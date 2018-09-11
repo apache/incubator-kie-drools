@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -318,6 +319,9 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
+        if (rightEntity == null) {
+            return Collections.singleton(leftEntity);
+        }
         return Arrays.asList(leftEntity, rightEntity);
     }
 
