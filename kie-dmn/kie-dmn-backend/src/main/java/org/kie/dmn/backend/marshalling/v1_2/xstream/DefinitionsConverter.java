@@ -27,6 +27,7 @@ import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.ElementCollection;
 import org.kie.dmn.model.api.Import;
@@ -128,6 +129,8 @@ public class DefinitionsConverter
                 nodeName = "inputData";
             } else if (e instanceof KnowledgeSource) {
                 nodeName = "knowledgeSource";
+            } else if (e instanceof DecisionService) {
+                nodeName = "decisionService";
             }
             writeChildrenNode(writer, context, e, nodeName);
         }
