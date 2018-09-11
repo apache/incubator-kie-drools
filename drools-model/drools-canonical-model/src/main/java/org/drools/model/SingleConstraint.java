@@ -1,7 +1,7 @@
 package org.drools.model;
 
 import org.drools.model.constraints.AbstractSingleConstraint;
-import org.drools.model.constraints.AndConstraints;
+import org.drools.model.constraints.MultipleConstraints;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint10;
 import org.drools.model.constraints.SingleConstraint11;
@@ -64,8 +64,8 @@ public interface SingleConstraint extends Constraint {
         }
 
         @Override
-        public AndConstraints and(Constraint constraint ) {
-            return new AndConstraints(constraint);
+        public MultipleConstraints with( Constraint constraint ) {
+            return new MultipleConstraints(constraint);
         }
 
         @Override
@@ -86,8 +86,8 @@ public interface SingleConstraint extends Constraint {
         }
 
         @Override
-        public AndConstraints and(Constraint constraint ) {
-            return new AndConstraints(constraint);
+        public MultipleConstraints with( Constraint constraint ) {
+            return new MultipleConstraints(constraint);
         }
 
         @Override

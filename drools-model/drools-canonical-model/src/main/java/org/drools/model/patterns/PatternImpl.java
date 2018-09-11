@@ -61,7 +61,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     }
 
     public void addConstraint( Constraint constraint ) {
-        this.constraint = ( (AbstractConstraint) this.constraint ).and( constraint );
+        this.constraint = this.constraint == SingleConstraint.TRUE ? constraint : ( (AbstractConstraint) this.constraint ).with( constraint );
     }
 
     public void addBinding(Binding binding) {

@@ -8,9 +8,14 @@ import org.drools.model.impl.ModelComponent;
 
 public class AndConstraints extends AbstractConstraint implements ModelComponent {
 
-    private final List<Constraint> constraints = new ArrayList<Constraint>();
+    private final List<Constraint> constraints;
 
-    public AndConstraints(Constraint... constraints) {
+    public AndConstraints( List<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+
+    public AndConstraints( Constraint... constraints) {
+        this.constraints = new ArrayList<>();
         for (Constraint constraint : constraints) {
             and(constraint);
         }

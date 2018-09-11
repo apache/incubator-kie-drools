@@ -269,7 +269,7 @@ public class DSL {
         return new CombinedExprViewItem(Condition.Type.AND, combineExprs( expression, expressions ) );
     }
 
-    private static ViewItem[] combineExprs( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions ) {
+    protected static ViewItem[] combineExprs( ViewItemBuilder<?> expression, ViewItemBuilder<?>... expressions ) {
         ViewItem[] andExprs = new ViewItem[expressions.length+1];
         andExprs[0] = expression.get();
         for (int i = 0; i < expressions.length; i++) {

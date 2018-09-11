@@ -191,7 +191,7 @@ public abstract class PatternDSL implements DSLNode {
             final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
             final List<String> allBindings = patternConstraintParseResults
                     .stream()
-                    .map(p -> p.getDrlxParseResult().acceptWithReturnValue(s -> s.getExprBinding()))
+                    .map(p -> p.getDrlxParseResult().acceptWithReturnValue( DrlxParseSuccess::getExprBinding ))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -226,5 +226,5 @@ public abstract class PatternDSL implements DSLNode {
 
     protected abstract MethodCallExpr input(DeclarationSpec declarationSpec);
 
-    protected abstract DSLNode createSimpleConstraint(DrlxParseSuccess drlxParseResult, PatternDescr pattern );
+    protected abstract DSLNode createSimpleConstraint( DrlxParseSuccess drlxParseResult, PatternDescr pattern );
 }

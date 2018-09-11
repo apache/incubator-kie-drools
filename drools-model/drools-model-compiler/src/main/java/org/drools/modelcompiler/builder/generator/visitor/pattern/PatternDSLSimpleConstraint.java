@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
@@ -21,7 +22,7 @@ class PatternDSLSimpleConstraint implements DSLNode {
     @Override
     public void buildPattern() {
         if (pattern.isUnification()) {
-            drlxParseResult.setPatternBindingUnification(true);
+            (( SingleDrlxParseSuccess ) drlxParseResult).setPatternBindingUnification(true);
         }
 
         new PatternExpressionBuilder(context).processExpression(drlxParseResult);

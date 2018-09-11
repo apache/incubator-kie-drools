@@ -33,6 +33,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
@@ -122,7 +123,7 @@ public class WindowReferenceGenerator {
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override
                         public Optional<Expression> onSuccess(DrlxParseSuccess drlxParseResult) {
-                            return Optional.of(generateLambdaWithoutParameters(drlxParseResult.getUsedDeclarations(), drlxParseResult.getExpr()));
+                            return Optional.of(generateLambdaWithoutParameters( (( SingleDrlxParseSuccess ) drlxParseResult).getUsedDeclarations(), drlxParseResult.getExpr()));
                         }
 
                         @Override

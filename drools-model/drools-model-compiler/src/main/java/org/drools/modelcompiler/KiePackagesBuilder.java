@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -111,8 +112,10 @@ import org.drools.modelcompiler.attributes.LambdaEnabled;
 import org.drools.modelcompiler.attributes.LambdaSalience;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.consequence.MVELConsequence;
+import org.drools.modelcompiler.constraints.AbstractConstraint;
 import org.drools.modelcompiler.constraints.BindingEvaluator;
 import org.drools.modelcompiler.constraints.BindingInnerObjectEvaluator;
+import org.drools.modelcompiler.constraints.CombinedConstraint;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
 import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
@@ -128,6 +131,8 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
@@ -606,7 +611,7 @@ public class KiePackagesBuilder {
             pattern.addConstraint( new UnificationConstraint( queryArgDecl ) );
         }
 
-        addConstraintsToPattern( ctx, pattern, modelPattern, modelPattern.getConstraint() );
+        addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
         return pattern;
     }
@@ -863,41 +868,56 @@ public class KiePackagesBuilder {
         throw new IllegalArgumentException( "Unknown window type: " + window.getType() );
     }
 
-    private void addConstraintsToPattern( RuleContext ctx, Pattern pattern, org.drools.model.Pattern modelPattern, Constraint constraint ) {
+    private void addConstraintsToPattern( RuleContext ctx, Pattern pattern, Constraint constraint ) {
+          if (constraint.getType() == Constraint.Type.MULTIPLE ) {
+            for (Constraint child : constraint.getChildren()) {
+                addConstraintsToPattern(ctx, pattern, child);
+            }
+            return;
+        }
+
+        createConstraint( ctx, pattern, constraint ).ifPresent( pattern::addConstraint );
+    }
+
+    private Optional<org.drools.core.spi.Constraint> createConstraint( RuleContext ctx, Pattern pattern, Constraint constraint ) {
         if (constraint.getType() == Constraint.Type.SINGLE) {
             SingleConstraint singleConstraint = (SingleConstraint) constraint;
-            boolean isEqual = singleConstraint.getIndex() != null && singleConstraint.getIndex().getConstraintType() == Index.ConstraintType.EQUAL;
+            return singleConstraint.getVariables().length > 0 ? Optional.of( createSingleConstraint( ctx, pattern, singleConstraint ) ) : Optional.empty();
+        } else {
+            List<AbstractConstraint> constraints = constraint.getChildren().stream().map( child -> createConstraint( ctx, pattern, child ) )
+                    .filter( Optional::isPresent ).map( Optional::get ).map( AbstractConstraint.class::cast ).collect( toList() );
+            return Optional.of( new CombinedConstraint( constraint.getType(), constraints ) );
+        }
+    }
 
-            if (singleConstraint.getVariables().length > 0) {
-                Variable[] vars = singleConstraint.getVariables();
-                Declaration[] declarations = new Declaration[vars.length];
-                Declaration unificationDeclaration = null;
-                for (int i = 0; i < vars.length; i++) {
-                    declarations[i] = ctx.getOrCreateDeclaration( vars[i] );
-                    if ( isEqual && declarations[i].getPattern().getObjectType().equals( ClassObjectType.DroolsQuery_ObjectType ) ) {
-                        unificationDeclaration = declarations[i];
-                    } else if ( pattern.getSource() instanceof MultiAccumulate) {
-                        Declaration accDeclaration = pattern.getDeclarations().get( declarations[i].getBindingName() );
-                        if (accDeclaration != null) {
-                            declarations[i].setReadAccessor( accDeclaration.getExtractor() );
-                        }
-                    }
+    private org.drools.core.spi.Constraint createSingleConstraint( RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint ) {
+        Variable[] vars = singleConstraint.getVariables();
+        Declaration[] declarations = new Declaration[vars.length];
+        Declaration unificationDeclaration = collectConstraintDeclarations( ctx, pattern, singleConstraint, vars, declarations );
+
+        ConstraintEvaluator constraintEvaluator = singleConstraint.isTemporal() ?
+                                                  new TemporalConstraintEvaluator( declarations, pattern, singleConstraint ) :
+                                                  new ConstraintEvaluator( declarations, pattern, singleConstraint );
+        return unificationDeclaration != null ?
+                                         new UnificationConstraint(unificationDeclaration, constraintEvaluator) :
+                                         new LambdaConstraint( constraintEvaluator );
+    }
+
+    private Declaration collectConstraintDeclarations( RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint, Variable[] vars, Declaration[] declarations ) {
+        Declaration unificationDeclaration = null;
+        boolean isEqual = singleConstraint.getIndex() != null && singleConstraint.getIndex().getConstraintType() == Index.ConstraintType.EQUAL;
+        for (int i = 0; i < vars.length; i++) {
+            declarations[i] = ctx.getOrCreateDeclaration( vars[i] );
+            if ( isEqual && declarations[i].getPattern().getObjectType().equals( ClassObjectType.DroolsQuery_ObjectType ) ) {
+                unificationDeclaration = declarations[i];
+            } else if ( pattern.getSource() instanceof MultiAccumulate ) {
+                Declaration accDeclaration = pattern.getDeclarations().get( declarations[i].getBindingName() );
+                if (accDeclaration != null) {
+                    declarations[i].setReadAccessor( accDeclaration.getExtractor() );
                 }
-
-                ConstraintEvaluator constraintEvaluator = singleConstraint.isTemporal() ?
-                                                          new TemporalConstraintEvaluator( declarations, pattern, singleConstraint ) :
-                                                          new ConstraintEvaluator( declarations, pattern, singleConstraint );
-                org.drools.core.spi.Constraint droolsConstraint = unificationDeclaration != null ?
-                                                                  new UnificationConstraint(unificationDeclaration, constraintEvaluator) :
-                                                                  new LambdaConstraint( constraintEvaluator );
-                pattern.addConstraint( droolsConstraint );
-            }
-
-        } else if (modelPattern.getConstraint().getType() == Constraint.Type.AND) {
-            for (Constraint child : constraint.getChildren()) {
-                addConstraintsToPattern(ctx, pattern, modelPattern, child);
             }
         }
+        return unificationDeclaration;
     }
 
     private void addFieldsToPatternWatchlist( Pattern pattern, String... fields ) {

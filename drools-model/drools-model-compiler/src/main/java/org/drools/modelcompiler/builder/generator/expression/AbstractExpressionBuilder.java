@@ -43,6 +43,8 @@ import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -59,6 +61,16 @@ public abstract class AbstractExpressionBuilder {
     }
 
     public void processExpression(DrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult instanceof SingleDrlxParseSuccess) {
+            processExpression( (SingleDrlxParseSuccess) drlxParseResult );
+        } else if (drlxParseResult instanceof MultipleDrlxParseSuccess) {
+            processExpression( (MultipleDrlxParseSuccess) drlxParseResult );
+        } else {
+            throw new UnsupportedOperationException( "Unknown expression type: " + drlxParseResult.getClass().getName() );
+        }
+    }
+
+    public void processExpression(SingleDrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
@@ -72,17 +84,24 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    private Expression buildUnificationExpression(DrlxParseSuccess drlxParseResult) {
+    public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
+        if ( drlxParseResult.isValidExpression() ) {
+            Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
+            context.addExpression(dslExpr);
+        }
+    }
+
+    private Expression buildUnificationExpression(SingleDrlxParseSuccess drlxParseResult) {
         MethodCallExpr exprDSL = buildBinding(drlxParseResult);
         context.addDeclaration(drlxParseResult.getUnificationVariable(), drlxParseResult.getUnificationVariableType(), drlxParseResult.getUnificationName());
         return exprDSL;
     }
 
-    public abstract Expression buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult);
+    public abstract MethodCallExpr buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult);
 
-    public abstract MethodCallExpr buildBinding(DrlxParseSuccess drlxParseResult );
+    public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult );
 
-    protected Expression getConstraintExpression(DrlxParseSuccess drlxParseResult) {
+    protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.getExpr() instanceof EnclosedExpr) {
             return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
         } else {
@@ -98,15 +117,15 @@ public abstract class AbstractExpressionBuilder {
         }
     }
 
-    protected Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Expression expr ) {
+    protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Expression expr ) {
         return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarations(), expr );
     }
 
-    protected Expression buildConstraintExpression(DrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
+    protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
         return drlxParseResult.isStatic() ? expr : generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam());
     }
 
-    boolean hasIndex( DrlxParseSuccess drlxParseResult ) {
+    boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
         TypedExpression left = drlxParseResult.getLeft();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
