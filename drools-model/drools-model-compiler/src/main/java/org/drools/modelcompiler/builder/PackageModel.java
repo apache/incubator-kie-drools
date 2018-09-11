@@ -83,7 +83,6 @@ public class PackageModel {
 
     private static final String RULES_FILE_NAME = "Rules";
 
-    private static final int RULES_PER_CLASS = 5;
     private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
     private final String name;
@@ -470,11 +469,14 @@ public class PackageModel {
             addRulesList( rulesListInitializerBody, "rulesList" );
         }
 
+        int maxLength = ruleMethods.values().parallelStream().map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
+        int rulesPerClass = Math.max( 65535 / maxLength, 1 );
+
         // each method per Drlx parser result
         int count = -1;
         Map<Integer, ClassOrInterfaceDeclaration> splitted = new LinkedHashMap<>();
         for (Entry<String, MethodDeclaration> ruleMethodKV : ruleMethods.entrySet()) {
-            ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(++count / RULES_PER_CLASS, i -> {
+            ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(++count / rulesPerClass, i -> {
                 CompilationUnit cuRulesMethod = new CompilationUnit();
                 results.with(cuRulesMethod);
                 cuRulesMethod.setPackageDeclaration(name);
