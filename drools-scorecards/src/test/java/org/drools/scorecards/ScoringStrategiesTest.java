@@ -48,7 +48,6 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
-@Ignore
 public class ScoringStrategiesTest {
 
     @Before
