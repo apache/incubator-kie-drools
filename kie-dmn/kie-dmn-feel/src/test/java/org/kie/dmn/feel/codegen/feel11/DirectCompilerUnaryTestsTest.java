@@ -24,30 +24,53 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.ast.expr.Expression;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class DirectCompilerUnaryTestsTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerUnaryTestsTest.class);
-    
+    private static class Listener implements FEELEventListener {
+        private FEELEvent event = null;
+        @Override
+        public void onEvent(FEELEvent evt) {
+            if (evt.getSeverity() == FEELEvent.Severity.ERROR) {
+                this.event = evt;
+            }
+        }
+        boolean isError() { return event != null; }
+        FEELEvent event() { return event; }
+    }
+
     private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
         Object left = EvalHelper.coerceNumber(l);
         CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression);
         LOG.debug("{}", compiledUnaryTests);
-        
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
-        List<Boolean> result = compiledUnaryTests.getUnaryTests().stream().map(ut -> ut.apply(emptyContext, left)).collect(Collectors.toList());
+        FEELEventListenersManager mgr = new FEELEventListenersManager();
+        Listener listener = new Listener();
+        mgr.addListener(listener);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext(mgr);
+        List<Boolean> result = compiledUnaryTests.getUnaryTests()
+                .stream()
+                .map(ut -> ut.apply(emptyContext, left))
+                .collect(Collectors.toList());
+        if (listener.isError()) {
+            LOG.debug("{}", listener.event());
+            return Collections.emptyList();
+        }
         LOG.debug("{}", result);
         return result;
     }
@@ -55,7 +78,7 @@ public class DirectCompilerUnaryTestsTest {
     @Test
     public void test_Dash() {
         assertThat(parseCompileEvaluate("-", 1), is(Arrays.asList(true)));
-        // assertThat(parseCompileEvaluate("-, -", 1), is(Arrays.asList(true, true)));
+        assertThat(parseCompileEvaluate("-, -", 1), is(Arrays.asList(true)));
     }
     
     @Test
@@ -80,9 +103,9 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("<47, 47", 1), is(Arrays.asList(true, false)));
     }
 
-    @Test @Ignore("all function not() evaluate to null when arg is not boolean")
+    @Test
     public void test_not() {
-        assertThat(parseCompileEvaluate("not(47), not(<1), not(!=1)", 1), is(Arrays.asList(true, true, true)));
+        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1), is(Collections.emptyList()));
     }
 
     @Test
