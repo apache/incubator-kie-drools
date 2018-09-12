@@ -38,8 +38,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
@@ -458,23 +462,20 @@ public final class ClassUtils {
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
+        return Stream.<Supplier<String>>of( () -> "get" + ucFirst(field), () -> field, () -> "is" + ucFirst(field), () -> "get" + field, () -> "is" + field )
+                .map( f -> getMethod(clazz, f.get()) ).filter( Optional::isPresent ).findFirst().flatMap( Function.identity() ).orElse( null );
+    }
+
+    private static Optional<Method> getMethod(Class<?> clazz, String name) {
         try {
-            return clazz.getMethod("get" + ucFirst(field));
+            return Optional.of( clazz.getMethod(name) );
         } catch (NoSuchMethodException e) {
-            try {
-                return clazz.getMethod(field);
-            } catch (NoSuchMethodException e1) {
-                try {
-                    return clazz.getMethod("is" + ucFirst(field));
-                } catch (NoSuchMethodException e2) {
-                    return null;
-                }
-            }
+            return Optional.empty();
         }
     }
 
     public static Class extractGenericType(Class<?> clazz, final String methodName) {
-        Method method  = ClassUtils.getAccessor(clazz, methodName);
+        Method method = ClassUtils.getAccessor(clazz, methodName);
         if(method == null) {
             throw new RuntimeException(String.format("Unknown accessor %s on %s", methodName, clazz));
         }

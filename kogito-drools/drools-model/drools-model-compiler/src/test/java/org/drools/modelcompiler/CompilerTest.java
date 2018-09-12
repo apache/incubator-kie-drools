@@ -1389,4 +1389,35 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    public static class TestFact {
+        private String aBcde;
+
+        public TestFact(String aBcde) {
+            this.aBcde = aBcde;
+        }
+
+        public String getaBcde() {
+            return aBcde;
+        }
+
+        public void setaBcde(String aBcde) {
+            this.aBcde = aBcde;
+        }
+    }
+
+    @Test
+    public void testGetterSetterCase() {
+        // DROOLS-2724
+        final String drl =
+                "import " + TestFact.class.getCanonicalName() + ";\n" +
+                "import java.util.List;\n" +
+                "rule R1\n" +
+                "when \n" +
+                "   TestFact(aBcde == \"test\")\n" +
+                "then end";
+        KieSession kieSession = getKieSession(drl);
+        kieSession.insert(new TestFact("test"));
+        assertEquals(1, kieSession.fireAllRules());
+    }
 }

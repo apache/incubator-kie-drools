@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.core.util.ClassUtils;
 import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
@@ -57,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -630,7 +630,7 @@ public class ExpressionTyper {
         TypedExpressionCursor teCursor;
         final java.lang.reflect.Type tc4 = originalTypeCursor;
         String firstName = firstNode.getName().getIdentifier();
-        Method firstAccessor = ClassUtils.getAccessor(toRawClass(tc4), firstName);
+        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
             teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName()), firstAccessor.getGenericReturnType());
@@ -676,7 +676,7 @@ public class ExpressionTyper {
                 typeCursor = originalTypeCursor;
             }
 
-            Method firstAccessor = ClassUtils.getAccessor((!isInLineCast) ? toRawClass(typeCursor) : patternType, firstName);
+            Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? toRawClass(typeCursor) : patternType, firstName);
             if (firstAccessor != null) {
                 // Hack to review - if a property is upper case it's probably not a react on property
                 if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
