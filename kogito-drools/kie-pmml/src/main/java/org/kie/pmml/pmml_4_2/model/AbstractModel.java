@@ -251,7 +251,11 @@ public abstract class AbstractModel<T> implements PMML4Model {
                     .distinct()
                     .collect(Collectors.toList());
         }
-        return list != null ? list : new ArrayList<>();
+        // DO NOT USE Collections.emptyList() here!!! emptyList() returns an EmptyList instance
+        // which is an internal class from Collections class, therefore not accessible
+        // by reflection - when mvel parses a RuleUnit template and there is
+        // a size call, it tries to invoke the method using reflection
+        return list != null ? list : new ArrayList<>(0);
     }
 
     public List<ExternalBeanRef> getExternalMiningFields() {

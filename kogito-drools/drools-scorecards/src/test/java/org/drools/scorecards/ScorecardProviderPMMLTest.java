@@ -53,7 +53,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import static org.kie.internal.builder.ScoreCardConfiguration.SCORECARD_INPUT_TYPE;
 
-@Ignore
 public class ScorecardProviderPMMLTest {
 
     private static String drl;

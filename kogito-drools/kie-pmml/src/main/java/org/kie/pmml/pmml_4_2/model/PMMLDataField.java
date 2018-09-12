@@ -15,48 +15,44 @@
  */
 package org.kie.pmml.pmml_4_2.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
-import org.dmg.pmml.pmml_4_2.descr.Interval;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 
 public class PMMLDataField {
+
     private String type;
     private String name;
     private DataField dataDictionaryField;
     private static PMML4Helper helper = new PMML4Helper();
-    
+
     public PMMLDataField(String name, DATATYPE type) {
-    	this.name = name;
-    	this.type = helper.mapDatatype(type, true);
+        this.name = name;
+        this.type = helper.mapDatatype(type, true);
     }
-    
+
     public PMMLDataField(MiningField miningField, DataField field) {
-    	this.name = miningField.getName();
-    	if (field != null) {
-    		this.type = helper.mapDatatype(field.getDataType(), true);
-    	}
-    	this.dataDictionaryField = field;
+        this.name = miningField.getName();
+        if (field != null) {
+            this.type = helper.mapDatatype(field.getDataType(), true);
+        }
+        this.dataDictionaryField = field;
     }
-    
+
     public PMMLDataField(OutputField outputField, DataField field) {
-    	this.name = outputField.getName();
-    	if (outputField.getDataType() != null) {
-    		this.type = helper.mapDatatype(outputField.getDataType(), true);
-    	} else if (field != null) {
-    		this.type = helper.mapDatatype(field.getDataType(), true);
-    	}
-    	this.dataDictionaryField = field;
+        this.name = outputField.getName();
+        if (outputField.getDataType() != null) {
+            this.type = helper.mapDatatype(outputField.getDataType(), true);
+        } else if (field != null) {
+            this.type = helper.mapDatatype(field.getDataType(), true);
+        }
+        this.dataDictionaryField = field;
     }
 
     public PMMLDataField(DataField field) {
-        this.type = helper.mapDatatype(field.getDataType(),true);
+        this.type = helper.mapDatatype(field.getDataType(), true);
         this.name = helper.compactAsJavaId(field.getName());
         this.dataDictionaryField = field;
     }
@@ -80,19 +76,12 @@ public class PMMLDataField {
     public String getCompactUpperCaseName() {
         return helper.compactUpperCase(name);
     }
-    
-    public List<Interval> getIntervals() {
-    	if (dataDictionaryField != null) {
-    		return dataDictionaryField.getIntervals();
-    	}
-    	return new ArrayList<>();
-    }
 
     public DataField getRawDataField() {
-		return dataDictionaryField;
-	}
+        return dataDictionaryField;
+    }
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
