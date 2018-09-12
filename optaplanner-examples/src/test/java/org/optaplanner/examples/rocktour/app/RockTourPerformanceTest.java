@@ -18,15 +18,21 @@ package org.optaplanner.examples.rocktour.app;
 
 import java.io.File;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution> {
 
+    // PLANNER-1200
+    private String moveThreadCount;
+
     public RockTourPerformanceTest(String moveThreadCount) {
         super(moveThreadCount);
+        this.moveThreadCount = moveThreadCount;
     }
 
     @Override
@@ -46,8 +52,13 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
+        runInSolverThreadOnly();
         File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);
     }
 
+    // PLANNER-1200
+    private void runInSolverThreadOnly() {
+        Assume.assumeTrue(SolverConfig.MOVE_THREAD_COUNT_NONE.equals(moveThreadCount));
+    }
 }
