@@ -62,6 +62,12 @@ public class UnmarshalMarshalTest {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ImportName.dmn");
     }
 
+    @Test
+    public void testV12_DecisionService20180911v12() throws Exception {
+        // DROOLS-2987 DMN v1.2 marshaller failing marshalling DecisionService node and dmndi:DMNDecisionServiceDividerLine
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DecisionService20180911v12.dmn");
+    }
+
     public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
         DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
         testRoundTrip(subdir, xmlfile, marshaller, DMN12_SCHEMA_SOURCE);
