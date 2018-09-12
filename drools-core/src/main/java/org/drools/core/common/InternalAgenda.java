@@ -19,6 +19,7 @@ package org.drools.core.common;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -297,6 +298,10 @@ public interface InternalAgenda
     KnowledgeHelper getKnowledgeHelper();
 
     default PropagationList getPropagationList() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Map<Integer, Set<Object>> getDerivedObject() {
         throw new UnsupportedOperationException();
     }
 }

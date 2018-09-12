@@ -343,7 +343,7 @@ public class ProtobufInputMarshaller {
                     throw new IllegalArgumentException( "Unknown node type " + _node.getNodeType() + " while deserializing session." );
                 }
             }
-            context.nodeMemories.put( _node.getNodeId(), memory );
+            context.getNodeMemories().put( _node.getNodeId(), memory );
         }
     }
 

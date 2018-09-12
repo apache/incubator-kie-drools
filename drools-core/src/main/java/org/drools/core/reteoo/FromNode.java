@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +182,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
+            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
             if( map != null ) {
                 TupleKey key = PersisterHelper.createTupleKey( leftTuple );
                 List<FactHandle> list = map.get( key );
@@ -210,6 +211,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                                                          workingMemory,
                                                                          null );
         }
+        workingMemory.getAgenda().getDerivedObject().computeIfAbsent(getId(), k -> new HashSet<>()).add(object);
         return handle;
     }
 
