@@ -53,7 +53,7 @@ dialect "java"
 salience 2
 when
    $new: PMML4Data( name == "@{rawName}", $value: value ) from pmmlData
-   $old: PMML4Data( name == $new.name, value != $value, this before $new ) from pmmlData
+   $old: PMML4Data( this != $new, name == $new.name, value != $value, this before[0] $new ) from pmmlData
 then
    retract($old);
 end
