@@ -3910,4 +3910,86 @@ public class IncrementalCompilationTest {
         assertEquals( "yyy: test", list.get(0) );
         assertEquals( "1", list.get(1) );
     }
+
+    @Test
+    @Ignore("requires mvel 2.4.3.Final")
+    public void testArgumentRedefinitionInStaticInvocation() {
+        // RHDM-709
+        final String ARG1 = "package org.test;" +
+                "    public class MyArg {\n" +
+                "        private String value;\n" +
+                "    }";
+
+        final String ARG2 = "package org.test;" +
+                "    public class MyArg {\n" +
+                "        private int value;\n" +
+                "    }";
+
+        final String FUNC = "package org.test;" +
+                "    public class MyFunc {\n" +
+                "        private String value;\n" +
+                "        public static void func(MyArg arg) {}\n" +
+                "    }";
+
+        final String FUNC2 = "package org.test;" +
+                "    public class MyFunc {\n" +
+                "        private int value;\n" +
+                "        public static void func(MyArg arg) {}\n" +
+                "    }";
+
+        final String DRL1 = "package org.test;\n" +
+                "rule R dialect\"mvel\" when\n" +
+                "        $arg : MyArg()\n" +
+                "    then\n" +
+                "        MyFunc.func($arg);" +
+                "end";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        final ReleaseId id = ks.newReleaseId("org.test", "myTest", "1.0.0");
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+
+        kfs.generateAndWritePomXML(id);
+
+        kfs.write("src/main/java/org/test/MyArg.java",
+                ks.getResources().newReaderResource(new StringReader(ARG1)));
+
+        kfs.write("src/main/java/org/test/MyFunc.java",
+                ks.getResources().newReaderResource(new StringReader(FUNC)));
+
+        kfs.write(ks.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+         kieBuilder.buildAll();
+
+        final KieContainer kc = ks.newKieContainer(id);
+        final KieSession ksession = kc.newKieSession();
+
+        final ReleaseId id2 = ks.newReleaseId("org.test", "myTest", "2.0.0");
+        final KieFileSystem kfs2 = ks.newKieFileSystem();
+
+        final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
+
+        kfs2.generateAndWritePomXML(id2);
+
+        kfs2.write("src/main/java/org/test/MyArg.java",
+                ks.getResources().newReaderResource(new StringReader(ARG2)));
+
+        kfs2.write("src/main/java/org/test/MyFunc.java",
+                ks.getResources().newReaderResource(new StringReader(FUNC2)));
+
+        kfs2.write(ks.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        kieBuilder2.buildAll();
+
+        final Results updateResults = kc.updateToVersion(id2);
+        assertFalse(updateResults.hasMessages(Level.ERROR));
+    }
 }

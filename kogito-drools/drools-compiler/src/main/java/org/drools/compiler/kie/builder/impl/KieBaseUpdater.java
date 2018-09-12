@@ -29,9 +29,9 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -77,6 +77,9 @@ public class KieBaseUpdater implements Runnable {
             for (Class<?> cls : ctx.modifiedClasses ) {
                 clearInstancesOfModifiedClass( cls );
             }
+            for (InternalKnowledgePackage pkg : ctx.kBase.getPackagesMap().values()) {
+                (( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" )).resetParserConfiguration();
+            }
         }
 
         if ( shouldRebuild ) {
@@ -95,13 +98,11 @@ public class KieBaseUpdater implements Runnable {
             wm.notifyWaitOnRest();
         }
 
-        final InternalKnowledgeBase kBase = ((KnowledgeBuilderImpl) kbuilder).getKnowledgeBase();
-
         final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
         final Boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
 
         if (isAlphaNetworkEnabled) {
-            kBase.getRete().getEntryPointNodes().values().stream()
+            ctx.kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                     .forEach(otn -> {
