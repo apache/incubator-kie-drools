@@ -21,6 +21,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
@@ -255,10 +256,19 @@ public class DMNFEELHelper {
         }
         variableTypes.put( "?", columntype );
 
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
-        ParseTree tree = parser.unaryTests();
-        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
-        DirectCompilerResult result = v.visit(tree);
+        FEELEventListenersManager manager = new FEELEventListenersManager();
+        CompiledFEELSupport.SyntaxErrorListener errorListener = new CompiledFEELSupport.SyntaxErrorListener();
+        manager.addListener(errorListener);
+        FEEL_1_1Parser parser = FEELParser.parse(
+                manager, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
+        ParseTree tree = parser.unaryTestsRoot();
+        DirectCompilerResult result;
+        if (errorListener.isError()) {
+            result = CompiledFEELSupport.compiledErrorUnaryTest(errorListener.event().getMessage());
+        } else {
+            DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
+            result = v.visit(tree);
+        }
         return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
     }
 

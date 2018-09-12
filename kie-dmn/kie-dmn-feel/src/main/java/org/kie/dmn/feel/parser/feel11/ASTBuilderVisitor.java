@@ -471,6 +471,11 @@ public class ASTBuilderVisitor
     }
 
     @Override
+    public BaseNode visitUnaryTestsRoot(FEEL_1_1Parser.UnaryTestsRootContext ctx) {
+        return visit(ctx.unaryTests());
+    }
+
+    @Override
     public BaseNode visitUnaryTests_empty(FEEL_1_1Parser.UnaryTests_emptyContext ctx) {
         return ASTBuilderFactory.newListNode(ctx, Collections.singletonList(ASTBuilderFactory.newDashNode(ctx)));
     }

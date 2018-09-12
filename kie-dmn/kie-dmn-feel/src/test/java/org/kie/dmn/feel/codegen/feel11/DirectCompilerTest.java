@@ -171,10 +171,11 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("3 ** null"), nullValue());
     }
 
-    @Test @Ignore("this is not valid syntax")
+    @Test
     public void test_logicalNegationExpression() {
-        assertThat(parseCompileEvaluate("not true"), is(false));
-        assertThat(parseCompileEvaluate("not false"), is(true));
+        // this is all invalid syntax
+        assertThat(parseCompileEvaluate("not true"), nullValue());
+        assertThat(parseCompileEvaluate("not false"), nullValue());
         assertThat(parseCompileEvaluate("not null"), nullValue());
         assertThat(parseCompileEvaluate("not 3"), nullValue());
     }

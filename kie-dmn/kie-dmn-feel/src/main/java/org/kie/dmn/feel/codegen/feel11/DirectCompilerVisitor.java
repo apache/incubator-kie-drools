@@ -67,7 +67,6 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -474,43 +473,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
     }
 
-//    @Override
-//    public DirectCompilerResult visitUnaryTests(FEEL_1_1Parser.UnaryTestsContext ctx) {
-//
-//        ParseTree children = ctx.getChild(0);
-//        // "empty cell / don't care"
-//        if (children.getText().equals("-")) {
-//            DirectCompilerResult t = createEmptyUnaryTestExpression();
-//            MethodCallExpr list = new MethodCallExpr(
-//                    null, "list", new NodeList<>(t.getExpression()));
-//            return DirectCompilerResult.of(list, BuiltInType.LIST, t.getFieldDeclarations());
-//        }
-//
-//        List<DirectCompilerResult> exprs = new ArrayList<>();
-//        for (int i = 0; i < children.getChildCount(); i++) {
-//            ParseTree c = children.getChild(i);
-//            if (c instanceof FEEL_1_1Parser.PositiveUnaryTestContext) {
-//                FEEL_1_1Parser.PositiveUnaryTestContext childCtx = (FEEL_1_1Parser.PositiveUnaryTestContext) c;
-//                DirectCompilerResult child = visit(childCtx);
-//                if (child.resultType == BuiltInType.UNARY_TEST) {
-//                    // is already a unary test, so we can add it as-is
-//                    exprs.add(child);
-//                } else if (child.resultType == BuiltInType.RANGE) {
-//                    // being a range, need the `in` operator.
-//                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.IN);
-//                    exprs.add(replaced);
-//                } else {
-//                    // implied a unarytest for the `=` equal operator.
-//                    DirectCompilerResult replaced = createUnaryTestExpression(childCtx, child, UnaryOperator.EQ);
-//                    exprs.add(replaced);
-//                }
-//            }
-//        }
-//
-//        MethodCallExpr list = new MethodCallExpr(null, "list");
-//        exprs.stream().map(DirectCompilerResult::getExpression).forEach(list::addArgument);
-//        return DirectCompilerResult.of(list, BuiltInType.LIST, DirectCompilerResult.mergeFDs(exprs.toArray(new DirectCompilerResult[]{})));
-//    }
+    @Override
+    public DirectCompilerResult visitUnaryTestsRoot(FEEL_1_1Parser.UnaryTestsRootContext ctx) {
+        return visit(ctx.unaryTests());
+    }
 
     @Override
     public DirectCompilerResult visitUnaryTests_empty(FEEL_1_1Parser.UnaryTests_emptyContext ctx) {
@@ -522,7 +488,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitUnaryTests_negated(FEEL_1_1Parser.UnaryTests_negatedContext ctx) {
-        DirectCompilerResult positiveTests = common(ctx.positiveUnaryTests());
+        DirectCompilerResult positiveTests = doPositiveUnaryTests(ctx.positiveUnaryTests());
         DirectCompilerResult result = createUnaryTestExpression(ctx, positiveTests, UnaryOperator.NOT);
 
         MethodCallExpr expression =
@@ -537,16 +503,15 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitUnaryTests_positive(FEEL_1_1Parser.UnaryTests_positiveContext ctx) {
         ArrayList<DirectCompilerResult> rs = new ArrayList<>();
-        return common(ctx.positiveUnaryTests());
+        return doPositiveUnaryTests(ctx.positiveUnaryTests());
     }
 
-    private DirectCompilerResult common(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
+    private DirectCompilerResult doPositiveUnaryTests(FEEL_1_1Parser.PositiveUnaryTestsContext ctx) {
         ArrayList<DirectCompilerResult> rs = new ArrayList<>();
         // fixme:
         // this should be handled as a field in the DirectCompilerResult class,
         // but for now it is cumbersome to bring it up the tree, let's remember to do this refactoring
         for (FEEL_1_1Parser.PositiveUnaryTestContext positiveUnaryTestContext : ctx.positiveUnaryTest()) {
-//            DirectCompilerResult result = visit(positiveUnaryTestContext);
             this.subExpressionContainsWildcard = false;
             DirectCompilerResult result = visit(positiveUnaryTestContext);
             if (result.resultType == BuiltInType.UNARY_TEST) {
@@ -839,7 +804,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.UNARY_TEST, endpoint.getFieldDeclarations());
         directCompilerResult.addFieldDesclaration(fd);
-        return directCompilerResult;    }
+        return directCompilerResult;
+    }
 
 
 

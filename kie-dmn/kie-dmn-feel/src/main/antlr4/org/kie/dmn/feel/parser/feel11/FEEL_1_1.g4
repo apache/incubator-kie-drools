@@ -316,6 +316,10 @@ positiveUnaryTests
     ;
 
 
+unaryTestsRoot
+    : unaryTests EOF
+    ;
+
 // #17 (root for decision tables)
 unaryTests
     :
