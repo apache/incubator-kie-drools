@@ -28,4 +28,24 @@ public class MarshallerTest {
 
         assertEquals( 0, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testAgendaReconciliation2() throws Exception {
+        String str =
+                "import java.util.Collection\n" +
+                        "rule R1 when\n" +
+                        "    String(this == \"ciao\") \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert("prova");
+        ksession.insert("ciao");
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+        assertEquals( 0, ksession.fireAllRules() );
+    }
 }
