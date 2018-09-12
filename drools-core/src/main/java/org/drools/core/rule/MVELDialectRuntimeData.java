@@ -325,6 +325,10 @@ public class MVELDialectRuntimeData
         return this.parserConfiguration;
     }
 
+    public void resetParserConfiguration() {
+        this.parserConfiguration = null;
+    }
+
     public void addImport(String str, Class cls) {
         this.imports.put( str, cls );
         if ( this.parserConfiguration != null ) {

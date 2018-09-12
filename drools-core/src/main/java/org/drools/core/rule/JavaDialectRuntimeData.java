@@ -501,12 +501,6 @@ public class JavaDialectRuntimeData
         this.dirty = false;
     }
 
-    public void clear() {
-        getStore().clear();
-        invokerLookups.clear();
-        reload();
-    }
-
     public String toString() {
         return this.getClass().getName() + getStore().toString();
     }
