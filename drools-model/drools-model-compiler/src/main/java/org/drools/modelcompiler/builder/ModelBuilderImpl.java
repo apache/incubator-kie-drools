@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
@@ -60,6 +61,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         buildOtherDeclarations(packages);
         deregisterTypeDeclarations( packages );
         buildRules(packages);
+        DrlxParseUtil.clearAccessorCache();
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {

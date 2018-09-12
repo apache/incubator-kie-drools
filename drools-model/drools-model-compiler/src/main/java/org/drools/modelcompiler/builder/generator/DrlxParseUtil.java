@@ -26,10 +26,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -101,8 +103,7 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
-    public static final NameExpr _THIS_EXPR = new NameExpr("_this");
-
+    private static final Map<String, Method> accessorsCache = new HashMap<>();
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -149,7 +150,7 @@ public class DrlxParseUtil {
             return null;
         }
         Class<?> clazz = toRawClass( type );
-        Method accessor = ClassUtils.getAccessor(clazz, name);
+        Method accessor = getAccessor( clazz, name );
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
             return new TypedExpression( body, accessor.getReturnType() );
@@ -771,5 +772,13 @@ public class DrlxParseUtil {
             }
         }
         return Optional.empty();
+    }
+
+    public static Method getAccessor( Class<?> clazz, String name ) {
+        return accessorsCache.computeIfAbsent( clazz.getCanonicalName() + "." + name, k -> ClassUtils.getAccessor(clazz, name) );
+    }
+
+    public static void clearAccessorCache() {
+        accessorsCache.clear();
     }
 }
