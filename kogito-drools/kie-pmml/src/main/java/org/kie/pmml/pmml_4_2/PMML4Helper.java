@@ -929,6 +929,9 @@ public class PMML4Helper {
 
 
     public String compactUpperCase(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Cannot call PMML4Helper::compactUpperCase with a null string.");
+        }
         java.util.StringTokenizer tok = new java.util.StringTokenizer(s);
         StringBuilder sb = new StringBuilder();
 

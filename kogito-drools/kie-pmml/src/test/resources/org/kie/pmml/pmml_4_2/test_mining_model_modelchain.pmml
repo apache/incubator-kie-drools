@@ -40,7 +40,7 @@
          <MiningField name="residenceState" />
          <MiningField name="validLicense" />
          <MiningField name="overallScore" />
-         <MiningField name="qualificationLevel"/>
+         <MiningField name="qualificationLevel" usageType="target"/>
       </MiningSchema>
       <Segmentation multipleModelMethod="modelChain">
          <Segment id="1">

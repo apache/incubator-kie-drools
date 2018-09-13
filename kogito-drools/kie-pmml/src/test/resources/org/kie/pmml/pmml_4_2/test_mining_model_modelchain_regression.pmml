@@ -2,11 +2,12 @@
    xmlns="http://www.dmg.org/PMML-4_2">
    <Header/>
  
-   <DataDictionary numberOfFields="4">
+   <DataDictionary numberOfFields="5">
     <DataField dataType="double" name="input1" optype="continuous" />
     <DataField dataType="double" name="input2" optype="continuous" />
     <DataField dataType="double" name="input3" optype="continuous"/>
     <DataField dataType="double" name="result" optype="continuous"/>
+    <DataField dataType="double" name="resultRegression" optype="continuous" />
   </DataDictionary>
   
   <MiningModel modelName="SampleMiningModel" functionName="regression">
@@ -20,7 +21,7 @@
     <Segmentation multipleModelMethod="modelChain">
       <Segment id="innerFunction1PartA">
         <SimplePredicate field="input1" operator="lessThan" value="10" />
-        <RegressionModel functionName="regression">
+        <RegressionModel functionName="regression" modelName="innerRegression1A">
           <MiningSchema>
             <MiningField name="input1" usageType="active" />
             <MiningField name="input2" usageType="active" />
@@ -39,7 +40,7 @@
       </Segment>
       <Segment id="innerFunction1PartB">
         <SimplePredicate field="input1" operator="greaterOrEqual" value="10" />
-        <RegressionModel functionName="regression">
+        <RegressionModel functionName="regression" modelName="innerRegression1B">
           <MiningSchema>
             <MiningField name="input1" usageType="active" />
             <MiningField name="input2" usageType="active" />
@@ -58,7 +59,7 @@
       </Segment>
       <Segment id="innerFunction2">
         <True />
-        <RegressionModel functionName="regression">
+        <RegressionModel functionName="regression" modelName="innerRegression2">
           <MiningSchema>
             <MiningField name="input1" usageType="active" />
             <MiningField name="input2" usageType="active" />
@@ -77,7 +78,7 @@
       </Segment>
       <Segment id="outerFunction">
         <True />
-        <RegressionModel functionName="regression">
+        <RegressionModel functionName="regression" modelName="outerRegression">
           <MiningSchema>
             <MiningField name="resultRegressionInner1" usageType="active" />
             <MiningField name="resultRegressionInner2" usageType="active" />

@@ -30,6 +30,11 @@ import org.kie.api.pmml.PMML4Result;
 
 @code{ int salienceValue; }
 
+declare @{miningModel.targetField}
+   value: Double
+   weight: Double
+end
+
 
 rule "Start Mining - @{miningModel.modelId}"
 salience 1000
@@ -66,6 +71,24 @@ then
    }
 end
 
+rule "Insert Segment Executions"
+salience 1000
+when
+   model: @{miningModel.miningPojoClassName}( ) from miningModelPojo
+then
+   SegmentExecution segEx = null;
+   @foreach{ childSegment: childSegments }
+   segEx = new SegmentExecution( model.getCorrelationId(),
+                                 "@{childSegment.owner.segmentationId}",
+                                 "@{childSegment.segmentId}",
+                                 @{childSegment.segmentIndex},
+                                 "@{childSegment.segmentRuleUnit}");
+   segEx.setState(SegmentExecutionState.UNKNOWN);
+   childModelSegments.insert(segEx);
+   @end{}
+end
+
+
 
 @foreach{ childSegment: childSegments }
 @code{ salienceValue = 100 - childSegment.segmentIndex; }
@@ -74,7 +97,7 @@ end
 rule "Clean up previous request - @{childSegment.segmentId}"
 salience 9000
 when
-   segEx: SegmentExecution( $cid: correlationId, $segId: segmentId == @{childSegment.segmentId},
+   segEx: SegmentExecution( $cid: correlationId, $segId: segmentId == "@{childSegment.segmentId}",
                             state == SegmentExecutionState.COMPLETE, requestData != null ) from childModelSegments
    data: PMMLRequestData( this == segEx.requestData ) from request
 then
@@ -85,14 +108,13 @@ rule "Add previous segment results - Segment @{childSegment.segmentId}"
 salience 1000
 no-loop
 when
-   segEx: SegmentExecution( $cid: correlationId, $segmId: segmentationId, $segId: segmentId == @{childSegment.segmentId},
+   segEx: SegmentExecution( $cid: correlationId, $segmId: segmentationId, $segId: segmentId == "@{childSegment.segmentId}",
                             $segIndex: segmentIndex,
                             state == SegmentExecutionState.WAITING, requestData != null ) from childModelSegments
    rqst: PMMLRequestData() from segEx.requestData
    prior: SegmentExecution( correlationId == $cid, segmentationId == $segmId, segmentIndex < $segIndex, 
                             state == SegmentExecutionState.COMPLETE ) from childModelSegments
 then
-   System.out.println("doing the mapping!!");
    PMMLRequestData data = segEx.getRequestData();
    PMML4Result result = prior.getResult();
    @foreach{ field: childSegment.model.miningFields }
@@ -101,7 +123,6 @@ then
    @end{}
    @end{}
    update(segEx);
-   System.out.println(rqst.getMappedRequestParams());
 end
 
 rule "Execute Segment @{childSegment.owner.segmentationId}-@{childSegment.segmentId}"
@@ -114,7 +135,6 @@ when
    not SegmentExecution( correlationId == $corrId, segmentationId == $segmId, 
       (state == SegmentExecutionState.WAITING && segmentIndex < $segIndex) ) from childModelSegments
 then
-   System.out.println("Executing segment @{childSegment.segmentId}");
    PMML4Result rslt = new PMML4Result();
    rslt.setCorrelationId($seg.getCorrelationId());
    rslt.setSegmentationId($seg.getSegmentationId());
@@ -134,6 +154,8 @@ rule "Check Segment Can Fire - Segment @{childSegment.segmentId}"
 salience @{salienceValue}
 when
    model: @{miningModel.miningPojoClassName}( @{childSegment.predicateText} ) from miningModelPojo
+   segEx: SegmentExecution( segmentId == "@{childSegment.segmentId}", state == SegmentExecutionState.UNKNOWN ) from childModelSegments
+   not ( SegmentExecution( state == SegmentExecutionState.WAITING || state == SegmentExecutionState.EXECUTING ) )
 then
 
    PMMLRequestData rqstData = new PMMLRequestData(model.getCorrelationId(),"@{childSegment.model.modelId}");
@@ -141,13 +163,10 @@ then
    @if{ field.inDictionary==true }rqstData.addRequestParam( "@{field.name}",model.getV@{field.compactUpperCaseName}() );@end{}
    @end{}
    rqstData.setSource(model.getClass().getName());
-   SegmentExecution segEx = new SegmentExecution( model.getCorrelationId(),
-                                                  "@{childSegment.owner.segmentationId}",
-                                                  "@{childSegment.segmentId}",
-                                                   @{childSegment.segmentIndex},
-                                                  "@{childSegment.segmentRuleUnit}");
-   segEx.setRequestData(rqstData);
-   childModelSegments.insert(segEx);
+   modify(segEx) {
+      setRequestData(rqstData),
+      setState(SegmentExecutionState.WAITING)
+   };
 end
 
 
