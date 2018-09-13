@@ -466,11 +466,7 @@ between_key
     ;
 
 not_key
-    : Not_Key
-    ;
-
-Not_Key
-    : 'not'
+    : NOT
     ;
 
 null_key
@@ -706,6 +702,10 @@ ADD : '+';
 SUB : '-';
 MUL : '*';
 DIV : '/';
+
+NOT
+    : 'not'
+    ;
 
 Identifier
 	:	JavaLetter JavaLetterOrDigit*
