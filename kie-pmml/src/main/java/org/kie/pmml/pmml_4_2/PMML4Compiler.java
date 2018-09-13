@@ -600,7 +600,7 @@ public class PMML4Compiler {
                     if (outfield.getRawDataField() != null && outfield.getRawDataField().getDataType() != null) {
                         e = outfield.getRawDataField();
                     } else if (target != null) {
-                        e = target.getRawDataField();
+                        e = copyDataField(target.getRawDataField());
                     }
                     if (e != null) {
                         e.setName(fldName);
@@ -612,6 +612,20 @@ public class PMML4Compiler {
                 }
             }
         });
+    }
+
+    private DataField copyDataField(DataField df) {
+        if (df == null) {
+            return null;
+        }
+        DataField copy = new DataField();
+        copy.setDataType(df.getDataType());
+        copy.setDisplayName(df.getDisplayName());
+        copy.setIsCyclic(df.getIsCyclic());
+        copy.setOptype(df.getOptype());
+        copy.setName(df.getName());
+
+        return copy;
     }
 
     protected PMMLResource buildResourceFromSegment(PMML pmml_origin, MiningSegment segment, ClassLoader classLoader, KieModuleModel module) {
