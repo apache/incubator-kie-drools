@@ -167,7 +167,7 @@ public class MiningSegmentation {
 		StringBuilder builder = new StringBuilder();
 		loadTemplates(this.multipleModelMethod);
 		Map<String, Object> templateVars = new HashMap<>();
-		String pkgName = this.getOwner().getModelPackageName();//"org.kie.pmml.pmml_4_2."+this.getSegmentationId();
+		String pkgName = this.getOwner().getModelPackageName();
 		CompiledTemplate ct = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		switch (this.multipleModelMethod) {
@@ -180,15 +180,9 @@ public class MiningSegmentation {
 			case MEDIAN:
 				break;
 			case MODEL_CHAIN:
-				List<MiningSegmentTransfer> segmentTransfers = new ArrayList<>();
-				MiningSegmentTransfer mst = new MiningSegmentTransfer(this.getSegmentationId(), "1","2");
-				mst.addResultToRequestMapping("calculatedScore","calculatedScore");
-				segmentTransfers.add(mst);
-				templateVars.put("segmentTransfers", segmentTransfers);
 				templateVars.put("miningModel", this.getOwner());
 				templateVars.put("childSegments", this.getMiningSegments());
 				templateVars.put("packageName", pkgName);
-				templateVars.put("resultMappings", segmentTransfers);
 				templateVars.put("ruleUnitClassName", this.getOwner().getRuleUnitClassName());
 				ct = templates.getNamedTemplate(this.multipleModelMethod.name());
 				TemplateRuntime.execute(ct,null,new MapVariableResolverFactory(templateVars),baos);
