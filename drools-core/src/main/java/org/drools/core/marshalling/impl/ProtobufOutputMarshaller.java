@@ -159,7 +159,7 @@ public class ProtobufOutputMarshaller {
 
             writeAgenda( context, _ruleData );
 
-            writeNodeMemories( context, _ruleData );
+            writeNodeMemories( context, _ruleData);
 
             for ( EntryPoint wmep : wm.getWorkingMemoryEntryPoints().values() ) {
                 org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
@@ -373,7 +373,7 @@ public class ProtobufOutputMarshaller {
                     }
                     case NodeTypeEnums.FromNode:
                     case NodeTypeEnums.ReactiveFromNode: {
-                        _node = writeFromNodeMemory( baseNode.getId(), memory );
+                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm );
                         break;
                     }
                     case NodeTypeEnums.QueryElementNode: {
@@ -476,7 +476,7 @@ public class ProtobufOutputMarshaller {
 
     @SuppressWarnings("unchecked")
     private static ProtobufMessages.NodeMemory writeFromNodeMemory(final int nodeId,
-                                                                   final Memory memory) {
+                                                                   final Memory memory, InternalWorkingMemory wm) {
         FromMemory fromMemory = (FromMemory) memory;
 
         if ( fromMemory.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
@@ -488,6 +488,7 @@ public class ProtobufOutputMarshaller {
                 ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
                         .setTuple( PersisterHelper.createTuple( leftTuple ) );
                 for ( RightTuple rightTuple : matches.values() ) {
+                    // add objects to agenda
                     FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                             .setId( rightTuple.getFactHandle().getId() )
                             .setRecency( rightTuple.getFactHandle().getRecency() )

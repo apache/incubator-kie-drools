@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package org.drools.core.marshalling;
 
 option java_package = "org.drools.core.marshalling.impl";
