@@ -367,7 +367,7 @@ qualifiedName
 
 nameRef
     : ( st=Identifier { helper.startVariable( $st ); }
-       | not_st=Not_Key { helper.startVariable( $not_st ); }
+       | not_st=NOT { helper.startVariable( $not_st ); }
        )  nameRefOtherToken*
     ;
 
