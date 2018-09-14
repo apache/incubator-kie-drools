@@ -41,26 +41,44 @@ Your starting page should look like this:
 
 Building and starting your application with launch scripts
 -----------------------------------
-An alternative option to build and lanuch your application is with the build scripts:
+An alternative option to build and lanuch your application is with the build scripts. Your application
+includes both shell scripts for Unix environments:
 ```
 launch.sh
 launch-dev.sh
 ```
-This script will try to find the apps model and kjar projects (in parent folder) and build
+as well as batch scripts for Windows environments:
+```
+launch.bat
+launch-dev.bat
+```
+
+
+These script will try to find the apps model and kjar projects (in parent folder) and build
 those before building and starting your application.
 
-To run this script you need to give it appropriate permissions, for example
+To run the shell scripts, you need to give it appropriate permissions, for example
 ```
 chmod 755 launch.sh
 ./launch.sh clean install
 ```
 
-and save for the dev script:
+and same for the shell dev script:
 ```
 chmod 755 launch-dev.sh
 ./launch-dev.sh clean install
 ```
-The launch-dev.sh script will launch you application in development mode, which means it will require
+
+This is not required for the batch scripts which you can just execute with
+```
+launch.bat clean install
+```
+or 
+```
+launch-dev.bat clean install
+```
+
+The launch-dev (sh or bat) script will launch you application in development mode, which means it will require
 connection to the controller (workbench). By default the controller is set to
 ```
 http://localhost:8080/jbpm-console/rest/controller
