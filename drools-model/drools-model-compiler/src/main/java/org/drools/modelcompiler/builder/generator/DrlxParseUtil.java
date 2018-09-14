@@ -749,16 +749,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Expression toNewBigIntegerExpr(Expression initExpression) {
-        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigInteger.class),
-                                      NodeList.nodeList(initExpression));
-    }
-
-    public static Expression toNewBigDecimalExpr(Expression initExpression) {
-        return new ObjectCreationExpr(null, toClassOrInterfaceType(BigDecimal.class),
-                                      NodeList.nodeList(initExpression));
-    }
-
     public static String toVar(String key) {
         return "var_" + key;
     }

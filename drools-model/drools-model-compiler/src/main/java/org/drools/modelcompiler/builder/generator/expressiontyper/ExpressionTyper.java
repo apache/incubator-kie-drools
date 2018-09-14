@@ -34,6 +34,7 @@ import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrintUtil;
@@ -160,7 +161,7 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof NameExpr) {
             return nameExpr(drlxExpr, typeCursor);
-        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr) {
+        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
 
@@ -199,10 +200,6 @@ public class ExpressionTyper {
                                        new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left, this), left.getType())
                                                .setStatic(opSpec.isStatic())
                                                .setLeft(left));
-        } else if (drlxExpr instanceof ObjectCreationExpr) {
-            final ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr)drlxExpr;
-            final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), objectCreationExpr.getType());
-            return of(new TypedExpression(objectCreationExpr, castClass));
 
         } else if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
@@ -448,6 +445,9 @@ public class ExpressionTyper {
 
             result = of(methodCallExpr((MethodCallExpr) firstNode, type, scope));
 
+        } else if (firstNode instanceof ObjectCreationExpr) {
+            result = of(objectCreationExpr((ObjectCreationExpr) firstNode));
+
         } else if (firstNode instanceof StringLiteralExpr) {
             result = of(stringLiteralExpr((StringLiteralExpr) firstNode));
 
@@ -557,18 +557,10 @@ public class ExpressionTyper {
         } else {
             methodCallExpr.setScope( scope );
         }
-        Class[] argsType = new Class[methodCallExpr.getArguments().size()];
-        for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
-            Expression arg = methodCallExpr.getArgument( i );
-            TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
-            TypedExpression typedExpr = typedArg.getTypedExpression().get();
-            argsType[i] = toRawClass( typedExpr.getType() );
-            methodCallExpr.setArgument( i, typedExpr.getExpression() );
-        }
 
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
-        Method m = rawClassCursor != null ? ClassUtil.findMethod( rawClassCursor, methodName, argsType ) : null;
+        Method m = rawClassCursor != null ? ClassUtil.findMethod( rawClassCursor, methodName, parseNodeArguments( methodCallExpr ) ) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType( methodName );
             if (functionType.isPresent()) {
@@ -584,6 +576,23 @@ public class ExpressionTyper {
         }
 
         return new TypedExpressionCursor(methodCallExpr, m.getGenericReturnType());
+    }
+
+    private TypedExpressionCursor objectCreationExpr(ObjectCreationExpr objectCreationExpr) {
+        parseNodeArguments( objectCreationExpr );
+        return new TypedExpressionCursor(objectCreationExpr, getClassFromType(ruleContext.getTypeResolver(), objectCreationExpr.getType()));
+    }
+
+    private Class[] parseNodeArguments( NodeWithArguments<?> methodCallExpr ) {
+        Class[] argsType = new Class[methodCallExpr.getArguments().size()];
+        for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
+            Expression arg = methodCallExpr.getArgument( i );
+            TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
+            TypedExpression typedExpr = typedArg.getTypedExpression().get();
+            argsType[i] = toRawClass( typedExpr.getType() );
+            methodCallExpr.setArgument( i, typedExpr.getExpression() );
+        }
+        return argsType;
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {

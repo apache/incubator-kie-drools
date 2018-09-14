@@ -34,11 +34,6 @@ import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
 import org.drools.testcoverage.common.model.Order;
@@ -73,9 +68,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 public class AccumulateTest {
@@ -88,7 +88,7 @@ public class AccumulateTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test(timeout = 10000)
@@ -1096,64 +1096,6 @@ public class AccumulateTest {
             ksession.insert(new Person("Bob", "stilton"));
         } finally {
             ksession.dispose();
-        }
-    }
-
-    @Test//(timeout = 10000)
-    public void testAccumulateWithSameSubnetwork() {
-        final String drl = "package org.drools.compiler.test;\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "global java.util.List list; \n" +
-                "rule r1 salience 100 \n" +
-                "    when\n" +
-                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
-                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
-                "                                                min($c.getPrice()) )\n" +
-                "    then\n" +
-                "        list.add( 'r1' + ':' + $total);\n" +
-                "end\n" +
-                "rule r2 \n" +
-                "    when\n" +
-                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
-                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
-                "                                                max($c.getPrice()) )\n" +
-                "    then\n" +
-                "        list.add( 'r2' + ':' + $total);\n" +
-                "end\n" +
-
-                "";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
-        final KieSession wm = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            wm.setGlobal("list", list);
-
-            // Check the network formation, to ensure the RiaNode is shared.
-            final ObjectTypeNode cheeseOtn = KieUtil.getObjectTypeNode(kbase, Cheese.class);
-            assertNotNull(cheeseOtn);
-            final ObjectSink[] oSinks = cheeseOtn.getObjectSinkPropagator().getSinks();
-            assertEquals(1, oSinks.length);
-
-            final JoinNode cheeseJoin = (JoinNode) oSinks[0];
-            final LeftTupleSink[] ltSinks = cheeseJoin.getSinkPropagator().getSinks();
-
-            assertEquals(1, ltSinks.length);
-            final RightInputAdapterNode rian = (RightInputAdapterNode) ltSinks[0];
-            assertEquals(2, rian.getObjectSinkPropagator().size());   //  RiaNode is shared, if this has two outputs
-
-            wm.insert(new Cheese("stilton", 10));
-            wm.insert(new Person("Alice", "brie"));
-            wm.insert(new Person("Bob", "stilton"));
-
-            wm.fireAllRules();
-
-            assertEquals(2, list.size());
-            assertEquals("r1:10", list.get(0));
-            assertEquals("r2:10", list.get(1));
-        } finally {
-            wm.dispose();
         }
     }
 
