@@ -111,6 +111,8 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
             // Causes a planning clone, which is expensive
             // For example, on cloud balancing 1200c-4800p this reduces performance by 18%
             bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        } else {
+            stepScope.setBestScoreImproved(true);
         }
     }
 

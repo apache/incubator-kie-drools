@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.solver.termination.StepCountTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
+import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +56,13 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Long minutesSpentLimit = null;
     private Long hoursSpentLimit = null;
     private Long daysSpentLimit = null;
+
     private Long unimprovedMillisecondsSpentLimit = null;
     private Long unimprovedSecondsSpentLimit = null;
     private Long unimprovedMinutesSpentLimit = null;
     private Long unimprovedHoursSpentLimit = null;
     private Long unimprovedDaysSpentLimit = null;
+    private String unimprovedScoreDifferenceThreshold = null;
 
     private String bestScoreLimit = null;
     private Boolean bestScoreFeasible = null;
@@ -171,6 +174,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     public void setUnimprovedDaysSpentLimit(Long unimprovedDaysSpentLimit) {
         this.unimprovedDaysSpentLimit = unimprovedDaysSpentLimit;
+    }
+
+    public String getUnimprovedScoreDifferenceThreshold() {
+        return unimprovedScoreDifferenceThreshold;
+    }
+
+    public void setUnimprovedScoreDifferenceThreshold(String unimprovedScoreDifferenceThreshold) {
+        this.unimprovedScoreDifferenceThreshold = unimprovedScoreDifferenceThreshold;
     }
 
     public String getBestScoreLimit() {
@@ -301,6 +312,11 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         return this;
     }
 
+    public TerminationConfig withUnimprovedScoreDifferenceThreshold(String unimprovedScoreDifferenceThreshold) {
+        this.unimprovedScoreDifferenceThreshold = unimprovedScoreDifferenceThreshold;
+        return this;
+    }
+
     public TerminationConfig withBestScoreLimit(String bestScoreLimit) {
         this.bestScoreLimit = bestScoreLimit;
         return this;
@@ -359,11 +375,26 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
         Long unimprovedTimeMillisSpentLimit = calculateUnimprovedTimeMillisSpentLimit();
         if (unimprovedTimeMillisSpentLimit != null) {
-            terminationList.add(new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit));
+            if (unimprovedScoreDifferenceThreshold == null) {
+                terminationList.add(new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit));
+            } else {
+                ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
+                Score unimprovedScoreDifferenceThreshold_ = scoreDefinition.parseScore(unimprovedScoreDifferenceThreshold);
+                if (unimprovedScoreDifferenceThreshold_.compareTo(scoreDefinition.getZeroScore()) <= 0) {
+                    throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
+                            + unimprovedScoreDifferenceThreshold + ") must be positive.");
+
+                }
+                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold_));
+            }
+        } else if (unimprovedScoreDifferenceThreshold != null) {
+            throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
+                    + unimprovedScoreDifferenceThreshold + ") can only be used if an unimproved*SpentLimit ("
+                    + unimprovedTimeMillisSpentLimit + ") is used too.");
         }
         if (bestScoreLimit != null) {
-            Score bestScoreLimit_ = configPolicy.getScoreDefinition().parseScore(bestScoreLimit);
             ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
+            Score bestScoreLimit_ = scoreDefinition.parseScore(bestScoreLimit);
             double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelsSize() - 1];
             for (int i = 0; i < timeGradientWeightNumbers.length; i++) {
                 timeGradientWeightNumbers[i] = 0.50; // Number pulled out of thin air
@@ -559,6 +590,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getUnimprovedHoursSpentLimit());
         unimprovedDaysSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedDaysSpentLimit,
                 inheritedConfig.getUnimprovedDaysSpentLimit());
+        unimprovedScoreDifferenceThreshold = ConfigUtils.inheritOverwritableProperty(unimprovedScoreDifferenceThreshold,
+                inheritedConfig.getUnimprovedScoreDifferenceThreshold());
         bestScoreLimit = ConfigUtils.inheritOverwritableProperty(bestScoreLimit,
                 inheritedConfig.getBestScoreLimit());
         bestScoreFeasible = ConfigUtils.inheritOverwritableProperty(bestScoreFeasible,
