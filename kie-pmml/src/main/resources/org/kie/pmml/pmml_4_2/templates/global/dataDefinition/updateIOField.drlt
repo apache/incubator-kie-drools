@@ -38,7 +38,7 @@ salience 2000
 
 when
    $new: PMML4Data( $cid: correlationId != null, capitalizedName == "@{name}", $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} ) from pmmlData
-   $old: PMML4Data( correlationId == $cid, name == $new.name, context == $ctx, this before $new ) from pmmlData
+   $old: PMML4Data( this != $new, correlationId == $cid, name == $new.name, context == $ctx, this before[0] $new ) from pmmlData
 then
     retract( $old );
 end
