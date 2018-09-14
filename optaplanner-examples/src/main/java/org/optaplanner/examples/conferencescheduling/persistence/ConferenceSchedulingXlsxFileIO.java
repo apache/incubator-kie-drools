@@ -1337,7 +1337,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames, Predicate<List<Object>> isValidJustificationList) {
+                String[] filteredConstraintNames, Predicate<List<Object>> isValidJustificationList) {
             nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames, isValidJustificationList);
         }
 

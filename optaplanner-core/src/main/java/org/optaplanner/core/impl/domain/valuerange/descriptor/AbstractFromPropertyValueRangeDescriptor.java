@@ -45,8 +45,8 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
     protected boolean countable;
 
     public AbstractFromPropertyValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
-                                                    boolean addNullInValueRange,
-                                                    MemberAccessor memberAccessor) {
+            boolean addNullInValueRange,
+            MemberAccessor memberAccessor) {
         super(variableDescriptor, addNullInValueRange);
         this.memberAccessor = memberAccessor;
         ValueRangeProvider valueRangeProviderAnnotation = memberAccessor.getAnnotation(ValueRangeProvider.class);

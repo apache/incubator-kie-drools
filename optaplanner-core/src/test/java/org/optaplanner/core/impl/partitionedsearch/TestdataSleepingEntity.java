@@ -60,8 +60,8 @@ public class TestdataSleepingEntity extends TestdataEntity {
             throw new RuntimeException("Interrupted while sleeping", ex);
         }
         logger.info("{}.setValue() interrupted after {}ms.",
-                    TestdataSleepingEntity.class.getSimpleName(),
-                    System.currentTimeMillis() - start);
+                TestdataSleepingEntity.class.getSimpleName(),
+                System.currentTimeMillis() - start);
     }
 
 }

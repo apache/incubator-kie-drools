@@ -28,7 +28,7 @@ public class FromEntityPropertyValueRangeDescriptor<Solution_>
         extends AbstractFromPropertyValueRangeDescriptor<Solution_> {
 
     public FromEntityPropertyValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
-                                                  boolean addNullInValueRange, MemberAccessor memberAccessor) {
+            boolean addNullInValueRange, MemberAccessor memberAccessor) {
         super(variableDescriptor, addNullInValueRange, memberAccessor);
     }
 

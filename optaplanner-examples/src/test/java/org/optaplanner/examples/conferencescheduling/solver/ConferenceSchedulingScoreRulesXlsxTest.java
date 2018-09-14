@@ -53,8 +53,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.*;
 
 @RunWith(Parameterized.class)
 public class ConferenceSchedulingScoreRulesXlsxTest {
@@ -72,7 +71,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
     public ConferenceSchedulingScoreRulesXlsxTest(String constraintPackage, String constraintName,
-                                                  HardSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
+            HardSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.expectedScore = expectedScore;

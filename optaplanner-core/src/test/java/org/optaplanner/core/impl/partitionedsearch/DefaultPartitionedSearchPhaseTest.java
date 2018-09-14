@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.*;
+import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -46,9 +46,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
 public class DefaultPartitionedSearchPhaseTest {
@@ -189,7 +187,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
         assertTrue("Executor must terminate successfully when it's shut down abruptly",
-                   executor.awaitTermination(100, TimeUnit.MILLISECONDS));
+                executor.awaitTermination(100, TimeUnit.MILLISECONDS));
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {

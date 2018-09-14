@@ -36,7 +36,7 @@ public class TestdataSolutionPartitioner implements SolutionPartitioner<Testdata
 
     @Override
     public List<TestdataSolution> splitWorkingSolution(ScoreDirector<TestdataSolution> scoreDirector,
-                                                       Integer runnablePartThreadLimit) {
+            Integer runnablePartThreadLimit) {
         TestdataSolution workingSolution = scoreDirector.getWorkingSolution();
         List<TestdataEntity> allEntities = workingSolution.getEntityList();
         if (allEntities.size() % partSize > 0) {

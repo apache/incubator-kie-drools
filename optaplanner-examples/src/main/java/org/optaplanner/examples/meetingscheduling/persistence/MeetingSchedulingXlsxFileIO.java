@@ -766,7 +766,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         void nextMeetingAssignmentListCell(List<MeetingAssignment> meetingAssignmentList,
-                                           Function<MeetingAssignment, String> stringFunction, List<String> filteredConstraintNames) {
+                Function<MeetingAssignment, String> stringFunction, List<String> filteredConstraintNames) {
             if (meetingAssignmentList == null) {
                 meetingAssignmentList = Collections.emptyList();
             }
