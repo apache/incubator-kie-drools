@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
@@ -34,6 +35,7 @@ import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.PrimitiveType;
@@ -48,8 +50,8 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigDecimalExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toNewBigIntegerExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -180,26 +182,30 @@ public abstract class AbstractExpressionBuilder {
 
         } else if (expression instanceof LiteralExpr) {
             if(expression instanceof BigDecimalLiteralExpr) {
-                expression = toNewBigDecimalExpr(new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
+                expression = toNewExpr(BigDecimal.class, new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
             } else if (expression instanceof BigIntegerLiteralExpr) {
-                expression = toNewBigIntegerExpr(new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
+                expression = toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
             } else if (leftType.equals(BigDecimal.class)) {
                 final BigDecimal bigDecimal = new BigDecimal( expression.toString() );
-                expression = toNewBigDecimalExpr( new StringLiteralExpr( bigDecimal.toString() ) );
+                expression = toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
             } else if (leftType.equals(BigInteger.class)) {
                 final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
-                expression = toNewBigIntegerExpr(new StringLiteralExpr(bigInteger.toString()));
+                expression = toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
             }
 
         } else if (expression instanceof NameExpr) {
             if (leftType.equals(BigDecimal.class)) {
-                expression = toNewBigDecimalExpr(expression);
+                expression = toNewExpr(BigDecimal.class, expression);
             } else if (leftType.equals(BigInteger.class)) {
-                expression = toNewBigIntegerExpr(expression);
+                expression = toNewExpr(BigInteger.class, expression);
             }
         }
 
         return expression;
+    }
+
+    private static Expression toNewExpr(Class<?> clazz, Expression initExpression) {
+        return new ObjectCreationExpr(null, toClassOrInterfaceType(clazz), NodeList.nodeList(initExpression));
     }
 
     protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {

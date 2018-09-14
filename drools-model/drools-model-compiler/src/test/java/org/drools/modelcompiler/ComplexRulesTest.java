@@ -610,4 +610,21 @@ public class ComplexRulesTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals(1, list.size());
     }
+
+    @Test
+    public void testUseConstructorInConstraint() {
+        // DROOLS-2990
+        String str =
+                "rule R when\n" +
+                "    $s: Short()" +
+                "    $d: Double( this > new Double($s) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( (short) 1 );
+        ksession.insert( 2.0 );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

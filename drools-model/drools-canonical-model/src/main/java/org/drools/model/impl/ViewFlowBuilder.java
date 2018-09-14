@@ -241,12 +241,14 @@ public class ViewFlowBuilder implements ViewBuilder {
             }
 
             addInputFromVariableSource( scopedInputs, patterVariable );
+
+            Condition modifiedPattern = viewItem2Condition( viewItem, condition, new BuildContext( ctx, scopedInputs ) );
+            conditions.set( conditions.indexOf( condition ), modifiedPattern );
+
             if (!ctx.isQuery) {
                 registerInputsFromViewItem( viewItem, conditionMap, scopedInputs, null );
             }
 
-            Condition modifiedPattern = viewItem2Condition( viewItem, condition, new BuildContext( ctx, scopedInputs ) );
-            conditions.set( conditions.indexOf( condition ), modifiedPattern );
 
             if ( type == Type.AND && !(viewItem instanceof AccumulateExprViewItem) ) {
                 conditionMap.put( patterVariable, modifiedPattern );
@@ -424,10 +426,10 @@ public class ViewFlowBuilder implements ViewBuilder {
             if (c1 instanceof Pattern && c2 instanceof Pattern) {
                 Pattern p1 = (( Pattern ) c1);
                 Pattern p2 = (( Pattern ) c2);
-                if (p1.getPatternVariable() == getSourceVariable( p2 )) {
+                if (p1.getPatternVariable() != null && p1.getPatternVariable() == getSourceVariable( p2 )) {
                     return -1;
                 }
-                if (p2.getPatternVariable() == getSourceVariable( p1 )) {
+                if (p2.getPatternVariable() != null && p2.getPatternVariable() == getSourceVariable( p1 )) {
                     return 1;
                 }
             }
