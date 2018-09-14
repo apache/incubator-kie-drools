@@ -258,6 +258,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
+        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
+                .buildBestSolutionRecaller(environmentMode_);
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_,
                 moveThreadCount_, moveThreadBufferSize, threadFactoryClass,
                 scoreDirectorFactory);
@@ -265,11 +267,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 : terminationConfig;
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
-                .buildBestSolutionRecaller(environmentMode_);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
         return new DefaultSolver<>(environmentMode_, randomFactory,
-                basicPlumbingTermination, termination, bestSolutionRecaller, phaseList, solverScope);
+                bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);
     }
 
     protected RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
@@ -354,8 +354,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     protected <Solution_> List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,
-                                         BestSolutionRecaller bestSolutionRecaller,
-                                         Termination termination) {
+            BestSolutionRecaller bestSolutionRecaller, Termination termination) {
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(

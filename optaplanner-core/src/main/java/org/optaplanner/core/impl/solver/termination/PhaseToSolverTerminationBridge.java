@@ -40,22 +40,22 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
 
     @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+        solverTermination.phaseStarted(phaseScope);
     }
 
     @Override
     public void stepStarted(AbstractStepScope stepScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+        solverTermination.stepStarted(stepScope);
     }
 
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+        solverTermination.stepEnded(stepScope);
     }
 
     @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
+        solverTermination.phaseStarted(phaseScope);
     }
 
     @Override

@@ -167,10 +167,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
             DefaultSolverScope<Solution_> solverScope) {
-        Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
-                termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
+        Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
+                termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         int partPhaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList) {
@@ -181,7 +181,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         DefaultSolverScope<Solution_> partSolverScope
                 = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
-        return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
+        return new PartitionSolver<>(bestSolutionRecaller, partTermination, phaseList, partSolverScope);
     }
 
     protected void doStep(PartitionedSearchStepScope<Solution_> stepScope) {

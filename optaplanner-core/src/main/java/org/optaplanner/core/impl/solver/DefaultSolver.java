@@ -59,10 +59,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // ************************************************************************
 
     public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
-            BasicPlumbingTermination basicPlumbingTermination, Termination termination,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, List<Phase<Solution_>> phaseList,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination, Termination termination,
+            List<Phase<Solution_>> phaseList,
             DefaultSolverScope<Solution_> solverScope) {
-        super(termination, bestSolutionRecaller, phaseList);
+        super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
         this.basicPlumbingTermination = basicPlumbingTermination;

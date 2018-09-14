@@ -47,19 +47,19 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     protected final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
     protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
+    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     // Note that the DefaultSolver.basicPlumbingTermination is a component of this termination
     protected final Termination termination;
-    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected final List<Phase<Solution_>> phaseList;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public AbstractSolver(Termination termination, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+    public AbstractSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
             List<Phase<Solution_>> phaseList) {
-        this.termination = termination;
         this.bestSolutionRecaller = bestSolutionRecaller;
+        this.termination = termination;
         bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
         this.phaseList = phaseList;
         for (Phase<Solution_> phase : phaseList) {
@@ -74,6 +74,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
+        termination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
         for (Phase<Solution_> phase : phaseList) {
             phase.solvingStarted(solverScope);
@@ -97,6 +98,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
             phase.solvingEnded(solverScope);
         }
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
+        termination.solvingEnded(solverScope);
         bestSolutionRecaller.solvingEnded(solverScope);
     }
 
