@@ -34,6 +34,8 @@ def pomFile = new File(moduleDir, "pom.xml");
 def indexFile = new File(moduleDir, "src/main/resources/static/index.html");
 def launchFile = new File(moduleDir, "launch.sh");
 def devLaunchFile = new File(moduleDir, "launch-dev.sh");
+def batLaunchFile = new File(moduleDir, "launch.bat");
+def batDevLaunchFile = new File(moduleDir, "launch-dev.bat");
 def kieServerStateFile = new File(moduleDir, myAppArtifactId + ".xml");
 
 def kieServerCapabilitiesMarker = 'KIE_SERVER_CAPABILITIES_MARKER';
@@ -333,6 +335,23 @@ launchFile.newWriter().withWriter { w ->
 
 devLaunchFile.newWriter().withWriter { w ->
     w << devLaunchFileContent
+}
+
+logOut("Updating bat launch scripts...", quietMode);
+def batLaunchFileContent = batLaunchFile.getText('UTF-8');
+def batDevLaunchFileContent = batDevLaunchFile.getText('UTF-8');
+
+batLaunchFileContent = batLaunchFileContent.replaceAll(myServiceNameMarker, myAppArtifactId);
+batLaunchFileContent = batLaunchFileContent.replaceAll(myServiceVersionMarker, myAppVersion);
+batLaunchFileContent = batLaunchFileContent.replaceAll(myServicePortMarker, myAppPortId);
+batDevLaunchFileContent = batDevLaunchFileContent.replaceAll(myServiceNameMarker, myAppArtifactId);
+
+batLaunchFile.newWriter().withWriter { w ->
+    w << batLaunchFileContent
+}
+
+batDevLaunchFile.newWriter().withWriter { w ->
+    w << batDevLaunchFileContent
 }
 
 logOut("Updating kie server state info...", quietMode);
