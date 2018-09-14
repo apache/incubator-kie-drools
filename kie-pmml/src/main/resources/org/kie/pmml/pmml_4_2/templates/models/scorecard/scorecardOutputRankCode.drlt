@@ -71,7 +71,7 @@ salience -10
 when
    $reslt: PMML4Result( "@{target}" memberOf resultVariables.keySet() ) from results
    $old: @{target}( ) from $reslt.resultVariables["@{target}"]
-   $new: @{target}( this after $old)
+   $new: @{target}( this != $old, this after[0] $old)
 then
    $reslt.updateResultVariable("@{target}",$new);
    update($reslt);
