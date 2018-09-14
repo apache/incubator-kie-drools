@@ -64,6 +64,11 @@ if [[ "$@" =~ "docker" ]]; then
     echo "Launching the application as docker container..."
     
     docker run -d -p MYSERVICE_PORT_MARKER:MYSERVICE_PORT_MARKER --name MYSERVICE_NAME_MARKER apps/MYSERVICE_NAME_MARKER:MYSERVICE_VERSION_MARKER
+elif [[ "$@" =~ "openshift" ]]; then
+    echo "Launching the application on OpenShift..."
+    
+    oc new-app MYSERVICE_NAME_MARKER:MYSERVICE_VERSION_MARKER
+    oc expose svc/MYSERVICE_NAME_MARKER
 else
 
 	echo "Launching the application locally..."
