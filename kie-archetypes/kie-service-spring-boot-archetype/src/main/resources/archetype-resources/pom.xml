@@ -120,6 +120,7 @@
 
       <properties>
         <fabric8.mode>openshift</fabric8.mode>
+        <fabric8.build.strategy>docker</fabric8.build.strategy>
       </properties>
 
       <build>
@@ -128,6 +129,49 @@
             <groupId>io.fabric8</groupId>
             <artifactId>fabric8-maven-plugin</artifactId>
             <version>${fabric8.version}</version>
+            <configuration>
+              <verbose>false</verbose>
+              <images>
+                <image>
+                  <name>apps/\${project.artifactId}:\${project.version}</name>
+                  <build>
+                    <from>fabric8/java-jboss-openjdk8-jdk</from>
+                    <assembly>
+                      <targetDir>/</targetDir>
+                      <inline>
+                        <files>
+                          <file>
+                            <source>\${project.build.directory}/\${project.build.finalName}.\${project.packaging}</source>
+                            <outputDirectory>deployments</outputDirectory>
+                            <destName>\${project.build.finalName}.\${project.packaging}</destName>
+                          </file>
+                          <file>
+                            <source>\${project.artifactId}.xml</source>
+                            <outputDirectory>deployments</outputDirectory>
+                            <destName>\${project.artifactId}.xml</destName>
+                          </file>
+                        </files>
+                        <fileSet>
+                          <directory>src/main/docker</directory>
+                          <outputDirectory>opt/jboss/.m2</outputDirectory>
+                          <includes>
+                            <include>settings.xml</include>
+                          </includes>
+                        </fileSet>
+                        <fileSet>
+                          <directory>../\${kjarArtifactId}/target/local-repository/maven</directory>
+                          <outputDirectory>opt/jboss/.m2/repository</outputDirectory>        
+                        </fileSet>
+                      </inline>
+                      <user>jboss:jboss:jboss</user>
+                    </assembly>
+                    <ports>
+                      <port>${appServerPort}</port>
+                    </ports>
+                  </build>
+                </image>
+              </images>
+            </configuration>
             <executions>
               <execution>
                 <phase>install</phase>
