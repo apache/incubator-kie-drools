@@ -3,11 +3,10 @@ package org.drools.modelcompiler.bigdecimaltest;
 import java.math.BigDecimal;
 
 import org.drools.modelcompiler.BaseModelTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BigDecimalTest extends BaseModelTest {
 
@@ -79,5 +78,113 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertEquals("0.5", policy.getRate().toString());
 
+    }
+
+    @Test
+    public void testBigDecimalEqualsToNull() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule \"Set Policy Rate\"\n" +
+                "when\n" +
+                "$customer: Customer( rate == value )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+
+        ksession.insert(customer);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalNotEqualsToNull() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule \"Set Policy Rate\"\n" +
+                "when\n" +
+                "$customer: Customer( rate != value )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        customer.setRate(new BigDecimal("0.5"));
+
+        ksession.insert(customer);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalNotEqualsToLiteralNull() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule \"Set Policy Rate\"\n" +
+                "when\n" +
+                "$customer: Customer( rate != null )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        customer.setRate(new BigDecimal("0.5"));
+
+        ksession.insert(customer);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalNotEqualsToLiteralValue() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule \"Set Policy Rate\"\n" +
+                "when\n" +
+                "$customer: Customer( rate != 1I )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        customer.setRate(new BigDecimal("0.5"));
+
+        ksession.insert(customer);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalGreaterThanNull() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule \"Set Policy Rate\"\n" +
+                "when\n" +
+                "Customer( rate > value )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setCode("code1");
+        customer.setRate(new BigDecimal("0.5"));
+
+        ksession.insert(customer);
+        assertEquals(0, ksession.fireAllRules());
     }
 }

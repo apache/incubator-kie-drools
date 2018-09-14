@@ -22,6 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -41,7 +46,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class AccumulateUnsupportedWithModelTest {
@@ -265,4 +272,61 @@ public class AccumulateUnsupportedWithModelTest {
         }
     }
 
+    @Test
+    public void testAccumulateWithSameSubnetwork() {
+        final String drl = "package org.drools.compiler.test;\n" +
+                "import " + Cheese.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list; \n" +
+                "rule r1 salience 100 \n" +
+                "    when\n" +
+                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
+                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
+                "                                                min($c.getPrice()) )\n" +
+                "    then\n" +
+                "        list.add( 'r1' + ':' + $total);\n" +
+                "end\n" +
+                "rule r2 \n" +
+                "    when\n" +
+                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
+                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
+                "                                                max($c.getPrice()) )\n" +
+                "    then\n" +
+                "        list.add( 'r2' + ':' + $total);\n" +
+                "end\n" +
+
+                "";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        final KieSession wm = kbase.newKieSession();
+        try {
+            final List list = new ArrayList();
+            wm.setGlobal("list", list);
+
+            // Check the network formation, to ensure the RiaNode is shared.
+            final ObjectTypeNode cheeseOtn = KieUtil.getObjectTypeNode(kbase, Cheese.class);
+            assertNotNull(cheeseOtn);
+            final ObjectSink[] oSinks = cheeseOtn.getObjectSinkPropagator().getSinks();
+            assertEquals(1, oSinks.length);
+
+            final JoinNode cheeseJoin = (JoinNode) oSinks[0];
+            final LeftTupleSink[] ltSinks = cheeseJoin.getSinkPropagator().getSinks();
+
+            assertEquals(1, ltSinks.length);
+            final RightInputAdapterNode rian = (RightInputAdapterNode) ltSinks[0];
+            assertEquals(2, rian.getObjectSinkPropagator().size());   //  RiaNode is shared, if this has two outputs
+
+            wm.insert(new Cheese("stilton", 10));
+            wm.insert(new Person("Alice", "brie"));
+            wm.insert(new Person("Bob", "stilton"));
+
+            wm.fireAllRules();
+
+            assertEquals(2, list.size());
+            assertEquals("r1:10", list.get(0));
+            assertEquals("r2:10", list.get(1));
+        } finally {
+            wm.dispose();
+        }
+    }
 }
