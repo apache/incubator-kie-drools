@@ -564,6 +564,7 @@ public class IndexingTest {
 
     @Test(timeout = 10000)
     public void testNotNodeModifyRight() {
+        System.out.println("This is an artificial change.");
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10 when\n" +
