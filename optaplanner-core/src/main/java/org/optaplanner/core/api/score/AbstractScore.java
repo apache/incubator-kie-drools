@@ -89,6 +89,9 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected static int parseLevelAsInt(Class<? extends Score> scoreClass,
             String scoreString, String levelString) {
+        if (levelString.equals("*")) {
+            return Integer.MIN_VALUE;
+        }
         try {
             return Integer.parseInt(levelString);
         } catch (NumberFormatException e) {
@@ -100,6 +103,9 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected static long parseLevelAsLong(Class<? extends Score> scoreClass,
             String scoreString, String levelString) {
+        if (levelString.equals("*")) {
+            return Long.MIN_VALUE;
+        }
         try {
             return Long.parseLong(levelString);
         } catch (NumberFormatException e) {
@@ -111,6 +117,9 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected static double parseLevelAsDouble(Class<? extends Score> scoreClass,
             String scoreString, String levelString) {
+        if (levelString.equals("*")) {
+            return Double.MIN_VALUE;
+        }
         try {
             return Double.parseDouble(levelString);
         } catch (NumberFormatException e) {
@@ -122,6 +131,13 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected static BigDecimal parseLevelAsBigDecimal(Class<? extends Score> scoreClass,
             String scoreString, String levelString) {
+        if (levelString.equals("*")) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + scoreClass.getSimpleName()
+                    + ") has a wildcard (*) as levelString (" + levelString
+                    + ") which is not supported for BigDecimal score values," +
+                    " because there is no general MIN_VALUE for BigDecimal.");
+        }
         try {
             return new BigDecimal(levelString);
         } catch (NumberFormatException e) {

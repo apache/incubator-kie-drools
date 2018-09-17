@@ -31,6 +31,10 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.parseScore("-147hard/-258medium/-369soft"));
         assertEquals(HardMediumSoftScore.valueOfUninitialized(-7, -147, -258, -369),
                 HardMediumSoftScore.parseScore("-7init/-147hard/-258medium/-369soft"));
+        assertEquals(HardMediumSoftScore.valueOf(-147, -258, Integer.MIN_VALUE),
+                HardMediumSoftScore.parseScore("-147hard/-258medium/*soft"));
+        assertEquals(HardMediumSoftScore.valueOf(-147, Integer.MIN_VALUE, -369),
+                HardMediumSoftScore.parseScore("-147hard/*medium/-369soft"));
     }
 
     @Test

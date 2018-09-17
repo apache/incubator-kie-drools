@@ -40,6 +40,10 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionSSS.parseScore("[]hard/[-147/-258/-369]soft"));
         assertEquals(scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369),
                 scoreDefinitionSSS.parseScore("-7init/[]hard/[-147/-258/-369]soft"));
+        assertEquals(scoreDefinitionHSS.createScore(-147, -258, Integer.MIN_VALUE),
+                scoreDefinitionHSS.parseScore("[-147]hard/[-258/*]soft"));
+        assertEquals(scoreDefinitionHSS.createScore(-147, Integer.MIN_VALUE, -369),
+                scoreDefinitionHSS.parseScore("[-147]hard/[*/-369]soft"));
     }
 
     @Test

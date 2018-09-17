@@ -31,6 +31,8 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.parseScore("-147hard/-258soft"));
         assertEquals(HardSoftLongScore.valueOfUninitialized(-7, -147L, -258L),
                 HardSoftLongScore.parseScore("-7init/-147hard/-258soft"));
+        assertEquals(HardSoftLongScore.valueOf(-147L, Long.MIN_VALUE),
+                HardSoftLongScore.parseScore("-147hard/*soft"));
     }
 
     @Test

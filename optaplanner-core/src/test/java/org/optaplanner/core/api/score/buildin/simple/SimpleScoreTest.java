@@ -29,6 +29,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
     public void parseScore() {
         assertEquals(SimpleScore.valueOf(-147), SimpleScore.parseScore("-147"));
         assertEquals(SimpleScore.valueOfUninitialized(-7, -147), SimpleScore.parseScore("-7init/-147"));
+        assertEquals(SimpleScore.valueOf(Integer.MIN_VALUE), SimpleScore.parseScore("*"));
     }
 
     @Test

@@ -31,6 +31,8 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
                 SimpleLongScore.parseScore("-147"));
         assertEquals(SimpleLongScore.valueOfUninitialized(-7, -147L),
                 SimpleLongScore.parseScore("-7init/-147"));
+        assertEquals(SimpleLongScore.valueOf(Long.MIN_VALUE),
+                SimpleLongScore.parseScore("*"));
     }
 
     @Test

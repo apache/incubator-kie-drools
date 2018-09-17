@@ -31,6 +31,8 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
                 SimpleDoubleScore.parseScore("-147.2"));
         assertEquals(SimpleDoubleScore.valueOfUninitialized(-7, -147.2),
                 SimpleDoubleScore.parseScore("-7init/-147.2"));
+        assertEquals(SimpleDoubleScore.valueOf(Double.MIN_VALUE),
+                SimpleDoubleScore.parseScore("*"));
     }
 
     @Test

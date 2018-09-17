@@ -34,6 +34,10 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.parseScore("[-5432109876]hard/[-9876543210/-3456789012]soft"));
         assertEquals(scoreDefinitionHSS.createScoreUninitialized(-7, -5432109876L, -9876543210L, -3456789012L),
                 scoreDefinitionHSS.parseScore("-7init/[-5432109876]hard/[-9876543210/-3456789012]soft"));
+        assertEquals(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, Long.MIN_VALUE),
+                scoreDefinitionHSS.parseScore("[-5432109876]hard/[-9876543210/*]soft"));
+        assertEquals(scoreDefinitionHSS.createScore(-5432109876L, Long.MIN_VALUE, -3456789012L),
+                scoreDefinitionHSS.parseScore("[-5432109876]hard/[*/-3456789012]soft"));
     }
 
     @Test
