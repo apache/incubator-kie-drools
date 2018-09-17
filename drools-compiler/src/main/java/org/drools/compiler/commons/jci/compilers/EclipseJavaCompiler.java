@@ -19,6 +19,8 @@ package org.drools.compiler.commons.jci.compilers;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -87,6 +89,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
     final class CompilationUnit implements ICompilationUnit {
 
+        final private String fsFileName;
         final private String clazzName;
         final private String fileName;
         final private char[] typeName;
@@ -95,10 +98,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         CompilationUnit( final ResourceReader pReader, final String pSourceFile ) {
             reader = pReader;
+
+            fsFileName = pSourceFile;
+
+            clazzName = ClassUtils.convertResourceToClassName( decode(getPathName( pSourceFile )) );
             
-            clazzName = ClassUtils.convertResourceToClassName( getPathName( pSourceFile ) );
-            
-            fileName = pSourceFile;
+            fileName = decode(pSourceFile);
             int dot = clazzName.lastIndexOf('.');
             if (dot > 0) {
                 typeName = clazzName.substring(dot + 1).toCharArray();
@@ -113,12 +118,20 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
         }
 
+        private String decode( final String path ) {
+            try {
+                return URLDecoder.decode( path, "UTF-8" );
+            } catch ( UnsupportedEncodingException e ) {
+                return path;
+            }
+        }
+
         public char[] getFileName() {
             return fileName.toCharArray();
         }
 
         public char[] getContents() {
-            final byte[] content = reader.getBytes(fileName);
+            final byte[] content = reader.getBytes(fsFileName);
 
             if (content == null) {
                 return null;
