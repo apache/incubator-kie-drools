@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -487,6 +488,9 @@ public class ProtobufOutputMarshaller {
                 Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
                 ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
                         .setTuple( PersisterHelper.createTuple( leftTuple ) );
+                for(Object o : matches.keySet()) {
+                    wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(o);
+                }
                 for ( RightTuple rightTuple : matches.values() ) {
                     // add objects to agenda
                     FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()

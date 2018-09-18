@@ -211,7 +211,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                                                          workingMemory,
                                                                          null );
         }
-        workingMemory.getAgenda().getDerivedObject().computeIfAbsent(getId(), k -> new HashSet<>()).add(object);
         return handle;
     }
 
