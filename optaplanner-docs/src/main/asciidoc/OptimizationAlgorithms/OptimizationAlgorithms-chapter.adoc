@@ -285,7 +285,7 @@ which is a ratio between the time already spent solving and the estimated entire
 
 
 [[timeMillisSpentTermination]]
-=== TimeMillisSpentTermination
+=== Time Spent Termination
 
 Terminates when an amount of time has been used.
 
@@ -296,6 +296,10 @@ Terminates when an amount of time has been used.
   </termination>
 ----
 
+Besides milliseconds you can also use:
+
+* Seconds
++
 [source,xml,options="nowrap"]
 ----
   <termination>
@@ -303,6 +307,8 @@ Terminates when an amount of time has been used.
   </termination>
 ----
 
+* Minutes
++
 [source,xml,options="nowrap"]
 ----
   <termination>
@@ -310,6 +316,8 @@ Terminates when an amount of time has been used.
   </termination>
 ----
 
+* Hours
++
 [source,xml,options="nowrap"]
 ----
   <termination>
@@ -317,6 +325,8 @@ Terminates when an amount of time has been used.
   </termination>
 ----
 
+* Days
++
 [source,xml,options="nowrap"]
 ----
   <termination>
@@ -345,16 +355,17 @@ Or use a combination that sums up to 150 minutes:
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` `REPRODUCIBLE`) because the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` `REPRODUCIBLE`)
+because the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
-* The `Termination` might produce slightly different time gradient values, which will send time gradient-based algorithms (such as Simulated Annealing) on a radically different path.
-
+* The `Termination` might produce slightly different time gradient values,
+which will send time gradient-based algorithms (such as Simulated Annealing) on a radically different path.
 ====
 
 
 [[unimprovedTimeMillisSpentTermination]]
-=== UnimprovedTimeMillisSpentTermination
+=== Unimproved Time Spent Termination
 
 Terminates when the best score has not improved in a specified amount of time.
 
@@ -367,6 +378,11 @@ Terminates when the best score has not improved in a specified amount of time.
   </localSearch>
 ----
 
+
+Besides milliseconds you can also use:
+
+* Seconds
++
 [source,xml,options="nowrap"]
 ----
   <localSearch>
@@ -376,6 +392,8 @@ Terminates when the best score has not improved in a specified amount of time.
   </localSearch>
 ----
 
+* Minutes
++
 [source,xml,options="nowrap"]
 ----
   <localSearch>
@@ -385,6 +403,8 @@ Terminates when the best score has not improved in a specified amount of time.
   </localSearch>
 ----
 
+* Hours
++
 [source,xml,options="nowrap"]
 ----
   <localSearch>
@@ -394,6 +414,8 @@ Terminates when the best score has not improved in a specified amount of time.
   </localSearch>
 ----
 
+* Days
++
 [source,xml,options="nowrap"]
 ----
   <localSearch>
@@ -403,17 +425,55 @@ Terminates when the best score has not improved in a specified amount of time.
   </localSearch>
 ----
 
+Just like <<timeMillisSpentTermination,time spent termination>>, combinations are summed up.
+
 This termination should not be applied to Construction Heuristics as they only update the best solution at the end.
-Configuring it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself may be a better option.
+Configuring it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself is often a better option.
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) as the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``)
+as the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
-* The `Termination` might produce slightly different time gradient values, which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.
-
+* The `Termination` might produce slightly different time gradient values,
+which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.
 ====
+
+Optionally, configure a score difference threshold by which the best score must improve in the specified time.
+For example, if the score doesn't improve by at least `100` soft points every 30 seconds or less, it terminates:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <termination>
+      <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+      <unimprovedScoreDifferenceThreshold>0hard/100soft</unimprovedScoreDifferenceThreshold>
+    </termination>
+  </localSearch>
+----
+
+If the score improves by 1 hard point and drops 900 soft points, it's still meets the threshold,
+because `1hard/-900soft` is larger than the threshold `0hard/100soft`.
+
+On the other hand, a threshold of `1hard/0soft` is not met by an new best solution
+that improves 1 hard point at the expense of 1 or more soft points,
+because `1hard/-100soft` is smaller than the threshold `1hard/0soft`.
+
+To require a feasibility improvement every 30 seconds while avoiding the pitfall above,
+use a wildcard `*` for lower score levels that are allowed to deteriorate if a higher score level improves:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <termination>
+      <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+      <unimprovedScoreDifferenceThreshold>1hard/*soft</unimprovedScoreDifferenceThreshold>
+    </termination>
+  </localSearch>
+----
+
+This effectively implies a threshold of `1hard/-2147483648soft`.
 
 
 [[bestScoreTermination]]
