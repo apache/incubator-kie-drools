@@ -3,7 +3,7 @@
 
 Planner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
 
-The `Competition?` column in the following table identifies an example as being either realistic or unrealistic. A _realistic competition_ is _an official, independent competition_:
+Some of the examples solve problems that are presented in academic contests. The `Contest` column in the following table lists the contests. It also identifies an example as being either _realistic_ or _unrealistic_ for the putpose of a contest. A _realistic contest_ is _an official, independent contest_:
 
 * that clearly defines a real-word use case.
 * with real-world constraints.
@@ -11,7 +11,7 @@ The `Competition?` column in the following table identifies an example as being 
 * that expects reproducible results within a specific time limit on specific hardware.
 * that has had serious participation from the academic and/or enterprise Operations Research community.
 
-These realistic competitions provide an objective comparison of Planner with competitive software and academic research.
+Realistic contests provide an objective comparison of Planner with competitive software and academic research.
 
 The source code of all these examples is available in the distribution zip under [path]_examples/sources_
 and also in git under [path]_optaplanner/optaplanner-examples_.
@@ -19,7 +19,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 .Examples Overview
 [cols="1,1a,1a,1a,1a", options="header"]
 |===
-|Example |Domain |Size |Competition? |Special features used
+|Example |Domain |Size |Contest |Special features used
 
 |<<nQueens,N queens>>
 |* 1 entity class
