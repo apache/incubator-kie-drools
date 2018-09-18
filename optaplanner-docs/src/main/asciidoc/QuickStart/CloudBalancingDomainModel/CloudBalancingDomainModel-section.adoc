@@ -8,9 +8,13 @@
 
 Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify contraints, improve performance, and increase flexibility for future needs. 
 
+To create a domain model, define all the objects that represent the input data for the problem. In this simple example, the objects are processes and computers. 
+
+A separate object in the domain model must represent a full data set of problem, which contains the input data as well as a solution. In this example, this object holds a list of computers and a list of processes. Each process is assigned to a compter; the distribution of processes between computers is the solution.
+
 . Draw a class diagram of your domain model. 
 . Normalize it to remove duplicate data.
-. Write down some sample instances for each class. 
+. Write down some _sample instances_ for each class. Sample instances are entity properties that are relevant for planning purposes.
 
 * ``Computer``: represents a computer with certain hardware and maintenance costs. 
 +
@@ -18,15 +22,16 @@ In this example, the sample instances for the `Computer` class are: `cpuPower`, 
 * ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner. 
 +
 Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
-* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set. 
+* ``CloudBalance``: represents the distribution of processes between computers. Contains every `Computer` and `Process` for a certain data set. 
 +
-The sample instance for `CloudBalance` is `score`.
+For an object representing the full data set and solution, a sample instance holding the _score_ must be present. Planner can calculate and compare the scores for different solutions; the solution with the highest score is the optimal solution. Therefore, the sample instance for `CloudBalance` is `score`.
 
 . Determine which relationships (or fields) change during planning.
 
-* Planning entity: the class (or classes) that changes during solving. In this example, it is the class ``Process``.
-* Planning variable: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
-* Planning solution: the class that represents a data set and contains all planning entities. In this example that is the class ``CloudBalance``.
+* _Planning entity_: the class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because we can move processes to different computers.
+** A class representing input data that Planner can not change is known as a _problem fact_. 
+* _Planning variable_: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
+* _Planning solution_: the class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
 
 In the UML class diagram below, the Planner concepts are already annotated:
 
@@ -105,7 +110,7 @@ public class CloudProcess ... {
 
 * Planner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
 
-* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on CloudBalance.getComputerList().
+* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on `CloudBalance.getComputerList()`.
 
 [NOTE]
 ====
@@ -120,14 +125,14 @@ The `CloudBalance` class has a [path]_@PlanningSolution_
  annotation.
 
 * It holds a list of all computers and processes.
-* It represents both the planning problem and (if it's initialized) the planning solution.
+* It represents both the planning problem and (if it is initialized) the planning solution.
 
-. Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+. The class holds a collection of processes that Planner can change. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``, so that Planner can retrieve the processes that it can change. To save a solution, Planner initializes a new instance of the class with the list of changed processes.
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
-Planner automatically updates it when it calculates a `Score` for a solution instance and therefore it needs a setter.
+Planner automatically updates it when it calculates a `Score` for a solution instance; therefore, this property needs a setter.
 
-. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so the computers are known to it.
+. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that Planner can retrieve a list of computers (problem facts) and make it available to the Drools engine.
 
 .CloudBalance.java
 ====
