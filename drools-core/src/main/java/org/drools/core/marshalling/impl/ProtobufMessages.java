@@ -20201,6 +20201,19 @@ public final class ProtobufMessages {
          */
         org.drools.core.marshalling.impl.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
             int index);
+
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        java.util.List<com.google.protobuf.ByteString> getObjectList();
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        int getObjectCount();
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        com.google.protobuf.ByteString getObject(int index);
       }
       /**
        * Protobuf type {@code org.drools.core.marshalling.NodeMemory.FromNodeMemory.FromContext}
@@ -20216,6 +20229,7 @@ public final class ProtobufMessages {
         }
         private FromContext() {
           handle_ = java.util.Collections.emptyList();
+          object_ = java.util.Collections.emptyList();
         }
 
         @java.lang.Override
@@ -20271,6 +20285,14 @@ public final class ProtobufMessages {
                       input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.PARSER, extensionRegistry));
                   break;
                 }
+                case 26: {
+                  if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                    object_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                    mutable_bitField0_ |= 0x00000004;
+                  }
+                  object_.add(input.readBytes());
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -20281,6 +20303,9 @@ public final class ProtobufMessages {
           } finally {
             if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               handle_ = java.util.Collections.unmodifiableList(handle_);
+            }
+            if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+              object_ = java.util.Collections.unmodifiableList(object_);
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -20355,6 +20380,28 @@ public final class ProtobufMessages {
           return handle_.get(index);
         }
 
+        public static final int OBJECT_FIELD_NUMBER = 3;
+        private java.util.List<com.google.protobuf.ByteString> object_;
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        public java.util.List<com.google.protobuf.ByteString>
+            getObjectList() {
+          return object_;
+        }
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        public int getObjectCount() {
+          return object_.size();
+        }
+        /**
+         * <code>repeated bytes object = 3;</code>
+         */
+        public com.google.protobuf.ByteString getObject(int index) {
+          return object_.get(index);
+        }
+
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
@@ -20373,6 +20420,9 @@ public final class ProtobufMessages {
           for (int i = 0; i < handle_.size(); i++) {
             output.writeMessage(2, handle_.get(i));
           }
+          for (int i = 0; i < object_.size(); i++) {
+            output.writeBytes(3, object_.get(i));
+          }
           unknownFields.writeTo(output);
         }
 
@@ -20388,6 +20438,15 @@ public final class ProtobufMessages {
           for (int i = 0; i < handle_.size(); i++) {
             size += com.google.protobuf.CodedOutputStream
               .computeMessageSize(2, handle_.get(i));
+          }
+          {
+            int dataSize = 0;
+            for (int i = 0; i < object_.size(); i++) {
+              dataSize += com.google.protobuf.CodedOutputStream
+                .computeBytesSizeNoTag(object_.get(i));
+            }
+            size += dataSize;
+            size += 1 * getObjectList().size();
           }
           size += unknownFields.getSerializedSize();
           memoizedSize = size;
@@ -20412,6 +20471,8 @@ public final class ProtobufMessages {
           }
           result = result && getHandleList()
               .equals(other.getHandleList());
+          result = result && getObjectList()
+              .equals(other.getObjectList());
           result = result && unknownFields.equals(other.unknownFields);
           return result;
         }
@@ -20430,6 +20491,10 @@ public final class ProtobufMessages {
           if (getHandleCount() > 0) {
             hash = (37 * hash) + HANDLE_FIELD_NUMBER;
             hash = (53 * hash) + getHandleList().hashCode();
+          }
+          if (getObjectCount() > 0) {
+            hash = (37 * hash) + OBJECT_FIELD_NUMBER;
+            hash = (53 * hash) + getObjectList().hashCode();
           }
           hash = (29 * hash) + unknownFields.hashCode();
           memoizedHashCode = hash;
@@ -20574,6 +20639,8 @@ public final class ProtobufMessages {
             } else {
               handleBuilder_.clear();
             }
+            object_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
 
@@ -20615,6 +20682,11 @@ public final class ProtobufMessages {
             } else {
               result.handle_ = handleBuilder_.build();
             }
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              object_ = java.util.Collections.unmodifiableList(object_);
+              bitField0_ = (bitField0_ & ~0x00000004);
+            }
+            result.object_ = object_;
             result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
@@ -20685,6 +20757,16 @@ public final class ProtobufMessages {
                   handleBuilder_.addAllMessages(other.handle_);
                 }
               }
+            }
+            if (!other.object_.isEmpty()) {
+              if (object_.isEmpty()) {
+                object_ = other.object_;
+                bitField0_ = (bitField0_ & ~0x00000004);
+              } else {
+                ensureObjectIsMutable();
+                object_.addAll(other.object_);
+              }
+              onChanged();
             }
             this.mergeUnknownFields(other.unknownFields);
             onChanged();
@@ -21070,6 +21152,78 @@ public final class ProtobufMessages {
               handle_ = null;
             }
             return handleBuilder_;
+          }
+
+          private java.util.List<com.google.protobuf.ByteString> object_ = java.util.Collections.emptyList();
+          private void ensureObjectIsMutable() {
+            if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+              object_ = new java.util.ArrayList<com.google.protobuf.ByteString>(object_);
+              bitField0_ |= 0x00000004;
+             }
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public java.util.List<com.google.protobuf.ByteString>
+              getObjectList() {
+            return java.util.Collections.unmodifiableList(object_);
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public int getObjectCount() {
+            return object_.size();
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public com.google.protobuf.ByteString getObject(int index) {
+            return object_.get(index);
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public Builder setObject(
+              int index, com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureObjectIsMutable();
+            object_.set(index, value);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public Builder addObject(com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureObjectIsMutable();
+            object_.add(value);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public Builder addAllObject(
+              java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+            ensureObjectIsMutable();
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, object_);
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>repeated bytes object = 3;</code>
+           */
+          public Builder clearObject() {
+            object_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000004);
+            onChanged();
+            return this;
           }
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -54205,7 +54359,7 @@ public final class ProtobufMessages {
       "drools.core.marshalling.Agenda.RuleFlowG" +
       "roup.NodeInstance\032E\n\014NodeInstance\022\033\n\023pro" +
       "cess_instance_id\030\001 \001(\003\022\030\n\020node_instance_" +
-      "id\030\002 \001(\t\"\322\013\n\nNodeMemory\022\017\n\007node_id\030\001 \001(\005" +
+      "id\030\002 \001(\t\"\343\013\n\nNodeMemory\022\017\n\007node_id\030\001 \001(\005" +
       "\022C\n\tnode_type\030\002 \001(\01620.org.drools.core.ma" +
       "rshalling.NodeMemory.NodeType\022P\n\naccumul" +
       "ate\030\003 \001(\0132<.org.drools.core.marshalling." +
@@ -54227,148 +54381,149 @@ public final class ProtobufMessages {
       "emory.RIAContext\032\177\n\nRIAContext\0221\n\005tuple\030" +
       "\001 \001(\0132\".org.drools.core.marshalling.Tupl" +
       "e\022>\n\rresult_handle\030\002 \001(\0132\'.org.drools.co" +
-      "re.marshalling.FactHandle\032\340\001\n\016FromNodeMe" +
+      "re.marshalling.FactHandle\032\361\001\n\016FromNodeMe" +
       "mory\022S\n\007context\030\001 \003(\0132B.org.drools.core." +
       "marshalling.NodeMemory.FromNodeMemory.Fr" +
-      "omContext\032y\n\013FromContext\0221\n\005tuple\030\001 \001(\0132" +
-      "\".org.drools.core.marshalling.Tuple\0227\n\006h" +
-      "andle\030\002 \003(\0132\'.org.drools.core.marshallin" +
-      "g.FactHandle\032\254\002\n\026QueryElementNodeMemory\022" +
-      "\\\n\007context\030\001 \003(\0132K.org.drools.core.marsh" +
-      "alling.NodeMemory.QueryElementNodeMemory" +
-      ".QueryContext\032\263\001\n\014QueryContext\0221\n\005tuple\030" +
-      "\001 \001(\0132\".org.drools.core.marshalling.Tupl" +
-      "e\0227\n\006handle\030\002 \001(\0132\'.org.drools.core.mars" +
-      "halling.FactHandle\0227\n\006result\030\003 \003(\0132\'.org" +
-      ".drools.core.marshalling.FactHandle\"@\n\010N" +
-      "odeType\022\016\n\nACCUMULATE\020\000\022\007\n\003RIA\020\001\022\010\n\004FROM" +
-      "\020\002\022\021\n\rQUERY_ELEMENT\020\003\"\342\001\n\nEntryPoint\022\026\n\016" +
-      "entry_point_id\030\001 \001(\t\0227\n\006handle\030\002 \003(\0132\'.o" +
-      "rg.drools.core.marshalling.FactHandle\022@\n" +
-      "\003tms\030\003 \001(\01323.org.drools.core.marshalling" +
-      ".TruthMaintenanceSystem\022A\n\003otc\030\004 \003(\01324.o" +
-      "rg.drools.core.marshalling.ObjectTypeCon" +
-      "figuration\"\345\002\n\nFactHandle\022@\n\004type\030\001 \001(\0162" +
-      "2.org.drools.core.marshalling.FactHandle" +
-      ".HandleType\022\n\n\002id\030\002 \001(\005\022\017\n\007recency\030\003 \001(\003" +
-      "\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010duration\030\005 \001(\003\022\022\n" +
-      "\nis_expired\030\006 \001(\010\022\031\n\021activations_count\030\007" +
-      " \001(\003\022\026\n\016strategy_index\030\010 \001(\005\022\016\n\006object\030\t" +
-      " \001(\014\022\023\n\013entry_point\030\n \001(\t\022\024\n\014is_justifie" +
-      "d\030\013 \001(\010\022\021\n\totn_count\030\014 \001(\005\">\n\nHandleType" +
-      "\022\020\n\014INITIAL_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022" +
-      "\t\n\005EVENT\020\004\"\354\001\n\nActivation\0221\n\005tuple\030\002 \001(\013" +
-      "2\".org.drools.core.marshalling.Tuple\022\020\n\010" +
-      "salience\030\003 \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\t" +
-      "rule_name\030\005 \001(\t\022\030\n\020activation_group\030\007 \001(" +
-      "\t\022\024\n\014is_activated\030\010 \001(\010\022\021\n\thandle_id\030\t \001" +
-      "(\005\022\032\n\022logical_dependency\030\n \003(\005\022\021\n\tevalua" +
-      "ted\030\013 \001(\010\"\032\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\"\227\001" +
-      "\n\026TruthMaintenanceSystem\0225\n\003key\030\001 \003(\0132(." +
-      "org.drools.core.marshalling.EqualityKey\022" +
-      "F\n\026OBSOLETE_justification\030\002 \003(\0132&.org.dr" +
-      "ools.core.marshalling.BeliefSet\"<\n\027Objec" +
-      "tTypeConfiguration\022\014\n\004type\030\001 \001(\t\022\023\n\013tms_" +
-      "enabled\030\002 \001(\010\"\201\001\n\013EqualityKey\022\016\n\006status\030" +
-      "\001 \001(\005\022\021\n\thandle_id\030\002 \001(\005\022\024\n\014other_handle" +
-      "\030\003 \003(\005\0229\n\tbeliefSet\030\004 \001(\0132&.org.drools.c" +
-      "ore.marshalling.BeliefSet\"i\n\tBeliefSet\022\021" +
-      "\n\thandle_id\030\001 \001(\005\022I\n\021logicalDependency\030\002" +
-      " \003(\0132..org.drools.core.marshalling.Logic" +
-      "alDependency\"\254\001\n\021LogicalDependency\022;\n\nac" +
-      "tivation\030\002 \001(\0132\'.org.drools.core.marshal" +
-      "ling.Activation\022\035\n\025object_strategy_index" +
-      "\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024value_strategy" +
-      "_index\030\n \001(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013ActionQu" +
-      "eue\022?\n\006action\030\001 \003(\0132/.org.drools.core.ma" +
-      "rshalling.ActionQueue.Action\032\264\005\n\006Action\022" +
-      "A\n\004type\030\001 \001(\01623.org.drools.core.marshall" +
-      "ing.ActionQueue.ActionType\022P\n\017behavior_e" +
-      "xpire\030\002 \001(\01327.org.drools.core.marshallin" +
-      "g.ActionQueue.BehaviorExpire\022X\n\023deactiva" +
-      "te_callback\030\003 \001(\0132;.org.drools.core.mars" +
-      "halling.ActionQueue.DeactivateCallback\022P" +
-      "\n\017logical_retract\030\004 \001(\01327.org.drools.cor" +
-      "e.marshalling.ActionQueue.LogicalRetract" +
-      "\022E\n\tpropagate\030\005 \001(\01322.org.drools.core.ma" +
-      "rshalling.ActionQueue.Propagate\022?\n\006asser" +
-      "t\030\006 \001(\0132/.org.drools.core.marshalling.Ac" +
-      "tionQueue.Assert\022?\n\006expire\030\007 \001(\0132/.org.d" +
-      "rools.core.marshalling.ActionQueue.Expir" +
-      "e\022?\n\006signal\030\010 \001(\0132/.org.drools.core.mars" +
-      "halling.ActionQueue.Signal\022_\n\027signal_pro" +
-      "cess_instance\030\t \001(\0132>.org.drools.core.ma" +
-      "rshalling.ActionQueue.SignalProcessInsta" +
-      "nce\032!\n\016BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032," +
-      "\n\022DeactivateCallback\022\026\n\016ruleflow_group\030\001" +
-      " \001(\t\032\207\001\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001" +
-      "(\005\022;\n\nactivation\030\002 \001(\0132\'.org.drools.core" +
-      ".marshalling.Activation\022\025\n\rfully_retract" +
-      "\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007n" +
-      "ode_id\030\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001" +
-      "(\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021update_equ" +
-      "als_map\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030" +
-      "\n\020origin_rule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132" +
-      "\".org.drools.core.marshalling.Tuple\032,\n\006E" +
-      "xpire\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(" +
-      "\005\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014" +
-      "\032Q\n\025SignalProcessInstance\022\014\n\004type\030\001 \001(\t\022" +
-      "\r\n\005event\030\002 \001(\014\022\033\n\023process_instance_id\030\003 " +
-      "\001(\003\"\237\001\n\nActionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022" +
-      "\027\n\023DEACTIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETR" +
-      "ACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPI" +
-      "RE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTA" +
-      "NCE\020\010\"\337\007\n\006Timers\0228\n\005timer\030\001 \003(\0132).org.dr" +
-      "ools.core.marshalling.Timers.Timer\032\342\002\n\005T" +
-      "imer\022;\n\004type\030\001 \001(\0162-.org.drools.core.mar" +
-      "shalling.Timers.TimerType\022?\n\006expire\030\002 \001(" +
-      "\0132/.org.drools.core.marshalling.Timers.E" +
-      "xpireTimer\022G\n\nactivation\030\003 \001(\01323.org.dro" +
-      "ols.core.marshalling.Timers.ActivationTi" +
-      "mer\022C\n\010behavior\030\004 \001(\01321.org.drools.core." +
-      "marshalling.Timers.BehaviorTimer\022F\n\ntime" +
-      "r_node\030\005 \001(\01322.org.drools.core.marshalli" +
-      "ng.Timers.TimerNodeTimer*\005\010d\020\310\001\032i\n\013Expir" +
-      "eTimer\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point" +
-      "_id\030\002 \001(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fi" +
-      "re_timestamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;" +
-      "\n\nactivation\030\001 \001(\0132\'.org.drools.core.mar" +
-      "shalling.Activation\0225\n\007trigger\030\002 \001(\0132$.o" +
-      "rg.drools.core.marshalling.Trigger\032a\n\rBe" +
-      "haviorTimer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022" +
-      "!\n\031DEPRECATED_behavior_index\030\002 \001(\005\022\021\n\tha" +
-      "ndle_id\030\003 \001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node" +
-      "_id\030\001 \001(\005\0221\n\005tuple\030\002 \001(\0132\".org.drools.co" +
-      "re.marshalling.Tuple\0225\n\007trigger\030\003 \001(\0132$." +
-      "org.drools.core.marshalling.Trigger\"R\n\tT" +
-      "imerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010" +
-      "BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020\005\"" +
-      "\316\007\n\007Trigger\022>\n\004type\030\001 \001(\01620.org.drools.c" +
-      "ore.marshalling.Trigger.TriggerType\022>\n\004c" +
-      "ron\030\002 \001(\01320.org.drools.core.marshalling." +
-      "Trigger.CronTrigger\022F\n\010interval\030\003 \001(\01324." +
-      "org.drools.core.marshalling.Trigger.Inte" +
-      "rvalTrigger\022D\n\003pit\030\004 \001(\01327.org.drools.co" +
-      "re.marshalling.Trigger.PointInTimeTrigge" +
-      "r\022N\n\004cmdt\030\005 \001(\0132@.org.drools.core.marsha" +
-      "lling.Trigger.CompositeMaxDurationTrigge" +
-      "r\032\247\001\n\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n" +
-      "\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n" +
-      "\014repeat_count\030\004 \001(\005\022\027\n\017cron_expression\030\005" +
-      " \001(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar" +
-      "_name\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart" +
-      "_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_" +
-      "limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016nex" +
-      "t_fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcal" +
-      "endar_name\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026" +
-      "\n\016next_fire_time\030\001 \001(\003\032\221\001\n\033CompositeMaxD" +
-      "urationTrigger\022\034\n\024maxDurationTimestamp\030\001" +
-      " \001(\003\022\030\n\020timerCurrentDate\030\002 \001(\003\022:\n\014timerT" +
-      "rigger\030\003 \001(\0132$.org.drools.core.marshalli" +
-      "ng.Trigger\"T\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010I" +
-      "NTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002\022\032\n\026COMPOSIT" +
-      "E_MAX_DURATION\020\003B4\n org.drools.core.mars" +
-      "halling.implB\020ProtobufMessages"
+      "omContext\032\211\001\n\013FromContext\0221\n\005tuple\030\001 \001(\013" +
+      "2\".org.drools.core.marshalling.Tuple\0227\n\006" +
+      "handle\030\002 \003(\0132\'.org.drools.core.marshalli" +
+      "ng.FactHandle\022\016\n\006object\030\003 \003(\014\032\254\002\n\026QueryE" +
+      "lementNodeMemory\022\\\n\007context\030\001 \003(\0132K.org." +
+      "drools.core.marshalling.NodeMemory.Query" +
+      "ElementNodeMemory.QueryContext\032\263\001\n\014Query" +
+      "Context\0221\n\005tuple\030\001 \001(\0132\".org.drools.core" +
+      ".marshalling.Tuple\0227\n\006handle\030\002 \001(\0132\'.org" +
+      ".drools.core.marshalling.FactHandle\0227\n\006r" +
+      "esult\030\003 \003(\0132\'.org.drools.core.marshallin" +
+      "g.FactHandle\"@\n\010NodeType\022\016\n\nACCUMULATE\020\000" +
+      "\022\007\n\003RIA\020\001\022\010\n\004FROM\020\002\022\021\n\rQUERY_ELEMENT\020\003\"\342" +
+      "\001\n\nEntryPoint\022\026\n\016entry_point_id\030\001 \001(\t\0227\n" +
+      "\006handle\030\002 \003(\0132\'.org.drools.core.marshall" +
+      "ing.FactHandle\022@\n\003tms\030\003 \001(\01323.org.drools" +
+      ".core.marshalling.TruthMaintenanceSystem" +
+      "\022A\n\003otc\030\004 \003(\01324.org.drools.core.marshall" +
+      "ing.ObjectTypeConfiguration\"\345\002\n\nFactHand" +
+      "le\022@\n\004type\030\001 \001(\01622.org.drools.core.marsh" +
+      "alling.FactHandle.HandleType\022\n\n\002id\030\002 \001(\005" +
+      "\022\017\n\007recency\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010" +
+      "duration\030\005 \001(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021ac" +
+      "tivations_count\030\007 \001(\003\022\026\n\016strategy_index\030" +
+      "\010 \001(\005\022\016\n\006object\030\t \001(\014\022\023\n\013entry_point\030\n \001" +
+      "(\t\022\024\n\014is_justified\030\013 \001(\010\022\021\n\totn_count\030\014 " +
+      "\001(\005\">\n\nHandleType\022\020\n\014INITIAL_FACT\020\001\022\010\n\004F" +
+      "ACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT\020\004\"\354\001\n\nActivati" +
+      "on\0221\n\005tuple\030\002 \001(\0132\".org.drools.core.mars" +
+      "halling.Tuple\022\020\n\010salience\030\003 \001(\005\022\024\n\014packa" +
+      "ge_name\030\004 \001(\t\022\021\n\trule_name\030\005 \001(\t\022\030\n\020acti" +
+      "vation_group\030\007 \001(\t\022\024\n\014is_activated\030\010 \001(\010" +
+      "\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logical_dependenc" +
+      "y\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\"\032\n\005Tuple\022\021\n\th" +
+      "andle_id\030\001 \003(\005\"\227\001\n\026TruthMaintenanceSyste" +
+      "m\0225\n\003key\030\001 \003(\0132(.org.drools.core.marshal" +
+      "ling.EqualityKey\022F\n\026OBSOLETE_justificati" +
+      "on\030\002 \003(\0132&.org.drools.core.marshalling.B" +
+      "eliefSet\"<\n\027ObjectTypeConfiguration\022\014\n\004t" +
+      "ype\030\001 \001(\t\022\023\n\013tms_enabled\030\002 \001(\010\"\201\001\n\013Equal" +
+      "ityKey\022\016\n\006status\030\001 \001(\005\022\021\n\thandle_id\030\002 \001(" +
+      "\005\022\024\n\014other_handle\030\003 \003(\005\0229\n\tbeliefSet\030\004 \001" +
+      "(\0132&.org.drools.core.marshalling.BeliefS" +
+      "et\"i\n\tBeliefSet\022\021\n\thandle_id\030\001 \001(\005\022I\n\021lo" +
+      "gicalDependency\030\002 \003(\0132..org.drools.core." +
+      "marshalling.LogicalDependency\"\254\001\n\021Logica" +
+      "lDependency\022;\n\nactivation\030\002 \001(\0132\'.org.dr" +
+      "ools.core.marshalling.Activation\022\035\n\025obje" +
+      "ct_strategy_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022" +
+      "\034\n\024value_strategy_index\030\n \001(\005\022\r\n\005value\030\013" +
+      " \001(\014\"\377\013\n\013ActionQueue\022?\n\006action\030\001 \003(\0132/.o" +
+      "rg.drools.core.marshalling.ActionQueue.A" +
+      "ction\032\264\005\n\006Action\022A\n\004type\030\001 \001(\01623.org.dro" +
+      "ols.core.marshalling.ActionQueue.ActionT" +
+      "ype\022P\n\017behavior_expire\030\002 \001(\01327.org.drool" +
+      "s.core.marshalling.ActionQueue.BehaviorE" +
+      "xpire\022X\n\023deactivate_callback\030\003 \001(\0132;.org" +
+      ".drools.core.marshalling.ActionQueue.Dea" +
+      "ctivateCallback\022P\n\017logical_retract\030\004 \001(\013" +
+      "27.org.drools.core.marshalling.ActionQue" +
+      "ue.LogicalRetract\022E\n\tpropagate\030\005 \001(\01322.o" +
+      "rg.drools.core.marshalling.ActionQueue.P" +
+      "ropagate\022?\n\006assert\030\006 \001(\0132/.org.drools.co" +
+      "re.marshalling.ActionQueue.Assert\022?\n\006exp" +
+      "ire\030\007 \001(\0132/.org.drools.core.marshalling." +
+      "ActionQueue.Expire\022?\n\006signal\030\010 \001(\0132/.org" +
+      ".drools.core.marshalling.ActionQueue.Sig" +
+      "nal\022_\n\027signal_process_instance\030\t \001(\0132>.o" +
+      "rg.drools.core.marshalling.ActionQueue.S" +
+      "ignalProcessInstance\032!\n\016BehaviorExpire\022\017" +
+      "\n\007node_id\030\001 \001(\005\032,\n\022DeactivateCallback\022\026\n" +
+      "\016ruleflow_group\030\001 \001(\t\032\207\001\n\016LogicalRetract" +
+      "\022\021\n\thandle_id\030\001 \001(\005\022;\n\nactivation\030\002 \001(\0132" +
+      "\'.org.drools.core.marshalling.Activation" +
+      "\022\025\n\rfully_retract\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032" +
+      "\034\n\tPropagate\022\017\n\007node_id\030\001 \001(\005\032\264\001\n\006Assert" +
+      "\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 " +
+      "\001(\010\022\031\n\021update_equals_map\030\003 \001(\010\022\027\n\017origin" +
+      "_pkg_name\030\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(" +
+      "\t\0221\n\005tuple\030\006 \001(\0132\".org.drools.core.marsh" +
+      "alling.Tuple\032,\n\006Expire\022\021\n\thandle_id\030\001 \001(" +
+      "\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Signal\022\014\n\004type\030\001 \001" +
+      "(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025SignalProcessInstan" +
+      "ce\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023proce" +
+      "ss_instance_id\030\003 \001(\003\"\237\001\n\nActionType\022\023\n\017B" +
+      "EHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_CALLBACK\020" +
+      "\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n" +
+      "\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIG" +
+      "NAL_PROCESS_INSTANCE\020\010\"\337\007\n\006Timers\0228\n\005tim" +
+      "er\030\001 \003(\0132).org.drools.core.marshalling.T" +
+      "imers.Timer\032\342\002\n\005Timer\022;\n\004type\030\001 \001(\0162-.or" +
+      "g.drools.core.marshalling.Timers.TimerTy" +
+      "pe\022?\n\006expire\030\002 \001(\0132/.org.drools.core.mar" +
+      "shalling.Timers.ExpireTimer\022G\n\nactivatio" +
+      "n\030\003 \001(\01323.org.drools.core.marshalling.Ti" +
+      "mers.ActivationTimer\022C\n\010behavior\030\004 \001(\01321" +
+      ".org.drools.core.marshalling.Timers.Beha" +
+      "viorTimer\022F\n\ntimer_node\030\005 \001(\01322.org.droo" +
+      "ls.core.marshalling.Timers.TimerNodeTime" +
+      "r*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\thandle_id\030\001 \001" +
+      "(\005\022\026\n\016entry_point_id\030\002 \001(\t\022\022\n\nclass_name" +
+      "\030\003 \001(\t\022\033\n\023next_fire_timestamp\030\004 \001(\003\032\205\001\n\017" +
+      "ActivationTimer\022;\n\nactivation\030\001 \001(\0132\'.or" +
+      "g.drools.core.marshalling.Activation\0225\n\007" +
+      "trigger\030\002 \001(\0132$.org.drools.core.marshall" +
+      "ing.Trigger\032a\n\rBehaviorTimer\022\032\n\022DEPRECAT" +
+      "ED_node_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_" +
+      "index\030\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\032\213\001\n\016Timer" +
+      "NodeTimer\022\017\n\007node_id\030\001 \001(\005\0221\n\005tuple\030\002 \001(" +
+      "\0132\".org.drools.core.marshalling.Tuple\0225\n" +
+      "\007trigger\030\003 \001(\0132$.org.drools.core.marshal" +
+      "ling.Trigger\"R\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n" +
+      "\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004" +
+      "\022\016\n\nTIMER_NODE\020\005\"\316\007\n\007Trigger\022>\n\004type\030\001 \001" +
+      "(\01620.org.drools.core.marshalling.Trigger" +
+      ".TriggerType\022>\n\004cron\030\002 \001(\01320.org.drools." +
+      "core.marshalling.Trigger.CronTrigger\022F\n\010" +
+      "interval\030\003 \001(\01324.org.drools.core.marshal" +
+      "ling.Trigger.IntervalTrigger\022D\n\003pit\030\004 \001(" +
+      "\01327.org.drools.core.marshalling.Trigger." +
+      "PointInTimeTrigger\022N\n\004cmdt\030\005 \001(\0132@.org.d" +
+      "rools.core.marshalling.Trigger.Composite" +
+      "MaxDurationTrigger\032\247\001\n\013CronTrigger\022\022\n\nst" +
+      "art_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repe" +
+      "at_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017" +
+      "cron_expression\030\005 \001(\t\022\026\n\016next_fire_time\030" +
+      "\006 \001(\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017Interva" +
+      "lTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time" +
+      "\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_c" +
+      "ount\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006pe" +
+      "riod\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022Poi" +
+      "ntInTimeTrigger\022\026\n\016next_fire_time\030\001 \001(\003\032" +
+      "\221\001\n\033CompositeMaxDurationTrigger\022\034\n\024maxDu" +
+      "rationTimestamp\030\001 \001(\003\022\030\n\020timerCurrentDat" +
+      "e\030\002 \001(\003\022:\n\014timerTrigger\030\003 \001(\0132$.org.droo" +
+      "ls.core.marshalling.Trigger\"T\n\013TriggerTy" +
+      "pe\022\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_T" +
+      "IME\020\002\022\032\n\026COMPOSITE_MAX_DURATION\020\003B4\n org" +
+      ".drools.core.marshalling.implB\020ProtobufM" +
+      "essages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -54513,7 +54668,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor,
-        new java.lang.String[] { "Tuple", "Handle", });
+        new java.lang.String[] { "Tuple", "Handle", "Object", });
     internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_descriptor =
       internal_static_org_drools_core_marshalling_NodeMemory_descriptor.getNestedTypes().get(3);
     internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable = new

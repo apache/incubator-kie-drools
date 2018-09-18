@@ -374,7 +374,7 @@ public class ProtobufOutputMarshaller {
                     }
                     case NodeTypeEnums.FromNode:
                     case NodeTypeEnums.ReactiveFromNode: {
-                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm );
+                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm, context);
                         break;
                     }
                     case NodeTypeEnums.QueryElementNode: {
@@ -477,8 +477,11 @@ public class ProtobufOutputMarshaller {
 
     @SuppressWarnings("unchecked")
     private static ProtobufMessages.NodeMemory writeFromNodeMemory(final int nodeId,
-                                                                   final Memory memory, InternalWorkingMemory wm) {
+                                                                   final Memory memory, InternalWorkingMemory wm, MarshallerWriteContext context) {
         FromMemory fromMemory = (FromMemory) memory;
+
+        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
+
 
         if ( fromMemory.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
             ProtobufMessages.NodeMemory.FromNodeMemory.Builder _from = ProtobufMessages.NodeMemory.FromNodeMemory.newBuilder();
@@ -488,9 +491,25 @@ public class ProtobufOutputMarshaller {
                 Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
                 ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
                         .setTuple( PersisterHelper.createTuple( leftTuple ) );
-                for(Object o : matches.keySet()) {
-                    wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(o);
+                for(Object object : matches.keySet()) {
+                    wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(object);
+
+                    ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
+
+                    try {
+                        ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
+                        byte[] serialized = strategy.marshal(strategyContext,
+                                                          context,
+                                                          object);
+                        ByteString copy = ByteString.copyFrom(serialized);
+                        _context.addObject(copy);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+
+
+
                 for ( RightTuple rightTuple : matches.values() ) {
                     // add objects to agenda
                     FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()

@@ -64,6 +64,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
 
     public Object                                                                  parameterObject;
 
+
     public MarshallerWriteContext(OutputStream stream,
                                   InternalKnowledgeBase kBase,
                                   InternalWorkingMemory wm,
