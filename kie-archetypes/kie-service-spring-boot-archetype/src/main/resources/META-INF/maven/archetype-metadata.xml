@@ -47,6 +47,10 @@
     <requiredProperty key="appType">
       <defaultValue>bpm</defaultValue>
     </requiredProperty>
+    <!-- remote debugging preset option -->
+    <requiredProperty key="remoteDebugEnabled">
+      <defaultValue>false</defaultValue>
+    </requiredProperty>
   </requiredProperties>
 
   <fileSets>
