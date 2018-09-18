@@ -196,6 +196,35 @@ This setup allows you to easily add more db setups. Just add your profile with
 needed depends in your apps pom.xml and then create a new application-YOUR_DB.properties
 file where you can update the data source configuration to reflect your db values.
 
+Remote debugging
+-----------------------------------
+By default your generated application will have remote debugging disabled. If you want 
+to generate an application with remote debugging enabled add the following option when 
+running mvn archetype:generate:
+
+```
+    -DremoteDebugEnabled=true
+```
+
+If you have already generated you application and would like to enable remote debugging after,
+find your apps pom.xml file and make sure you have there:
+
+```
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
+            </configuration>
+      </plugin>
+    </plugins>
+  </build>
+```
+
+and change the remote debug address as you wish or leave the default as is.
+
 Troubleshooting
 -----------------------------------
 This archetype requires maven-archetype-plugin version 3.0.1 or above.

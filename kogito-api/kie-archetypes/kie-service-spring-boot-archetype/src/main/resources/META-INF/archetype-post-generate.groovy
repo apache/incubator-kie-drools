@@ -19,6 +19,7 @@ def myAppPortId = "${appServerPort}";
 def kjarArtifactId = "${kjarArtifactId}";
 def kjarVersion = "${kjarVersion}";
 def kjarContainerId = "";
+def remoteDebugEnabled = "${remoteDebugEnabled}";
 
 if( kjarArtifactId != "none" && kjarVersion != "none") {
     kjarContainerId = kjarArtifactId + "-" + kjarVersion.replaceAll("\\.", "_");
@@ -50,8 +51,9 @@ def indexIconMarkerBO = "INDEX_ICON_MARKER_BO";
 def myServiceNameMarker = 'MYSERVICE_NAME_MARKER';
 def myServiceVersionMarker = 'MYSERVICE_VERSION_MARKER';
 def myServicePortMarker = 'MYSERVICE_PORT_MARKER';
-def kjarContainerIdMarker = "KJAR_CONTAINER_ID_MARKER"
-def dbProfilesMarker = "DB_PROFILES_MARKER"
+def kjarContainerIdMarker = "KJAR_CONTAINER_ID_MARKER";
+def dbProfilesMarker = "DB_PROFILES_MARKER";
+def remoteDebugMarker = "REMOTE_DEBUG_MARKER";
 
 def BPMSpringBootStarterDepends = """
 <dependency>
@@ -163,6 +165,12 @@ def DBProfilesConfig = """
 </profile>
 """;
 
+def remoteDebugSettings = """
+<configuration>
+    <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
+</configuration>
+""";
+
 logOut("Updating app configuration for app type: " + appType, quietMode);
 
 if( appType == "bpm" ) {
@@ -206,6 +214,12 @@ if( appType == "bpm" ) {
     logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, BPMSpringBootStarterDepends);
     pomContent = pomContent.replace(dbProfilesMarker, DBProfilesConfig);
+
+    if(remoteDebugEnabled == "true") {
+        pomContent = pomContent.replace(remoteDebugMarker, remoteDebugSettings);
+    } else {
+        pomContent = pomContent.replace(remoteDebugMarker, '');
+    }
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent
@@ -254,6 +268,12 @@ if( appType == "bpm" ) {
     pomContent = pomContent.replace(springBootStarterMarker, BRMSpringBootStarterDepends);
     pomContent = pomContent.replace(dbProfilesMarker, '');
 
+    if(remoteDebugEnabled == "true") {
+        pomContent = pomContent.replace(remoteDebugMarker, remoteDebugSettings);
+    } else {
+        pomContent = pomContent.replace(remoteDebugMarker, '');
+    }
+
     pomFile.newWriter().withWriter { w ->
         w << pomContent
     }
@@ -300,6 +320,12 @@ if( appType == "bpm" ) {
     logOut("- adding spring boot starter dependency", quietMode);
     pomContent = pomContent.replace(springBootStarterMarker, PlannerSpringBootStarterDepends);
     pomContent = pomContent.replace(dbProfilesMarker, '');
+
+    if(remoteDebugEnabled == "true") {
+        pomContent = pomContent.replace(remoteDebugMarker, remoteDebugSettings);
+    } else {
+        pomContent = pomContent.replace(remoteDebugMarker, '');
+    }
 
     pomFile.newWriter().withWriter { w ->
         w << pomContent

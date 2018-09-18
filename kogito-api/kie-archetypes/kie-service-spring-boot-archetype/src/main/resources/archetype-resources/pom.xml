@@ -37,6 +37,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        REMOTE_DEBUG_MARKER
       </plugin>
     </plugins>
   </build>
