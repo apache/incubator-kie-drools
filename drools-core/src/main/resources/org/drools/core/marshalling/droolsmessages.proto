@@ -195,7 +195,12 @@ message NodeMemory {
         message FromContext {
             optional Tuple tuple = 1;
             repeated FactHandle handle = 2;
-            repeated bytes object = 3;
+            repeated FromObject object = 3;
+
+            message FromObject {
+                optional int32 strategy_index = 8;
+                optional bytes object = 9;
+            }
         }
     }
 
