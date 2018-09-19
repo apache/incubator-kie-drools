@@ -104,7 +104,7 @@ public class MemoryFileSystem
         if ( lastSlashPos >= 0 ) {
             Folder folder = getFolder( path.substring( 0,
                                                        lastSlashPos ) );
-            String name = decode( path.substring( lastSlashPos + 1 ) );
+            String name = path.substring( lastSlashPos + 1 );
             return new MemoryFile( this,
                                    name,
                                    folder );
@@ -575,11 +575,4 @@ public class MemoryFileSystem
         return clone;
     }
 
-    private String decode( final String path ) {
-        try {
-            return URLDecoder.decode( path, "UTF-8" );
-        } catch ( UnsupportedEncodingException e ) {
-            return path;
-        }
-    }
 }
