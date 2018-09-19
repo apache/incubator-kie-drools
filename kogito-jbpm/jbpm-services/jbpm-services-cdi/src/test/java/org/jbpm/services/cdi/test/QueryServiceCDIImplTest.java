@@ -16,6 +16,8 @@
 
 package org.jbpm.services.cdi.test;
 
+import static java.util.Collections.emptyList;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -25,8 +27,6 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.test.QueryServiceImplTest;
-import org.jbpm.kie.services.test.TestIdentityProvider;
-import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
@@ -35,12 +35,12 @@ import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.api.query.QueryService;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.UpdateStringCommand;
+import org.jbpm.test.services.TestIdentityProvider;
+import org.jbpm.test.services.TestUserGroupCallbackImpl;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Collections.emptyList;
 
 @RunWith(Arquillian.class)
 public class QueryServiceCDIImplTest extends QueryServiceImplTest {
@@ -114,8 +114,7 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
                 .addPackage("org.jbpm.services.cdi.test") // Identity Provider Test Impl here
                 .addClass("org.jbpm.services.cdi.test.util.CDITestHelperNoTaskService")
                 .addClass("org.jbpm.services.cdi.test.util.CountDownDeploymentListenerCDIImpl")
-                .addClass("org.jbpm.kie.services.test.objects.CoundDownDeploymentListener")
-                .addClass("org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl")
+                .addClass("org.jbpm.kie.services.test.objects.CoundDownDeploymentListener")                
                 .addAsResource("jndi.properties", "jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));

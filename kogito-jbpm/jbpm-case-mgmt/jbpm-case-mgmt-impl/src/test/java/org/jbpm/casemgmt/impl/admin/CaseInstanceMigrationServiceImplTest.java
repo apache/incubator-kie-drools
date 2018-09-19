@@ -41,8 +41,6 @@ import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.services.impl.admin.ProcessInstanceMigrationServiceImpl;
-import org.jbpm.services.api.admin.ProcessInstanceMigrationService;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.task.impl.model.UserImpl;
@@ -71,8 +69,7 @@ public class CaseInstanceMigrationServiceImplTest extends AbstractCaseServicesBa
     
     private KModuleDeploymentUnit deploymentUnitV1;
     private KModuleDeploymentUnit deploymentUnitV2;
-    
-    protected ProcessInstanceMigrationService migrationService;
+       
     
     @Before
     public void setUp() throws Exception {
@@ -121,8 +118,6 @@ public class CaseInstanceMigrationServiceImplTest extends AbstractCaseServicesBa
         }
         repository = getKieMavenRepository();
         repository.installArtifact(releaseId2, kJar2, pom2);
-        
-        migrationService = new ProcessInstanceMigrationServiceImpl();
         
         // now let's deploy to runtime both kjars
         deploymentUnitV1 = new KModuleDeploymentUnit(MIGRATION_GROUP_ID, MIGRATION_ARTIFACT_ID, MIGRATION_VERSION_V1);

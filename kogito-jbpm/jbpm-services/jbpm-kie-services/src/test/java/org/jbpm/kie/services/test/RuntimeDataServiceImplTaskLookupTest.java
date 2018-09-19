@@ -15,6 +15,13 @@
  */
 package org.jbpm.kie.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -25,13 +32,15 @@ import java.util.List;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
-import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.test.services.TestUserGroupCallbackImpl;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -44,9 +53,6 @@ import org.kie.internal.task.api.AuditTask;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class RuntimeDataServiceImplTaskLookupTest extends AbstractKieServicesBaseTest {
@@ -67,11 +73,21 @@ public class RuntimeDataServiceImplTaskLookupTest extends AbstractKieServicesBas
 
     private static final List<String> fakeGroupIds = Arrays.asList("groupone", "grouptwo", "groupthree");
 
+    @BeforeClass
+    public static void setupOnce() {
+        System.setProperty("org.jbpm.ht.callback", "custom");
+        System.setProperty("org.jbpm.ht.custom.callback", "org.jbpm.test.services.TestUserGroupCallbackImpl");
+    }
+    
+    @AfterClass
+    public static void clearOnce() {
+        System.clearProperty("org.jbpm.ht.callback");
+        System.clearProperty("org.jbpm.ht.custom.callback");
+    }
+    
     @Before
     public void prepare() {
-        System.setProperty("org.jbpm.ht.callback", "custom");
-        System.setProperty("org.jbpm.ht.custom.callback", "org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl");
-
+        
 
         configureServices();
         logger.debug("Preparing kjar");
@@ -105,9 +121,7 @@ public class RuntimeDataServiceImplTaskLookupTest extends AbstractKieServicesBas
 
     @After
     public void cleanup() {
-        System.clearProperty("org.jbpm.ht.callback");
-        System.clearProperty("org.jbpm.ht.custom.callback");
-
+        
         if (processInstanceId != null) {
             try {
                 // let's abort process instance to leave the system in clear state

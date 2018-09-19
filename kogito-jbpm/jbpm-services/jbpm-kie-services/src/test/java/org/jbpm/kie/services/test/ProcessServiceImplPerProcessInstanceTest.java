@@ -16,89 +16,58 @@
 
 package org.jbpm.kie.services.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.test.services.AbstractKieServicesTest;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.scanner.KieMavenRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+public class ProcessServiceImplPerProcessInstanceTest extends AbstractKieServicesTest {
 
-public class ProcessServiceImplPerProcessInstanceTest extends AbstractKieServicesBaseTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
-
-    private static KModuleDeploymentUnit deploymentUnit;
+    protected static final String ARTIFACT_ID = "test-module";
+    protected static final String GROUP_ID = "org.jbpm.test";
+    protected static final String VERSION = "1.0.0";
 
     private static final String PROCESS_ID_HUMAN_TASK = "org.jbpm.writedocument";
     private static final String PROCESS_ID_SIGNAL = "org.jbpm.signal";
 
-    @BeforeClass
-    public static void prepareDeploymentUnit() {
-        deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        deploymentUnit.setStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE);
+    @Override
+    protected DeploymentUnit createDeploymentUnit(String groupId, String artifactid, String version) throws Exception {
+        DeploymentUnit unit = super.createDeploymentUnit(groupId, artifactid, version);
+        ((KModuleDeploymentUnit) unit).setStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE);
+        return unit;
     }
-
-    @Before
-    public void prepare() {
-        configureServices();
-        logger.debug("Preparing kjar");
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+    
+    @Override
+    protected List<String> getProcessDefinitionFiles() {
         List<String> processes = new ArrayList<String>();
         processes.add("repo/processes/general/customtask.bpmn");
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/signal.bpmn");
-
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-
-        }
-        KieMavenRepository repository = getKieMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-
-        deploymentService.deploy(deploymentUnit);
-    }
-
-    @After
-    public void cleanup() {
-        cleanupSingletonSessionId();
-        try {
-            deploymentService.undeploy(deploymentUnit);
-        } catch (Exception e) {
-            // do nothing in case of some failed tests to avoid next test to fail as well
-        }
-        close();
+        return processes;
+    }    
+    
+    @Override
+    public DeploymentUnit prepareDeploymentUnit() throws Exception {
+        return createAndDeployUnit(GROUP_ID, ARTIFACT_ID, VERSION);  
     }
 
     @Test

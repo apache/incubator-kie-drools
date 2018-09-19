@@ -41,6 +41,14 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-core</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-audit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-runtime-manager</artifactId>
     </dependency>
     <dependency>
@@ -79,6 +87,11 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

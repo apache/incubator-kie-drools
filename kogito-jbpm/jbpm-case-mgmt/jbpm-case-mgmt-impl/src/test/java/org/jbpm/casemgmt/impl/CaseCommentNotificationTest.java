@@ -44,7 +44,6 @@ import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
-import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,10 +63,9 @@ public class CaseCommentNotificationTest extends AbstractCaseServicesBaseTest {
         return processes;
     }
     
-    protected DeploymentUnit prepareDeploymentUnit() {
-        assertThat(deploymentService).isNotNull();
-        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
+    @Override
+    protected DeploymentUnit createDeploymentUnit(String groupId, String artifactid, String version) throws Exception {        
+        DeploymentUnit unit = super.createDeploymentUnit(groupId, artifactid, version);
         final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
         descriptor.getBuilder()
         .addEventListener(new ObjectModel(
@@ -78,11 +76,8 @@ public class CaseCommentNotificationTest extends AbstractCaseServicesBaseTest {
                 "mvel",
                 "org.jbpm.casemgmt.impl.util.CommentNotificationEventListenerFactory.get(\"test\")"
         ));
-        deploymentUnit.setDeploymentDescriptor(descriptor);
-        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
-
-        deploymentService.deploy(deploymentUnit);
-        return deploymentUnit;
+        ((KModuleDeploymentUnit)unit).setDeploymentDescriptor(descriptor);
+        return unit;
     }
 
     @Test

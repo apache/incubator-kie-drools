@@ -70,6 +70,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     @Before
     public void prepare() {
     	configureServices();
+    	
 
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);

@@ -61,8 +61,10 @@ import org.jbpm.services.api.query.model.QueryDefinition;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.services.api.query.model.QueryParam;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -93,12 +95,21 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
     protected QueryDefinition query;
 
     protected String dataSourceJNDIname;
+    
+    @BeforeClass
+    public static void setupOnce() {
+        System.setProperty("org.jbpm.ht.callback", "custom");
+        System.setProperty("org.jbpm.ht.custom.callback", "org.jbpm.test.services.TestUserGroupCallbackImpl");
+    }
+    
+    @AfterClass
+    public static void clearOnce() {
+        System.clearProperty("org.jbpm.ht.callback");
+        System.clearProperty("org.jbpm.ht.custom.callback");
+    }
 
     @Before
     public void prepare() {
-        System.setProperty("org.jbpm.ht.callback", "custom");
-        System.setProperty("org.jbpm.ht.custom.callback", "org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl");
-
         this.dataSourceJNDIname = getDataSourceJNDI();
         configureServices();
         logger.debug("Preparing kjar");
@@ -160,9 +171,6 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 
     @After
     public void cleanup() {
-        System.clearProperty("org.jbpm.ht.callback");
-        System.clearProperty("org.jbpm.ht.custom.callback");
-
         if (query != null) {
             try {
                 queryService.unregisterQuery(query.getName());

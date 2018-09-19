@@ -23,13 +23,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.kie.services.test.objects.TestUserGroupCallbackImpl;
 import org.jbpm.runtime.manager.impl.ManagedAuditEventBuilderImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.cdi.Kjar;
 import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
+import org.jbpm.test.services.TestUserGroupCallbackImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;

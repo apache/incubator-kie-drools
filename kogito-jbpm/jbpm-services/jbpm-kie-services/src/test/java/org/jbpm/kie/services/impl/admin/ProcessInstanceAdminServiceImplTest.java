@@ -16,6 +16,13 @@
 
 package org.jbpm.kie.services.impl.admin;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -36,7 +43,6 @@ import org.jbpm.services.api.admin.TimerInstance;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
-import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +58,6 @@ import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
-
 public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
@@ -67,7 +70,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     private KModuleDeploymentUnit deploymentUnit;
     private Long processInstanceId = null;
     
-    protected ProcessInstanceAdminService processAdminService;
+    
 
     @Before
     public void prepare() {
@@ -95,12 +98,6 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         }
         KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
-
-        processAdminService = new ProcessInstanceAdminServiceImpl();
-        ((ProcessInstanceAdminServiceImpl) processAdminService).setProcessService(processService);
-        ((ProcessInstanceAdminServiceImpl) processAdminService).setRuntimeDataService(runtimeDataService);
-        ((ProcessInstanceAdminServiceImpl) processAdminService).setCommandService(new TransactionalCommandService(emf));
-        ((ProcessInstanceAdminServiceImpl) processAdminService).setIdentityProvider(identityProvider);
         
         // now let's deploy to runtime both kjars
         deploymentUnit = new KModuleDeploymentUnit(ADMIN_GROUP_ID, ADMIN_ARTIFACT_ID, ADMIN_VERSION_V1);

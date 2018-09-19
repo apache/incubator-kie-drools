@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.kie.services.test.objects;
+package org.jbpm.test.services;
 
 import java.util.List;
 import java.util.Map;

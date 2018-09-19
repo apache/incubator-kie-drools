@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -14,15 +14,15 @@
 
   <name>jBPM :: Test</name>
   <description>jBPM Test</description>
-  
+
   <properties>
     <java.module.name>org.jbpm.test</java.module.name>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/> 
+    <maven.jdbc.db.name />
+    <maven.jdbc.db.port />
+    <maven.jdbc.db.server />
     <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
   </properties>
 
@@ -55,9 +55,17 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-workitems</artifactId>
     </dependency>
-   <dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-shared-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-case-mgmt-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -75,14 +83,14 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-     <dependency>
-       <groupId>org.hibernate</groupId>
-       <artifactId>hibernate-entitymanager</artifactId>
-     </dependency>
-     <dependency>
-       <groupId>org.hibernate</groupId>
-       <artifactId>hibernate-core</artifactId>
-     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -99,7 +107,7 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
@@ -112,10 +120,22 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-      <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-test-util</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-maven-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -129,12 +149,12 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-    <plugins>  
+    <plugins>
       <plugin>
-        <!--  ensure that db/tx log files are deleted before runs -->
+        <!-- ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
-         <filesets>
+          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
@@ -142,7 +162,7 @@
                 <include>JPADroolsFlow.h2.db</include>
               </includes>
             </fileset>
-         </filesets>
+          </filesets>
         </configuration>
       </plugin>
     </plugins>

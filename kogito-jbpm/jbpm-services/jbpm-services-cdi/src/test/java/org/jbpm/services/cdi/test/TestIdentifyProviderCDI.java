@@ -18,7 +18,7 @@ package org.jbpm.services.cdi.test;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jbpm.kie.services.test.TestIdentityProvider;
+import org.jbpm.test.services.TestIdentityProvider;
 
 @ApplicationScoped
 public class TestIdentifyProviderCDI extends TestIdentityProvider {

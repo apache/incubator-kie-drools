@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.casemgmt.impl.util;
+package org.jbpm.test.services;
 
 import java.util.ArrayList;
 import java.util.List;
