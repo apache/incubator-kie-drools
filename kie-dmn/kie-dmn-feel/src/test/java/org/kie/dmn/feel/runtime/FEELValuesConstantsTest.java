@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELValuesConstantsTest extends BaseFEELTest {
 
@@ -32,7 +33,7 @@ public class FEELValuesConstantsTest extends BaseFEELTest {
                 { "false", Boolean.FALSE , null},
                 // dash is an unary test that always matches, so for now, returning true.
                 // have to double check to know if this is not the case
-                { "-", UnaryTest.class , null},
+                { "-", null, FEELEvent.Severity.ERROR },
                 { ".872", new BigDecimal( "0.872" ) , null},
                 { "-.872", new BigDecimal( "-0.872" ) , null},
                 { "+.872", new BigDecimal( "0.872" ) , null},

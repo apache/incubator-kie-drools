@@ -27,6 +27,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -39,14 +40,23 @@ import static org.junit.Assert.assertThat;
 public class DirectCompilerUnaryTestsTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerUnaryTestsTest.class);
-    
+
     private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
         Object left = EvalHelper.coerceNumber(l);
-        CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression);
+        FEELEventListenersManager mgr = new FEELEventListenersManager();
+        CompiledFEELSupport.SyntaxErrorListener listener = new CompiledFEELSupport.SyntaxErrorListener();
+        mgr.addListener(listener);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext(mgr);
+        CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression, mgr, listener);
         LOG.debug("{}", compiledUnaryTests);
-        
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
-        List<Boolean> result = compiledUnaryTests.getUnaryTests().stream().map(ut -> ut.apply(emptyContext, left)).collect(Collectors.toList());
+        List<Boolean> result = compiledUnaryTests.getUnaryTests()
+                .stream()
+                .map(ut -> ut.apply(emptyContext, left))
+                .collect(Collectors.toList());
+        if (listener.isError()) {
+            LOG.debug("{}", listener.event());
+            return Collections.emptyList();
+        }
         LOG.debug("{}", result);
         return result;
     }
@@ -54,7 +64,7 @@ public class DirectCompilerUnaryTestsTest {
     @Test
     public void test_Dash() {
         assertThat(parseCompileEvaluate("-", 1), is(Arrays.asList(true)));
-        assertThat(parseCompileEvaluate("-, -", 1), is(Arrays.asList(true, true)));
+        assertThat(parseCompileEvaluate("-, -", 1), is(Collections.emptyList()));
     }
     
     @Test
@@ -81,7 +91,7 @@ public class DirectCompilerUnaryTestsTest {
 
     @Test
     public void test_not() {
-        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1), is(Arrays.asList(true, true, true)));
+        assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1), is(Collections.emptyList()));
     }
 
     @Test
@@ -92,18 +102,21 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 2), is(Arrays.asList(true, true)));
     }
 
-    private CompiledFEELUnaryTests parse(String input) {
-        return parse( input, Collections.emptyMap() );
+    private CompiledFEELUnaryTests parse(String input, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {
+        return parse( input, Collections.emptyMap(), mgr, listener );
     }
 
-    private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+    private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {
+        FEEL_1_1Parser parser = FEELParser.parse(mgr, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
 
-        ParseTree tree = parser.expressionList();
-
-        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes, true);
-        DirectCompilerResult directResult = v.visit(tree);
-        
+        ParseTree tree = parser.unaryTestsRoot();
+        DirectCompilerResult directResult;
+        if (listener.isError()) {
+            directResult = CompiledFEELSupport.compiledErrorUnaryTest(listener.event().getMessage());
+        } else {
+            DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes, true);
+            directResult = v.visit(tree);
+        }
         Expression expr = directResult.getExpression();
         CompiledFEELUnaryTests cu = new CompilerBytecodeLoader().makeFromJPUnaryTestsExpression(input, expr, directResult.getFieldDeclarations());
 

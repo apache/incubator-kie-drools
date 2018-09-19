@@ -31,7 +31,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "not( false )", Boolean.TRUE , null},
                 { "not( 10 = 3 )", Boolean.TRUE , null},
                 { "not(list contains([1,2,3,4,5,6], 3))", Boolean.FALSE , null},
-                { "not( \"foo\" )", UnaryTest.class , null},
+                { "not( \"foo\" )", null, FEELEvent.Severity.ERROR},
                 {"{x : 10, r : not( x = 3 )}.r", Boolean.TRUE, null},
                 {"{x : 3, r : not( x = 3 )}.r", Boolean.FALSE, null},
 
@@ -54,7 +54,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "10 in ( > 50, < 5 )", Boolean.FALSE , null},
                 { "10 in ( > 5, < -40 )", Boolean.TRUE , null},
                 { "null in ( > 20, null )", Boolean.TRUE , null},
-                { "null in -", Boolean.TRUE , null},
+                { "null in -", null, FEELEvent.Severity.ERROR},
                 { "10 in [5..20]", Boolean.TRUE , null},
                 { "10 in [10..20)", Boolean.TRUE , null},
                 { "10 in (10..20)", Boolean.FALSE , null},

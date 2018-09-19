@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.ast.expr.Expression;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -172,8 +173,9 @@ public class DirectCompilerTest {
 
     @Test
     public void test_logicalNegationExpression() {
-        assertThat(parseCompileEvaluate("not true"), is(false));
-        assertThat(parseCompileEvaluate("not false"), is(true));
+        // this is all invalid syntax
+        assertThat(parseCompileEvaluate("not true"), nullValue());
+        assertThat(parseCompileEvaluate("not false"), nullValue());
         assertThat(parseCompileEvaluate("not null"), nullValue());
         assertThat(parseCompileEvaluate("not 3"), nullValue());
     }

@@ -25,17 +25,47 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
+import org.drools.javaparser.ast.body.FieldDeclaration;
+import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.body.VariableDeclarator;
+import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.javaparser.ast.stmt.ReturnStmt;
+import org.drools.javaparser.ast.stmt.Statement;
+import org.drools.javaparser.ast.type.UnknownType;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
+import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -424,4 +454,73 @@ public class CompiledFEELSupport {
     public static Object coerceNumber(Object value) {
         return EvalHelper.coerceNumber(value);
     }
+
+
+    /**
+     * Generates a compilable class that reports a (compile-time) error at runtime
+     */
+    public static CompiledFEELExpression compiledError(String expression, String msg) {
+        return new CompilerBytecodeLoader()
+                .makeFromJPExpression(
+                        expression,
+                        compiledErrorExpression(msg),
+                        Collections.emptySet());
+    }
+
+    public static DirectCompilerResult compiledErrorUnaryTest(String msg) {
+
+        LambdaExpr initializer = new LambdaExpr();
+        initializer.setEnclosingParameters(true);
+        initializer.addParameter(new Parameter(new UnknownType(), "feelExprCtx"));
+        initializer.addParameter(new Parameter(new UnknownType(), "left"));
+        Statement lambdaBody = new BlockStmt(new NodeList<>(
+                new ExpressionStmt(compiledErrorExpression(msg)),
+                new ReturnStmt(new BooleanLiteralExpr(false))
+        ));
+        initializer.setBody(lambdaBody);
+        String constantName = "UT_EMPTY";
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        vd.setInitializer(initializer);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+
+        fd.setJavadocComment(" FEEL unary test: - ");
+
+        MethodCallExpr list = new MethodCallExpr(null, "list", new NodeList<>(new NameExpr(constantName)));
+
+        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(list, BuiltInType.LIST);
+        directCompilerResult.addFieldDesclaration(fd);
+        return directCompilerResult;
+
+    }
+
+
+    public static MethodCallExpr compiledErrorExpression(String msg) {
+        return new MethodCallExpr(
+                new NameExpr("CompiledFEELSupport"),
+                "notifyCompilationError",
+                new NodeList<>(
+                        new NameExpr("feelExprCtx"),
+                        new StringLiteralExpr(msg)));
+    }
+
+    // thread-unsafe, but this is single-threaded so it's ok
+    public static class SyntaxErrorListener implements FEELEventListener {
+        private FEELEvent event = null;
+        @Override
+        public void onEvent(FEELEvent evt) {
+            if (evt instanceof SyntaxErrorEvent
+            || evt instanceof InvalidParametersEvent) {
+                this.event = evt;
+            }
+        }
+        public boolean isError() { return event != null; }
+        public FEELEvent event() { return event; }
+    }
+
+
+
 }

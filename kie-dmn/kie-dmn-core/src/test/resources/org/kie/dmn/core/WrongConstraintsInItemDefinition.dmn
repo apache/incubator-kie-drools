@@ -27,7 +27,7 @@
           <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:outputEntry id="_aef76a51-de39-488c-bf54-fdb3e193613b">
-          <semantic:text>-</semantic:text>
+          <semantic:text>"DEFAULT"</semantic:text>
         </semantic:outputEntry>
       </semantic:rule>
     </semantic:decisionTable>
