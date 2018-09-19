@@ -231,7 +231,7 @@ public class FEELParserTest {
         BaseNode neg = parse( inputExpression );
 
         assertThat( neg, is( instanceOf( FunctionInvocationNode.class ) ) );
-        assertThat( neg.getResultType(), is( BuiltInType.BOOLEAN ) );
+        assertThat( neg.getResultType(), is( BuiltInType.UNKNOWN ) );
         assertThat( neg.getText(), is( "not ( true )" ) );
 
         FunctionInvocationNode not = (FunctionInvocationNode) neg;

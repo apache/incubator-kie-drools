@@ -173,7 +173,21 @@ public class CompiledFEELSemanticMappings {
             throw new IllegalArgumentException("Unable to transform s " + s + "as Comparable");
         }
     }
-    
+
+    public static Boolean coerceToBoolean(EvaluationContext ctx, Object value) {
+        if (value instanceof Boolean) return (Boolean) value;
+
+        ctx.notifyEvt( () -> new ASTEventBase(
+                FEELEvent.Severity.ERROR,
+                Msg.createMessage(
+                        Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE,
+                        value == null? "null" : value.getClass(),
+                        "Boolean"),
+                null));
+
+        return null;
+    }
+
     public static <T> T coerceTo(Class<?> paramType, Object value) {
         Object actual;
         if( paramType.isAssignableFrom( value.getClass() ) ) {
@@ -344,6 +358,14 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean eq(Object left, Object right) {
         return EvalHelper.isEqual(left, right, null);
+    }
+
+    public static Boolean gracefulEq(EvaluationContext ctx, Object left, Object right) {
+        if (left instanceof List) {
+            return ((List) left).contains(right);
+        } else {
+            return eq(left, right);
+        }
     }
 
     public static Boolean between(EvaluationContext ctx,

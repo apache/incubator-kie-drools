@@ -27,15 +27,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
@@ -124,12 +120,12 @@ public class FEELImpl
             // Use JavaParser to translate FEEL to Java:
             Set<FEELEventListener> listeners = new HashSet<>(ctx.getListeners());
             // add listener to syntax errors, and save them
-            CompilerErrorListener errorListener = new CompilerErrorListener();
+            CompiledFEELSupport.SyntaxErrorListener errorListener = new CompiledFEELSupport.SyntaxErrorListener();
             listeners.add(errorListener);
             FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(listeners), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
             ParseTree tree = parser.compilation_unit();
-            if (errorListener.evt != null) {
-                return compiledError(expression, errorListener.evt.getMessage());
+            if (errorListener.isError()) {
+                return CompiledFEELSupport.compiledError(expression, errorListener.event().getMessage());
             }
             try {
                 DirectCompilerVisitor v = new DirectCompilerVisitor(ctx.getInputVariableTypes());
@@ -137,7 +133,7 @@ public class FEELImpl
                 Expression expr = directResult.getExpression();
                 return new CompilerBytecodeLoader().makeFromJPExpression(expression, expr, directResult.getFieldDeclarations());
             } catch (FEELCompilationError e) {
-                return compiledError(expression, e.getMessage());
+                return CompiledFEELSupport.compiledError(expression, e.getMessage());
             }
         } else { // "legacy" interpreted AST compilation:
             FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
@@ -149,25 +145,9 @@ public class FEELImpl
         }
     }
 
-    /**
-     * Generates a compilable class that reports a (compile-time) error at runtime
-     */
-    private CompiledFEELExpression compiledError(String expression, String msg) {
-        return new CompilerBytecodeLoader()
-                .makeFromJPExpression(
-                        expression,
-                        new MethodCallExpr(
-                                new NameExpr("CompiledFEELSupport"),
-                                "notifyCompilationError",
-                                new NodeList<>(
-                                        new NameExpr("feelExprCtx"),
-                                        new StringLiteralExpr(msg))),
-                        Collections.emptySet());
-    }
-
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
         FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), ctx.getFEELFunctions(), profiles);
-        ParseTree tree = parser.expressionList();
+        ParseTree tree = parser.unaryTestsRoot();
         ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
         BaseNode expr = v.visit(tree);
         CompiledExpression ce = new CompiledExpressionImpl(expr);
@@ -324,17 +304,5 @@ public class FEELImpl
         listenerMgr.addListeners(contextListeners);
         return listenerMgr;
     }
-
-    // thread-unsafe, but this is single-threaded so it's ok
-    private static class CompilerErrorListener implements FEELEventListener {
-        FEELEvent evt;
-        @Override
-        public void onEvent(FEELEvent feelEvent) {
-            if (feelEvent.getSeverity() == FEELEvent.Severity.ERROR) {
-                evt = feelEvent;
-            }
-        }
-    }
-
 
 }

@@ -208,8 +208,7 @@ comparisonExpression
 relationalExpression
 	:	additiveExpression                                                                           #relExpressionAdd
 	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
-	|   val=relationalExpression in_key '(' expressionList ')'                                       #relExpressionValueList
-	|   val=relationalExpression in_key '(' simpleUnaryTests ')'                                     #relExpressionTestList
+	|   val=relationalExpression in_key '(' positiveUnaryTests ')'                                     #relExpressionTestList
     |   val=relationalExpression in_key expression                                                   #relExpressionValue        // includes simpleUnaryTest
     |   val=relationalExpression instance_key of_key type                                            #relExpressionInstanceOf
 	;
@@ -247,9 +246,7 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:   not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
-	|	not_key unaryExpression           #logicalNegation
-	|   primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
+	: primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary
@@ -261,7 +258,7 @@ primary
     | list                        #primaryList
     | context                     #primaryContext
     | '(' expression ')'          #primaryParens
-    | simpleUnaryTest             #primaryUnaryTest
+    | simplePositiveUnaryTest     #primaryUnaryTest
     | qualifiedName parameters?   #primaryName
     ;
 
@@ -282,13 +279,9 @@ booleanLiteral
 /**************************
  *    OTHER CONSTRUCTS
  **************************/
-// #13
-simpleUnaryTests
-    : (simpleUnaryTest|primary) ( ',' (simpleUnaryTest|primary) )*
-    ;
 
 // #7
-simpleUnaryTest
+simplePositiveUnaryTest
     : op='<'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='>'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='<=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
@@ -296,8 +289,43 @@ simpleUnaryTest
     | op='='  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | op='!=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
-    | null_key           #positiveUnaryTestNull
-    | '-'                #positiveUnaryTestDash
+    ;
+
+
+// #13
+simplePositiveUnaryTests
+    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
+    ;
+
+
+// #14
+simpleUnaryTests
+    : simplePositiveUnaryTests                     #positiveSimplePositiveUnaryTests
+    | not_key '(' simplePositiveUnaryTests ')'     #negatedSimplePositiveUnaryTests
+    | '-'                                          #positiveUnaryTestDash
+    ;
+
+// #15
+positiveUnaryTest
+    : expression
+    ;
+
+// #16
+positiveUnaryTests
+    : positiveUnaryTest ( ',' positiveUnaryTest )* 
+    ;
+
+
+unaryTestsRoot
+    : unaryTests EOF
+    ;
+
+// #17 (root for decision tables)
+unaryTests
+    :
+    not_key '(' positiveUnaryTests ')' #unaryTests_negated
+    | positiveUnaryTests               #unaryTests_positive
+    | '-'                              #unaryTests_empty
     ;
 
 // #18
@@ -338,11 +366,13 @@ qualifiedName
     ;
 
 nameRef
-    : st=Identifier { helper.startVariable( $st ); } nameRefOtherToken*
+    : ( st=Identifier { helper.startVariable( $st ); }
+       | not_st=NOT { helper.startVariable( $not_st ); }
+       )  nameRefOtherToken*
     ;
 
-nameRefOtherToken
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!')
+nameRefOtherToken // added some special cases here: we should rework a bit the lexing part, though --ev
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!'|'/'|'*'|'in'|',')
     ;
 
 /********************************
@@ -436,7 +466,7 @@ between_key
     ;
 
 not_key
-    : 'not'
+    : NOT
     ;
 
 null_key
@@ -672,6 +702,10 @@ ADD : '+';
 SUB : '-';
 MUL : '*';
 DIV : '/';
+
+NOT
+    : 'not'
+    ;
 
 Identifier
 	:	JavaLetter JavaLetterOrDigit*

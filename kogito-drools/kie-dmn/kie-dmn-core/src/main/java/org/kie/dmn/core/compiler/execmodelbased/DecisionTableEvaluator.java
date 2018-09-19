@@ -54,7 +54,7 @@ public class DecisionTableEvaluator {
 
             columnEvalCtxs[i] = feel.newEvaluationContext( Collections.singletonList( events::add ), evalCtx.getAllValues());
             columnEvalCtxs[i].enterFrame();
-            columnEvalCtxs[i].setValue( "?", inputs[i] );
+            columnEvalCtxs[i].setValue( "?", result );
         }
         return inputs;
     }

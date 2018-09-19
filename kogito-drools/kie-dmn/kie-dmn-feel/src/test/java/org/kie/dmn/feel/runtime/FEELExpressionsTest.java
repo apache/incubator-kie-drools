@@ -58,21 +58,8 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE , null},
 
                 // negated unary tests
-                {"10 in ( not( <5, >=20, =15, !=10 ) )", Boolean.TRUE, null},
-                {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE, null},
-                {"10 in ( not( <5 ) )", Boolean.TRUE, null},
-                {"10 in ( not( (10..20] ) )", Boolean.TRUE, null},
-                {"10 in ( not( 10 ) )", Boolean.FALSE, null},
-                {"10 in ( not( 5 ) )", Boolean.TRUE, null},
-                {"10 in ( not( 5, (5+5), (20+10) ) )", Boolean.FALSE, null},
-                {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE, null},
-                {"10 in ( not( >5*20 ) )", Boolean.TRUE , null},
-                {"10 in ( not( 10 ), not( 20 ) )", Boolean.TRUE , null},
-                {"10 in ( not( null, 10 ) )", Boolean.FALSE , null},
-                {"10 in ( not( 5, 10 ) )", Boolean.FALSE , null},
-                {"null in ( not( 10, null ) )", Boolean.FALSE , null},
-                {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE , null},
-                {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE , null},
+                {"10 in ( not( <5, >=20, =15, !=10 ) )", Boolean.FALSE, FEELEvent.Severity.ERROR},
+                {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.FALSE , FEELEvent.Severity.ERROR},
 
                 // Unary tests with ? character
                 {"{ ? foo : 5, result : ? foo < 10 }.result", Boolean.TRUE , null},

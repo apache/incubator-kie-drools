@@ -21,7 +21,9 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
+import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -30,6 +32,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -249,14 +252,30 @@ public class DMNFEELHelper {
     public String getSourceForUnaryTest(String packageName, String className, String input, DMNCompilerContext ctx, Type columntype) {
         Map<String, Type> variableTypes = new HashMap<>();
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-            variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
+            variableTypes.put( entry.getKey(), dmnToFeelType((BaseDMNTypeImpl) entry.getValue()) );
         }
         variableTypes.put( "?", columntype );
 
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
-        ParseTree tree = parser.expressionList();
-        DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
-        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, v.visit(tree));
+        FEELEventListenersManager manager = new FEELEventListenersManager();
+        CompiledFEELSupport.SyntaxErrorListener errorListener = new CompiledFEELSupport.SyntaxErrorListener();
+        manager.addListener(errorListener);
+        FEEL_1_1Parser parser = FEELParser.parse(
+                manager, input, variableTypes, Collections.emptyMap(), (( FEELImpl ) feel).getCustomFunctions(), Collections.emptyList());
+        ParseTree tree = parser.unaryTestsRoot();
+        DirectCompilerResult result;
+        if (errorListener.isError()) {
+            result = CompiledFEELSupport.compiledErrorUnaryTest(errorListener.event().getMessage());
+        } else {
+            DirectCompilerVisitor v = new DirectCompilerVisitor(variableTypes, true);
+            result = v.visit(tree);
+        }
+        return new CompilerBytecodeLoader().getSourceForUnaryTest(packageName, className, input, result);
+    }
+
+
+    public static Type dmnToFeelType(BaseDMNTypeImpl v) {
+        if (v.isCollection()) return BuiltInType.LIST;
+        else return v.getFeelType();
     }
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
