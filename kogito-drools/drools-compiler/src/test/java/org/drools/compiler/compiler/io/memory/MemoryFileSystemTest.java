@@ -42,6 +42,6 @@ public class MemoryFileSystemTest {
     public void testGetJapaneseFileName() throws Exception {
         final File file = memoryFileSystem.getFile( "path/path/%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A.java" );
 
-        assertEquals( "あいうえお.java", file.getName() );
+        assertEquals( "%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A.java", file.getName() );
     }
 }
