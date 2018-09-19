@@ -495,8 +495,11 @@ public class ProtobufOutputMarshaller {
                     wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(object);
 
                     ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
+                    System.out.println("strategy = " + strategy);
 
                     try {
+                        Integer index = context.getStrategyIndex( strategy );
+
                         ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
                         byte[] serialized = strategy.marshal(strategyContext,
                                                           context,
