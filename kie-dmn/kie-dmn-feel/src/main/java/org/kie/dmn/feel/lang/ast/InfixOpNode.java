@@ -161,6 +161,7 @@ public class InfixOpNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        if (left == null) return null;
         Object left = this.left.evaluate( ctx );
         Object right = this.right.evaluate( ctx );
         switch ( operator ) {

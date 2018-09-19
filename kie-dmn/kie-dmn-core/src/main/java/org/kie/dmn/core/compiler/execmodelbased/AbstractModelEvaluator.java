@@ -106,7 +106,10 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
 
             eventResults = processEvents(events, eventManager, ( DMNResultImpl ) dmnResult, node);
 
-            return new EvaluatorResultImpl( result, EvaluatorResult.ResultType.SUCCESS );
+            return new EvaluatorResultImpl(result,
+                                           eventResults.hasErrors?
+                                                   EvaluatorResult.ResultType.FAILURE :
+                                                   EvaluatorResult.ResultType.SUCCESS );
         } catch (RuntimeException e) {
             logger.error(e.toString(), e);
             throw e;

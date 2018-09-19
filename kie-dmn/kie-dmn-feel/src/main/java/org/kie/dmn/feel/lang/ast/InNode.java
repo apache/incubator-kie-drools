@@ -55,6 +55,7 @@ public class InNode
 
     @Override
     public Boolean evaluate(EvaluationContext ctx) {
+        if (exprs == null) return null;
         Object value = this.value.evaluate( ctx );
         Object expr = this.exprs.evaluate( ctx );
         if ( expr != null ) {
