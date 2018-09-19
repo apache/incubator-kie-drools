@@ -456,7 +456,7 @@ For example, if the score doesn't improve by at least `100` soft points every 30
 If the score improves by 1 hard point and drops 900 soft points, it's still meets the threshold,
 because `1hard/-900soft` is larger than the threshold `0hard/100soft`.
 
-On the other hand, a threshold of `1hard/0soft` is not met by an new best solution
+On the other hand, a threshold of `1hard/0soft` is not met by any new best solution
 that improves 1 hard point at the expense of 1 or more soft points,
 because `1hard/-100soft` is smaller than the threshold `1hard/0soft`.
 
