@@ -897,6 +897,7 @@ public class ProtobufOutputMarshaller {
 
             _activation.setObject(so.serializedObject);
             _activation.setStrategyIndex(so.strategyIndex);
+            _activation.setNodeId(((BaseTuple) agendaItem).getParent().getTupleSink().getId());
         }
 
         return _activation.build();

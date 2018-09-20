@@ -269,6 +269,7 @@ message Activation {
 
     optional int32 strategy_index = 12;
     optional bytes object = 13;
+    optional int32 node_id = 14;
 }
 
 message Tuple {
