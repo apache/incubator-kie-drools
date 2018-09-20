@@ -813,14 +813,14 @@ public class ProtobufInputMarshaller {
                     }
                 }
 
-                return true;
+
+                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
+                // add the tuple to the cache for correlation
+                this.tuplesCache.put( key, activation.getTuple() );
+                // check if there was an active activation for it
+                return !this.dormantActivations.containsKey( key );
 
 
-//                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
-//                // add the tuple to the cache for correlation
-//                this.tuplesCache.put( key, activation.getTuple() );
-//                // check if there was an active activation for it
-//                return !this.dormantActivations.containsKey( key );
             }
         }
 
