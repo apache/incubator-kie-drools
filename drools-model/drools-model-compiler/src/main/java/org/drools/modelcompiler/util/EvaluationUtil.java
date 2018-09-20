@@ -30,7 +30,7 @@ public class EvaluationUtil {
     }
 
     public static boolean equals(Comparable c1, Comparable c2) {
-        return c1 != null ? c2 != null && c2 != null && c1.compareTo( c2 ) == 0 : c2 == null;
+        return c1 != null ? c2 != null && c1.compareTo(c2) == 0 : c2 == null;
     }
 
     public static boolean notEquals(Comparable c1, Comparable c2) {
