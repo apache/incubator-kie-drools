@@ -805,13 +805,13 @@ public class ProtobufInputMarshaller {
                 return true;
             } else {
 
-                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
-
-                for(InternalFactHandle ifh : internalFactHandles) {
-                    if(ifh.isAlreadyFired()) {
-                        return false;
-                    }
-                }
+//                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
+//
+//                for(InternalFactHandle ifh : internalFactHandles) {
+//                    if(ifh.isAlreadyFired()) {
+//                        return false;
+//                    }
+//                }
 
 
                 ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );

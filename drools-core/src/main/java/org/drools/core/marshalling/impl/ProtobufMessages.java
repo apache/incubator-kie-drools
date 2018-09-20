@@ -29169,6 +29169,24 @@ public final class ProtobufMessages {
      * <code>optional bool evaluated = 11;</code>
      */
     boolean getEvaluated();
+
+    /**
+     * <code>optional int32 strategy_index = 12;</code>
+     */
+    boolean hasStrategyIndex();
+    /**
+     * <code>optional int32 strategy_index = 12;</code>
+     */
+    int getStrategyIndex();
+
+    /**
+     * <code>optional bytes object = 13;</code>
+     */
+    boolean hasObject();
+    /**
+     * <code>optional bytes object = 13;</code>
+     */
+    com.google.protobuf.ByteString getObject();
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.Activation}
@@ -29191,6 +29209,8 @@ public final class ProtobufMessages {
       handleId_ = 0;
       logicalDependency_ = java.util.Collections.emptyList();
       evaluated_ = false;
+      strategyIndex_ = 0;
+      object_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -29294,6 +29314,16 @@ public final class ProtobufMessages {
             case 88: {
               bitField0_ |= 0x00000080;
               evaluated_ = input.readBool();
+              break;
+            }
+            case 96: {
+              bitField0_ |= 0x00000100;
+              strategyIndex_ = input.readInt32();
+              break;
+            }
+            case 106: {
+              bitField0_ |= 0x00000200;
+              object_ = input.readBytes();
               break;
             }
           }
@@ -29577,6 +29607,36 @@ public final class ProtobufMessages {
       return evaluated_;
     }
 
+    public static final int STRATEGY_INDEX_FIELD_NUMBER = 12;
+    private int strategyIndex_;
+    /**
+     * <code>optional int32 strategy_index = 12;</code>
+     */
+    public boolean hasStrategyIndex() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional int32 strategy_index = 12;</code>
+     */
+    public int getStrategyIndex() {
+      return strategyIndex_;
+    }
+
+    public static final int OBJECT_FIELD_NUMBER = 13;
+    private com.google.protobuf.ByteString object_;
+    /**
+     * <code>optional bytes object = 13;</code>
+     */
+    public boolean hasObject() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>optional bytes object = 13;</code>
+     */
+    public com.google.protobuf.ByteString getObject() {
+      return object_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -29615,6 +29675,12 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(11, evaluated_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt32(12, strategyIndex_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeBytes(13, object_);
       }
       unknownFields.writeTo(output);
     }
@@ -29661,6 +29727,14 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(11, evaluated_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, strategyIndex_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(13, object_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -29720,6 +29794,16 @@ public final class ProtobufMessages {
         result = result && (getEvaluated()
             == other.getEvaluated());
       }
+      result = result && (hasStrategyIndex() == other.hasStrategyIndex());
+      if (hasStrategyIndex()) {
+        result = result && (getStrategyIndex()
+            == other.getStrategyIndex());
+      }
+      result = result && (hasObject() == other.hasObject());
+      if (hasObject()) {
+        result = result && getObject()
+            .equals(other.getObject());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -29768,6 +29852,14 @@ public final class ProtobufMessages {
         hash = (37 * hash) + EVALUATED_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getEvaluated());
+      }
+      if (hasStrategyIndex()) {
+        hash = (37 * hash) + STRATEGY_INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getStrategyIndex();
+      }
+      if (hasObject()) {
+        hash = (37 * hash) + OBJECT_FIELD_NUMBER;
+        hash = (53 * hash) + getObject().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -29921,6 +30013,10 @@ public final class ProtobufMessages {
         bitField0_ = (bitField0_ & ~0x00000080);
         evaluated_ = false;
         bitField0_ = (bitField0_ & ~0x00000100);
+        strategyIndex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        object_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
 
@@ -29986,6 +30082,14 @@ public final class ProtobufMessages {
           to_bitField0_ |= 0x00000080;
         }
         result.evaluated_ = evaluated_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.strategyIndex_ = strategyIndex_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.object_ = object_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -30067,6 +30171,12 @@ public final class ProtobufMessages {
         }
         if (other.hasEvaluated()) {
           setEvaluated(other.getEvaluated());
+        }
+        if (other.hasStrategyIndex()) {
+          setStrategyIndex(other.getStrategyIndex());
+        }
+        if (other.hasObject()) {
+          setObject(other.getObject());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -30692,6 +30802,73 @@ public final class ProtobufMessages {
       public Builder clearEvaluated() {
         bitField0_ = (bitField0_ & ~0x00000100);
         evaluated_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int strategyIndex_ ;
+      /**
+       * <code>optional int32 strategy_index = 12;</code>
+       */
+      public boolean hasStrategyIndex() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int32 strategy_index = 12;</code>
+       */
+      public int getStrategyIndex() {
+        return strategyIndex_;
+      }
+      /**
+       * <code>optional int32 strategy_index = 12;</code>
+       */
+      public Builder setStrategyIndex(int value) {
+        bitField0_ |= 0x00000200;
+        strategyIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 strategy_index = 12;</code>
+       */
+      public Builder clearStrategyIndex() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        strategyIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes object = 13;</code>
+       */
+      public boolean hasObject() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      /**
+       * <code>optional bytes object = 13;</code>
+       */
+      public com.google.protobuf.ByteString getObject() {
+        return object_;
+      }
+      /**
+       * <code>optional bytes object = 13;</code>
+       */
+      public Builder setObject(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000400;
+        object_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes object = 13;</code>
+       */
+      public Builder clearObject() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        object_ = getDefaultInstance().getObject();
         onChanged();
         return this;
       }
@@ -55203,12 +55380,13 @@ public final class ProtobufMessages {
       "try_point\030\n \001(\t\022\024\n\014is_justified\030\013 \001(\010\022\021\n" +
       "\totn_count\030\014 \001(\005\">\n\nHandleType\022\020\n\014INITIA" +
       "L_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT\020\004" +
-      "\"\354\001\n\nActivation\0221\n\005tuple\030\002 \001(\0132\".org.dro" +
+      "\"\224\002\n\nActivation\0221\n\005tuple\030\002 \001(\0132\".org.dro" +
       "ols.core.marshalling.Tuple\022\020\n\010salience\030\003" +
       " \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\trule_name\030" +
       "\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_ac" +
       "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logi" +
-      "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\"" +
+      "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\022" +
+      "\026\n\016strategy_index\030\014 \001(\005\022\016\n\006object\030\r \001(\014\"" +
       "\032\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\"\227\001\n\026TruthMai" +
       "ntenanceSystem\0225\n\003key\030\001 \003(\0132(.org.drools" +
       ".core.marshalling.EqualityKey\022F\n\026OBSOLET" +
@@ -55495,7 +55673,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_Activation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Activation_descriptor,
-        new java.lang.String[] { "Tuple", "Salience", "PackageName", "RuleName", "ActivationGroup", "IsActivated", "HandleId", "LogicalDependency", "Evaluated", });
+        new java.lang.String[] { "Tuple", "Salience", "PackageName", "RuleName", "ActivationGroup", "IsActivated", "HandleId", "LogicalDependency", "Evaluated", "StrategyIndex", "Object", });
     internal_static_org_drools_core_marshalling_Tuple_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable = new

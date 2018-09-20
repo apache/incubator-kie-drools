@@ -66,6 +66,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -338,14 +339,14 @@ public class ProtobufOutputMarshaller {
 
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( org.drools.core.spi.Activation activation : dormant ) {
-            _ab.addMatch( writeActivation( context, (AgendaItem) activation ) );
+            _ab.addMatch( writeActivation( context, (AgendaItem) activation, true) );
         }
 
         // serialize all network evaluator activations
         for ( Activation activation : agenda.getActivations() ) {
             if ( activation.isRuleAgendaItem() ) {
                 // serialize it
-                _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation ) );
+                _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation, false) );
             }
         }
 
@@ -480,9 +481,6 @@ public class ProtobufOutputMarshaller {
                                                                    final Memory memory, InternalWorkingMemory wm, MarshallerWriteContext context) {
         FromMemory fromMemory = (FromMemory) memory;
 
-        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
-
-
         if ( fromMemory.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
             ProtobufMessages.NodeMemory.FromNodeMemory.Builder _from = ProtobufMessages.NodeMemory.FromNodeMemory.newBuilder();
 
@@ -494,27 +492,14 @@ public class ProtobufOutputMarshaller {
                 for(Object object : matches.keySet()) {
                     wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(object);
 
-                    ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
                     ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder fromObjectBuilder = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.newBuilder();
 
-                    try {
-                        Integer index = context.getStrategyIndex( strategy );
-
-                        ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
-                        byte[] serialized = strategy.marshal(strategyContext,
-                                                          context,
-                                                          object);
-                        ByteString serialiedObject = ByteString.copyFrom(serialized);
-
-                        _context.addObject(fromObjectBuilder
-                                                   .setStrategyIndex(index)
-                                                   .setObject(serialiedObject)
-                                                   .build());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    SerializedObject so = serializeObject(context, object);
+                    _context.addObject(fromObjectBuilder
+                                               .setStrategyIndex(so.strategyIndex)
+                                               .setObject(so.serializedObject)
+                                               .build());
                 }
-
 
 
                 for ( RightTuple rightTuple : matches.values() ) {
@@ -535,6 +520,38 @@ public class ProtobufOutputMarshaller {
                     .build();
         }
         return null;
+    }
+
+    private static SerializedObject serializeObject(MarshallerWriteContext context, Object object) {
+        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
+
+        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
+
+
+        Integer index = context.getStrategyIndex( strategy );
+
+        ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
+        byte[] serialized;
+        try {
+            serialized = strategy.marshal(strategyContext,
+                                              context,
+                                              object);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ByteString serializedObject = ByteString.copyFrom(serialized);
+
+        return new SerializedObject(index, serializedObject);
+    }
+
+    public static class SerializedObject {
+        public int strategyIndex;
+        public ByteString serializedObject;
+
+        public SerializedObject(int strategyIndex, ByteString object) {
+            this.strategyIndex = strategyIndex;
+            this.serializedObject = object;
+        }
     }
 
     private static ProtobufMessages.NodeMemory writeQueryElementNodeMemory(final int nodeId,
@@ -848,7 +865,8 @@ public class ProtobufOutputMarshaller {
     }
 
     public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation(MarshallerWriteContext context,
-                                                                                            AgendaItem<M> agendaItem) {
+                                                                                            AgendaItem<M> agendaItem,
+                                                                                            boolean isDormient) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
         RuleImpl rule = agendaItem.getRule();
@@ -873,6 +891,14 @@ public class ProtobufOutputMarshaller {
                 _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getId() );
             }
         }
+
+        if(isDormient) {
+            SerializedObject so = serializeObject(context, ((BaseTuple)agendaItem).getFactHandle().getObject());
+
+            _activation.setObject(so.serializedObject);
+            _activation.setStrategyIndex(so.strategyIndex);
+        }
+
         return _activation.build();
     }
 
