@@ -38,6 +38,8 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNDecisionServicesTest {
 
@@ -550,4 +552,45 @@ public class DMNDecisionServicesTest {
         assertThat(result.get("ABC"), is("abc"));
     }
 
+    @Test
+    public void testDecisionService20180920() {
+        // DROOLS-3005 DMN DecisionService having an imported requiredInput
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DSWithImportRequiredInput20180920.dmn",
+                                                                                 this.getClass(),
+                                                                                 "DSWithImportRequiredInput20180920-import-1.dmn");
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_76165d7d-12f8-46d3-b8af-120f1ac8b3fc", "Model B");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        testDecisionService20180920_testEvaluateAll(runtime, dmnModel);
+        testDecisionService20180920_testEvaluateDS(runtime, dmnModel);
+    }
+
+    public static void testDecisionService20180920_testEvaluateAll(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Model A", mapOf(entry("Input 1", "input 1 value")));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision B"), is("input 1 value"));
+        assertThat(result.get("Invoke Decision B DS"), is("A value"));
+    }
+
+    public static void testDecisionService20180920_testEvaluateDS(DMNRuntime runtime, DMNModel dmnModel) {
+        DMNContext context = DMNFactory.newContext();
+        context.set("Model A", mapOf(entry("Input 1", "input 1 value")));
+
+        DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "Decision B DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.getAll(), not(hasEntry(is("Invoke Decision B DS"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(result.get("Decision B"), is("input 1 value"));
+    }
 }
