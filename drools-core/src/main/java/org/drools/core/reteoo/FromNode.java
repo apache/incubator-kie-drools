@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -35,6 +36,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
@@ -182,16 +184,39 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
-            if( map != null ) {
+//            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
+//            if( map != null ) {
+//                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
+//                List<FactHandle> list = map.get( key );
+//                if( list != null && ! list.isEmpty() ) {
+//                    // it is a linked list, so the operation is fairly efficient
+//                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
+//                    if( list.isEmpty() ) {
+//                        map.remove(key);
+//                    }
+//                }
+//            }
+            Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>> map2 = (Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>>) context.getReaderContext().getNodeMemories2().get(getId() );
+            if( map2 != null ) {
                 TupleKey key = PersisterHelper.createTupleKey( leftTuple );
-                List<FactHandle> list = map.get( key );
+                List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> list = map2.get( key );
                 if( list != null && ! list.isEmpty() ) {
                     // it is a linked list, so the operation is fairly efficient
-                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
+                    ((java.util.LinkedList<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>)list).removeFirst();
+
                     if( list.isEmpty() ) {
-                        map.remove(key);
+                        map2.remove(key);
                     }
+
+                    InternalFactHandle internalFactHandle = workingMemory.getFactHandleFactory().newFactHandle(object,
+                                                                                                               objectTypeConf,
+                                                                                                               workingMemory,
+                                                                                                               null);
+
+                    ((DefaultFactHandle)internalFactHandle).setAlreadyFired(true);
+                    return internalFactHandle;
+
+
                 }
             }
         }

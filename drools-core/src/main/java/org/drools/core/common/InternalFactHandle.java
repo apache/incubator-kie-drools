@@ -125,6 +125,8 @@ public interface InternalFactHandle
 
     LinkedTuples getLinkedTuples();
 
+    default boolean isAlreadyFired() { return false; };
+
     interface LinkedTuples {
         LinkedTuples clone();
 

@@ -804,11 +804,23 @@ public class ProtobufInputMarshaller {
                 }
                 return true;
             } else {
-                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
-                // add the tuple to the cache for correlation
-                this.tuplesCache.put( key, activation.getTuple() );
-                // check if there was an active activation for it
-                return !this.dormantActivations.containsKey( key );
+
+                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
+
+                for(InternalFactHandle ifh : internalFactHandles) {
+                    if(ifh.isAlreadyFired()) {
+                        return false;
+                    }
+                }
+
+                return true;
+
+
+//                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
+//                // add the tuple to the cache for correlation
+//                this.tuplesCache.put( key, activation.getTuple() );
+//                // check if there was an active activation for it
+//                return !this.dormantActivations.containsKey( key );
             }
         }
 
