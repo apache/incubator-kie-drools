@@ -16,8 +16,8 @@
 
 package org.jbpm.executor.commands;
 
-import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutionResults;
@@ -25,12 +25,7 @@ import org.kie.api.executor.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Simple command to log the contextual data and return empty results. After attempting to get BeanManager
- * and creating simple CDI bean based on given class name as parameter. 
- * Just for demo purpose.
- * 
- */
+
 public class RequeueRunningJobsCommand implements Command{
     
     private static final Logger logger = LoggerFactory.getLogger(RequeueRunningJobsCommand.class);
@@ -41,7 +36,7 @@ public class RequeueRunningJobsCommand implements Command{
     	Long olderThan = (Long) ctx.getData("MaxRunningTime");
     	Long requestId = (Long) ctx.getData("RequestId");
     	try {
-    		ExecutorService executorService = ExecutorServiceFactory.newExecutorService(null);
+    		ExecutorService executorService = (ExecutorService) ServiceRegistry.get().service(ServiceRegistry.EXECUTOR_SERVICE);
     		if (executorService instanceof RequeueAware) {
     			
     			if (requestId != null) {
@@ -56,10 +51,9 @@ public class RequeueRunningJobsCommand implements Command{
     		}
 			
 		} catch (Exception e) {		
-			logger.error("Error while creating CDI bean from jbpm executor", e);
+			logger.error("Error while requeueing jobs", e);
 		}
     	
-        logger.info("Command executed on executor with data {}", ctx.getData());
         ExecutionResults executionResults = new ExecutionResults();
         return executionResults;
     }

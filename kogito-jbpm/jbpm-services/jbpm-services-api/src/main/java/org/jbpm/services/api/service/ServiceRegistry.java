@@ -27,6 +27,7 @@ import org.jbpm.services.api.admin.ProcessInstanceAdminService;
 import org.jbpm.services.api.admin.ProcessInstanceMigrationService;
 import org.jbpm.services.api.admin.UserTaskAdminService;
 import org.jbpm.services.api.query.QueryService;
+import org.kie.api.executor.ExecutorService;
 
 /**
  * Single ServiceRegistry that allows any service to register itself 
@@ -48,6 +49,8 @@ public class ServiceRegistry {
     public static final String PROCESS_ADMIN_SERVICE = ProcessInstanceAdminService.class.getSimpleName();
     public static final String MIGRATION_SERVICE = ProcessInstanceMigrationService.class.getSimpleName();
     public static final String USER_TASK_ADMIN_SERVICE = UserTaskAdminService.class.getSimpleName();
+    
+    public static final String EXECUTOR_SERVICE = ExecutorService.class.getSimpleName();
     
     public static final String CASE_SERVICE = "CaseService";
     public static final String CASE_RUNTIME_DATA_SERVICE = "CaseRuntimeDataService";

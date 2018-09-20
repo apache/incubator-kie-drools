@@ -25,8 +25,9 @@ import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
-import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.executor.impl.event.ExecutorEventSupportImpl;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.Executor;
@@ -152,6 +153,7 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     		try {
 		        executor.init();
 		        this.executorStarted = true;
+		        ServiceRegistry.get().register(ServiceRegistry.EXECUTOR_SERVICE, this);
     		} catch (ExecutorNotStartedException e) {
     			this.executorStarted = false;
     		}
@@ -163,7 +165,8 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     	if (executorStarted) {
     		ExecutorServiceFactory.resetExecutorService(this);
 	    	this.executorStarted = false;
-	        executor.destroy();	        
+	        executor.destroy();	
+	        ServiceRegistry.get().remove(ServiceRegistry.EXECUTOR_SERVICE);
     	}
     }
     
