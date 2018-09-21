@@ -31,7 +31,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -75,7 +74,6 @@ import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -687,10 +685,36 @@ public class ProtobufInputMarshaller {
 
         for ( ProtobufMessages.Activation _activation : _dormant ) {
             // this is a dormant activation
-            context.filter.getDormantActivationsMap().put( PersisterHelper.createActivationKey( _activation.getPackageName(),
-                                                                                                _activation.getRuleName(),
-                                                                                                _activation.getTuple() ),
-                                                           _activation );
+
+            ActivationKey activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
+                                                                              _activation.getRuleName(),
+                                                                              _activation.getTuple());
+
+
+
+
+
+            Object object = null;
+            ObjectMarshallingStrategy strategy = null;
+            if ( _activation.hasStrategyIndex() ) {
+                strategy = context.usedStrategies.get( _activation.getStrategyIndex() );
+                try {
+                    object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                                 context,
+                                                 _activation.getObject().toByteArray(),
+                                                 (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
+
+                    context.filter.getDormantActivationsMap().put(activationKey,
+                                                                  new PBActivationsFilter.ActivationWithObject(_activation, object));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+
         }
         for ( ProtobufMessages.Activation _activation : _rneas ) {
             // this is an active rule network evaluator
@@ -782,19 +806,39 @@ public class ProtobufInputMarshaller {
             implements
             ActivationsFilter,
             AgendaFilter {
-        private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
+        private Map<ActivationKey, ActivationWithObject> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, Tuple>                       tuplesCache;
         private Queue<RuleAgendaItem>                           rneaToFire;
 
+
+        static class ActivationWithObject {
+
+            private final ProtobufMessages.Activation activation;
+            private final Object object;
+
+            public ActivationWithObject(ProtobufMessages.Activation activation, Object object) {
+                this.activation = activation;
+                this.object = object;
+            }
+
+            public ProtobufMessages.Activation getActivation() {
+                return activation;
+            }
+
+            public Object getObject() {
+                return object;
+            }
+        }
+
         public PBActivationsFilter() {
-            this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
+            this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ActivationWithObject>();
             this.rneActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, Tuple>();
             this.rneaToFire = new ConcurrentLinkedQueue<RuleAgendaItem>();
         }
 
-        public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
+        public Map<ActivationKey, ActivationWithObject> getDormantActivationsMap() {
             return this.dormantActivations;
         }
 
@@ -816,10 +860,11 @@ public class ProtobufInputMarshaller {
                     int nodeId = ((BaseTuple)activation).getParent().getTupleSink().getId();
 
 
-                    List<ProtobufMessages.Activation> collect = this.dormantActivations.values().stream()
+                    List collect = this.dormantActivations.entrySet().stream()
                             .filter(s -> {
-                                Object object = s.getObject();
-                                return s.getNodeId() == nodeId && object.equals(ifh.getObject());
+                                Object object = s.getValue().object;
+                                int nodeId1 = s.getValue().activation.getNodeId();
+                                return nodeId1 == nodeId && object.equals(ifh.getObject());
                             })
                             .collect(Collectors.toList());
 
