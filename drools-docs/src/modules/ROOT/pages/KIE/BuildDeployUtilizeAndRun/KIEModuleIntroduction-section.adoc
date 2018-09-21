@@ -2,12 +2,12 @@
 = Introduction
 
 
-6.0 introduces a new configuration and convention approach to building knowledge bases, instead of using the programmatic builder approach in 5.x.
+6.0 introduces a new configuration and convention approach to building KIE bases, instead of using the programmatic builder approach in 5.x.
 The builder is still available to fall back on, as it's used for the tooling integration.
 
 Building now uses Maven, and aligns with Maven practices.
 A KIE project or module is simply a Maven Java project or module; with an additional metadata file META-INF/kmodule.xml.
-The kmodule.xml file is the descriptor that selects resources to knowledge bases and configures those knowledge bases and sessions.
+The kmodule.xml file is the descriptor that selects resources to KIE bases and configures those KIE bases and sessions.
 There is also alternative XML support via Spring and OSGi BluePrints.
 
 While standard Maven can build and package KIE resources, it will not provide validation at build time.
