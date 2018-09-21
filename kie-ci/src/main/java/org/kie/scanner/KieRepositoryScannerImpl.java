@@ -180,7 +180,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
         MemoryKieModule kieModule = new MemoryKieModule(releaseId);
         addDependencies(kieModule, resolver, resolver.getPomDirectDependencies( DependencyFilter.COMPILE_FILTER ));
-        kieModule.build();
         return kieModule;
     }
 
@@ -190,7 +189,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         InternalKieModule kieModule = createKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
-            kieModule.build();
         }
         return kieModule;
     }
