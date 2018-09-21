@@ -857,21 +857,22 @@ public class ProtobufInputMarshaller {
 
                 for(InternalFactHandle ifh : internalFactHandles) {
 
-                    int nodeId = ((BaseTuple)activation).getParent().getTupleSink().getId();
+                    final Tuple parent = ((BaseTuple) activation).getParent();
+                    if(parent != null) {
+                        int nodeId = parent.getTupleSink().getId();
 
+                        List collect = this.dormantActivations.entrySet().stream()
+                                .filter(s -> {
+                                    Object object = s.getValue().object;
+                                    int nodeId1 = s.getValue().activation.getNodeId();
+                                    return nodeId1 == nodeId && object.equals(ifh.getObject());
+                                })
+                                .collect(Collectors.toList());
 
-                    List collect = this.dormantActivations.entrySet().stream()
-                            .filter(s -> {
-                                Object object = s.getValue().object;
-                                int nodeId1 = s.getValue().activation.getNodeId();
-                                return nodeId1 == nodeId && object.equals(ifh.getObject());
-                            })
-                            .collect(Collectors.toList());
-
-                    if(!collect.isEmpty()) {
-                        return false;
+                        if (!collect.isEmpty()) {
+                            return false;
+                        }
                     }
-
                 }
 
 

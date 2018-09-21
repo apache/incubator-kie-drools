@@ -893,11 +893,18 @@ public class ProtobufOutputMarshaller {
         }
 
         if(isDormient) {
-            SerializedObject so = serializeObject(context, ((BaseTuple)agendaItem).getFactHandle().getObject());
+            InternalFactHandle factHandle = ((BaseTuple) agendaItem).getFactHandle();
 
-            _activation.setObject(so.serializedObject);
-            _activation.setStrategyIndex(so.strategyIndex);
-            _activation.setNodeId(((BaseTuple) agendaItem).getParent().getTupleSink().getId());
+            if(factHandle != null) {
+                SerializedObject so = serializeObject(context, factHandle.getObject());
+
+                _activation.setObject(so.serializedObject);
+                _activation.setStrategyIndex(so.strategyIndex);
+                org.drools.core.spi.Tuple parent = ((BaseTuple) agendaItem).getParent();
+                if (parent != null) {
+                    _activation.setNodeId(parent.getTupleSink().getId());
+                }
+            }
         }
 
         return _activation.build();
