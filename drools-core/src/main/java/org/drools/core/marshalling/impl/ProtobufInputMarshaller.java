@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -855,21 +856,21 @@ public class ProtobufInputMarshaller {
 
                 InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
 
-                for(InternalFactHandle ifh : internalFactHandles) {
+                for(InternalFactHandle factHandle : internalFactHandles) {
 
                     final Tuple parent = ((BaseTuple) activation).getParent();
                     if(parent != null) {
                         int nodeId = parent.getTupleSink().getId();
 
-                        List collect = this.dormantActivations.entrySet().stream()
-                                .filter(s -> {
-                                    Object object = s.getValue().object;
-                                    int nodeId1 = s.getValue().activation.getNodeId();
-                                    return nodeId1 == nodeId && object.equals(ifh.getObject());
+                        Optional<Map.Entry<ActivationKey, ActivationWithObject>> collect = this.dormantActivations.entrySet().stream()
+                                .filter(dormantActivation -> {
+                                    Object dormantObject = dormantActivation.getValue().object;
+                                    int dormantNodeId = dormantActivation.getValue().activation.getNodeId();
+                                    return dormantNodeId == nodeId && dormantObject.equals(factHandle.getObject());
                                 })
-                                .collect(Collectors.toList());
+                                .findAny();
 
-                        if (!collect.isEmpty()) {
+                        if (collect.isPresent()) {
                             return false;
                         }
                     }
