@@ -371,7 +371,6 @@ public class KnowledgeBaseImpl
     }
 
     private StatefulKnowledgeSessionImpl internalInitSession( SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {
-        session.registerReceiveNodes(receiveNodes);
         if ( sessionConfig.isKeepReference() ) {
             addStatefulSession(session);
         }
@@ -1813,7 +1812,11 @@ public class KnowledgeBaseImpl
         return ruleUnitRegistry.hasUnits();
     }
 
-    public void addReceiveNode(AsyncReceiveNode node) {
+    public List<AsyncReceiveNode> getReceiveNodes() {
+        return receiveNodes;
+    }
+
+    public void addReceiveNode( AsyncReceiveNode node) {
         if (receiveNodes == null) {
             receiveNodes = new ArrayList<>();
         }

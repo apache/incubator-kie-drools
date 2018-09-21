@@ -373,7 +373,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.lastIdleTimestamp = new AtomicLong(-1);
     }
 
-    public void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
+    private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
         receiveNodeMemories = nodes == null ? Collections.emptyList() : nodes.stream().map( this::getNodeMemory ).collect( toList() );
     }
 
@@ -386,6 +386,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
+        registerReceiveNodes(kBase.getReceiveNodes());
+
         this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 

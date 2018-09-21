@@ -17,6 +17,7 @@ package org.drools.core.impl;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -147,5 +148,6 @@ public interface InternalKnowledgeBase extends KieBase {
 
     SessionConfiguration getSessionConfiguration();
 
+    List<AsyncReceiveNode> getReceiveNodes();
     void addReceiveNode(AsyncReceiveNode node);
 }
