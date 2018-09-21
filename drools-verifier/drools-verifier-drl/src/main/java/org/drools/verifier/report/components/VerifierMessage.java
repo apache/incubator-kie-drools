@@ -119,10 +119,7 @@ public class VerifierMessage extends VerifierMessageBase {
             buffer.append( "\n" );
 
             Collection<Cause> childCauses = cause.getCauses();
-            if ( childCauses == null ) {
-                System.out.println( cause );
-            }
-            if ( !childCauses.isEmpty() ) {
+            if ( childCauses != null && !childCauses.isEmpty() ) {
                 buffer.append( printCauses( spaces * 2,
                                             childCauses ) );
             }
