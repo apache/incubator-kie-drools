@@ -386,9 +386,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
-        registerReceiveNodes(kBase.getReceiveNodes());
 
         this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
+        registerReceiveNodes(kBase.getReceiveNodes());
+
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
         if (agenda == null) {
