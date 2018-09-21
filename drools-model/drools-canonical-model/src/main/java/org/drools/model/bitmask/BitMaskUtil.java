@@ -40,9 +40,7 @@ public class BitMaskUtil {
 
         BitMask mask = getEmptyPropertyReactiveMask(accessibleProperties.size());
         if (listenedProperties.contains( TRAITSET_FIELD_NAME )) {
-            if (listenedProperties.contains( TRAITSET_FIELD_NAME ) ) {
-                mask = mask.set(TRAITABLE_BIT);
-            }
+            mask = mask.set(TRAITABLE_BIT);
         }
         for (String propertyName : listenedProperties) {
             if (propertyName.equals("*")) {
