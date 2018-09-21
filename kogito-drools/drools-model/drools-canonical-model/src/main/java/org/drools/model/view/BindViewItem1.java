@@ -1,5 +1,7 @@
 package org.drools.model.view;
 
+import java.util.Arrays;
+
 import org.drools.model.Binding;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
@@ -76,6 +78,6 @@ public class BindViewItem1<T> implements ViewItem<T>, Binding, ModelComponent {
         if ( !ModelComponent.areEqualInModel( boundVariable, that.boundVariable )) return false;
         if ( !ModelComponent.areEqualInModel( inputVariable, that.inputVariable )) return false;
         if ( !bindingFunction.equals( that.bindingFunction )) return false;
-        return reactOn == null ? that.reactOn == null : reactOn.equals( that.reactOn );
+        return reactOn == null ? that.reactOn == null : Arrays.equals(reactOn, that.reactOn);
     }
 }

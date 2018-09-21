@@ -63,6 +63,7 @@ import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
@@ -155,7 +156,8 @@ public class DMNValidatorImpl implements DMNValidator {
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
-        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(kieContainer.getClassLoader(), localChainedProperties, this.dmnProfiles);
+        final ClassLoader classLoader = this.kieContainer.isPresent() ? this.kieContainer.get().getClassLoader() : ClassLoaderUtil.findDefaultClassLoader();
+        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles);
     }
     
     public void dispose() {
@@ -235,7 +237,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                 results.addAll(model.getMessages());
                                 otherModel_DMNModels.add(model);
                             } else {
-                                Objects.requireNonNull(model);
+                                throw new IllegalStateException("Compiled model is null!");
                             }
                         }
                     } catch (Throwable t) {
@@ -292,7 +294,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                 results.addAll(model.getMessages());
                                 otherModel_DMNModels.add(model);
                             } else {
-                                Objects.requireNonNull(model);
+                                throw new IllegalStateException("Compiled model is null!");
                             }
                         }
                     } catch (Throwable t) {
@@ -436,7 +438,7 @@ public class DMNValidatorImpl implements DMNValidator {
             results.addAll(validateModel(dmnModel, Collections.emptyList()));
         }
         if( flags.contains( VALIDATE_COMPILATION ) ) {
-            results.addAll( validateCompilation( dmnModel, results ) );
+            results.addAll( validateCompilation( dmnModel ) );
         }
     }
 
@@ -510,14 +512,14 @@ public class DMNValidatorImpl implements DMNValidator {
         return reporter.getMessages().getMessages();
     }
 
-    private List<DMNMessage> validateCompilation(Definitions dmnModel, DMNMessageManager results) {
+    private List<DMNMessage> validateCompilation(Definitions dmnModel) {
         if( dmnModel != null ) {
             DMNCompiler compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile( dmnModel );
             if( model != null ) {
                 return model.getMessages();
             } else {
-                Objects.requireNonNull(model);
+                throw new IllegalStateException("Compiled model is null!");
             }
         }
         return Collections.emptyList();

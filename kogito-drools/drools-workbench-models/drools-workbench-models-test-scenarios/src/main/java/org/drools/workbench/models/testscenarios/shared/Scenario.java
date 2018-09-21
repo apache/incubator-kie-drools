@@ -154,7 +154,6 @@ public class Scenario implements HasImports {
 
             if (remove && fixture instanceof Expectation) {
                 iterator.remove();
-                globals.remove(fixture);
             }
         }
     }
@@ -177,7 +176,9 @@ public class Scenario implements HasImports {
 
             if (remove && !(fixture instanceof Expectation)) {
                 iterator.remove();
-                globals.remove(fixture);
+                if (fixture instanceof FactData) {
+                    globals.remove(fixture);
+                }
             }
         }
 
