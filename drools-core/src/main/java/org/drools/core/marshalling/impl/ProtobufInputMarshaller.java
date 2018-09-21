@@ -691,28 +691,25 @@ public class ProtobufInputMarshaller {
                                                                               _activation.getRuleName(),
                                                                               _activation.getTuple());
 
-
-
-
-
-            Object object = null;
-            ObjectMarshallingStrategy strategy = null;
-            if ( _activation.hasStrategyIndex() ) {
-                strategy = context.usedStrategies.get( _activation.getStrategyIndex() );
+            final Optional<Object> deserializedObject;
+            if (_activation.hasStrategyIndex()) {
+                ObjectMarshallingStrategy strategy = context.usedStrategies.get(_activation.getStrategyIndex());
                 try {
-                    object = strategy.unmarshal( context.strategyContexts.get( strategy ),
-                                                 context,
-                                                 _activation.getObject().toByteArray(),
-                                                 (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
+                    Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
+                                                       context,
+                                                       _activation.getObject().toByteArray(),
+                                                       (context.kBase == null) ? null : context.kBase.getRootClassLoader());
 
-                    context.filter.getDormantActivationsMap().put(activationKey,
-                                                                  new PBActivationsFilter.ActivationWithObject(_activation, object));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    deserializedObject = Optional.of(object);
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
+            } else {
+                deserializedObject = Optional.empty();
             }
+
+            context.filter.getDormantActivationsMap().put(activationKey,
+                                                          new PBActivationsFilter.ActivationWithObject(_activation, deserializedObject));
 
 
 
@@ -816,9 +813,9 @@ public class ProtobufInputMarshaller {
         static class ActivationWithObject {
 
             private final ProtobufMessages.Activation activation;
-            private final Object object;
+            private final Optional<Object> object;
 
-            public ActivationWithObject(ProtobufMessages.Activation activation, Object object) {
+            public ActivationWithObject(ProtobufMessages.Activation activation, Optional<Object> object) {
                 this.activation = activation;
                 this.object = object;
             }
@@ -827,7 +824,7 @@ public class ProtobufInputMarshaller {
                 return activation;
             }
 
-            public Object getObject() {
+            public Optional<Object> getObject() {
                 return object;
             }
         }
@@ -864,9 +861,10 @@ public class ProtobufInputMarshaller {
 
                         Optional<Map.Entry<ActivationKey, ActivationWithObject>> collect = this.dormantActivations.entrySet().stream()
                                 .filter(dormantActivation -> {
-                                    Object dormantObject = dormantActivation.getValue().object;
+                                    Optional<Object> optDrmantObject = dormantActivation.getValue().object;
                                     int dormantNodeId = dormantActivation.getValue().activation.getNodeId();
-                                    return dormantNodeId == nodeId && dormantObject.equals(factHandle.getObject());
+                                    return optDrmantObject.filter(dormantObject -> dormantNodeId == nodeId && dormantObject.equals(factHandle.getObject()))
+                                            .isPresent();
                                 })
                                 .findAny();
 
