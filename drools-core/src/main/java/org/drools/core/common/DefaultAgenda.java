@@ -136,12 +136,6 @@ public class DefaultAgenda
 
     private ExecutionStateMachine executionStateMachine;
 
-    private Map<Integer, Set<Object>> derivedObject = new HashMap<>();
-
-    public Map<Integer, Set<Object>> getDerivedObject() {
-        return derivedObject;
-    }
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------

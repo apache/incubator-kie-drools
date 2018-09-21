@@ -80,7 +80,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private InternalFactHandle      parentHandle;
 
-    private boolean isAlreadyFired= false;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -958,12 +957,4 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.parentHandle = parentHandle;
     }
 
-    @Override
-    public boolean isAlreadyFired() {
-        return isAlreadyFired;
-    }
-
-    public void setAlreadyFired(boolean alreadyFired) {
-        isAlreadyFired = alreadyFired;
-    }
 }

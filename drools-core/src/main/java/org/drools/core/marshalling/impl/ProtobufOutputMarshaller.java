@@ -161,7 +161,7 @@ public class ProtobufOutputMarshaller {
 
             writeAgenda( context, _ruleData );
 
-            writeNodeMemories( context, _ruleData);
+            writeNodeMemories( context, _ruleData );
 
             for ( EntryPoint wmep : wm.getWorkingMemoryEntryPoints().values() ) {
                 org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
@@ -490,8 +490,6 @@ public class ProtobufOutputMarshaller {
                 ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
                         .setTuple( PersisterHelper.createTuple( leftTuple ) );
                 for(Object object : matches.keySet()) {
-                    wm.getAgenda().getDerivedObject().computeIfAbsent(nodeId, k -> new HashSet<>()).add(object);
-
                     ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder fromObjectBuilder = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.newBuilder();
 
                     SerializedObject so = serializeObject(context, object);

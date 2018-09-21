@@ -178,24 +178,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
-        FactHandle _handle = null;
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
         if( context.getReaderContext() != null ) {
-//            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
-//            if( map != null ) {
-//                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
-//                List<FactHandle> list = map.get( key );
-//                if( list != null && ! list.isEmpty() ) {
-//                    // it is a linked list, so the operation is fairly efficient
-//                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
-//                    if( list.isEmpty() ) {
-//                        map.remove(key);
-//                    }
-//                }
-//            }
             Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>> map2 = (Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>>) context.getReaderContext().getNodeMemories2().get(getId() );
             if( map2 != null ) {
                 TupleKey key = PersisterHelper.createTupleKey( leftTuple );
@@ -203,40 +190,17 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                 if( list != null && ! list.isEmpty() ) {
                     // it is a linked list, so the operation is fairly efficient
                     ((java.util.LinkedList<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>)list).removeFirst();
-
                     if( list.isEmpty() ) {
                         map2.remove(key);
                     }
-
-                    InternalFactHandle internalFactHandle = workingMemory.getFactHandleFactory().newFactHandle(object,
-                                                                                                               objectTypeConf,
-                                                                                                               workingMemory,
-                                                                                                               null);
-
-                    ((DefaultFactHandle)internalFactHandle).setAlreadyFired(true);
-                    return internalFactHandle;
-
-
                 }
             }
         }
 
-        InternalFactHandle handle;
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         object,
-                                                                         _handle.getRecency(),
-                                                                         objectTypeConf,
-                                                                         workingMemory,
-                                                                         null );
-        } else {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                         objectTypeConf,
-                                                                         workingMemory,
-                                                                         null );
-        }
-        return handle;
+        return workingMemory.getFactHandleFactory().newFactHandle(object,
+                                                                  objectTypeConf,
+                                                                  workingMemory,
+                                                                  null );
     }
 
 

@@ -300,8 +300,4 @@ public interface InternalAgenda
     default PropagationList getPropagationList() {
         throw new UnsupportedOperationException();
     }
-
-    default Map<Integer, Set<Object>> getDerivedObject() {
-        throw new UnsupportedOperationException();
-    }
 }
