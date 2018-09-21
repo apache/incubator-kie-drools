@@ -52,8 +52,8 @@ image::KIE/BuildDeployUtilizeAndRun/KieRuntime.png[align="center"]
 ==== Globals
 
 
-Globals are named objects that are made visible to the rule engine, but in a way that is fundamentally different from the one for facts: changes in the object backing a global do not trigger reevaluation of rules.
-Still, globals are useful for providing static information, as an object offering services that are used in the RHS of a rule, or as a means to return objects from the rule engine.
+Globals are named objects that are made visible to the {ENGINE}, but in a way that is fundamentally different from the one for facts: changes in the object backing a global do not trigger reevaluation of rules.
+Still, globals are useful for providing static information, as an object offering services that are used in the RHS of a rule, or as a means to return objects from the {ENGINE}.
 When you use a global on the LHS of a rule, make sure it is immutable, or, at least, don't expect changes to have any effect on the behavior of your rules.
 
 A global must be declared in a rules file, and then it needs to be backed up with a Java object.
@@ -64,7 +64,7 @@ global java.util.List list
 ----
 
 
-With the Knowledge Base now aware of the global identifier and its type, it is now possible to call `ksession.setGlobal()` with the global's name and an object, for any session, to associate the object with the global.
+With the KIE base now aware of the global identifier and its type, it is now possible to call `ksession.setGlobal()` with the global's name and an object, for any session, to associate the object with the global.
 Failure to declare the global type and identifier in DRL code will result in an exception being thrown from this call.
 
 [source,java]
@@ -80,7 +80,7 @@ Failure to do so results in a ``NullPointerException``.
 == Event Model
 
 
-The event package provides means to be notified of rule engine events, including rules firing, objects being asserted, etc.
+The event package provides means to be notified of {ENGINE} events, including rules firing, objects being asserted, etc.
 This allows separation of logging and auditing activities from the main part of your application (and the rules).
 
 The `KieRuntimeEventManager` interface is implemented by the `KieRuntime` which provides two interfaces, `RuleRuntimeEventManager` and ``ProcessEventManager``.
