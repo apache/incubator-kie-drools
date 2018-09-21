@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -49,6 +50,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 
 public interface InternalKnowledgeBase extends KieBase {
+
+    StatefulKnowledgeSessionImpl createSession( long id, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment );
 
     String getId();
 
