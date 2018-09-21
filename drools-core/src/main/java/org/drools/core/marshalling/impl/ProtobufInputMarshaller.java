@@ -636,10 +636,10 @@ public class ProtobufInputMarshaller {
             if( _beliefSet.getLogicalDependencyCount() > 0 ) {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
-                    Activation activation = (Activation) context.filter.getTuplesCache().get(
-                                                                                              PersisterHelper.createActivationKey( _activation.getPackageName(),
-                                                                                                                                   _activation.getRuleName(),
-                                                                                                                                   _activation.getTuple() ) ).getContextObject();
+                    ActivationKey activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
+                                                                                      _activation.getRuleName(),
+                                                                                      _activation.getTuple());
+                    Activation activation = (Activation) context.filter.getTuplesCache().get(activationKey).getContextObject();
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
@@ -847,6 +847,10 @@ public class ProtobufInputMarshaller {
                 return true;
             } else {
 
+                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
+                // add the tuple to the cache for correlation
+                this.tuplesCache.put( key, activation.getTuple() );
+
                 InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
 
                 for(InternalFactHandle factHandle : internalFactHandles) {
@@ -870,10 +874,6 @@ public class ProtobufInputMarshaller {
                     }
                 }
 
-
-                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
-                // add the tuple to the cache for correlation
-                this.tuplesCache.put( key, activation.getTuple() );
                 // check if there was an active activation for it
                 return !this.dormantActivations.containsKey( key );
 
