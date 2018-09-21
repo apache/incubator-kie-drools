@@ -87,6 +87,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -125,6 +126,9 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.api.internal.runtime.KieRuntimes;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -149,10 +153,9 @@ import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.internal.runtime.KieRuntimeService;
-import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.internal.runtime.beliefs.Mode;
+
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -251,6 +254,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected transient InternalRuleUnitExecutor ruleUnitExecutor;
 
     private boolean stateless;
+
+    private List<AsyncReceiveNode.AsyncReceiveMemory> receiveNodeMemories;
 
     // ------------------------------------------------------------
     // Constructors
@@ -368,6 +373,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.lastIdleTimestamp = new AtomicLong(-1);
     }
 
+    private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
+        receiveNodeMemories = nodes == null ? Collections.emptyList() : nodes.stream().map( this::getNodeMemory ).collect( toList() );
+    }
+
     public void initMBeans(String containerId, String kbaseName, String ksessionName) {
         if (((InternalKnowledgeBase) kBase).getConfiguration() != null && ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey( containerId, kbaseName, ksessionName );
@@ -377,7 +386,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected void bindRuleBase( InternalKnowledgeBase kBase, InternalAgenda agenda, boolean initInitFactHandle ) {
         this.kBase = kBase;
+
         this.nodeMemories = new ConcurrentNodeMemories(kBase, DEFAULT_RULE_UNIT);
+        registerReceiveNodes(kBase.getReceiveNodes());
+
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
         if (agenda == null) {
@@ -514,6 +526,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
             ep.dispose();
         }
+        for (AsyncReceiveNode.AsyncReceiveMemory receiveMemory : this.receiveNodeMemories) {
+            receiveMemory.dispose();
+        }
+
         this.ruleRuntimeEventSupport.clear();
         this.ruleEventListenerSupport.clear();
         this.agendaEventSupport.clear();

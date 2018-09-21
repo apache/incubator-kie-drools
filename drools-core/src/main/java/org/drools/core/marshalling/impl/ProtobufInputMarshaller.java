@@ -47,7 +47,6 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
@@ -188,19 +187,11 @@ public class ProtobufInputMarshaller {
                                                                                  _session.getRuleData().getLastRecency() );
 
         InternalAgenda agenda = context.kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.kBase, false );
-        readAgenda( context,
-                    _session.getRuleData(),
-                    agenda );
+        readAgenda( context, _session.getRuleData(), agenda );
 
-        WorkingMemoryFactory wmFactory = context.kBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
-        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( id,
-                                                                                                 context.kBase,
-                                                                                                 handleFactory,
-                                                                                                 1, // pCTx starts at 1, as InitialFact is 0
-                                                                                                 config,
-                                                                                                 agenda,
-                                                                                                 environment );
-        return session;
+        return context.kBase.createSession( id, handleFactory,
+                                            1, // pCTx starts at 1, as InitialFact is 0
+                                            config, agenda, environment );
     }
 
     private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException,

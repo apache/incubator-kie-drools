@@ -27,6 +27,10 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.AsyncReceiveNode;
+import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
+import org.drools.core.reteoo.AsyncSendNode;
+import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
@@ -83,6 +87,8 @@ public class RuleNetworkEvaluator {
     private static final PhreakBranchNode       pBranchNode = new PhreakBranchNode();
     private static final PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
     private static final PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
+    private static final PhreakAsyncSendNode    pSendNode   = new PhreakAsyncSendNode();
+    private static final PhreakAsyncReceiveNode pReceiveNode = new PhreakAsyncReceiveNode();
     private static final PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
     private static PhreakQueryTerminalNode      pQtNode     = new PhreakQueryTerminalNode();
 
@@ -405,6 +411,14 @@ public class RuleNetworkEvaluator {
                 case NodeTypeEnums.ConditionalBranchNode: {
                     pBranchNode.doNode((ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem, sink,
                                        agenda, srcTuples, trgTuples, stagedLeftTuples, executor);
+                    break;
+                }
+                case NodeTypeEnums.AsyncSendNode: {
+                    pSendNode.doNode((AsyncSendNode) node, (AsyncSendMemory) nodeMem, agenda.getWorkingMemory(), srcTuples);
+                    break;
+                }
+                case NodeTypeEnums.AsyncReceiveNode: {
+                    pReceiveNode.doNode( (AsyncReceiveNode) node, (AsyncReceiveMemory) nodeMem, sink, agenda.getWorkingMemory(), srcTuples, trgTuples);
                     break;
                 }
             }
