@@ -66,6 +66,7 @@ import org.drools.model.impl.From0Impl;
 import org.drools.model.impl.From1Impl;
 import org.drools.model.impl.From2Impl;
 import org.drools.model.impl.From3Impl;
+import org.drools.model.impl.Exchange;
 import org.drools.model.impl.GlobalImpl;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -141,6 +142,14 @@ public class DSL {
 
     public static <T> Variable<T> any(Class<T> type) {
         return declarationOf( type );
+    }
+
+    public static <T> Exchange<T> exchangeOf( Class<T> type ) {
+        return new Exchange<T>( type );
+    }
+
+    public static <T> Exchange<T> exchangeOf( Class<T> type, String name ) {
+        return new Exchange<T>( type, name );
     }
 
     public static <T> Declaration<T> declarationOf( Class<T> type ) {

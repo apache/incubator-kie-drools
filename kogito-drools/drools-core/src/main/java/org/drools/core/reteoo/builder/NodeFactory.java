@@ -18,11 +18,15 @@
 package org.drools.core.reteoo.builder;
 
 
+import java.util.List;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.AsyncReceiveNode;
+import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
@@ -42,6 +46,8 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.AsyncReceive;
+import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -53,8 +59,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
-
-import java.util.List;
 
 public interface NodeFactory {
 
@@ -177,4 +181,20 @@ public interface NodeFactory {
                                List<Behavior> behaviors,
                                ObjectSource objectSource,
                                BuildContext context);
+
+    AsyncSendNode buildAsyncSendNode( int id,
+                                      DataProvider dataProvider,
+                                      LeftTupleSource tupleSource,
+                                      AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
+                                      BetaConstraints betaConstraints,
+                                      boolean tupleMemoryEnabled,
+                                      BuildContext context,
+                                      AsyncSend send );
+
+    AsyncReceiveNode buildAsyncReceiveNode( int id,
+                                            AsyncReceive receive,
+                                            LeftTupleSource tupleSource,
+                                            AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
+                                            BetaConstraints betaConstraints,
+                                            BuildContext context );
 }

@@ -41,6 +41,8 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.AsyncReceive;
+import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.Declaration;
@@ -100,9 +102,11 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.functions.Function0;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.model.impl.Exchange;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
@@ -382,7 +386,7 @@ public class KiePackagesBuilder {
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
         if (ctx.getRule().getRuleUnitClassName() != null) {
-            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ) ) );
+            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ), Condition.Type.PATTERN ) );
         }
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
@@ -418,6 +422,8 @@ public class KiePackagesBuilder {
         }
 
         switch (condition.getType()) {
+            case SENDER:
+            case RECEIVER:
             case PATTERN: {
                 return buildPattern( ctx, group, condition );
             }
@@ -592,7 +598,7 @@ public class KiePackagesBuilder {
 
     private Pattern buildPattern(RuleContext ctx, GroupElement group, Condition condition) {
         org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
-        Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable() );
+        Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable(), condition.getType() );
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
@@ -765,7 +771,7 @@ public class KiePackagesBuilder {
         return accFunction1;
     }
 
-    private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable ) {
+    private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable, Condition.Type type ) {
         Pattern pattern = new Pattern( ctx.getNextPatternIndex(),
                                        0, // offset will be set by ReteooBuilder
                                        getObjectType( patternVariable ),
@@ -818,7 +824,19 @@ public class KiePackagesBuilder {
                 pattern.addBehavior( createWindow( decl.getWindow() ) );
                 ctx.setNeedStreamMode();
             }
+
+        } else if ( patternVariable instanceof Exchange ) {
+            if ( type == Condition.Type.SENDER) {
+                Function0 supplier = (( Exchange ) patternVariable).getMessageSupplier();
+                DataProvider provider = new LambdaDataProvider( x -> supplier.apply(), false );
+                pattern.setSource( new AsyncSend( pattern, patternVariable.getName(), provider ) );
+            } else if ( type == Condition.Type.RECEIVER) {
+                pattern.setSource( new AsyncReceive( pattern, patternVariable.getName() ) );
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
+
         ctx.registerPattern( patternVariable, pattern );
         return pattern;
     }

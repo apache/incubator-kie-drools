@@ -49,10 +49,10 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -60,6 +60,7 @@ import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
@@ -188,6 +189,8 @@ public class KnowledgeBaseImpl
     private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
 
     private SessionConfiguration sessionConfiguration;
+
+    private List<AsyncReceiveNode> receiveNodes;
 
     public KnowledgeBaseImpl() { }
 
@@ -354,10 +357,20 @@ public class KnowledgeBaseImpl
         }
     }
 
+    @Override
+    public StatefulKnowledgeSessionImpl createSession(long id, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
+                .createWorkingMemory( id, this, handleFactory, propagationContext, config, agenda, environment );
+        return internalInitSession( config, session );
+    }
+
     StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig ) {
-        WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
-        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( nextWorkingMemoryCounter(), this,
-                                                                                                               sessionConfig, environment );
+        StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
+                .createWorkingMemory( nextWorkingMemoryCounter(), this, sessionConfig, environment );
+        return internalInitSession( sessionConfig, session );
+    }
+
+    private StatefulKnowledgeSessionImpl internalInitSession( SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session ) {
         if ( sessionConfig.isKeepReference() ) {
             addStatefulSession(session);
         }
@@ -1797,5 +1810,16 @@ public class KnowledgeBaseImpl
 
     public boolean hasUnits() {
         return ruleUnitRegistry.hasUnits();
+    }
+
+    public List<AsyncReceiveNode> getReceiveNodes() {
+        return receiveNodes;
+    }
+
+    public void addReceiveNode( AsyncReceiveNode node) {
+        if (receiveNodes == null) {
+            receiveNodes = new ArrayList<>();
+        }
+        receiveNodes.add(node);
     }
 }

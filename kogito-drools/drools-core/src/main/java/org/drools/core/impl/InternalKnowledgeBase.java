@@ -17,6 +17,7 @@ package org.drools.core.impl;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -24,11 +25,13 @@ import java.util.concurrent.Future;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -48,6 +51,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 
 public interface InternalKnowledgeBase extends KieBase {
+
+    StatefulKnowledgeSessionImpl createSession( long id, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment );
 
     String getId();
 
@@ -142,4 +147,7 @@ public interface InternalKnowledgeBase extends KieBase {
     boolean hasUnits();
 
     SessionConfiguration getSessionConfiguration();
+
+    List<AsyncReceiveNode> getReceiveNodes();
+    void addReceiveNode(AsyncReceiveNode node);
 }
