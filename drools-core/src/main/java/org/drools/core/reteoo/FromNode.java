@@ -182,20 +182,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
-        if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>> map2 = (Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>>) context.getReaderContext().getNodeMemories2().get(getId() );
-            if( map2 != null ) {
-                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
-                List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> list = map2.get( key );
-                if( list != null && ! list.isEmpty() ) {
-                    // it is a linked list, so the operation is fairly efficient
-                    ((java.util.LinkedList<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>)list).removeFirst();
-                    if( list.isEmpty() ) {
-                        map2.remove(key);
-                    }
-                }
-            }
-        }
 
         return workingMemory.getFactHandleFactory().newFactHandle(object,
                                                                   objectTypeConf,

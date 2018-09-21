@@ -326,14 +326,11 @@ public class ProtobufInputMarshaller {
                 }
                 case FROM : {
                     Map<TupleKey, List<ProtobufMessages.FactHandle>> map = new HashMap<>();
-                    Map<TupleKey, List<ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>> map2 = new HashMap<>();
                     for ( ProtobufMessages.NodeMemory.FromNodeMemory.FromContext _ctx : _node.getFrom().getContextList() ) {
                         // have to instantiate a modifiable list
                         map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new LinkedList<>(_ctx.getHandleList()) );
-                        map2.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new LinkedList<>(_ctx.getObjectList()) );
                     }
                     memory = map;
-                    memory2 = map2;
                     break;
                 }
                 case QUERY_ELEMENT : {
@@ -351,7 +348,6 @@ public class ProtobufInputMarshaller {
                 }
             }
             context.getNodeMemories().put( _node.getNodeId(), memory );
-            context.getNodeMemories2().put( _node.getNodeId(), memory2 );
         }
     }
 

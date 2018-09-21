@@ -19,7 +19,6 @@ package org.drools.core.common;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;

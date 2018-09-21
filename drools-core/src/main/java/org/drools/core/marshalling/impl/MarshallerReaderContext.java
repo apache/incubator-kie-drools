@@ -71,14 +71,9 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     // this is a map to store node memory data indexed by node ID
     private final Map<Integer, Object>                                              nodeMemories;
-    private final Map<Integer, Object>                                              nodeMemories2;
 
     public Map<Integer, Object> getNodeMemories() {
         return nodeMemories;
-    }
-
-    public Map<Integer, Object> getNodeMemories2() {
-        return nodeMemories2;
     }
 
     public Object                                                                  parameterObject;
@@ -140,7 +135,6 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.env = env;
 
         this.nodeMemories = new HashMap<Integer, Object>();
-        this.nodeMemories2 = new HashMap<Integer, Object>();
         this.timerNodeSchedulers = new HashMap<Integer, Map<ProtobufInputMarshaller.TupleKey, PhreakTimerNode.Scheduler>>();
 
         this.parameterObject = null;

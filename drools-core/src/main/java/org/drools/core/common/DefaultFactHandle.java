@@ -80,7 +80,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private InternalFactHandle      parentHandle;
 
-
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -134,10 +133,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public DefaultFactHandle(int id,
-                             String wmEntryPointId,
-                             int identityHashCode,
-                             int objectHashCode,
-                             long recency,
+            String wmEntryPointId,
+            int identityHashCode,
+            int objectHashCode,
+            long recency,
             Object object) {
         this.id = id;
         setEntryPoint( ( wmEntryPointId == null ) ? null : new DisconnectedWorkingMemoryEntryPoint( wmEntryPointId ) );
@@ -956,5 +955,4 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public void setParentHandle( InternalFactHandle parentHandle ) {
         this.parentHandle = parentHandle;
     }
-
 }
