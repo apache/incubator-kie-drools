@@ -15,13 +15,13 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
-import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
+import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
 
 public class ConferenceSchedulingScoreHardConstraintTest {
 
-    private HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
+    private HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
     @Test

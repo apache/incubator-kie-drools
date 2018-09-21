@@ -84,6 +84,12 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
+        <version>1.0.4</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

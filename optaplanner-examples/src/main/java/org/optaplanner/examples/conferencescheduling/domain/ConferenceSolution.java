@@ -23,8 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
@@ -50,7 +49,7 @@ public class ConferenceSolution extends AbstractPersistable {
     private List<Talk> talkList;
 
     @PlanningScore
-    private HardSoftScore score = null;
+    private HardMediumSoftScore score = null;
 
     public ConferenceSolution() {
     }
@@ -124,11 +123,11 @@ public class ConferenceSolution extends AbstractPersistable {
         this.talkList = talkList;
     }
 
-    public HardSoftScore getScore() {
+    public HardMediumSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardMediumSoftScore score) {
         this.score = score;
     }
 

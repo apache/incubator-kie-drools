@@ -17,7 +17,7 @@
 package org.optaplanner.examples.conferencescheduling.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
@@ -25,7 +25,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 
-global HardSoftScoreHolder scoreHolder;
+global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -153,23 +153,32 @@ rule "Talk prohibited room tags"
         scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
 end
 
-rule "Talk mutually-exclusive-talks tags"
-    when
-        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
-        $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
-        $rightTalk : Talk(timeslot != null, overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
-                getTimeslot().overlaps($timeslot),
-                id > $leftId)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
-end
-
 rule "Talk prerequisite talks"
     when
         ConferenceParametrization($weight : talkPrerequisiteTalks != 0)
         $talk : Talk(timeslot != null, missingPrerequisiteCount() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $weight * $talk.missingPrerequisiteCount());
+end
+
+// ############################################################################
+// Medium constraints
+// ############################################################################
+rule "Talk mutually-exclusive-talks tags"
+    when
+        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
+        $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
+        $rightTalk : Talk(timeslot != null, overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
+                timeslot.isOnSameDayAs($timeslot),
+                id > $leftId)
+    then
+        if ($rightTalk.getTimeslot().overlaps($leftTalk.getTimeslot())) { // Medium constraint if they overlap as well:
+            scoreHolder.addMultiConstraintMatch(kcontext, 0,
+                - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk),
+                - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
+        } else {
+            scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
+        }
 end
 
 // ############################################################################

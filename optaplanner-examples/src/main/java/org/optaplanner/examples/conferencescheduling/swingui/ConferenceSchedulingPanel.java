@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -32,6 +33,13 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public static final String LOGO_PATH = "/org/optaplanner/examples/conferencescheduling/swingui/conferenceSchedulingLogo.png";
 
     public ConferenceSchedulingPanel() {
+        JButton importConferenceButton = new JButton("Import conference");
+        importConferenceButton.addActionListener(event -> {
+            //TODO: Add a panel to get conferenceBaseUrl from the user
+            ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter("https://dvbe18.confinabox.com/api/conferences/DVBE18");
+            solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
+        });
+
         JButton button = new JButton("Show in LibreOffice or Excel");
         button.addActionListener(event -> {
             SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
@@ -48,6 +56,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
                 throw new IllegalStateException("Failed to show temp file (" + tempFile + ") in LibreOffice or Excel.", e);
             }
         });
+        add(importConferenceButton);
         add(button);
         add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
     }
