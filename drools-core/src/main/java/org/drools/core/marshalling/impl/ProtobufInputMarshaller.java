@@ -75,6 +75,7 @@ import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -815,11 +816,9 @@ public class ProtobufInputMarshaller {
                     int nodeId = ((BaseTuple)activation).getParent().getTupleSink().getId();
 
 
-
                     List<ProtobufMessages.Activation> collect = this.dormantActivations.values().stream()
                             .filter(s -> {
-                                ByteString object = s.getObject();
-                                Object deserializedObject = null;
+                                Object object = s.getObject();
                                 return s.getNodeId() == nodeId && object.equals(ifh.getObject());
                             })
                             .collect(Collectors.toList());
@@ -938,4 +937,5 @@ public class ProtobufInputMarshaller {
             return true;
         }
     }
+
 }
