@@ -15,7 +15,7 @@
 | required
 
 |lookup
-|Sets the knowledge session id on which the commands are
+|Sets the KIE session id on which the commands are
               going to be executed
 |true
 

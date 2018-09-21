@@ -15,8 +15,7 @@
 | required
 
 |objects
-|The list of objects to be inserted on the knowledge
-              session
+|The list of objects to be inserted on the KIE session
 |true
 
 |outIdentifier

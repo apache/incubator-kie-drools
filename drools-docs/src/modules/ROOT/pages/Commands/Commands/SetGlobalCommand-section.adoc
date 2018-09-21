@@ -15,8 +15,7 @@
 | required
 
 |identifier
-|The identifier of the global defined in the knowledge
-              base
+|The identifier of the global defined in the KIE base
 |true
 
 |object
@@ -83,4 +82,3 @@ command.getCommands().add(setGlobalCommand);
     </set-global>
 </batch-execution>
 ----
-

@@ -3,7 +3,7 @@
 
 
 
-* Description: Used to get an object from a knowledge session
+* Description: Used to get an object from a KIE session
 * Attributes
 +
 
