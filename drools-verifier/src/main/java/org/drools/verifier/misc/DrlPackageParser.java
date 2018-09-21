@@ -60,14 +60,13 @@ public class DrlPackageParser {
         // Remove block comments
         int start = drl.indexOf( "/*" );
         while ( start > 0 ) {
-            if ( start >= 0 ) {
-                drl = drl.replace( drl.substring( start,
-                                                  drl.indexOf( "*/",
-                                                               start ) ),
-                                   "" );
+            drl = drl.replace( drl.substring( start,
+                                              drl.indexOf( "*/",
+                                                           start ) ),
+                               "" );
 
-                start = drl.indexOf( "/*" );
-            }
+            start = drl.indexOf( "/*" );
+
         }
 
         final Matcher m = finder.matcher( drl );
