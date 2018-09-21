@@ -29,7 +29,9 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -57,6 +59,7 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.process.instance.WorkItem;
+import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -805,13 +808,27 @@ public class ProtobufInputMarshaller {
                 return true;
             } else {
 
-//                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
-//
-//                for(InternalFactHandle ifh : internalFactHandles) {
-//                    if(ifh.isAlreadyFired()) {
-//                        return false;
-//                    }
-//                }
+                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
+
+                for(InternalFactHandle ifh : internalFactHandles) {
+
+                    int nodeId = ((BaseTuple)activation).getParent().getTupleSink().getId();
+
+
+
+                    List<ProtobufMessages.Activation> collect = this.dormantActivations.values().stream()
+                            .filter(s -> {
+                                ByteString object = s.getObject();
+                                Object deserializedObject = null;
+                                return s.getNodeId() == nodeId && object.equals(ifh.getObject());
+                            })
+                            .collect(Collectors.toList());
+
+                    if(!collect.isEmpty()) {
+                        return false;
+                    }
+
+                }
 
 
                 ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );

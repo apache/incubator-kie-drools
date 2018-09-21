@@ -544,6 +544,28 @@ public class ProtobufOutputMarshaller {
         return new SerializedObject(index, serializedObject);
     }
 
+    private static Object unmarshall(MarshallerWriteContext context, int index, ByteString str) {
+        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
+
+        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
+
+
+//        Integer index = context.getStrategyIndex( strategy );
+
+//        ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
+//        byte[] serialized;
+//        try {
+////            serialized = strategy.unmarshal(strategyContext,
+////                                              context,
+////                                              str, context.kBase.getRootClassLoader() );
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        ByteString serializedObject = ByteString.copyFrom(serialized);
+
+        return new SerializedObject(index, null);
+    }
+
     public static class SerializedObject {
         public int strategyIndex;
         public ByteString serializedObject;
