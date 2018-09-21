@@ -3,7 +3,7 @@
 
 
 
-* Description: Allows you to modify a previously inserted object in the knowledge session.
+* Description: Allows you to modify a previously inserted object in the KIE session.
 * Attributes
 +
 

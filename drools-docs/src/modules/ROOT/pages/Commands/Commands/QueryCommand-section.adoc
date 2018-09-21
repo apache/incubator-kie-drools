@@ -3,7 +3,7 @@
 
 
 
-* Description: Executes a query defined in knowledge base.
+* Description: Executes a query defined in KIE base.
 * Attributes
 +
 

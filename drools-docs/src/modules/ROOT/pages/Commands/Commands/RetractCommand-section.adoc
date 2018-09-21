@@ -3,7 +3,7 @@
 
 
 
-* Description: Retract an object from the knowledge session.
+* Description: Retract an object from the KIE session.
 * Attributes
 +
 

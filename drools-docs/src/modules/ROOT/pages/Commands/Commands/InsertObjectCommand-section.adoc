@@ -3,7 +3,7 @@
 
 
 
-* Description: Insert an object in the knowledge session.
+* Description: Insert an object in the KIE session.
 * Attributes
 +
 

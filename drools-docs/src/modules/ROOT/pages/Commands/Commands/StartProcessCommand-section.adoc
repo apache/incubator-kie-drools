@@ -24,7 +24,7 @@
 |false
 
 |data
-|A list of objects to be inserted in the knowledge session
+|A list of objects to be inserted in the KIE session
               before the process startup
 |false
 |===
