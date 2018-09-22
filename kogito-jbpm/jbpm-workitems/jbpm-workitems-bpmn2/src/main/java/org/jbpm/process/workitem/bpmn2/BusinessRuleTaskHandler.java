@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Additional BusinesRuleTask support that allows to decouple rules from processes - as default BusinessRuleTask
+ * Additional BusinessRuleTask support that allows to decouple rules from processes - as default BusinessRuleTask
  * uses exact same working memory (kie session) as process which essentially means same kbase.
  * To allow better separation and maintainability BusinessRuleTaskHandler is provided that supports:
  * <ul>
@@ -147,8 +147,7 @@ public class BusinessRuleTaskHandler extends AbstractLogOrThrowWorkItemHandler i
                                     results);
                 }
             } else if (DMN_LANG.equalsIgnoreCase(language)) {
-                handleDMN(workItem,
-                          parameters,
+                handleDMN(parameters,
                           results);
             } else {
                 throw new IllegalArgumentException("Not supported language type " + language);
@@ -182,7 +181,7 @@ public class BusinessRuleTaskHandler extends AbstractLogOrThrowWorkItemHandler i
                                    String kieSessionName,
                                    Map<String, Object> parameters,
                                    Map<String, Object> results) {
-        logger.debug("Evalating rules in statefull session with name {}",
+        logger.debug("Evaluating rules in statefull session with name {}",
                      kieSessionName);
         Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
         KieSession kieSession = kieContainer.newKieSession(kieSessionName);
@@ -212,7 +211,7 @@ public class BusinessRuleTaskHandler extends AbstractLogOrThrowWorkItemHandler i
                                    String kieSessionName,
                                    Map<String, Object> parameters,
                                    Map<String, Object> results) {
-        logger.debug("Evalating rules in stateless session with name {}",
+        logger.debug("Evaluating rules in stateless session with name {}",
                      kieSessionName);
         StatelessKieSession kieSession = kieContainer.newStatelessKieSession(kieSessionName);
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -240,8 +239,7 @@ public class BusinessRuleTaskHandler extends AbstractLogOrThrowWorkItemHandler i
         }
     }
 
-    protected void handleDMN(WorkItem workItem,
-                             Map<String, Object> parameters,
+    protected void handleDMN(Map<String, Object> parameters,
                              Map<String, Object> results) {
         String namespace = (String) parameters.remove("Namespace");
         String model = (String) parameters.remove("Model");
