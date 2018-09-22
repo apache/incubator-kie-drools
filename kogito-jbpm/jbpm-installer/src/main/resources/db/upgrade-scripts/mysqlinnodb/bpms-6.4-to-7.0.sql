@@ -69,6 +69,9 @@ create table ExecutionErrorInfo (
     primary key (id)
 ) ENGINE=InnoDB;
 
+create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
+create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+
 alter table ProcessInstanceLog add column slaCompliance integer;
 alter table ProcessInstanceLog add column sla_due_date datetime;
 ALTER TABLE NodeInstanceLog ADD COLUMN slaCompliance integer;

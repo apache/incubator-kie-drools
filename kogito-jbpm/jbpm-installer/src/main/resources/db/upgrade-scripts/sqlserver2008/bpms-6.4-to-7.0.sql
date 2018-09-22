@@ -66,6 +66,9 @@ create table ExecutionErrorInfo (
     primary key (id)
 );
 
+create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
+create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+
 ALTER TABLE ProcessInstanceLog ADD sla_due_date datetime2;
 ALTER TABLE ProcessInstanceLog ADD slaCompliance int; 
 ALTER TABLE NodeInstanceLog ADD sla_due_date datetime2;

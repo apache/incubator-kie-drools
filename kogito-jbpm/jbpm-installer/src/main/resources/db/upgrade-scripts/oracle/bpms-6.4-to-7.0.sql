@@ -74,6 +74,9 @@ create sequence CASE_FILE_DATA_LOG_ID_SEQ;
 
 create sequence EXEC_ERROR_INFO_ID_SEQ;
 
+create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
+create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+
 alter table ProcessInstanceLog add sla_due_date timestamp;
 alter table ProcessInstanceLog add slaCompliance number(10,0);
 ALTER TABLE NodeInstanceLog ADD sla_due_date timestamp;
