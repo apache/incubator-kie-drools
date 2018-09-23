@@ -38,6 +38,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -360,7 +361,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
      */
 	protected void processResources(InternalKieModule module, Collection<String> files,
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId, Map<String, ProcessDescriptor> processes) {
-        for (String fileName : files) {
+        boolean processClasses = (((KieContainerImpl) kieContainer).getKieProject() instanceof KieModuleKieProject);
+	    for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
                 ProcessAssetDesc process;
                 try {
@@ -389,7 +391,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
                 }
-            } else if( fileName.matches(".+class$")) {
+            } else if( processClasses && fileName.matches(".+class$")) {
                 // Classes 1: classes from deployment added
                 String className = fileName.replaceAll("/", ".");
                 className = className.substring(0, fileName.length() - ".class".length());
@@ -452,7 +454,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 	 * @param deployedUnit The {@link DeployedUnitImpl}, used to store the classes loaded
 	 */
 	protected void processClassloader(KieContainer kieContainer, DeployedUnitImpl deployedUnit) {
-		if (kieContainer.getClassLoader() instanceof ProjectClassLoader) {
+	    if (((KieContainerImpl) kieContainer).getKieProject() instanceof KieModuleKieProject && kieContainer.getClassLoader() instanceof ProjectClassLoader) {
 			ClassLoader parentCl = kieContainer.getClassLoader().getParent();
 			if (parentCl instanceof URLClassLoader) {
 				URL[] urls = ((URLClassLoader) parentCl).getURLs();

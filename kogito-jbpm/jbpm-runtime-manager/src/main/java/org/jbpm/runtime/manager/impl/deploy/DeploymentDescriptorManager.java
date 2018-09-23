@@ -69,9 +69,10 @@ public class DeploymentDescriptorManager {
 	public List<DeploymentDescriptor> getDeploymentDescriptorHierarchy(KieContainer kieContainer) {
 		List<DeploymentDescriptor> descriptorHierarchy = new ArrayList<DeploymentDescriptor>();
 
-		InternalKieModule module = ((KieModuleKieProject) ((KieContainerImpl)kieContainer).getKieProject()).getInternalKieModule();
-		collectDeploymentDescriptors(module, descriptorHierarchy);
-
+		if (((KieContainerImpl)kieContainer).getKieProject() instanceof KieModuleKieProject) {
+    		InternalKieModule module = ((KieModuleKieProject) ((KieContainerImpl)kieContainer).getKieProject()).getInternalKieModule();
+    		collectDeploymentDescriptors(module, descriptorHierarchy);
+		}
 		// last is the default descriptor
 		descriptorHierarchy.add(getDefaultDescriptor());	
 		

@@ -1,0 +1,7 @@
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+  <kbase name="KBase-test" default="true" eventProcessingMode="cloud" equalsBehavior="identity" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="org.jbpm.kie.services.processes">
+    <ksession name="ksession-test" type="stateful" default="true" clockType="realtime" scope="javax.enterprise.context.ApplicationScoped"/>
+  </kbase>
+</kmodule>
