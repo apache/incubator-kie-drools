@@ -17,8 +17,12 @@
 package org.jbpm.executor.impl.wih;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -37,7 +41,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -250,6 +256,45 @@ public class SLATrackingCommandTest extends AbstractExecutorBaseTest {
         assertNodeInstanceSLACompliance(logService, processInstance.getId(), "Hello", ProcessInstance.SLA_MET);
     }
    
+    @Test
+    public void testDontSignalCompletedSLATrackingOnUserTask() throws Exception {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTaskWithSLAOnTask.bpmn2"), ResourceType.BPMN2)
+                .addEnvironmentEntry("SLATimerMode", "false")
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, tasks.size());
+
+        Thread.sleep(3000);
+
+        runtime.getTaskService().start(tasks.get(0).getId(), "john");
+        runtime.getTaskService().complete(tasks.get(0).getId(), "john", null);
+
+        countDownListener.reset(1);
+        Long requestInfoId = scheduleSLATracking(manager.getIdentifier());
+        countDownListener.waitTillCompleted();
+        assertNull(ksession.getProcessInstance(processInstance.getId())); // completed
+        
+        RequestInfo requestInfo = executorService.getRequestById(requestInfoId);
+        ByteArrayInputStream is = new ByteArrayInputStream(requestInfo.getResponseData());
+        ExecutionResults results = (ExecutionResults) new ObjectInputStream(is).readObject();
+        assertFalse(results.getData().containsKey("NodeSLASignals"));
+        
+    }
     
     private ExecutorService buildExecutorService() {        
         emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.complete");
@@ -261,12 +306,12 @@ public class SLATrackingCommandTest extends AbstractExecutorBaseTest {
         return executorService;
     }
     
-	private void scheduleSLATracking(String identifier) {
+	private Long scheduleSLATracking(String identifier) {
 		CommandContext commandContext = new CommandContext();
 		commandContext.setData("EmfName", "org.jbpm.persistence.complete");
 		commandContext.setData("SingleRun", "true");
 		commandContext.setData("ForDeployment", identifier);
-		executorService.scheduleRequest("org.jbpm.executor.commands.SLATrackingCommand", commandContext);
+		return executorService.scheduleRequest("org.jbpm.executor.commands.SLATrackingCommand", commandContext);
 	}
 
 	private void assertProcessInstanceSLACompliance(JPAAuditLogService logService, Long processInstanceId, int slaCompliance) {

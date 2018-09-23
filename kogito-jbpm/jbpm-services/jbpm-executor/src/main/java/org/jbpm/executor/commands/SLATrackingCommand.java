@@ -100,8 +100,9 @@ public class SLATrackingCommand implements Command, Reoccurring {
         parameters.put("now", new Date());
         StringBuilder lookupQuery = new StringBuilder();
 
-        lookupQuery.append("select log from NodeInstanceLog log where ");
-        lookupQuery.append("log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.slaDueDate < :now and nil.slaCompliance = 1 ");
+        lookupQuery.append("select log from NodeInstanceLog log, ProcessInstanceLog proc ");
+        lookupQuery.append("where proc.processInstanceId = log.processInstanceId and proc.status = 1 ");
+        lookupQuery.append("and log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.slaDueDate < :now and nil.slaCompliance = 1 ");
         lookupQuery.append("GROUP BY nil.nodeInstanceId ");
         lookupQuery.append("HAVING sum(nil.type) = 0) ");
         lookupQuery.append("and log.type = 0 ");
@@ -144,7 +145,7 @@ public class SLATrackingCommand implements Command, Reoccurring {
         parameters.put("now", new Date());
         lookupQuery = new StringBuilder();
 
-        lookupQuery.append("select log from ProcessInstanceLog log where log.slaDueDate < :now and log.slaCompliance = 1 ");
+        lookupQuery.append("select log from ProcessInstanceLog log where log.slaDueDate < :now and log.slaCompliance = 1 and log.status = 1");
         if (forDeployment != null && !forDeployment.isEmpty()) {
             lookupQuery.append(" and log.externalId = :forDeployment");
             parameters.put("forDeployment", forDeployment);
