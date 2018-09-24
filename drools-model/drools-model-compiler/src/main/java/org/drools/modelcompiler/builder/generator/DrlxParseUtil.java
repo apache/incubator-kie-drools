@@ -205,9 +205,6 @@ public class DrlxParseUtil {
         }
 
         if (expr instanceof BinaryExpr) {
-            BinaryExpr binaryExpr = ( BinaryExpr ) expr;
-            java.lang.reflect.Type leftType = getExpressionType( context, typeResolver, binaryExpr.getLeft(), usedDeclarations );
-            java.lang.reflect.Type rightType = getExpressionType( context, typeResolver, binaryExpr.getRight(), usedDeclarations );
             return boolean.class;
         }
 

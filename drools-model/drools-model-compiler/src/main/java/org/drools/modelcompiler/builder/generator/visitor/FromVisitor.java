@@ -152,7 +152,6 @@ public class FromVisitor {
     }
 
     private Expression createSupplier(Expression parsedExpression) {
-        Supplier<String> str = () -> "ciao";
         final LambdaExpr lambdaExpr = new LambdaExpr(NodeList.nodeList(), new ExpressionStmt(parsedExpression), true);
 
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
