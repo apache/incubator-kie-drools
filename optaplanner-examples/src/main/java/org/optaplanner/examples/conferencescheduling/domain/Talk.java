@@ -50,6 +50,8 @@ public class Talk extends AbstractPersistable {
     private Set<Talk> prerequisiteTalkSet;
     private int favoriteCount;
     private int crowdControlRisk;
+    private Timeslot publishedTimeslot;
+    private Room publishedRoom;
 
     @PlanningPin
     private boolean pinnedByUser = false;
@@ -453,6 +455,22 @@ public class Talk extends AbstractPersistable {
 
     public void setCrowdControlRisk(int crowdControlRisk) {
         this.crowdControlRisk = crowdControlRisk;
+    }
+
+    public Timeslot getPublishedTimeslot() {
+        return publishedTimeslot;
+    }
+
+    public void setPublishedTimeslot(Timeslot publishedTimeslot) {
+        this.publishedTimeslot = publishedTimeslot;
+    }
+
+    public Room getPublishedRoom() {
+        return publishedRoom;
+    }
+
+    public void setPublishedRoom(Room publishedRoom) {
+        this.publishedRoom = publishedRoom;
     }
 
     // ************************************************************************

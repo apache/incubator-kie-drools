@@ -56,6 +56,9 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String SAME_DAY_TALKS = "Same day talks";
     public static final String POPULAR_TALKS = "Popular talks";
     public static final String CROWD_CONTROL = "Crowd control";
+    public static final String PUBLISHED_TIMESLOT = "Published timeslot";
+    public static final String PUBLISHED_ROOM = "Published room";
+    public static final String ROOM_STABILITY = "Room stability";
 
     private int talkTypeOfTimeslot = 10000;
     private int talkTypeOfRoom = 10000;
@@ -71,8 +74,10 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int speakerProhibitedRoomTags = 1;
     private int talkRequiredRoomTags = 1;
     private int talkProhibitedRoomTags = 1;
-    private int talkMutuallyExclusiveTalksTags = 1;
     private int talkPrerequisiteTalks = 1;
+
+    private int talkMutuallyExclusiveTalksTags = 1;
+    private int publishedTimeslot = 10;
 
     private int themeTrackConflict = 10;
     private int sectorConflict = 10;
@@ -93,6 +98,8 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int sameDayTalks = 10;
     private int popularTalks = 10;
     private int crowdControl = 10;
+    private int publishedRoom = 10;
+    private int roomStability = 10;
 
     public ConferenceParametrization() {
     }
@@ -215,6 +222,22 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setTalkProhibitedRoomTags(int talkProhibitedRoomTags) {
         this.talkProhibitedRoomTags = talkProhibitedRoomTags;
+    }
+
+    public int getTalkMutuallyExclusiveTalksTags() {
+        return talkMutuallyExclusiveTalksTags;
+    }
+
+    public void setTalkMutuallyExclusiveTalksTags(int talkMutuallyExclusiveTalksTags) {
+        this.talkMutuallyExclusiveTalksTags = talkMutuallyExclusiveTalksTags;
+    }
+
+    public int getPublishedTimeslot() {
+        return publishedTimeslot;
+    }
+
+    public void setPublishedTimeslot(int publishedTimeslot) {
+        this.publishedTimeslot = publishedTimeslot;
     }
 
     public int getThemeTrackConflict() {
@@ -345,14 +368,6 @@ public class ConferenceParametrization extends AbstractPersistable {
         this.talkUndesiredRoomTags = talkUndesiredRoomTags;
     }
 
-    public int getTalkMutuallyExclusiveTalksTags() {
-        return talkMutuallyExclusiveTalksTags;
-    }
-
-    public void setTalkMutuallyExclusiveTalksTags(int talkMutuallyExclusiveTalksTags) {
-        this.talkMutuallyExclusiveTalksTags = talkMutuallyExclusiveTalksTags;
-    }
-
     public int getTalkPrerequisiteTalks() {
         return talkPrerequisiteTalks;
     }
@@ -383,5 +398,21 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setCrowdControl(int crowdControl) {
         this.crowdControl = crowdControl;
+    }
+
+    public int getPublishedRoom() {
+        return publishedRoom;
+    }
+
+    public void setPublishedRoom(int publishedRoom) {
+        this.publishedRoom = publishedRoom;
+    }
+
+    public int getRoomStability() {
+        return roomStability;
+    }
+
+    public void setRoomStability(int roomStability) {
+        this.roomStability = roomStability;
     }
 }

@@ -156,9 +156,14 @@ end
 rule "Talk prerequisite talks"
     when
         ConferenceParametrization($weight : talkPrerequisiteTalks != 0)
-        $talk : Talk(timeslot != null, missingPrerequisiteCount() > 0)
+        $talk : Talk(timeslot != null, getPrerequisiteTalkSet().size() > 0)
+        $count : Number(this > 0) from accumulate(
+            $reqTalk : Talk($talk.getPrerequisiteTalkSet().contains(this), timeslot == null ||
+                            !timeslot.endsBefore($talk.getTimeslot())),
+            count($reqTalk)
+        )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $talk.missingPrerequisiteCount());
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $count.intValue());
 end
 
 // ############################################################################
@@ -179,6 +184,14 @@ rule "Talk mutually-exclusive-talks tags"
         } else {
             scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
         }
+end
+
+rule "Published timeslot"
+    when
+        ConferenceParametrization($weight : publishedTimeslot != 0)
+        Talk(publishedTimeslot != null, timeslot != publishedTimeslot)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, - $weight);
 end
 
 // ############################################################################
@@ -385,6 +398,23 @@ rule "Crowd control"
             $overlappingTalk : Talk(timeslot != null, id != $talk.getId(), crowdControlRisk > 0, timeslot.overlaps($talk.getTimeslot)),
             count($overlappingTalk)
         )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+end
+
+rule "Published room"
+    when
+        ConferenceParametrization($weight : publishedRoom != 0)
+        Talk(publishedRoom != null, room != publishedRoom)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+end
+
+rule "Room stability"
+    when
+        ConferenceParametrization($weight : roomStability != 0)
+        $talk : Talk(timeslot != null, $timeslot : timeslot, $room : room, $id : id)
+        Talk(timeslot != null, overlappingThemeTrackCount($talk) > 0, $id < id, timeslot.isOnSameDayAs($timeslot), $room != room)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
 end

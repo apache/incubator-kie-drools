@@ -40,6 +40,14 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
         });
 
+        JButton publishButton = new JButton("Publish");
+        publishButton.addActionListener(actionEvent -> {
+            solutionBusiness.getSolution().getTalkList().stream().forEach(talk -> {
+                talk.setPublishedTimeslot(talk.getTimeslot());
+                talk.setPublishedRoom(talk.getRoom());
+            });
+        });
+
         JButton button = new JButton("Show in LibreOffice or Excel");
         button.addActionListener(event -> {
             SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
@@ -57,6 +65,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             }
         });
         add(importConferenceButton);
+        add(publishButton);
         add(button);
         add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
     }
