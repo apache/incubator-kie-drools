@@ -446,8 +446,6 @@ public class POJOGenerator {
                 case LONG:
                     primitiveToInt = format("(int) ({0} ^ ({0} >>> 32))", fieldName);
                     break;
-                default:
-                    throw new IllegalArgumentException("Unsupported primitive type: " + primitiveType + "!");
             }
             return parseStatement(format("result = 31 * result + {0};", primitiveToInt));
         } else {

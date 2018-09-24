@@ -200,8 +200,6 @@ public class LambdaIntrospector implements LambdaPrinter {
                 case DCONST_1:
                     sb.append("const 1D\n");
                     break;
-                default:
-                    throw new IllegalArgumentException("Unsupported opcode: " + opcode + "!");
             }
         }
 
