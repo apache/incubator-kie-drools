@@ -120,7 +120,7 @@ public class BitMaskUtil {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null) {
+            if (!(obj instanceof PropertyInClass)) {
                 return false;
             }
             PropertyInClass other = (PropertyInClass) obj;
