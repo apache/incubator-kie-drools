@@ -175,7 +175,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
         FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
+            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
             if( map != null ) {
                 TupleKey key = PersisterHelper.createTupleKey( leftTuple );
                 List<FactHandle> list = map.get( key );
