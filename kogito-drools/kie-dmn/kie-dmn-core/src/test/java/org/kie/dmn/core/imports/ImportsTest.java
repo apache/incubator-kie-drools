@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.imports;
 
+import java.util.function.Function;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -276,6 +278,41 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         assertThat(evaluateAll.getDecisionResultByName("Hello decision using imported InputData").getResult(), is("Hello, DROOLS-2944"));
+    }
+
+    @Test
+    public void testAllowDMNAPItoEvaluateDirectDependencyImportedDecisions() {
+        // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn");
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
+        
+        testAllowDMNAPItoEvaluateDirectDependencyImportedDecisions_evaluateResultsAndCheck(runtime,
+                                                                                           dmnModel,
+                                                                                           context -> runtime.evaluateByName(dmnModel,
+                                                                                                                             context,
+                                                                                                                             "modelA.Greet the Person",
+                                                                                                                             "Evaluating Say Hello"));
+        testAllowDMNAPItoEvaluateDirectDependencyImportedDecisions_evaluateResultsAndCheck(runtime,
+                                                                                           dmnModel,
+                                                                                           context -> runtime.evaluateById(dmnModel,
+                                                                                                                           context,
+                                                                                                                           "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5",
+                                                                                                                           "_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"));
+    }
+
+    private void testAllowDMNAPItoEvaluateDirectDependencyImportedDecisions_evaluateResultsAndCheck(DMNRuntime runtime, final DMNModel dmnModel, Function<DMNContext, DMNResult> fn) {
+        DMNContext context = runtime.newContext();
+        context.set("modelA", mapOf(entry("Person name", "John")));
+
+        DMNResult evaluateAll = fn.apply(context);
+        LOG.debug("{}", evaluateAll);
+        LOG.debug("{}", evaluateAll.getDecisionResults());
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
+
+        assertThat(evaluateAll.getDecisionResultByName("Evaluating Say Hello").getResult(), is("Evaluating Say Hello to: Hello, John"));
+        assertThat(evaluateAll.getDecisionResultByName("modelA.Greet the Person").getResult(), is("Hello, John"));
     }
 }
 

@@ -165,6 +165,13 @@ public class DMNRuntimeImpl
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
+        // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
+        if (!decision.isPresent() && name != null && name.contains(".")) {
+            decision = model.getDecisions().stream()
+                            .filter(d -> !d.getModelNamespace().equals(model.getNamespace()))
+                            .filter(d -> (((DMNModelImpl) model).getImportAliasFor(d.getModelNamespace(), d.getModelName()).orElse("") + "." + d.getName()).equals(name))
+                            .findFirst();
+        }
         if (decision.isPresent()) {
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {
@@ -194,6 +201,11 @@ public class DMNRuntimeImpl
     private void evaluateByIdInternal( DMNModel model, DMNContext context, DMNResultImpl result, String id ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
+        // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
+        if (!decision.isPresent() && id != null && id.contains("#")) { // only direct dependencies check:
+            decision = Optional.ofNullable(model.getDecisionById(id))
+                               .filter(d -> (((DMNModelImpl) model).getImportAliasFor(d.getModelNamespace(), d.getModelName()).isPresent()));
+        }
         if (decision.isPresent()) {
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {
@@ -475,8 +487,15 @@ public class DMNRuntimeImpl
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
             if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
-                dr = new DMNDecisionResultImpl(decisionId, decision.getName());
-                result.addDecisionResult(dr);
+                String decisionResultName = d.getName();
+                Optional<String> importAliasFor = ((DMNModelImpl) result.getModel()).getImportAliasFor(d.getModelNamespace(), d.getModelName());
+                if (importAliasFor.isPresent()) {
+                    decisionResultName = importAliasFor.get() + "." + d.getName();
+                }
+                dr = new DMNDecisionResultImpl(decisionId, decisionResultName);
+                if (importAliasFor.isPresent()) { // otherwise is a transitive, skipped and not to be added to the results:
+                    result.addDecisionResult(dr);
+                }
             }
             dr.setEvaluationStatus(DMNDecisionResult.DecisionEvaluationStatus.EVALUATING);
             for( DMNNode dep : decision.getDependencies().values() ) {
