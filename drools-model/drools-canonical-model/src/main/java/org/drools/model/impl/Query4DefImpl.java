@@ -86,7 +86,7 @@ public class Query4DefImpl<A, B, C, D> extends QueryDefImpl implements Query4Def
     @Override
     public boolean isEqualTo( ModelComponent other ) {
         if ( this == other ) return true;
-        if ( !(other instanceof Query1DefImpl) ) return false;
+        if ( !(other instanceof Query4DefImpl) ) return false;
 
         Query4DefImpl that = ( Query4DefImpl ) other;
 
