@@ -104,8 +104,12 @@ public class LambdaIntrospector implements LambdaPrinter {
 
         @Override
         public boolean equals( Object o ) {
-            ClassIdentifier that = ( ClassIdentifier ) o;
-            return className.equals( that.className ) && classLoader == that.classLoader;
+            if (o instanceof ClassIdentifier) {
+                ClassIdentifier that = ( ClassIdentifier ) o;
+                return className.equals( that.className ) && classLoader == that.classLoader;
+            } else {
+                return false;
+            }
         }
 
         @Override
