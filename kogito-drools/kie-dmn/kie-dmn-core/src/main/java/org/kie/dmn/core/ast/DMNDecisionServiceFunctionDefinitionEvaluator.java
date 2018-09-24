@@ -17,7 +17,9 @@
 package org.kie.dmn.core.ast;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNContext;
@@ -42,10 +44,10 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServiceFunctionDefinitionEvaluator.class);
     private DecisionServiceNode dsNode;
-    private List<FormalParameter> parameters;
+    private List<DSFormalParameter> parameters;
     private boolean coerceSingletonResult;
 
-    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionServiceNode dsNode, List<FormalParameter> parameters, boolean coerceSingletonResult) {
+    public DMNDecisionServiceFunctionDefinitionEvaluator(DecisionServiceNode dsNode, List<DSFormalParameter> parameters, boolean coerceSingletonResult) {
         this.dsNode = dsNode;
         this.parameters = parameters;
         this.coerceSingletonResult = coerceSingletonResult;
@@ -58,13 +60,34 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
         return new EvaluatorResultImpl(function, ResultType.SUCCESS);
     }
 
+    public static class DSFormalParameter extends FormalParameter {
+        private final String importName;
+        private final String elementName;
+
+        public DSFormalParameter(String importName, String elementName, DMNType type) {
+            super(importName != null ? importName + "." + elementName : elementName, type);
+            this.importName = importName;
+            this.elementName = elementName;
+        }
+
+        public String getImportName() {
+            return importName;
+        }
+
+        public String getElementName() {
+            return elementName;
+        }
+
+    }
+
     public static class DMNDSFunction extends BaseFEELFunction {
-        private final List<FormalParameter> parameters;
+
+        private final List<DSFormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
 
-        public DMNDSFunction(String name, List<FormalParameter> parameters, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNDSFunction(String name, List<DSFormalParameter> parameters, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super(name);
             this.parameters = parameters;
             this.evaluator = evaluator;
@@ -78,7 +101,19 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             DMNContext dmnContext = eventManager.getRuntime().newContext();
             try {
                 for (int i = 0; i < params.length; i++) {
-                    dmnContext.set(parameters.get(i).name, params[i]);
+                    DSFormalParameter formalParameter = parameters.get(i);
+                    if (formalParameter.getImportName() == null) {
+                        dmnContext.set(formalParameter.name, params[i]);
+                    } else {
+                        Map<String, Object> importNameCtx = null;
+                        if (dmnContext.isDefined(formalParameter.getImportName())) {
+                            importNameCtx = (Map) dmnContext.get(formalParameter.getImportName());
+                        } else {
+                            importNameCtx = new HashMap<>();
+                            dmnContext.set(formalParameter.getImportName(), importNameCtx);
+                        }
+                        importNameCtx.put(formalParameter.getElementName(), params[i]);
+                    }
                 }
                 resultContext.setContext(dmnContext);
                 EvaluatorResult result = evaluator.evaluate(eventManager, resultContext);

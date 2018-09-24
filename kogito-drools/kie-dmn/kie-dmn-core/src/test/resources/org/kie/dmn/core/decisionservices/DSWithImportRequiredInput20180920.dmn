@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:include1="http://www.trisotech.com/dmn/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" xmlns="http://www.trisotech.com/dmn/definitions/_76165d7d-12f8-46d3-b8af-120f1ac8b3fc" id="_76165d7d-12f8-46d3-b8af-120f1ac8b3fc" namespace="http://www.trisotech.com/dmn/definitions/_76165d7d-12f8-46d3-b8af-120f1ac8b3fc"          exporter="DMN Modeler" exporterVersion="6.1.8.201809121639" name="Model B" triso:logoChoice="Default">
+	<semantic:extensionElements>
+		<triso:dmnInputs>[]</triso:dmnInputs>
+	</semantic:extensionElements>
+	<semantic:import namespace="http://www.trisotech.com/dmn/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" name="Model A" triso:fileId="eyJmIjp7InNrdSI6IjUyNzMzNTNjLTllMTktNDczYy05ZmJjLWViNzM4NTExMjU1MyIsIm5hbWUiOiJNb2RlbCBBIn19" triso:fileName="Model Inclusion/ABC/Model A" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Model A"/>
+	<semantic:decision id="_81768120-1280-403f-adc6-f63d4cb43912" name="Decision B">
+		<semantic:variable name="Decision B" id="_ae541efa-05f8-4253-bdff-2661a1046bdd"/>
+		<semantic:informationRequirement id="_1d0b9ce1-4902-4dee-96be-080779185bb5">
+			<semantic:requiredInput href="http://www.trisotech.com/dmn/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f#_0b30a69e-76c9-433b-8e20-07bd6bef68a7"/>
+		</semantic:informationRequirement>
+		<semantic:literalExpression id="_ead2856e-35ff-4b56-a0c0-d607cd0416f0">
+			<semantic:text>Model A.Input 1</semantic:text>
+		</semantic:literalExpression>
+	</semantic:decision>
+	<semantic:decisionService id="_fe931a1a-9eb5-42d2-a63a-e012d9868231" name="Decision B DS">
+		<semantic:variable name="Decision B DS" id="_59efeb65-405d-472f-86a3-a0757c2760aa"/>
+		<semantic:outputDecision href="#_81768120-1280-403f-adc6-f63d4cb43912"/>
+		<semantic:inputData href="http://www.trisotech.com/dmn/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f#_0b30a69e-76c9-433b-8e20-07bd6bef68a7"/>
+	</semantic:decisionService>
+	<semantic:decision id="_123b38fe-fcb9-42ca-9d7b-992a086632db" name="Invoke Decision B DS">
+		<semantic:variable name="Invoke Decision B DS" id="_c48e78ed-fbaa-4d54-a333-02e2681b6df4"/>
+		<semantic:knowledgeRequirement id="_c21e79fa-1260-42bf-b24b-3d63348a529a">
+			<semantic:requiredKnowledge href="#_fe931a1a-9eb5-42d2-a63a-e012d9868231"/>
+		</semantic:knowledgeRequirement>
+		<semantic:invocation id="_2aded323-2322-422e-b92a-946a7083c293">
+			<semantic:literalExpression id="literal__2aded323-2322-422e-b92a-946a7083c293">
+				<semantic:text>Decision B DS</semantic:text>
+			</semantic:literalExpression>
+			<semantic:binding>
+				<semantic:parameter id="_989c1494-bd05-4291-94a9-c410820566c3" name="Model A.Input 1"/>
+				<semantic:literalExpression id="_0cc445c4-075d-4fe5-8c89-829bd95faacf">
+					<semantic:text>"A value"</semantic:text>
+				</semantic:literalExpression>
+			</semantic:binding>
+		</semantic:invocation>
+	</semantic:decision>
+	<semantic:textAnnotation id="_c4b216bf-83a0-4ffa-bf79-be753eb93f47">
+		<semantic:text>Execution doesn't work</semantic:text>
+	</semantic:textAnnotation>
+	<semantic:association id="_86db3d30-ffa9-4892-a0fd-dfcc0e97d168">
+		<semantic:sourceRef href="#_c4b216bf-83a0-4ffa-bf79-be753eb93f47"/>
+		<semantic:targetRef href="#_123b38fe-fcb9-42ca-9d7b-992a086632db"/>
+	</semantic:association>
+</semantic:definitions>

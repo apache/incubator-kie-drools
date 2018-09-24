@@ -18,14 +18,18 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator;
-import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
+import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator.DSFormalParameter;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -76,18 +80,45 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         return node instanceof DecisionServiceNodeImpl;
     }
 
+    /**
+     * DMN v1.2 specification, chapter "10.4 Execution Semantics of Decision Services"
+     * The qualified name of an element named E that is defined in the same decision model as S is simply E.
+     * Otherwise, the qualified name is I.E, where I is the name of the import element that refers to the model where E is defined.
+     */
+    private static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
+        if (input.getModelNamespace().equals(model.getNamespace())) {
+            return null;
+        } else {
+            Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
+            if (!importAlias.isPresent()) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ((DMNBaseNode)input).getSource(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                      new QName(input.getModelNamespace(), input.getModelName()),
+                                      ((DMNBaseNode)input).getSource());
+                return null;
+            }
+            return importAlias.get();
+        }
+    }
+
     @Override
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
 
-        List<FormalParameter> parameters = new ArrayList<>();
+        List<DSFormalParameter> parameters = new ArrayList<>();
         
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
+            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
-                ni.addInputParameter(input.getName(), input);
-                parameters.add(new FormalParameter(input.getName(), input.getType()));
+                ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
+                parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getType()));
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -103,9 +134,10 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         for (DMNElementReference er : ni.getDecisionService().getInputDecision()) {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
+            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
-                ni.addInputParameter(input.getName(), input);
-                parameters.add(new FormalParameter(input.getName(), input.getResultType()));
+                ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
+                parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getResultType()));
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
