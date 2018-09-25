@@ -52,7 +52,7 @@ public class KieBaseBuilder {
 
     public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseOption... options ) {
         KieBaseConfiguration kieBaseConf = KieServices.get().newKieBaseConfiguration();
-        if (options == null || options.length == 0) {
+        if (options != null) {
             for (KieBaseOption option : options) {
                 kieBaseConf.setOption( option );
             }

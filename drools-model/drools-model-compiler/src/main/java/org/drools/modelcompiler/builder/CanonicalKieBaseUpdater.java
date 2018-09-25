@@ -127,6 +127,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                             case DECLARATION:
                                 oldKpkg.removeTypeDeclaration( changedItemName );
                                 break;
+                            default:
+                                throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
                         }
                     }
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
@@ -150,6 +152,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 TypeDeclaration addedType = kpkg.getTypeDeclaration( changedItemName );
                                 oldKpkg.addTypeDeclaration( addedType );
                                 break;
+                            default:
+                                throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
                         }
                     }
                 }

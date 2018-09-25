@@ -612,7 +612,7 @@ public abstract class AccumulateVisitor {
 
     protected abstract void postVisit();
 
-    class NewBinding {
+    public static class NewBinding {
 
         Optional<String> patternBinding;
         MethodCallExpr bindExpression;
