@@ -19,7 +19,9 @@ ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
 endif::[]
 * You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
-* The following dependency is added to the `pom.xml` file of the project:
+
+.Procedure
+. In your client application, add the following dependencies to the relevant classpath of your Java project:
 +
 --
 [source,xml,subs="attributes+"]
@@ -61,8 +63,6 @@ endif::[]
 ====
 endif::DM,PAM[]
 --
-
-.Procedure
 . Instantiate a `KieServicesClient` instance with the appropriate connection information.
 +
 --

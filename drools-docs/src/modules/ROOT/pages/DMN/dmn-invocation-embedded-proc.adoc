@@ -1,32 +1,34 @@
 [id='dmn-invocation-embedded-proc']
-= Embedding a DMN call directly into the Java application
+= Embedding a DMN call directly in a Java application
 
-A KIE container is local when the knowledge assets are either embedded directly into the calling program or are physically pulled in using Maven dependencies for the KJAR. You typically embed knowledge assets directly into a project if there is a tight relationship between the version of the code and the version of the DMN definition. Any changes to the decision take effect after you have intentionally updated and redeployed the application. One potential benefit of this approach is that proper operation does not rely on any external dependencies to the run time, which can be a limitation of locked-down environments.
+A KIE container is local when the knowledge assets are either embedded directly into the calling program or are physically pulled in using Maven dependencies for the KJAR. You typically embed knowledge assets directly into a project if there is a tight relationship between the version of the code and the version of the DMN definition. Any changes to the decision take effect after you have intentionally updated and redeployed the application. A benefit of this approach is that proper operation does not rely on any external dependencies to the run time, which can be a limitation of locked-down environments.
 
-Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, for example, by using a system property, and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
+Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
 
-.Prerequisites
-* A KJAR containing the DMN model to execute has been created. For information about project packaging, see
+.Prerequisite
+A KJAR containing the DMN model to execute has been created. For information about project packaging, see
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
 endif::[]
-* The following dependencies have been added to the `pom.xml` file of the project:
+
+
+.Procedure
+. In your client application, add the following dependencies to the relevant classpath of your Java project:
 +
 --
-
 [source,xml,subs="attributes+"]
 ----
-<!-- Required for the DMN runtime API -->
+// Required for the DMN runtime API
 <dependency>
   <groupId>org.kie</groupId>
   <artifactId>kie-dmn-core</artifactId>
   <version>${{PRODUCT_INIT}.version}</version>
 </dependency>
 
-<!-- Required if not using classpath kie container -->
+// Required if not using classpath KIE container
 <dependency>
   <groupId>org.kie</groupId>
   <artifactId>kie-ci</artifactId>
@@ -64,8 +66,6 @@ endif::[]
 ====
 endif::DM,PAM[]
 --
-
-.Procedure
 . Create a KIE container from `classpath` or `ReleaseId`:
 +
 [source,java]
