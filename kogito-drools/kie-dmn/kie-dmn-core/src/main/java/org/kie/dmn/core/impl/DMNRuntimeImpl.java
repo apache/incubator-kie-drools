@@ -164,14 +164,7 @@ public class DMNRuntimeImpl
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
-        // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
-        if (!decision.isPresent() && name != null && name.contains(".")) {
-            decision = model.getDecisions().stream()
-                            .filter(d -> !d.getModelNamespace().equals(model.getNamespace()))
-                            .filter(d -> (((DMNModelImpl) model).getImportAliasFor(d.getModelNamespace(), d.getModelName()).orElse("") + "." + d.getName()).equals(name))
-                            .findFirst();
-        }
+        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name));
         if (decision.isPresent()) {
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {
@@ -200,12 +193,7 @@ public class DMNRuntimeImpl
 
     private void evaluateByIdInternal( DMNModel model, DMNContext context, DMNResultImpl result, String id ) {
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id)).filter(d -> d.getModelNamespace().equals(model.getNamespace()));
-        // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
-        if (!decision.isPresent() && id != null && id.contains("#")) { // only direct dependencies check:
-            decision = Optional.ofNullable(model.getDecisionById(id))
-                               .filter(d -> (((DMNModelImpl) model).getImportAliasFor(d.getModelNamespace(), d.getModelName()).isPresent()));
-        }
+        Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id));
         if (decision.isPresent()) {
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
         } else {

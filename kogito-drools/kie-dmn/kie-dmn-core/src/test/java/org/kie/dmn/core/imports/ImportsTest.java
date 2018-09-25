@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -313,6 +314,29 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
         assertThat(evaluateAll.getDecisionResultByName("Evaluating Say Hello").getResult(), is("Evaluating Say Hello to: Hello, John"));
         assertThat(evaluateAll.getDecisionResultByName("modelA.Greet the Person").getResult(), is("Hello, John"));
+    }
+
+    @Test
+    public void testRetrieveDecisionByIDName() {
+        // DROOLS-
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn");
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
+
+        assertThat(dmnModel.getDecisionById("_96df766e-23e1-4aa6-9d5d-545fbe2f1e23").getName(), is("Evaluating Say Hello"));
+        assertThat(dmnModel.getDecisionById("http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5").getName(), is("Greet the Person")); // this is an imported Decision
+        assertThat(dmnModel.getDecisionById("_f7fdaec4-d669-4797-b3b4-12b860de2eb5"), nullValue()); // this is an imported Decision
+
+        assertThat(dmnModel.getDecisionByName("Evaluating Say Hello").getId(), is("_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"));
+        assertThat(dmnModel.getDecisionByName("Greet the Person"), nullValue()); // this is an imported Decision
+        assertThat(dmnModel.getDecisionByName("modelA.Greet the Person").getId(), is("_f7fdaec4-d669-4797-b3b4-12b860de2eb5")); // this is an imported Decision
+
+        assertThat(dmnModel.getInputById("http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_4f6c136c-8512-4d71-8bbf-7c9eb6e74063").getName(), is("Person name")); // this is an imported InputData node.
+        assertThat(dmnModel.getInputById("_4f6c136c-8512-4d71-8bbf-7c9eb6e74063"), nullValue()); // this is an imported InputData node.
+
+        assertThat(dmnModel.getInputByName("Person name"), nullValue()); // this is an imported InputData node.
+        assertThat(dmnModel.getInputByName("modelA.Person name").getId(), is("_4f6c136c-8512-4d71-8bbf-7c9eb6e74063")); // this is an imported InputData node.
     }
 }
 

@@ -129,6 +129,25 @@ public class DMNModelImpl
         this.definitions = definitions;
     }
 
+    /**
+     * Given a DMNNode, compute the proper name of the node, considering DMN-Imports.
+     * For DMNNode in this current model, name is simply the name of the model.
+     * For imported DMNNodes, this is the name with the prefix of the direct-dependency of the import `name`.
+     * For transitively-imported DMNNodes, it is always null.
+     */
+    public String nameInCurrentModel(DMNNode node) {
+        if (node.getModelNamespace().equals(this.getNamespace())) {
+            return node.getName();
+        } else {
+            Optional<String> lookupAlias = getImportAliasFor(node.getModelNamespace(), node.getModelName());
+            if (lookupAlias.isPresent()) {
+                return lookupAlias.get() + "." + node.getName();
+            } else {
+                return null;
+            }
+        }
+    }
+
     public void addInput(InputDataNode idn) {
         inputs.put(computeDRGElementModelLocalId(idn), idn);
     }
@@ -144,7 +163,7 @@ public class DMNModelImpl
             return null;
         }
         for ( InputDataNode in : this.inputs.values() ) {
-            if (Objects.equals(name, in.getName())) {
+            if (Objects.equals(name, nameInCurrentModel(in))) {
                 return in;
             }
         }
@@ -179,7 +198,7 @@ public class DMNModelImpl
             return null;
         }
         for ( DecisionNode dn : this.decisions.values() ) {
-            if (Objects.equals(name, dn.getName())) {
+            if (Objects.equals(name, nameInCurrentModel(dn))) {
                 return dn;
             }
         }
