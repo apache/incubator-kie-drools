@@ -71,6 +71,22 @@ public class Timeslot extends AbstractPersistable {
         return startDateTime.toLocalDate().equals(other.getStartDateTime().toLocalDate());
     }
 
+    public boolean pauseExists(Timeslot other, int pauseInMinutes) {
+        if (this.overlaps(other)) {
+            return false;
+        }
+        if (!this.isOnSameDayAs(other)) {
+            return true;
+        }
+        if (this.startsAfter(other)) {
+            return (this.getStartDateTime().getHour() * 60 + this.getStartDateTime().getMinute())
+                    - (other.getEndDateTime().getHour() * 60 + other.getEndDateTime().getMinute()) >= pauseInMinutes;
+        } else {
+            return (other.getStartDateTime().getHour() * 60 + other.getStartDateTime().getMinute())
+                    - (this.getEndDateTime().getHour() * 60 + this.getEndDateTime().getMinute()) >= pauseInMinutes;
+        }
+    }
+
     @Override
     public String toString() {
         return startDateTime + "-" + endDateTime.toLocalTime();

@@ -166,6 +166,14 @@ rule "Talk prerequisite talks"
         scoreHolder.addHardConstraintMatch(kcontext, - $weight * $count.intValue());
 end
 
+rule "Consecutive talks pause"
+    when
+        ConferenceParametrization($weight : consecutiveTalksPause != 0, $minimumPause : minimumConsecutiveTalksPauseInMinutes)
+        $talk: Talk(timeslot != null, $id : id, $timeslot : getTimeslot())
+        Talk(timeslot != null, $id < id, hasMutualSpeaker($talk), !getTimeslot().pauseExists($timeslot, $minimumPause))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
+end
 // ############################################################################
 // Medium constraints
 // ############################################################################

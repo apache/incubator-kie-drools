@@ -238,6 +238,15 @@ public class Talk extends AbstractPersistable {
                 .count();
     }
 
+    public boolean hasMutualSpeaker(Talk talk) {
+        for (Speaker speaker : talk.getSpeakerList()) {
+            if (speakerList.contains(speaker)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return code;
