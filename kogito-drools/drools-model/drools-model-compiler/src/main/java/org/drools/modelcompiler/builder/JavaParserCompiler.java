@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +33,7 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.util.ClassUtils;
 import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
@@ -95,7 +98,7 @@ public class JavaParserCompiler {
             return Collections.emptyMap();
         }
 
-        InternalClassLoader internalClassLoader = new InternalClassLoader( classLoader, trgMfs );
+        InternalClassLoader internalClassLoader = AccessController.doPrivileged((PrivilegedAction<InternalClassLoader>) () -> new InternalClassLoader( classLoader, trgMfs ));
 
         Map<String, Class<?>> result = new HashMap<>();
         for (GeneratedClassWithPackage cls : classes) {

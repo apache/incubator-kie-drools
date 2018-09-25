@@ -205,9 +205,6 @@ public class DrlxParseUtil {
         }
 
         if (expr instanceof BinaryExpr) {
-            BinaryExpr binaryExpr = ( BinaryExpr ) expr;
-            java.lang.reflect.Type leftType = getExpressionType( context, typeResolver, binaryExpr.getLeft(), usedDeclarations );
-            java.lang.reflect.Type rightType = getExpressionType( context, typeResolver, binaryExpr.getRight(), usedDeclarations );
             return boolean.class;
         }
 
@@ -450,7 +447,7 @@ public class DrlxParseUtil {
     }
 
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) throws ParseProblemException {
-        return JavaParser.parseBlock(String.format("{\n%s\n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
+        return JavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
