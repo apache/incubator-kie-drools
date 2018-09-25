@@ -217,6 +217,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per prohibited tag in a talk's room");
             readIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::setTalkPrerequisiteTalks,
                     "Hard penalty per talk that is scheduled before any of its prerequisite talks");
+            readIntConstraintLine(CONSECUTIVE_TALKS_PAUSE, parametrization::setConsecutiveTalksPause,
+                    "Hard penalty per two consecutive talks for the same speaker with a pause less than minimum pause");
 
             solution.setParametrization(parametrization);
         }
@@ -855,6 +857,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Hard penalty per prohibited tag in a talk's room");
             writeIntConstraintLine(TALK_PREREQUISITE_TALKS, parametrization::getTalkPrerequisiteTalks,
                     "Hard penalty per talk that is scheduled before any of its prerequisite talks");
+            writeIntConstraintLine(CONSECUTIVE_TALKS_PAUSE, parametrization::getConsecutiveTalksPause,
+                    "Hard penalty per two consecutive talks for the same speaker with a pause less than minimum pause");
             autoSizeColumnsWithHeader();
         }
 

@@ -36,6 +36,7 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String TALK_PROHIBITED_ROOM_TAGS = "Talk prohibited room tags";
     public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS = "Talk mutually-exclusive-talks tags";
     public static final String TALK_PREREQUISITE_TALKS = "Talk prerequisite talks";
+    public static final String CONSECUTIVE_TALKS_PAUSE = "Consecutive talks pause";
 
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
     public static final String SECTOR_CONFLICT = "Sector conflict";
@@ -75,6 +76,8 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int talkRequiredRoomTags = 1;
     private int talkProhibitedRoomTags = 1;
     private int talkPrerequisiteTalks = 1;
+    private int consecutiveTalksPause = 1;
+    private int minimumConsecutiveTalksPauseInMinutes = 30;
 
     private int talkMutuallyExclusiveTalksTags = 1;
     private int publishedTimeslot = 10;
@@ -374,6 +377,22 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setTalkPrerequisiteTalks(int talkPrerequisiteTalks) {
         this.talkPrerequisiteTalks = talkPrerequisiteTalks;
+    }
+
+    public int getConsecutiveTalksPause() {
+        return consecutiveTalksPause;
+    }
+
+    public void setConsecutiveTalksPause(int consecutiveTalksPause) {
+        this.consecutiveTalksPause = consecutiveTalksPause;
+    }
+
+    public int getMinimumConsecutiveTalksPauseInMinutes() {
+        return minimumConsecutiveTalksPauseInMinutes;
+    }
+
+    public void setMinimumConsecutiveTalksPauseInMinutes(int minimumConsecutiveTalksPauseInMinutes) {
+        this.minimumConsecutiveTalksPauseInMinutes = minimumConsecutiveTalksPauseInMinutes;
     }
 
     public int getSameDayTalks() {
