@@ -99,7 +99,7 @@ public class TestGenValueFact implements TestGenFact {
                     if (parseMethod != null) {
                         fields.add(new TestGenFactField(this, fieldName, new TestGenParsedValueProvider(parseMethod, value)));
                     } else {
-                        throw new IllegalStateException("Unsupported type: " + field.getType());
+                        throw new IllegalStateException("Unsupported type: " + field);
                     }
                 }
             } else {
@@ -108,12 +108,12 @@ public class TestGenValueFact implements TestGenFact {
         }
     }
 
-    private static Method getParseMethod(Field f) {
+    static Method getParseMethod(Field f) {
         for (Method m : f.getType().getMethods()) {
             if (Modifier.isStatic(m.getModifiers())
                     && f.getType().equals(m.getReturnType())
                     && m.getParameters().length == 1
-                    && m.getParameters()[0].getType().equals(String.class)
+                    && CharSequence.class.isAssignableFrom(m.getParameters()[0].getType())
                     && (m.getName().startsWith("parse") || m.getName().startsWith("valueOf"))) {
                 return m;
             }

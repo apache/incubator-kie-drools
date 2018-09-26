@@ -122,7 +122,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
                 writer.print(minJournal, testFile);
                 throw wrapOriginalException(e);
             } else {
-                throw new UnsupportedOperationException("Stale shadow variable reproducer not implemented.");
+                throw new UnsupportedOperationException("Stale shadow variable reproducer not implemented.", e);
             }
         }
     }

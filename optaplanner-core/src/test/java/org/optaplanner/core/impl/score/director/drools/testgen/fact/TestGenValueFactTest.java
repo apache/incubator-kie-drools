@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -175,4 +177,43 @@ public class TestGenValueFactTest {
         assertEquals("Arrays.asList(" + fa.getVariableName() + ", " + fb.getVariableName() + ")", val.toString());
     }
 
+    @Test
+    public void parseMethodTakingStringAsParameter() {
+        parseMethodOnField("fieldWithParseMethodTakingString");
+    }
+
+    @Test
+    public void parseMethodTakingCharSequenceAsParameter() {
+        parseMethodOnField("fieldWithParseMethodTakingCharSequence");
+    }
+
+    private void parseMethodOnField(String fieldName) {
+        try {
+            Field testField = TestClassWithFields.class.getDeclaredField(fieldName);
+            Method m = TestGenValueFact.getParseMethod(testField);
+            assertNotNull(m);
+        } catch (UnsupportedOperationException | NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    static class TestClassWithParseMethodTakingCharSequence {
+
+        public static TestClassWithParseMethodTakingCharSequence parse(CharSequence parameter) {
+            return null;
+        }
+    }
+
+    static class TestClassWithParseMethodTakingString {
+
+        public static TestClassWithParseMethodTakingString parse(String parameter) {
+            return null;
+        }
+    }
+
+    static class TestClassWithFields {
+
+        private TestClassWithParseMethodTakingCharSequence fieldWithParseMethodTakingCharSequence = null;
+        private TestClassWithParseMethodTakingString fieldWithParseMethodTakingString = null;
+    }
 }
