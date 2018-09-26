@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.imports;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 import org.junit.Test;
@@ -24,6 +25,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,10 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -318,7 +324,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testRetrieveDecisionByIDName() {
-        // DROOLS-
+        // DROOLS-3026
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                  this.getClass(),
                                                                                  "ModelB.dmn");
@@ -337,6 +343,34 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
         assertThat(dmnModel.getInputByName("Person name"), nullValue()); // this is an imported InputData node.
         assertThat(dmnModel.getInputByName("modelA.Person name").getId(), is("_4f6c136c-8512-4d71-8bbf-7c9eb6e74063")); // this is an imported InputData node.
+    }
+
+    @Test
+    public void testImportChain() {
+        // DROOLS-3045 DMN model API to display namespace transitive import dependencies
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
+                                                                                 this.getClass(),
+                                                                                 "ModelB.dmn",
+                                                                                 "ModelB2.dmn",
+                                                                                 "ModelC.dmn");
+
+        final DMNModelImpl modelA = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "Say hello 1ID1D");
+        assertThat(modelA.getImportChainAliases().entrySet(), hasSize(0));
+
+        final DMNModelImpl modelB = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
+        assertThat(modelB.getImportChainAliases().entrySet(), hasSize(1));
+        assertThat(modelB.getImportChainAliases(), hasEntry(is("http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"),
+                                                            contains(Arrays.asList("modelA"))));
+
+        final DMNModelImpl modelC = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "Model C");
+        assertThat(modelC.getImportChainAliases().entrySet(), hasSize(3));
+        assertThat(modelC.getImportChainAliases(), hasEntry(is("http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c"),
+                                                            contains(Arrays.asList("Model B"))));
+        assertThat(modelC.getImportChainAliases(), hasEntry(is("http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768"),
+                                                            contains(Arrays.asList("Model B2"))));
+        assertThat(modelC.getImportChainAliases(), hasEntry(is("http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"),
+                                                            containsInAnyOrder(Arrays.asList("Model B2", "modelA"),
+                                                                               Arrays.asList("Model B", "modelA"))));
     }
 }
 
