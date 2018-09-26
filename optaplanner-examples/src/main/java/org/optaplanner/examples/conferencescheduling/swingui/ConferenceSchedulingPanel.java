@@ -17,10 +17,16 @@
 package org.optaplanner.examples.conferencescheduling.swingui;
 
 import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -33,23 +39,34 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public static final String LOGO_PATH = "/org/optaplanner/examples/conferencescheduling/swingui/conferenceSchedulingLogo.png";
 
     public ConferenceSchedulingPanel() {
-        JButton importConferenceButton = new JButton("Import conference");
+        JButton importConferenceButton = new JButton("Import from CFP");
         importConferenceButton.addActionListener(event -> {
-            //TODO: Add a panel to get conferenceBaseUrl from the user
-            ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter("https://dvbe18.confinabox.com/api/conferences/DVBE18");
-            solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
+            String[] cfpArray = {"devoxx-cfp"};
+            JComboBox cfpConferenceBox = new JComboBox(cfpArray);
+            JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
+            Object[] dialogue = {
+                    "Choose conference:", cfpConferenceBox,
+                    "Enter CFP REST Url:", cfpRestUrlTextField
+            };
+
+            int option = JOptionPane.showConfirmDialog(this, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                String conferenceBaseUrl = cfpRestUrlTextField.getText();
+                ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl);
+                solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
+            }
         });
 
         JButton publishButton = new JButton("Publish");
         publishButton.addActionListener(actionEvent -> {
-            solutionBusiness.getSolution().getTalkList().stream().forEach(talk -> {
+            solutionBusiness.getSolution().getTalkList().forEach(talk -> {
                 talk.setPublishedTimeslot(talk.getTimeslot());
                 talk.setPublishedRoom(talk.getRoom());
             });
         });
 
-        JButton button = new JButton("Show in LibreOffice or Excel");
-        button.addActionListener(event -> {
+        JButton showInLibreOfficeOrExcelButton = new JButton("Show in LibreOffice or Excel");
+        showInLibreOfficeOrExcelButton.addActionListener(event -> {
             SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
             File tempFile;
             try {
@@ -64,13 +81,23 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
                 throw new IllegalStateException("Failed to show temp file (" + tempFile + ") in LibreOffice or Excel.", e);
             }
         });
-        add(importConferenceButton);
-        add(publishButton);
-        add(button);
-        add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
+
+        setLayout(new GridLayout(12, 1));
+        JPanel showPanel = new JPanel();
+        JPanel importPanel = new JPanel();
+        showPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        importPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        showPanel.add(showInLibreOfficeOrExcelButton);
+        showPanel.add(new JLabel("Changes to that file are ignored unless you explicitly save it there and open it here."));
+        importPanel.add(importConferenceButton);
+        importPanel.add(publishButton);
+
+        add(showPanel);
+        add(importPanel);
     }
 
-    @Override
+        @Override
     public void resetPanel(ConferenceSolution solution) {
     }
 
