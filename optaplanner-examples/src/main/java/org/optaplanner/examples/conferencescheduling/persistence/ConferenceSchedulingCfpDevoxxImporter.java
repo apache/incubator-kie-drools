@@ -18,6 +18,7 @@ package org.optaplanner.examples.conferencescheduling.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -36,7 +37,6 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
@@ -56,11 +56,10 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConferenceSchedulingCfpDevoxxImporter.class);
     private static final String ZONE_ID = "Europe/Paris";
-    private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "bof"};
-    private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "uni", "conf", "Deep Dive",
-            "Opening Keynote", "Closing Keynote", "Quickie Sessions", "quick"};
+    private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "Hands-on Labs", "bof", "BOF (Bird of a Feather)", "ignite", "Ignite Sessions"};
+    private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "Tools-in-Action", "uni", "University",
+            "conf", "Conference", "Deep Dive", "key", "Keynote", "Quickie", "quick"};
 
-    private static final String[] IGNORED_TALK_TYPES = {"ignite", "key"};
     private static final String[] IGNORED_ROOM_IDS = {"ExhibitionHall"};
     private static final String[] IGNORED_SPEAKER_NAMES = {"Devoxx Partner"};
 
@@ -71,6 +70,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     private Map<String, Talk> talkCodeToTalkMap;
     private Set<String> talkUrlSet;
     private Set<String> trackIdSet;
+    private Map<String, String> talkTypeIdToTalkTypeNameMap;
 
     private ConferenceSolution solution;
     private Map<String, Integer> timeslotTalkTypeToTotalMap = new HashMap<>();
@@ -112,6 +112,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
     private void importTalkTypeList() {
         this.talkTypeNameToTalkTypeMap = new HashMap<>();
+        this.talkTypeIdToTalkTypeNameMap = new HashMap<>();
         List<TalkType> talkTypeList = new ArrayList<>();
 
         String proposalTypeUrl = conferenceBaseUrl + "/proposalTypes";
@@ -121,12 +122,13 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         JsonArray talkTypeArray = rootObject.getJsonArray("proposalTypes");
         for (int i = 0; i < talkTypeArray.size(); i++) {
             JsonObject talkTypeObject = talkTypeArray.getJsonObject(i);
-            String talkTypeName = talkTypeObject.getString("id");
+            String talkTypeName = talkTypeObject.getString("label");
             if (talkTypeNameToTalkTypeMap.keySet().contains(talkTypeName)) {
                 LOGGER.warn("Duplicate talk type in " + proposalTypeUrl
                         + " at index " + i + ".");
                 continue;
             }
+            talkTypeIdToTalkTypeNameMap.put(talkTypeObject.getString("id"), talkTypeName);
 
             TalkType talkType = new TalkType((long) i, talkTypeName);
             talkType.setCompatibleRoomSet(new HashSet<>());
@@ -233,192 +235,80 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         solution.setSpeakerList(speakerList);
     }
 
-/* TODO: Uncomment this when the REST api exposes the talks
     private void importTalkList() {
         this.talkCodeToTalkMap = new HashMap<>();
-        List<Talk> talkList = new ArrayList<>();
-        Long talkId = 0L;
+        solution.setTalkList(new ArrayList<>());
 
         for (String talkUrl : this.talkUrlSet) {
             LOGGER.debug("Sending a request to: " + talkUrl);
             JsonObject talkObject = readJson(talkUrl, JsonReader::readObject);
 
-            String code = talkObject.getString("id");
-            String title = talkObject.getString("title");
-            String talkTypeName = talkObject.getString("talkType");
-            Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("trackId")));
-            if (!trackIdSet.containsAll(themeTrackSet)) {
-                throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                        + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
-            }
-            String languageg = talkObject.getString("lang");
-            List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
-                    .map(speakerJsonValue -> {
-                        JsonReader jsonReader = Json.createReader(new StringReader(speakerJsonValue.toString()));
-                        JsonObject speakerJsonObject = jsonReader.readObject();
-
-                        String speakerName = speakerJsonObject.getString("name");
-                        Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
-                        if (speaker == null) {
-*/
-/*                            throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                                    + ") contains a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
-                                    + ") that doesn't exist in speaker list.");*//*
-
-
-                            //TODO: Temporary workaround until the missing speakers issue is fuxed, once fixed uncomment the throw block above and delete this
-                            LOGGER.warn("The talk (" + code + ": " + title + ", " + talkUrl
-                                    + ") has a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
-                                    + ") that doesn't exist in speaker list.");
-                            String speakerUrl = speakerJsonObject.getJsonObject("link").getString("href");
-                            LOGGER.debug("Sending a request to: " + speakerUrl);
-                            JsonObject speakerObject = readJson(speakerUrl, JsonReader::readObject);
-
-                            String speakerId = speakerObject.getString("uuid");
-
-                            speaker = new Speaker((long) solution.extractSpeakerList().size());
-                            speaker.setName(speakerName);
-                            speaker.withPreferredRoomTagSet(new HashSet<>())
-                                    .withPreferredTimeslotTagSet(new HashSet<>())
-                                    .withProhibitedRoomTagSet(new HashSet<>())
-                                    .withProhibitedTimeslotTagSet(new HashSet<>())
-                                    .withRequiredRoomTagSet(new HashSet<>())
-                                    .withRequiredTimeslotTagSet(new HashSet<>())
-                                    .withUnavailableTimeslotSet(new HashSet<>())
-                                    .withUndesiredRoomTagSet(new HashSet<>())
-                                    .withUndesiredTimeslotTagSet(new HashSet<>());
-                            if (speakerNameToSpeakerMap.keySet().contains(speakerName)) {
-                                throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
-                                        + ") already exists in the speaker list");
-                            }
-                            speakerNameToSpeakerMap.put(speakerName, speaker);
-                            solution.extractSpeakerList().add(speaker);
-                        }
-                        return speaker;
-                    })
-                    .collect(Collectors.toList());
-
-            Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, languageg, speakerList);
-
-            talkCodeToTalkMap.put(code, talk);
-            talkList.add(talk);
+            createTalk(talkUrl, talkObject);
         }
-
-        solution.setTalkList(talkList);
-    }
-*/
-
-    private void importTalkList() {
-        this.talkCodeToTalkMap = new HashMap<>();
-        List<Talk> talkList = new ArrayList<>();
-        Long talkId = 0L;
-
-        String talksPath = getClass().getResource("devoxxBE").toString();
-        String[] confFiles = {"BOF", "Conf14Sept2018", "DeepDive", "HandsOnLabs", "Quickies", "ToolsInAction"};
-        for (String confType : confFiles) {
-            LOGGER.debug("Sending a request to: " + talksPath + "/" + confType + ".json");
-            JsonArray talksArray = readJson(talksPath + "/" + confType + ".json", JsonReader::readObject)
-                    .getJsonObject("approvedTalks").getJsonArray("talks");
-
-            for (int i = 0; i < talksArray.size(); i++) {
-                JsonObject talkObject = talksArray.getJsonObject(i);
-
-                String code = talkObject.getString("id");
-                String title = talkObject.getString("title").substring(5);
-                String talkTypeName = talkObject.getJsonObject("talkType").getString("id");
-                Set<String> themeTrackSet = extractThemeTrackSet(talkObject, code, title);
-                String language = talkObject.getString("lang");
-                int audienceLevel = Integer.parseInt(talkObject.getString("audienceLevel").replaceAll("[^0-9]", ""));
-                List<Speaker> speakerList = extractSpeakerList(confType, talkObject, code, title);
-                Set<String> contentTagSet = extractContentTagSet(talkObject);
-                String state = talkObject.getJsonObject("state").getString("code");
-
-                if (!Arrays.asList(IGNORED_TALK_TYPES).contains(code) && !state.equals("declined")) {
-                    Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, language, speakerList,
-                            audienceLevel, contentTagSet);
-                    talkCodeToTalkMap.put(code, talk);
-                    talkList.add(talk);
-                    talkTalkTypeToTotalMap.merge(talkTypeName, 1, Integer::sum);
-                }
-            }
-        }
-        solution.setTalkList(talkList);
     }
 
-    private Set<String> extractThemeTrackSet(JsonObject talkObject, String code, String title) {
-        Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getJsonObject("track").getString("id")));
+    private Talk createTalk(String talkUrl, JsonObject talkObject) {
+        String code = talkObject.getString("id");
+        String title = talkObject.getString("title");
+        String talkTypeName = talkObject.getString("talkType");
+        Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("trackId")));
         if (!trackIdSet.containsAll(themeTrackSet)) {
             throw new IllegalStateException("The talk (" + title + ") with id (" + code
                     + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
         }
-        return themeTrackSet;
+        String languageg = talkObject.getString("lang");
+        List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
+                .map(speakerJsonValue -> {
+                    JsonReader jsonReader = Json.createReader(new StringReader(speakerJsonValue.toString()));
+                    JsonObject speakerJsonObject = jsonReader.readObject();
+
+                    String speakerName = speakerJsonObject.getString("name");
+                    Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
+                    if (speaker == null) {
+//                            throw new IllegalStateException("The talk (" + title + ") with id (" + code
+//                                    + ") contains a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
+//                                    + ") that doesn't exist in speaker list.");
+
+                        //TODO: Temporary workaround until the missing speakers issue is fixed, once fixed uncomment the throw block above and delete this
+                        LOGGER.warn("The talk (" + code + ": " + title + ", " + talkUrl
+                                + ") has a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
+                                + ") that doesn't exist in speaker list.");
+                        String speakerUrl = speakerJsonObject.getJsonObject("link").getString("href");
+                        LOGGER.debug("Sending a request to: " + speakerUrl);
+                        JsonObject speakerObject = readJson(speakerUrl, JsonReader::readObject);
+
+                        String speakerId = speakerObject.getString("uuid");
+
+                        speaker = new Speaker((long) solution.getSpeakerList().size());
+                        speaker.setName(speakerName);
+                        speaker.withPreferredRoomTagSet(new HashSet<>())
+                                .withPreferredTimeslotTagSet(new HashSet<>())
+                                .withProhibitedRoomTagSet(new HashSet<>())
+                                .withProhibitedTimeslotTagSet(new HashSet<>())
+                                .withRequiredRoomTagSet(new HashSet<>())
+                                .withRequiredTimeslotTagSet(new HashSet<>())
+                                .withUnavailableTimeslotSet(new HashSet<>())
+                                .withUndesiredRoomTagSet(new HashSet<>())
+                                .withUndesiredTimeslotTagSet(new HashSet<>());
+                        if (speakerNameToSpeakerMap.keySet().contains(speakerName)) {
+                            throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
+                                    + ") already exists in the speaker list");
+                        }
+                        speakerNameToSpeakerMap.put(speakerName, speaker);
+                        solution.getSpeakerList().add(speaker);
+                    }
+                    return speaker;
+                })
+                .collect(Collectors.toList());
+        speakerList.removeAll(speakerList.stream().filter(
+                speaker -> Arrays.asList(IGNORED_SPEAKER_NAMES).contains(speaker.getName())).collect(Collectors.toList()));
+
+        return createTalk(code, title, talkTypeName, themeTrackSet, languageg, speakerList);
     }
 
-    private List<Speaker> extractSpeakerList(String confType, JsonObject talkObject, String code, String title) {
-        List<Speaker> speakerList = new ArrayList<>();
-
-        String mainSpeakerName = talkObject.getString("mainSpeaker");
-        if (Arrays.asList(IGNORED_SPEAKER_NAMES).contains(mainSpeakerName)) {
-            return speakerList;
-        }
-
-        speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, mainSpeakerName));
-        if (talkObject.containsKey("secondarySpeaker")) {
-            String secondarySpeakerName = talkObject.getString("secondarySpeaker");
-            speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, secondarySpeakerName));
-        }
-
-        if (talkObject.containsKey("otherSpeakers")) {
-            JsonArray otherSpeakersArray = talkObject.getJsonArray("otherSpeakers");
-            for (JsonValue otherSpeakerName : otherSpeakersArray) {
-                speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title,
-                        otherSpeakerName.toString().replaceAll("\"", "")));
-            }
-        }
-
-        return speakerList;
-    }
-
-    private Speaker getSpeakerOrCreateOneIfNull(String confType, String code, String title, String speakerName) {
-        Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
-        if (speaker == null) {
-            LOGGER.warn("The talk (" + code + ": " + title + ") of type ( " + confType
-                    + ") has a speaker (" + speakerName + ") that doesn't exist in speaker list.");
-
-            speaker = new Speaker((long) solution.getSpeakerList().size());
-            speaker.setName(speakerName);
-            speaker.withPreferredRoomTagSet(new HashSet<>())
-                    .withPreferredTimeslotTagSet(new HashSet<>())
-                    .withProhibitedRoomTagSet(new HashSet<>())
-                    .withProhibitedTimeslotTagSet(new HashSet<>())
-                    .withRequiredRoomTagSet(new HashSet<>())
-                    .withRequiredTimeslotTagSet(new HashSet<>())
-                    .withUnavailableTimeslotSet(new HashSet<>())
-                    .withUndesiredRoomTagSet(new HashSet<>())
-                    .withUndesiredTimeslotTagSet(new HashSet<>());
-            if (speakerNameToSpeakerMap.keySet().contains(speakerName)) {
-                throw new IllegalStateException("Speaker (" + speakerName + ") already exists in the speaker list");
-            }
-            speakerNameToSpeakerMap.put(speakerName, speaker);
-            solution.getSpeakerList().add(speaker);
-        }
-        return speaker;
-    }
-
-    private Set<String> extractContentTagSet(JsonObject talkObject) {
-        if (talkObject.containsKey("tags")) {
-            return talkObject.getJsonArray("tags").stream()
-                    .map(JsonObject.class::cast)
-                    .filter(tagObject -> !tagObject.getString("value").isEmpty())
-                    .map(tagObject -> tagObject.getString("value"))
-                    .collect(Collectors.toSet());
-        }
-        return new HashSet<>();
-    }
-
-    private Talk createTalk(Long talkId, String code, String title, String talkTypeName, Set<String> themeTrackSet,
-                            String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
-        Talk talk = new Talk(talkId);
+    private Talk createTalk(String code, String title, String talkTypeName, Set<String> themeTrackSet,
+                            String languageg, List<Speaker> speakerList) {
+        Talk talk = new Talk((long) solution.getTalkList().size());
         talk.setCode(code);
         talk.setTitle(title);
         if (talkTypeNameToTalkTypeMap.get(talkTypeName) == null) {
@@ -429,9 +319,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         talk.withThemeTrackTagSet(themeTrackSet)
                 .withLanguage(languageg)
                 .withSpeakerList(speakerList)
-                .withAudienceLevel(audienceLevel)
+                .withAudienceLevel(0)
                 .withAudienceTypeSet(new HashSet<>())
-                .withContentTagSet(contentTagSet)
+                .withContentTagSet(new HashSet<>())
                 .withPreferredRoomTagSet(new HashSet<>())
                 .withPreferredTimeslotTagSet(new HashSet<>())
                 .withProhibitedRoomTagSet(new HashSet<>())
@@ -444,10 +334,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 .withMutuallyExclusiveTalksTagSet(new HashSet<>())
                 .withPrerequisiteTalksCodesSet(new HashSet<>());
 
-        //TODO specific for DeovxxBE, remove it
-        if (talk.getContentTagSet().contains("Devoxx Sponsor")) {
-            talk.getMutuallyExclusiveTalksTagSet().add("Devoxx Sponsor");
-        }
+        talkCodeToTalkMap.put(talk.getCode(), talk);
+        solution.getTalkList().add(talk);
+        talkTalkTypeToTotalMap.merge(talk.getTalkType().getName(), 1, Integer::sum);
 
         return talk;
     }
@@ -483,11 +372,10 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 }
 
                 // Assuming slotId is of format: tia_room6_monday_12_.... take only "tia"
-                String talkTypeName = timeslotObject.getString("slotId").split("_")[0];
+                // Specific for DevoxxBE, unknown in slotId matches a keynote slot
+                talkTypeIdToTalkTypeNameMap.put("unknown", talkTypeIdToTalkTypeNameMap.get("key"));
+                String talkTypeName = talkTypeIdToTalkTypeNameMap.get(timeslotObject.getString("slotId").split("_")[0]);
                 TalkType timeslotTalkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
-                if (Arrays.asList(IGNORED_TALK_TYPES).contains(talkTypeName)) {
-                    continue;
-                }
 
                 Timeslot timeslot;
                 if (startAndEndTimeToTimeslotMap.keySet().contains(Pair.of(startDateTime, endDateTime))) {
@@ -550,9 +438,11 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     private void scheduleTalk(JsonObject timeslotObject, Room room, Timeslot timeslot) {
         Talk talk = talkCodeToTalkMap.get(timeslotObject.getJsonObject("talk").getString("id"));
         if (talk == null) {
-            throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
-                    + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
-                    + ") that does not exist in the talk list");
+//            throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
+//                    + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
+//                    + ") that does not exist in the talk list");
+            //TODO: Temporary workaround until the missing speakers issue is fixed, once fixed uncomment the throw block above and delete this
+            talk = createTalk("", timeslotObject.getJsonObject("talk"));
         }
         if (talk.isPinnedByUser()) {
             throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
