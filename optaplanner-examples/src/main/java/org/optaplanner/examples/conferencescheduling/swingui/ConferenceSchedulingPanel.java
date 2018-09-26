@@ -21,6 +21,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -97,8 +98,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
         add(importPanel);
     }
 
-        @Override
+    @Override
     public void resetPanel(ConferenceSolution solution) {
     }
-
 }
