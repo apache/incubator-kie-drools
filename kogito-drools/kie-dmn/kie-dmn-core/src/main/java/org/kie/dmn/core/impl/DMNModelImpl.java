@@ -20,12 +20,15 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -90,13 +93,12 @@ public class DMNModelImpl
     private boolean runtimeTypeCheck = false;
 
     private Map<String, QName> importAliases = new HashMap<>();
-
-    public DMNModelImpl() {
-    }
+    private ImportChain importChain;
 
     public DMNModelImpl(Definitions definitions) {
         this.definitions = definitions;
         wireTypeRegistry(definitions);
+        importChain = new ImportChain(this);
     }
 
     private void wireTypeRegistry(Definitions definitions) {
@@ -462,5 +464,63 @@ public class DMNModelImpl
         return this.importAliases.get(iAlias);
     }
 
+    public void addImportChainChild(ImportChain child, String alias) {
+        this.importChain.children.add(ImportChain.from(child, alias));
+    }
 
+    public ImportChain getImportChain() {
+        return this.importChain;
+    }
+
+    public Map<String, Collection<List<String>>> getImportChainAliases() {
+        return this.importChain.getImportChainAliases();
+    }
+
+    private static class ImportChain {
+        private final String alias;
+        private final DMNModel node;
+        
+        private final List<ImportChain> children = new ArrayList<>();
+        
+        public ImportChain(DMNModel node) {
+            this(node, null);
+        }
+
+        private ImportChain(DMNModel node, String alias) {
+            this.alias = alias;
+            this.node = node;
+        }
+        
+        public static ImportChain from(ImportChain from, String alias) {
+            ImportChain result = new ImportChain(from.node, alias);
+            result.children.addAll(from.children);
+            return result;
+        }
+
+        /**
+         * For any given namespace, will return the list of available aliases (also transitive ones).
+         */
+        public Map<String, Collection<List<String>>> getImportChainAliases() {
+            Map<String, Collection<List<String>>> result = new HashMap<>();
+            for (ImportChain l : children) {
+                Map<String, Collection<List<String>>> leafResult = l.getImportChainAliases(); 
+                for (Entry<String, Collection<List<String>>> kv : leafResult.entrySet()) {
+                    Collection<List<String>> allPrefixesUnderNamespace = result.computeIfAbsent(kv.getKey(), k -> new ArrayList<>());
+                    for (List<String> ps : kv.getValue()) {
+                        List<String> prefixed = new ArrayList<>();
+                        if (alias != null) { // if alias is null then I am root hence what need to be added is directly the result of the recursive call, as-is.
+                            prefixed.add(alias);
+                        }
+                        prefixed.addAll(ps);
+                        allPrefixesUnderNamespace.add(prefixed);
+                    }
+                }
+            }
+            if (alias != null) {
+                Collection<List<String>> allPrefixesUnderMyNamespace = result.computeIfAbsent(node.getNamespace(), k -> new ArrayList<>());
+                allPrefixesUnderMyNamespace.add(Arrays.asList(alias));
+            }
+            return result;
+        }
+    }
 }

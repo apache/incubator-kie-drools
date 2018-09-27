@@ -1555,7 +1555,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         DecisionNodeImpl b = buildSimplifiedDecisionNode(defs, "b");
         a.addDependency("b", b);
         b.addDependency("a", b);
-        DMNModelImpl model = new DMNModelImpl();
+        DMNModelImpl model = new DMNModelImpl(defs);
         model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
@@ -1569,7 +1569,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         Definitions defs = buildSimplifiedDefinitions("ns", "self");
         DecisionNodeImpl decision = buildSimplifiedDecisionNode(defs, "self");
         decision.addDependency("self", decision);
-        DMNModelImpl model = new DMNModelImpl();
+        DMNModelImpl model = new DMNModelImpl(defs);
         model.setDefinitions(defs);
         model.addDecision(decision);
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
@@ -1585,7 +1585,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         DecisionNodeImpl c = buildSimplifiedDecisionNode(defs, "c");
         a.addDependency("c", c);
         b.addDependency("c", c);
-        DMNModelImpl model = new DMNModelImpl();
+        DMNModelImpl model = new DMNModelImpl(defs);
         model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
@@ -1606,7 +1606,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         a.addDependency("c", c);
         b.addDependency("d", d);
         c.addDependency("d", d);
-        DMNModelImpl model = new DMNModelImpl();
+        DMNModelImpl model = new DMNModelImpl(defs);
         model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
