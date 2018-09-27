@@ -223,6 +223,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
+        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
         }
