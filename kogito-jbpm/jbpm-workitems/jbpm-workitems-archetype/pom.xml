@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-workitems</artifactId>
-    <version>7.12.0-SNAPSHOT</version>
+    <version>7.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>jbpm-workitems-archetype</artifactId>
