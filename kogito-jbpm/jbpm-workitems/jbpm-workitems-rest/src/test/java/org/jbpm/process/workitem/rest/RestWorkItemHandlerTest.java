@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.ws.rs.ext.RuntimeDelegate;
 
@@ -42,6 +43,7 @@ import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONNECT_T
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT_DATA;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT_TYPE;
+import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONTENT_TYPE_CHARSET;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_READ_TIMEOUT;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_RESULT;
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_STATUS;
@@ -323,6 +325,8 @@ public class RestWorkItemHandlerTest {
                               "POST");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
@@ -359,6 +363,8 @@ public class RestWorkItemHandlerTest {
                               "POST");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
@@ -393,6 +399,8 @@ public class RestWorkItemHandlerTest {
                               "POST");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("AcceptHeader",
@@ -461,6 +469,8 @@ public class RestWorkItemHandlerTest {
                               "PUT");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
 
@@ -497,6 +507,8 @@ public class RestWorkItemHandlerTest {
                               "PUT");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("AcceptHeader",
@@ -535,6 +547,8 @@ public class RestWorkItemHandlerTest {
                               "PUT");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("AcceptHeader",
@@ -705,7 +719,9 @@ public class RestWorkItemHandlerTest {
         workItem.setParameter("Method",
                               "POST");
         workItem.setParameter(PARAM_CONTENT_TYPE,
-                              "Application/XML;charset=utf-8");
+                              "Application/XML");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("ResultClass",
@@ -743,7 +759,9 @@ public class RestWorkItemHandlerTest {
         workItem.setParameter("Method",
                               "PUT");
         workItem.setParameter(PARAM_CONTENT_TYPE,
-                              "Application/Xml;charset=utf-8");
+                              "Application/Xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               "<person><name>john</name><age>25</age></person>");
         workItem.setParameter("ResultClass",
@@ -786,6 +804,8 @@ public class RestWorkItemHandlerTest {
                               "POST");
         workItem.setParameter(PARAM_CONTENT_TYPE,
                               "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
         workItem.setParameter(contentParamName,
                               request);
         workItem.setParameter("ResultClass",
@@ -915,7 +935,45 @@ public class RestWorkItemHandlerTest {
     }
 
     @Test
-    public void testPUTOperationWithCharsetSpecified() {
+    public void testPUTOperationWithSetCharset() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String nonAsciiData = "\u0418\u0432\u0430\u043d";
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><person><age>25</age><name>Put Иван</name></person>";
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/xml-charset");
+        workItem.setParameter("Method",
+                              "PUT");
+        workItem.setParameter(PARAM_CONTENT_TYPE,
+                              "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
+        workItem.setParameter(contentParamName,
+                              "<person><name>" + nonAsciiData + "</name><age>25</age></person>");
+
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertNotNull("result cannot be null",
+                      result);
+        assertEquals(expected,
+                     result);
+        int responseCode = (Integer) results.get(PARAM_STATUS);
+        assertNotNull(responseCode);
+        assertEquals(200,
+                     responseCode);
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
+                     responseMsg);
+    }
+
+    @Test
+    public void testPUTOperationWithCharsetUnspecifiedViaParameter() {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         String nonAsciiData = "\u0418\u0432\u0430\u043d";
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
@@ -1084,5 +1142,26 @@ public class RestWorkItemHandlerTest {
         assertNotNull(responseMsg);
         assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed OK",
                      responseMsg);
+    }
+
+    @Test
+    public void testGetContentTypeAndCharset() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+
+        Map<String, Object> params = new java.util.HashMap<>();
+        params.put(PARAM_CONTENT_TYPE, "application/xml");
+        params.put(PARAM_CONTENT_TYPE_CHARSET, "UTF-8");
+        assertEquals("application/xml;charset=UTF-8", handler.getContentTypeAndCharset(params) );
+
+        params.put(PARAM_CONTENT_TYPE, "application/xml;charset=UTF-8");
+        params.put(PARAM_CONTENT_TYPE_CHARSET, "SOME_WROMG_CHARSET");
+        assertEquals("application/xml;charset=UTF-8", handler.getContentTypeAndCharset(params) );
+
+        params.remove(PARAM_CONTENT_TYPE_CHARSET);
+        assertEquals("application/xml;charset=UTF-8", handler.getContentTypeAndCharset(params) );
+
+        params.remove(PARAM_CONTENT_TYPE);
+        assertNull(handler.getContentTypeAndCharset(params));
+
     }
 }

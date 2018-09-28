@@ -117,6 +117,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
     public static final String PARAM_CONNECT_TIMEOUT = "ConnectTimeout";
     public static final String PARAM_READ_TIMEOUT = "ReadTimeout";
     public static final String PARAM_CONTENT_TYPE = "ContentType";
+    public static final String PARAM_CONTENT_TYPE_CHARSET = "ContentTypeCharset";
     public static final String PARAM_HEADERS = "Headers";
     public static final String PARAM_CONTENT = "Content";
     public static final String PARAM_CONTENT_DATA = "ContentData";
@@ -659,10 +660,10 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                 Object content = params.get(PARAM_CONTENT_DATA) != null ? params.get(PARAM_CONTENT_DATA) : params.get(PARAM_CONTENT);
                 if (!(content instanceof String)) {
                     content = transformRequest(content,
-                                               (String) params.get(PARAM_CONTENT_TYPE));
+                                               getContentTypeAndCharset(params));
                 }
                 StringEntity entity = new StringEntity((String) content,
-                                                       ContentType.parse((String) params.get(PARAM_CONTENT_TYPE)));
+                                                       ContentType.parse(getContentTypeAndCharset(params)));
                 builder.setEntity(entity);
             } catch (UnsupportedCharsetException e) {
                 throw new RuntimeException("Cannot set body for REST request [" + builder.getMethod() + "] " + builder.getUri(),
@@ -678,10 +679,10 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             Object content = params.get(PARAM_CONTENT_DATA) != null ? params.get(PARAM_CONTENT_DATA) : params.get(PARAM_CONTENT);
             if (!(content instanceof String)) {
                 content = transformRequest(content,
-                                           (String) params.get(PARAM_CONTENT_TYPE));
+                                           getContentTypeAndCharset(params));
             }
             ((HttpEntityEnclosingRequestBase) theMethod).setEntity(new StringEntity((String) content,
-                                                                                    ContentType.parse((String) params.get(PARAM_CONTENT_TYPE))));
+                                                                                    ContentType.parse(getContentTypeAndCharset(params))));
         }
     }
 
@@ -1157,6 +1158,21 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             }
             addCustomHeaders(httpHeaders, theMethod::addHeader);
             return theMethod;
+        }
+    }
+
+    protected String getContentTypeAndCharset(Map<String, Object> params) {
+        String contentType = (String) params.get(PARAM_CONTENT_TYPE);
+        String contentTypeCharset = (String) params.get(PARAM_CONTENT_TYPE_CHARSET);
+
+        if(contentType == null || contentTypeCharset == null) {
+            return contentType;
+        }
+
+        if(!contentType.contains("charset=")) {
+            return contentType + ";charset=" + contentTypeCharset;
+        } else {
+            return contentType;
         }
     }
 
