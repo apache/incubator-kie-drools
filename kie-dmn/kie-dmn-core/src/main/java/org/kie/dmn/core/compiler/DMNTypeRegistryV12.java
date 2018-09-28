@@ -1,7 +1,9 @@
 package org.kie.dmn.core.compiler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
@@ -23,6 +25,18 @@ public class DMNTypeRegistryV12 implements DMNTypeRegistry {
     public DMNType unknown() {
         return UNKNOWN;
     }
+
+    /** 
+     * DMN v1.2 spec, chapter 7.3.2 ItemDefinition metamodel
+     * FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time, and date and time. Was missing from spec document: date
+     */
+    public static final List<BuiltInType> ITEMDEF_TYPEREF_FEEL_BUILTIN = Collections.unmodifiableList(Arrays.asList(BuiltInType.NUMBER,
+                                                                                                                    BuiltInType.STRING,
+                                                                                                                    BuiltInType.BOOLEAN,
+                                                                                                                    BuiltInType.DURATION,
+                                                                                                                    BuiltInType.DATE,
+                                                                                                                    BuiltInType.TIME,
+                                                                                                                    BuiltInType.DATE_TIME));
 
     public DMNTypeRegistryV12() {
         String feelNamespace = KieDMNModelInstrumentedBase.URI_FEEL;
