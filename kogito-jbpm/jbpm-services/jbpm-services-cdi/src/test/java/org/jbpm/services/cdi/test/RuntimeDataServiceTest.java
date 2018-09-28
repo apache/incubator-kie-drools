@@ -197,13 +197,13 @@ public class RuntimeDataServiceTest extends AbstractKieServicesBaseTest {
         // assert if logs are ordered by log.id ASC
         Iterator<NodeInstanceDesc> iterator = nodeInstanceLogs.iterator();
         NodeInstanceDesc log0 = iterator.next();
-        assertEquals("End", log0.getName());
+        assertEquals("Start", log0.getName());
 
         NodeInstanceDesc log1 = iterator.next();
         assertEquals("Hello", log1.getName());
 
         NodeInstanceDesc log2 = iterator.next();
-        assertEquals("Start", log2.getName());
+        assertEquals("End", log2.getName());
 
         Collection<NodeInstanceDesc> fullNodeInstanceLogs = runtimeDataService.getProcessInstanceFullHistory(
                 processInstance.getId(), new QueryContext());
@@ -211,24 +211,24 @@ public class RuntimeDataServiceTest extends AbstractKieServicesBaseTest {
         // assert if logs are ordered by log.date DESC, log.id DESC
         Iterator<NodeInstanceDesc> fullIterator = fullNodeInstanceLogs.iterator();
         NodeInstanceDesc fullLog0 = fullIterator.next();
-        assertEquals("Start", fullLog0.getName());
+        assertEquals("End", fullLog0.getName());
         assertEquals(true, fullLog0.isCompleted());
 
         NodeInstanceDesc fullLog1 = fullIterator.next();
-        assertEquals("Hello", fullLog1.getName());
-        assertEquals(true, fullLog1.isCompleted());
+        assertEquals("End", fullLog1.getName());
+        assertEquals(false, fullLog1.isCompleted());
 
         NodeInstanceDesc fullLog2 = fullIterator.next();
-        assertEquals("End", fullLog2.getName());
+        assertEquals("Hello", fullLog2.getName());
         assertEquals(true, fullLog2.isCompleted());
 
         NodeInstanceDesc fullLog3 = fullIterator.next();
-        assertEquals("End", fullLog3.getName());
+        assertEquals("Hello", fullLog3.getName());
         assertEquals(false, fullLog3.isCompleted());
 
         NodeInstanceDesc fullLog4 = fullIterator.next();
-        assertEquals("Hello", fullLog4.getName());
-        assertEquals(false, fullLog4.isCompleted());
+        assertEquals("Start", fullLog4.getName());
+        assertEquals(true, fullLog4.isCompleted());
 
         NodeInstanceDesc fullLog5 = fullIterator.next();
         assertEquals("Start", fullLog5.getName());

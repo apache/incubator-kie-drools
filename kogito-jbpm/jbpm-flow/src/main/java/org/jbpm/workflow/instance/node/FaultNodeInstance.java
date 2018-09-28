@@ -76,11 +76,18 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             if (!exceptionHandled) {
                 handleException(faultName, exceptionScopeInstance);
             }
-            ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
             boolean hidden = false;
             if (getNode().getMetaData().get("hidden") != null) {
                 hidden = true;
             }
+            if (!hidden) {
+                InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+                ((InternalProcessRuntime) kruntime.getProcessRuntime())
+                        .getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
+            }
+
+            ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
+
             if (!hidden) {
                 InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
                 ((InternalProcessRuntime) kruntime.getProcessRuntime())

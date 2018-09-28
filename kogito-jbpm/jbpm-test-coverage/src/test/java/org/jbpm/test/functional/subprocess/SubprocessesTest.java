@@ -303,6 +303,7 @@ public class SubprocessesTest extends JbpmTestCase {
 
         // signal the subprocess to continue
         ksession.signalEvent("continue", null, id);
+        assertLeft(process, P2_SIGNAL_END);
         assertLeft(process, P3_SIGNAL);
         assertTriggered(process, P3_SCRIPT);
         assertChangedVariable(process, "variable", null, "new value");
@@ -348,6 +349,7 @@ public class SubprocessesTest extends JbpmTestCase {
 
         ksession.signalEvent("finish", null, pi.getId());
         assertLeft(process, P2_SIGNAL_END);
+        assertLeft(process, P3_SIGNAL);
         assertNextNode(process, P2_END);
         assertProcessCompleted(process, PROCESS_ID_2);
 
@@ -437,6 +439,7 @@ public class SubprocessesTest extends JbpmTestCase {
         // signal the parent process to finish
         ksession.signalEvent("finish", null, pi.getId());
         assertLeft(process, P2_SIGNAL_END);
+        assertLeft(process, P3_SIGNAL);
         assertNextNode(process, P2_END);
         assertProcessCompleted(process, PROCESS_ID_2);
 
@@ -477,6 +480,7 @@ public class SubprocessesTest extends JbpmTestCase {
         // signal the subprocess to continue
         ksession.signalEvent("continue", null, id);
         assertLeft(process, P3_SIGNAL);
+        assertLeft(process, P2_SIGNAL_END);
         assertTriggered(process, P3_SCRIPT);
         assertChangedVariable(process, "variable", null, "new value");
         assertLeft(process, P3_SCRIPT);
@@ -546,7 +550,9 @@ public class SubprocessesTest extends JbpmTestCase {
         ksession.abortProcessInstance(pi.getId());
 
         assertProcessCompleted(process, PROCESS_ID_2);
+        assertLeft(process, "dependent process");
         assertProcessCompleted(process, PROCESS_ID_3);
+        assertLeft(process, P3_SIGNAL);
 
         Assertions.assertThat(listener.wasProcessCompleted(PROCESS_ID_2)).isFalse();
         Assertions.assertThat(listener.wasProcessCompleted(PROCESS_ID_3)).isFalse();
@@ -581,7 +587,9 @@ public class SubprocessesTest extends JbpmTestCase {
 
         // carry on with execution of superprocess
         assertProcessCompleted(process, PROCESS_ID_3);
+        assertLeft(process, P3_SIGNAL);
         assertProcessCompleted(process, PROCESS_ID_2);
+        assertLeft(process, "dependent process");
 
         Assertions.assertThat(listener.wasProcessAborted(PROCESS_ID_2)).isTrue();
         Assertions.assertThat(listener.wasProcessAborted(PROCESS_ID_3)).isTrue();

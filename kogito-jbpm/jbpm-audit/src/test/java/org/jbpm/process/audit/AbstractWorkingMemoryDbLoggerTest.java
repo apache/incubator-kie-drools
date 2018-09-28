@@ -115,6 +115,7 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
+        assertRuleFlowSampleLogsSorting(nodeInstances, processInstanceId);
         logService.clear();
 	}
 
@@ -137,6 +138,7 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
                 logger.debug(" -> {}", nodeInstance.getDate());
             }
             assertEquals(6, nodeInstances.size());
+            assertRuleFlowSampleLogsSorting(nodeInstances, processInstance.getProcessInstanceId());
         }
         logService.clear();
 	}
@@ -167,4 +169,57 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         assertEquals(14, nodeInstances.size());
         logService.clear();
 	}
+
+	private void assertRuleFlowSampleLogsSorting(List<NodeInstanceLog> nodeInstanceLogs, long processInstanceId){
+        assertLogContent(nodeInstanceLogs.get(0),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         0,
+                         "StartNode",
+                         "Start");
+        assertLogContent(nodeInstanceLogs.get(1),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         1,
+                         "StartNode",
+                         "Start");
+        assertLogContent(nodeInstanceLogs.get(2),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         0,
+                         "WorkItemNode",
+                         "Task");
+        assertLogContent(nodeInstanceLogs.get(3),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         1,
+                         "WorkItemNode",
+                         "Task");
+        assertLogContent(nodeInstanceLogs.get(4),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         0,
+                         "EndNode",
+                         "End");
+        assertLogContent(nodeInstanceLogs.get(5),
+                         processInstanceId,
+                         "com.sample.ruleflow",
+                         1,
+                         "EndNode",
+                         "End");
+    }
+
+    private void assertLogContent(NodeInstanceLog log,
+                                  long nodeInstanceId,
+                                  String processId,
+                                  Integer type,
+                                  String nodeType,
+                                  String nodeName){
+
+        assertEquals(nodeInstanceId,log.getProcessInstanceId().longValue());
+        assertEquals(processId,log.getProcessId());
+        assertEquals(type,log.getType());
+        assertEquals(nodeType, log.getNodeType());
+        assertEquals(nodeName,log.getNodeName());
+    }
 }

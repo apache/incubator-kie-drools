@@ -70,9 +70,9 @@ public class EProcessHistoryTest extends RemoteEjbTest {
         long pid = startProcess(ProcessDefinitions.SCRIPT_TASK);
         List<NodeInstanceDesc> logs = ejb.getProcessInstanceFullHistory(pid);
         Assertions.assertThat(logs.size()).isEqualTo(6);
-        String[] expected = {"_A3185DDF-23A7-48B7-A2FE-7C0FE39F6691", "_3C8F4385-5348-479C-83EE-0C2DC2004F1A",
-                "_DC07735C-FA99-414C-AEAC-9F4CE0CF24F9", "_DC07735C-FA99-414C-AEAC-9F4CE0CF24F9",
-                "_3C8F4385-5348-479C-83EE-0C2DC2004F1A", "_A3185DDF-23A7-48B7-A2FE-7C0FE39F6691"};
+        String[] expected = {"_DC07735C-FA99-414C-AEAC-9F4CE0CF24F9", "_DC07735C-FA99-414C-AEAC-9F4CE0CF24F9",
+                "_3C8F4385-5348-479C-83EE-0C2DC2004F1A", "_3C8F4385-5348-479C-83EE-0C2DC2004F1A",
+                "_A3185DDF-23A7-48B7-A2FE-7C0FE39F6691", "_A3185DDF-23A7-48B7-A2FE-7C0FE39F6691"};
         for (int i = 0; i < logs.size(); ++i) {
             NodeInstanceDesc node = logs.get(i);
             Assertions.assertThat(node.getNodeId()).isEqualTo(expected[i]);

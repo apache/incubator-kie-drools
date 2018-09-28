@@ -143,6 +143,6 @@ public abstract class AbstractRuntimeEJBServicesTest extends AbstractEJBServices
     }
 
     public List<NodeInstanceDesc> getProcessInstanceHistory(Long processInstanceId) {
-        return (List<NodeInstanceDesc>) runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContext(0, 40));
+        return (List<NodeInstanceDesc>) runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContext(0, 80));
     }
 }

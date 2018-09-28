@@ -123,8 +123,6 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
     @Override
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
-        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
-        persist(log, event);
     }
 
     @Override
@@ -217,9 +215,10 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
     @Override
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-
-        
+        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
+        persist(log, event);
     }
+
     @Override
     public void beforeVariableChanged(ProcessVariableChangedEvent event) {
         

@@ -145,7 +145,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public void cancel() {
-        nodeInstanceContainer.removeNodeInstance(this);
         boolean hidden = false;
         Node node = getNode();
     	if (node != null && node.getMetaData().get("hidden") != null) {
@@ -154,7 +153,13 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	if (!hidden) {
     		InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
-        		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
+        		.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
+        }
+        nodeInstanceContainer.removeNodeInstance(this);
+        if (!hidden) {
+            InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+            ((InternalProcessRuntime) kruntime.getProcessRuntime())
+                    .getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         }
     }
     
