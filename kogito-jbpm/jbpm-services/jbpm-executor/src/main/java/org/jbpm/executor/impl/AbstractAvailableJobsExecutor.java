@@ -174,9 +174,10 @@ public abstract class AbstractAvailableJobsExecutor {
                         
                         executorStoreService.updateRequest(request, null);
                         processReoccurring = true;
-                    }
+                    }                    
                     // callback handling after job execution
                     callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
+                    updateProcessInfoInContext(request, ctx);
                     
                     for (CommandCallback handler : callbacks) {
                         
@@ -264,6 +265,8 @@ public abstract class AbstractAvailableJobsExecutor {
             request.setStatus(STATUS.ERROR);
             
             executorStoreService.updateRequest(request, null);
+            updateProcessInfoInContext(request, ctx);
+            
             AsyncJobException wrappedException = new AsyncJobException(request.getId(), request.getCommandName(), e);
             if (callbacks != null) {
                 for (CommandCallback handler : callbacks) {                        
@@ -315,4 +318,14 @@ public abstract class AbstractAvailableJobsExecutor {
         }
     }
 
+    protected void updateProcessInfoInContext(RequestInfo requestInfo, CommandContext ctx) {
+        
+        if (requestInfo.getDeploymentId() != null) {
+            ctx.setData("deploymentId", requestInfo.getDeploymentId());
+        }
+        
+        if (requestInfo.getProcessInstanceId() != null) {
+            ctx.setData("processInstanceId", requestInfo.getProcessInstanceId());
+        }
+    }
 }

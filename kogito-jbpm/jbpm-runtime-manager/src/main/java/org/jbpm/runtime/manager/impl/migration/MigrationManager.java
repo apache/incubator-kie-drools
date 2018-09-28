@@ -45,6 +45,7 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.impl.migration.MigrationEntry.Type;
 import org.jbpm.workflow.core.NodeContainer;
@@ -59,6 +60,7 @@ import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
@@ -128,7 +130,7 @@ public class MigrationManager {
      */
     public MigrationReport migrate(Map<String, String> nodeMapping) {
 
-        validate();
+        
         KieSession current = null;
         KieSession tobe = null;      
         TransactionManager txm = null;
@@ -136,6 +138,8 @@ public class MigrationManager {
         InternalRuntimeManager currentManager = (InternalRuntimeManager) RuntimeManagerRegistry.get().getManager(migrationSpec.getDeploymentId());
         InternalRuntimeManager toBeManager = (InternalRuntimeManager) RuntimeManagerRegistry.get().getManager(migrationSpec.getToDeploymentId());
 
+        boolean migrateExecutorJobs = ((SimpleRuntimeEnvironment)currentManager.getEnvironment()).getEnvironmentTemplate().get("ExecutorService") != null;
+        validate(migrateExecutorJobs);
         Map<Long, List<TimerInstance>> timerMigrated = null;
         try {
 
@@ -234,7 +238,17 @@ public class MigrationManager {
                     logger.warn("Unexpected error during migration", e);
                     report.addEntry(Type.WARN, "Cannot update context mapping owner (added in version 6.2) due to " + e.getMessage());
                 }
-
+                
+                if (migrateExecutorJobs) {
+                    // update request info/executor with new deployment id
+                    Query executorRequestQuery = em.createQuery("update RequestInfo set deploymentId = :depId where processInstanceId = :procInstanceId and status in ('ERROR')");
+                    executorRequestQuery
+                                .setParameter("depId", migrationSpec.getToDeploymentId())                            
+                                .setParameter("procInstanceId", migrationSpec.getProcessInstanceId());
+    
+                    int executorRequestsUpdated = executorRequestQuery.executeUpdate();
+                    report.addEntry(Type.INFO, "Executor Jobs updated = " + executorRequestsUpdated + " for process instance id " + migrationSpec.getProcessInstanceId());
+                }
                 current = JPAKnowledgeService.newStatefulKnowledgeSession(currentManager.getEnvironment().getKieBase(), null, currentManager.getEnvironment().getEnvironment());
                 tobe = toBeManager.getEnvironment().getKieBase().newKieSession();
                 upgradeProcessInstance(current, tobe, migrationSpec.getProcessInstanceId(), migrationSpec.getToProcessId(), nodeMapping, em, toBeManager.getIdentifier());
@@ -283,7 +297,7 @@ public class MigrationManager {
         return report;
     }
 
-    private void validate() {
+    private void validate(boolean migrateExecutorJobs) {
         if (migrationSpec == null) {
             report.addEntry(Type.ERROR, "no process data given for migration");
             return;
@@ -336,6 +350,17 @@ public class MigrationManager {
             
             if (log == null || log.getStatus() != ProcessInstance.STATE_ACTIVE) {
                 report.addEntry(Type.ERROR, "No process instance found or it is not active (id " + migrationSpec.getProcessInstanceId() + " in status " + (log == null ? "-1" : log.getStatus()));
+            }
+            
+            if (migrateExecutorJobs) {
+                List<Long> executorJobs = (List<Long>) em.createQuery("select id FROM RequestInfo ri WHERE ri.processInstanceId = :processInstanceId and ri.status in (:statuses)")
+                        .setParameter("processInstanceId", migrationSpec.getProcessInstanceId())
+                        .setParameter("statuses", Arrays.asList(STATUS.QUEUED, STATUS.RETRYING, STATUS.RUNNING))
+                        .getResultList();
+
+                if (!executorJobs.isEmpty()) {
+                    report.addEntry(Type.ERROR, "There are active async jobs for process instance " + migrationSpec.getProcessInstanceId() + " migration not allowed with active jobs");
+                }
             }
         } finally {
             em.close();
