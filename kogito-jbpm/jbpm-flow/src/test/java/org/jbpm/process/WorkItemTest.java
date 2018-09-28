@@ -26,13 +26,14 @@ import java.util.Set;
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.process.core.impl.WorkImpl;
-import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.process.instance.impl.demo.MockDataWorkItemHandler;
 import org.jbpm.process.test.Person;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -41,6 +42,7 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -111,6 +113,90 @@ public class WorkItemTest extends AbstractBaseTest {
         }
 
         Assert.assertEquals( ProcessInstance.STATE_ABORTED,
+                             processInstance.getState() );
+    }
+	
+	@Test
+    public void testMockDataWorkItemHandler() {
+        String processId = "org.drools.actions";
+        String workName = "Unnexistent Task";
+        RuleFlowProcess process = getWorkItemProcess( processId,
+                                                      workName );
+        KieSession ksession = createKieSession(process); 
+        
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put("Result", "test");
+        
+        ksession.getWorkItemManager().registerWorkItemHandler( workName,
+                                                               new MockDataWorkItemHandler(output) );
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put( "UserName",
+                        "John Doe" );
+        parameters.put( "Person",
+                        new Person( "John Doe" ) );
+
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
+                                                                  parameters );
+        
+        Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        Assert.assertNotNull(numberVariable);
+        Assert.assertEquals("test", numberVariable);
+
+        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
+                             processInstance.getState() );
+    }
+	
+    @Test
+    public void testMockDataWorkItemHandlerCustomFunction() {
+        String processId = "org.drools.actions";
+        String workName = "Unnexistent Task";
+        RuleFlowProcess process = getWorkItemProcess( processId,
+                                                      workName );
+        KieSession ksession = createKieSession(process); 
+        
+        ksession.getWorkItemManager().registerWorkItemHandler( workName,
+                                                               new MockDataWorkItemHandler((input) ->  {
+            Map<String, Object> output = new HashMap<String, Object>();
+            if ("John Doe".equals(input.get("Comment"))) {
+                output.put("Result", "one");                
+            } else {
+                output.put("Result", "two");
+                
+            }
+            return output;
+        } ));
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put( "UserName",
+                        "John Doe" );
+        parameters.put( "Person",
+                        new Person( "John Doe" ) );
+
+        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
+                                                                  parameters );
+        
+        Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        Assert.assertNotNull(numberVariable);
+        Assert.assertEquals("one", numberVariable);
+
+        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
+                             processInstance.getState() );
+        
+        parameters = new HashMap<String, Object>();
+        parameters.put( "UserName",
+                        "John Doe" );
+        parameters.put( "Person",
+                        new Person( "John Deen" ) );
+
+        processInstance = ksession.startProcess( "org.drools.actions",
+                                                                  parameters );
+        
+        numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        Assert.assertNotNull(numberVariable);
+        Assert.assertEquals("two", numberVariable);
+
+        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
                              processInstance.getState() );
     }
 
