@@ -16,15 +16,8 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MsAttendance")
-@XStreamInclude({
-        RequiredAttendance.class,
-        PreferredAttendance.class
-})
 public abstract class Attendance extends AbstractPersistable {
 
     private Person person;

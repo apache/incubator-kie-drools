@@ -18,10 +18,8 @@ package org.optaplanner.examples.meetingscheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MsMeeting")
 public class Meeting extends AbstractPersistable {
 
     private String topic;

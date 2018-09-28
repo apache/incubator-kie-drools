@@ -20,11 +20,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-@XStreamAlias("MsDay")
 public class Day extends AbstractPersistable implements Labeled {
 
     private int dayOfYear;

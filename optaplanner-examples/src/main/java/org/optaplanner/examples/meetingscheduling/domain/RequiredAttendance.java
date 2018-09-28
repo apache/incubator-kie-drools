@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("MsRequiredAttendance")
 public class RequiredAttendance extends Attendance {
 
 }

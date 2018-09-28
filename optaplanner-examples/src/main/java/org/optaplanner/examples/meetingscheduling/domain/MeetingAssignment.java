@@ -16,14 +16,12 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang3.text.WordUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity()
-@XStreamAlias("MsMeetingAssignment")
 public class MeetingAssignment extends AbstractPersistable {
 
     private Meeting meeting;

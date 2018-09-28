@@ -21,11 +21,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAccessor;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-@XStreamAlias("MsTimeGrain")
 public class TimeGrain extends AbstractPersistable implements Labeled {
 
     /**
