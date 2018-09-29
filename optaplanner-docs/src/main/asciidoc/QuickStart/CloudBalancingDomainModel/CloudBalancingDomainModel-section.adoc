@@ -28,7 +28,7 @@ For an object representing the full data set and solution, a sample instance hol
 
 . Determine which relationships (or fields) change during planning.
 
-* _Planning entity_: the class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because we can move processes to different computers.
+* _Planning entity_: the class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because Planner can move processes to different computers.
 ** A class representing input data that Planner can not change is known as a _problem fact_. 
 * _Planning variable_: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
 * _Planning solution_: the class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
