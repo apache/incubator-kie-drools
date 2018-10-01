@@ -95,6 +95,8 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
                 || previousStandstill.getHosWeekStart().getHosWeekStart() == null) {
             return new Arrival(null, null, null, null);
         }
+
+        // HOS = Hours of service (in terms of driving regulations)
         long earlyLateBreakDrivingSecondsBudget = solution.getParametrization().getEarlyLateBreakDrivingSecondsBudget();
         long nightDrivingSecondsBudget = solution.getParametrization().getNightDrivingSecondsBudget();
         long hosWeekDrivingSecondsBudget = solution.getParametrization().getHosWeekDrivingSecondsBudget();

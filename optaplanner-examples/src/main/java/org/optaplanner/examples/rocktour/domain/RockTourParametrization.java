@@ -22,6 +22,8 @@ public class RockTourParametrization extends AbstractPersistable {
 
     public static final String EARLY_LATE_BREAK_DRIVING_SECONDS = "Early late break driving seconds budget";
     public static final String NIGHT_DRIVING_SECONDS = "Night driving seconds budget";
+
+    // HOS = Hours of service (in terms of driving regulations)
     public static final String HOS_WEEK_DRIVING_SECONDS_BUDGET = "HOS week driving seconds budget";
     public static final String HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET = "HOS week consecutive driving days budget";
     public static final String HOS_WEEK_REST_DAYS = "HOS week rest days";
@@ -33,6 +35,8 @@ public class RockTourParametrization extends AbstractPersistable {
 
     private long earlyLateBreakDrivingSecondsBudget = 1L * 60L * 60L;
     private long nightDrivingSecondsBudget = 7L * 60L * 60L;
+
+    // HOS = Hours of service (in terms of driving regulations)
     private long hosWeekDrivingSecondsBudget = 50L * 60L * 60L;
     private int hosWeekConsecutiveDrivingDaysBudget = 7;
     private int hosWeekRestDays = 2;
