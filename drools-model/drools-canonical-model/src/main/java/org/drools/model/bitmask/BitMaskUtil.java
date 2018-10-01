@@ -120,6 +120,9 @@ public class BitMaskUtil {
 
         @Override
         public boolean equals(Object obj) {
+            if (!(obj instanceof PropertyInClass)) {
+                return false;
+            }
             PropertyInClass other = (PropertyInClass) obj;
             return clazz == other.clazz && setter.equals(other.setter);
         }
