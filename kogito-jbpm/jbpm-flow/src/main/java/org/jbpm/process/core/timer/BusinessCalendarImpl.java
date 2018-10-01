@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 
-import org.drools.core.time.TimeUtils;
 import org.jbpm.util.PatternConstants;
 import org.kie.api.time.SessionClock;
 import org.slf4j.Logger;
@@ -258,6 +257,8 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         if (currentCalHour >= endHour) {
             c.add(Calendar.DAY_OF_YEAR, 1);
             c.add(Calendar.HOUR_OF_DAY, startHour-currentCalHour);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
         } else if (currentCalHour < startHour) {
             c.add(Calendar.HOUR_OF_DAY, startHour);
         }

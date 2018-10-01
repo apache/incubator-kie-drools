@@ -16,8 +16,6 @@
 
 package org.jbpm.process.core.timer;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,10 +23,12 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.time.SessionPseudoClock;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.time.SessionPseudoClock;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class BusinessCalendarImplTest extends AbstractBaseTest {
 
@@ -323,6 +323,21 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
         Date result = businessCal.calculateBusinessTimeAsDate("10000");
 
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss.SSS", result));
+    }
+
+    @Test
+    public void testCalculateMinutesPassingAfterHour() {
+        Properties config = new Properties();
+        String currentDate = "2018-05-02 19:51:33";
+        String expectedDate = "2018-05-03 09:01:00";
+
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime(currentDate).getTime());
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+
+        Date result = businessCal.calculateBusinessTimeAsDate("1m");
+
+        System.out.println(result);
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss", result));
     }
 
     @Test(expected = IllegalArgumentException.class)
