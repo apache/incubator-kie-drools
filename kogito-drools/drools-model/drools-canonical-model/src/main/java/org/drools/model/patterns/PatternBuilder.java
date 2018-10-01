@@ -17,7 +17,6 @@ import static org.drools.model.FlowDSL.declarationOf;
 
 public class PatternBuilder {
 
-    private Variable[] joinVars;
     private DataSourceDefinition dataSourceDefinition = DataSourceDefinitionImpl.DEFAULT;
 
     public PatternBuilder from(DataSourceDefinition dataSourceDefinition) {

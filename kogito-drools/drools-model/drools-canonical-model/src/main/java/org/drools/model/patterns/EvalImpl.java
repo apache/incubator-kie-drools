@@ -52,7 +52,7 @@ public class EvalImpl implements Condition, ModelComponent {
     @Override
     public boolean isEqualTo( ModelComponent o ) {
         if ( this == o ) return true;
-        if ( !(o instanceof ExistentialPatternImpl) ) return false;
+        if ( !(o instanceof EvalImpl) ) return false;
 
         EvalImpl that = ( EvalImpl ) o;
 

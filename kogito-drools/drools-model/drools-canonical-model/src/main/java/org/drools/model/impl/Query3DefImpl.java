@@ -78,7 +78,7 @@ public class Query3DefImpl<A, B, C> extends QueryDefImpl implements Query3Def<A,
     @Override
     public boolean isEqualTo( ModelComponent other ) {
         if ( this == other ) return true;
-        if ( !(other instanceof Query1DefImpl) ) return false;
+        if ( !(other instanceof Query3DefImpl) ) return false;
 
         Query3DefImpl that = ( Query3DefImpl ) other;
 

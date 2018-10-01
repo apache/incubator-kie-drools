@@ -70,7 +70,7 @@ public class Query2DefImpl<A, B> extends QueryDefImpl implements Query2Def<A, B>
     @Override
     public boolean isEqualTo( ModelComponent other ) {
         if ( this == other ) return true;
-        if ( !(other instanceof Query1DefImpl) ) return false;
+        if ( !(other instanceof Query2DefImpl) ) return false;
 
         Query2DefImpl that = ( Query2DefImpl ) other;
 
