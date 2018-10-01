@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.conferencescheduling.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -83,7 +84,6 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             }
         });
 
-        setLayout(new GridLayout(12, 1));
         JPanel showPanel = new JPanel();
         JPanel importPanel = new JPanel();
         showPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -94,8 +94,13 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
         importPanel.add(importConferenceButton);
         importPanel.add(publishButton);
 
-        add(showPanel);
-        add(importPanel);
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new GridLayout(2, 1));
+        buttonsPanel.add(showPanel);
+        buttonsPanel.add(importPanel);
+
+        setLayout(new BorderLayout());
+        add(buttonsPanel, BorderLayout.NORTH);
     }
 
     @Override
