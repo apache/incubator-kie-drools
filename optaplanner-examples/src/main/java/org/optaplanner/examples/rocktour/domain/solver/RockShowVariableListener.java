@@ -118,13 +118,15 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
                 timeOfDay = RockTimeOfDay.EARLY;
             }
         }
-        hosWeekDrivingSecondsTotal += drivingSeconds;
+
+        hosWeekDrivingSecondsTotal += show.getDrivingTimeFromPreviousStandstill();
+
         // HOS driving time per week limits: add weekend rest period if driving for too many hour or too many days
         if (hosWeekDrivingSecondsTotal > hosWeekDrivingSecondsBudget
                 || hosWeekStart.getDepartureDate().until(arrivalDate, DAYS) > hosWeekConsecutiveDrivingDaysBudget) {
             arrivalDate = arrivalDate.plusDays(hosWeekRestDays);
             hosWeekStart = show;
-            hosWeekDrivingSecondsTotal = 0L;
+            hosWeekDrivingSecondsTotal -= hosWeekDrivingSecondsBudget;
             timeOfDay = RockTimeOfDay.EARLY;
         }
         if (show.getDurationInHalfDay() % 2 == 0 && timeOfDay != RockTimeOfDay.EARLY) {
