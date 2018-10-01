@@ -29,6 +29,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class PropertyReactivityTest extends BaseModelTest {
 
@@ -305,5 +306,50 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         ksession.insert(new AtomicInteger(0));
         assertEquals( 3, ksession.fireAllRules() );
+    }
+
+    @Test(timeout = 10000L)
+    public void testPropertyReactivityWith2Rules() {
+        checkPropertyReactivityWith2Rules( "age == 41\n" );
+    }
+
+    @Test(timeout = 10000L)
+    public void testPropertyReactivityWith2RulesUsingAccessor() {
+        checkPropertyReactivityWith2Rules( "getAge() == 41\n" );
+    }
+
+    @Test(timeout = 10000L)
+    public void testPropertyReactivityWith2RulesLiteralFirst() {
+        checkPropertyReactivityWith2Rules( "41 == age\n" );
+    }
+
+    @Test(timeout = 10000L)
+    public void testPropertyReactivityWith2RulesLiteralFirstUsingAccessor() {
+        checkPropertyReactivityWith2Rules( "41 == getAge()\n" );
+    }
+
+    private void checkPropertyReactivityWith2Rules( String constraint ) {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $p : Person( age == 40 )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $p : Person( " + constraint + " )\n" +
+                "then\n" +
+                "    modify($p) { setEmployed( true ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person( "Mario", 40 );
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals( 41, p.getAge() );
+        assertTrue( p.getEmployed() );
     }
 }
