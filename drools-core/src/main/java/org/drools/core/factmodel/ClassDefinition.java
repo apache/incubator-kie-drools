@@ -330,6 +330,10 @@ public class ClassDefinition
         return metaData;
     }
 
+    public Object getMetaData(String name) {
+        return metaData != null ? metaData.get(name) : null;
+    }
+
     public void addMetaData( String key, Object value ) {
         if ( this.metaData == null ) {
             metaData = new HashMap<String,Object>();

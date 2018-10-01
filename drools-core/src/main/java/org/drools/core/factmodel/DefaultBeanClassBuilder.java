@@ -16,6 +16,17 @@
 
 package org.drools.core.factmodel;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
@@ -31,17 +42,6 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -89,25 +89,23 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         ClassWriter cw = this.buildClassHeader( classLoader, classDef );
 
-        this.buildFields( cw, classDef );
+        buildMetaData( cw, classDef );
+        buildFields( cw, classDef );
 
         if ( classDef.isTraitable() ) {
-            this.buildDynamicPropertyMap( cw, classDef );
-            this.buildTraitMap( cw, classDef );
-            this.buildFieldTMS( cw, classDef );
+            buildDynamicPropertyMap( cw, classDef );
+            buildTraitMap( cw, classDef );
+            buildFieldTMS( cw, classDef );
         }
 
-        this.buildConstructors( cw, classDef );
-
-        this.buildGettersAndSetters( cw, classDef );
-
-        this.buildEqualityMethods( cw, classDef );
-
-        this.buildToString( cw, classDef );
+        buildConstructors( cw, classDef );
+        buildGettersAndSetters( cw, classDef );
+        buildEqualityMethods( cw, classDef );
+        buildToString( cw, classDef );
 
         if ( classDef.isTraitable() ) {
             // must guarantee serialization order when enhancing fields are present
-            this.buildSerializationMethods(cw, classDef);
+            buildSerializationMethods(cw, classDef);
         }
 
         if ( classDef.isReactive() ) {
@@ -277,6 +275,18 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                     classDef );
             this.buildHashCode( cw,
                     classDef );
+        }
+    }
+
+    protected void buildMetaData(ClassWriter cw, ClassDefinition classDef) {
+        Object serialVersionUID = classDef.getMetaData("serialVersionUID");
+        if (serialVersionUID != null) {
+            FieldVisitor fv = cw.visitField( Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC + Opcodes.ACC_FINAL,
+                                             "serialVersionUID",
+                                             BuildUtils.getTypeDescriptor( "long" ),
+                                             null,
+                                             Long.parseLong( serialVersionUID.toString() ) );
+            fv.visitEnd();
         }
     }
 
