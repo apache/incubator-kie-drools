@@ -28,6 +28,7 @@ import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NormalAnnotationExpr;
@@ -150,7 +151,12 @@ public class POJOGenerator {
 
         List<AnnotationDescr> softAnnotations = new ArrayList<>();
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
-            processAnnotation( builder, typeResolver, generatedClass, ann, softAnnotations );
+            if (ann.getName().equals( "serialVersionUID" )) {
+                LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue( "value" ).toString());
+                generatedClass.addFieldWithInitializer( PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL );
+            } else {
+                processAnnotation( builder, typeResolver, generatedClass, ann, softAnnotations );
+            }
         }
         if (softAnnotations.size() > 0) {
             String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect( joining());
