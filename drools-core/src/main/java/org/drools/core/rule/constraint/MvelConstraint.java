@@ -443,12 +443,16 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             propertyNameBuilder = new StringBuilder();
             extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
+        } else if (propertyName.equals("null") || propertyName.equals("true") || propertyName.equals("false")) {
+            propertyNameBuilder = new StringBuilder();
+            extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
+            propertyName = propertyNameBuilder.toString();
         }
 
         if (propertyName.startsWith("is") || propertyName.startsWith("get")) {
             int exprPos = simpleExpression.indexOf(propertyName);
             int propNameEnd = exprPos + propertyName.length();
-            if (simpleExpression.length() > propNameEnd + 2 && simpleExpression.charAt(propNameEnd) == '(') {
+            if (simpleExpression.length() > propNameEnd + 1 && simpleExpression.charAt(propNameEnd) == '(') {
                 propertyName = getter2property(propertyName);
             }
         }

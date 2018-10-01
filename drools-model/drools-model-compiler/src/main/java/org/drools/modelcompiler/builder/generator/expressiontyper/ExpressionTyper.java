@@ -332,13 +332,23 @@ public class ExpressionTyper {
             firstNode = firstChild;
         }
 
-        if(originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
+        if (originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
             // try infer type  from the declarations
             final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstChild.toString());
             originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
         final Optional<TypedExpressionCursor> teCursor = processFirstNode(drlxExpr, childrenNodes, firstNode, isInLineCast, originalTypeCursor);
+
+        if (firstNode instanceof MethodCallExpr) {
+            MethodCallExpr firstMethod = ( MethodCallExpr ) firstNode;
+            if (firstMethod.getArguments().isEmpty()) {
+                String firstProp = getter2property(firstMethod.getNameAsString());
+                if (firstProp != null) {
+                    context.addReactOnProperties( firstProp );
+                }
+            }
+        }
 
         Expression previous;
         java.lang.reflect.Type typeCursor;

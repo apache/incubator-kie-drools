@@ -925,15 +925,17 @@ public class StringUtils {
     }
 
     public static int extractFirstIdentifier(String string, StringBuilder builder, int start) {
+        boolean isQuoted = false;
         boolean started = false;
         int i = start;
         for (; i < string.length(); i++) {
             char ch = string.charAt(i);
-            if (Character.isJavaIdentifierStart(ch)) {
+            if (!isQuoted && Character.isJavaIdentifierStart(ch)) {
                 builder.append(ch);
                 started = true;
-            }
-            else if (started && Character.isJavaIdentifierPart(ch)) {
+            } else if (ch == '"' || ch == '\'') {
+                isQuoted = !isQuoted;
+            } else if (started && Character.isJavaIdentifierPart(ch)) {
                 builder.append(ch);
             } else if (started) {
                 break;
