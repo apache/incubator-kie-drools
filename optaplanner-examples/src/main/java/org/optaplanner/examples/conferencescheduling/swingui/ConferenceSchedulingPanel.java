@@ -30,11 +30,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
 
@@ -54,8 +57,8 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             int option = JOptionPane.showConfirmDialog(this, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 String conferenceBaseUrl = cfpRestUrlTextField.getText();
-                ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl);
-                solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
+                newSingleThreadExecutor().execute(new ConferenceImporter(conferenceBaseUrl, solutionBusiness));
+                JOptionPane.showMessageDialog(this, "Importing CFP data in progress ...");
             }
         });
 
@@ -105,5 +108,22 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
 
     @Override
     public void resetPanel(ConferenceSolution solution) {
+    }
+
+    private class ConferenceImporter implements Runnable {
+        String conferenceBaseUrl;
+        SolutionBusiness<ConferenceSolution> solutionBusiness;
+
+        public ConferenceImporter(String conferenceBaseUrl, SolutionBusiness<ConferenceSolution> solutionBusiness) {
+            this.conferenceBaseUrl = conferenceBaseUrl;
+            this.solutionBusiness = solutionBusiness;
+        }
+
+        @Override
+        public void run() {
+            ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl);
+            solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
+            JOptionPane.showMessageDialog(ConferenceSchedulingPanel.this, "CFP data imported successfully.");
+        }
     }
 }
