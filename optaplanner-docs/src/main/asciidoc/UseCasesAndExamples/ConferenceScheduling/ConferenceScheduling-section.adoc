@@ -31,7 +31,9 @@ Hard constraints:
 Medium constraints:
 
 * Talk mutually-exclusive-talks tags: Talks that share such tags must not be scheduled in overlapping timeslots.
-* Published timeslot: A talk must not be scheduled at a different timeslot unless a hard constraint is broken.
+* Published timeslot: A published talk must not be scheduled at a different timeslot than currently published.
+If a hard constraint's input data changes after publishing (such as speaker unavailability), then this medium constraint will be
+minimally broken to attain a new feasible solution.
 
 Soft constraints:
 
