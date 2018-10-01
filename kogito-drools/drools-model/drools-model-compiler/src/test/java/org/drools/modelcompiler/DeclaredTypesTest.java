@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -441,5 +442,23 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
+    }
+
+    @Test
+    public void testDeclaredSlidingWindowOnEventInTypeDeclaration() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "declare MyPojo\n" +
+                "  @serialVersionUID( 42 )\n" +
+                "end\n" +
+                "rule R when then insert(new MyPojo()); end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        Object pojo = getObjectsIntoList(ksession, Object.class).iterator().next();
+        Field f = pojo.getClass().getDeclaredField( "serialVersionUID" );
+        f.setAccessible( true );
+        assertEquals(42L, (long)f.get( pojo ));
     }
 }
