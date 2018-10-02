@@ -22,6 +22,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,15 +30,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 
-import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution> {
 
@@ -57,7 +56,7 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             int option = JOptionPane.showConfirmDialog(this, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 String conferenceBaseUrl = cfpRestUrlTextField.getText();
-                newSingleThreadExecutor().execute(new ConferenceImporter(conferenceBaseUrl, solutionBusiness));
+                new ImporterWorker(conferenceBaseUrl).execute();
                 JOptionPane.showMessageDialog(this, "Importing CFP data in progress ...");
             }
         });
@@ -110,20 +109,33 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public void resetPanel(ConferenceSolution solution) {
     }
 
-    private class ConferenceImporter implements Runnable {
-        String conferenceBaseUrl;
-        SolutionBusiness<ConferenceSolution> solutionBusiness;
+    private class ImporterWorker extends SwingWorker<ConferenceSolution, Void> {
 
-        public ConferenceImporter(String conferenceBaseUrl, SolutionBusiness<ConferenceSolution> solutionBusiness) {
+        private String conferenceBaseUrl;
+
+        public ImporterWorker(String conferenceBaseUrl) {
             this.conferenceBaseUrl = conferenceBaseUrl;
-            this.solutionBusiness = solutionBusiness;
         }
 
         @Override
-        public void run() {
-            ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl);
-            solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
-            JOptionPane.showMessageDialog(ConferenceSchedulingPanel.this, "CFP data imported successfully.");
+        protected ConferenceSolution doInBackground() throws Exception {
+            return new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl).importSolution();
         }
+
+        @Override
+        protected void done() {
+            try {
+                ConferenceSolution cfpProblem = get();
+                solutionBusiness.setSolution(cfpProblem);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Importing was interrupted.", e);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException("Importing failed.", e.getCause());
+            } finally {
+                JOptionPane.showMessageDialog(ConferenceSchedulingPanel.this, "CFP data imported successfully.");
+            }
+        }
+
     }
 }
