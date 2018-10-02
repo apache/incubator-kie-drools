@@ -116,7 +116,7 @@ public class MarshallerTest {
         try {
             final FactHandle fhA = ksession.insert("Luca");
             ksession.insert(2L);
-            FactHandle integer = ksession.insert(10);
+            ksession.insert(10);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
 
@@ -124,7 +124,7 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
 
-            ksession.delete(integer);
+            ksession.delete(ksession.getFactHandle(10));
 
             assertEquals( 1, ksession.fireAllRules() );
 
