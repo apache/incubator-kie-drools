@@ -16,11 +16,6 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.phreak.Reactive;
-import org.kie.api.definition.type.Annotation;
-import org.kie.api.definition.type.FactField;
-import org.kie.api.definition.type.FactType;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -34,6 +29,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.phreak.Reactive;
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created
@@ -313,6 +313,10 @@ public class ClassDefinition
 
     public Map<String, Object> getMetaData() {
         return metaData;
+    }
+
+    public Object getMetaData(String name) {
+        return metaData != null ? metaData.get(name) : null;
     }
 
     public void addMetaData( String key, Object value ) {
