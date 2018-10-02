@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.*;
@@ -97,6 +98,39 @@ public class MarshallerTest {
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testSubnetwork() throws Exception {
+        final String str =
+                        "rule R1 when\n" +
+                        "    String()\n" +
+                        "    Long()\n" +
+                        "    not( Long() and Integer() )\n" +
+                        "then end\n";
+
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            final FactHandle fhA = ksession.insert("Luca");
+            ksession.insert(2L);
+            FactHandle integer = ksession.insert(10);
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+            assertEquals( 0, ksession.fireAllRules() );
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+            ksession.delete(integer);
+
+            assertEquals( 1, ksession.fireAllRules() );
+
+        } finally {
+            ksession.dispose();
+        }
     }
 
 }
