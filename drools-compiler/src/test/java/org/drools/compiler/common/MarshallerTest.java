@@ -94,11 +94,9 @@ public class MarshallerTest {
         ksession.insert(new Person("Edson", 35));
         ksession.insert(new Person("Mario", 40));
 
-        assertEquals(1, ksession.fireAllRules());
-
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertEquals(0, ksession.fireAllRules());
+        assertEquals(1, ksession.fireAllRules());
     }
 
 }
