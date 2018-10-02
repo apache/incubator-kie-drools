@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.lambda.PropertySetterFactory;
 
 /**
  * A {@link MemberAccessor} based on a getter and optionally a setter.
@@ -54,7 +55,7 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         getterFunction = createGetterFunction(lookup);
         setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
-        setterFunction = createSetterFunction(lookup);
+        setterFunction = PropertySetterFactory.createSetterFunction(setterMethod, propertyType, lookup);
     }
 
     private Function createGetterFunction(MethodHandles.Lookup lookup) {
@@ -74,29 +75,6 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
             return (Function) getterSite.getTarget().invokeExact();
         } catch (Throwable e) {
             throw new IllegalArgumentException("Lambda creation failed for getterMethod (" + getterMethod + ").", e);
-        }
-    }
-
-    private BiConsumer createSetterFunction(MethodHandles.Lookup lookup) {
-        if (setterMethod == null) {
-            return null;
-        }
-        Class<?> declaringClass = setterMethod.getDeclaringClass();
-        CallSite setterSite;
-        try {
-            setterSite = LambdaMetafactory.metafactory(lookup,
-                    "accept",
-                    MethodType.methodType(BiConsumer.class),
-                    MethodType.methodType(void.class, Object.class, Object.class),
-                    lookup.findVirtual(declaringClass, setterMethod.getName(), MethodType.methodType(void.class, propertyType)),
-                    MethodType.methodType(void.class, declaringClass, propertyType));
-        } catch (LambdaConversionException | NoSuchMethodException | IllegalAccessException e) {
-            throw new IllegalArgumentException("Lambda creation failed for setterMethod (" + setterMethod + ").", e);
-        }
-        try {
-            return (BiConsumer) setterSite.getTarget().invokeExact();
-        } catch (Throwable e) {
-            throw new IllegalArgumentException("Lambda creation failed for setterMethod (" + setterMethod + ").", e);
         }
     }
 
