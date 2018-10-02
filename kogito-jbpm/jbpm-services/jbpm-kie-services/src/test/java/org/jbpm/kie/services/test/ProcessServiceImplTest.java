@@ -700,7 +700,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
     		processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
     		fail("Deployment is deactivated so cannot start new process instances");
     	} catch (Exception e) {
-    		assertTrue(e.getMessage().contains("Deployments org.jbpm.test:test-module:1.0.0 is not active"));
+    		assertTrue(e.getMessage().contains("Deployment org.jbpm.test:test-module:1.0.0 is not active"));
     	}
 
     }

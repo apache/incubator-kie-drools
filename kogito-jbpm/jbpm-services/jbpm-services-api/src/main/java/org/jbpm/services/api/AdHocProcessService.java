@@ -34,7 +34,7 @@ public interface AdHocProcessService {
      * @param params process variables
      * @return process instance identifier
      * @throws RuntimeException in case of encountered errors
-     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+     * @throws DeploymentNotActiveException in case deployment with given deployment id does not exist or is not active
      */
     Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey, Map<String, Object> params, Long parentProcessInstanceId);
 }

@@ -31,6 +31,7 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.services.api.DeploymentNotActiveException;
 import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -101,7 +102,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		if (!deployedUnit.isActive()) {
-			throw new DeploymentNotFoundException("Deployments " + deploymentId + " is not active");
+			throw new DeploymentNotActiveException("Deployment " + deploymentId + " is not active");
 		}
 
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
@@ -130,7 +131,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
 		if (!deployedUnit.isActive()) {
-			throw new DeploymentNotFoundException("Deployments " + deploymentId + " is not active");
+			throw new DeploymentNotActiveException("Deployment " + deploymentId + " is not active");
 		}
 
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
@@ -703,7 +704,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	protected void disallowWhenNotActive(DeployedUnit deployedUnit, Command<?> cmd) {
 		if (!deployedUnit.isActive() &&
 				cmd instanceof StartProcessCommand) {
-			throw new DeploymentNotFoundException("Deployments " + deployedUnit.getDeploymentUnit().getIdentifier() + " is not active");
+			throw new DeploymentNotActiveException("Deployment " + deployedUnit.getDeploymentUnit().getIdentifier() + " is not active");
 		}
 	}
 

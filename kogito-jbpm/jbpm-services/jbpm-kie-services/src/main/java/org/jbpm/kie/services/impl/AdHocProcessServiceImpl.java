@@ -16,10 +16,11 @@
 
 package org.jbpm.kie.services.impl;
 
-import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
+import java.util.Map;
+
 import org.jbpm.kie.services.impl.cmd.StartProcessInstanceWithParentCommand;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.services.api.AdHocProcessService;
+import org.jbpm.services.api.DeploymentNotActiveException;
 import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.RuntimeDataService;
@@ -34,8 +35,6 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class AdHocProcessServiceImpl implements AdHocProcessService, VariablesAware {
     private static final Logger logger = LoggerFactory.getLogger(AdHocProcessServiceImpl.class);
@@ -58,7 +57,7 @@ public class AdHocProcessServiceImpl implements AdHocProcessService, VariablesAw
             throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
         }
         if (!deployedUnit.isActive()) {
-            throw new DeploymentNotFoundException("Deployments " + deploymentId + " is not active");
+            throw new DeploymentNotActiveException("Deployment " + deploymentId + " is not active");
         }
 
         RuntimeManager manager = deployedUnit.getRuntimeManager();

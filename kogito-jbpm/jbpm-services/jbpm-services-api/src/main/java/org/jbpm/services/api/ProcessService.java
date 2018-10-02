@@ -35,7 +35,8 @@ public interface ProcessService {
 	 * @param processId The process's identifier 
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
-	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+	 * @throws DeploymentNotActiveException in case deployment with given deployment id is not active
 	 */
 	Long startProcess(String deploymentId, String processId);
 
@@ -47,7 +48,8 @@ public interface ProcessService {
 	 * @param params process variables
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
-	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+	 * @throws DeploymentNotActiveException in case deployment with given deployment id is not active
 	 */
     Long startProcess(String deploymentId, String processId, Map<String, Object> params);
     
@@ -59,7 +61,8 @@ public interface ProcessService {
 	 * @param correlationKey correlation key to be assigned to process instance - must be unique
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
-	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+     * @throws DeploymentNotActiveException in case deployment with given deployment id is not active
 	 */
 	Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey);
 
@@ -72,7 +75,8 @@ public interface ProcessService {
 	 * @param params process variables
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
-	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+     * @throws DeploymentNotActiveException in case deployment with given deployment id is not active
 	 */
     Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey, Map<String, Object> params);
 
@@ -403,8 +407,8 @@ public interface ProcessService {
      * @param deploymentId deployment information for the process's kjar
      * @param command actual command for execution
      * @return results of command execution
-     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist 
-     * or is not active for restricted commands (e.g. start process)
+     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+     * @throws DeploymentNotActiveException in case deployment with given deployment id is not active for restricted commands (e.g. start process)
      */
     public <T> T execute(String deploymentId, Command<T> command);
     
@@ -415,7 +419,7 @@ public interface ProcessService {
      * @param command actual command for execution
      * @return results of command execution
      * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist 
-     * or is not active for restricted commands (e.g. start process)
+     * @throws DeploymentNotActiveException in case deployment with given deployment id is not active for restricted commands (e.g. start process)
      */
     public <T> T execute(String deploymentId, Context<?> context, Command<T> command);
 
