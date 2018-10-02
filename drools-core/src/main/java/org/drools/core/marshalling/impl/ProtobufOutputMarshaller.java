@@ -521,10 +521,8 @@ public class ProtobufOutputMarshaller {
     }
 
     private static SerializedObject serializeObject(MarshallerWriteContext context, Object object) {
-        ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
-        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
-
+        ObjectMarshallingStrategy strategy = new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
 
         Integer index = context.getStrategyIndex( strategy );
 
