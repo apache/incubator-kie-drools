@@ -95,16 +95,15 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         importTimeslotList();
 
         for (TalkType talkType : solution.getTalkTypeList()) {
-            LOGGER.info(talkType.getName()
-                    + ": Timeslots Total is " + (timeslotTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : timeslotTalkTypeToTotalMap.get(talkType.getName()))
-                    + ", Talks Total is " + (talkTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : talkTalkTypeToTotalMap.get(talkType.getName()))
-            );
+            LOGGER.info("{}: Timeslots Total is {}, Talks Total is {}.", talkType.getName(),
+                    timeslotTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : timeslotTalkTypeToTotalMap.get(talkType.getName()),
+                    talkTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : talkTalkTypeToTotalMap.get(talkType.getName()));
         }
         return solution;
     }
 
     private String getConferenceName() {
-        LOGGER.debug("Sending a request to: " + conferenceBaseUrl);
+        LOGGER.debug("Sending a request to: {}", conferenceBaseUrl);
         JsonObject conferenceObject = readJson(conferenceBaseUrl, JsonReader::readObject);
         return conferenceObject.getString("eventCode");
     }
@@ -114,7 +113,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         List<TalkType> talkTypeList = new ArrayList<>();
 
         String proposalTypeUrl = conferenceBaseUrl + "/proposalTypes";
-        LOGGER.debug("Sending a request to: " + proposalTypeUrl);
+        LOGGER.debug("Sending a request to: {}", proposalTypeUrl);
         JsonObject rootObject = readJson(proposalTypeUrl, JsonReader::readObject);
 
         JsonArray talkTypeArray = rootObject.getJsonArray("proposalTypes");
@@ -122,8 +121,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
             JsonObject talkTypeObject = talkTypeArray.getJsonObject(i);
             String talkTypeId = talkTypeObject.getString("id");
             if (talkTypeIdToTalkTypeMap.keySet().contains(talkTypeId)) {
-                LOGGER.warn("Duplicate talk type in " + proposalTypeUrl
-                        + " at index " + i + ".");
+                LOGGER.warn("Duplicate talk type in {} at index {}.", proposalTypeUrl, i);
                 continue;
             }
 
@@ -141,7 +139,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     private void importTrackIdSet() {
         this.trackIdSet = new HashSet<>();
         String tracksUrl = conferenceBaseUrl + "/tracks";
-        LOGGER.debug("Sending a request to: " + tracksUrl);
+        LOGGER.debug("Sending a request to: {}", tracksUrl);
         JsonObject rootObject = readJson(tracksUrl, JsonReader::readObject);
 
         JsonArray tracksArray = rootObject.getJsonArray("tracks");
@@ -155,7 +153,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         List<Room> roomList = new ArrayList<>();
 
         String roomsUrl = conferenceBaseUrl + "/rooms/";
-        LOGGER.debug("Sending a request to: " + roomsUrl);
+        LOGGER.debug("Sending a request to: {}", roomsUrl);
         JsonObject rootObject = readJson(roomsUrl, JsonReader::readObject);
 
         JsonArray roomArray = rootObject.getJsonArray("rooms");
@@ -188,12 +186,12 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         List<Speaker> speakerList = new ArrayList<>();
 
         String speakersUrl = conferenceBaseUrl + "/speakers";
-        LOGGER.debug("Sending a request to: " + speakersUrl);
+        LOGGER.debug("Sending a request to: {}", speakersUrl);
         JsonArray speakerArray = readJson(speakersUrl, JsonReader::readArray);
 
         for (int i = 0; i < speakerArray.size(); i++) {
             String speakerUrl = speakerArray.getJsonObject(i).getJsonArray("links").getJsonObject(0).getString("href");
-            LOGGER.debug("Sending a request to: " + speakerUrl);
+            LOGGER.debug("Sending a request to: {}", speakerUrl);
             JsonObject speakerObject = readJson(speakerUrl, JsonReader::readObject);
 
             String speakerId = speakerObject.getString("uuid");
@@ -230,7 +228,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         solution.setTalkList(new ArrayList<>());
 
         String talksUrl = conferenceBaseUrl + "/talks";
-        LOGGER.debug("Sending a request to: " + talksUrl);
+        LOGGER.debug("Sending a request to: {}", talksUrl);
         JsonArray talkArray = readJson(talksUrl, JsonReader::readObject).getJsonObject("talks").getJsonArray("accepted");
 
         for (int i = 0; i < talkArray.size(); i++) {
@@ -288,8 +286,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     private Speaker getSpeakerOrCreateOneIfNull(String code, String title, String speakerName) {
         Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
         if (speaker == null) {
-            LOGGER.warn("The talk (" + code + ": " + title
-                    + ") has a speaker (" + speakerName + ") that doesn't exist in speaker list.");
+            LOGGER.warn("The talk ({}: {}) has a speaker ({}) that doesn't exist in speaker list.", code, title, speakerName);
 
             speaker = new Speaker((long) solution.getSpeakerList().size());
             speaker.setName(speakerName);
@@ -365,13 +362,13 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
         Long timeSlotId = 0L;
         String schedulesUrl = conferenceBaseUrl + "/schedules/";
-        LOGGER.debug("Sending a request to: " + schedulesUrl);
+        LOGGER.debug("Sending a request to: {}", schedulesUrl);
         JsonArray daysArray = readJson(schedulesUrl, JsonReader::readObject).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
             JsonObject dayObject = daysArray.getJsonObject(i);
             String dayUrl = dayObject.getString("href");
 
-            LOGGER.debug("Sending a request to: " + dayUrl);
+            LOGGER.debug("Sending a request to: {}", dayUrl);
             JsonArray daySlotsArray = readJson(dayUrl, JsonReader::readObject).getJsonArray("slots");
 
             for (int j = 0; j < daySlotsArray.size(); j++) {
@@ -415,9 +412,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     startAndEndTimeToTimeslotMap.put(Pair.of(startDateTime, endDateTime), timeslot);
                 }
 
-                if (!timeslotObject.isNull("talk")) {
-                    scheduleTalk(timeslotObject, room, timeslot);
-                }
+//                if (!timeslotObject.isNull("talk")) {
+//                    scheduleTalk(timeslotObject, room, timeslot);
+//                }
 
                 for (TalkType talkType : timeslot.getTalkTypeSet()) {
                     talkType.getCompatibleTimeslotSet().add(timeslot);
