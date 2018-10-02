@@ -268,7 +268,7 @@ public class ConfigUtils {
         if (scriptEngine == null) {
             throw new IllegalStateException("The " + propertyName + " (" + script
                     + ") could not resolve because the JVM doesn't support scriptLanguage (" + scriptLanguage + ").\n"
-                    + "  Maybe try running in a normal JVM.");
+                    + "Maybe try running in a normal JVM.");
         }
         scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
         Object scriptResult;

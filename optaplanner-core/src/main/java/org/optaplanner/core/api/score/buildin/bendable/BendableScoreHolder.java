@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.buildin.bendable;
 import java.util.Arrays;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -125,7 +124,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public BendableScore extractScore(int initScore) {
         return new BendableScore(initScore,
                 Arrays.copyOf(hardScores, hardScores.length),
                 Arrays.copyOf(softScores, softScores.length));

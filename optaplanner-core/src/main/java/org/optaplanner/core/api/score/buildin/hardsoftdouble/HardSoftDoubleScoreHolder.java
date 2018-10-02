@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -86,7 +85,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public HardSoftDoubleScore extractScore(int initScore) {
         return HardSoftDoubleScore.valueOfUninitialized(initScore, hardScore, softScore);
     }
 

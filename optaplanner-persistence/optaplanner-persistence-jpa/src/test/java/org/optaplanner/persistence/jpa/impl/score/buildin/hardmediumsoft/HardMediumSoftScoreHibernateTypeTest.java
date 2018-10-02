@@ -30,8 +30,8 @@ public class HardMediumSoftScoreHibernateTypeTest extends AbstractScoreHibernate
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                HardMediumSoftScore.valueOf(-100, -20, -3),
-                HardMediumSoftScore.valueOfUninitialized(-7, -100, -20, -3));
+                HardMediumSoftScore.of(-100, -20, -3),
+                HardMediumSoftScore.ofUninitialized(-7, -100, -20, -3));
     }
 
     @Entity

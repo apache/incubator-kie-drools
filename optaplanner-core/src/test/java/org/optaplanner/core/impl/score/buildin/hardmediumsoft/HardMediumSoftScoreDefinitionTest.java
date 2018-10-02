@@ -45,7 +45,7 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScoreDefinition scoreDefinition = new HardMediumSoftScoreDefinition();
         HardMediumSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
-                HardMediumSoftScore.valueOf(-1, -2, -3));
+                HardMediumSoftScore.of(-1, -2, -3));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore());
         assertEquals(Integer.MAX_VALUE, optimisticBound.getMediumScore());
@@ -57,7 +57,7 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScoreDefinition scoreDefinition = new HardMediumSoftScoreDefinition();
         HardMediumSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
-                HardMediumSoftScore.valueOf(-1, -2, -3));
+                HardMediumSoftScore.of(-1, -2, -3));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(-1, optimisticBound.getHardScore());
         assertEquals(-2, optimisticBound.getMediumScore());
@@ -69,7 +69,7 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScoreDefinition scoreDefinition = new HardMediumSoftScoreDefinition();
         HardMediumSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 3),
-                HardMediumSoftScore.valueOf(-1, -2, -3));
+                HardMediumSoftScore.of(-1, -2, -3));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(-1, pessimisticBound.getHardScore());
         assertEquals(-2, pessimisticBound.getMediumScore());
@@ -81,7 +81,7 @@ public class HardMediumSoftScoreDefinitionTest {
         HardMediumSoftScoreDefinition scoreDefinition = new HardMediumSoftScoreDefinition();
         HardMediumSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 3),
-                HardMediumSoftScore.valueOf(-1, -2, -3));
+                HardMediumSoftScore.of(-1, -2, -3));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore());
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getMediumScore());

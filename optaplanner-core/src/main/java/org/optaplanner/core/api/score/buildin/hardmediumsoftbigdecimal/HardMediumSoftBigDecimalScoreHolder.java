@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal;
 import java.math.BigDecimal;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -115,7 +114,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public HardMediumSoftBigDecimalScore extractScore(int initScore) {
         return HardMediumSoftBigDecimalScore.valueOfUninitialized(initScore,
                 hardScore == null ? BigDecimal.ZERO : hardScore,
                 mediumScore == null ? BigDecimal.ZERO : mediumScore,

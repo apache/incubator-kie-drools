@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -53,7 +52,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public SimpleBigDecimalScore extractScore(int initScore) {
         return SimpleBigDecimalScore.valueOfUninitialized(initScore,
                 score == null ? BigDecimal.ZERO : score);
     }

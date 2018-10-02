@@ -41,7 +41,7 @@ rule "Room conflict"
         $leftAssignment : MeetingAssignment(room != null, $leftId : id, $room : room)
         $rightAssignment : MeetingAssignment(room == $room, calculateOverlap($leftAssignment) > 0, id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+        scoreHolder.match(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 // TODO Might be more efficient if a MeetingAssignment knows timeGrainList.size()
@@ -51,7 +51,7 @@ rule "Don't go in overtime"
         MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : getLastTimeGrainIndex())
         not TimeGrain(grainIndex == $lastTimeGrainIndex)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $lastTimeGrainIndex);
+        scoreHolder.match(kcontext, $lastTimeGrainIndex);
 end
 
 rule "Required attendance conflict"
@@ -61,23 +61,22 @@ rule "Required attendance conflict"
         $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+        scoreHolder.match(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 rule "Required room capacity"
     when
-        MeetingAssignment(requiredCapacity > roomCapacity, $penalty : (roomCapacity - requiredCapacity))
+        MeetingAssignment(requiredCapacity > roomCapacity, $requiredCapacity : requiredCapacity, $roomCapacity : roomCapacity)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $penalty);
+        scoreHolder.match(kcontext, $requiredCapacity - $roomCapacity);
 end
 
 rule "Start and end on same day"
     when
-        MeetingParametrization($weight: startAndEndOnSameDay != 0)
         MeetingAssignment(startingTimeGrain != null, $firstTimeGrain : startingTimeGrain, $lastTimeGrainIndex : getLastTimeGrainIndex())
         $lastTimeGrain : TimeGrain(grainIndex == $lastTimeGrainIndex, $firstTimeGrain.getDay() != getDay())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
+        scoreHolder.match(kcontext);
 end
 
 // ############################################################################
@@ -92,7 +91,7 @@ rule "Required and preferred attendance conflict"
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
         // Fairness not implemented (see tennis example)
-        scoreHolder.addMediumConstraintMatch(kcontext, -1);
+        scoreHolder.match(kcontext);
 end
 
 rule "Preferred attendance conflict"
@@ -103,7 +102,7 @@ rule "Preferred attendance conflict"
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
         // Fairness not implemented (see tennis example)
-        scoreHolder.addMediumConstraintMatch(kcontext, -1);
+        scoreHolder.match(kcontext);
 end
 
 // ############################################################################
@@ -112,50 +111,45 @@ end
 
 rule "Do all meetings as soon as possible"
     when
-        MeetingParametrization($weight: doAllMeetingsAsSoonAsPossible != 0)
         MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : lastTimeGrainIndex)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex * $weight);
+        scoreHolder.match(kcontext, $lastTimeGrainIndex);
 end
 
 rule "One TimeGrain break between two consecutive meetings"
     when
-        MeetingParametrization($weight: oneTimeGrainBreakBetweenTwoConsecutiveMeetings != 0)
         MeetingAssignment(startingTimeGrain != null,  $leftEnd : getLastTimeGrainIndex())
         MeetingAssignment(startingTimeGrain != null, $leftEnd == startingTimeGrain.getGrainIndex() - 1)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.match(kcontext);
 end
 
 rule "Overlapping meetings"
     when
-        MeetingParametrization($weight: overlappingMeetings != 0)
         $leftAssignment : MeetingAssignment(startingTimeGrain != null)
         $rightAssignment : MeetingAssignment(startingTimeGrain != null, meeting.getId() < $leftAssignment.getMeeting().getId(),
             meeting != $leftAssignment.getMeeting())
     then
         if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
-            scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+            scoreHolder.match(kcontext);
         }
 end
 
 rule "Assign larger rooms first"
     when
-        MeetingParametrization($weight: assignLargerRoomsFirst != 0)
-        MeetingAssignment(room != null, $room : room, $roomCapacity : room.getCapacity())
-        Room($otherRoomCapacity : capacity, $roomCapacity < capacity)
+        MeetingAssignment(room != null, $roomCapacity : room.getCapacity())
+        Room($roomCapacity < capacity, $otherRoomCapacity : capacity) // TODO BUG
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, ($roomCapacity - $otherRoomCapacity) * $weight);
+        scoreHolder.match(kcontext, $otherRoomCapacity - $roomCapacity);
 end
 
 rule "Room stability"
     when
-        MeetingParametrization($weight: roomStability != 0)
         Attendance($person : person, $leftMeeting : meeting)
         Attendance(person == $person, meeting != $leftMeeting, $rightMeeting : meeting)
         MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null, $leftStartTimeGrain : startingTimeGrain, $leftRoom : room)
         MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
             $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.match(kcontext);
 end

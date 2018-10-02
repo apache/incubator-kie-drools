@@ -44,6 +44,8 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
  * <p>
+ * Each planning solution is recommended to have 1 {@link PlanningParametrizationProperty} property too.
+ * <p>
  * Each planning solution used with Drools score calculation must have at least 1 {@link ProblemFactCollectionProperty}
  * or {@link ProblemFactProperty} property.
  * <p>
@@ -57,8 +59,8 @@ public @interface PlanningSolution {
     /**
      * Enable reflection through the members of the class
      * to automatically assume {@link PlanningScore}, {@link PlanningEntityCollectionProperty},
-     * {@link PlanningEntityProperty}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty} annotations
-     * based on the member type.
+     * {@link PlanningEntityProperty}, {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty}
+     * and {@link PlanningParametrizationProperty} annotations based on the member type.
      * @return never null
      */
     AutoDiscoverMemberType autoDiscoverMemberType() default AutoDiscoverMemberType.NONE;

@@ -155,7 +155,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(HardMediumSoftScore.valueOf(-200, -5000, -10));
+        solverScope.setBestScore(HardMediumSoftScore.of(-200, -5000, -10));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -207,7 +207,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
             LocalSearchStepScope<Solution_> stepScope, int hardScore, int mediumScore, int softScore) {
         Move<Solution_> move = mock(Move.class);
         LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
-        moveScope.setScore(HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore));
+        moveScope.setScore(HardMediumSoftScore.of(hardScore, mediumScore, softScore));
         moveScope.setAccepted(true);
         return moveScope;
     }

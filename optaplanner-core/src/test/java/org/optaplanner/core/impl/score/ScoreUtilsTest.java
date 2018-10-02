@@ -49,7 +49,7 @@ public class ScoreUtilsTest {
         assertEquals(HardSoftDoubleScore.valueOf(-1000.0, -200.0), ScoreUtils.parseScore(HardSoftDoubleScore.class, "-1000hard/-200soft"));
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-1000"), new BigDecimal("-200")),
                 ScoreUtils.parseScore(HardSoftBigDecimalScore.class, "-1000hard/-200soft"));
-        assertEquals(HardMediumSoftScore.valueOf(-1000, -200, -30), ScoreUtils.parseScore(HardMediumSoftScore.class, "-1000hard/-200medium/-30soft"));
+        assertEquals(HardMediumSoftScore.of(-1000, -200, -30), ScoreUtils.parseScore(HardMediumSoftScore.class, "-1000hard/-200medium/-30soft"));
         assertEquals(HardMediumSoftLongScore.valueOf(-1000L, -200L, -30L), ScoreUtils.parseScore(HardMediumSoftLongScore.class, "-1000hard/-200medium/-30soft"));
         assertEquals(BendableScore.valueOf(new int[] {-1000}, new int[]{-200, -30}), ScoreUtils.parseScore(BendableScore.class, "[-1000]hard/[-200/-30]soft"));
         assertEquals(BendableLongScore.valueOf(new long[] {-1000L}, new long[]{-200L, -30L}), ScoreUtils.parseScore(BendableLongScore.class, "[-1000]hard/[-200/-30]soft"));

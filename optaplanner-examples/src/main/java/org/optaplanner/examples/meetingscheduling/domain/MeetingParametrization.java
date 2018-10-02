@@ -16,8 +16,14 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
+import org.optaplanner.core.api.domain.parametrization.PlanningParameter;
+import org.optaplanner.core.api.domain.parametrization.PlanningParametrization;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
+// @ConstraintWeights
+
+@PlanningParametrization(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
 public class MeetingParametrization extends AbstractPersistable {
 
     public static final String ROOM_CONFLICT = "Room conflict";
@@ -35,20 +41,34 @@ public class MeetingParametrization extends AbstractPersistable {
     public static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
     public static final String ROOM_STABILITY = "Room stability";
 
-    private int roomConflict = 1;
-    private int dontGoInOvertime = 1;
-    private int requiredAttendanceConflict = 1;
-    private int requiredRoomCapacity = 1;
-    private int startAndEndOnSameDay = 1;
+    // @ConstraintWeight
 
-    private int requiredAndPreferredAttendanceConflict = 1;
-    private int preferredAttendanceConflict = 1;
+    @PlanningParameter(ROOM_CONFLICT)
+    private HardMediumSoftScore roomConflict = HardMediumSoftScore.ofHard(-1);
+    @PlanningParameter(DONT_GO_IN_OVERTIME)
+    private HardMediumSoftScore dontGoInOvertime = HardMediumSoftScore.ofHard(-1);
+    @PlanningParameter(REQUIRED_ATTENDANCE_CONFLICT)
+    private HardMediumSoftScore requiredAttendanceConflict = HardMediumSoftScore.ofHard(-1);
+    @PlanningParameter(REQUIRED_ROOM_CAPACITY)
+    private HardMediumSoftScore requiredRoomCapacity = HardMediumSoftScore.ofHard(-1);
+    @PlanningParameter(START_AND_END_ON_SAME_DAY)
+    private HardMediumSoftScore startAndEndOnSameDay = HardMediumSoftScore.ofHard(-1);
 
-    private int doAllMeetingsAsSoonAsPossible = 1;
-    private int oneTimeGrainBreakBetweenTwoConsecutiveMeetings = 100;
-    private int overlappingMeetings = 10;
-    private int assignLargerRoomsFirst = 1;
-    private int roomStability = 1;
+    @PlanningParameter(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT)
+    private HardMediumSoftScore requiredAndPreferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
+    @PlanningParameter(PREFERRED_ATTENDANCE_CONFLICT)
+    private HardMediumSoftScore preferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
+
+    @PlanningParameter(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE)
+    private HardMediumSoftScore doAllMeetingsAsSoonAsPossible = HardMediumSoftScore.ofSoft(-1);
+    @PlanningParameter(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS)
+    private HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings = HardMediumSoftScore.ofSoft(-100);
+    @PlanningParameter(OVERLAPPING_MEETINGS)
+    private HardMediumSoftScore overlappingMeetings = HardMediumSoftScore.ofSoft(-10);
+    @PlanningParameter(ASSIGN_LARGER_ROOMS_FIRST)
+    private HardMediumSoftScore assignLargerRoomsFirst = HardMediumSoftScore.ofSoft(-1);
+    @PlanningParameter(ROOM_STABILITY)
+    private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(-1);
 
     public MeetingParametrization() {
     }
@@ -61,99 +81,100 @@ public class MeetingParametrization extends AbstractPersistable {
     // Simple getters and setters
     // ************************************************************************
 
-    public int getRoomConflict() {
+    public HardMediumSoftScore getRoomConflict() {
         return roomConflict;
     }
 
-    public void setRoomConflict(int roomConflict) {
+    public void setRoomConflict(HardMediumSoftScore roomConflict) {
         this.roomConflict = roomConflict;
     }
 
-    public int getDontGoInOvertime() {
+    public HardMediumSoftScore getDontGoInOvertime() {
         return dontGoInOvertime;
     }
 
-    public void setDontGoInOvertime(int dontGoInOvertime) {
+    public void setDontGoInOvertime(HardMediumSoftScore dontGoInOvertime) {
         this.dontGoInOvertime = dontGoInOvertime;
     }
 
-    public int getRequiredAttendanceConflict() {
+    public HardMediumSoftScore getRequiredAttendanceConflict() {
         return requiredAttendanceConflict;
     }
 
-    public void setRequiredAttendanceConflict(int requiredAttendanceConflict) {
+    public void setRequiredAttendanceConflict(HardMediumSoftScore requiredAttendanceConflict) {
         this.requiredAttendanceConflict = requiredAttendanceConflict;
     }
 
-    public int getRequiredRoomCapacity() {
+    public HardMediumSoftScore getRequiredRoomCapacity() {
         return requiredRoomCapacity;
     }
 
-    public void setRequiredRoomCapacity(int requiredRoomCapacity) {
+    public void setRequiredRoomCapacity(HardMediumSoftScore requiredRoomCapacity) {
         this.requiredRoomCapacity = requiredRoomCapacity;
     }
 
-    public int getStartAndEndOnSameDay() {
+    public HardMediumSoftScore getStartAndEndOnSameDay() {
         return startAndEndOnSameDay;
     }
 
-    public void setStartAndEndOnSameDay(int startAndEndOnSameDay) {
+    public void setStartAndEndOnSameDay(HardMediumSoftScore startAndEndOnSameDay) {
         this.startAndEndOnSameDay = startAndEndOnSameDay;
     }
 
-    public int getRequiredAndPreferredAttendanceConflict() {
+    public HardMediumSoftScore getRequiredAndPreferredAttendanceConflict() {
         return requiredAndPreferredAttendanceConflict;
     }
 
-    public void setRequiredAndPreferredAttendanceConflict(int requiredAndPreferredAttendanceConflict) {
+    public void setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore requiredAndPreferredAttendanceConflict) {
         this.requiredAndPreferredAttendanceConflict = requiredAndPreferredAttendanceConflict;
     }
 
-    public int getPreferredAttendanceConflict() {
+    public HardMediumSoftScore getPreferredAttendanceConflict() {
         return preferredAttendanceConflict;
     }
 
-    public void setPreferredAttendanceConflict(int preferredAttendanceConflict) {
+    public void setPreferredAttendanceConflict(HardMediumSoftScore preferredAttendanceConflict) {
         this.preferredAttendanceConflict = preferredAttendanceConflict;
     }
 
-    public int getDoAllMeetingsAsSoonAsPossible() {
+    public HardMediumSoftScore getDoAllMeetingsAsSoonAsPossible() {
         return doAllMeetingsAsSoonAsPossible;
     }
 
-    public void setDoAllMeetingsAsSoonAsPossible(int doAllMeetingsAsSoonAsPossible) {
+    public void setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore doAllMeetingsAsSoonAsPossible) {
         this.doAllMeetingsAsSoonAsPossible = doAllMeetingsAsSoonAsPossible;
     }
 
-    public int getOneTimeGrainBreakBetweenTwoConsecutiveMeetings() {
+    public HardMediumSoftScore getOneTimeGrainBreakBetweenTwoConsecutiveMeetings() {
         return oneTimeGrainBreakBetweenTwoConsecutiveMeetings;
     }
 
-    public void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(int oneTimeGrainBreakBetweenTwoConsecutiveMeetings) {
+    public void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings) {
         this.oneTimeGrainBreakBetweenTwoConsecutiveMeetings = oneTimeGrainBreakBetweenTwoConsecutiveMeetings;
     }
 
-    public int getOverlappingMeetings() {
+    public HardMediumSoftScore getOverlappingMeetings() {
         return overlappingMeetings;
     }
 
-    public void setOverlappingMeetings(int overlappingMeetings) {
+    public void setOverlappingMeetings(HardMediumSoftScore overlappingMeetings) {
         this.overlappingMeetings = overlappingMeetings;
     }
 
-    public int getAssignLargerRoomsFirst() {
+    public HardMediumSoftScore getAssignLargerRoomsFirst() {
         return assignLargerRoomsFirst;
     }
 
-    public void setAssignLargerRoomsFirst(int assignLargerRoomsFirst) {
+    public void setAssignLargerRoomsFirst(HardMediumSoftScore assignLargerRoomsFirst) {
         this.assignLargerRoomsFirst = assignLargerRoomsFirst;
     }
 
-    public int getRoomStability() {
+    public HardMediumSoftScore getRoomStability() {
         return roomStability;
     }
 
-    public void setRoomStability(int roomStability) {
+    public void setRoomStability(HardMediumSoftScore roomStability) {
         this.roomStability = roomStability;
     }
+
 }

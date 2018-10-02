@@ -94,20 +94,21 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             MeetingParametrization parametrization = new MeetingParametrization();
             parametrization.setId(0L);
 
-            readIntConstraintLine(ROOM_CONFLICT, parametrization::setRoomConflict, "");
-            readIntConstraintLine(DONT_GO_IN_OVERTIME, parametrization::setRoomConflict, "");
-            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
-            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::setRoomConflict, "");
-            readIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::setRoomConflict, "");
+            // TODO refactor this to allow setting pos/neg, weight and score level
+            readIntConstraintLine(ROOM_CONFLICT, hardScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
+            readIntConstraintLine(DONT_GO_IN_OVERTIME, hardScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
+            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, hardScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
+            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, hardScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
+            readIntConstraintLine(START_AND_END_ON_SAME_DAY, hardScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
 
-            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
-            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
+            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofMedium(-mediumScore)), "");
+            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofMedium(-mediumScore)), "");
 
-            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, parametrization::setRoomConflict, "");
-            readIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, parametrization::setRoomConflict, "");
-            readIntConstraintLine(OVERLAPPING_MEETINGS, parametrization::setRoomConflict, "");
-            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, parametrization::setRoomConflict, "");
-            readIntConstraintLine(ROOM_STABILITY, parametrization::setRoomConflict, "");
+            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, softScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofSoft(-softScore)), "");
+            readIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, softScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofSoft(-softScore)), "");
+            readIntConstraintLine(OVERLAPPING_MEETINGS, softScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofSoft(-softScore)), "");
+            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, softScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofSoft(-softScore)), "");
+            readIntConstraintLine(ROOM_STABILITY, softScore -> parametrization.setRoomConflict(HardMediumSoftScore.ofSoft(-softScore)), "");
 
             solution.setParametrization(parametrization);
         }
@@ -206,26 +207,26 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void readSpeakerList(Map<String, Person> personMap, Meeting meeting, List<Attendance> speakerAttendanceList, Set<Person> speakerSet) {
             meeting.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
-                                           .filter(speaker -> !speaker.isEmpty())
-                                           .map(speakerName -> {
-                                               Person speaker = personMap.get(speakerName);
-                                               if (speaker == null) {
-                                                   throw new IllegalStateException(
-                                                           currentPosition() + ": The meeting with id (" + meeting.getId()
-                                                                   + ") has a speaker (" + speakerName + ") that doesn't exist in the Persons list.");
-                                               }
-                                               if (speakerSet.contains(speaker)) {
-                                                   throw new IllegalStateException(
-                                                           currentPosition() + ": The meeting with id (" + meeting.getId()
-                                                                   + ") has a duplicate speaker (" + speakerName + ").");
-                                               }
-                                               speakerSet.add(speaker);
-                                               RequiredAttendance speakerAttendance = new RequiredAttendance();
-                                               speakerAttendance.setMeeting(meeting);
-                                               speakerAttendance.setPerson(speaker);
-                                               speakerAttendanceList.add(speakerAttendance);
-                                               return speaker;
-                                           }).collect(toList()));
+                    .filter(speaker -> !speaker.isEmpty())
+                    .map(speakerName -> {
+                        Person speaker = personMap.get(speakerName);
+                        if (speaker == null) {
+                            throw new IllegalStateException(
+                                    currentPosition() + ": The meeting with id (" + meeting.getId()
+                                            + ") has a speaker (" + speakerName + ") that doesn't exist in the Persons list.");
+                        }
+                        if (speakerSet.contains(speaker)) {
+                            throw new IllegalStateException(
+                                    currentPosition() + ": The meeting with id (" + meeting.getId()
+                                            + ") has a duplicate speaker (" + speakerName + ").");
+                        }
+                        speakerSet.add(speaker);
+                        RequiredAttendance speakerAttendance = new RequiredAttendance();
+                        speakerAttendance.setMeeting(meeting);
+                        speakerAttendance.setPerson(speaker);
+                        speakerAttendanceList.add(speakerAttendance);
+                        return speaker;
+                    }).collect(toList()));
         }
 
         private void readMeetingDuration(Meeting meeting) {
@@ -480,20 +481,21 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
             MeetingParametrization parametrization = solution.getParametrization();
 
-            writeIntConstraintLine(ROOM_CONFLICT, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(DONT_GO_IN_OVERTIME, parametrization::getDontGoInOvertime, "");
-            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::getRequiredAttendanceConflict, "");
-            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::getRequiredRoomCapacity, "");
-            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::getStartAndEndOnSameDay, "");
+            // TODO refactor this to allow setting pos/neg, weight and score level
+            writeIntConstraintLine(ROOM_CONFLICT, -parametrization.getRoomConflict().getHardScore(), "");
+            writeIntConstraintLine(DONT_GO_IN_OVERTIME, -parametrization.getDontGoInOvertime().getHardScore(), "");
+            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, -parametrization.getRequiredAttendanceConflict().getHardScore(), "");
+            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, -parametrization.getRequiredRoomCapacity().getHardScore(), "");
+            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, -parametrization.getStartAndEndOnSameDay().getHardScore(), "");
             nextRow();
-            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRequiredAndPreferredAttendanceConflict, "");
-            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::getPreferredAttendanceConflict, "");
+            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, -parametrization.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
+            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, -parametrization.getPreferredAttendanceConflict().getMediumScore(), "");
             nextRow();
-            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, parametrization::getDoAllMeetingsAsSoonAsPossible, "");
-            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, parametrization::getOneTimeGrainBreakBetweenTwoConsecutiveMeetings, "");
-            writeIntConstraintLine(OVERLAPPING_MEETINGS, parametrization::getOverlappingMeetings, "");
-            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, parametrization::getAssignLargerRoomsFirst, "");
-            writeIntConstraintLine(ROOM_STABILITY, parametrization::getRoomStability, "");
+            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, -parametrization.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
+            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, -parametrization.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
+            writeIntConstraintLine(OVERLAPPING_MEETINGS, -parametrization.getOverlappingMeetings().getSoftScore(), "");
+            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, -parametrization.getAssignLargerRoomsFirst().getSoftScore(), "");
+            writeIntConstraintLine(ROOM_STABILITY, -parametrization.getRoomStability().getSoftScore(), "");
 
             autoSizeColumnsWithHeader();
         }

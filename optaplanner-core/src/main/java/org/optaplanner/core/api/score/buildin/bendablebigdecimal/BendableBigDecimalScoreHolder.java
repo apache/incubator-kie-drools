@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -132,7 +131,7 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public BendableBigDecimalScore extractScore(int initScore) {
         return new BendableBigDecimalScore(initScore,
                 Arrays.copyOf(hardScores, hardScores.length),
                 Arrays.copyOf(softScores, softScores.length));

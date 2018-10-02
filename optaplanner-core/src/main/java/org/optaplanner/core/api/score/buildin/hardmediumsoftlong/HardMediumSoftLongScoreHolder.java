@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -103,7 +102,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public HardMediumSoftLongScore extractScore(int initScore) {
         return HardMediumSoftLongScore.valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 

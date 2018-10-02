@@ -208,7 +208,7 @@ public class EntityDescriptor<Solution_> {
                     + ") has a " + variableAnnotationClass.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that is duplicated by another member for variableDescriptor (" + duplicate + ").\n"
-                    + "  Verify that the annotation is not defined on both the field and its getter.");
+                    + "Maybe the annotation is defined on both the field and its getter.");
         }
         if (variableAnnotationClass.equals(PlanningVariable.class)) {
             GenuineVariableDescriptor<Solution_> variableDescriptor = new GenuineVariableDescriptor<>(this,

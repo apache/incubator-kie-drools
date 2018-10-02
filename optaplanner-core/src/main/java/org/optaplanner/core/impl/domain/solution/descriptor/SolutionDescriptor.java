@@ -40,8 +40,10 @@ import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
+import org.optaplanner.core.api.domain.parametrization.PlanningParametrization;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
+import org.optaplanner.core.api.domain.solution.PlanningParametrizationProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -73,6 +75,7 @@ import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMe
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
+import org.optaplanner.core.impl.domain.parametrization.descriptor.ParametrizationDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -152,6 +155,7 @@ public class SolutionDescriptor<Solution_> {
     private SolutionCloner<Solution_> solutionCloner;
 
     private AutoDiscoverMemberType autoDiscoverMemberType;
+    private MemberAccessor parametrizationMemberAccessor;
     private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
@@ -159,6 +163,7 @@ public class SolutionDescriptor<Solution_> {
     private MemberAccessor scoreMemberAccessor;
     private ScoreDefinition scoreDefinition;
 
+    private ParametrizationDescriptor<Solution_> parametrizationDescriptor;
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
 
@@ -230,6 +235,10 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") must have 1 member with a " + PlanningScore.class.getSimpleName() + " annotation.\n"
                     + "Maybe add a getScore() method with a " + PlanningScore.class.getSimpleName() + " annotation.");
+        }
+        if (parametrizationMemberAccessor != null) {
+            // The scoreDefinition is definitely initialized at this point.
+            parametrizationDescriptor.processAnnotations(descriptorPolicy, scoreDefinition);
         }
     }
 
@@ -339,6 +348,8 @@ public class SolutionDescriptor<Solution_> {
                 member, entityClassList);
         if (annotationClass == null) {
             return;
+        } else if (annotationClass.equals(PlanningParametrizationProperty.class)) {
+            processPlanningParametrizationPropertyAnnotation(descriptorPolicy, member, annotationClass);
         } else if (annotationClass.equals(ProblemFactProperty.class)
                 || annotationClass.equals(ProblemFactCollectionProperty.class)) {
             processProblemFactPropertyAnnotation(descriptorPolicy, member, annotationClass);
@@ -353,6 +364,7 @@ public class SolutionDescriptor<Solution_> {
     private Class<? extends Annotation> extractFactEntityOrScoreAnnotationClassOrAutoDiscover(
             Member member, List<Class<?>> entityClassList) {
         Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
+                PlanningParametrizationProperty.class,
                 ProblemFactProperty.class, ProblemFactCollectionProperty.class,
                 PlanningEntityProperty.class, PlanningEntityCollectionProperty.class,
                 PlanningScore.class);
@@ -372,22 +384,28 @@ public class SolutionDescriptor<Solution_> {
             if (type != null) {
                 if (Score.class.isAssignableFrom(type)) {
                     annotationClass = PlanningScore.class;
-                } else if (Collection.class.isAssignableFrom(type)) {
-                    Type genericType = (member instanceof Field) ? ((Field) member).getGenericType()
-                            : ((Method) member).getGenericReturnType();
-                    Class<?> elementType = ConfigUtils.extractCollectionGenericTypeParameter(
-                            "solutionClass", solutionClass,
-                            type, genericType,
-                            null, member.getName());
-                    if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(elementType))) {
-                        annotationClass = PlanningEntityCollectionProperty.class;
+                } else if (Collection.class.isAssignableFrom(type) || type.isArray()) {
+                    Class<?> elementType;
+                    if (Collection.class.isAssignableFrom(type)) {
+                        Type genericType = (member instanceof Field) ? ((Field) member).getGenericType()
+                                : ((Method) member).getGenericReturnType();
+                        elementType = ConfigUtils.extractCollectionGenericTypeParameter(
+                                "solutionClass", solutionClass,
+                                type, genericType,
+                                null, member.getName());
                     } else {
-                        annotationClass = ProblemFactCollectionProperty.class;
+                        elementType = type.getComponentType();
                     }
-                } else if (type.isArray()) {
-                    Class<?> elementType = type.getComponentType();
                     if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(elementType))) {
                         annotationClass = PlanningEntityCollectionProperty.class;
+                    } else if (elementType.isAnnotationPresent(PlanningParametrization.class)) {
+                        throw new IllegalStateException("The autoDiscoverMemberType (" + autoDiscoverMemberType
+                                + ") cannot accept a member (" + member
+                                + ") of type (" + type
+                                + ") with an elementType (" + elementType
+                                + ") that has a " + PlanningParametrization.class.getSimpleName() + " annotation.\n"
+                                + "Maybe use a member of the type (" + elementType + ") directly instead of a "
+                                + Collection.class.getSimpleName() + " or array of that type.");
                     } else {
                         annotationClass = ProblemFactCollectionProperty.class;
                     }
@@ -398,6 +416,8 @@ public class SolutionDescriptor<Solution_> {
                             + ") which is an implementation of " + Map.class.getSimpleName() + ".");
                 } else if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(type))) {
                     annotationClass = PlanningEntityProperty.class;
+                } else if (type.isAnnotationPresent(PlanningParametrization.class)) {
+                    annotationClass = PlanningParametrizationProperty.class;
                 } else {
                     annotationClass = ProblemFactProperty.class;
                 }
@@ -406,11 +426,43 @@ public class SolutionDescriptor<Solution_> {
         return annotationClass;
     }
 
+    private void processPlanningParametrizationPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+            Class<? extends Annotation> annotationClass) {
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
+                member, FIELD_OR_READ_METHOD, annotationClass);
+        if (parametrizationMemberAccessor != null) {
+            if (!parametrizationMemberAccessor.getName().equals(memberAccessor.getName())
+                    || !parametrizationMemberAccessor.getClass().equals(memberAccessor.getClass())) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningParametrizationProperty.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
+                        + "Maybe the annotation is defined on both the field and its getter.");
+            }
+            // Bottom class wins. Bottom classes are parsed first due to ConfigUtil.getAllAnnotatedLineageClasses()
+            return;
+        }
+        assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
+        parametrizationMemberAccessor = memberAccessor;
+        // Every parametrization is also a problem fact
+        problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+
+        Class<?> parametrizationClass = parametrizationMemberAccessor.getType();
+        if (!parametrizationClass.isAnnotationPresent(PlanningParametrization.class)) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningParametrizationProperty.class.getSimpleName()
+                    + " annotated member (" + member + ") that does not return a class ("
+                    + parametrizationClass + ") that has a "
+                    + PlanningParametrization.class.getSimpleName() + " annotation.");
+        }
+        parametrizationDescriptor = new ParametrizationDescriptor<>(this, parametrizationClass);
+    }
+
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_READ_METHOD, annotationClass);
-        assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+        assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == ProblemFactProperty.class) {
             problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else if (annotationClass == ProblemFactCollectionProperty.class) {
@@ -431,7 +483,7 @@ public class SolutionDescriptor<Solution_> {
             Class<? extends Annotation> annotationClass) {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_GETTER_METHOD, annotationClass);
-        assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+        assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == PlanningEntityProperty.class) {
             entityMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else if (annotationClass == PlanningEntityCollectionProperty.class) {
@@ -448,12 +500,15 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    private void assertUnexistingProblemFactOrPlanningEntityProperty(
+    private void assertNoFieldAndGetterDuplicationOrConflict(
             MemberAccessor memberAccessor, Class<? extends Annotation> annotationClass) {
         MemberAccessor duplicate;
         Class<? extends Annotation> otherAnnotationClass;
         String memberName = memberAccessor.getName();
-        if (problemFactMemberAccessorMap.containsKey(memberName)) {
+        if (parametrizationMemberAccessor != null && parametrizationMemberAccessor.getName().equals(memberName)) {
+            duplicate = parametrizationMemberAccessor;
+            otherAnnotationClass = PlanningParametrizationProperty.class;
+        } else if (problemFactMemberAccessorMap.containsKey(memberName)) {
             duplicate = problemFactMemberAccessorMap.get(memberName);
             otherAnnotationClass = ProblemFactProperty.class;
         } else if (problemFactCollectionMemberAccessorMap.containsKey(memberName)) {
@@ -502,7 +557,7 @@ public class SolutionDescriptor<Solution_> {
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
-                        + "  Verify that the annotation is not defined on both the field and its getter.");
+                        + "Maybe the annotation is defined on both the field and its getter.");
             }
             // Bottom class wins. Bottom classes are parsed first due to ConfigUtil.getAllAnnotatedLineageClasses()
             return;

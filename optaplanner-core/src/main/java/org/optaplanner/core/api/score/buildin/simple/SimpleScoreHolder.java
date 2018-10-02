@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.buildin.simple;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -51,7 +50,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore(int initScore) {
+    public SimpleScore extractScore(int initScore) {
         return SimpleScore.valueOfUninitialized(initScore, score);
     }
 

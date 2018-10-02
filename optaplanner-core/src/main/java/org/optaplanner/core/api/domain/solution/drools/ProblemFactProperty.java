@@ -21,6 +21,7 @@ import java.lang.annotation.Target;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.parametrization.PlanningParametrization;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -35,8 +36,8 @@ import static java.lang.annotation.RetentionPolicy.*;
  * The problem fact will be added as a fact in the {@link KieSession} of the {@link DroolsScoreDirector},
  * so the score rules can use it.
  * <p>
- * Do not annotate {@link PlanningEntity planning entities} as problem facts:
- * they are automatically inserted into the {@link KieSession}.
+ * Do not annotate {@link PlanningEntity planning entities} or a {@link PlanningParametrization planning paramerization}
+ * as problem facts: they are automatically inserted into the {@link KieSession}.
  * @see ProblemFactCollectionProperty
  */
 @Target({METHOD, FIELD})

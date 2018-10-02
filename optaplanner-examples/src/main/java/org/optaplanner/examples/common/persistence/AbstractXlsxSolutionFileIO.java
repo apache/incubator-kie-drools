@@ -98,7 +98,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public abstract Solution_ read();
 
-        protected void readIntConstraintLine(String name, Consumer<Integer> consumer, String constraintdescription) {
+        protected void readIntConstraintLine(String name, Consumer<Integer> consumer, String constraintDescription) {
             nextRow();
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -122,10 +122,10 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                             + ") for constraint (" + name + ") must be an n/a.");
                 }
             }
-            readHeaderCell(constraintdescription);
+            readHeaderCell(constraintDescription);
         }
 
-        protected void readLongConstraintLine(String name, Consumer<Long> consumer, String constraintdescription) {
+        protected void readLongConstraintLine(String name, Consumer<Long> consumer, String constraintDescription) {
             nextRow();
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -149,7 +149,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                             + ") for constraint (" + name + ") must be an n/a.");
                 }
             }
-            readHeaderCell(constraintdescription);
+            readHeaderCell(constraintDescription);
         }
 
         protected String currentPosition() {
@@ -385,6 +385,14 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             style.setWrapText(true);
             style.setVerticalAlignment(VerticalAlignment.CENTER);
             return style;
+        }
+
+        protected void writeIntConstraintLine(String name, int value, String constraintDescription) {
+            nextRow();
+            nextHeaderCell(name);
+            XSSFCell weightCell = nextCell();
+            weightCell.setCellValue(value);
+            nextHeaderCell(constraintDescription);
         }
 
         protected void writeIntConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {

@@ -27,9 +27,9 @@ public class HardMediumSoftScoreJacksonJsonSerializerAndDeserializerTest extends
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftScoreWrapper(null));
-        HardMediumSoftScore score = HardMediumSoftScore.valueOf(1200, 30, 4);
+        HardMediumSoftScore score = HardMediumSoftScore.of(1200, 30, 4);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftScoreWrapper(score));
-        score = HardMediumSoftScore.valueOfUninitialized(-7, 1200, 30, 4);
+        score = HardMediumSoftScore.ofUninitialized(-7, 1200, 30, 4);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftScoreWrapper(score));
     }
 
