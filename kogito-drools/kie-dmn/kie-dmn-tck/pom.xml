@@ -33,11 +33,12 @@
     <java.module.name>org.kie.dmn.tck</java.module.name>
     <tck.repository.url>https://github.com/dmn-tck/tck</tck.repository.url>
     <tck.repository.branch>master</tck.repository.branch>
+    <org.kie.dmn.compiler.execmodel>false</org.kie.dmn.compiler.execmodel>
   </properties>
 
   <profiles>
     <profile>
-      <id>tck</id>
+      <id>dmn-tck</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -46,11 +47,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-plugin</artifactId>
-            <!--
-              Not using latest version 1.9.5 here, because there is this bug:
-              https://issues.apache.org/jira/browse/SCM-836
-            -->
-            <version>1.9.4</version>
+            <version>1.11.1</version>
             <executions>
               <execution>
                 <id>run-tck-suite</id>
@@ -62,7 +59,7 @@
                   <connectionUrl>scm:git:${tck.repository.url}</connectionUrl>
                   <scmVersion>${tck.repository.branch}</scmVersion>
                   <scmVersionType>branch</scmVersionType>
-                  <goals>install -Ddrools.version=${project.version} -Dorg.kie.dmn.strictConformance</goals>
+                  <goals>install -Ddrools.version=${project.version} -Dorg.kie.dmn.strictConformance -Dorg.kie.dmn.compiler.execmodel=${org.kie.dmn.compiler.execmodel}</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
                   <pushChanges>false</pushChanges>
@@ -72,6 +69,15 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>dmn-tck-with-exec-model</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <org.kie.dmn.compiler.execmodel>true</org.kie.dmn.compiler.execmodel>
+      </properties>
     </profile>
   </profiles>
 </project>
