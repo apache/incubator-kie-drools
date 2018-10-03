@@ -240,7 +240,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         if (numberOfWeeks > 0) {
             c.add(Calendar.WEEK_OF_YEAR, numberOfWeeks);
         }
-        handleWeekend(c);
+        handleWeekend(c, hours > 0 || min > 0);
         hours += (days - (numberOfWeeks * daysPerWeek)) * hoursInDay;
         
         // calculate number of days
@@ -248,8 +248,8 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         if (numberOfDays > 0) {
             for (int i = 0; i < numberOfDays; i++) {
                 c.add(Calendar.DAY_OF_YEAR, 1);
-                handleWeekend(c);
-                handleHoliday(c);
+                handleWeekend(c, false);
+                handleHoliday(c, hours > 0 || min > 0);
             }
         }
 
@@ -266,8 +266,8 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         // calculate remaining hours
         time = hours - (numberOfDays * hoursInDay);
         c.add(Calendar.HOUR, time);
-        handleWeekend(c);
-        handleHoliday(c);
+        handleWeekend(c, true);
+        handleHoliday(c, hours > 0 || min > 0);
         
         currentCalHour = c.get(Calendar.HOUR_OF_DAY);
         if (currentCalHour >= endHour) {
@@ -305,14 +305,14 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             c.add(Calendar.HOUR_OF_DAY, startHour);
         }
         // take under consideration weekend
-        handleWeekend(c);
+        handleWeekend(c, false);
         // take under consideration holidays
-        handleHoliday(c);
+        handleHoliday(c, false);
  
         return c.getTime();
     }
     
-    protected void handleHoliday(Calendar c) {
+    protected void handleHoliday(Calendar c, boolean resetTime) {
         if (!holidays.isEmpty()) {
             Date current = c.getTime();
             for (TimePeriod holiday : holidays) {
@@ -333,7 +333,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
                     
                     c.add(Calendar.HOUR_OF_DAY, (int) (difference/HOUR_IN_MILLIS));
                     
-                    handleWeekend(c);
+                    handleWeekend(c, resetTime);
                     break;
                 }
             }
@@ -490,10 +490,16 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         
         return true;
     }
-    protected void handleWeekend(Calendar c) {
+    protected void handleWeekend(Calendar c, boolean resetTime) {
         int dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
         while (!isWorkingDay(dayOfTheWeek)) {
             c.add(Calendar.DAY_OF_YEAR, 1);
+            if (resetTime) {
+                c.set(Calendar.HOUR_OF_DAY, 0);
+                c.set(Calendar.MINUTE, 0);
+                c.set(Calendar.SECOND, 0);
+                c.set(Calendar.MILLISECOND, 0);
+            }
             dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
         }
     }

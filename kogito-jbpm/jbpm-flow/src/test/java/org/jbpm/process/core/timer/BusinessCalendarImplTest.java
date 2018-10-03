@@ -336,7 +336,6 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
 
         Date result = businessCal.calculateBusinessTimeAsDate("1m");
 
-        System.out.println(result);
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss", result));
     }
 
@@ -349,6 +348,43 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void testMissingConfigurationSingleArgConstructor() {
         BusinessCalendarImpl businessCal = new BusinessCalendarImpl(null);
+    }
+    
+    @Test
+    public void testCalculateMinutesPassingHoliday() {
+        Properties config = new Properties();
+        config.setProperty(BusinessCalendarImpl.DAYS_PER_WEEK, "5");
+        config.setProperty(BusinessCalendarImpl.HOURS_PER_DAY, "8");
+        config.setProperty(BusinessCalendarImpl.START_HOUR, "9");
+        config.setProperty(BusinessCalendarImpl.END_HOUR, "18");
+        config.setProperty(BusinessCalendarImpl.WEEKEND_DAYS, "1,7"); // sun,sat
+        config.setProperty(BusinessCalendarImpl.HOLIDAYS, "2018-04-30,2018-05-03:2018-05-05");
+        config.setProperty(BusinessCalendarImpl.HOLIDAY_DATE_FORMAT, "yyyy-MM-dd");
+        String currentDate = "2018-05-03 13:51:33";
+        String duration = "10m";
+        String expectedDate = "2018-05-07 09:10:00";
+
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime(currentDate).getTime());
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+
+        Date result = businessCal.calculateBusinessTimeAsDate(duration);
+
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss", result));
+    }
+
+    @Test
+    public void testCalculateMinutesPassingWeekend() {
+        Properties config = new Properties();
+        String currentDate = "2018-05-06 13:51:33";
+        String duration = "10m";
+        String expectedDate = "2018-05-07 09:10:00";
+
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime(currentDate).getTime());
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+
+        Date result = businessCal.calculateBusinessTimeAsDate(duration);
+
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss", result));
     }
 
     private Date parseToDate(String dateString) {
