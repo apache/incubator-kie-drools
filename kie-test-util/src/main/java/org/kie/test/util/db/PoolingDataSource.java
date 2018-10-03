@@ -126,12 +126,12 @@ public class PoolingDataSource implements DataSource {
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         Properties properties = new Properties();
+        properties.put(TransactionalDriver.poolConnections, "false");
         properties.put(TransactionalDriver.XADataSource, this.xads);
         properties.put(TransactionalDriver.userName, username);
         if (password != null) {
             properties.put(TransactionalDriver.password, password);
-        }
-
+        }        
         return transactionalDriver.connect("jdbc:arjuna:" + uniqueName, properties);
     }
 
