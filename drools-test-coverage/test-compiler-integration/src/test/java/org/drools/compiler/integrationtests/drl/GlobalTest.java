@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -145,42 +144,6 @@ public class GlobalTest {
         assertEquals(entries2[0].getValue(), "Testing 2");
         assertEquals(1, session2.getGlobals().getGlobalKeys().size());
         assertTrue(session2.getGlobals().getGlobalKeys().contains("myGlobal"));
-
-        // Testing 3.
-        final KieSession session3 = ((StatelessKnowledgeSessionImpl) session2).newWorkingMemory();
-        try {
-            session3.insert(sample);
-            session3.fireAllRules();
-            Map.Entry[] entries3 = ((MapGlobalResolver) session3.getGlobals()).getGlobals();
-            assertEquals(1, entries3.length);
-            assertEquals(entries3[0].getValue(), "Testing 2");
-            assertEquals(1, session3.getGlobals().getGlobalKeys().size());
-            assertTrue(session3.getGlobals().getGlobalKeys().contains("myGlobal"));
-
-            session3.setGlobal("myGlobal", "Testing 3 Over");
-            entries3 = ((MapGlobalResolver) session3.getGlobals()).getGlobals();
-            assertEquals(1, entries3.length);
-            assertEquals(entries3[0].getValue(), "Testing 3 Over");
-            assertEquals(1, session3.getGlobals().getGlobalKeys().size());
-            assertTrue(session3.getGlobals().getGlobalKeys().contains("myGlobal"));
-        } finally {
-            session3.dispose();
-        }
-
-        // Testing 4.
-        final KieSession session4 = ((StatelessKnowledgeSessionImpl) session2).newWorkingMemory();
-        try {
-            session4.setGlobal("myGlobal", "Testing 4");
-            session4.insert(sample);
-            session4.fireAllRules();
-            final Map.Entry[] entries4 = ((MapGlobalResolver) session4.getGlobals()).getGlobals();
-            assertEquals(1, entries4.length);
-            assertEquals(entries4[0].getValue(), "Testing 4");
-            assertEquals(1, session4.getGlobals().getGlobalKeys().size());
-            assertTrue(session4.getGlobals().getGlobalKeys().contains("myGlobal"));
-        } finally {
-            session4.dispose();
-        }
     }
 
     @Test

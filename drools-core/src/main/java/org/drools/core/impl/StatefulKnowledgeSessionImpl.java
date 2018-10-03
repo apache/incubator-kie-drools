@@ -246,8 +246,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Map<String, Object> runtimeServices;
 
-    private boolean alive = true;
-
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
 
@@ -256,6 +254,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private boolean stateless;
 
     private List<AsyncReceiveNode.AsyncReceiveMemory> receiveNodeMemories;
+
+    private transient StatefulSessionPool pool;
+    private transient boolean alive = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -512,7 +513,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.kBase;
     }
 
+    StatefulKnowledgeSessionImpl fromPool(StatefulSessionPool pool) {
+        this.pool = pool;
+        alive = true;
+        return this;
+    }
+
     public void dispose() {
+        alive = false;
+        if (pool != null) {
+            pool.release(this);
+            return;
+        }
+
         if (!agenda.dispose(this)) {
             return;
         }
@@ -556,7 +569,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public boolean isAlive() {
-        return agenda.isAlive();
+        return alive && agenda.isAlive();
     }
 
     public void destroy() {
@@ -1112,8 +1125,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.processRuntime = null;
 
         this.initialFactHandle = initInitialFact(kBase, null);
-
-        alive = true;
     }
 
     public void reset(int handleId,

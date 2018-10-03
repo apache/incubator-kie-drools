@@ -88,6 +88,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.TripleStore;
+import org.kie.api.KiePool;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
@@ -173,8 +174,6 @@ public class KnowledgeBaseImpl
 
     public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<KieBaseEventListener, Boolean>());
 
-    private transient SessionsCache sessionsCache;
-
     private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<Runnable>();
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
@@ -217,10 +216,6 @@ public class KnowledgeBaseImpl
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
-
-        if ( this.config.getSessionCacheOption().isEnabled() ) {
-            sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
-        }
 
         sessionConfiguration = new SessionConfigurationImpl( null, this.config.getClassLoader(), this.config.getChainedProperties() );
     }
@@ -328,7 +323,15 @@ public class KnowledgeBaseImpl
                           String queryName) {
         return getPackage(packageName).getRule( queryName );
     }
-    
+
+    public KiePool<KieSession> newKieSessionsPool( int initialSize) {
+        return new StatefulSessionPool(this, initialSize);
+    }
+
+    public KiePool<KieSession> newKieSessionsPool( KieSessionConfiguration conf, int initialSize) {
+        return new StatefulSessionPool(this, conf, initialSize);
+    }
+
     public KieSession newKieSession() {
         return newKieSession(null, EnvironmentFactory.newEnvironment());
     }
@@ -623,19 +626,10 @@ public class KnowledgeBaseImpl
     }
 
     public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession) {
-        if (sessionsCache != null) {
-            synchronized (sessionsCache) {
-                sessionsCache.store(statefulSession);
-            }
-        }
         this.statefulSessions.remove(statefulSession);
         if (kieContainer != null) {
             kieContainer.disposeSession( statefulSession );
         }
-    }
-
-    public StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment) {
-        return sessionsCache != null ? sessionsCache.getCachedSession(config) : null;
     }
 
     public FactHandleFactory newFactHandleFactory() {

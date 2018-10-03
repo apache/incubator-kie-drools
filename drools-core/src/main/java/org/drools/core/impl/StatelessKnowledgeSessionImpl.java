@@ -87,7 +87,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     }
 
 
-    public StatefulKnowledgeSession newWorkingMemory() {
+    private StatefulKnowledgeSession newWorkingMemory() {
         this.kBase.readLock();
         try {
             StatefulKnowledgeSessionImpl ksession = ((KnowledgeBaseImpl)kBase)
@@ -299,7 +299,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         return environment;
     }
 
-    protected void dispose(StatefulKnowledgeSession ksession) {
+    private void dispose(StatefulKnowledgeSession ksession) {
         ksession.dispose();
     }
 
@@ -319,7 +319,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             if ( this == obj ) {
                 return true;
             }
-            if ( obj == null || !(obj instanceof ListnerHolder) ) {
+            if ( !(obj instanceof ListnerHolder) ) {
                 return false;
             }
 
