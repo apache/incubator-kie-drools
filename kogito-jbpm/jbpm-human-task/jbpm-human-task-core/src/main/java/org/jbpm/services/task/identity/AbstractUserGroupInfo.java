@@ -17,6 +17,7 @@
 package org.jbpm.services.task.identity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -54,8 +55,8 @@ public abstract class AbstractUserGroupInfo {
 		}
         if (locationUrl != null) {
             config = new Properties();
-            try {
-                config.load(locationUrl.openStream());
+            try (InputStream stream = locationUrl.openStream()) {
+                config.load(stream);
             } catch (IOException e) {
                 logger.error("Error when loading properties for DB user group callback", e);
                 config = null;
