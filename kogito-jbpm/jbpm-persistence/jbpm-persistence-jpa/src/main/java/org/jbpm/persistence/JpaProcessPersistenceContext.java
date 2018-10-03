@@ -47,8 +47,8 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
         super( em, txm );
     }
 
-    public JpaProcessPersistenceContext(EntityManager em, boolean useJTA, boolean locking, TransactionManager txm) {
-        super( em, useJTA, locking, txm);
+    public JpaProcessPersistenceContext(EntityManager em, boolean useJTA, boolean locking, String lockingMode, TransactionManager txm) {
+        super( em, useJTA, locking, lockingMode, txm);
     }
 
     public PersistentProcessInstance persist(PersistentProcessInstance processInstanceInfo) {
@@ -57,7 +57,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
         TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
         if( this.pessimisticLocking ) { 
         	em.flush();
-            return em.find(ProcessInstanceInfo.class, processInstanceInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return em.find(ProcessInstanceInfo.class, processInstanceInfo.getId(), lockMode );
         }
         return processInstanceInfo;
     }
@@ -65,7 +65,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
     public PersistentProcessInstance findProcessInstanceInfo(Long processId) {
     	EntityManager em = getEntityManager();       
     	if( this.pessimisticLocking ) { 
-            return em.find( ProcessInstanceInfo.class, processId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return em.find( ProcessInstanceInfo.class, processId, lockMode );
         }
         return em.find( ProcessInstanceInfo.class, processId );
     }
@@ -123,7 +123,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
         em.persist( correlationKeyInfo );
         if( this.pessimisticLocking) {
         	em.flush();
-            return em.find(CorrelationKeyInfo.class, correlationKeyInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+            return em.find(CorrelationKeyInfo.class, correlationKeyInfo.getId(), lockMode);
         }
         return correlationKeyInfo;
         

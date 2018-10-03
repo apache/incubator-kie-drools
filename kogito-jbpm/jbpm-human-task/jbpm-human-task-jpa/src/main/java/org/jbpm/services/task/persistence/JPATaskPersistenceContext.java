@@ -85,19 +85,21 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	protected EntityManager em;
     protected final boolean isJTA;
     protected final boolean pessimisticLocking;
+    protected LockModeType lockMode;
 
     public JPATaskPersistenceContext(EntityManager em) {
-        this(em, true, false);
+        this(em, true, false, null);
     }
 
     public JPATaskPersistenceContext(EntityManager em, boolean isJTA) {
-       this(em, isJTA, false);
+       this(em, isJTA, false, null);
     }
 
-    public JPATaskPersistenceContext(EntityManager em, boolean isJTA, boolean locking) {
+    public JPATaskPersistenceContext(EntityManager em, boolean isJTA, boolean locking, String lockingMode) {
         this.em = em;
         this.isJTA = isJTA;
         this.pessimisticLocking = locking;
+        this.lockMode = LockModeType.valueOf(lockingMode == null ? LockModeType.PESSIMISTIC_FORCE_INCREMENT.name() : lockingMode);
 
         logger.debug("TaskPersistenceManager configured with em {}, isJTA {}, pessimistic locking {}", em, isJTA, locking);
     }
@@ -115,7 +117,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		Task task = null;
 		if( this.pessimisticLocking ) {
-			return this.em.find( TaskImpl.class, taskId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+			return this.em.find( TaskImpl.class, taskId, lockMode );
         }
 		task = this.em.find( TaskImpl.class, taskId );
 		return task;
@@ -127,7 +129,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		this.em.persist( task );
         if( this.pessimisticLocking ) {
         	this.em.flush();
-            return this.em.find(TaskImpl.class, task.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(TaskImpl.class, task.getId(), lockMode );
         }
         EventManagerProvider.getInstance().get().create(new TaskInstanceView(task));
         return task;

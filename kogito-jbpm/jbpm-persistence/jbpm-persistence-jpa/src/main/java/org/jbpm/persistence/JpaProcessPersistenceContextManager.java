@@ -38,9 +38,10 @@ public class JpaProcessPersistenceContextManager extends JpaPersistenceContextMa
         if( locking == null ) { 
             locking = false;
         }
+        String lockingMode = (String) env.get(EnvironmentName.USE_PESSIMISTIC_LOCKING_MODE);
         
         boolean useJTA = true; 
-        return new JpaProcessPersistenceContext( getCommandScopedEntityManager(), useJTA, locking, txm );
+        return new JpaProcessPersistenceContext( getCommandScopedEntityManager(), useJTA, locking, lockingMode, txm );
     }
 
     @Override

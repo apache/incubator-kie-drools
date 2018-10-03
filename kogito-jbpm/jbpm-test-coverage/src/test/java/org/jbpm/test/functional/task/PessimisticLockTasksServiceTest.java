@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.LockModeType;
 import javax.persistence.PessimisticLockException;
 import javax.transaction.UserTransaction;
 
@@ -79,10 +80,22 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
     }
 
     @Test
-    public void testPessimisticLockingOnTask() throws Exception {
+    public void testPessimisticLockingOnTaskDefaultMode() throws Exception {
+        testPessimisticLockingOnTask(null);
+    }
+    
+    @Test
+    public void testPessimisticLockingOnTaskWriteMode() throws Exception {
+        testPessimisticLockingOnTask(LockModeType.PESSIMISTIC_WRITE.name());
+    }
+    
+    private void testPessimisticLockingOnTask(String lockMode) throws Exception {
 
     	final List<Exception> exceptions = new ArrayList<Exception>();
     	addEnvironmentEntry(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+    	if (lockMode != null) {
+    	    addEnvironmentEntry(EnvironmentName.USE_PESSIMISTIC_LOCKING_MODE, lockMode);
+    	}
 
     	createRuntimeManager("org/jbpm/test/functional/task/Evaluation2.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine();

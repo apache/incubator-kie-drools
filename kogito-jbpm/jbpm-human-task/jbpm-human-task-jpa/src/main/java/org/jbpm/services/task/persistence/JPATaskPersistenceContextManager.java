@@ -38,10 +38,10 @@ public class JPATaskPersistenceContextManager extends
         if( locking == null ) { 
             locking = false;
         }
-        
+        String lockingMode = (String) env.get(EnvironmentName.USE_PESSIMISTIC_LOCKING_MODE);
         boolean useJTA = true; 
 		EntityManager em = getCommandScopedEntityManager();
-		return new JPATaskPersistenceContext(em, useJTA, locking);
+		return new JPATaskPersistenceContext(em, useJTA, locking, lockingMode);
 	}
 
 	@Override
