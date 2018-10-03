@@ -28,7 +28,7 @@ import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingParametrization;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingWeightPack;
 
 global HardMediumSoftScoreHolder scoreHolder;
 

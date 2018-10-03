@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.parametrization;
+package org.optaplanner.core.api.domain.constraintweight;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -23,20 +23,20 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property (or a field) set the score weight and score level of a constraint.
+ * Specifies that a bean property (or a field) set the score weight multiplier and score level of a constraint.
  * <p>
- * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningParametrization} class.
+ * It is specified on a getter of a java bean property (or directly on a field) of a {@link ConstraintWeightPack} class.
  */
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)
-public @interface PlanningParameter {
+public @interface ConstraintWeight {
 
     /**
      * The constraint package is the namespace of the constraint.
      * <p>
      * The constraint id is this constraint package
      * concatenated with ":" and {@link #value() the constraint name}.
-     * @return defaults to {@link PlanningParametrization#constraintPackage()}
+     * @return defaults to {@link ConstraintWeightPack#constraintPackage()}
      */
     String constraintPackage() default "";
 

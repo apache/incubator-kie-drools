@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
-import org.optaplanner.core.api.domain.parametrization.PlanningParameter;
-import org.optaplanner.core.api.domain.parametrization.PlanningParametrization;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 // @ConstraintWeights
 
-@PlanningParametrization(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
-public class MeetingParametrization extends AbstractPersistable {
+@ConstraintWeightPack(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
+public class MeetingWeightPack extends AbstractPersistable {
 
     public static final String ROOM_CONFLICT = "Room conflict";
     public static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
@@ -41,39 +41,37 @@ public class MeetingParametrization extends AbstractPersistable {
     public static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
     public static final String ROOM_STABILITY = "Room stability";
 
-    // @ConstraintWeight
-
-    @PlanningParameter(ROOM_CONFLICT)
+    @ConstraintWeight(ROOM_CONFLICT)
     private HardMediumSoftScore roomConflict = HardMediumSoftScore.ofHard(-1);
-    @PlanningParameter(DONT_GO_IN_OVERTIME)
+    @ConstraintWeight(DONT_GO_IN_OVERTIME)
     private HardMediumSoftScore dontGoInOvertime = HardMediumSoftScore.ofHard(-1);
-    @PlanningParameter(REQUIRED_ATTENDANCE_CONFLICT)
+    @ConstraintWeight(REQUIRED_ATTENDANCE_CONFLICT)
     private HardMediumSoftScore requiredAttendanceConflict = HardMediumSoftScore.ofHard(-1);
-    @PlanningParameter(REQUIRED_ROOM_CAPACITY)
+    @ConstraintWeight(REQUIRED_ROOM_CAPACITY)
     private HardMediumSoftScore requiredRoomCapacity = HardMediumSoftScore.ofHard(-1);
-    @PlanningParameter(START_AND_END_ON_SAME_DAY)
+    @ConstraintWeight(START_AND_END_ON_SAME_DAY)
     private HardMediumSoftScore startAndEndOnSameDay = HardMediumSoftScore.ofHard(-1);
 
-    @PlanningParameter(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT)
+    @ConstraintWeight(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT)
     private HardMediumSoftScore requiredAndPreferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
-    @PlanningParameter(PREFERRED_ATTENDANCE_CONFLICT)
+    @ConstraintWeight(PREFERRED_ATTENDANCE_CONFLICT)
     private HardMediumSoftScore preferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
 
-    @PlanningParameter(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE)
+    @ConstraintWeight(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE)
     private HardMediumSoftScore doAllMeetingsAsSoonAsPossible = HardMediumSoftScore.ofSoft(-1);
-    @PlanningParameter(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS)
+    @ConstraintWeight(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS)
     private HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings = HardMediumSoftScore.ofSoft(-100);
-    @PlanningParameter(OVERLAPPING_MEETINGS)
+    @ConstraintWeight(OVERLAPPING_MEETINGS)
     private HardMediumSoftScore overlappingMeetings = HardMediumSoftScore.ofSoft(-10);
-    @PlanningParameter(ASSIGN_LARGER_ROOMS_FIRST)
+    @ConstraintWeight(ASSIGN_LARGER_ROOMS_FIRST)
     private HardMediumSoftScore assignLargerRoomsFirst = HardMediumSoftScore.ofSoft(-1);
-    @PlanningParameter(ROOM_STABILITY)
+    @ConstraintWeight(ROOM_STABILITY)
     private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(-1);
 
-    public MeetingParametrization() {
+    public MeetingWeightPack() {
     }
 
-    public MeetingParametrization(long id) {
+    public MeetingWeightPack(long id) {
         super(id);
     }
 

@@ -27,8 +27,8 @@ import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingParametrization;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingWeightPack;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
@@ -43,9 +43,9 @@ public class MeetingSchedulingScoreConstraintTest {
     private MeetingSchedule getMeetingSchedule(int numberOfEntities) {
         // After getting the solution, need to set AttendanceList for it. And for every meeting Required & Preferred attendance lists
         MeetingSchedule solution = new MeetingSchedule();
-        MeetingParametrization parametrization = new MeetingParametrization();
+        MeetingWeightPack parametrization = new MeetingWeightPack();
         parametrization.setId(0L);
-        solution.setParametrization(parametrization);
+        solution.setWeightPack(parametrization);
 
         List<Meeting> meetingList = new ArrayList<>();
         List<Day> dayList = new ArrayList<>();
@@ -100,7 +100,7 @@ public class MeetingSchedulingScoreConstraintTest {
     @Test
     public void roomStability() {
         MeetingSchedule solution = getMeetingSchedule(6);
-        MeetingParametrization parametrization = solution.getParametrization();
+        MeetingWeightPack parametrization = solution.getWeightPack();
         List<Attendance> aList = new ArrayList<>();
         for (int i = 0; i < solution.getMeetingList().size(); i++) {
             Meeting m = solution.getMeetingList().get(i);

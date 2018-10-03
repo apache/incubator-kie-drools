@@ -18,8 +18,8 @@ package org.optaplanner.examples.meetingscheduling.domain;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningParametrizationProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
@@ -30,9 +30,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @PlanningSolution
 public class MeetingSchedule extends AbstractPersistable {
 
-    // @ConstraintWeightsProperty
-    @PlanningParametrizationProperty
-    private MeetingParametrization parametrization;
+    @ConstraintWeightPackProvider
+    private MeetingWeightPack weightPack;
 
     @ProblemFactCollectionProperty
     private List<Meeting> meetingList;
@@ -55,12 +54,12 @@ public class MeetingSchedule extends AbstractPersistable {
     @PlanningScore
     private HardMediumSoftScore score;
 
-    public MeetingParametrization getParametrization() {
-        return parametrization;
+    public MeetingWeightPack getWeightPack() {
+        return weightPack;
     }
 
-    public void setParametrization(MeetingParametrization parametrization) {
-        this.parametrization = parametrization;
+    public void setWeightPack(MeetingWeightPack weightPack) {
+        this.weightPack = weightPack;
     }
 
     public List<Meeting> getMeetingList() {

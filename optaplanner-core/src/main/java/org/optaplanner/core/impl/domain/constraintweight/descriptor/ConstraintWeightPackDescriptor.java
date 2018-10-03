@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.parametrization.descriptor;
+package org.optaplanner.core.impl.domain.constraintweight.descriptor;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -24,8 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.parametrization.PlanningParameter;
-import org.optaplanner.core.api.domain.parametrization.PlanningParametrization;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -40,22 +41,22 @@ import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFac
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class ParametrizationDescriptor<Solution_> {
+public class ConstraintWeightPackDescriptor<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    private final Class<?> parametrizationClass;
+    private final Class<?> constraintWeightPackClass;
 
-    private final Map<String, MemberAccessor> parameterMemberAccessorMap;
+    private final Map<String, MemberAccessor> constraintWeightMemberAccessorMap;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public ParametrizationDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> parametrizationClass) {
+    public ConstraintWeightPackDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> constraintWeightPackClass) {
         this.solutionDescriptor = solutionDescriptor;
-        this.parametrizationClass = parametrizationClass;
-        parameterMemberAccessorMap = new LinkedHashMap<>();
+        this.constraintWeightPackClass = constraintWeightPackClass;
+        constraintWeightMemberAccessorMap = new LinkedHashMap<>();
     }
 
     // ************************************************************************
@@ -63,11 +64,11 @@ public class ParametrizationDescriptor<Solution_> {
     // ************************************************************************
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition scoreDefinition) {
-        processParametrizationAnnotations(descriptorPolicy);
+        processPackAnnotation(descriptorPolicy);
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
-        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(parametrizationClass, PlanningParametrization.class)) {
+        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(constraintWeightPackClass, ConstraintWeightPack.class)) {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
                 if (member instanceof Method && potentiallyOverwritingMethodList.stream().anyMatch(
@@ -82,46 +83,46 @@ public class ParametrizationDescriptor<Solution_> {
             memberList.stream().filter(member -> member instanceof Method)
                     .forEach(member -> potentiallyOverwritingMethodList.add((Method) member));
         }
-        if (parameterMemberAccessorMap.isEmpty()) {
-            throw new IllegalStateException("The parametrizationClass (" + parametrizationClass
+        if (constraintWeightMemberAccessorMap.isEmpty()) {
+            throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
                     + ") must have at least 1 member with a "
-                    + PlanningParameter.class.getSimpleName() + " annotation.");
+                    + ConstraintWeight.class.getSimpleName() + " annotation.");
         }
     }
 
-    private void processParametrizationAnnotations(DescriptorPolicy descriptorPolicy) {
-        PlanningParametrization parametrizationAnnotation = parametrizationClass.getAnnotation(PlanningParametrization.class);
-        if (parametrizationAnnotation == null) {
-            throw new IllegalStateException("The parametrizationClass (" + parametrizationClass
-                    + ") has been specified as a planning parametrization in the solver class ("
-                    + solutionDescriptor.getSolutionClass() + ")," +
-                    " but does not have a " + PlanningParametrization.class.getSimpleName() + " annotation.");
+    private void processPackAnnotation(DescriptorPolicy descriptorPolicy) {
+        ConstraintWeightPack packAnnotation = constraintWeightPackClass.getAnnotation(ConstraintWeightPack.class);
+        if (packAnnotation == null) {
+            throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+                    + ") has been specified as a " + ConstraintWeightPackProvider.class.getSimpleName()
+                    + " in the solution class (" + solutionDescriptor.getSolutionClass() + ")," +
+                    " but does not have a " + ConstraintWeightPack.class.getSimpleName() + " annotation.");
         }
     }
 
     private void processParameterAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             ScoreDefinition scoreDefinition) {
-        if (((AnnotatedElement) member).isAnnotationPresent(PlanningParameter.class)) {
+        if (((AnnotatedElement) member).isAnnotationPresent(ConstraintWeight.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, PlanningParameter.class);
-            if (parameterMemberAccessorMap.containsKey(memberAccessor.getName())) {
-                MemberAccessor duplicate = parameterMemberAccessorMap.get(memberAccessor.getName());
-                throw new IllegalStateException("The parametrizationClass (" + parametrizationClass
-                        + ") has a " + PlanningParameter.class.getSimpleName()
+                    member, FIELD_OR_READ_METHOD, ConstraintWeight.class);
+            if (constraintWeightMemberAccessorMap.containsKey(memberAccessor.getName())) {
+                MemberAccessor duplicate = constraintWeightMemberAccessorMap.get(memberAccessor.getName());
+                throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+                        + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by a member (" + duplicate + ").\n"
                         + "Maybe the annotation is defined on both the field and its getter.");
             }
             if (!scoreDefinition.getScoreClass().isAssignableFrom(memberAccessor.getType())) {
-                throw new IllegalStateException("The parametrizationClass (" + parametrizationClass
-                        + ") has a " + PlanningParameter.class.getSimpleName()
+                throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+                        + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") with a return type (" + memberAccessor.getType()
                         + ") that is not assignable to the score class (" + scoreDefinition.getScoreClass() + ").\n"
                         + "Maybe make that member (" + memberAccessor.getName() + ") return the score class ("
                         + scoreDefinition.getScoreClass().getSimpleName() + ") instead.");
             }
-            parameterMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            constraintWeightMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         }
     }
 
@@ -133,13 +134,13 @@ public class ParametrizationDescriptor<Solution_> {
         return solutionDescriptor;
     }
 
-    public Class<?> getParametrizationClass() {
-        return parametrizationClass;
+    public Class<?> getConstraintWeightPackClass() {
+        return constraintWeightPackClass;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + parametrizationClass.getName() + ")";
+        return getClass().getSimpleName() + "(" + constraintWeightPackClass.getName() + ")";
     }
 
 }

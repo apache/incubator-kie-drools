@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.domain.autodiscover;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.PlanningParametrizationProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
@@ -26,7 +26,7 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 
 /**
  * Determines if and how to automatically presume
- * {@link PlanningParametrizationProperty}, {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty},
+ * {@link ConstraintWeightPackProvider}, {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty},
  * {@link PlanningEntityCollectionProperty}, {@link PlanningEntityProperty} and {@link PlanningScore} annotations
  * on {@link PlanningSolution} members based from the member type.
  */

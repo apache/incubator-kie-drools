@@ -21,7 +21,8 @@ import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.domain.parametrization.PlanningParameter;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -144,8 +145,8 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
         BiConsumer<RuleContext, Integer> consumer = parametrizedMatchMap.get(rule);
         if (consumer == null) {
             throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + PlanningParameter.class.getSimpleName() + " on the @"
-                    + PlanningParameter.class.getSimpleName() + " annotated class.");
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
         }
         consumer.accept(kcontext, matchWeight);
     }

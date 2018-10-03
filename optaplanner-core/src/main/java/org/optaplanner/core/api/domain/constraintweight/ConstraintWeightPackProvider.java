@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.parametrization;
+package org.optaplanner.core.api.domain.constraintweight;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that the class is a planning parametrization.
- * A parametrization holds the weights for each of the constraints.
- * A parametrization is part of a {@link @PlanningSolution}.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link ConstraintWeightPack}.
+ * This property is automatically a {@link ProblemFactProperty} too, so no need to declare that explicitly.
+ * <p>
+ * The type of this property (or field) must have a {@link ConstraintWeightPack} annotation.
  */
-@Target({TYPE})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
-public @interface PlanningParametrization {
-
-    /**
-     * The namespace of the constraints.
-     *
-     * @return defaults to the annotated class's package.
-     */
-    String constraintPackage() default "";
+public @interface ConstraintWeightPackProvider {
 
 }
