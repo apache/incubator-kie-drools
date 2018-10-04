@@ -71,14 +71,14 @@ public class TimeFunctionTest {
 
     @Test
     public void parseWithZone() {
-        TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Etc/UTC").getOrElse(null);
+        final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Etc/UTC").getOrElse(null);
         assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
         assertEquals(ZoneId.of("Etc/UTC"), parsedResult.query(TemporalQueries.zone()));
     }
 
     @Test
     public void parseWithZoneIANA() {
-        TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Europe/Paris").getOrElse(null);
+        final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Europe/Paris").getOrElse(null);
         assertEquals(LocalTime.of(0, 1, 0), parsedResult.query(TemporalQueries.localTime()));
         assertEquals(ZoneId.of("Europe/Paris"), parsedResult.query(TemporalQueries.zone()));
     }

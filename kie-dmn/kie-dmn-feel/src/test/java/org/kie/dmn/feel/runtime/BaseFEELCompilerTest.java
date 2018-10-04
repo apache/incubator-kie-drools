@@ -17,7 +17,7 @@
 package org.kie.dmn.feel.runtime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -58,14 +58,14 @@ public abstract class BaseFEELCompilerTest {
 
     @Test
     public void testExpression() {
-        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEEL.newInstance(Arrays.asList(new DoCompileFEELProfile())) : FEEL.newInstance();
+        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEEL.newInstance(Collections.singletonList(new DoCompileFEELProfile())) : FEEL.newInstance();
         assertResult( expression, inputTypes, inputValues, result );
     }
 
-    protected void assertResult(String expression, Map<String, Type> inputTypes, Map<String, Object> inputValues, Object result) {
-        CompilerContext ctx = feel.newCompilerContext();
-        inputTypes.forEach( (name, type) -> ctx.addInputVariableType( name, type ) );
-        CompiledExpression compiledExpression = feel.compile( expression, ctx );
+    protected void assertResult(final String expression, final Map<String, Type> inputTypes, final Map<String, Object> inputValues, final Object result) {
+        final CompilerContext ctx = feel.newCompilerContext();
+        inputTypes.forEach(ctx::addInputVariableType);
+        final CompiledExpression compiledExpression = feel.compile(expression, ctx );
 
         if( result == null ) {
             assertThat( "Evaluating: '" + expression + "'", feel.evaluate( compiledExpression, inputValues ), is( nullValue() ) );
@@ -77,11 +77,11 @@ public abstract class BaseFEELCompilerTest {
     }
 
     protected static List<Object[]> enrichWith5thParameter(final Object[][] cases) {
-        List<Object[]> results = new ArrayList<>();
-        for (Object[] c : cases) {
+        final List<Object[]> results = new ArrayList<>();
+        for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], c[3], FEEL_TARGET.AST_INTERPRETED});
         }
-        for (Object[] c : cases) {
+        for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], c[3], FEEL_TARGET.JAVA_TRANSLATED});
         }
         return results;

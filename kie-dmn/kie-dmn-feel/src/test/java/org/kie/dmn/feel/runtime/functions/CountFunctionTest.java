@@ -17,10 +17,10 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;

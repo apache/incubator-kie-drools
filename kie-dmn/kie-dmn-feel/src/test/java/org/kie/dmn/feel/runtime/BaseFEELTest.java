@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.runtime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -46,7 +45,7 @@ public abstract class BaseFEELTest {
 
     public enum FEEL_TARGET {
         AST_INTERPRETED,
-        JAVA_TRANSLATED;
+        JAVA_TRANSLATED
     }
 
     private FEEL feel = null; // due to @Parameter injection by JUnit framework, need to defer FEEL init to actual instance method, to have the opportunity for the JUNit framework to initialize all the @Parameters
@@ -70,15 +69,13 @@ public abstract class BaseFEELTest {
     public void testExpression() {
         final List<FEELProfile> profiles = getFEELProfilesForTests();
         feel = FEEL.newInstance(profiles);
-        FEELEventListener listener = mock( FEELEventListener.class );
+        final FEELEventListener listener = mock(FEELEventListener.class );
         feel.addListener( listener );
-        feel.addListener( evt -> {
-            System.out.println(evt);
-        } );
+        feel.addListener(System.out::println);
         assertResult( expression, result );
 
         if( severity != null ) {
-            ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
+            final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class );
             verify( listener , atLeastOnce()).onEvent( captor.capture() );
             assertThat( captor.getValue().getSeverity(), is( severity ) );
         } else {
@@ -86,7 +83,7 @@ public abstract class BaseFEELTest {
         }
     }
 
-    protected void assertResult( String expression, Object result ) {
+    protected void assertResult(final String expression, final Object result ) {
         if( result == null ) {
             assertThat( "Evaluating: '" + expression + "'", feel.evaluate( expression ), is( nullValue() ) );
         } else if( result instanceof Class<?> ) {
@@ -97,11 +94,11 @@ public abstract class BaseFEELTest {
     }
 
     protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile) {
-        List<Object[]> results = new ArrayList<>();
-        for (Object[] c : cases) {
+        final List<Object[]> results = new ArrayList<>();
+        for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
         }
-        for (Object[] c : cases) {
+        for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
         }
         return results;

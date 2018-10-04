@@ -23,35 +23,35 @@ import org.kie.dmn.feel.runtime.Range;
 public class RangeImplTest {
 
     @Test
-    public void getLowBoundary() throws Exception {
+    public void getLowBoundary() {
         final Range.RangeBoundary lowBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN);
         Assert.assertEquals(lowBoundary, rangeImpl.getLowBoundary());
     }
 
     @Test
-    public void getLowEndPoint() throws Exception {
+    public void getLowEndPoint() {
         final Integer lowEndPoint = 1;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, lowEndPoint, 15, Range.RangeBoundary.CLOSED);
         Assert.assertEquals(lowEndPoint, rangeImpl.getLowEndPoint());
     }
 
     @Test
-    public void getHighEndPoint() throws Exception {
+    public void getHighEndPoint() {
         final Integer highEndPoint = 15;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 1, highEndPoint, Range.RangeBoundary.CLOSED);
         Assert.assertEquals(highEndPoint, rangeImpl.getHighEndPoint());
     }
 
     @Test
-    public void getHighBoundary() throws Exception {
+    public void getHighBoundary() {
         final Range.RangeBoundary highBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary);
         Assert.assertEquals(highBoundary, rangeImpl.getHighBoundary());
     }
 
     @Test
-    public void includes() throws Exception {
+    public void includes() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
         Assert.assertFalse(rangeImpl.includes(-15));
         Assert.assertFalse(rangeImpl.includes(5));
@@ -77,30 +77,30 @@ public class RangeImplTest {
     }
 
     @Test
-    public void equals() throws Exception {
+    public void equals() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertTrue(rangeImpl.equals(rangeImpl));
+        Assert.assertEquals(rangeImpl, rangeImpl);
 
         RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertTrue(rangeImpl.equals(rangeImpl2));
+        Assert.assertEquals(rangeImpl, rangeImpl2);
 
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertFalse(rangeImpl.equals(rangeImpl2));
+        Assert.assertNotEquals(rangeImpl, rangeImpl2);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertFalse(rangeImpl.equals(rangeImpl2));
+        Assert.assertNotEquals(rangeImpl, rangeImpl2);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertFalse(rangeImpl.equals(rangeImpl2));
+        Assert.assertNotEquals(rangeImpl, rangeImpl2);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertFalse(rangeImpl.equals(rangeImpl2));
+        Assert.assertNotEquals(rangeImpl, rangeImpl2);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
-        Assert.assertFalse(rangeImpl.equals(rangeImpl2));
+        Assert.assertNotEquals(rangeImpl, rangeImpl2);
 
         rangeImpl = new RangeImpl();
-        Assert.assertTrue(rangeImpl.equals(rangeImpl));
+        Assert.assertEquals(rangeImpl, rangeImpl);
     }
 
     @Test
-    public void hashCodeTest() throws Exception {
+    public void hashCodeTest() {
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
         Assert.assertEquals(rangeImpl.hashCode(), rangeImpl.hashCode());
 

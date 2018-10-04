@@ -17,8 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
