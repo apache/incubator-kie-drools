@@ -73,7 +73,7 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferencePar
 
 public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
-    private static boolean strict;
+    private boolean strict;
 
     public ConferenceSchedulingXlsxFileIO() {
         this(true);
@@ -95,7 +95,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private static class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
+    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
 
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
@@ -497,7 +497,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 TalkType talkType = totalTalkTypeMap.get(talkTypeName);
                 if (talkType == null) {
                     throw new IllegalStateException(currentPosition()
-                            + ": The talk (" + talk + ")'s talkType (" + talkType
+                            + ": The talk (" + talk + ")'s talkType (" + talkTypeName
                             + ") does not exist in the talk types (" + totalTalkTypeMap.keySet()
                             + ") of the other sheet (Timeslots).");
                 }
@@ -722,7 +722,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
+    private class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
 
         private Map<String, XSSFCellStyle> themeTrackToStyleMap;
 
