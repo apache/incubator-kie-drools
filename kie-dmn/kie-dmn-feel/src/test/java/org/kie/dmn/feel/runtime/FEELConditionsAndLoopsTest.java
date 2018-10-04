@@ -47,6 +47,6 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null}
 
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

@@ -93,6 +93,6 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "null = null", Boolean.TRUE , null},
                 { "null != null", Boolean.FALSE , null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

@@ -50,6 +50,6 @@ public class FEELTernaryLogicTest extends BaseFEELTest {
                 { "true or false and false", Boolean.TRUE , null},
                 { "(true or false) and false", Boolean.FALSE , null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

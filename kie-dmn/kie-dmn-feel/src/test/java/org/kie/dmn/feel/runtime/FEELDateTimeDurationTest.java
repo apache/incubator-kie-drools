@@ -167,6 +167,6 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null},
                 { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", OffsetTime::from ) , null }
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

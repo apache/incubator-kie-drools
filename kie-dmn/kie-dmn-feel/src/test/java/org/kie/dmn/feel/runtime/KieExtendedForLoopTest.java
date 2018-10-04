@@ -30,7 +30,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
-public class KieExtendedForLoopTest extends KieExtendedBaseFEELTest {
+public class KieExtendedForLoopTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
@@ -50,7 +50,7 @@ public class KieExtendedForLoopTest extends KieExtendedBaseFEELTest {
             {"for i in 0..10 return if i = 0 then 1 else i * partial[-1]", Arrays.asList( 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ), null},
 
         };
-        return Arrays.asList( cases );
+        return addAdditionalParameters(cases, true);
     }
 
     private static List<Object> l(Object... args) {

@@ -151,6 +151,6 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

@@ -110,6 +110,6 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
                         new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ), null }
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }
