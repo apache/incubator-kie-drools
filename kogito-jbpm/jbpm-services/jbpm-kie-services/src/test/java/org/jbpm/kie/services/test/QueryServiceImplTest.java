@@ -33,6 +33,7 @@ import java.util.*;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.impl.query.SqlQueryDefinition;
 import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceCustomQueryMapper;
 import org.jbpm.kie.services.impl.query.mapper.ProcessInstanceQueryMapper;
@@ -1306,6 +1307,69 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processService.abortProcessInstance(processInstanceId2);
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
+    }
+    
+    @Test
+    public void testRegisterQueryWithCustomDataSourceResolver() {
+        
+        ((QueryServiceImpl)queryService).setDataSourceResolver(input -> {
+            return dataSourceJNDIname;
+            });
+
+        query = new SqlQueryDefinition("getAllProcessInstances", "resolve-me");
+        query.setExpression("select * from processinstancelog");
+
+        queryService.registerQuery(query);
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryDefinition registeredQuery = queries.get(0);
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+
+        registeredQuery = queryService.getQuery(query.getName());
+
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+        
+        Map<String, String> resolvedColumns = registeredQuery.getColumns();
+        assertNotNull(resolvedColumns);
+        assertEquals(18, resolvedColumns.size());
+        
+        Collection<ProcessInstanceDesc> instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals(1, (int) instances.iterator().next().getState());
+
+        // search using named mapper to refer to query mappers by name
+        instances = queryService.query(query.getName(), new NamedQueryMapper<Collection<ProcessInstanceDesc>>("ProcessInstances"), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals(1, (int) instances.iterator().next().getState());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+
+        instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext(COLUMN_PROCESSNAME, false));
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals(3, (int) instances.iterator().next().getState());
+
     }
     
     protected void setFieldValue(Object instance, String fieldName, Object value) {

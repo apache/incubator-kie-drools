@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.dashbuilder.DataSetCore;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
@@ -37,6 +38,7 @@ import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
+import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.dashbuilder.dataset.def.SQLDataSetDefBuilder;
 import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.dashbuilder.dataset.filter.ColumnFilter;
@@ -88,6 +90,8 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
 
     private DeploymentRolesManager deploymentRolesManager = new DeploymentRolesManager();
     
+    private Function<String, String> dataSourceResolver = input -> input;
+    
     
     public QueryServiceImpl() {
         ServiceRegistry.get().register(QueryService.class.getSimpleName(), this);
@@ -119,6 +123,10 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
 
     public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
         this.userGroupCallback = userGroupCallback;
+    }
+ 
+    public void setDataSourceResolver(Function<String, String> dataSourceResolver) {
+        this.dataSourceResolver = dataSourceResolver;
     }
 
     public void init() {
@@ -165,11 +173,17 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
         if (queryDefinition instanceof SqlQueryDefinition) {
             SqlQueryDefinition sqlQueryDefinition = (SqlQueryDefinition) queryDefinition;
 
-            SQLDataSetDefBuilder<?> builder = DataSetDefFactory.newSQLDataSetDef().uuid(sqlQueryDefinition.getName()).name(sqlQueryDefinition.getName() + "::" + sqlQueryDefinition.getTarget().toString()).dataSource(sqlQueryDefinition.getSource()).dbSQL(sqlQueryDefinition.getExpression(), true);
+            SQLDataSetDefBuilder<?> builder = DataSetDefFactory.newSQLDataSetDef()
+                    .uuid(sqlQueryDefinition.getName())
+                    .name(sqlQueryDefinition.getName() + "::" + sqlQueryDefinition.getTarget().toString())
+                    .dataSource(sqlQueryDefinition.getSource())
+                    .dbSQL(sqlQueryDefinition.getExpression(), true);
 
             DataSetDef sqlDef = builder.buildDef();
             try {
                 dataSetDefRegistry.registerDataSetDef(sqlDef);
+                // resolve data source after registration so the expression (if used) is stored in db
+                ((SQLDataSetDef) sqlDef).setDataSource(dataSourceResolver.apply(sqlQueryDefinition.getSource()));
                 DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
                 if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider, userGroupCallback, metadata));
