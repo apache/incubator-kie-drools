@@ -6,7 +6,11 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import java.util.*;
 
-public class OnlineDatingTest {
+public class OnlineDatingTest extends BaseInterpretedVsCompiledTest {
+
+    public OnlineDatingTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testDMChallengeMarch2017() {

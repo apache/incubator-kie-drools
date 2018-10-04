@@ -33,10 +33,16 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-public class DMNProfilesTest {
+public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
+
+    public DMNProfilesTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
+
     @Test
     public void testJust47() {
         final KieServices ks = KieServices.Factory.get();

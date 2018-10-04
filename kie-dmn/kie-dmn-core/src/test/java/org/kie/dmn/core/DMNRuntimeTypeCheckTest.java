@@ -47,11 +47,15 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class DMNRuntimeTypeCheckTest {
+public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypeCheckTest.class);
 
     private static final KieServices ks = KieServices.Factory.get();
+
+    public DMNRuntimeTypeCheckTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testDefaultNoTypeCheck() {

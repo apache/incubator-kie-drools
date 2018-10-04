@@ -21,8 +21,12 @@ import org.slf4j.LoggerFactory;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 
-public class DMNAssemblerTest {
+public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNAssemblerTest.class);
+
+    public DMNAssemblerTest(final boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testDuplicateModel() {

@@ -28,8 +28,12 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNUpdateTest {
+public class DMNUpdateTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNUpdateTest.class);
+
+    public DMNUpdateTest(boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testRemoveAndAddSomething() {
