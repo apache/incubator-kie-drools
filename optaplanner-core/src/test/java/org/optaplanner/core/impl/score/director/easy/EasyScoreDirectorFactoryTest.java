@@ -34,8 +34,8 @@ public class EasyScoreDirectorFactoryTest {
         EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
         when(scoreCalculator.calculateScore(any(TestdataSolution.class)))
                 .thenAnswer(invocation -> SimpleScore.valueOf(-10));
-        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(scoreCalculator);
-        directorFactory.setSolutionDescriptor(solutionDescriptor);
+        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(
+                solutionDescriptor, scoreCalculator);
 
         EasyScoreDirector<TestdataSolution> director = directorFactory.buildScoreDirector(false, false);
         TestdataSolution solution = new TestdataSolution();

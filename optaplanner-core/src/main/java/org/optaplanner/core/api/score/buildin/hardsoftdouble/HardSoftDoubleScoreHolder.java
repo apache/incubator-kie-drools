@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
@@ -25,7 +30,9 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  * Use {@link HardSoftBigDecimalScoreHolder} instead.
  * @see HardSoftDoubleScore
  */
-public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
+public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubleScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Double>> matchExecutorMap = new LinkedHashMap<>();
 
     protected double hardScore;
     protected double softScore;
@@ -40,6 +47,32 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
 
     public double getSoftScore() {
         return softScore;
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, HardSoftDoubleScore constraintWeight) {
+        BiConsumer<RuleContext, Double> matchExecutor;
+        if (constraintWeight.equals(HardSoftDoubleScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else if (constraintWeight.getSoftScore() == 0.0) {
+            matchExecutor = (RuleContext kcontext, Double matchWeight)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);
+        } else if (constraintWeight.getHardScore() == 0.0) {
+            matchExecutor = (RuleContext kcontext, Double matchWeight)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore() * matchWeight);
+        } else {
+            matchExecutor = (RuleContext kcontext, Double matchWeight)
+                    -> addMultiConstraintMatch(kcontext,
+                    constraintWeight.getHardScore() * matchWeight,
+                    constraintWeight.getSoftScore() * matchWeight);
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

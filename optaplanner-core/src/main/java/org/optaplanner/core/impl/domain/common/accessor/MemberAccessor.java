@@ -31,6 +31,8 @@ import java.lang.reflect.Type;
  */
 public interface MemberAccessor extends AnnotatedElement {
 
+    Class<?> getDeclaringClass();
+
     String getName();
 
     Class<?> getType();

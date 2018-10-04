@@ -20,6 +20,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,9 @@ public class ConstraintWeightPackDescriptor<Solution_> {
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     private final Class<?> constraintWeightPackClass;
+    private String constraintPackage;
 
-    private final Map<String, MemberAccessor> constraintWeightMemberAccessorMap;
+    private final Map<String, ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptorMap;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -56,7 +58,11 @@ public class ConstraintWeightPackDescriptor<Solution_> {
     public ConstraintWeightPackDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> constraintWeightPackClass) {
         this.solutionDescriptor = solutionDescriptor;
         this.constraintWeightPackClass = constraintWeightPackClass;
-        constraintWeightMemberAccessorMap = new LinkedHashMap<>();
+        constraintWeightDescriptorMap = new LinkedHashMap<>();
+    }
+
+    public Collection<ConstraintWeightDescriptor<Solution_>> getConstraintWeightDescriptors() {
+        return constraintWeightDescriptorMap.values();
     }
 
     // ************************************************************************
@@ -83,7 +89,7 @@ public class ConstraintWeightPackDescriptor<Solution_> {
             memberList.stream().filter(member -> member instanceof Method)
                     .forEach(member -> potentiallyOverwritingMethodList.add((Method) member));
         }
-        if (constraintWeightMemberAccessorMap.isEmpty()) {
+        if (constraintWeightDescriptorMap.isEmpty()) {
             throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
                     + ") must have at least 1 member with a "
                     + ConstraintWeight.class.getSimpleName() + " annotation.");
@@ -92,6 +98,12 @@ public class ConstraintWeightPackDescriptor<Solution_> {
 
     private void processPackAnnotation(DescriptorPolicy descriptorPolicy) {
         ConstraintWeightPack packAnnotation = constraintWeightPackClass.getAnnotation(ConstraintWeightPack.class);
+        // If a @ConstraintWeightPack extends a @ConstraintWeightPack, their constraintPackage might differ.
+        // So the ConstraintWeightDescriptors parse this too.
+        constraintPackage = packAnnotation.constraintPackage();
+        if (constraintPackage.equals("")) {
+            constraintPackage = constraintWeightPackClass.getPackage().getName();
+        }
         if (packAnnotation == null) {
             throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
                     + ") has been specified as a " + ConstraintWeightPackProvider.class.getSimpleName()
@@ -105,8 +117,8 @@ public class ConstraintWeightPackDescriptor<Solution_> {
         if (((AnnotatedElement) member).isAnnotationPresent(ConstraintWeight.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                     member, FIELD_OR_READ_METHOD, ConstraintWeight.class);
-            if (constraintWeightMemberAccessorMap.containsKey(memberAccessor.getName())) {
-                MemberAccessor duplicate = constraintWeightMemberAccessorMap.get(memberAccessor.getName());
+            if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
+                MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
                 throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
                         + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
@@ -122,7 +134,9 @@ public class ConstraintWeightPackDescriptor<Solution_> {
                         + "Maybe make that member (" + memberAccessor.getName() + ") return the score class ("
                         + scoreDefinition.getScoreClass().getSimpleName() + ") instead.");
             }
-            constraintWeightMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            ConstraintWeightDescriptor<Solution_> constraintWeightDescriptor = new ConstraintWeightDescriptor<>(this,
+                    memberAccessor);
+            constraintWeightDescriptorMap.put(memberAccessor.getName(), constraintWeightDescriptor);
         }
     }
 
@@ -142,5 +156,4 @@ public class ConstraintWeightPackDescriptor<Solution_> {
     public String toString() {
         return getClass().getSimpleName() + "(" + constraintWeightPackClass.getName() + ")";
     }
-
 }

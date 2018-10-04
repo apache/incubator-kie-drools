@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -24,7 +29,9 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  * Use {@link SimpleDoubleScoreHolder} instead.
  * @see SimpleDoubleScore
  */
-public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
+public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Double>> matchExecutorMap = new LinkedHashMap<>();
 
     protected double score;
 
@@ -34,6 +41,24 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
 
     public double getScore() {
         return score;
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, SimpleDoubleScore constraintWeight) {
+        BiConsumer<RuleContext, Double> matchExecutor;
+        if (constraintWeight.equals(SimpleDoubleScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else {
+            matchExecutor = (RuleContext kcontext, Double matchWeight)
+                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

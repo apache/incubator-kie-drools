@@ -41,13 +41,13 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
 
     protected boolean assertClonedSolution = false;
 
+    public AbstractScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.solutionDescriptor = solutionDescriptor;
+    }
+
     @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
-    }
-
-    public void setSolutionDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.solutionDescriptor = solutionDescriptor;
     }
 
     @Override

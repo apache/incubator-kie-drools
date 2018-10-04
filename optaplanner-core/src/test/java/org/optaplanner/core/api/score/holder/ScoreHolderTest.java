@@ -43,11 +43,14 @@ public class ScoreHolderTest {
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new AbstractScoreHolder(constraintMatchEnabled, SimpleScore.ZERO) {
-            private static final long serialVersionUID = 3167742145462539743L;
-
             @Override
             public Score<?> extractScore(int initScore) {
                 return SimpleScore.valueOf(0);
+            }
+
+            @Override
+            public void putConstraintWeight(org.kie.api.definition.rule.Rule rule, Score constraintWeight) {
+                throw new UnsupportedOperationException();
             }
         };
     }

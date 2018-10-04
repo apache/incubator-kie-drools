@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -34,8 +35,10 @@ public class IncrementalScoreDirectorFactory<Solution_> extends AbstractScoreDir
     private final Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass;
     private final Map<String, String> incrementalScoreCalculatorCustomProperties;
 
-    public IncrementalScoreDirectorFactory(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass,
+    public IncrementalScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass,
             Map<String, String> incrementalScoreCalculatorCustomProperties) {
+        super(solutionDescriptor);
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
     }

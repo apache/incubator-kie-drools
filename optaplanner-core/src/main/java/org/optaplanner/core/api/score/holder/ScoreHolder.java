@@ -19,7 +19,10 @@ package org.optaplanner.core.api.score.holder;
 import java.util.Collection;
 import java.util.Map;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -33,9 +36,10 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
  * Other {@link ScoreDirector} implementations do not use this class.
  * <p>
  * An implementation must extend {@link AbstractScoreHolder} to ensure backwards compatibility in future versions.
+ * @param <Score_> the {@link Score} type
  * @see AbstractScoreHolder
  */
-public interface ScoreHolder {
+public interface ScoreHolder<Score_ extends Score> {
 
     /**
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
@@ -45,7 +49,14 @@ public interface ScoreHolder {
      * method, see {@link Score#getInitScore()}
      * @return never null, the {@link Score} of the working {@link PlanningSolution}
      */
-    Score extractScore(int initScore);
+    Score_ extractScore(int initScore);
+
+    /**
+     * Sets up a {@link ConstraintWeight} from the {@link ConstraintWeightPack} during initialization.
+     * @param rule never null
+     * @param constraintWeight never null, with {@link Score#getInitScore()} equal to 0.
+     */
+    void putConstraintWeight(Rule rule, Score_ constraintWeight);
 
     /**
      * Must be in sync with {@link ScoreDirector#isConstraintMatchEnabled()}

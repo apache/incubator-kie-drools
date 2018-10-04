@@ -17,14 +17,20 @@
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardSoftBigDecimalScore
  */
-public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
+public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftBigDecimalScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorMap = new LinkedHashMap<>();
 
     protected BigDecimal hardScore = null;
     protected BigDecimal softScore = null;
@@ -39,6 +45,32 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public BigDecimal getSoftScore() {
         return softScore;
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, HardSoftBigDecimalScore constraintWeight) {
+        BiConsumer<RuleContext, BigDecimal> matchExecutor;
+        if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore().multiply(matchWeight));
+        } else {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addMultiConstraintMatch(kcontext,
+                    constraintWeight.getHardScore().multiply(matchWeight),
+                    constraintWeight.getSoftScore().multiply(matchWeight));
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

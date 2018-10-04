@@ -34,6 +34,11 @@ public final class ReflectionFieldMemberAccessor implements MemberAccessor {
     }
 
     @Override
+    public Class<?> getDeclaringClass() {
+        return field.getDeclaringClass();
+    }
+
+    @Override
     public String getName() {
         return field.getName();
     }

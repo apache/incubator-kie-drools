@@ -16,13 +16,23 @@
 
 package org.optaplanner.core.impl.score.director.drools;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightPackDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -38,22 +48,31 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     protected final KieContainer kieContainer;
     protected final String ksessionName;
 
+    protected Map<Rule, Function<Solution_, Score>> ruleToConstraintWeightExtractorMap;
+
     /**
+     * @param solutionDescriptor never null
      * For {@link LegacyDroolsScoreDirectorFactory} only. Do not use.
      * @param kieBase never null
      */
-    protected DroolsScoreDirectorFactory(KieBase kieBase) {
+    protected DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
+        super(solutionDescriptor);
         kieContainer = null;
         ksessionName = null;
+        solutionDescriptor.checkIfProblemFactsExist();
     }
 
     /**
+     * @param solutionDescriptor never null
      * @param kieContainer never null
      * @param ksessionName null if the default ksession should be used
      */
-    public DroolsScoreDirectorFactory(KieContainer kieContainer, String ksessionName) {
+    public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            KieContainer kieContainer, String ksessionName) {
+        super(solutionDescriptor);
         this.kieContainer = kieContainer;
         this.ksessionName = ksessionName;
+        solutionDescriptor.checkIfProblemFactsExist();
         // if ksessionName is null, then the default kieSession is used
         KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(ksessionName);
         if (kieSessionModel == null) {
@@ -74,6 +93,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
         String kbaseName = kieSessionModel.getKieBaseModel().getName();
         KieBase kieBase = kieContainer.newKieBase(kbaseName, null);
         checkIfGlobalScoreHolderExists(kieBase);
+        createRuleToConstraintWeightExtractorMap(kieBase);
     }
 
     protected void checkIfGlobalScoreHolderExists(KieBase kieBase) {
@@ -99,10 +119,35 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
         }
     }
 
-    @Override
-    public void setSolutionDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
-        super.setSolutionDescriptor(solutionDescriptor);
-        solutionDescriptor.checkIfProblemFactsExist();
+    protected void createRuleToConstraintWeightExtractorMap(KieBase kieBase) {
+        ConstraintWeightPackDescriptor<Solution_> packDescriptor = solutionDescriptor.getConstraintWeightPackDescriptor();
+        if (packDescriptor == null) {
+            ruleToConstraintWeightExtractorMap = null;
+            return;
+        }
+        Collection<ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptors = packDescriptor.getConstraintWeightDescriptors();
+        ruleToConstraintWeightExtractorMap = new LinkedHashMap<>(constraintWeightDescriptors.size());
+        for (ConstraintWeightDescriptor<Solution_> constraintWeightDescriptor : constraintWeightDescriptors) {
+            String constraintPackage = constraintWeightDescriptor.getConstraintPackage();
+            String constraintName = constraintWeightDescriptor.getConstraintName();
+            Rule rule = kieBase.getRule(constraintPackage, constraintName);
+            if (rule == null) {
+                Rule potentialRule = kieBase.getKiePackages().stream().flatMap(kiePackage -> kiePackage.getRules().stream())
+                        .filter(selectedRule -> selectedRule.getName().equals(constraintName)).findFirst().orElse(null);
+                throw new IllegalStateException("The constraintWeightPackClass (" + packDescriptor.getConstraintWeightPackClass()
+                        + ") has a " + ConstraintWeight.class.getSimpleName()
+                        + " annotated member (" + constraintWeightDescriptor.getMemberAccessor()
+                        + ") with constraintPackage/rulePackage (" + constraintPackage
+                        + ") and constraintName/ruleName (" + constraintName
+                        + ") for which no Drools rule exist in the DRL.\n"
+                        + (potentialRule != null ? "Maybe the constraintPackage (" + constraintPackage + ") is wrong,"
+                        + " because there is a rule with the same ruleName (" + constraintName
+                        + "), but in a different rulePackage (" + rule.getPackageName() + ")."
+                        : "Maybe there is a typo in the constraintName (" + constraintName
+                        + ") so it not identical to the constraint's ruleName."));
+            }
+            ruleToConstraintWeightExtractorMap.put(rule, constraintWeightDescriptor.createExtractionFunction());
+        }
     }
 
     public KieContainer getKieContainer() {
@@ -114,6 +159,10 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
      */
     public String getKsessionName() {
         return ksessionName;
+    }
+
+    public Map<Rule, Function<Solution_, Score>> getRuleToConstraintWeightExtractorMap() {
+        return ruleToConstraintWeightExtractorMap;
     }
 
     // ************************************************************************

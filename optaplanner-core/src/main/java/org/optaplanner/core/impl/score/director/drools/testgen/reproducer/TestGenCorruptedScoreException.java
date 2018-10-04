@@ -19,8 +19,6 @@ import org.optaplanner.core.api.score.Score;
 
 public class TestGenCorruptedScoreException extends RuntimeException {
 
-    private static final long serialVersionUID = -8432764392597925152L;
-
     private final Score<?> workingScore;
     private final Score<?> uncorruptedScore;
 

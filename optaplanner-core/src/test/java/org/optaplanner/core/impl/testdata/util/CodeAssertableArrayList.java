@@ -20,8 +20,6 @@ import java.util.Collection;
 
 public class CodeAssertableArrayList<E> extends ArrayList<E> implements CodeAssertable {
 
-    private static final long serialVersionUID = -6085607048567865778L;
-
     private final String code;
 
     public CodeAssertableArrayList(String code, Collection<? extends E> c) {

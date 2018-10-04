@@ -16,14 +16,20 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardMediumSoftBigDecimalScore
  */
-public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
+public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardMediumSoftBigDecimalScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorMap = new LinkedHashMap<>();
 
     protected BigDecimal hardScore;
     protected BigDecimal mediumScore;
@@ -46,8 +52,39 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, HardMediumSoftBigDecimalScore constraintWeight) {
+        BiConsumer<RuleContext, BigDecimal> matchExecutor;
+        if (constraintWeight.equals(HardMediumSoftBigDecimalScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else if (constraintWeight.getMediumScore().equals(BigDecimal.ZERO) && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO) && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addMediumConstraintMatch(kcontext, constraintWeight.getMediumScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO) && constraintWeight.getMediumScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore().multiply(matchWeight));
+        } else {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addMultiConstraintMatch(kcontext,
+                    constraintWeight.getHardScore().multiply(matchWeight),
+                    constraintWeight.getMediumScore().multiply(matchWeight),
+                    constraintWeight.getSoftScore().multiply(matchWeight));
+        }
+        matchExecutorMap.put(rule, matchExecutor);
+    }
+
+    // ************************************************************************
     // Worker methods
     // ************************************************************************
+
     /**
      * Add a hard constraint of specified weighting.
      *

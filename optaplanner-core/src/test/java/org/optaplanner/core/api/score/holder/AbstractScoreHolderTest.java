@@ -28,8 +28,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractScoreHolderTest {
 
@@ -47,7 +46,6 @@ public abstract class AbstractScoreHolderTest {
         List<Object> justificationList = Arrays.asList(justifications);
         RuleContext kcontext = mock(RuleContext.class);
         AgendaItemImpl<TestModedAssertion> agendaItem = new AgendaItemImpl<TestModedAssertion>() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public List<Object> getObjects() {

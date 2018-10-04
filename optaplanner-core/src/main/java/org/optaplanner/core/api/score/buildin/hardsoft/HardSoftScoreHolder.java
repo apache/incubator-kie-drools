@@ -16,13 +16,20 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardSoftScore
  */
-public class HardSoftScoreHolder extends AbstractScoreHolder {
+public class HardSoftScoreHolder extends AbstractScoreHolder<HardSoftScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Integer>> matchExecutorMap = new LinkedHashMap<>();
 
     protected int hardScore;
     protected int softScore;
@@ -37,6 +44,32 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
 
     public int getSoftScore() {
         return softScore;
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, HardSoftScore constraintWeight) {
+        BiConsumer<RuleContext, Integer> matchExecutor;
+        if (constraintWeight.equals(HardSoftScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else if (constraintWeight.getSoftScore() == 0) {
+            matchExecutor = (RuleContext kcontext, Integer matchWeight)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);
+        } else if (constraintWeight.getHardScore() == 0) {
+            matchExecutor = (RuleContext kcontext, Integer matchWeight)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore() * matchWeight);
+        } else {
+            matchExecutor = (RuleContext kcontext, Integer matchWeight)
+                    -> addMultiConstraintMatch(kcontext,
+                    constraintWeight.getHardScore() * matchWeight,
+                    constraintWeight.getSoftScore() * matchWeight);
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

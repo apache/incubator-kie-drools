@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director.drools;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -27,10 +28,11 @@ public class LegacyDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDire
 
     protected final KieBase kieBase;
 
-    public LegacyDroolsScoreDirectorFactory(KieBase kieBase) {
-        super(kieBase);
+    public LegacyDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
+        super(solutionDescriptor, kieBase);
         this.kieBase = kieBase;
         checkIfGlobalScoreHolderExists(kieBase);
+        createRuleToConstraintWeightExtractorMap(kieBase);
     }
 
     public KieBase getKieBase() {

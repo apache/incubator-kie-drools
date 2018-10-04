@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import org.kie.api.KieBase;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.LegacyDroolsScoreDirectorFactory;
 
@@ -27,8 +28,9 @@ public class TestGenLegacyDroolsScoreDirectorFactory<Solution_> extends LegacyDr
     private final List<String> scoreDrlList;
     private final List<File> scoreDrlFileList;
 
-    public TestGenLegacyDroolsScoreDirectorFactory(KieBase kieBase, List<String> scoreDrlList, List<File> scoreDrlFileList) {
-        super(kieBase);
+    public TestGenLegacyDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            KieBase kieBase, List<String> scoreDrlList, List<File> scoreDrlFileList) {
+        super(solutionDescriptor, kieBase);
         this.scoreDrlList = scoreDrlList;
         this.scoreDrlFileList = scoreDrlFileList;
     }

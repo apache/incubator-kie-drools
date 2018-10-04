@@ -16,13 +16,15 @@
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import org.kie.api.runtime.KieContainer;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 
 public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDirectorFactory<Solution_> {
 
-    public TestGenDroolsScoreDirectorFactory(KieContainer kieContainer, String ksessionName) {
-        super(kieContainer, ksessionName);
+    public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            KieContainer kieContainer, String ksessionName) {
+        super(solutionDescriptor, kieContainer, ksessionName);
     }
 
     @Override

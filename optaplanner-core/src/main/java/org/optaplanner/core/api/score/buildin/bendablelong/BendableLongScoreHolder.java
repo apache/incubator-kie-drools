@@ -17,14 +17,20 @@
 package org.optaplanner.core.api.score.buildin.bendablelong;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see BendableLongScore
  */
-public class BendableLongScoreHolder extends AbstractScoreHolder {
+public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorMap = new LinkedHashMap<>();
 
     private long[] hardScores;
     private long[] softScores;
@@ -49,6 +55,60 @@ public class BendableLongScoreHolder extends AbstractScoreHolder {
 
     public long getSoftScore(int softLevel) {
         return softScores[softLevel];
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, BendableLongScore constraintWeight) {
+        BiConsumer<RuleContext, Long> matchExecutor;
+        if (constraintWeight.equals(BendableLongScore.zero(hardScores.length, softScores.length))) {
+            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else {
+            Integer singleLevel = null;
+            Long singleLevelWeight = null;
+            for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
+                long levelWeight = constraintWeight.getHardOrSoftScore(i);
+                if (levelWeight != 0) {
+                    if (singleLevel != null) {
+                        singleLevel = null;
+                        singleLevelWeight = null;
+                        break;
+                    }
+                    singleLevel = i;
+                    singleLevelWeight = levelWeight;
+                }
+            }
+            if (singleLevel != null) {
+                long levelWeight = singleLevelWeight;
+                if (singleLevel < constraintWeight.getHardLevelsSize()) {
+                    int level = singleLevel;
+                    matchExecutor = (RuleContext kcontext, Long matchWeight)
+                            -> addHardConstraintMatch(kcontext, level, levelWeight * matchWeight);
+                } else {
+                    int level = singleLevel - constraintWeight.getHardLevelsSize();
+                    matchExecutor = (RuleContext kcontext, Long matchWeight)
+                            -> addSoftConstraintMatch(kcontext, level, levelWeight * matchWeight);
+                }
+            } else {
+                matchExecutor = (RuleContext kcontext, Long matchWeight)-> {
+                    long[] hardWeights = new long[hardScores.length];
+                    long[] softWeights = new long[softScores.length];
+                    for (int i = 0; i < hardWeights.length; i++) {
+                        hardWeights[i] = constraintWeight.getHardScore(i) * matchWeight;
+                    }
+                    for (int i = 0; i < softWeights.length; i++) {
+                        softWeights[i] = constraintWeight.getSoftScore(i) * matchWeight;
+                    }
+                    addMultiConstraintMatch(kcontext, hardWeights, softWeights);
+                };
+            }
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

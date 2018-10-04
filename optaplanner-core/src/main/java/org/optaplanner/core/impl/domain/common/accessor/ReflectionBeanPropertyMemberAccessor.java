@@ -49,6 +49,11 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
     }
 
     @Override
+    public Class<?> getDeclaringClass() {
+        return getterMethod.getDeclaringClass();
+    }
+
+    @Override
     public String getName() {
         return propertyName;
     }

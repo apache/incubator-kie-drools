@@ -16,13 +16,20 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see SimpleLongScore
  */
-public class SimpleLongScoreHolder extends AbstractScoreHolder {
+public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorMap = new LinkedHashMap<>();
 
     protected long score;
 
@@ -32,6 +39,24 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
 
     public long getScore() {
         return score;
+    }
+
+    // ************************************************************************
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void putConstraintWeight(Rule rule, SimpleLongScore constraintWeight) {
+        BiConsumer<RuleContext, Long> matchExecutor;
+        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {};
+        } else if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        } else {
+            matchExecutor = (RuleContext kcontext, Long matchWeight)
+                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+        }
+        matchExecutorMap.put(rule, matchExecutor);
     }
 
     // ************************************************************************

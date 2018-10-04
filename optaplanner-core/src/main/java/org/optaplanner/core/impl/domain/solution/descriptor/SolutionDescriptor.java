@@ -835,6 +835,14 @@ public class SolutionDescriptor<Solution_> {
     // Model methods
     // ************************************************************************
 
+    public MemberAccessor getConstraintWeightPackMemberAccessor() {
+        return constraintWeightPackMemberAccessor;
+    }
+
+    public ConstraintWeightPackDescriptor<Solution_> getConstraintWeightPackDescriptor() {
+        return constraintWeightPackDescriptor;
+    }
+
     public Set<Class<?>> getEntityClassSet() {
         return entityDescriptorMap.keySet();
     }

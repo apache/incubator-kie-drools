@@ -34,8 +34,9 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
+ * @param <Score_> the {@link Score} type
  */
-public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
+public abstract class AbstractScoreHolder<Score_ extends Score> implements ScoreHolder<Score_>, Serializable {
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;

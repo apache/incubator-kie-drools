@@ -48,6 +48,11 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
     }
 
     @Override
+    public Class<?> getDeclaringClass() {
+        return readMethod.getDeclaringClass();
+    }
+
+    @Override
     public String getName() {
         return methodName;
     }
