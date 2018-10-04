@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.xml.bind.JAXBContext;
 
+import javax.xml.bind.JAXBContext;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -1414,5 +1414,45 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 4, added.size() );
         assertEquals( 4, removed.size() );
         assertEquals( 1, updated.size() );
+    }
+
+    public static class Question {}
+    public static class QuestionVisible {
+        private final Question question;
+        public QuestionVisible( Question question ) {
+            this.question = question;
+        }
+        public Question getQuestion() {
+            return question;
+        }
+    }
+
+    @Test
+    public void testQueryWithOptionalOr() {
+        // DROOLS-1386
+        String str =
+                "package org.test\n" +
+                "import " + Question.class.getCanonicalName() + "\n" +
+                "import " + QuestionVisible.class.getCanonicalName() + "\n" +
+                "query QuestionsKnowledge\n" +
+                "    $question: Question()\n" +
+                "    $visible: QuestionVisible(question == $question) or not QuestionVisible(question == $question)\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+        Question question = new Question();
+        ksession.insert( question );
+        QueryResults results = ksession.getQueryResults("QuestionsKnowledge");
+        assertEquals( 1, results.size() );
+        QueryResultsRow row = results.iterator().next();
+        assertSame( question, row.get( "$question" ) );
+
+        QuestionVisible questionVisible = new QuestionVisible( question );
+        ksession.insert( questionVisible );
+        results = ksession.getQueryResults("QuestionsKnowledge");
+        assertEquals( 1, results.size() );
+        row = results.iterator().next();
+        assertSame( question, row.get( "$question" ) );
+        assertSame( questionVisible, row.get( "$visible" ) );
     }
 }
