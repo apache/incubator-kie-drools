@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
@@ -82,7 +83,9 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ x : 47, result : x in 2 }.result", Boolean.FALSE , null},
                 {"{ someList : [1, 2, 3], result : 47 in someList }.result", Boolean.FALSE , null},
                 {"{ someList : [1, 2, 3], x : 47, result : x in someList }.result", Boolean.FALSE , null},
-                {"{ someNestedList : { theList : [1, 2, 3] } , x : 47, result : x in someNestedList.theList }.result", Boolean.FALSE , null}
+                {"{ someNestedList : { theList : [1, 2, 3] } , x : 47, result : x in someNestedList.theList }.result", Boolean.FALSE , null},
+                {"{ exp: 2, v: 3, r: exp**v}.r", BigDecimal.valueOf(8), null},
+                {"{Principal: 12, Rate: 1, Fees: 1, Term: -1, R: (Principal*Rate/12)/(1-(1+Rate/12)**-Term)+Fees}.R", new BigDecimal("-11.00000000000000000000000000000005"), null}
 
         };
         return enrichWith4thParameter(cases);

@@ -221,7 +221,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             throw new IllegalArgumentException("signedunary should be only over a FEEL NUMBER (bigdecimal).");
         }
         // therefore, unaryExpr is a bigdecimal and operator is `-`.
-        MethodCallExpr result = new MethodCallExpr(unaryExpr.getExpression(), "negate");
+        MethodCallExpr result = new MethodCallExpr(castToBigDecimal(unaryExpr.getExpression()), "negate");
         return DirectCompilerResult.of(result, unaryExpr.resultType, unaryExpr.getFieldDeclarations() );
     }
 
@@ -370,10 +370,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             Expression result = groundToNullIfAnyIsNull(plusCall, left.getExpression(), right.getExpression());
             return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
         } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
-            MethodCallExpr subtractCall = new MethodCallExpr(left.getExpression(), "subtract");
-            subtractCall.addArgument(right.getExpression());
+            Expression l = castToBigDecimal(left.getExpression());
+            Expression r = castToBigDecimal(right.getExpression());
+            MethodCallExpr subtractCall = new MethodCallExpr(l, "subtract");
+            subtractCall.addArgument(r);
             subtractCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(subtractCall, left.getExpression(), right.getExpression());
+            Expression result = groundToNullIfAnyIsNull(subtractCall, l, r);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
             // fallback support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#sub
@@ -390,10 +392,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             // optimization: if either left or right is a null literal, just null
             return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
-            MethodCallExpr addCall = new MethodCallExpr(left.getExpression(), "multiply");
-            addCall.addArgument(right.getExpression());
+            Expression l = castToBigDecimal(left.getExpression());
+            Expression r = castToBigDecimal(right.getExpression());
+            MethodCallExpr addCall = new MethodCallExpr(l, "multiply");
+            addCall.addArgument(r);
             addCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
+            Expression result = groundToNullIfAnyIsNull(addCall, l, r);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
             // fallback support strategy:
@@ -412,9 +416,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
             // right might be zero, hence if divide-by-zero we should ground to null.
             MethodCallExpr addCall = new MethodCallExpr(null, "div");
-            addCall.addArgument(left.getExpression());
-            addCall.addArgument(right.getExpression());
-            Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
+            EnclosedExpr l = castToBigDecimal(left.getExpression());
+            EnclosedExpr r = castToBigDecimal(right.getExpression());
+            addCall.addArgument(l);
+            addCall.addArgument(r);
+            Expression result = groundToNullIfAnyIsNull(addCall, l, r);
             return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
         } else {
             // fallback support strategy:
@@ -430,15 +436,20 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         if (left.getExpression() instanceof NullLiteralExpr || right.getExpression() instanceof NullLiteralExpr) {
             // optimization: if either left or right is a null literal, just null
             return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(left, right));
-        } else if (left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER) {
-            MethodCallExpr subtractCall = new MethodCallExpr(left.getExpression(), "pow");
-            subtractCall.addArgument(new MethodCallExpr(right.getExpression(), "intValue"));
-            subtractCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(subtractCall, left.getExpression(), right.getExpression());
-            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
-            throw new UnsupportedOperationException("this was a visitPow but either left or right is not a number"); // parser problem.
+            EnclosedExpr leftCasted = castToBigDecimal(left.getExpression());
+            EnclosedExpr rightCasted = castToBigDecimal(right.getExpression());
+
+            MethodCallExpr subtractCall = new MethodCallExpr(leftCasted, "pow");
+            subtractCall.addArgument(new MethodCallExpr(rightCasted, "intValue"));
+            subtractCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(subtractCall, leftCasted, rightCasted);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         }
+    }
+
+    private EnclosedExpr castToBigDecimal(Expression left) {
+        return new EnclosedExpr(new CastExpr(TYPE_BIG_DECIMAL, new EnclosedExpr(left)));
     }
 
     @Override
