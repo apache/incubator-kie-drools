@@ -1013,13 +1013,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(talk.getFavoriteCount());
                 nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
-                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : hardPenaltyStyle)
+                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle)
                         .setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
-                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : hardPenaltyStyle)
+                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle)
                         .setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
-                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : hardPenaltyStyle)
+                nextCell(talk.getTimeslot().equals(talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle)
                         .setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
-                nextCell(talk.getRoom().equals(talk.getPublishedRoom()) ? defaultStyle : hardPenaltyStyle)
+                nextCell(talk.getRoom().equals(talk.getPublishedRoom()) ? defaultStyle : republishedStyle)
                         .setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));

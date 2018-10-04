@@ -36,6 +36,7 @@ public class TangoColorFactory {
     public static final Color CHOCOLATE_1 = new Color(233, 185, 110);
     public static final Color CHOCOLATE_2 = new Color(193, 125, 17);
     public static final Color CHOCOLATE_3 = new Color(143, 89, 2);
+    public static final Color MAGENTA = new Color(255, 0, 255);
     public static final Color PLUM_1 = new Color(173, 127, 168);
     public static final Color PLUM_2 = new Color(117, 80, 123);
     public static final Color PLUM_3 = new Color(92, 53, 102);
