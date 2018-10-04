@@ -53,7 +53,20 @@ public class DecisionTableProviderImpl
         ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         for ( RuleTemplateConfiguration template : configuration.getRuleTemplateConfigurations() ) {
             try {
-                drls.add(converter.compile(resource.getInputStream(), template.getTemplate().getInputStream(), template.getRow(), template.getCol()));
+                InputType inputType;
+                switch ( configuration.getInputType() ) {
+                case XLS :
+                case XLSX :
+                	inputType= InputType.XLS;
+                	break;
+                case CSV : 
+                	inputType= InputType.CSV;
+                	break;
+                default:
+                	throw new IllegalArgumentException("unsuported input type : "+configuration.getInputType());
+                }
+                
+				drls.add(converter.compile(resource.getInputStream(), template.getTemplate().getInputStream(), inputType,template.getRow(), template.getCol()));
             } catch (IOException e) {
                 logger.error( "Cannot open " + template.getTemplate(), e );
             }
