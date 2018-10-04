@@ -37,27 +37,27 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN12specificTest.class);
 
-    public DMN12specificTest(boolean useExecModelCompiler) {
+    public DMN12specificTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
     @Test
     public void testDMN12typeAliases() {
         // DROOLS-
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("typeAliases.dmn", this.getClass());
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9f6be450-17c0-49d9-a67f-960ad04b046f", "Drawing 1");
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("typeAliases.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9f6be450-17c0-49d9-a67f-960ad04b046f", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
-        context.set("a date and time", LocalDateTime.of(2018, 9, 28, 16, 07));
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a date and time", LocalDateTime.of(2018, 9, 28, 16, 7));
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
-        assertThat(result.get("a decision"), is(LocalDateTime.of(2018, 9, 28, 16, 07).plusDays(1)));
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("a decision"), is(LocalDateTime.of(2018, 9, 28, 16, 7).plusDays(1)));
     }
 
 }

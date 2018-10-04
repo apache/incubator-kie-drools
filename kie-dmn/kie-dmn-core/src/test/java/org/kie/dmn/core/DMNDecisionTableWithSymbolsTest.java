@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat;
 
 public class DMNDecisionTableWithSymbolsTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNDecisionTableWithSymbolsTest( boolean useExecModelCompiler ) {
+    public DMNDecisionTableWithSymbolsTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 

@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
 
 public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
 
-    public VacationDaysTest( boolean useExecModelCompiler ) {
+    public VacationDaysTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -71,19 +71,19 @@ public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
         executeTest( 60, 20, 30 );
     }
 
-    private void executeTest( int age, int yearsService, int expectedVacationDays ) {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0020-vacation-days.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0020-vacation-days" );
+    private void executeTest(final int age, final int yearsService, final int expectedVacationDays ) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0020-vacation-days.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0020-vacation-days" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
 
         context.set( "Age", age );
         context.set( "Years of Service", yearsService );
 
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
 
         assertThat( result.get( "Total Vacation Days" ), is( BigDecimal.valueOf( expectedVacationDays ) ) );
     }

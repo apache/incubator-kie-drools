@@ -153,17 +153,17 @@ public class ExtendedDMNProfileTest {
         assertResult(evenFunction.invoke(valueOf(2.0)), Boolean.TRUE);
     }
 
-    private static <T> void assertResult(FEELFnResult<T> result, T val) {
+    private static <T> void assertResult(final FEELFnResult<T> result, final T val) {
         assertTrue(result.isRight());
         assertThat(result.getOrElse(null), Matchers.equalTo(val));
     }
 
-    private static void assertResultDoublePrecision(FEELFnResult<BigDecimal> result, BigDecimal val) {
+    private static void assertResultDoublePrecision(final FEELFnResult<BigDecimal> result, final BigDecimal val) {
         assertTrue(result.isRight());
         assertThat(Double.compare(result.getOrElse(null).doubleValue(), val.doubleValue()), Matchers.equalTo(0));
     }
 
-    private static void assertNull(FEELFnResult<?> result) {
+    private static void assertNull(final FEELFnResult<?> result) {
         Assert.assertNull(result.getOrElse(null));
     }
 }

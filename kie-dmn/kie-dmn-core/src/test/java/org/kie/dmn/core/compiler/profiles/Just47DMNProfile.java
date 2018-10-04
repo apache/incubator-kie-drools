@@ -1,6 +1,5 @@
 package org.kie.dmn.core.compiler.profiles;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class Just47DMNProfile implements DMNProfile {
 
     @Override
     public List<FEELFunction> getFEELFunctions() {
-        return Arrays.asList(new Just47Function());
+        return Collections.singletonList(new Just47Function());
     }
 
     @Override

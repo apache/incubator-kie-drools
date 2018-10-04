@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNDecisionTableHitPolicyTest( boolean useExecModelCompiler ) {
+    public DMNDecisionTableHitPolicyTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -220,26 +220,25 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollect() {
-        List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext( BigDecimal.valueOf( 70 ), "Medium", true));
+        final List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext(BigDecimal.valueOf(70 ), "Medium", true));
         assertThat(decisionResults, hasSize(3));
         assertThat(decisionResults, contains(BigDecimal.valueOf(10), BigDecimal.valueOf(25), BigDecimal.valueOf(13)));
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollectNoHits() {
-        List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext( BigDecimal.valueOf( 5 ), "Medium", true));
+        final List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext(BigDecimal.valueOf(5 ), "Medium", true));
         assertThat(decisionResults, hasSize(0));
     }
 
-    private List<BigDecimal> executeTestDecisionTableHitPolicyCollect(DMNContext context) {
+    private List<BigDecimal> executeTestDecisionTableHitPolicyCollect(final DMNContext context) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-C.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-C");
         assertThat(dmnModel, notNullValue());
 
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
 
-        final List<BigDecimal> decisionResults = (List<BigDecimal>) result.get( "Status number");
-        return decisionResults;
+        return (List<BigDecimal>) result.get( "Status number");
     }
 
     @Test
