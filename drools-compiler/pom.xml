@@ -286,7 +286,7 @@
               <execution>
                 <phase>generate-sources</phase>
                 <configuration>
-                  <tasks>
+                  <target>
                     <condition property="antlr.debugParser" value="-Xconversiontimeout 32000 -debug" else="">
                       <isset property="debugParser"/>
                     </condition>
@@ -356,7 +356,7 @@
                         <include name="Java__.g"/>
                       </fileset>
                     </delete>
-                  </tasks>
+                  </target>
                 </configuration>
                 <goals>
                   <goal>run</goal>

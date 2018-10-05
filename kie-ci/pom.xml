@@ -243,9 +243,9 @@
             <id>create-custom-maven-repo-dir</id>
             <phase>generate-test-resources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <mkdir dir="${project.build.directory}/testing-maven-repo"/>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
