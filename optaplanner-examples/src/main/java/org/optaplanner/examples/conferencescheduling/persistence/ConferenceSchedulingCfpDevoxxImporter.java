@@ -319,7 +319,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         return new HashSet<>();
     }
 
-    private Talk createTalk(String code, String title, String talkTypeId, Set<String> themeTrackSet,
+    private void createTalk(String code, String title, String talkTypeId, Set<String> themeTrackSet,
                             String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
         Talk talk = new Talk((long) solution.getTalkList().size());
         talk.setCode(code);
@@ -350,8 +350,6 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         talkCodeToTalkMap.put(talk.getCode(), talk);
         solution.getTalkList().add(talk);
         talkTalkTypeToTotalMap.merge(talk.getTalkType().getName(), 1, Integer::sum);
-
-        return talk;
     }
 
     private void importTimeslotList() {
@@ -412,9 +410,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     startAndEndTimeToTimeslotMap.put(Pair.of(startDateTime, endDateTime), timeslot);
                 }
 
-//                if (!timeslotObject.isNull("talk")) {
-//                    scheduleTalk(timeslotObject, room, timeslot);
-//                }
+                if (!timeslotObject.isNull("talk")) {
+                    scheduleTalk(timeslotObject, room, timeslot);
+                }
 
                 for (TalkType talkType : timeslot.getTalkTypeSet()) {
                     talkType.getCompatibleTimeslotSet().add(timeslot);
