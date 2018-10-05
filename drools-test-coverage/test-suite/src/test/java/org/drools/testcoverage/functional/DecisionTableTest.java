@@ -16,6 +16,10 @@
 
 package org.drools.testcoverage.functional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.testcoverage.common.listener.OrderListener;
@@ -29,6 +33,7 @@ import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,10 +44,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Tests all features which can be used in decision tables.
@@ -61,18 +62,89 @@ public class DecisionTableTest {
         return TestParametersUtil.getKieBaseConfigurations();
     }
 
+    private static Resource sampleXlsDecisionTable;
+
+    private static Resource sampleCsvDecisionTable;
+
+    private static Resource multipleTablesDecisionTable;
+
+    private static Resource evalDecisionTable;
+
+    private static Resource advancedDecisionTable;
+
+    private static Resource sequentialDecisionTable;
+
+    private static Resource agendaGroupDecisionTable;
+
+    private static Resource emptyConditionDecisionTable;
+
+    private static Resource emptyActionDecisionTable;
+
+    private static Resource queriesDecisionTable;
+
+    private static Resource sampleDatesCsvDecisionTable;
+
+    private static Resource sampleDatesXlsDecisionTable;
+
+    @BeforeClass
+    public static void loadDecisionTablesToAvoidLoadingThemForEachKieBaseConfiguration() {
+        sampleXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.xls",
+                                                                                    DecisionTableTest.class,
+                                                                                    DecisionTableInputType.XLS);
+
+        sampleCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv",
+                                                                                    DecisionTableTest.class,
+                                                                                    DecisionTableInputType.CSV);
+
+        multipleTablesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls",
+                                                                                         DecisionTableTest.class,
+                                                                                         DecisionTableInputType.XLS);
+
+        evalDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.xls",
+                                                                               DecisionTableTest.class,
+                                                                               DecisionTableInputType.XLS);
+
+        advancedDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls",
+                                                                                   DecisionTableTest.class,
+                                                                                   DecisionTableInputType.XLS);
+
+        agendaGroupDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv",
+                                                                                      DecisionTableTest.class,
+                                                                                      DecisionTableInputType.CSV);
+
+        emptyConditionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls",
+                                                                                         DecisionTableTest.class,
+                                                                                         DecisionTableInputType.XLS);
+
+        emptyActionDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.csv",
+                                                                                      DecisionTableTest.class,
+                                                                                      DecisionTableInputType.CSV);
+
+        queriesDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls",
+                                                                                  DecisionTableTest.class,
+                                                                                  DecisionTableInputType.XLS);
+
+        sequentialDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sequential.csv",
+                                                                                     DecisionTableTest.class,
+                                                                                     DecisionTableInputType.CSV);
+
+        sampleDatesCsvDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.csv",
+                                                                                         DecisionTableTest.class,
+                                                                                         DecisionTableInputType.CSV);
+
+        sampleDatesXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.xls",
+                                                                                         DecisionTableTest.class,
+                                                                                         DecisionTableInputType.XLS);
+    }
+
     @Test
     public void testSimpleXLS() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sample.xls", getClass(), DecisionTableInputType.XLS);
-        testSimpleDecisionTable(decisionTable);
+        testSimpleDecisionTable(sampleXlsDecisionTable);
     }
 
     @Test
     public void testSimpleCSV() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
-        testSimpleDecisionTable(decisionTable);
+        testSimpleDecisionTable(sampleCsvDecisionTable);
     }
 
     private void testSimpleDecisionTable(final Resource decisionTable) {
@@ -96,11 +168,7 @@ public class DecisionTableTest {
 
     @Test
     public void testMultipleTableXLS() {
-
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls", getClass(), DecisionTableInputType.XLS);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, multipleTablesDecisionTable);
 
         Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
@@ -137,10 +205,7 @@ public class DecisionTableTest {
      */
     @Test
     public void testEvalTable() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.xls", getClass(), DecisionTableInputType.XLS);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, evalDecisionTable);
 
         Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
@@ -237,17 +302,12 @@ public class DecisionTableTest {
     /**
      * test for advanced rule settings (no-loop, saliences, ...), file
      * sample_advanced_dt.xls
-     *
      * covers also bugfix for Bug724257 (agenda group not added from dtable to
      * .drl)
      */
     @Test
     public void testAdvancedTable() {
-
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls", getClass(), DecisionTableInputType.XLS);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, advancedDecisionTable);
         KieSession session = kbase.newKieSession();
 
         final OrderListener listener = new OrderListener();
@@ -264,7 +324,7 @@ public class DecisionTableTest {
         Assertions.assertThat(listener.size()).isEqualTo(4);
 
         // rules have to be fired in expected order
-        final String[] expected = new String[] { "HelloWorld_11", "namedRule", "b1", "another rule" };
+        final String[] expected = new String[]{"HelloWorld_11", "namedRule", "b1", "another rule"};
         for (int i = 0; i < 4; i++) {
             Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
@@ -274,10 +334,7 @@ public class DecisionTableTest {
 
     @Test
     public void testPushQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, queriesDecisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
 
@@ -335,10 +392,7 @@ public class DecisionTableTest {
 
     @Test
     public void testPullQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, queriesDecisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
 
@@ -399,10 +453,7 @@ public class DecisionTableTest {
      */
     @Test
     public void testSequential() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sequential.csv", getClass(), DecisionTableInputType.CSV);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, sequentialDecisionTable);
 
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
@@ -410,28 +461,27 @@ public class DecisionTableTest {
         ksession.insert("something");
         ksession.fireAllRules();
         Assertions.assertThat(listener.size()).as("Wrong number of rules fired").isEqualTo(3);
-        final String[] expected = { "Rule1", "Rule2", "Rule3" };
+        final String[] expected = {"Rule1", "Rule2", "Rule3"};
         for (int i = 0; i < 3; i++) {
             Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
+        ksession.dispose();
     }
 
     @Test
     public void testLockOnActive() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
         ksession.addEventListener(listener);
         ksession.insert("lockOnActive");
         ksession.fireAllRules();
         Assertions.assertThat(listener.size()).isEqualTo(3);
-        final String[] expected = { "a", "a2", "a3" };
+        final String[] expected = {"a", "a2", "a3"};
         for (int i = 0; i < listener.size(); i++) {
             Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
+        ksession.dispose();
     }
 
     /**
@@ -440,10 +490,7 @@ public class DecisionTableTest {
      */
     @Test
     public void testAutoFocus() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
         ksession.addEventListener(listener);
@@ -466,14 +513,12 @@ public class DecisionTableTest {
         for (int i = 0; i < listener.size(); i++) {
             Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
+        ksession.dispose();
     }
 
     @Test
     public void testActivationGroup() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
@@ -484,36 +529,27 @@ public class DecisionTableTest {
         Assertions.assertThat(listener.isRuleFired("c1")).isFalse();
         Assertions.assertThat(listener.isRuleFired("c2")).isTrue();
         Assertions.assertThat(listener.isRuleFired("c3")).isFalse();
+        ksession.dispose();
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testEmptyConditionInXLS() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls", getClass(), DecisionTableInputType.XLS);
-        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, decisionTable);
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyConditionDecisionTable);
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testEmptyActionInCSV() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.csv", getClass(), DecisionTableInputType.CSV);
-        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, decisionTable);
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyActionDecisionTable);
     }
 
     @Test
     public void testCSVWithDateAttributes() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.csv", getClass(), DecisionTableInputType.CSV);
-
-        testDecisionTableWithDateAttributes(decisionTable);
+        testDecisionTableWithDateAttributes(sampleDatesCsvDecisionTable);
     }
 
     @Test
     public void testXLSWithDateAttributes() {
-        final Resource decisionTable =
-                ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.xls", getClass(), DecisionTableInputType.XLS);
-
-        testDecisionTableWithDateAttributes(decisionTable);
+        testDecisionTableWithDateAttributes(sampleDatesXlsDecisionTable);
     }
 
     private void testDecisionTableWithDateAttributes(final Resource decisionTable) {
