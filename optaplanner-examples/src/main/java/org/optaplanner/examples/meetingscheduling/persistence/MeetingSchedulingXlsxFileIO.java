@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,6 +36,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
@@ -71,10 +75,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         public MeetingSchedule read() {
             solution = new MeetingSchedule();
             readConfiguration();
-            readPersonList();
-            readMeetingList();
             readDayList();
             readRoomList();
+            readPersonList();
+            readMeetingList();
 
             return solution;
         }
@@ -140,11 +144,18 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Content");
             readHeaderCell("Required attendance list");
             readHeaderCell("Preferred attendance list");
+            readHeaderCell("Day");
+            readHeaderCell("Starting time");
+            readHeaderCell("Room");
 
             List<Meeting> meetingList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             List<Attendance> attendanceList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long meetingId = 0L, meetingAssignmentId = 0L, attendanceId = 0L;
+            Map<LocalDateTime, TimeGrain> timeGrainMap = solution.getTimeGrainList().stream().collect(
+                    Collectors.toMap(TimeGrain::getDateTime, Function.identity()));
+            Map<String, Room> roomMap = solution.getRoomList().stream().collect(
+                    Collectors.toMap(Room::getName, Function.identity()));
 
             while (nextRow()) {
                 Meeting meeting = new Meeting();
@@ -182,7 +193,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     attendanceId += meetingAttendanceList.size();
                     attendanceList.addAll(meetingAttendanceList);
                 }
-
+                meetingAssignment.setStartingTimeGrain(extractTimeGrain(meeting, timeGrainMap));
+                meetingAssignment.setRoom(extractRoom(meeting, roomMap));
                 meetingList.add(meeting);
                 meetingAssignment.setMeeting(meeting);
                 meetingAssignmentList.add(meetingAssignment);
@@ -317,6 +329,45 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .collect(toList());
         }
 
+        private TimeGrain extractTimeGrain(Meeting meeting, Map<LocalDateTime, TimeGrain> timeGrainMap) {
+            String dateString = nextStringCell().getStringCellValue();
+            String startTimeString = nextStringCell().getStringCellValue();
+            if (!dateString.isEmpty() || !startTimeString.isEmpty()) {
+                LocalDateTime dateTime;
+                try {
+                    dateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
+                            LocalTime.parse(startTimeString, TIME_FORMATTER));
+                } catch (DateTimeParseException e) {
+                    throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                            + ") has a timeGrain date (" + dateString + ") and startTime (" + startTimeString
+                            + ") that doesn't parse as a date or time.", e);
+                }
+
+                TimeGrain timeGrain = timeGrainMap.get(dateTime);
+                if (timeGrain == null) {
+                    throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                            + ") has a timeGrain date (" + dateString + ") and startTime (" + startTimeString
+                            + ") that doesn't exist in the other sheet (Day).");
+                }
+                return timeGrain;
+            }
+            return null;
+        }
+
+        private Room extractRoom(Meeting meeting, Map<String, Room> roomMap) {
+            String roomName = nextStringCell().getStringCellValue();
+            if (!roomName.isEmpty()) {
+                Room room = roomMap.get(roomName);
+                if (room == null) {
+                    throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                            + ") has a roomName (" + roomName
+                            + ") that doesn't exist in the other sheet (Rooms).");
+                }
+                return room;
+            }
+            return null;
+        }
+
         private void readDayList() {
             nextSheet("Days");
             nextRow(false);
@@ -406,10 +457,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             creationHelper = workbook.getCreationHelper();
             createStyles();
             writeConfiguration();
-            writePersons();
-            writeMeetings();
             writeDays();
             writeRooms();
+            writePersons();
+            writeMeetings();
             writeRoomsView();
             writePersonsView();
             writePrintedFormView();
@@ -468,6 +519,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Content");
             nextHeaderCell("Required attendance list");
             nextHeaderCell("Preferred attendance list");
+            nextHeaderCell("Day");
+            nextHeaderCell("Starting time");
+            nextHeaderCell("Room");
+            Map<Meeting, List<MeetingAssignment>> meetingAssignmentMap = solution.getMeetingAssignmentList().stream()
+                    .collect(groupingBy(MeetingAssignment::getMeeting, toList()));
             for (Meeting meeting : solution.getMeetingList()) {
                 nextRow();
                 nextCell().setCellValue(meeting.getTopic());
@@ -486,6 +542,15 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         meeting.getPreferredAttendanceList().stream()
                                 .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
                                 .collect(joining(", ")));
+                List<MeetingAssignment> meetingAssignmentList = meetingAssignmentMap.get(meeting);
+                if (meetingAssignmentList.size() != 1) {
+                    throw new IllegalStateException("Impossible state");
+                }
+                MeetingAssignment meetingAssignment = meetingAssignmentList.get(0);
+                TimeGrain startingTimeGrain = meetingAssignment.getStartingTimeGrain();
+                nextCell().setCellValue(startingTimeGrain == null ? "" : DAY_FORMATTER.format(startingTimeGrain.getDate()));
+                nextCell().setCellValue(startingTimeGrain == null ? "" : TIME_FORMATTER.format(startingTimeGrain.getTime()));
+                nextCell().setCellValue(meetingAssignment.getRoom() == null ? "" : meetingAssignment.getRoom().getName());
             }
             setSizeColumnsWithHeader(5000);
         }

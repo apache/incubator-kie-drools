@@ -40,7 +40,11 @@ public class Day extends AbstractPersistable implements Labeled {
     }
 
     public String getDateString() {
-        return DAY_FORMATTER.format(LocalDate.ofYearDay(LocalDate.now().getYear(), dayOfYear));
+        return DAY_FORMATTER.format(toDate());
+    }
+
+    public LocalDate toDate() {
+        return LocalDate.ofYearDay(LocalDate.now().getYear(), dayOfYear);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class MeetingParametrization extends AbstractPersistable {
     public static final String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS = "One TimeGrain break between two consecutive meetings";
     public static final String OVERLAPPING_MEETINGS = "Overlapping meetings";
     public static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
-    public static final String ROOM_STABILITY = "Room Stability";
+    public static final String ROOM_STABILITY = "Room stability";
 
     private int roomConflict = 1;
     private int dontGoInOvertime = 1;
