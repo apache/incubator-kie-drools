@@ -553,9 +553,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (processRuntime != null) {
             this.processRuntime.dispose();
         }
-        if (timerService != null) {
-            this.timerService.shutdown();
-        }
+
+        this.timerService.shutdown();
 
         if (this.workItemManager != null) {
             ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
@@ -1120,7 +1119,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         initDefaultEntryPoint();
         updateEntryPointsCache();
 
-        timerService = TimerServiceFactory.getTimerService(this.config);
+        timerService.reset();
 
         this.processRuntime = null;
 

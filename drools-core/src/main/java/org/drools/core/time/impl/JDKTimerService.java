@@ -16,14 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.Trigger;
-import org.kie.api.time.SessionClock;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -31,6 +23,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.drools.core.time.InternalSchedulerService;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.Trigger;
+import org.kie.api.time.SessionClock;
 
 /**
  * A default Scheduler implementation that uses the
@@ -43,7 +43,9 @@ public class JDKTimerService
         SessionClock,
         InternalSchedulerService {
 
-    private AtomicLong                      idCounter         = new AtomicLong();
+    private final int size;
+
+    private AtomicLong                      idCounter;
 
     protected ScheduledThreadPoolExecutor   scheduler;
 
@@ -54,7 +56,8 @@ public class JDKTimerService
     }
 
     public JDKTimerService(int size) {
-        this.scheduler = new ScheduledThreadPoolExecutor(size);
+        this.size = size;
+        init();
     }
 
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
@@ -76,6 +79,17 @@ public class JDKTimerService
         return System.currentTimeMillis();
     }
 
+    public void reset() {
+        this.scheduler.shutdownNow();
+        init();
+    }
+
+    private void init() {
+        this.scheduler = new ScheduledThreadPoolExecutor(size);
+        this.idCounter = new AtomicLong();
+    }
+
+    @Override
     public void shutdown() {
         // forcing a shutdownNow instead of a regular shutdown()
         // to avoid delays on shutdown. This is an irreversible 

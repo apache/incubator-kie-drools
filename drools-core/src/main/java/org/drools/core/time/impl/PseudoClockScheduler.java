@@ -178,9 +178,14 @@ public class PseudoClockScheduler
         this.session = session;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public void reset() {
+        idCounter.set(0);
+        timer.set(0);
+        queue.clear();
+    }
+
+    @Override
     public void shutdown() {
         // nothing to do
     }

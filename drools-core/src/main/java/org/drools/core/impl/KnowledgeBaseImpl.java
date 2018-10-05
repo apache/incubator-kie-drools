@@ -88,7 +88,6 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.TripleStore;
-import org.kie.api.KiePool;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
@@ -108,6 +107,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -324,12 +324,8 @@ public class KnowledgeBaseImpl
         return getPackage(packageName).getRule( queryName );
     }
 
-    public KiePool<KieSession> newKieSessionsPool( int initialSize) {
-        return new StatefulSessionPool(this, initialSize);
-    }
-
-    public KiePool<KieSession> newKieSessionsPool( KieSessionConfiguration conf, int initialSize) {
-        return new StatefulSessionPool(this, conf, initialSize);
+    public KieSessionsPool newKieSessionsPool( int initialSize) {
+        return new KieSessionsPoolImpl(this, initialSize);
     }
 
     public KieSession newKieSession() {
@@ -367,7 +363,7 @@ public class KnowledgeBaseImpl
         return internalInitSession( config, session );
     }
 
-    StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig ) {
+    public StatefulKnowledgeSessionImpl internalCreateStatefulKnowledgeSession( Environment environment, SessionConfiguration sessionConfig ) {
         StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) kieComponentFactory.getWorkingMemoryFactory()
                 .createWorkingMemory( nextWorkingMemoryCounter(), this, sessionConfig, environment );
         return internalInitSession( sessionConfig, session );

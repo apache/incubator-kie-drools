@@ -19,33 +19,22 @@ package org.drools.core.impl;
 import java.util.function.Supplier;
 
 import org.drools.core.util.ScalablePool;
-import org.kie.api.KieBase;
-import org.kie.api.KiePool;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 
-public class StatefulSessionPool implements KiePool<KieSession> {
+public class StatefulSessionPool {
 
+    private final KnowledgeBaseImpl kbase;
     private final ScalablePool<StatefulKnowledgeSessionImpl> pool;
 
-    public StatefulSessionPool( KieBase kieBase, int initialSize) {
-        this(kieBase, null, initialSize);
-    }
-
-    public StatefulSessionPool( KieBase kieBase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier) {
-        this(kieBase, null, initialSize, supplier);
-    }
-
-    public StatefulSessionPool( KieBase kieBase, KieSessionConfiguration conf, int initialSize) {
-        this(kieBase, null, initialSize, () -> ((StatefulKnowledgeSessionImpl) kieBase.newKieSession(conf, null)));
-    }
-
-    public StatefulSessionPool( KieBase kieBase, KieSessionConfiguration conf, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier ) {
+    public StatefulSessionPool( KnowledgeBaseImpl kbase, int initialSize, Supplier<StatefulKnowledgeSessionImpl> supplier ) {
+        this.kbase = kbase;
         this.pool = new ScalablePool<>(initialSize, supplier, s -> s.reset(), s -> s.fromPool(null).dispose());
     }
 
-    @Override
-    public KieSession get() {
+    public KnowledgeBaseImpl getKieBase() {
+        return kbase;
+    }
+
+    public StatefulKnowledgeSessionImpl get() {
         return pool.get().fromPool( this );
     }
 
@@ -53,8 +42,7 @@ public class StatefulSessionPool implements KiePool<KieSession> {
         pool.release( session );
     }
 
-    @Override
     public void shutdown() {
-        pool.shutdown();
+        pool.clear();
     }
 }

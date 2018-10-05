@@ -35,8 +35,6 @@ public class ScalablePool<T> {
     private final Consumer<? super T> resetter;
     private final Consumer<? super T> disposer;
 
-    private volatile boolean alive = true;
-
     public ScalablePool( int initialSize, Supplier<? extends T> supplier, Consumer<? super T> resetter, Consumer<? super T> disposer ) {
         this.supplier = supplier;
         this.resetter = resetter;
@@ -50,7 +48,6 @@ public class ScalablePool<T> {
     }
 
     public T get() {
-        checkAlive();
         synchronized (fixedSizePool) {
             if ( cursor > 0 ) {
                 return fixedSizePool[--cursor];
@@ -69,7 +66,6 @@ public class ScalablePool<T> {
     }
 
     public void release(T t) {
-        checkAlive();
         resetter.accept( t );
         synchronized (fixedSizePool) {
             if ( cursor < fixedSizePool.length ) {
@@ -82,9 +78,7 @@ public class ScalablePool<T> {
         }
     }
 
-    public void shutdown() {
-        checkAlive();
-        alive = false;
+    public void clear() {
         for (int i = 0; i < fixedSizePool.length; i++) {
             disposer.accept( fixedSizePool[i] );
             fixedSizePool[i] = null;
@@ -97,9 +91,4 @@ public class ScalablePool<T> {
         }
     }
 
-    protected void checkAlive() {
-        if (!alive) {
-            throw new IllegalStateException( "Illegal method call. This session pool was previously disposed." );
-        }
-    }
 }

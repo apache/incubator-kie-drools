@@ -25,10 +25,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.Test;
-import org.kie.api.KiePool;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.utils.KieHelper;
 
@@ -42,9 +42,9 @@ public class SessionsPoolTest {
 
     @Test
     public void testKieSessionsPool() {
-        KiePool<KieSession> pool = createPool( 1 );
+        KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 1 );
 
-        KieSession ksession = pool.get();
+        KieSession ksession = pool.newKieSession();
         checkKieSession( ksession );
         ksession.dispose();
 
@@ -53,7 +53,7 @@ public class SessionsPoolTest {
             fail("it shouldn't be possible to operate on a disposed session even if created from a pool");
         } catch (Exception e) { }
 
-        KieSession ksession2 = pool.get();
+        KieSession ksession2 = pool.newKieSession();
 
         // using a pool with only one session so it should return the same one as before
         assertSame( ksession, ksession2 );
@@ -68,14 +68,14 @@ public class SessionsPoolTest {
         } catch (Exception e) { }
 
         try {
-            pool.get();
+            pool.newKieSession();
             fail("after pool shutdown it shouldn't be possible to get sessions from it");
         } catch (Exception e) { }
     }
 
     @Test
     public void testKieSessionsPoolInMultithreadEnv() throws InterruptedException, ExecutionException {
-        KiePool<KieSession> pool = createPool( 4 );
+        KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 4 );
 
         final int THREAD_NR = 10;
         final ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
@@ -89,7 +89,7 @@ public class SessionsPoolTest {
         for (int i = 0; i < THREAD_NR; i++) {
             ecs.submit(() -> {
                 try {
-                    KieSession ksession = pool.get();
+                    KieSession ksession = pool.newKieSession();
                     checkKieSession( ksession );
                     ksession.dispose();
 
@@ -112,30 +112,9 @@ public class SessionsPoolTest {
 
         pool.shutdown();
         try {
-            pool.get();
+            pool.newKieSession();
             fail("after pool shutdown it shouldn't be possible to get sessions from it");
         } catch (Exception e) { }
-    }
-
-    private KiePool<KieSession> createPool( int size ) {
-        String drl =
-                "global java.util.List list\n" +
-                        "rule R1 when\n" +
-                        "  $s: String()\n" +
-                        "then\n" +
-                        "  list.add($s);\n" +
-                        "end\n";
-
-        KieContainer kContainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
-        return kContainer.newKieSessionsPool( size );
-    }
-
-    private void checkKieSession( KieSession ksession ) {
-        List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
-        ksession.insert( "test" );
-        ksession.fireAllRules();
-        assertEquals(1, list.size());
     }
 
     @Test
@@ -148,8 +127,8 @@ public class SessionsPoolTest {
                 "  list.add($s);\n" +
                 "end\n";
 
-        KieContainer kContainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
-        StatelessKieSession session = kContainer.newStatelessKieSession();
+        KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 1 );
+        StatelessKieSession session = pool.newStatelessKieSession();
 
         List<String> list = new ArrayList<>();
         session.setGlobal( "list", list );
@@ -158,6 +137,26 @@ public class SessionsPoolTest {
 
         list.clear();
         session.execute( "test" );
+        assertEquals(1, list.size());
+    }
+
+    private KieContainer getKieContainer() {
+        String drl =
+                "global java.util.List list\n" +
+                        "rule R1 when\n" +
+                        "  $s: String()\n" +
+                        "then\n" +
+                        "  list.add($s);\n" +
+                        "end\n";
+
+        return new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+    }
+
+    private void checkKieSession( KieSession ksession ) {
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "test" );
+        ksession.fireAllRules();
         assertEquals(1, list.size());
     }
 }

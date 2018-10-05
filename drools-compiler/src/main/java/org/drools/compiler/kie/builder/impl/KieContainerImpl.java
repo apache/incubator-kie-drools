@@ -35,10 +35,12 @@ import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
 import org.drools.core.InitialFact;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulSessionPool;
@@ -47,7 +49,6 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KiePool;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -63,6 +64,7 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
@@ -446,33 +448,22 @@ public class KieContainerImpl
         return newKieSession(null, environment, conf);
     }
 
-    public KiePool<KieSession> newKieSessionsPool(int initialSize) {
-        return newKieSessionsPool((KieSessionConfiguration)null, initialSize);
+    public KieContainerSessionsPool newKieSessionsPool( int initialSize) {
+        return new KieContainerSessionsPoolImpl(this, initialSize);
     }
 
-    public KiePool<KieSession> newKieSessionsPool(KieSessionConfiguration conf, int initialSize) {
-        KieSessionModel kSessionModel = findKieSessionModel(false);
-        KieBase kBase = getKieBaseFromKieSessionModel( kSessionModel );
-        return createContainerPool( kBase, kSessionModel, initialSize, conf );
-    }
-
-    public KiePool<KieSession> newKieSessionsPool(String kSessionName, int initialSize) {
-        return newKieSessionsPool(kSessionName, null, initialSize);
-    }
-
-    public KiePool<KieSession> newKieSessionsPool(String kSessionName, KieSessionConfiguration conf, int initialSize) {
-        KieSessionModel kSessionModel = getKieSessionModel(kSessionName);
+    StatefulSessionPool createKieSessionsPool(String kSessionName, KieSessionConfiguration conf, Environment env, int initialSize, boolean stateless) {
+        KieSessionModel kSessionModel = kSessionName != null ? getKieSessionModel(kSessionName) : findKieSessionModel(false);
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
             return null;
         }
-        KieBase kBase = getKieBaseFromKieSessionModel( kSessionModel );
-        return createContainerPool( kBase, kSessionModel, initialSize, conf );
-    }
-
-    private KiePool<KieSession> createContainerPool( KieBase kBase, KieSessionModel kSessionModel, int initialSize, KieSessionConfiguration conf ) {
-        return kBase == null ? null : new StatefulSessionPool(kBase, conf, initialSize, () -> {
-            StatefulKnowledgeSessionImpl kSession = ((StatefulKnowledgeSessionImpl) kBase.newKieSession());
+        KnowledgeBaseImpl kBase = (KnowledgeBaseImpl) getKieBaseFromKieSessionModel( kSessionModel );
+        return kBase == null ? null : new StatefulSessionPool(kBase, initialSize, () -> {
+            SessionConfiguration sessConf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
+            StatefulKnowledgeSessionImpl kSession = stateless ?
+                    kBase.internalCreateStatefulKnowledgeSession( env, sessConf ).setStateless( true ) :
+                    (StatefulKnowledgeSessionImpl) kBase.newKieSession( sessConf, env );
             registerNewKieSession( kSessionModel, ( InternalKnowledgeBase ) kBase, kSession );
             return kSession;
         });
