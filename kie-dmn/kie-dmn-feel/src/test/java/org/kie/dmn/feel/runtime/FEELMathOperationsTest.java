@@ -67,6 +67,6 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "--1", BigDecimal.valueOf( 1 ), null },
                 { "---1", BigDecimal.valueOf( -1 ), null },
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

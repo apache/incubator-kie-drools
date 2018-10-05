@@ -17,9 +17,9 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.runners.Parameterized;
 
@@ -39,7 +39,7 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
 
                 // for
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y",
-                        Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ),
+                        Stream.of(10, 20, 30, 20, 40, 60, 30, 60, 90 ).map(BigDecimal::valueOf).collect(Collectors.toList() ),
                  null },
                 {"count( for x in [1, 2, 3] return x+1 )", BigDecimal.valueOf( 3 ), null},
 
@@ -47,6 +47,6 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null}
 
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

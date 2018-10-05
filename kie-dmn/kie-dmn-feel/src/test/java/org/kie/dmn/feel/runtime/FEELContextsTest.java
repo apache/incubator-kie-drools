@@ -62,6 +62,6 @@ public class FEELContextsTest extends BaseFEELTest {
 
 
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

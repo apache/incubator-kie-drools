@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 
-public class KieFEELExtendedFunctionsTest extends KieExtendedBaseFEELTest {
+public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
@@ -36,6 +36,6 @@ public class KieFEELExtendedFunctionsTest extends KieExtendedBaseFEELTest {
                 { "split( \"foo,bar,baz\", \",\" )", Arrays.asList( "foo", "bar", "baz" ), null },
                 { "split( \"foo;bar|baz\", \"[;|]\" )", Arrays.asList( "foo", "bar", "baz" ), null },
         };
-        return Arrays.asList( cases );
+        return addAdditionalParameters(cases, true);
     }
 }

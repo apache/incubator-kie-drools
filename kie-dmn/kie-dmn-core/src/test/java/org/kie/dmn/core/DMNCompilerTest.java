@@ -46,33 +46,37 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNCompilerTest {
+public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
+    public DMNCompilerTest(final boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
+
     @Test
     public void testItemDefAllowedValuesString() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
-        ItemDefNode itemDef = dmnModel.getItemDefinitionByName( "tEmploymentStatus" );
+        final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tEmploymentStatus" );
 
         assertThat( itemDef.getName(), is( "tEmploymentStatus" ) );
         assertThat( itemDef.getId(), is( nullValue() ) );
 
-        DMNType type = itemDef.getType();
+        final DMNType type = itemDef.getType();
 
         assertThat( type, is( notNullValue() ) );
         assertThat( type.getName(), is( "tEmploymentStatus" ) );
         assertThat( type.getId(), is( nullValue() ) );
         assertThat( type, is( instanceOf( SimpleTypeImpl.class ) ) );
 
-        SimpleTypeImpl feelType = (SimpleTypeImpl) type;
+        final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
-        assertThat(feelType.getFeelType(), is(instanceOf(AliasFEELType.class)));
-        assertThat(((AliasFEELType) feelType.getFeelType()).getName(), is("tEmploymentStatus"));
+        final EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
+        assertThat( feelType.getFeelType(), is(instanceOf(AliasFEELType.class)));
+        assertThat( feelType.getFeelType().getName(), is("tEmploymentStatus"));
         assertThat( feelType.getAllowedValuesFEEL().size(), is( 4 ) );
         assertThat( feelType.getAllowedValuesFEEL().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
         assertThat( feelType.getAllowedValuesFEEL().get( 1 ).apply( ctx, "EMPLOYED" ), is( true )   );
@@ -82,36 +86,36 @@ public class DMNCompilerTest {
 
     @Test
     public void testCompositeItemDefinition() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0008-LX-arithmetic.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0008-LX-arithmetic.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
-        ItemDefNode itemDef = dmnModel.getItemDefinitionByName( "tLoan" );
+        final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tLoan" );
 
         assertThat( itemDef.getName(), is( "tLoan" ) );
         assertThat( itemDef.getId(), is( "tLoan" ) );
 
-        DMNType type = itemDef.getType();
+        final DMNType type = itemDef.getType();
 
         assertThat( type, is( notNullValue() ) );
         assertThat( type.getName(), is( "tLoan" ) );
         assertThat( type.getId(), is( "tLoan" ) );
         assertThat( type, is( instanceOf( CompositeTypeImpl.class ) ) );
 
-        CompositeTypeImpl compType = (CompositeTypeImpl) type;
+        final CompositeTypeImpl compType = (CompositeTypeImpl) type;
 
         assertThat( compType.getFields().size(), is( 3 ) );
-        DMNType principal = compType.getFields().get( "principal" );
+        final DMNType principal = compType.getFields().get("principal" );
         assertThat( principal, is( notNullValue() ) );
         assertThat( principal.getName(), is( "number" ) );
         assertThat( ((SimpleTypeImpl)principal).getFeelType(), is( BuiltInType.NUMBER ) );
 
-        DMNType rate = compType.getFields().get( "rate" );
+        final DMNType rate = compType.getFields().get("rate" );
         assertThat( rate, is( notNullValue() ) );
         assertThat( rate.getName(), is( "number" ) );
         assertThat( ((SimpleTypeImpl)rate).getFeelType(), is( BuiltInType.NUMBER ) );
 
-        DMNType termMonths = compType.getFields().get( "termMonths" );
+        final DMNType termMonths = compType.getFields().get("termMonths" );
         assertThat( termMonths, is( notNullValue() ) );
         assertThat( termMonths.getName(), is( "number" ) );
         assertThat( ((SimpleTypeImpl)termMonths).getFeelType(), is( BuiltInType.NUMBER ) );
@@ -121,44 +125,44 @@ public class DMNCompilerTest {
     public void testCompilationThrowsNPE() {
         try {
             DMNRuntimeUtil.createRuntime( "compilationThrowsNPE.dmn", this.getClass() );
-        } catch (IllegalStateException ex) {
+        } catch (final IllegalStateException ex) {
             assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
         }
     }
 
     @Test
     public void testRecursiveFunctions() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Recursive.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "Recursive" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Recursive.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
         assertThat( dmnModel, notNullValue() );
         assertFalse( runtime.evaluateAll( dmnModel, DMNFactory.newContext() ).hasErrors() );
     }
 
     @Test
     public void testImport() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
-                                                                                 this.getClass(),
-                                                                                 "Imported_Model.dmn");
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
+                                                                                       this.getClass(),
+                                                                                       "Imported_Model.dmn");
 
-        DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
-                                                  "Imported Model");
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+                                                        "Imported Model");
         assertThat(importedModel, notNullValue());
-        for (DMNMessage message : importedModel.getMessages()) {
+        for (final DMNMessage message : importedModel.getMessages()) {
             LOG.debug("{}", message);
         }
 
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
-                                             "Importing Model");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edab52",
+                                                   "Importing Model");
         assertThat(dmnModel, notNullValue());
-        for (DMNMessage message : dmnModel.getMessages()) {
+        for (final DMNMessage message : dmnModel.getMessages()) {
             LOG.debug("{}", message);
         }
 
-        DMNContext context = runtime.newContext();
+        final DMNContext context = runtime.newContext();
         context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
 
-        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
-        for (DMNMessage message : evaluateAll.getMessages()) {
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        for (final DMNMessage message : evaluateAll.getMessages()) {
             LOG.debug("{}", message);
         }
         LOG.debug("{}", evaluateAll);

@@ -35,8 +35,8 @@ public class FEELListsTest extends BaseFEELTest {
 
                 { "[ 5, 10+2, \"foo\"+\"bar\", true ]", Arrays.asList( BigDecimal.valueOf( 5 ), BigDecimal.valueOf( 12 ), "foobar", Boolean.TRUE ), null },
                 { "[ null ]", Arrays.asList(new Object[] {null}), null },
-                { "[ null, null ]", Arrays.asList(new Object[] {null, null}), null },
-                { "[ null, 47, null ]", Arrays.asList(new Object[] {null, BigDecimal.valueOf( 47 ), null}), null },
+                { "[ null, null ]", Arrays.asList(null, null), null },
+                { "[ null, 47, null ]", Arrays.asList(null, BigDecimal.valueOf(47 ), null), null },
 
                 // Filtering by index
                 {"[\"a\", \"b\", \"c\"][1]", "a", null },
@@ -56,60 +56,83 @@ public class FEELListsTest extends BaseFEELTest {
                 {"{ a list : [10, 20, 30, 40], second : a list[2] }.second", BigDecimal.valueOf( 20 ), null },
 
                 // Filtering by boolean expression
-                {"[1, 2, 3, 4][item = 4]", Arrays.asList( BigDecimal.valueOf( 4 ) ), null },
+                {"[1, 2, 3, 4][item = 4]", Collections.singletonList(BigDecimal.valueOf(4)), null },
                 {"[1, 2, 3, 4][item > 2]", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ), null },
                 {"[1, 2, 3, 4][item > 5]", Collections.emptyList(), null },
-                {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", Arrays.asList( new HashMap<String, Object>() {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} ), null },
-                {"[ {x:1, y:2}, {x:2, y:3} ][x > 1]", Arrays.asList( new HashMap<String, Object>() {
+                {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", Collections.singletonList(new HashMap<String, Object>() {{
+                    put("x", BigDecimal.valueOf(1));
+                    put("y", BigDecimal.valueOf(2));
+                }}), null },
+                {"[ {x:1, y:2}, {x:2, y:3} ][x > 1]", Collections.singletonList(new HashMap<String, Object>() {
                     {
-                        put("x", BigDecimal.valueOf( 2 ));
-                        put("y", BigDecimal.valueOf( 3 ));
+                        put("x", BigDecimal.valueOf(2));
+                        put("y", BigDecimal.valueOf(3));
                     }
-                } ), null },
+                }), null },
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 0]", Collections.emptyList(), null },
                 {"{x:false, l:[ {x:1, y:2}, {x:2, y:3} ],r:l[x] }.r", Collections.emptyList(), null },
 
                 // Other filtering
                 {"[\"a\", \"b\", \"c\"][a]", Collections.emptyList(), null }, // DROOLS-1679
-                {"{ a list : [ { a : false, b : 2 }, { a : true, b : 3 } ], r : a list[a] }.r", Arrays.asList( new HashMap<String, Object>() {{ put("a", true);  put("b", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ a list : [ { a : false, b : 2 }, { a : true, b : 3 } ], r : a list[a] }.r", Collections.singletonList(new HashMap<String, Object>() {
+                    {
+                        put("a", true);
+                        put("b", BigDecimal.valueOf(3));
+                    }
+                }), null },
                 {"{ a list : [ { a : false, b : 2 }, { a : null, b : 3 }, { b : 4 } ], r : a list[a] }.r", Collections.emptyList(), null },
                 {"{ a list : [ \"a\", \"b\", \"c\" ], x : 2, a : a list[x]}.a", "b", null },
-                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : \"asd\", a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
-                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : false, a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
-                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : null, a : a list[x] }.a", Arrays.asList( new HashMap<String, Object>() {{ put("x", true);  put("y", BigDecimal.valueOf( 3 )); } } ), null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : \"asd\", a : a list[x] }.a", Collections.singletonList(new HashMap<String, Object>() {
+                    {
+                        put("x", true);
+                        put("y", BigDecimal.valueOf(3));
+                    }
+                }), null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : false, a : a list[x] }.a", Collections.singletonList(new HashMap<String, Object>() {
+                    {
+                        put("x", true);
+                        put("y", BigDecimal.valueOf(3));
+                    }
+                }), null },
+                {"{ a list : [ { x : false, y : 2 }, { x : true, y : 3 } ], x : null, a : a list[x] }.a", Collections.singletonList(new HashMap<String, Object>() {
+                    {
+                        put("x", true);
+                        put("y", BigDecimal.valueOf(3));
+                    }
+                }), null },
                 {"{ people : [ { firstName : \"bob\" }, { firstName : \"max\" } ], result : people[ lastName = null ] }.result", Arrays.asList( new HashMap<String, Object>() {{ put("firstName", "bob"); }}, new HashMap<String, Object>() {{ put("firstName", "max"); }}) , null },
                 
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ), null },
-                {"[ {x:1, y:2}, {x:2} ].y", Arrays.asList( BigDecimal.valueOf( 2 ) ), null },
+                {"[ {x:1, y:2}, {x:2} ].y", Collections.singletonList(BigDecimal.valueOf(2)), null },
                 {"[ {x:1, y:2}, {x:2, y:3} ].z", Collections.emptyList(), null },
 
                 // lists of intervals
-                {"[ ( 10 .. 20 ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, BigDecimal.valueOf( 10 ),
-                                                                   BigDecimal.valueOf( 20 ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ] 10 .. 20 [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, BigDecimal.valueOf( 10 ),
-                                                                   BigDecimal.valueOf( 20 ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ( duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ), null },
-                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ] duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ), null },
-                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ [ duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ), null },
-                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ), null },
+                {"[ ( 10 .. 20 ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(10),
+                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN)), null },
+                {"[ ] 10 .. 20 [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(10),
+                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN)), null },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
                         new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ), null }
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

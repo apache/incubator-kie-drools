@@ -66,7 +66,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
             resultList.addAll(itemDefinitions);
             result.add(resultList);
         } else {
-            for (ItemDefinition itemDefinition : itemDefinitions) {
+            for (final ItemDefinition itemDefinition : itemDefinitions) {
                 final List<ItemDefinition> newHead = new ArrayList<>(head);
                 newHead.add(itemDefinition);
                 final List<ItemDefinition> possibleDependencies =
@@ -146,7 +146,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
                                                 final int numberOfDeps,
                                                 final Set<String> usedNames) {
         int addedDepsCount = 0;
-        for (ItemDefinition dependency : dependencies) {
+        for (final ItemDefinition dependency : dependencies) {
             if (!usedNames.contains(dependency.getName())) {
                 createAndAddDependency(itemDefinition, dependency);
                 usedNames.add(dependency.getName());
@@ -159,7 +159,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
     }
 
     private static void createAndAddDependency(final ItemDefinition itemDefinition, final ItemDefinition dependency) {
-        ItemDefinition newDependency = new TItemDefinition();
+        final ItemDefinition newDependency = new TItemDefinition();
         newDependency.setName("_" + itemDefinition.getName() + "-" + dependency.getName());
         newDependency.setTypeRef(new QName(TEST_NS, dependency.getName()));
         itemDefinition.getItemComponent().add(newDependency);
@@ -175,7 +175,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
         return itemDefinitions;
     }
 
-    private List<ItemDefinition> orderingStrategy(List<ItemDefinition> ins) {
+    private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
         return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
     }
 
@@ -186,15 +186,15 @@ public class ItemDefinitionDependenciesGeneratedTest {
             logger.trace(itemDefinition.getName());
             itemDefinition.getItemComponent().forEach(dependency -> logger.trace(dependency.getName()));
         });
-        List<ItemDefinition> orderedList = orderingStrategy(itemDefinitions);
+        final List<ItemDefinition> orderedList = orderingStrategy(itemDefinitions);
 
-        for (ItemDefinition itemDefinition : itemDefinitions) {
+        for (final ItemDefinition itemDefinition : itemDefinitions) {
             assertOrdering(itemDefinition, orderedList);
         }
     }
 
     private void assertOrdering(final ItemDefinition itemDefinition, final List<ItemDefinition> orderedList) {
-        for (ItemDefinition dependency : itemDefinition.getItemComponent()) {
+        for (final ItemDefinition dependency : itemDefinition.getItemComponent()) {
             final String dependencyName = dependency.getTypeRef().getLocalPart();
             final int indexOfDependency = indexOfItemDefinitionByName(dependencyName, orderedList);
             assertTrue("Cannot find dependency " + dependencyName + " in the ordered list!",
@@ -209,7 +209,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
 
     private int indexOfItemDefinitionByName(final String name, final List<ItemDefinition> itemDefinitions) {
         int index = 0;
-        for (ItemDefinition itemDefinition : itemDefinitions) {
+        for (final ItemDefinition itemDefinition : itemDefinitions) {
             if (itemDefinition.getName().equals(name)) {
                 return index;
             }

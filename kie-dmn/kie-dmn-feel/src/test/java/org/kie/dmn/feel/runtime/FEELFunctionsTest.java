@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -86,7 +87,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "mean( 1, 2, 3 )", BigDecimal.valueOf( 2 ) , null},
                 { "mean([ 1, 2, 3 ])", BigDecimal.valueOf( 2 ) , null},
                 { "sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ), null},
-                { "sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Arrays.asList( BigDecimal.valueOf( 4 ) ), null},
+                { "sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Collections.singletonList(BigDecimal.valueOf(4)), null},
                 { "sublist( [1, 2, 3, 4, 5 ], 4, 3 )", null , FEELEvent.Severity.ERROR},
                 { "sublist( [1, 2, 3, 4, 5 ], 6, 3 )", null , FEELEvent.Severity.ERROR},
                 { "sublist( [1, 2, 3, 4, 5 ], -6, 3 )", null , FEELEvent.Severity.ERROR},
@@ -121,14 +122,14 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "reverse( null )", null , FEELEvent.Severity.ERROR},
                 { "index of( [1, 2, 3, 2], 2 )", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "index of( [1, 2, null, null], null )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
-                { "index of( [1, 2, null, null], 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) , null},
+                { "index of( [1, 2, null, null], 1 )", Collections.singletonList(BigDecimal.valueOf(1)), null},
                 { "index of( null, 1 )", null , FEELEvent.Severity.ERROR},
                 { "union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "union( [1, 2, null], 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) , null},
                 { "union( null, 4 )", Arrays.asList( null, BigDecimal.valueOf(4) ), null},
                 { "distinct values( [1, 2, 3, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) , null},
                 { "distinct values( [1, 2, null, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) , null},
-                { "distinct values( 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) , null},
+                { "distinct values( 1 )", Collections.singletonList(BigDecimal.valueOf(1)), null},
                 { "distinct values( null )", null , FEELEvent.Severity.ERROR},
                 { "decimal( 1/3, 2 )", new BigDecimal("0.33") , null},
                 { "decimal( 1.5, 0 )", new BigDecimal("2") , null},
@@ -151,6 +152,6 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }
