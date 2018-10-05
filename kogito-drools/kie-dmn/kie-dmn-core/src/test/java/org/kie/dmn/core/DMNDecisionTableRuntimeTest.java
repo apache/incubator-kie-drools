@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -58,7 +57,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNDecisionTableRuntimeTest(boolean useExecModelCompiler) {
+    public DMNDecisionTableRuntimeTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -87,20 +86,18 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test(timeout = 30_000L)
     public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
-        Runnable task = () -> {
-            checkDecisionTableWithCalculatedResult(runtime);
-        };
-        List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
-        List<CompletableFuture<Void>> tasks = new ArrayList<>();
+        final Runnable task = () -> checkDecisionTableWithCalculatedResult(runtime);
+        final List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
+        final List<CompletableFuture<Void>> tasks = new ArrayList<>();
         
         for ( int i=0 ; i<10_000; i++) {
-            CompletableFuture<Void> newtask = CompletableFuture.runAsync(task).exceptionally(t -> {problems.add(t); return null;});
+            final CompletableFuture<Void> newtask = CompletableFuture.runAsync(task).exceptionally(t -> {problems.add(t); return null;});
             tasks.add( newtask );
         }
         CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[]{})).get();
-        
-        for ( Throwable t : problems ) {
-            throw t;
+
+        if (problems.size() > 0) {
+            throw problems.get(0);
         }
     }
 
@@ -251,59 +248,59 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDTInputExpressionLocalXmlnsInference() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "drools1502-InputExpression.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel(
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools1502-InputExpression.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
-        DMNContext context = runtime.newContext();
+        final DMNContext context = runtime.newContext();
         context.set( "MyInput", "a" );
 
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
 
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
     }
 
     @Test
     public void testDTInContext() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_in_context.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_in_context.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = DMNFactory.newContext();
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
 
         assertThat( dmnResult.getDecisionResults().size(), is( 1 ) );
         assertThat( dmnResult.getDecisionResultByName( "D1" ).getResult(), is( instanceOf( Map.class ) ) );
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat( ((Map) result.get( "D1" )).get( "Text color" ), is( "red" ) );
     }
 
     @Test
     public void testDTUsingEqualsUnaryTestWithVariable1() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
-        Map<String, Object> complex = new HashMap<>();
+        final Map<String, Object> complex = new HashMap<>();
         complex.put( "aBoolean", true );
         complex.put( "aNumber", 10 );
         complex.put( "aString", "bar" );
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set( "Complex", complex );
         context.set( "Another boolean", true );
         context.set( "Another String", "bar" );
         context.set( "Another number", 10 );
 
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Compare Boolean" ), is( "Same boolean" ) );
         assertThat( result.get( "Compare Number" ), is( "Equals" ) );
         assertThat( result.get( "Compare String" ), is( "Same String" ) );
@@ -311,24 +308,24 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDTUsingEqualsUnaryTestWithVariable2() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.hasErrors(), is( false ) );
 
-        Map<String, Object> complex = new HashMap<>();
+        final Map<String, Object> complex = new HashMap<>();
         complex.put( "aBoolean", true );
         complex.put( "aNumber", 10 );
         complex.put( "aString", "bar" );
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set( "Complex", complex );
         context.set( "Another boolean", false );
         context.set( "Another String", "foo" );
         context.set( "Another number", 20 );
 
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Compare Boolean" ), is( "Not same boolean" ) );
         assertThat( result.get( "Compare Number" ), is( "Bigger" ) );
         assertThat( result.get( "Compare String" ), is( "Different String" ) );
@@ -350,31 +347,31 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNullRelation() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nullrelation.dmn", getClass());
-        DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101", "Null in relations");
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nullrelation.dmn", getClass());
+        final DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101", "Null in relations");
         assertThat(model, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(model.getMessages()), model.hasErrors(), is(false));
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("Value", "a3");
-        DMNResult result = runtime.evaluateByName(model, context, "Mapping");
+        final DMNResult result = runtime.evaluateByName(model, context, "Mapping");
         assertThat(DMNRuntimeUtil.formatMessages(result.getMessages()), result.hasErrors(), is(false));
     }
 
     @Test
     public void testDecisionTableOutputDMNTypeCollection() {
         // DROOLS-2359
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollection.dmn", this.getClass());
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollection.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("selector", "asd");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat(result.get("a decision"), is(Arrays.asList("abc", "xyz")));
     }
 
@@ -382,39 +379,39 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
     public void testDecisionTableOutputDMNTypeCollection_NOtypecheck() {
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
-        KieServices ks = KieServices.Factory.get();
+        final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
                                                                     ks.getResources().newClassPathResource("DecisionTableOutputDMNTypeCollection.dmn", this.getClass()));
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("selector", "asd");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat(result.get("a decision"), is(Arrays.asList("abc", "xyz")));
     }
 
     @Test
     public void testDecisionTableOutputDMNTypeCollectionWithLOV() {
         // DROOLS-2359
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass());
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("selector", "asd");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat(result.get("a decision"), is(Arrays.asList("abc", "a")));
     }
 
@@ -422,21 +419,21 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
     public void testDecisionTableOutputDMNTypeCollectionWithLOV_NOtypecheck() {
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
-        KieServices ks = KieServices.Factory.get();
+        final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
                                                                     ks.getResources().newClassPathResource("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass()));
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("selector", "asd");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat(result.get("a decision"), is(Arrays.asList("abc", "a")));
     }
 
@@ -560,12 +557,12 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     private void testDecisionTablesQuestionMarkVariable(final String dmnResourcePath, final String expectedResult,
                                                         final DMNDecisionResult.DecisionEvaluationStatus expectedStatus) {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( dmnResourcePath, this.getClass() );
-        DMNModel model = runtime.getModel( "http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(dmnResourcePath, this.getClass() );
+        final DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825", "Enabling question marks" );
         assertThat( model, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
-        DMNContext context = DMNFactory.newContext();
-        DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
+        final DMNContext context = DMNFactory.newContext();
+        final DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
 
         assertEquals(expectedStatus, result.getEvaluationStatus());
         assertFalse(result.hasErrors());

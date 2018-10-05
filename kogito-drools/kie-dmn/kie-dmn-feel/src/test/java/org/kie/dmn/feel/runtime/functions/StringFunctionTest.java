@@ -42,7 +42,7 @@ public class StringFunctionTest {
     private StringFunction stringFunction;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         stringFunction = new StringFunction();
     }
 

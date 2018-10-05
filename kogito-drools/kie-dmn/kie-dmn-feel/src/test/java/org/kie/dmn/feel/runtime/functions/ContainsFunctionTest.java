@@ -25,7 +25,7 @@ public class ContainsFunctionTest {
     private ContainsFunction containsFunction;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         containsFunction = new ContainsFunction();
     }
 

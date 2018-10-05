@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.runtime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -26,7 +25,9 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
+import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -42,13 +43,10 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
-    public static enum FEEL_TARGET {
+    public enum FEEL_TARGET {
         AST_INTERPRETED,
-        JAVA_TRANSLATED;
+        JAVA_TRANSLATED
     }
-
-    @Parameterized.Parameter(3)
-    public FEEL_TARGET testFEELTarget;
 
     private FEEL feel = null; // due to @Parameter injection by JUnit framework, need to defer FEEL init to actual instance method, to have the opportunity for the JUNit framework to initialize all the @Parameters
 
@@ -61,18 +59,23 @@ public abstract class BaseFEELTest {
     @Parameterized.Parameter(2)
     public FEELEvent.Severity severity;
 
+    @Parameterized.Parameter(3)
+    public FEEL_TARGET testFEELTarget;
+
+    @Parameterized.Parameter(4)
+    public boolean useExtendedProfile;
+
     @Test
     public void testExpression() {
-        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEEL.newInstance(Arrays.asList(new DoCompileFEELProfile())) : FEEL.newInstance();
-        FEELEventListener listener = mock( FEELEventListener.class );
+        final List<FEELProfile> profiles = getFEELProfilesForTests();
+        feel = FEEL.newInstance(profiles);
+        final FEELEventListener listener = mock(FEELEventListener.class );
         feel.addListener( listener );
-        feel.addListener( evt -> {
-            System.out.println(evt);
-        } );
+        feel.addListener(System.out::println);
         assertResult( expression, result );
 
         if( severity != null ) {
-            ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
+            final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class );
             verify( listener , atLeastOnce()).onEvent( captor.capture() );
             assertThat( captor.getValue().getSeverity(), is( severity ) );
         } else {
@@ -80,7 +83,7 @@ public abstract class BaseFEELTest {
         }
     }
 
-    protected void assertResult( String expression, Object result ) {
+    protected void assertResult(final String expression, final Object result ) {
         if( result == null ) {
             assertThat( "Evaluating: '" + expression + "'", feel.evaluate( expression ), is( nullValue() ) );
         } else if( result instanceof Class<?> ) {
@@ -90,14 +93,25 @@ public abstract class BaseFEELTest {
         }
     }
 
-    protected static List<Object[]> enrichWith4thParameter(final Object[][] cases) {
-        List<Object[]> results = new ArrayList<>();
-        for (Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED});
+    protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile) {
+        final List<Object[]> results = new ArrayList<>();
+        for (final Object[] c : cases) {
+            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
         }
-        for (Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED});
+        for (final Object[] c : cases) {
+            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
         }
         return results;
+    }
+
+    private List<FEELProfile> getFEELProfilesForTests() {
+        final List<FEELProfile> profiles = new ArrayList<>();
+        if (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) {
+            profiles.add(new DoCompileFEELProfile());
+        }
+        if (useExtendedProfile) {
+            profiles.add(new KieExtendedFEELProfile());
+        }
+        return profiles;
     }
 }

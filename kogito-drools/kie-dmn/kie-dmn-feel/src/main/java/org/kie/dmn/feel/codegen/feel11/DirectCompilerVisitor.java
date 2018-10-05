@@ -341,10 +341,12 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
             }
         } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
-            MethodCallExpr addCall = new MethodCallExpr(left.getExpression(), "add");
-            addCall.addArgument(new CastExpr(TYPE_BIG_DECIMAL, new EnclosedExpr(right.getExpression())));
+            Expression l = castToBigDecimal(left.getExpression());
+            Expression r = castToBigDecimal(right.getExpression());
+            MethodCallExpr addCall = new MethodCallExpr(l, "add");
+            addCall.addArgument(r);
             addCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(addCall, left.getExpression(), right.getExpression());
+            Expression result = groundToNullIfAnyIsNull(addCall, l, r);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         } else {
             // fallback support strategy; to avoid the below, will require to match all the possible conbination in InfixOpNode#add

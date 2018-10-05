@@ -27,22 +27,22 @@ public abstract class BaseInterpretedVsCompiledTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{ true, false };
+        return new Object[]{true, false};
     }
 
     private final boolean useExecModelCompiler;
 
-    public BaseInterpretedVsCompiledTest( boolean useExecModelCompiler ) {
+    public BaseInterpretedVsCompiledTest(final boolean useExecModelCompiler) {
         this.useExecModelCompiler = useExecModelCompiler;
     }
 
     @Before
     public void before() {
-        System.setProperty( ExecModelCompilerOption.PROPERTY_NAME, Boolean.toString( useExecModelCompiler ) );
+        System.setProperty(ExecModelCompilerOption.PROPERTY_NAME, Boolean.toString(useExecModelCompiler));
     }
 
     @After
     public void after() {
-        System.clearProperty( ExecModelCompilerOption.PROPERTY_NAME );
+        System.clearProperty(ExecModelCompilerOption.PROPERTY_NAME);
     }
 }

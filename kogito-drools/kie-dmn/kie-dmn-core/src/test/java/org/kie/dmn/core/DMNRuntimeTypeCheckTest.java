@@ -47,24 +47,28 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class DMNRuntimeTypeCheckTest {
+public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypeCheckTest.class);
 
     private static final KieServices ks = KieServices.Factory.get();
+
+    public DMNRuntimeTypeCheckTest(final boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
 
     @Test
     public void testDefaultNoTypeCheck() {
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
                                                                     ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         assertNoTypeCheck(runtime);
     }
 
     @Test
     public void testAskTypeCheckInKModule() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("true", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("true", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         assertPerformTypeCheck(runtime);
     }
 
@@ -74,26 +78,26 @@ public class DMNRuntimeTypeCheckTest {
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
                                                                     ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         assertPerformTypeCheck(runtime);
         System.clearProperty(RuntimeTypeCheckOption.PROPERTY_NAME);
     }
 
     @Test
     public void testExplicitDisableTypeCheckInKModule() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("false", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("false", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         assertNoTypeCheck(runtime);
     }
 
     @Test
     public void testUnreckonOptionTypeCheckInKModuleDefaultsToNoTypeCheck() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("boh", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("boh", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         assertNoTypeCheck(runtime);
     }
 
     @Test
     public void testEmptyOptionTypeCheckInKModuleDefaultsToNoTypeCheck() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         assertNoTypeCheck(runtime);
     }
 
@@ -102,54 +106,52 @@ public class DMNRuntimeTypeCheckTest {
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
                                                                     ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         ((DMNRuntimeImpl) runtime).setOption(new RuntimeTypeCheckOption(true));
         assertPerformTypeCheck(runtime);
     }
 
     @Test
     public void testExplicitDisableTypeCheckInKModuleButOverrideRuntime() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("false", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("false", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         ((DMNRuntimeImpl) runtime).setOption(new RuntimeTypeCheckOption(true));
         assertPerformTypeCheck(runtime);
     }
 
     @Test
     public void testAskTypeCheckInKModuleButOverrideRuntime() {
-        DMNRuntime runtime = getRuntimeWithTypeCheckOption("true", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
+        final DMNRuntime runtime = getRuntimeWithTypeCheckOption("true", ks.getResources().newClassPathResource("forTypeCheckTest.dmn", this.getClass()));
         ((DMNRuntimeImpl) runtime).setOption(new RuntimeTypeCheckOption(false));
         assertPerformTypeCheck(runtime);
     }
 
-    private DMNRuntime getRuntimeWithTypeCheckOption(String typeCheckKModuleOption, Resource... resources) {
+    private DMNRuntime getRuntimeWithTypeCheckOption(final String typeCheckKModuleOption, final Resource... resources) {
         final KieFileSystem kfs = ks.newKieFileSystem();
 
-        KieModuleModel kmm = ks.newKieModuleModel();
+        final KieModuleModel kmm = ks.newKieModuleModel();
         kmm.setConfigurationProperty(RuntimeTypeCheckOption.PROPERTY_NAME, typeCheckKModuleOption);
         kfs.writeKModuleXML(kmm.toXML());
-        for (Resource r : resources) {
+        for (final Resource r : resources) {
             kfs.write(r);
         }
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        Results results = kieBuilder.getResults();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final Results results = kieBuilder.getResults();
         assertThat(results.getMessages().toString(), results.hasMessages(org.kie.api.builder.Message.Level.ERROR), is(false));
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
-        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
-
-        return runtime;
+        return kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
     }
 
-    private void assertNoTypeCheck(DMNRuntime runtime) {
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
+    private void assertNoTypeCheck(final DMNRuntime runtime) {
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
                    dmnResult.getMessages(DMNMessage.Severity.ERROR)
@@ -157,23 +159,23 @@ public class DMNRuntimeTypeCheckTest {
                             .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())),
                    is(true));
 
-        DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
+        final DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
         assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(textPlusNumberDR.getResult(), is("The input number is: ciao"));
 
-        DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
+        final DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
         assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
     }
 
-    private void assertPerformTypeCheck(DMNRuntime runtime) {
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
+    private void assertPerformTypeCheck(final DMNRuntime runtime) {
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd", "forTypeCheckTest");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         assertThat("Should throw several errors, not only for 1 specific Decision: " + DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
                    dmnResult.getMessages(DMNMessage.Severity.ERROR)
@@ -181,11 +183,11 @@ public class DMNRuntimeTypeCheckTest {
                             .allMatch(m -> m.getSourceId().equals(dmnModel.getDecisionByName("hundred minus number").getId())),
                    is(false));
 
-        DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
+        final DMNDecisionResult textPlusNumberDR = dmnResult.getDecisionResultByName("text plus number");
         assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
 
-        DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
-        assertThat(textPlusNumberDR.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
+        final DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
+        assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.SKIPPED)); // dependency failed type check
     }
 
     @Test
@@ -197,13 +199,13 @@ public class DMNRuntimeTypeCheckTest {
         final DMNModel dmnModel = runtime.getModel("<wrong>", "<wrong>");
         // please notice an end-user of the API might not having checked the result of the previous call is not a null.
 
-        DMNContext emptyContext = DMNFactory.newContext();
+        final DMNContext emptyContext = DMNFactory.newContext();
         try {
-            DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
             LOG.debug("{}", dmnResult);
 
             fail("");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertTrue(e.getMessage().contains("'model'"));
             /* java.lang.NullPointerException: Kie DMN API parameter 'model' cannot be null.
                 at java.util.Objects.requireNonNull(Objects.java:290)

@@ -84,6 +84,6 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"10 instance of any", Boolean.TRUE , null},
                 {"duration instance of function", Boolean.TRUE , null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

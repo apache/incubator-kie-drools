@@ -18,6 +18,7 @@ package org.kie.dmn.core;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 import org.junit.Test;
@@ -41,7 +42,7 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNInputRuntimeTest( boolean useExecModelCompiler ) {
+    public DMNInputRuntimeTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -152,7 +153,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         testInputStringNotAllowedValuesEvaluateAll(new Object());
     }
 
-    public void testInputStringNotAllowedValuesEvaluateAll(final Object inputValue) {
+    private void testInputStringNotAllowedValuesEvaluateAll(final Object inputValue) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
@@ -245,13 +246,13 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         final DMNContext ctx1 = runtime.newContext();
-        ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Arrays.asList("Golf"))));
+        ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));
         final DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult1.getMessages() ), dmnResult1.hasErrors(), is( false ) );
         assertThat( dmnResult1.getContext().get( "MyDecision" ), is( "The Person P1 likes 1 thing(s)." ) );
 
         final DMNContext ctx2 = runtime.newContext();
-        ctx2.set("p1", prototype(entry("Name", "P2"), entry("Interests", Arrays.asList("x"))));
+        ctx2.set("p1", prototype(entry("Name", "P2"), entry("Interests", Collections.singletonList("x"))));
         final DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult2.getMessages() ), dmnResult2.hasErrors(), is( true ) );
         assertThat( dmnResult2.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );

@@ -33,39 +33,45 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-public class DMNProfilesTest {
+public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
+
+    public DMNProfilesTest(final boolean useExecModelCompiler) {
+        super(useExecModelCompiler);
+    }
+
     @Test
     public void testJust47() {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 
-        KieModuleModel kmm = ks.newKieModuleModel();
+        final KieModuleModel kmm = ks.newKieModuleModel();
         kmm.setConfigurationProperty("org.kie.dmn.profiles.Just47DMNProfile", Just47DMNProfile.class.getCanonicalName());
         kfs.writeKModuleXML(kmm.toXML());
         kfs.write(ks.getResources().newClassPathResource("just_47.dmn", this.getClass()));
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        Results results = kieBuilder.getResults();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final Results results = kieBuilder.getResults();
         assertThat(results.getMessages().toString(), results.hasMessages(org.kie.api.builder.Message.Level.ERROR), is(false));
 
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
 
-        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ae46e75f-efc5-48f8-8e82-4f48bf16afc0", "just 47");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ae46e75f-efc5-48f8-8e82-4f48bf16afc0", "just 47");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNContext context = DMNFactory.newContext();
+        final DMNContext context = DMNFactory.newContext();
         context.set("number", 123.123456d);
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
-        DMNContext result = dmnResult.getContext();
+        final DMNContext result = dmnResult.getContext();
         assertThat(result.get("decision result"), is(new BigDecimal(47)));
     }
 }

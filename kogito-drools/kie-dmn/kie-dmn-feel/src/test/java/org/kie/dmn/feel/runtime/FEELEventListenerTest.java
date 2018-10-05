@@ -16,13 +16,13 @@
 
 package org.kie.dmn.feel.runtime;
 
-import static org.hamcrest.Matchers.is;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
+
+import static org.hamcrest.Matchers.is;
 
 public class FEELEventListenerTest {
 
@@ -37,7 +37,7 @@ public class FEELEventListenerTest {
         testVariable = null;
         feel = FEEL.newInstance();
         feel.addListener(event -> testVariable = LISTENER_OUTPUT);
-        feel.addListener( event -> System.out.println( event ) );
+        feel.addListener(System.out::println);
         feel.addListener( (evt) -> { if (evt.getSeverity() == Severity.ERROR) System.err.println(evt); } );
     }
 

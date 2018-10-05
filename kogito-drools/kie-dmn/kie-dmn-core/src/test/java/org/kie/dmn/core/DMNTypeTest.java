@@ -17,6 +17,7 @@
 package org.kie.dmn.core;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,42 +47,42 @@ public class DMNTypeTest {
         // DROOLS-2147
         final String testNS = "testDROOLS2147";
         
-        Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
-        DMNType dmnPerson = typeRegistry.registerType(new CompositeTypeImpl(testNS, "person", null, false, personPrototype, null, null));
-        DMNType dmnPersonList = typeRegistry.registerType(new CompositeTypeImpl(testNS, "personList", null, true, null, dmnPerson, null));
-        DMNType dmnListOfPersonsGrouped = typeRegistry.registerType(new CompositeTypeImpl(testNS, "groups", null, true, null, dmnPersonList, null));
+        final Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
+        final DMNType dmnPerson = typeRegistry.registerType(new CompositeTypeImpl(testNS, "person", null, false, personPrototype, null, null));
+        final DMNType dmnPersonList = typeRegistry.registerType(new CompositeTypeImpl(testNS, "personList", null, true, null, dmnPerson, null));
+        final DMNType dmnListOfPersonsGrouped = typeRegistry.registerType(new CompositeTypeImpl(testNS, "groups", null, true, null, dmnPersonList, null));
 
 
-        Map<String, Object> instanceBob = prototype(entry("name", "Bob"), entry("age", 42));
-        Map<String, Object> instanceJohn = prototype(entry("name", "John"), entry("age", 47));
+        final Map<String, Object> instanceBob = prototype(entry("name", "Bob"), entry("age", 42));
+        final Map<String, Object> instanceJohn = prototype(entry("name", "John"), entry("age", 47));
 
-        Map<String, Object> instanceNOTaPerson = prototype(entry("name", "NOTAPERSON"));
+        final Map<String, Object> instanceNOTaPerson = prototype(entry("name", "NOTAPERSON"));
 
         assertTrue(dmnPerson.isAssignableValue(instanceBob));
         assertTrue(dmnPerson.isAssignableValue(instanceJohn));
 
         assertFalse(dmnPerson.isAssignableValue(instanceNOTaPerson));
 
-        List<Map<String, Object>> onlyBob = Arrays.asList(instanceBob);
-        List<Map<String, Object>> bobANDjohn = Arrays.asList(instanceBob, instanceJohn);
-        List<Map<String, Object>> johnANDnotAPerson = Arrays.asList(instanceJohn, instanceNOTaPerson);
+        final List<Map<String, Object>> onlyBob = Collections.singletonList(instanceBob);
+        final List<Map<String, Object>> bobANDjohn = Arrays.asList(instanceBob, instanceJohn);
+        final List<Map<String, Object>> johnANDnotAPerson = Arrays.asList(instanceJohn, instanceNOTaPerson);
 
         assertTrue(dmnPersonList.isAssignableValue(onlyBob));
         assertTrue(dmnPersonList.isAssignableValue(bobANDjohn));
         assertFalse(dmnPersonList.isAssignableValue(johnANDnotAPerson));
         assertTrue(dmnPersonList.isAssignableValue(instanceBob)); // because accordingly to FEEL spec, bob=[bob]
         
-        List<List<Map<String, Object>>> the2ListsThatContainBob = Arrays.asList(onlyBob, bobANDjohn);
+        final List<List<Map<String, Object>>> the2ListsThatContainBob = Arrays.asList(onlyBob, bobANDjohn);
         assertTrue(dmnListOfPersonsGrouped.isAssignableValue(the2ListsThatContainBob));
 
-        List<List<Map<String, Object>>> the3Lists = Arrays.asList(onlyBob, bobANDjohn, johnANDnotAPerson);
+        final List<List<Map<String, Object>>> the3Lists = Arrays.asList(onlyBob, bobANDjohn, johnANDnotAPerson);
         assertFalse(dmnListOfPersonsGrouped.isAssignableValue(the3Lists));
 
-        List<Object> groupsOfBobAndBobHimself = Arrays.asList(instanceBob, onlyBob, bobANDjohn);
+        final List<Object> groupsOfBobAndBobHimself = Arrays.asList(instanceBob, onlyBob, bobANDjohn);
         assertTrue(dmnListOfPersonsGrouped.isAssignableValue(groupsOfBobAndBobHimself)); // [bob, [bob], [bob, john]] because for the property of FEEL spec a=[a] is equivalent to [[bob], [bob], [bob, john]]
 
-        DMNType listOfGroups = typeRegistry.registerType(new CompositeTypeImpl(testNS, "listOfGroups", null, true, null, dmnListOfPersonsGrouped, null));
-        List<Object> groupsContainingBobPartitionedBySize = Arrays.asList(the2ListsThatContainBob, Arrays.asList(bobANDjohn));
+        final DMNType listOfGroups = typeRegistry.registerType(new CompositeTypeImpl(testNS, "listOfGroups", null, true, null, dmnListOfPersonsGrouped, null));
+        final List<Object> groupsContainingBobPartitionedBySize = Arrays.asList(the2ListsThatContainBob, Collections.singletonList(bobANDjohn));
         assertTrue(listOfGroups.isAssignableValue(groupsContainingBobPartitionedBySize)); // [ [[B], [B, J]], [[B, J]] ]
     }
 
@@ -90,11 +91,11 @@ public class DMNTypeTest {
         // DROOLS-2357
         final String testNS = "testDROOLS2357";
 
-        FEEL feel = FEEL.newInstance();
-        DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), FEEL_STRING, BuiltInType.STRING));
+        final FEEL feel = FEEL.newInstance();
+        final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), FEEL_STRING, BuiltInType.STRING));
 
         assertTrue(tDecision1.isAssignableValue("a"));
-        assertTrue(tDecision1.isAssignableValue(Arrays.asList("a")));
+        assertTrue(tDecision1.isAssignableValue(Collections.singletonList("a")));
 
         assertFalse(tDecision1.isAssignableValue("z"));
 

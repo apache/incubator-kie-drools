@@ -42,7 +42,7 @@ public class CodeFunctionTest {
     private CodeFunction codeFunction;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         codeFunction = new CodeFunction();
     }
 

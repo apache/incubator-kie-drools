@@ -88,6 +88,6 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{Principal: 12, Rate: 1, Fees: 1, Term: -1, R: (Principal*Rate/12)/(1-(1+Rate/12)**-Term)+Fees}.R", new BigDecimal("-11.00000000000000000000000000000005"), null}
 
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }

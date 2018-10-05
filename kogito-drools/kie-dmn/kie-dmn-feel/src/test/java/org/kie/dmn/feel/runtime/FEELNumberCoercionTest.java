@@ -15,11 +15,6 @@
  */
 package org.kie.dmn.feel.runtime;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
-
 import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
@@ -29,14 +24,19 @@ import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
+
 public class FEELNumberCoercionTest {
     private final FEEL feel = FEEL.newInstance();
     
-    private Object evaluateInfix(Object x, InfixOperator op, Object y) {
-        Map<String, Object> inputVariables = new HashMap<>();
+    private Object evaluateInfix(final Object x, final InfixOperator op, final Object y) {
+        final Map<String, Object> inputVariables = new HashMap<>();
         inputVariables.put("x", x);
         inputVariables.put("y", y);
-        String expression = "x " + op.symbol + " y";
+        final String expression = "x " + op.symbol + " y";
         System.out.println(expression);
         return feel.evaluate(expression, inputVariables);
     }
@@ -54,15 +54,15 @@ public class FEELNumberCoercionTest {
     }
     
     @SafeVarargs
-    private final Object evaluate(String expression, Map.Entry<String, ?>... vars) {
-        HashMap<String, Object> inputVariables = new HashMap<>();
-        for (Map.Entry<String, ?> v : vars) {
+    private final Object evaluate(final String expression, final Map.Entry<String, ?>... vars) {
+        final HashMap<String, Object> inputVariables = new HashMap<>();
+        for (final Map.Entry<String, ?> v : vars) {
             inputVariables.put(v.getKey(), v.getValue());
         }
         return feel.evaluate(expression, inputVariables);
     }
     
-    private static Map.Entry<String, Object> var(String name, Object value) {
+    private static Map.Entry<String, Object> var(final String name, final Object value) {
         return new SimpleEntry<>(name, value);
     }
     
@@ -73,8 +73,8 @@ public class FEELNumberCoercionTest {
         assertThat( ((Map) evaluate("{ myf : function( v1, v2 ) ceiling(v1), invoked: myf(v2: false, v1: x) }", var("x", 1.01d) )).get("invoked"), is( getBigDecimalOrNull( 2d ) ) );
         assertThat( ((Map) evaluate("{ myf : function( v1, v2 ) v1, invoked: myf(v2: false, v1: x) }", var("x", 1.01d) )).get("invoked"), is( getBigDecimalOrNull( 1.01d ) ) );
 
-        assertThat( evaluate(" x.y ", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 1.01d ) ) );
-        assertThat( evaluate("ceiling( x.y )", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 2d ) ) );
+        assertThat( evaluate(" x.y ", var("x", new HashMap<String, Object>(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 1.01d ) ) );
+        assertThat( evaluate("ceiling( x.y )", var("x", new HashMap<String, Object>(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 2d ) ) );
     }
 
     @Test

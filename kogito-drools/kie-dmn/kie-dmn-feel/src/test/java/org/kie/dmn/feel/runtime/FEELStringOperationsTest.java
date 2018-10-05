@@ -35,7 +35,7 @@ public class FEELStringOperationsTest extends BaseFEELTest {
                 { "\"string with \\\"quotes\\\"\"", "string with \"quotes\"", null},
                 { "\"a\\b\\t\\n\\f\\r\\\"\\'\\\\\\u2202b\"", "a\b\t\n\f\r\"\'\\\u2202b", null}
         };
-        return enrichWith4thParameter(cases);
+        return addAdditionalParameters(cases, false);
     }
 }
 

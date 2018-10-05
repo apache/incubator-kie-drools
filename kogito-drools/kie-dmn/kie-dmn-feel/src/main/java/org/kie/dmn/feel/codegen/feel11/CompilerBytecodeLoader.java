@@ -60,12 +60,15 @@ public class CompilerBytecodeLoader {
         }
 
         public Class<?> load(MemoryFileSystem pStore, String string) {
-            Map<String, Class<?>> loaded = new HashMap<>();
+            Class<?> loadedClass = null;
             for (Entry<String, byte[]> kv : pStore.getMap().entrySet() ) {
-                String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
-                loaded.put(className, defineClass(className, kv.getValue(), 0, kv.getValue().length));
+                final String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
+                final Class<?> definedClass = defineClass(className, kv.getValue(), 0, kv.getValue().length);
+                if (string.equals(className)) {
+                    loadedClass = definedClass;
+                }
             }
-            return (Class<?>) loaded.get(string);
+            return loadedClass;
         }
 
     }
