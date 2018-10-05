@@ -44,4 +44,10 @@ public class BooleanNode
     public Type getResultType() {
         return BuiltInType.BOOLEAN;
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
 }

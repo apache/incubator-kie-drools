@@ -16,29 +16,48 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ListNode
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+
+public class UnaryTestListNode
         extends BaseNode {
 
-    private List<BaseNode> elements;
-
-    public ListNode(ParserRuleContext ctx) {
-        super( ctx );
-        elements = new ArrayList<>();
+    public enum State {
+        Positive,
+        Negated
     }
 
-    public ListNode(ParserRuleContext ctx, List<BaseNode> elements) {
-        super( ctx );
+    private List<BaseNode> elements;
+    private State state;
+    private BaseNode notNode;
+
+    public UnaryTestListNode(ParserRuleContext ctx) {
+        this(ctx, new ArrayList<>(), State.Positive);
+    }
+
+    public UnaryTestListNode(ParserRuleContext ctx, List<BaseNode> elements, State state) {
+        super(ctx);
         this.elements = elements;
+        this.state = state;
+        if (isNegated()) {
+            notNode = ASTBuilderFactory.newUnaryTestNode(ctx, "not",
+                                                         ASTBuilderFactory.newListNode(ctx, elements));
+        }
+    }
+
+    public boolean isNegated() {
+        return state == State.Negated;
+    }
+
+    public State getState() {
+        return state;
     }
 
     public List<BaseNode> getElements() {
@@ -51,7 +70,11 @@ public class ListNode
 
     @Override
     public List evaluate(EvaluationContext ctx) {
-        return elements.stream().map( e -> e != null ? e.evaluate( ctx ) : null ).collect( Collectors.toList() );
+        if (notNode != null) {
+            return Collections.singletonList(notNode.evaluate(ctx));
+        } else {
+            return elements.stream().map(e -> e != null ? e.evaluate(ctx) : null).collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -61,12 +84,11 @@ public class ListNode
 
     @Override
     public ASTNode[] getChildrenNode() {
-        return elements.toArray( new ASTNode[elements.size()] );
+        return elements.toArray(new ASTNode[elements.size()]);
     }
 
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
-
 }

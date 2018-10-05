@@ -62,4 +62,10 @@ public class NamedParameterNode
     public ASTNode[] getChildrenNode() {
         return new ASTNode[] { name, expression };
     }
+
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

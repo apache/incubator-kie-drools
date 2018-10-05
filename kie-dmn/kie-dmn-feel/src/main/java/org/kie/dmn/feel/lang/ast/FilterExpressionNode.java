@@ -126,4 +126,8 @@ public class FilterExpressionNode
         return new ASTNode[] { expression, filter };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

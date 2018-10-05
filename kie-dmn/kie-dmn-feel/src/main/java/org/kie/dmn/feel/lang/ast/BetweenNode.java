@@ -101,4 +101,9 @@ public class BetweenNode
         return new ASTNode[] { value, start, end };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
 }

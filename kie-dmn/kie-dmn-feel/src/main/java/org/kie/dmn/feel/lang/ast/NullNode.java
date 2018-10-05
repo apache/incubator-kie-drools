@@ -30,4 +30,9 @@ public class NullNode
     public Object evaluate(EvaluationContext ctx) {
         return null;
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

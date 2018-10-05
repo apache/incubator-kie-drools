@@ -51,6 +51,10 @@ public class IterationContextNode
         return expression;
     }
 
+    public BaseNode getRangeEndExpr() {
+        return rangeEndExpr;
+    }
+
     public void setExpression(BaseNode expression) {
         this.expression = expression;
     }
@@ -74,6 +78,11 @@ public class IterationContextNode
             return new ASTNode[] { name, expression, rangeEndExpr };
         }
         return new ASTNode[] { name, expression };
+    }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 
 }

@@ -45,4 +45,7 @@ public interface ASTNode {
     Object evaluate(EvaluationContext ctx);
 
     ASTNode[] getChildrenNode();
+
+    <T> T accept(Visitor<T> v);
+
 }

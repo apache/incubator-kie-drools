@@ -65,4 +65,10 @@ public class NameDefNode
     public String evaluate(EvaluationContext ctx) {
         return EvalHelper.normalizeVariableName( getText() );
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
 }

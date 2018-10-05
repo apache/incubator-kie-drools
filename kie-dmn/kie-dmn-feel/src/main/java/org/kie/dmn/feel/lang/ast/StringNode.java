@@ -38,4 +38,9 @@ public class StringNode
     public Type getResultType() {
         return BuiltInType.STRING;
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

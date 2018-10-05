@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +176,7 @@ public class CompiledFEELSemanticMappings {
     }
 
     public static Boolean coerceToBoolean(EvaluationContext ctx, Object value) {
-        if (value instanceof Boolean) return (Boolean) value;
+        if (value == null || value instanceof Boolean) return (Boolean) value;
 
         ctx.notifyEvt( () -> new ASTEventBase(
                 FEELEvent.Severity.ERROR,
@@ -317,8 +318,13 @@ public class CompiledFEELSemanticMappings {
 
     // to ground to null if right = 0
     public static Object div(Object left, BigDecimal right) {
-        return right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
+        return right == null || right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
     }
+
+    public static Object pow(Object left, Object right) {
+        return InfixOpNode.math( left, right, null, (l, r) -> l.pow(r.intValue(), MathContext.DECIMAL128 ) );
+    }
+
 
     /**
      * FEEL spec Table 42 and derivations
