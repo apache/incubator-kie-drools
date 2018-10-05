@@ -742,4 +742,16 @@ public class SpreadsheetCompilerUnitTest {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
     }
 
+    @Test
+    public void testLhsOrder() {
+        // DROOLS-3080
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile("/data/LhsOrder.xls",
+                                       InputType.XLS);
+
+        Assertions.assertThat(drl.split("\n"))
+                .as("Lhs order is wrong")
+                .containsSequence("accumulate(Person(name == \"John\", $a : age); $max:max($a))",
+                                  "$p:Person(name == \"John\", age == $max)");
+    }
 }
