@@ -16,8 +16,15 @@
 package org.drools.compiler.kproject.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.api.builder.model.ChannelModel;
@@ -28,11 +35,6 @@ import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class KieSessionModelImpl
         implements
@@ -52,6 +54,7 @@ public class KieSessionModelImpl
     private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
     private final List<ChannelModel>         channels = new ArrayList<ChannelModel>();
+    private       Map<String, String>        calendars;
 
     private boolean                          isDefault = false;
 
@@ -197,7 +200,18 @@ public class KieSessionModelImpl
     private void addChannelModel(ChannelModel channel) {
     	channels.add(channel);
     }
-    
+
+    public KieSessionModel addCalendar(String name, String type) {
+        if (calendars == null) {
+            calendars = new HashMap<>();
+        }
+        calendars.put(name, type);
+        return this;
+    }
+
+    public Map<String, String> getCalendars() {
+        return calendars == null ? Collections.emptyMap() : calendars;
+    }
 
     public String getConsoleLogger() {
         return consoleLogger;
@@ -264,6 +278,7 @@ public class KieSessionModelImpl
 
             writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandlerModels());
             writeObjectList(writer, context, "channels", "channel", kSession.getChannelModels());
+            writeMap(writer, context, "calendars", "calendar", "name", "type", kSession.getCalendars());
 
             if (!kSession.getListenerModels().isEmpty()) {
                 writer.startNode("listeners");
@@ -323,6 +338,8 @@ public class KieSessionModelImpl
                             wih.setKSession( kSession );
                             kSession.addWorkItemHandelerModel(wih);
                         }
+                    } else if ("calendars".equals(name)) {
+                        kSession.calendars = readMap(reader, context, "name", "type");
                     } else if ( "channels".equals( name ) ) {
                         List<ChannelModelImpl> channels = readObjectList(reader, context, ChannelModelImpl.class);
                         for (ChannelModelImpl channel : channels) {

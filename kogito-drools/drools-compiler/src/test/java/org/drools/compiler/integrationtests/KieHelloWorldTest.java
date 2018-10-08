@@ -594,4 +594,83 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
             assertTrue( e.getMessage().contains( "notexistingKB" ) );
         }
     }
+
+    @Test
+    public void testDeclarativeCalendars() {
+        String weekendCalendarSource =
+                "package org.mypackage;\n" +
+                "\n" +
+                "public class WeekendCalendar implements org.kie.api.time.Calendar {\n" +
+                "        @Override\n" +
+                "        public boolean isTimeIncluded( long timestamp ) {\n" +
+                "            java.util.Calendar c = java.util.Calendar.getInstance();\n" +
+                "            c.setTimeInMillis(timestamp);\n" +
+                "            final int day = c.get(java.util.Calendar.DAY_OF_WEEK);\n" +
+                "            return day == java.util.Calendar.SATURDAY || day == java.util.Calendar.SUNDAY;\n" +
+                "        }\n" +
+                "    }";
+
+        String weekdayCalendarSource =
+                "package org.mypackage;\n" +
+                "\n" +
+                "public class WeekdayCalendar implements org.kie.api.time.Calendar {\n" +
+                "        @Override\n" +
+                "        public boolean isTimeIncluded( long timestamp ) {\n" +
+                "            java.util.Calendar c = java.util.Calendar.getInstance();\n" +
+                "            c.setTimeInMillis(timestamp);\n" +
+                "            final int day = c.get(java.util.Calendar.DAY_OF_WEEK);\n" +
+                "            return day != java.util.Calendar.SATURDAY && day != java.util.Calendar.SUNDAY;\n" +
+                "        }\n" +
+                "    }";
+
+        String drl =
+                "package org.mypackage;\n" +
+                "\n" +
+                "global java.util.List list\n" +
+                " \n" +
+                "rule \"weekend\"\n" +
+                "    calendars \"weekend\"\n" +
+                "    \n" +
+                "    when\n" +
+                "    then\n" +
+                "        list.add(\"weekend\");\n" +
+                "end\n" +
+                " \n" +
+                "rule \"weekday\"\n" +
+                "    calendars \"weekday\"\n" +
+                "\n" +
+                "    when\n" +
+                "    then\n" +
+                "       list.add(\"weekday\");\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "hello-calendar", "1.0" );
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+
+        kproj.newKieBaseModel().newKieSessionModel("KSession1")
+                .addCalendar( "weekend", "org.mypackage.WeekendCalendar" )
+                .addCalendar( "weekday", "org.mypackage.WeekdayCalendar" )
+                .setDefault( true );
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .generateAndWritePomXML(releaseId)
+                .write("src/main/resources/org/mypackage/r1.drl", drl)
+                .write("src/main/java/org/mypackage/WeekendCalendar.java", weekendCalendarSource)
+                .write("src/main/java/org/mypackage/WeekdayCalendar.java", weekdayCalendarSource)
+                .writeKModuleXML(kproj.toXML());
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
+
+        ArrayList<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals(1, list.size());
+    }
 }

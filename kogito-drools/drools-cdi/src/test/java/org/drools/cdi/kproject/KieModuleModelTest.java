@@ -16,6 +16,8 @@
 
 package org.drools.cdi.kproject;
 
+import java.util.List;
+
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
@@ -35,10 +37,11 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import java.util.List;
-
 import static org.drools.compiler.kproject.models.KieModuleModelImpl.fromXML;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class KieModuleModelTest {
 
@@ -63,6 +66,7 @@ public class KieModuleModelTest {
                 .setClockType(ClockTypeOption.get("realtime"))
                 .setBeliefSystem(BeliefSystemTypeOption.get("jtms"))
                 .setFileLogger("drools.log", 10, true)
+                .addCalendar("monday", "org.domain.Monday")
                 .setDefault(true);
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
@@ -112,6 +116,7 @@ public class KieModuleModelTest {
         assertEquals(KieSessionType.STATEFUL, kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
         assertEquals(BeliefSystemTypeOption.get("jtms"), kieSessionModelXML.getBeliefSystem());
+        assertEquals("org.domain.Monday", kieSessionModelXML.getCalendars().get("monday"));
 
         FileLoggerModel fileLogger = kieSessionModelXML.getFileLogger();
         assertEquals("drools.log", fileLogger.getFile());

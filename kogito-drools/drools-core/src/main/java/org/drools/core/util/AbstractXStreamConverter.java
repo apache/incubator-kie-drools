@@ -15,13 +15,16 @@
 
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-
-import java.util.*;
 
 public abstract class AbstractXStreamConverter implements Converter {
     private final Class type;
@@ -87,12 +90,16 @@ public abstract class AbstractXStreamConverter implements Converter {
     }
 
     protected void writePropertyMap(HierarchicalStreamWriter writer, MarshallingContext context, String mapName, Map<String, String> map) {
+        writeMap(writer, context, mapName, "property", "key", "value", map);
+    }
+
+    protected void writeMap(HierarchicalStreamWriter writer, MarshallingContext context, String mapName, String itemName, String keyName, String valueName, Map<String, String> map) {
         if (map != null && !map.isEmpty()) {
             writer.startNode(mapName);
             for (Map.Entry<String, String> entry : map.entrySet()) {
-                writer.startNode("property");
-                writer.addAttribute("key", entry.getKey());
-                writer.addAttribute("value", entry.getValue());
+                writer.startNode(itemName);
+                writer.addAttribute(keyName, entry.getKey());
+                writer.addAttribute(valueName, entry.getValue());
                 writer.endNode();
             }
             writer.endNode();
@@ -132,10 +139,14 @@ public abstract class AbstractXStreamConverter implements Converter {
     }
 
     protected Map<String, String> readPropertyMap(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        return readMap(reader, context, "key", "value");
+    }
+
+    protected Map<String, String> readMap(HierarchicalStreamReader reader, UnmarshallingContext context, String key, String value) {
         Map<String, String> map = new HashMap<String, String>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            map.put(reader.getAttribute("key"), reader.getAttribute("value"));
+            map.put(reader.getAttribute(key), reader.getAttribute(value));
             reader.moveUp();
         }
         return map;
