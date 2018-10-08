@@ -61,6 +61,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     private RuleUnitFactory ruleUnitFactory;
     private RuleUnit currentRuleUnit;
+    private RuleUnitDescr currentRuDescr;
 
     private AtomicBoolean suspended = new AtomicBoolean( false );
 
@@ -201,11 +202,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     public int internalExecuteUnit( RuleUnit ruleUnit ) {
-        RuleUnitDescr ruDescr = bindRuleUnit( ruleUnit );
+        currentRuDescr = bindRuleUnit( ruleUnit );
         try {
             return session.fireAllRules();
         } finally {
-            unbindRuleUnit(ruDescr);
+            unbindCurrentRuleUnit();
         }
     }
 
@@ -214,14 +215,14 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     public void runUntilHalt( RuleUnit ruleUnit ) {
-        bindRuleUnit( ruleUnit );
+        currentRuDescr = bindRuleUnit( ruleUnit );
         session.fireUntilHalt();
     }
 
     @Override
     public void halt() {
         session.halt();
-        unbindRuleUnit(session.kBase.getRuleUnitRegistry().getRuleUnitDescr( currentRuleUnit ));
+        unbindCurrentRuleUnit();
     }
 
     @Override
@@ -241,7 +242,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
             agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));
 
             unitsStack.push( currentRuleUnit );
-            bindRuleUnit( ruleUnit );
+            currentRuDescr = bindRuleUnit( ruleUnit );
         } else {
             for (int i = 0; i < unitsStack.size(); i++) {
                 if (unitsStack.get(i).getClass().getName().equals( activateUnitName )) {
@@ -285,11 +286,12 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         return ruDescr;
     }
 
-    private void unbindRuleUnit( RuleUnitDescr ruDescr ) {
-        ruDescr.unbindDataSources( session, currentRuleUnit );
+    private void unbindCurrentRuleUnit() {
+        currentRuDescr.unbindDataSources( session, currentRuleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( null );
         currentRuleUnit.onEnd();
         currentRuleUnit = null;
+        currentRuDescr = null;
         suspended.set( true );
     }
 

@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.rule.UnitVar;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
@@ -55,8 +57,10 @@ import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.utils.KieHelper;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
 import static org.junit.Assert.assertEquals;
@@ -2176,5 +2180,171 @@ public class RuleUnitTest {
         public void setPersons(final DataSource<Person> persons) {
             this.persons = persons;
         }
+    }
+
+    public static class MainHouseUnit implements RuleUnit {
+
+        private DataSource<Date> now;
+        private DataSource<String> part;
+        private DataSource<Boolean> switch1;
+
+        public MainHouseUnit() {
+            super();
+        }
+
+        public DataSource<Date> getNow() {
+            return now;
+        }
+
+        public DataSource<String> getPart() {
+            return part;
+        }
+
+        public DataSource<Boolean> getSwitch1() {
+            return switch1;
+        }
+
+    }
+
+    public static class DayPartUnit implements RuleUnit {
+
+        private DataSource<Date> now;
+        private DataSource<Date> aScopedDS;
+        private DataSource<String> part;
+
+        public DayPartUnit() {
+            super();
+        }
+
+        public DataSource<Date> getNow() {
+            return now;
+        }
+
+        public DataSource<String> getPart() {
+            return part;
+        }
+
+        public DataSource<Date> getaScopedDS() {
+            return aScopedDS;
+        }
+
+    }
+
+    public static class SwitchUnit implements RuleUnit {
+
+        private DataSource<String> part;
+        private DataSource<Boolean> switch1;
+
+        public SwitchUnit() {
+            super();
+        }
+
+        public DataSource<String> getPart() {
+            return part;
+        }
+
+        public DataSource<Boolean> getSwitch1() {
+            return switch1;
+        }
+
+    }
+
+    private KieBase kieBaseMainGuardSubunitRunBackToMain(boolean currentStyle) {
+        // use "hammer" approach with external multiple call to fire, or "drools.run()" approach in rules.
+        System.out.println("Running with style: " + currentStyle);
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName(MainHouseUnit.class) + "\n" +
+                "import " + DayPartUnit.class.getCanonicalName() + "\n" +
+                "import " + SwitchUnit.class.getCanonicalName() + "\n" +
+                "rule GuardDayPartUnit when\n" +
+                "    Object() from now \n" +
+                "    not( String() from part ) \n" +
+                "then\n" +
+                "    System.out.println(\"Guarding DayPartUnit\");\n" +
+                "    drools.guard(DayPartUnit.class);\n" +
+                "end\n" +
+                "rule GuardSwitchUnit when\n" +
+                "    String() from part \n" +
+                "    not( Boolean() from switch1 ) \n" +
+                "then\n" +
+                "    System.out.println(\"Guarding SwitchUnit\");\n" +
+                "    drools.guard(SwitchUnit.class);\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName(DayPartUnit.class) + "\n" +
+                "import " + MainHouseUnit.class.getCanonicalName() + "\n" +
+                "rule doDayPartUnit when\n" +
+                "    $n : Object() from now \n" +
+                "then\n" +
+                "    System.out.println(\"Inside DayPartUnit: \"+$n);\n" +
+                "    part.insert(\"Morning\");\n" +
+                (currentStyle ? "//" : "") + " drools.run(MainHouseUnit.class);\n" +
+                "end\n";
+
+        String drl3 = "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName(SwitchUnit.class) + "\n" +
+                "import " + MainHouseUnit.class.getCanonicalName() + "\n" +
+                "rule doSwitchUnit when\n" +
+                "    $n : String() from part \n" +
+                "then\n" +
+                "    System.out.println(\"Inside SwitchUnit: \"+$n);\n" +
+                "    switch1.insert(true);\n" +
+                (currentStyle ? "//" : "") + " drools.run(MainHouseUnit.class);\n" +
+                "end\n";
+
+        return KieBaseUtil.getKieBaseFromKieModuleFromDrl("rule-unit-test", kieBaseTestConfiguration, drl1, drl2, drl3);
+    }
+
+    public static class EmptyUnit implements RuleUnit {
+
+        public EmptyUnit() {
+            // no-args constructor.
+        }
+    }
+
+    public static class StringDSUnit implements RuleUnit {
+
+        private DataSource<String> strings;
+
+        public StringDSUnit() {
+            // no-args constructor.
+        }
+
+        public DataSource<String> getStrings() {
+            return strings;
+        }
+
+    }
+
+    @Test
+    public void testGuardAndRunBack() {
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName(EmptyUnit.class) + "\n" +
+                "import " + StringDSUnit.class.getCanonicalName() + "\n" +
+                "rule RGuard when\n" +
+                "then\n" +
+                "    System.out.println(\"Guarding StringDSUnit\");\n" +
+                "    drools.guard(StringDSUnit.class);\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName(StringDSUnit.class) + "\n" +
+                "import " + EmptyUnit.class.getCanonicalName() + "\n" +
+                "rule RGoBack when\n" +
+                "then\n" +
+                "    System.out.println(\"Inside StringDSUnit: \");\n" +
+                "    drools.run(EmptyUnit.class);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent(drl1, ResourceType.DRL)
+                .addContent(drl2, ResourceType.DRL)
+                .build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+
+        executor.newDataSource("strings", "abc", "xyz");
+
+        RuleUnit emptyUnit = new EmptyUnit();
+        executor.run(emptyUnit);
     }
 }
