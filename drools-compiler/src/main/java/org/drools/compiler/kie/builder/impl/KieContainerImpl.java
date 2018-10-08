@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.management.ObjectName;
 
+import javax.management.ObjectName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -65,6 +65,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -527,6 +528,7 @@ public class KieContainerImpl
             wireSessionComponents( kSessionModel, kSession );
         }
         registerLoggers(kSessionModel, kSession);
+        registerCalendars(kSessionModel, kSession);
 
         ((StatefulKnowledgeSessionImpl) kSession).initMBeans(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionModel.getName());
 
@@ -545,6 +547,17 @@ public class KieContainerImpl
                 kieLoggers.newThreadedFileLogger(kSession, fileLogger.getFile(), fileLogger.getInterval());
             } else {
                 kieLoggers.newFileLogger(kSession, fileLogger.getFile());
+            }
+        }
+    }
+
+    private void registerCalendars(KieSessionModelImpl kSessionModel, KieSession kSession) {
+        for (Map.Entry<String, String> entry : kSessionModel.getCalendars().entrySet()) {
+            try {
+                Calendar calendar = (Calendar) getClassLoader().loadClass( entry.getValue() ).newInstance();
+                kSession.getCalendars().set( entry.getKey(), calendar );
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                log.error( "Cannot instance calendar " + entry.getKey(), e );
             }
         }
     }
