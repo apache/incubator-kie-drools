@@ -17,6 +17,7 @@
 package org.kie.api.builder.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -130,6 +131,18 @@ public interface KieSessionModel {
      * Sets a FileLogger with the given name, threaded behavior and logging interval
      */
     KieSessionModel setFileLogger(String fileName, int interval, boolean threaded);
+
+    /**
+     * Add a calendar to this KieSessionModel
+     * @param name The calendar name
+     * @param type The class implementing the calendar
+     */
+    KieSessionModel addCalendar(String name, String type);
+
+    /**
+     * Returns all the calendars set on this KieSessionModel
+     */
+    Map<String, String> getCalendars();
 
     /**
      * Returns true if this KieSessionModel is the default one

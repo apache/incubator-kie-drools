@@ -84,6 +84,7 @@
           <xsd:element ref="fileLogger"/>
         </xsd:choice>
         <xsd:element ref="workItemHandlers" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="calendars" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="listeners" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="channels" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
@@ -130,6 +131,21 @@
   </xsd:element>
 
   <xsd:element name="workItemHandler">
+    <xsd:complexType>
+      <xsd:attribute name="name" use="required" type="xsd:string"/>
+      <xsd:attribute name="type" use="required" type="xsd:string"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="calendars">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="calendar" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="calendar">
     <xsd:complexType>
       <xsd:attribute name="name" use="required" type="xsd:string"/>
       <xsd:attribute name="type" use="required" type="xsd:string"/>

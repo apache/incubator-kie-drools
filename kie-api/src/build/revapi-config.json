@@ -244,6 +244,24 @@
           "methodName": "newSessionCustomized",
           "elementKind": "method",
           "justification": "support session creation with customization"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::addCalendar(java.lang.String, java.lang.String)",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieSessionModel",
+          "methodName": "addCalendar",
+          "elementKind": "method",
+          "justification": "allow to set Calendars on a KieSession in a declartive way"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.builder.model.KieSessionModel::getCalendars()",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieSessionModel",
+          "methodName": "getCalendars",
+          "elementKind": "method",
+          "justification": "allow to set Calendars on a KieSession in a declartive way"
         }
       ]
     }
