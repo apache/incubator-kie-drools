@@ -372,7 +372,7 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testDecisionService20181008() {
-        // DROOLS-
+        // DROOLS-3087 DMN Validation of DecisionService referencing a missing import
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .theseModels(getReader("DSWithImport20181008-ModelA.dmn"),
                                                           getReader("DSWithImport20181008-ModelB.dmn"));
