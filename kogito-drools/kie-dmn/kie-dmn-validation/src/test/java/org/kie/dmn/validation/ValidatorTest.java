@@ -369,4 +369,18 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_TYPE_REF) && p.getSourceId().equals("_63d05cff-8e3b-4dad-a355-fd88f8bcd613")));
     }
+
+    @Test
+    public void testDecisionService20181008() {
+        // DROOLS-3087 DMN Validation of DecisionService referencing a missing import
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_MODEL, VALIDATE_COMPILATION)
+                                             .theseModels(getReader("DSWithImport20181008-ModelA.dmn"),
+                                                          getReader("DSWithImport20181008-ModelB.dmn"));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+
+        List<DMNMessage> missingDMNImport = validator.validateUsing(VALIDATE_MODEL)
+                                                     .theseModels(getReader("DSWithImport20181008-ModelA.dmn"),
+                                                                  getReader("DSWithImport20181008-ModelB-missingDMNImport.dmn"));
+        assertThat(missingDMNImport.stream().filter(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)).count(), is(2L)); // on Decision and Decision Service missing to locate the dependency given Import is omitted.
+    }
 }

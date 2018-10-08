@@ -55,6 +55,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
     @Override
     public DMNModelInstrumentedBase getParentDRDElement() {
         if( this instanceof TDRGElement
+                || this instanceof TDecisionService // in DMN v1.1 it was a bug in the schema as decision service missed to inherit from DRGElement
                 || (this instanceof TArtifact)
                 || (this instanceof TItemDefinition && parent != null && parent instanceof TDefinitions)) {
             return this;
