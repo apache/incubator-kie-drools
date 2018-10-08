@@ -25,4 +25,5 @@ public interface SourceBuilder {
     void addCellValue(int row, int col, String value);
     void clearValues();
     boolean hasValues();
+    int getColumn();
 }

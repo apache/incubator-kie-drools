@@ -102,4 +102,7 @@ public class RhsBuilder implements SourceBuilder {
         return hasValues;
     }
 
+    public int getColumn() {
+        return headerCol;
+    }
 }
