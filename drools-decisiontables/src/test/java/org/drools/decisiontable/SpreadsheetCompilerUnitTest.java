@@ -44,7 +44,10 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Some basic unit tests for converter utility. Note that some of this may still
@@ -392,14 +395,17 @@ public class SpreadsheetCompilerUnitTest {
 
     @Test
     public void testNegativeNumbers() throws Exception {
-        KieBase kbase = readKnowledgeBase( "/data/DT_WithNegativeNumbers.xls" );
+        KieBase kbase = readKnowledgeBase("/data/DT_WithNegativeNumbers.xls");
         KieSession ksession = kbase.newKieSession();
-        IntHolder i1 = new IntHolder( 1 );
-        IntHolder i2 = new IntHolder( -1 );
-        ksession.insert( i1 );
-        ksession.insert( i2 );
-        ksession.fireAllRules();
-        ksession.dispose();
+        try {
+            IntHolder i1 = new IntHolder(1);
+            IntHolder i2 = new IntHolder(-1);
+            ksession.insert(i1);
+            ksession.insert(i2);
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
