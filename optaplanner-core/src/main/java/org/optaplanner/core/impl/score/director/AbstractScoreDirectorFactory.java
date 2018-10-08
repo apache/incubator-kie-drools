@@ -98,7 +98,8 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
             Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
             if (!score.equals(uncorruptedScore)) {
                 throw new IllegalStateException(
-                        "Score corruption: the solution's score (" + score + ") is not the uncorruptedScore ("
+                        "Score corruption (" + score.subtract(uncorruptedScore).toShortString()
+                                + "): the solution's score (" + score + ") is not the uncorruptedScore ("
                                 + uncorruptedScore + ").");
             }
         }

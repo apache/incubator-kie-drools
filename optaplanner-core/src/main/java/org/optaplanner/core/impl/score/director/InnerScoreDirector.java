@@ -181,6 +181,19 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
+     * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
+     * it is equal to the parameter {@link Score predictedScore}.
+     * <p>
+     * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
+     * @param predictedScore never null
+     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
+     * is included in the exception message
+     * @see InnerScoreDirectorFactory#assertScoreFromScratch
+     */
+    void assertPredictedScoreFromScratch(Score predictedScore, Object completedAction);
+
+    /**
+     * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
      * in the current {@link ScoreDirector} (with incremental calculation residue),
      * it is equal to the parameter {@link Score beforeMoveScore}.
      * <p>

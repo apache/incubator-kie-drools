@@ -174,7 +174,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         // There is no need to recalculate the score, but we still need to set it
         scoreDirector.getSolutionDescriptor().setScore(scoreDirector.getWorkingSolution(), score);
         if (assertStepScoreFromScratch) {
-            scoreDirector.assertWorkingScoreFromScratch(score, step);
+            scoreDirector.assertPredictedScoreFromScratch(score, step);
         }
         if (assertExpectedStepScore) {
             scoreDirector.assertExpectedWorkingScore(score, step);

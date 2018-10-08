@@ -220,7 +220,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         if (assertWorkingSolutionScoreFromScratch) {
             // In BRUTE_FORCE the stepScore can be null because it was not calculated
             if (stepScope.getStartingStepScore() != null) {
-                phaseScope.assertWorkingScoreFromScratch(stepScope.getStartingStepScore(), restoreMoveList);
+                phaseScope.assertPredictedScoreFromScratch(stepScope.getStartingStepScore(), restoreMoveList);
             }
         }
         if (assertExpectedWorkingSolutionScore) {

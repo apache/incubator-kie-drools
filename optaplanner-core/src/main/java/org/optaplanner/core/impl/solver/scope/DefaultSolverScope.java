@@ -125,20 +125,8 @@ public class DefaultSolverScope<Solution_> {
         return scoreDirector.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
-    }
-
-    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        scoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
-    }
-
     public void assertScoreFromScratch(Solution_ solution) {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
-    }
-
-    public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
-        scoreDirector.assertShadowVariablesAreNotStale(workingScore, completedAction);
     }
 
     public Score getStartingInitializedScore() {

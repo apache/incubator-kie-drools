@@ -160,7 +160,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
         if (assertStepScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), completedAction);
+            phaseScope.assertPredictedScoreFromScratch(stepScope.getScore(), completedAction);
         }
         if (assertExpectedStepScore) {
             phaseScope.assertExpectedWorkingScore(stepScope.getScore(), completedAction);

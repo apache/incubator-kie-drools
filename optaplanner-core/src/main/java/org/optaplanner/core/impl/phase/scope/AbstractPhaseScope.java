@@ -166,38 +166,19 @@ public abstract class AbstractPhaseScope<Solution_> {
     }
 
     public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-        solverScope.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
+        getScoreDirector().assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
     public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        solverScope.assertWorkingScoreFromScratch(workingScore, completedAction);
+        getScoreDirector().assertWorkingScoreFromScratch(workingScore, completedAction);
+    }
+
+    public void assertPredictedScoreFromScratch(Score workingScore, Object completedAction) {
+        getScoreDirector().assertPredictedScoreFromScratch(workingScore, completedAction);
     }
 
     public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
-        solverScope.assertShadowVariablesAreNotStale(workingScore, completedAction);
-    }
-
-    public void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore) {
-        Score undoScore = calculateScore();
-        if (!undoScore.equals(beforeMoveScore)) {
-            logger.trace("        Corruption detected. Diagnosing...");
-            // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
-            String undoMoveString = "Undo(" + move + ")";
-            // Precondition: assert that are probably no corrupted score rules.
-            getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMoveString);
-            // Precondition: assert that shadow variable after the undoMove aren't stale
-            getScoreDirector().assertShadowVariablesAreNotStale(undoScore, undoMoveString);
-            throw new IllegalStateException("UndoMove corruption: the beforeMoveScore (" + beforeMoveScore
-                    + ") is not the undoScore (" + undoScore
-                    + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.\n"
-                    + "  1) Enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
-                    + " (if you haven't already) to fail-faster in case there's a score corruption.\n"
-                    + "  2) Check the Move.createUndoMove(...) method of the moveClass (" + move.getClass() + ")."
-                    + " The move (" + move + ") might have a corrupted undoMove (" + undoMoveString + ").\n"
-                    + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
-                    + " for shadow variables that are used by the score constraints with a different score weight"
-                    + " between the beforeMoveScore (" + beforeMoveScore + ") and the undoScore (" + undoScore + ").");
-        }
+        getScoreDirector().assertShadowVariablesAreNotStale(workingScore, completedAction);
     }
 
     public Random getWorkingRandom() {
