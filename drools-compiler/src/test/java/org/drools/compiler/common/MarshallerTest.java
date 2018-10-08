@@ -118,16 +118,13 @@ public class MarshallerTest {
             ksession.insert(2L);
             ksession.insert(10);
 
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
-
-            assertEquals( 0, ksession.fireAllRules() );
+            FactHandle factHandle1 = ksession.getFactHandle(10);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
 
-            FactHandle factHandle = ksession.getFactHandle(10);
-            ksession.delete(factHandle);
+            FactHandle factHandle2 = ksession.getFactHandle(10);
 
-            assertEquals( 1, ksession.fireAllRules() );
+            assertNotNull(factHandle2);
 
         } finally {
             ksession.dispose();
