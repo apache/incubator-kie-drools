@@ -258,6 +258,7 @@ public class TemplatesTest {
         session.insert(new Vegetable("onion", 500, 7, 4, Taste.EXCELENT));
 
         session.fireAllRules();
+        session.dispose();
 
         // check of size of satisfying items
         Assertions.assertThat(list.size()).isEqualTo(4);
@@ -285,6 +286,7 @@ public class TemplatesTest {
         }
 
         session.fireAllRules();
+        session.dispose();
 
         // check of size of satisfying items
         Assertions.assertThat(list.size()).isEqualTo(expectedResultListSize);

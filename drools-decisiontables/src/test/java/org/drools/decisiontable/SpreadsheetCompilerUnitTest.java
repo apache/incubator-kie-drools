@@ -399,6 +399,7 @@ public class SpreadsheetCompilerUnitTest {
         ksession.insert( i1 );
         ksession.insert( i2 );
         ksession.fireAllRules();
+        ksession.dispose();
     }
 
     @Test
