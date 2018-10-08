@@ -16,11 +16,13 @@
 
 package org.drools.decisiontable.parser;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
@@ -104,7 +106,7 @@ implements RuleSheetListener {
     private final List<Rule>               _ruleList              = new LinkedList<Rule>();
 
     //need to keep an ordered list of this to make conditions appear in the right order
-    private List<SourceBuilder>            sourceBuilders         = new ArrayList<SourceBuilder>();
+    private Collection<SourceBuilder>     sourceBuilders;
 
     private final PropertiesSheetListener _propertiesListener     = new PropertiesSheetListener();
 
@@ -353,7 +355,7 @@ implements RuleSheetListener {
         preInitRuleTable( row, column, value );
         this._isInRuleTable = true;
         this._actions = new HashMap<Integer, ActionType>();
-        this.sourceBuilders = new ArrayList<SourceBuilder>();
+        this.sourceBuilders = new TreeSet<SourceBuilder>(Comparator.comparing( SourceBuilder::getColumn ));
         this._ruleStartColumn = column;
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;

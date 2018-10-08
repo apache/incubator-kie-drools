@@ -326,4 +326,7 @@ public class LhsBuilder implements SourceBuilder {
                                                                        1 ) == content.length() - 1 );
     }
 
+    public int getColumn() {
+        return headerCol;
+    }
 }
