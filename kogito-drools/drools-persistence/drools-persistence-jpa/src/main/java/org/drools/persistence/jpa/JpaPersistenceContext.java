@@ -40,19 +40,22 @@ public class JpaPersistenceContext implements PersistenceContext {
     protected final boolean pessimisticLocking;
     protected final TransactionManager txm;
     
+    protected LockModeType lockMode;
+    
     public JpaPersistenceContext(EntityManager em, TransactionManager txm) {
-        this(em, true, false, txm);
+        this(em, true, false, null, txm);
     }
     
     public JpaPersistenceContext(EntityManager em, boolean isJTA, TransactionManager txm) {
-       this(em, isJTA, false, txm);
+       this(em, isJTA, false, null, txm);
     }
     
-    public JpaPersistenceContext(EntityManager em, boolean isJTA, boolean locking, TransactionManager txm) {
+    public JpaPersistenceContext(EntityManager em, boolean isJTA, boolean locking, String lockingMode, TransactionManager txm) {
         this.em = em;
         this.isJTA = isJTA;
         this.pessimisticLocking = locking;
         this.txm = txm;
+        this.lockMode = LockModeType.valueOf(lockingMode == null ? LockModeType.PESSIMISTIC_FORCE_INCREMENT.name() : lockingMode);
     }
 
     public PersistentSession persist(PersistentSession entity) {
@@ -60,7 +63,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         TransactionManagerHelper.addToUpdatableSet(txm, entity);
         if( this.pessimisticLocking ) {
             this.em.flush();
-            return this.em.find(SessionInfo.class, entity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(SessionInfo.class, entity.getId(), lockMode );
         }
         return entity;
     }
@@ -69,7 +72,7 @@ public class JpaPersistenceContext implements PersistenceContext {
 
         SessionInfo sessionInfo = null;
         if( this.pessimisticLocking ) {
-            sessionInfo = this.em.find( SessionInfo.class, id, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            sessionInfo = this.em.find( SessionInfo.class, id, lockMode );
             TransactionManagerHelper.addToUpdatableSet(txm, sessionInfo);
             return sessionInfo;
         }
@@ -92,7 +95,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
     
     public void lock(PersistentSession session) {
-    	this.em.lock( session, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+    	this.em.lock( session, lockMode );
     }
     
     public boolean isOpen() {
@@ -114,7 +117,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         TransactionManagerHelper.addToUpdatableSet(txm, workItem);
         if( this.pessimisticLocking ) {
             this.em.flush();
-            return em.find(WorkItemInfo.class, workItem.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+            return em.find(WorkItemInfo.class, workItem.getId(), lockMode);
         }
 
         return workItem;
@@ -123,7 +126,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     public PersistentWorkItem findWorkItem(Long id) {
         WorkItemInfo workItemInfo = null;
         if( this.pessimisticLocking ) {
-            workItemInfo = this.em.find( WorkItemInfo.class, id, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            workItemInfo = this.em.find( WorkItemInfo.class, id, lockMode );
             TransactionManagerHelper.addToUpdatableSet(txm, workItemInfo);
 
             return workItemInfo;
@@ -143,10 +146,10 @@ public class JpaPersistenceContext implements PersistenceContext {
     public PersistentWorkItem merge(PersistentWorkItem workItem) {
         if( this.pessimisticLocking ) { 
             if( em.contains(workItem) ) { 
-                em.lock(workItem, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+                em.lock(workItem, lockMode);
             } else { 
                 // Yes, this is a hack, but for detached entities, it's the only way to lock before merging
-                WorkItemInfo dbWorkItemInfo = em.find(WorkItemInfo.class, workItem.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+                WorkItemInfo dbWorkItemInfo = em.find(WorkItemInfo.class, workItem.getId(), lockMode);
                 for( Field field : WorkItemInfo.class.getDeclaredFields() ) { 
                     boolean access = field.isAccessible();
                     field.setAccessible(true);
@@ -164,7 +167,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
     
     public void lock(PersistentWorkItem workItem) {
-    	this.em.lock( workItem, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+    	this.em.lock( workItem, lockMode );
     }
     
     protected EntityManager getEntityManager() {
