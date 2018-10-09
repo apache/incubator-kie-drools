@@ -521,18 +521,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
-        Map<ShadowVariableDescriptor, List<String>> shadowVariableDescriptorListMap = calculateShadowVariableViolationListMap();
-        if (!shadowVariableDescriptorListMap.isEmpty()) {
-            StringBuilder message = new StringBuilder();
-            message.append(VariableListener.class.getSimpleName()).append(" corruption after completedAction (")
-                    .append(completedAction).append("):\n");
-            shadowVariableDescriptorListMap.forEach((shadowVariableDescriptor, violationList) -> {
-                message.append(violationList.get(0));
-                if (violationList.size() > 1) {
-                    message.append("  ...\n");
-                }
-            });
-            throw new IllegalStateException(message.toString());
+        String violationMessage = createShadowVariablesViolationMessage();
+        if (violationMessage != null) {
+            throw new IllegalStateException(
+                    VariableListener.class.getSimpleName() + " corruption after completedAction ("
+                    + completedAction + "):\n"
+                    + violationMessage);
         }
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
@@ -555,26 +549,21 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      * @return never null
      */
     protected String buildShadowVariableAnalysis(boolean predicted) {
-        Map<ShadowVariableDescriptor, List<String>> shadowVariableDescriptorListMap = calculateShadowVariableViolationListMap();
+        String violationMessage = createShadowVariablesViolationMessage();
         String workingLabel = predicted ? "working" : "corrupted";
-        if (shadowVariableDescriptorListMap.isEmpty()) {
-            return "Shadow variable corruption: none in the " + workingLabel + " scoreDirector.";
+        if (violationMessage == null) {
+            return "Shadow variable corruption in the " + workingLabel + " scoreDirector:\n"
+                    + "  None";
         }
-        final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
-        StringBuilder analysis = new StringBuilder();
-        analysis.append("Shadow variable corruption in the ").append(workingLabel).append(" scoreDirector:\n");
-        shadowVariableDescriptorListMap.forEach((shadowVariableDescriptor, violationList) -> {
-            violationList.stream().limit(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT).forEach(analysis::append);
-            if (violationList.size() >= SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT) {
-                analysis.append("    ... ").append(violationList.size() - SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT)
-                        .append(" more\n");
-            }
-        });
-        analysis.append("  Check your variable listeners.");
-        return analysis.toString();
+        return "Shadow variable corruption in the " + workingLabel + " scoreDirector:\n"
+                + violationMessage
+                + "  Maybe there is a bug in the VariableListener of those shadow variable(s).";
     }
 
-    protected Map<ShadowVariableDescriptor, List<String>> calculateShadowVariableViolationListMap() {
+    /**
+     * @return null if there are no violations
+     */
+    protected String createShadowVariablesViolationMessage() {
         Map<ShadowVariableDescriptor, List<String>> violationListMap = new TreeMap<>(
                 Comparator.comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
@@ -604,19 +593,31 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 Object originalValue = shadowVariableValuesMap.get(shadowVariableDescriptor);
                 if (!Objects.equals(originalValue, newValue)) {
                     List<String> violationList = violationListMap.computeIfAbsent(shadowVariableDescriptor, k -> new ArrayList<>());
-                    violationList.add("  The entity (" + entity
+                    violationList.add("    The entity (" + entity
                             + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                             + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
                             + ") after all " + VariableListener.class.getSimpleName()
                             + "s were triggered without changes to the genuine variables.\n"
-                            + "  Maybe the " + VariableListener.class.getSimpleName() + " class ("
+                            + "      Maybe the " + VariableListener.class.getSimpleName() + " class ("
                             + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
                             + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                             + ") forgot to update it when one of its sources changed.\n");
                 }
             }
         }
-        return violationListMap;
+        if (violationListMap.isEmpty()) {
+            return null;
+        }
+        final int SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT = 3;
+        StringBuilder message = new StringBuilder();
+        violationListMap.forEach((shadowVariableDescriptor, violationList) -> {
+            violationList.stream().limit(SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT).forEach(message::append);
+            if (violationList.size() >= SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT) {
+                message.append("  ... ").append(violationList.size() - SHADOW_VARIABLE_VIOLATION_DISPLAY_LIMIT)
+                        .append(" more\n");
+            }
+        });
+        return message.toString();
     }
 
     @Override

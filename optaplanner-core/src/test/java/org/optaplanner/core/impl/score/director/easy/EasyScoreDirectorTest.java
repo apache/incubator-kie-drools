@@ -15,10 +15,21 @@
  */
 package org.optaplanner.core.impl.score.director.easy;
 
+import java.util.Arrays;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.AdditionalAnswers;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
+import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -43,6 +54,35 @@ public class EasyScoreDirectorTest {
         EasyScoreDirectorFactory<Object> factory = mock(EasyScoreDirectorFactory.class);
         when(factory.getSolutionDescriptor()).thenReturn(mock(SolutionDescriptor.class));
         return factory;
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void shadowVariableCorruption() {
+        EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
+                new EasyScoreDirectorFactory<>((EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.valueOf(0));
+        scoreDirectorFactory.setSolutionDescriptor(TestdataCorruptedShadowedSolution.buildSolutionDescriptor());
+        scoreDirectorFactory.setInitializingScoreTrend(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
+        EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false);
+
+        TestdataCorruptedShadowedSolution solution = new TestdataCorruptedShadowedSolution("s1");
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        solution.setValueList(Arrays.asList(v1, v2));
+        TestdataCorruptedShadowedEntity e1 = new TestdataCorruptedShadowedEntity("e1");
+        TestdataCorruptedShadowedEntity e2 = new TestdataCorruptedShadowedEntity("e2");
+        solution.setEntityList(Arrays.asList(e1, e2));
+        scoreDirector.setWorkingSolution(solution);
+
+        scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(-2, 0), "NoChange");
+        scoreDirector.beforeVariableChanged(e1, "value");
+        e1.setValue(v1);
+        scoreDirector.afterVariableChanged(e1, "value");
+        scoreDirector.beforeVariableChanged(e2, "value");
+        e2.setValue(v1);
+        scoreDirector.afterVariableChanged(e2, "value");
+        scoreDirector.triggerVariableListeners();
+        scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(0, 0), "FirstChange");
     }
 
 }
