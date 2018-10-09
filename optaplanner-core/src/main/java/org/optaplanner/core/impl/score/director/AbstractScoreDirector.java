@@ -744,17 +744,23 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                         .append(" more\n");
             }
         }
-        if (excessMap.isEmpty() && missingMap.isEmpty()) {
+        if (!excessMap.isEmpty() || !missingMap.isEmpty()) {
+            analysis.append("  Maybe there is a bug in the score constraints of those ConstraintMatch(s).\n");
+            analysis.append("  Maybe a score constraint doesn't select all the entities it depends on, but finds some through a reference in a selected entity."
+                    + " This corrupts incremental score calculation, because the constraint is not re-evaluated if such a non-selected entity changes.");
+        } else {
             if (predicted) {
                 analysis.append("  If multithreaded solving is active,"
                         + " the working scoreDirector is probably not the corrupted scoreDirector.\n");
-                analysis.append("  Maybe the rebase() method of the move is bugged if multithreaded solving is active.\n");
+                analysis.append("  If multithreaded solving is active, maybe the rebase() method of the move is bugged.\n");
+                analysis.append("  If multithreaded solving is active,"
+                        + " maybe a VariableListener affected the moveThread's workingSolution after doing and undoing a move,"
+                        + " but this didn't happen here on the solverThread, so we can't detect it.");
             } else {
                 analysis.append("  Impossible state. Maybe this is a bug in the scoreDirector (").append(getClass())
-                        .append(").\n");
+                        .append(").");
             }
         }
-        analysis.append("  Check your score constraints.");
         return analysis.toString();
     }
 
