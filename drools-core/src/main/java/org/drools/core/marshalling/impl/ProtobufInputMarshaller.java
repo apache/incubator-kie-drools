@@ -30,7 +30,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
@@ -128,7 +127,7 @@ public class ProtobufInputMarshaller {
     /**
      * Create a new session into which to read the stream data
      */
-    public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
+    public static ReadSessionResult readSession(MarshallerReaderContext context,
                                                            int id) throws IOException, ClassNotFoundException {
         return readSession( context,
                             id,
@@ -136,14 +135,14 @@ public class ProtobufInputMarshaller {
                             new SessionConfigurationImpl() );
     }
 
-    public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
+    public static ReadSessionResult readSession(MarshallerReaderContext context,
                                                            int id,
                                                            Environment environment,
                                                            SessionConfiguration config) throws IOException, ClassNotFoundException {
         return readSession( context, id, environment, config, null );
     }
 
-    public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
+    public static ReadSessionResult readSession(MarshallerReaderContext context,
                                                            int id,
                                                            Environment environment,
                                                            SessionConfiguration config,
@@ -161,10 +160,11 @@ public class ProtobufInputMarshaller {
             initializer.init( session );
         }
 
-        return readSession( _session,
-                            session,
-                            (InternalAgenda) session.getAgenda(),
-                            context );
+        return new ReadSessionResult(readSession(_session,
+                                                 session,
+                                                 session.getAgenda(),
+                                                 context),
+                                     _session);
     }
 
     private static InternalAgenda resetSession(StatefulKnowledgeSessionImpl session,
