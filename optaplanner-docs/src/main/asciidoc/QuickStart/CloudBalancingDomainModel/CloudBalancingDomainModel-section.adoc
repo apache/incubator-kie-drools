@@ -28,10 +28,10 @@ For an object representing the full data set and solution, a sample instance hol
 
 . Determine which relationships (or fields) change during planning.
 
-* _Planning entity_: the class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because Planner can move processes to different computers.
-** A class representing input data that Planner can not change is known as a _problem fact_. 
-* _Planning variable_: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
-* _Planning solution_: the class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
+* _Planning entity_: The class (or classes) that Planner can change during solving. In this example, it is the class ``Process``, because Planner can assign processes to computers.
+* _Problem fact_: A class representing input data that Planner can not change. 
+* _Planning variable_: The property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
+* _Planning solution_: The class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
 
 In the UML class diagram below, the Planner concepts are already annotated:
 
@@ -124,15 +124,18 @@ Instead of getter annotations, it is also possible to use <<annotationAlternativ
 The `CloudBalance` class has a [path]_@PlanningSolution_
  annotation.
 
-* It holds a list of all computers and processes.
+* It holds a list of all computers and a list of all processes. 
 * It represents both the planning problem and (if it is initialized) the planning solution.
+* To save a solution, Planner initializes a new instance of the class.
 
-. The class holds a collection of processes that Planner can change. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``, so that Planner can retrieve the processes that it can change. To save a solution, Planner initializes a new instance of the class with the list of changed processes.
+. The `processList` property holds a list of processes. Planner can change the processes, allocating them to different computers. Therefore, a process is a planing entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+
+. The `computerList` property holds a list of computers. Planner can not change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that Planner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
+
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
-Planner automatically updates it when it calculates a `Score` for a solution instance; therefore, this property needs a setter.
+Planner automatically updates it when it calculates a `Score` for a solution instance. Therefore, this property needs a setter.
 
-. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that Planner can retrieve a list of computers (problem facts) and make it available to the Drools engine.
 
 .CloudBalance.java
 ====
