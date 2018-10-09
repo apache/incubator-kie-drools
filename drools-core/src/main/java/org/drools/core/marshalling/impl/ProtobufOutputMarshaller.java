@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,11 +63,13 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
+import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -79,6 +80,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.Sink;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
@@ -888,10 +890,11 @@ public class ProtobufOutputMarshaller {
             }
         }
 
-        if(isDormient) {
+        if (isDormient) {
             InternalFactHandle factHandle = ((BaseTuple) agendaItem).getFactHandle();
 
-            if(factHandle != null) {
+            boolean b = sinkSourceIsNode((BaseTuple) agendaItem);
+            if (factHandle != null && b) {
                 SerializedObject so = serializeObject(context, factHandle.getObject());
 
                 _activation.setObject(so.serializedObject);
@@ -904,6 +907,11 @@ public class ProtobufOutputMarshaller {
         }
 
         return _activation.build();
+    }
+
+    private static boolean sinkSourceIsNode(BaseTuple agendaItem) {
+        Sink tupleSink = agendaItem.getTupleSink();
+        return (tupleSink instanceof AbstractTerminalNode) && ((AbstractTerminalNode) tupleSink).getLeftTupleSource() instanceof FromNode;
     }
 
     public static Tuple writeTuple(org.drools.core.spi.Tuple tuple) {

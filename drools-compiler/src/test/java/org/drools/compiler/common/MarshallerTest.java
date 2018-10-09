@@ -38,10 +38,10 @@ public class MarshallerTest {
 
         ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
 
-        assertFalse(deserializedMessage.getRuleData().getEntryPointList().stream().flatMap(ep -> ep.getHandleList().stream()).anyMatch(ml -> ml.getObject() != null));
-        assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> ml.getObject() != null));
-
         assertEquals(0, ksession.fireAllRules());
+        assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> ml.getObject().size() > 0));
+//        assertFalse(deserializedMessage.getRuleData().getEntryPointList().stream().flatMap(ep -> ep.getHandleList().stream()).anyMatch(ml -> ml.getObject() != null));
+
     }
 
     @Test
