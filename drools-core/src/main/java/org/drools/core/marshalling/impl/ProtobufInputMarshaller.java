@@ -688,7 +688,7 @@ public class ProtobufInputMarshaller {
                                                                               _activation.getTuple());
 
             final Optional<Object> deserializedObject;
-            if (_activation.hasStrategyIndex()) {
+            if (_activation.hasStrategyIndex() && !_activation.getObject().isEmpty()) {
                 ObjectMarshallingStrategy strategy = context.usedStrategies.get(_activation.getStrategyIndex());
                 try {
                     Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
