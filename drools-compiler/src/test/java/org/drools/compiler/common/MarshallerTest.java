@@ -4,6 +4,7 @@ import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -110,21 +111,24 @@ public class MarshallerTest {
                         "then end\n";
 
 
-        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL)
+                .build(EqualityBehaviorOption.EQUALITY);
         KieSession ksession = kbase.newKieSession();
 
         try {
-            final FactHandle fhA = ksession.insert("Luca");
+            ksession.insert("Luca");
             ksession.insert(2L);
             ksession.insert(10);
 
-            FactHandle factHandle1 = ksession.getFactHandle(10);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+            assertEquals( 0, ksession.fireAllRules() );
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
 
-            FactHandle factHandle2 = ksession.getFactHandle(10);
+            ksession.delete(ksession.getFactHandle(10));
 
-            assertNotNull(factHandle2);
+            assertEquals( 1, ksession.fireAllRules() );
 
         } finally {
             ksession.dispose();
