@@ -64,6 +64,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AbstractTerminalNode;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BaseTuple;
@@ -72,6 +73,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -911,7 +913,11 @@ public class ProtobufOutputMarshaller {
 
     private static boolean sinkSourceIsNode(BaseTuple agendaItem) {
         Sink tupleSink = agendaItem.getTupleSink();
-        return (tupleSink instanceof AbstractTerminalNode) && ((AbstractTerminalNode) tupleSink).getLeftTupleSource() instanceof FromNode;
+        if (tupleSink instanceof AbstractTerminalNode) {
+            LeftTupleSource leftTupleSource = ((AbstractTerminalNode) tupleSink).getLeftTupleSource();
+            return leftTupleSource instanceof FromNode || leftTupleSource instanceof AccumulateNode;
+        }
+        return false;
     }
 
     public static Tuple writeTuple(org.drools.core.spi.Tuple tuple) {
