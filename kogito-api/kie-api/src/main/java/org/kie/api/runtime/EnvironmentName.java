@@ -28,6 +28,7 @@ public class EnvironmentName {
     public static final String PERSISTENCE_CONTEXT_MANAGER          = "org.kie.api.persistence.PersistenceContextManager";
     public static final String TASK_PERSISTENCE_CONTEXT_MANAGER     = "org.kie.api.persistence.TaskPersistenceContextManager";
     public static final String USE_PESSIMISTIC_LOCKING              = "org.kie.api.persistence.pessimistic";
+    public static final String USE_PESSIMISTIC_LOCKING_MODE         = "org.kie.api.persistence.pessimistic.mode";
 
     public static final String OBJECT_MARSHALLING_STRATEGIES        = "org.kie.api.marshalling.ObjectMarshallingStrategies";
     public static final String GLOBALS                              = "org.kie.Globals";
