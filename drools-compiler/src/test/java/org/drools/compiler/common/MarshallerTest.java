@@ -128,7 +128,44 @@ public class MarshallerTest {
 
             ksession.delete(ksession.getFactHandle(10));
 
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
             assertEquals( 1, ksession.fireAllRules() );
+
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testSubnetwork2() throws Exception {
+        final String str =
+                        "rule R1 when\n" +
+                        "    String()\n" +
+                        "    Long()\n" +
+                        "    not( Long() and Integer() )\n" +
+                        "then end\n";
+
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL)
+                .build(EqualityBehaviorOption.EQUALITY);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            ksession.insert("Luca");
+            ksession.insert(2L);
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+            assertEquals( 1, ksession.fireAllRules() );
+
+            ksession.insert("Mario");
+            ksession.insert(11);
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true );
+
+            assertEquals( 0, ksession.fireAllRules() );
+
 
         } finally {
             ksession.dispose();
