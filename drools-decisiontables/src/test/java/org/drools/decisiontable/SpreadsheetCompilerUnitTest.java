@@ -396,13 +396,17 @@ public class SpreadsheetCompilerUnitTest {
 
     @Test
     public void testNegativeNumbers() throws Exception {
-        KieBase kbase = readKnowledgeBase( "/data/DT_WithNegativeNumbers.xls" );
+        KieBase kbase = readKnowledgeBase("/data/DT_WithNegativeNumbers.xls");
         KieSession ksession = kbase.newKieSession();
-        IntHolder i1 = new IntHolder( 1 );
-        IntHolder i2 = new IntHolder( -1 );
-        ksession.insert( i1 );
-        ksession.insert( i2 );
-        ksession.fireAllRules();
+        try {
+            IntHolder i1 = new IntHolder(1);
+            IntHolder i2 = new IntHolder(-1);
+            ksession.insert(i1);
+            ksession.insert(i2);
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     @Test
