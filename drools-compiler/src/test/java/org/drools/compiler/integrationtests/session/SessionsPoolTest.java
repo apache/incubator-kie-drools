@@ -45,8 +45,11 @@ public class SessionsPoolTest {
         KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 1 );
 
         KieSession ksession = pool.newKieSession();
-        checkKieSession( ksession );
-        ksession.dispose();
+        try {
+            checkKieSession( ksession );
+        } finally {
+            ksession.dispose();
+        }
 
         try {
             ksession.insert( "test2" );
@@ -65,12 +68,12 @@ public class SessionsPoolTest {
         try {
             ksession.insert( "test3" );
             fail("after pool shutdown all sessions created from it should be disposed");
-        } catch (Exception e) { }
+        } catch (IllegalStateException e) { }
 
         try {
             pool.newKieSession();
             fail("after pool shutdown it shouldn't be possible to get sessions from it");
-        } catch (Exception e) { }
+        } catch (IllegalStateException e) { }
     }
 
     @Test
@@ -78,43 +81,49 @@ public class SessionsPoolTest {
         KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 4 );
 
         final int THREAD_NR = 10;
-        final ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_NR, r -> {
             final Thread t = new Thread(r);
             t.setDaemon(true);
             return t;
         });
 
-
-        final CompletionService<Boolean> ecs = new ExecutorCompletionService<>(executor);
-        for (int i = 0; i < THREAD_NR; i++) {
-            ecs.submit(() -> {
-                try {
-                    KieSession ksession = pool.newKieSession();
-                    checkKieSession( ksession );
-                    ksession.dispose();
-
+        try {
+            CompletionService<Boolean> ecs = new ExecutorCompletionService<>( executor );
+            for (int i = 0; i < THREAD_NR; i++) {
+                ecs.submit( () -> {
                     try {
-                        ksession.insert( "test2" );
-                        fail("it shouldn't be possible to operate on a disposed session even if created from a pool");
-                    } catch (Exception e) { }
-                    return true;
-                } catch (final Exception e) {
-                    return false;
-                }
-            });
-        }
+                        KieSession ksession = pool.newKieSession();
+                        try {
+                            checkKieSession( ksession );
+                        } finally {
+                            ksession.dispose();
+                        }
 
-        boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
-            success = ecs.take().get() && success;
+                        try {
+                            ksession.insert( "test2" );
+                            fail( "it shouldn't be possible to operate on a disposed session even if created from a pool" );
+                        } catch (IllegalStateException e) {
+                        }
+                        return true;
+                    } catch (final Exception e) {
+                        return false;
+                    }
+                } );
+            }
+            boolean success = true;
+            for (int i = 0; i < THREAD_NR; i++) {
+                success = ecs.take().get() && success;
+            }
+            assertTrue( success );
+        } finally {
+            executor.shutdown();
         }
-        assertTrue( success );
 
         pool.shutdown();
         try {
             pool.newKieSession();
             fail("after pool shutdown it shouldn't be possible to get sessions from it");
-        } catch (Exception e) { }
+        } catch (IllegalStateException e) { }
     }
 
     @Test

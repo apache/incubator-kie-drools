@@ -23,7 +23,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 
-public abstract class AbstratcKieSessionsPool implements KieSessionsPool {
+public abstract class AbstractKieSessionsPool implements KieSessionsPool {
 
     private volatile boolean alive = true;
 
@@ -33,7 +33,7 @@ public abstract class AbstratcKieSessionsPool implements KieSessionsPool {
 
     protected final Environment environment = EnvironmentFactory.newEnvironment();
 
-    protected AbstratcKieSessionsPool( int initialSize ) {
+    protected AbstractKieSessionsPool( int initialSize ) {
         this.initialSize = initialSize;
     }
 

@@ -21,7 +21,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 
-public class KieSessionsPoolImpl extends AbstratcKieSessionsPool {
+public class KieSessionsPoolImpl extends AbstractKieSessionsPool {
 
     private final KnowledgeBaseImpl kBase;
 
