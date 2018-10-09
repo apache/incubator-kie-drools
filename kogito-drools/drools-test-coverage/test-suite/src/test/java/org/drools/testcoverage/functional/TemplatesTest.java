@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Parameterized.class)
 public class TemplatesTest {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplatesTest.class);
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
 
@@ -135,9 +136,9 @@ public class TemplatesTest {
     @Test
     public void loadingFromDLRArrayCorrectnessCheck() throws Exception {
         final String[][] rows = new String[3][6];
-        rows[0] = new String[] { "tomato", "weight", "200", "1000", "6", "== Taste.GOOD || == Taste.EXCELENT" };
-        rows[1] = new String[] { "cucumber", "length", "20", "40", "15", "== Taste.EXCELENT" };
-        rows[2] = new String[] { "carrot", "weight", "0", "1000", "2", "== Taste.HORRIBLE" };
+        rows[0] = new String[]{"tomato", "weight", "200", "1000", "6", "== Taste.GOOD || == Taste.EXCELENT"};
+        rows[1] = new String[]{"cucumber", "length", "20", "40", "15", "== Taste.EXCELENT"};
+        rows[2] = new String[]{"carrot", "weight", "0", "1000", "2", "== Taste.HORRIBLE"};
 
         final ArrayDataProvider adp = new ArrayDataProvider(rows);
 
@@ -243,21 +244,25 @@ public class TemplatesTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         final KieSession session = kbase.newKieSession();
-
         final List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
 
-        session.insert(new Vegetable("tomato", 350, 8, 3, Taste.GOOD));
-        session.insert(new Vegetable("tomato", 150, 8, 3, Taste.BAD));
-        session.insert(new Vegetable("tomato", 350, 8, 7, Taste.GOOD));
-        session.insert(new Vegetable("tomato", 1000, 8, 6, Taste.EXCELENT));
-        session.insert(new Vegetable("cucumber", 1500, 19, 5, Taste.EXCELENT));
-        session.insert(new Vegetable("cucumber", 1500, 21, 5, Taste.EXCELENT));
-        session.insert(new Vegetable("carrot", 1000, 8, 6, Taste.EXCELENT));
-        session.insert(new Vegetable("carrot", 200, 8, 1, Taste.HORRIBLE));
-        session.insert(new Vegetable("onion", 500, 7, 4, Taste.EXCELENT));
+        try {
+            session.setGlobal("list", list);
 
-        session.fireAllRules();
+            session.insert(new Vegetable("tomato", 350, 8, 3, Taste.GOOD));
+            session.insert(new Vegetable("tomato", 150, 8, 3, Taste.BAD));
+            session.insert(new Vegetable("tomato", 350, 8, 7, Taste.GOOD));
+            session.insert(new Vegetable("tomato", 1000, 8, 6, Taste.EXCELENT));
+            session.insert(new Vegetable("cucumber", 1500, 19, 5, Taste.EXCELENT));
+            session.insert(new Vegetable("cucumber", 1500, 21, 5, Taste.EXCELENT));
+            session.insert(new Vegetable("carrot", 1000, 8, 6, Taste.EXCELENT));
+            session.insert(new Vegetable("carrot", 200, 8, 1, Taste.HORRIBLE));
+            session.insert(new Vegetable("onion", 500, 7, 4, Taste.EXCELENT));
+
+            session.fireAllRules();
+        } finally {
+            session.dispose();
+        }
 
         // check of size of satisfying items
         Assertions.assertThat(list.size()).isEqualTo(4);
@@ -276,15 +281,19 @@ public class TemplatesTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
 
         final KieSession session = kbase.newKieSession();
-
         final List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
 
-        for (int i = 0; i < 500; i++) {
-            session.insert(new Vegetable("tomato", 350, 8, 3, Taste.BAD));
+        try {
+            session.setGlobal("list", list);
+
+            for (int i = 0; i < 500; i++) {
+                session.insert(new Vegetable("tomato", 350, 8, 3, Taste.BAD));
+            }
+
+            session.fireAllRules();
+        } finally {
+            session.dispose();
         }
-
-        session.fireAllRules();
 
         // check of size of satisfying items
         Assertions.assertThat(list.size()).isEqualTo(expectedResultListSize);
@@ -407,7 +416,6 @@ public class TemplatesTest {
             }
             return sb.toString();
         }
-
     }
 
     public class Vegetable {
@@ -448,11 +456,14 @@ public class TemplatesTest {
     }
 
     public enum Taste {
-        HORRIBLE, BAD, AVERAGE, GOOD, EXCELENT;
+        HORRIBLE,
+        BAD,
+        AVERAGE,
+        GOOD,
+        EXCELENT;
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
-
 }
