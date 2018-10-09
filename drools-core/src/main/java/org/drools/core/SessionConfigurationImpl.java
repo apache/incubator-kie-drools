@@ -173,7 +173,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
                                                                                                                            QueryListenerOption.STANDARD.getAsString() ) ) );
 
         setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(this.chainedProperties.getProperty(TimerJobFactoryOption.PROPERTY_NAME,
-                                                                                                                 TimerJobFactoryType.TRACKABLE.getId())));
+                                                                                                                 TimerJobFactoryType.THREAD_SAFE_TRACKABLE.getId())));
     }
 
     public SessionConfigurationImpl addDefaultProperties(Properties properties) {
