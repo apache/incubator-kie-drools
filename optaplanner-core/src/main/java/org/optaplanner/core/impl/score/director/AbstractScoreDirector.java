@@ -629,7 +629,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         assertScoreFromScratch(workingScore, completedAction, true);
     }
 
-    private void assertScoreFromScratch(Score workingScore, Object completedAction, boolean predicted) {
+    private void assertScoreFromScratch(Score score, Object completedAction, boolean predicted) {
         InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
@@ -639,13 +639,14 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 assertionScoreDirectorFactory.buildScoreDirector(false, true)) {
             uncorruptedScoreDirector.setWorkingSolution(workingSolution);
             Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
-            if (!workingScore.equals(uncorruptedScore)) {
+            if (!score.equals(uncorruptedScore)) {
                 String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedScoreDirector, predicted);
                 String shadowVariableAnalysis = buildShadowVariableAnalysis(predicted);
                 throw new IllegalStateException(
-                        "Score corruption (" + workingScore.subtract(uncorruptedScore).toShortString()
-                                + "): the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                                + uncorruptedScore + ") after completedAction (" + completedAction + "):\n"
+                        "Score corruption (" + score.subtract(uncorruptedScore).toShortString()
+                                + "): the " + (predicted ? "predictedScore" : "workingScore") + " (" + score
+                                + ") is not the uncorruptedScore (" + uncorruptedScore
+                                + ") after completedAction (" + completedAction + "):\n"
                                 + scoreCorruptionAnalysis + "\n"
                                 + shadowVariableAnalysis);
             }
