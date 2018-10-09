@@ -96,6 +96,9 @@ The kmodule.xml allows to define and configure one or more ``KieBase``s and for 
       <workItemHandlers>
         <workItemHandler name="name" type="org.domain.WorkItemHandler"/>
       </workItemHandlers>
+      <calendars>
+        <calendar name="monday" type="org.domain.Monday"/>
+      </calendars>
       <listeners>
         <ruleRuntimeEventListener type="org.domain.RuleRuntimeListener"/>
         <agendaEventListener type="org.domain.FirstAgendaListener"/>
@@ -217,7 +220,7 @@ They are listed and described in the following table:
 |===
 
 
-As outlined in the former kmodule.xml sample, it is also possible to declaratively create on each `KieSession` a file (or a console) logger, one or more ``WorkItemHandler``s and some listeners that can be of 3 different types: ruleRuntimeEventListener, agendaEventListener and processEventListener
+As outlined in the former kmodule.xml sample, it is also possible to declaratively create on each `KieSession` a file (or a console) logger, one or more ``WorkItemHandler``s and ``Calendar``s plus some listeners that can be of 3 different types: ruleRuntimeEventListener, agendaEventListener and processEventListener
 
 Having defined a kmodule.xml like the one in the former sample, it is now possible to simply retrieve the KieBases and KieSessions from the KieContainer using their names.
 
