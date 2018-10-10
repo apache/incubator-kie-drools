@@ -56,7 +56,7 @@ public class EasyScoreDirectorTest {
         return factory;
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>((EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.valueOf(0));
@@ -82,7 +82,13 @@ public class EasyScoreDirectorTest {
         e2.setValue(v1);
         scoreDirector.afterVariableChanged(e2, "value");
         scoreDirector.triggerVariableListeners();
-        scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(0, 0), "FirstChange");
+        // TODO After upgrade to JUnit 5, clean this up
+        try {
+            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(0, 0), "FirstChange");
+            fail("IllegalStateException wasn't thrown.");
+        } catch (IllegalStateException e) {
+            // ok
+        }
     }
 
 }
