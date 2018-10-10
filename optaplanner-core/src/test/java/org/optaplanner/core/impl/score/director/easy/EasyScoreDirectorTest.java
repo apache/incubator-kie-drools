@@ -20,12 +20,9 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.AdditionalAnswers;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
@@ -59,8 +56,8 @@ public class EasyScoreDirectorTest {
     @Test
     public void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
-                new EasyScoreDirectorFactory<>((EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.valueOf(0));
-        scoreDirectorFactory.setSolutionDescriptor(TestdataCorruptedShadowedSolution.buildSolutionDescriptor());
+                new EasyScoreDirectorFactory<>(TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
+                        (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.valueOf(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false);
