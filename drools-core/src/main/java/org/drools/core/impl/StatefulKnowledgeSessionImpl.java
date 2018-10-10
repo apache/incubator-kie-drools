@@ -88,7 +88,6 @@ import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode;
-import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -157,6 +156,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
 
+import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -767,9 +767,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         InitialFact initialFact = InitialFactImpl.getInstance();
         InternalFactHandle handle = new DefaultFactHandle(0, initialFact, 0, entryPoint );
 
-        ClassObjectTypeConf otc = (ClassObjectTypeConf) entryPoint.getObjectTypeConfigurationRegistry()
-                                                                  .getObjectTypeConf(epId, initialFact);
-        ObjectTypeNode otn = otc.getConcreteObjectTypeNode();
+        ObjectTypeNode otn = entryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
             PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
             PropagationContext pctx = ctxFact.createPropagationContext( 0, PropagationContext.Type.INSERTION, null,
@@ -1116,7 +1114,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.opCounter.set(0);
         this.lastIdleTimestamp.set( -1 );
 
-        initDefaultEntryPoint();
+        this.defaultEntryPoint.reset();
         updateEntryPointsCache();
 
         timerService.reset();

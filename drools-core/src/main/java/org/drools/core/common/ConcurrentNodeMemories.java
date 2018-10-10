@@ -16,8 +16,6 @@
 
 package org.drools.core.common;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,22 +53,18 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase)session.getKieBase();
-        Set<SegmentMemory> smems = new HashSet<SegmentMemory>();
 
         for (int i = 0; i < memories.length(); i++) {
             Memory memory = memories.get(i);
             if (memory != null) {
                 if (memory.getSegmentMemory() != null) {
-                    smems.add(memory.getSegmentMemory());
+                    SegmentMemory smem = memory.getSegmentMemory();
+                    smem.reset(kBase.getSegmentPrototype(smem));
+                    if ( smem.isSegmentLinked() ) {
+                        smem.notifyRuleLinkSegment((InternalWorkingMemory)session);
+                    }
                 }
                 memory.reset();
-            }
-        }
-
-        for (SegmentMemory smem : smems) {
-            smem.reset(kBase.getSegmentPrototype(smem));
-            if ( smem.isSegmentLinked() ) {
-                smem.notifyRuleLinkSegment((InternalWorkingMemory)session);
             }
         }
     }

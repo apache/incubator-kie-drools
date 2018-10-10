@@ -101,6 +101,8 @@ public class KieContainerImpl
 
 	private final String containerId;
 
+    private final Map<String, KieSessionConfiguration> sessionConfsCache = new ConcurrentHashMap<>();
+
     public KieModule getMainKieModule() {
         return kr.getKieModule(getReleaseId());
     }
@@ -638,13 +640,16 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
-        KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
-        ksConf.setOption( kSessionModel.getClockType() );
-        ksConf.setOption( kSessionModel.getBeliefSystem() );
-        return ksConf;
+        return sessionConfsCache.computeIfAbsent(kSessionModel.getName(), k -> {
+            KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
+            ksConf.setOption( kSessionModel.getClockType() );
+            ksConf.setOption( kSessionModel.getBeliefSystem() );
+            return ksConf;
+        });
     }
 
     public void dispose() {
+        sessionConfsCache.clear();
         kBases.values().forEach( kb -> ( (InternalKnowledgeBase) kb ).setKieContainer( null ) );
 
         Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<DroolsManagementAgent.CBSKey>();

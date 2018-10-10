@@ -57,15 +57,12 @@ public class JDKTimerService
 
     public JDKTimerService(int size) {
         this.size = size;
-        init();
+        this.scheduler = new ScheduledThreadPoolExecutor(size);
+        this.idCounter = new AtomicLong(0L);
     }
 
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
         this.jobFactoryManager = timerJobFactoryManager;
-    }
-
-    public void setCounter(long counter) {
-        idCounter = new AtomicLong(counter);
     }
 
     public TimerJobFactoryManager getTimerJobFactoryManager() {
@@ -80,13 +77,11 @@ public class JDKTimerService
     }
 
     public void reset() {
-        this.scheduler.shutdownNow();
-        init();
-    }
-
-    private void init() {
-        this.scheduler = new ScheduledThreadPoolExecutor(size);
-        this.idCounter = new AtomicLong();
+        if (idCounter.get() != 0L) {
+            this.scheduler.shutdownNow();
+            this.scheduler = new ScheduledThreadPoolExecutor( size );
+            this.idCounter.set( 0L );
+        }
     }
 
     @Override

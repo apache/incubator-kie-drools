@@ -96,7 +96,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     @Override
     public void clear() {
         storesMap.clear();
-        concreteStores.clear();
+        concreteStores = new CopyOnWriteArrayList<ConcreteClassStore>();
         if (isEqualityBehaviour) {
             equalityMap.clear();
         }
