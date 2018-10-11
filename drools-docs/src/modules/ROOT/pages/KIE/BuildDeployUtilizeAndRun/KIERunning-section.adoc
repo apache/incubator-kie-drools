@@ -433,19 +433,6 @@ baos.close();
 
 Note that the acceptance checking order is in the natural order of the supplied elements.
 
-Also note that if you are using scheduled matches (i.e.
-some of your rules use timers or calendars) they are marshallable only if, before you use it, you configure your KieSession to use a trackable timer job factory manager as follows:
-
-.Configuring a trackable timer job factory manager
-====
-[source,java]
-----
-KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
-ksconf.setOption(TimerJobFactoryOption.get("trackable"));
-KSession ksession = kbase.newKieSession(ksconf, null);
-----
-====
-
 == Persistence and Transactions
 
 
