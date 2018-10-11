@@ -64,16 +64,11 @@ import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
     private static class ScopeHelper {
-
         Deque<Map<String, Type>> stack;
 
         public ScopeHelper() {
             this.stack = new ArrayDeque<>();
             this.stack.push(new HashMap<>());
-        }
-
-        public void addTypes(Map<String, Type> inputTypes) {
-            stack.peek().putAll(inputTypes);
         }
 
         public void addType(String name, Type type) {
@@ -300,6 +295,8 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                     FeelCtx.emptyContext(), BuiltInType.CONTEXT);
         }
 
+        scopeHelper.pushScope();
+
         // openContext(feelCtx)
         MapBackedType resultType = new MapBackedType();
         DirectCompilerResult openContext =
@@ -320,6 +317,8 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                                 r.getExpression().asMethodCallExpr().setScope(l.getExpression()),
                                 r.resultType,
                                 DirectCompilerResult.mergeFDs(l, r)));
+
+        scopeHelper.popScope();
 
         // .closeContext()
         return DirectCompilerResult.of(
