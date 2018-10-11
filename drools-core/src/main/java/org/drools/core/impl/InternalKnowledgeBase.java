@@ -95,8 +95,6 @@ public interface InternalKnowledgeBase extends KieBase {
 
     void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession);
 
-    StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment);
-
     TripleStore getTripleStore();
 
     TraitRegistry getTraitRegistry();

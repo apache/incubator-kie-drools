@@ -55,12 +55,17 @@ public class JpaJDKTimerService extends JDKTimerService {
 
     public JpaJDKTimerService() {
         this( 1 );
-        timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
     }
 
     public JpaJDKTimerService(int size) {
         super( size );
         timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        timerInstances.clear();
     }
 
     protected Callable<Void> createCallableJob(Job job,

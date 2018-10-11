@@ -135,7 +135,6 @@ public class SegmentMemoryPrototypeTest {
         try {
             checkKieSession(ksession);
         } finally {
-            ksession.dispose();
             try {
                 ksession.reset();
                 checkKieSession(ksession);

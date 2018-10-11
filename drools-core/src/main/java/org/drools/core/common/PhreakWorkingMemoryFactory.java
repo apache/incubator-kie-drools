@@ -32,11 +32,6 @@ public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Seriali
     }
 
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
-        InternalWorkingMemory cachedWm = kBase.getCachedSession(config, environment);
-        if (cachedWm != null) {
-            return cachedWm;
-        }
-
         return new StatefulKnowledgeSessionImpl( id, kBase, true, config, environment);
     }
 

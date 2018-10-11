@@ -525,9 +525,8 @@ public class DefaultAgenda
     }
 
     private void clearFocusStack() {
-        InternalAgendaGroup[] groups = focusStack.toArray( new InternalAgendaGroup[focusStack.size()] );
-        for ( InternalAgendaGroup group : groups ) {
-            group.visited();
+        for ( AgendaGroup group : focusStack ) {
+            (( InternalAgendaGroup ) group).visited();
         }
         this.focusStack.clear();
     }
