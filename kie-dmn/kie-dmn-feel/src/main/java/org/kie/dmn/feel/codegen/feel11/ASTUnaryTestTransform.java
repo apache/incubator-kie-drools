@@ -35,15 +35,30 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
         for (BaseNode e : n.getElements()) {
             UnaryTestSubexpr accept = e.accept(this);
             if (accept.isWildcard()) {
-                collect.add(asWildcard(accept.node));
+                collect.add(rewriteToUnaryTestExpr(accept.node));
             } else if (!accept.isUnaryTest()) {
-                collect.add(asUnaryEq(accept.node));
+                collect.add(rewriteToUnaryEqInExpr(accept.node));
             } else {
                 collect.add(accept.node);
             }
         }
         return new TopLevel(
                 ASTBuilderFactory.newUnaryTestListNode(n.getParserRuleContext(), collect, n.getState()));
+    }
+
+    private BaseNode rewriteToUnaryTestExpr(BaseNode node) {
+        return ASTBuilderFactory.newUnaryTestNode(
+                node.getParserRuleContext(), "test", node);
+    }
+
+    public BaseNode rewriteToUnaryEqInExpr(BaseNode node) {
+        if (node instanceof ListNode || node instanceof RangeNode) {
+            return ASTBuilderFactory.newUnaryTestNode(
+                    node.getParserRuleContext(), "in", node);
+        } else {
+            return ASTBuilderFactory.newUnaryTestNode(
+                    node.getParserRuleContext(), "=", node);
+        }
     }
 
     @Override
@@ -104,21 +119,6 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
             return new WildCardUnaryExpression(n);
         } else {
             return new SimpleUnaryExpression(n);
-        }
-    }
-
-    private BaseNode asWildcard(BaseNode node) {
-        return ASTBuilderFactory.newUnaryTestNode(
-                node.getParserRuleContext(), "test", node);
-    }
-
-    public BaseNode asUnaryEq(BaseNode node) {
-        if (node instanceof ListNode || node instanceof RangeNode) {
-            return ASTBuilderFactory.newUnaryTestNode(
-                    node.getParserRuleContext(), "in", node);
-        } else {
-            return ASTBuilderFactory.newUnaryTestNode(
-                    node.getParserRuleContext(), "=", node);
         }
     }
 
