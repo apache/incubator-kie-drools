@@ -588,7 +588,7 @@ public class KieContainerImpl
         }
     }
 
-    private void registerCalendars(KieSessionModelImpl kSessionModel, KieSession kSession) {
+    private void registerCalendars(KieSessionModel kSessionModel, KieSession kSession) {
         for (Map.Entry<String, String> entry : kSessionModel.getCalendars().entrySet()) {
             try {
                 Calendar calendar = (Calendar) getClassLoader().loadClass( entry.getValue() ).newInstance();
