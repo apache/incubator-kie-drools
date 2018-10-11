@@ -36,7 +36,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
                 StepCountingHillClimbingType.STEP);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -142,7 +142,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
                 StepCountingHillClimbingType.EQUAL_OR_IMPROVING_STEP);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -248,7 +248,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
                 StepCountingHillClimbingType.IMPROVING_STEP);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());

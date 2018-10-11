@@ -40,17 +40,17 @@ public abstract class AbstractSolverRankingComparatorTest {
     protected SingleBenchmarkResult addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList,
             int score, int bestScore, int worstScore) {
         return addSingleBenchmark(singleBenchmarkResultList,
-                SimpleScore.valueOf(score),
-                SimpleScore.valueOf(bestScore),
-                SimpleScore.valueOf(worstScore));
+                SimpleScore.of(score),
+                SimpleScore.of(bestScore),
+                SimpleScore.of(worstScore));
     }
 
     protected SingleBenchmarkResult addSingleBenchmarkWithHardSoftLongScore(List<SingleBenchmarkResult> singleBenchmarkResultList,
             long hardScore, long softScore, long hardBestScore, long softBestScore, long hardWorstScore, long softWorstScore) {
         return addSingleBenchmark(singleBenchmarkResultList,
-                HardSoftLongScore.valueOf(hardScore, softScore),
-                HardSoftLongScore.valueOf(hardBestScore, softBestScore),
-                HardSoftLongScore.valueOf(hardWorstScore, softWorstScore));
+                HardSoftLongScore.of(hardScore, softScore),
+                HardSoftLongScore.of(hardBestScore, softBestScore),
+                HardSoftLongScore.of(hardWorstScore, softWorstScore));
     }
 
     protected <S extends Score<S>> SingleBenchmarkResult addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList,

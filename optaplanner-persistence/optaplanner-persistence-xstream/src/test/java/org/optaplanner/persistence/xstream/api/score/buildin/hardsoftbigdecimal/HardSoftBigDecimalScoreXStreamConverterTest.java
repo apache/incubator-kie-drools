@@ -28,9 +28,9 @@ public class HardSoftBigDecimalScoreXStreamConverterTest extends AbstractScoreXS
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftBigDecimalScoreWrapper(null));
-        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.valueOf(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
-        score = HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        score = HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
     }
 

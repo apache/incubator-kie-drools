@@ -57,7 +57,7 @@ public class EasyScoreDirectorTest {
     public void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>(TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
-                        (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.valueOf(0));
+                        (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false);
@@ -71,7 +71,7 @@ public class EasyScoreDirectorTest {
         solution.setEntityList(Arrays.asList(e1, e2));
         scoreDirector.setWorkingSolution(solution);
 
-        scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(-2, 0), "NoChange");
+        scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(-2, 0), "NoChange");
         scoreDirector.beforeVariableChanged(e1, "value");
         e1.setValue(v1);
         scoreDirector.afterVariableChanged(e1, "value");
@@ -81,7 +81,7 @@ public class EasyScoreDirectorTest {
         scoreDirector.triggerVariableListeners();
         // TODO After upgrade to JUnit 5, clean this up
         try {
-            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.valueOfUninitialized(0, 0), "FirstChange");
+            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange");
             fail("IllegalStateException wasn't thrown.");
         } catch (IllegalStateException e) {
             // ok

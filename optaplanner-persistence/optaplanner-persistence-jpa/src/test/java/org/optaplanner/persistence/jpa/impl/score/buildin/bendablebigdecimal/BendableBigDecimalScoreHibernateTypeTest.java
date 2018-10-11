@@ -32,10 +32,10 @@ public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                BendableBigDecimalScore.valueOf(
+                BendableBigDecimalScore.of(
                         new BigDecimal[]{new BigDecimal("10000.00001"), new BigDecimal("2000.00020"), new BigDecimal("300.00300")},
                         new BigDecimal[]{new BigDecimal("40.04000"), new BigDecimal("5.50000")}),
-                BendableBigDecimalScore.valueOfUninitialized(-7,
+                BendableBigDecimalScore.ofUninitialized(-7,
                         new BigDecimal[]{new BigDecimal("10000.00001"), new BigDecimal("2000.00020"), new BigDecimal("300.00300")},
                         new BigDecimal[]{new BigDecimal("40.04000"), new BigDecimal("5.50000")}));
     }

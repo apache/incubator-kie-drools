@@ -38,13 +38,29 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         String[] scoreTokens = parseScoreTokens(SimpleDoubleScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleDoubleScore.class, scoreString, scoreTokens[0]);
         double score = parseLevelAsDouble(SimpleDoubleScore.class, scoreString, scoreTokens[1]);
-        return valueOfUninitialized(initScore, score);
+        return ofUninitialized(initScore, score);
     }
 
+    public static SimpleDoubleScore ofUninitialized(int initScore, double score) {
+        return new SimpleDoubleScore(initScore, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, double)}
+     */
+    @Deprecated
     public static SimpleDoubleScore valueOfUninitialized(int initScore, double score) {
         return new SimpleDoubleScore(initScore, score);
     }
 
+    public static SimpleDoubleScore of(double score) {
+        return new SimpleDoubleScore(0, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(double)}
+     */
+    @Deprecated
     public static SimpleDoubleScore valueOf(double score) {
         return new SimpleDoubleScore(0, score);
     }

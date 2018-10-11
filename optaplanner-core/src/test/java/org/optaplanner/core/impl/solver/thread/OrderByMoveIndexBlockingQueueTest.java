@@ -57,39 +57,39 @@ public class OrderByMoveIndexBlockingQueueTest {
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
         queue.startNextStep(0);
-        executorService.submit(() -> queue.addMove(0, 0, 0, new DummyMove("a0"), SimpleScore.valueOf(-100)));
-        executorService.submit(() -> queue.addMove(1, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1000)));
-        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-200)));
-        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-30)));
+        executorService.submit(() -> queue.addMove(0, 0, 0, new DummyMove("a0"), SimpleScore.of(-100)));
+        executorService.submit(() -> queue.addMove(1, 0, 1, new DummyMove("a1"), SimpleScore.of(-1000)));
+        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.of(-200)));
+        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.of(-30)));
         assertResult("a0", -100, queue.take());
         assertResult("a1", -1000, queue.take());
         assertResult("a2", -200, queue.take());
-        executorService.submit(() -> queue.addMove(1, 0, 5, new DummyMove("a5"), SimpleScore.valueOf(-5)));
-        executorService.submit(() -> queue.addMove(1, 0, 4, new DummyMove("a4"), SimpleScore.valueOf(-4)));
+        executorService.submit(() -> queue.addMove(1, 0, 5, new DummyMove("a5"), SimpleScore.of(-5)));
+        executorService.submit(() -> queue.addMove(1, 0, 4, new DummyMove("a4"), SimpleScore.of(-4)));
         assertResult("a3", -30, queue.take());
-        executorService.submit(() -> queue.addMove(1, 0, 9, new DummyMove("a9"), SimpleScore.valueOf(-9)));
+        executorService.submit(() -> queue.addMove(1, 0, 9, new DummyMove("a9"), SimpleScore.of(-9)));
         assertResult("a4", -4, queue.take());
         assertResult("a5", -5, queue.take());
-        executorService.submit(() -> queue.addMove(1, 0, 8, new DummyMove("a8"), SimpleScore.valueOf(-8)));
-        executorService.submit(() -> queue.addMove(0, 0, 6, new DummyMove("a6"), SimpleScore.valueOf(-6)));
-        executorService.submit(() -> queue.addMove(1, 0, 7, new DummyMove("a7"), SimpleScore.valueOf(-7)));
+        executorService.submit(() -> queue.addMove(1, 0, 8, new DummyMove("a8"), SimpleScore.of(-8)));
+        executorService.submit(() -> queue.addMove(0, 0, 6, new DummyMove("a6"), SimpleScore.of(-6)));
+        executorService.submit(() -> queue.addMove(1, 0, 7, new DummyMove("a7"), SimpleScore.of(-7)));
         assertResult("a6", -6, queue.take());
-        executorService.submit(() -> queue.addMove(1, 0, 10, new DummyMove("a10"), SimpleScore.valueOf(-10)));
+        executorService.submit(() -> queue.addMove(1, 0, 10, new DummyMove("a10"), SimpleScore.of(-10)));
 
         queue.startNextStep(1);
-        executorService.submit(() -> queue.addMove(0, 1, 0, new DummyMove("b0"), SimpleScore.valueOf(0)));
-        executorService.submit(() -> queue.addMove(1, 0, 11, new DummyMove("a11"), SimpleScore.valueOf(-11)));
+        executorService.submit(() -> queue.addMove(0, 1, 0, new DummyMove("b0"), SimpleScore.of(0)));
+        executorService.submit(() -> queue.addMove(1, 0, 11, new DummyMove("a11"), SimpleScore.of(-11)));
         assertResult("b0", 0, queue.take());
-        executorService.submit(() -> queue.addMove(0, 1, 3, new DummyMove("b3"), SimpleScore.valueOf(-3)));
-        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.valueOf(-1)));
-        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.valueOf(-2)));
+        executorService.submit(() -> queue.addMove(0, 1, 3, new DummyMove("b3"), SimpleScore.of(-3)));
+        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1)));
+        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.of(-2)));
         assertResult("b1", -1, queue.take());
-        executorService.submit(() -> queue.addMove(0, 1, 4, new DummyMove("b4"), SimpleScore.valueOf(-4)));
+        executorService.submit(() -> queue.addMove(0, 1, 4, new DummyMove("b4"), SimpleScore.of(-4)));
 
         queue.startNextStep(2);
-        executorService.submit(() -> queue.addMove(1, 2, 2, new DummyMove("c2"), SimpleScore.valueOf(-2)));
-        executorService.submit(() -> queue.addMove(1, 2, 1, new DummyMove("c1"), SimpleScore.valueOf(-1)));
-        executorService.submit(() -> queue.addMove(1, 2, 0, new DummyMove("c0"), SimpleScore.valueOf(0)));
+        executorService.submit(() -> queue.addMove(1, 2, 2, new DummyMove("c2"), SimpleScore.of(-2)));
+        executorService.submit(() -> queue.addMove(1, 2, 1, new DummyMove("c1"), SimpleScore.of(-1)));
+        executorService.submit(() -> queue.addMove(1, 2, 0, new DummyMove("c0"), SimpleScore.of(0)));
         assertResult("c0", 0, queue.take());
         assertResult("c1", -1, queue.take());
         assertResult("c2", -2, queue.take());
@@ -103,14 +103,14 @@ public class OrderByMoveIndexBlockingQueueTest {
         queue.startNextStep(0);
         executorService.submit(() -> queue.addUndoableMove(0, 0, 0, new DummyMove("a0")));
         executorService.submit(() -> queue.addUndoableMove(1, 0, 3, new DummyMove("a3")));
-        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.of(-1)));
         executorService.submit(() -> queue.addUndoableMove(1, 0, 2, new DummyMove("a2")));
         assertResult("a0", false, queue.take());
         assertResult("a1", -1, queue.take());
         assertResult("a2", false, queue.take());
 
         queue.startNextStep(1);
-        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1)));
         executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
         executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
         assertResult("b0", false, queue.take());
@@ -123,22 +123,22 @@ public class OrderByMoveIndexBlockingQueueTest {
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
         queue.startNextStep(0);
-        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
-        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.valueOf(0)));
-        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-2)));
-        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.of(-1)));
+        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.of(0)));
+        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.of(-2)));
+        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.of(-3)));
         assertResult("a0", 0, queue.take());
         assertResult("a1", -1, queue.take());
         assertResult("a2", -2, queue.take());
 
         queue.startNextStep(1);
-        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.valueOf(-1)));
+        executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1)));
         executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
         executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet or the next task finishes earlier
-        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.valueOf(-2)));
+        executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.of(-2)));
         assertResult("b0", false, queue.take());
         assertResult("b1", -1, queue.take());
         try {
@@ -155,10 +155,10 @@ public class OrderByMoveIndexBlockingQueueTest {
         OrderByMoveIndexBlockingQueue<TestdataSolution> queue = new OrderByMoveIndexBlockingQueue<>(4 + 2);
 
         queue.startNextStep(0);
-        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.valueOf(-1)));
-        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.valueOf(0)));
-        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.valueOf(-2)));
-        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.valueOf(-3)));
+        executorService.submit(() -> queue.addMove(0, 0, 1, new DummyMove("a1"), SimpleScore.of(-1)));
+        executorService.submit(() -> queue.addMove(1, 0, 0, new DummyMove("a0"), SimpleScore.of(0)));
+        executorService.submit(() -> queue.addMove(0, 0, 2, new DummyMove("a2"), SimpleScore.of(-2)));
+        executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.of(-3)));
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         try {
@@ -176,7 +176,7 @@ public class OrderByMoveIndexBlockingQueueTest {
 
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
-        assertEquals(SimpleScore.valueOf(score), result.getScore());
+        assertEquals(SimpleScore.of(score), result.getScore());
     }
 
     private void assertResult(String moveCode, boolean doable, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {

@@ -60,7 +60,7 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return SimpleBigDecimalScore.valueOfUninitialized(initScore, (BigDecimal) levelNumbers[0]);
+        return SimpleBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0]);
     }
 
     @Override

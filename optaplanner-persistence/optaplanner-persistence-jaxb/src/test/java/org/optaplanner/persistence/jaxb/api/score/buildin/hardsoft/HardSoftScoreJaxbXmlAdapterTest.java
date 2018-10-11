@@ -28,9 +28,9 @@ public class HardSoftScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapter
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftScoreWrapper(null));
-        HardSoftScore score = HardSoftScore.valueOf(1200, 34);
+        HardSoftScore score = HardSoftScore.of(1200, 34);
         assertSerializeAndDeserialize(score, new TestHardSoftScoreWrapper(score));
-        score = HardSoftScore.valueOfUninitialized(-7, 1200, 34);
+        score = HardSoftScore.ofUninitialized(-7, 1200, 34);
         assertSerializeAndDeserialize(score, new TestHardSoftScoreWrapper(score));
     }
 

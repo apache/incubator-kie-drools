@@ -119,7 +119,7 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
                 }
             }
         }
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.of(hardScore, softScore);
     }
 
 }

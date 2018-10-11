@@ -49,7 +49,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> 
                 score -= tailVisit.getDistanceTo(domicile);
             }
         }
-        return SimpleLongScore.valueOf(score);
+        return SimpleLongScore.of(score);
     }
 
 }

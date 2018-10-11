@@ -39,13 +39,13 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1);
-        assertEquals(HardSoftScore.valueOf(-1, 0), scoreHolder.extractScore(0));
+        assertEquals(HardSoftScore.of(-1, 0), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8);
-        assertEquals(HardSoftScore.valueOf(-9, 0), scoreHolder.extractScore(0));
+        assertEquals(HardSoftScore.of(-9, 0), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(HardSoftScore.valueOf(-1, 0), scoreHolder.extractScore(0));
+        assertEquals(HardSoftScore.of(-1, 0), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -10);
@@ -70,11 +70,11 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, -999, -999);
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftScore.valueOf(-50301, -4020), scoreHolder.extractScore(0));
-        assertEquals(HardSoftScore.valueOfUninitialized(-7, -50301, -4020), scoreHolder.extractScore(-7));
+        assertEquals(HardSoftScore.of(-50301, -4020), scoreHolder.extractScore(0));
+        assertEquals(HardSoftScore.ofUninitialized(-7, -50301, -4020), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftScore.valueOf(-1, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftScore.valueOf(0, -20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardSoftScore.of(-1, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardSoftScore.of(0, -20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

@@ -35,25 +35,25 @@ public class BestScoreFeasibleTerminationTest {
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[]{});
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
-        when(solverScope.getStartingInitializedScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(solverScope.getStartingInitializedScore()).thenReturn(HardSoftScore.of(-100, -100));
         when(solverScope.isBestSolutionInitialized()).thenReturn(true);
 
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(-100, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
         assertEquals(0.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-80, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(-80, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
         assertEquals(0.2, termination.calculateSolverTimeGradient(solverScope), 0.0);
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-60, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(-60, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
         assertEquals(0.4, termination.calculateSolverTimeGradient(solverScope), 0.0);
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-40, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(-40, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
         assertEquals(0.6, termination.calculateSolverTimeGradient(solverScope), 0.0);
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-20, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(-20, -100));
         assertEquals(false, termination.isSolverTerminated(solverScope));
         assertEquals(0.8, termination.calculateSolverTimeGradient(solverScope), 0.0);
-        when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOf(0, -100));
+        when(solverScope.getBestScore()).thenReturn(HardSoftScore.of(0, -100));
         assertEquals(true, termination.isSolverTerminated(solverScope));
         assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
     }
@@ -65,25 +65,25 @@ public class BestScoreFeasibleTerminationTest {
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[]{});
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
-        when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.of(-100, -100));
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
 
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-100, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(-100, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
         assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-80, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(-80, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
         assertEquals(0.2, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-60, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(-60, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
         assertEquals(0.4, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-40, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(-40, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
         assertEquals(0.6, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(-20, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(-20, -100));
         assertEquals(false, termination.isPhaseTerminated(phaseScope));
         assertEquals(0.8, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
-        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOf(0, -100));
+        when(phaseScope.getBestScore()).thenReturn(HardSoftScore.of(0, -100));
         assertEquals(true, termination.isPhaseTerminated(phaseScope));
         assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
     }
@@ -98,8 +98,8 @@ public class BestScoreFeasibleTerminationTest {
         // Normal cases
         // Smack in the middle
         assertEquals(0.6, termination.calculateFeasibilityTimeGradient(
-                BendableScore.valueOf(new int[]{-10, -100}, new int[]{-50, -60, -70}),
-                BendableScore.valueOf(new int[]{-4, -40}, new int[]{-50, -60, -70})), 0.0);
+                BendableScore.of(new int[]{-10, -100}, new int[]{-50, -60, -70}),
+                BendableScore.of(new int[]{-4, -40}, new int[]{-50, -60, -70})), 0.0);
     }
 
 }

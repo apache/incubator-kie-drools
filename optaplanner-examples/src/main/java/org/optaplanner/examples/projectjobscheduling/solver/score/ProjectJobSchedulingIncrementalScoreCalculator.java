@@ -172,7 +172,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
 
     @Override
     public Score calculateScore() {
-        return BendableScore.valueOf(new int[] {hardScore}, new int[] {soft0Score, soft1Score});
+        return BendableScore.of(new int[] {hardScore}, new int[] {soft0Score, soft1Score});
     }
 
 }

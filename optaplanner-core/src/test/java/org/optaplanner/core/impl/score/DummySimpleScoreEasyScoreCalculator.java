@@ -24,7 +24,7 @@ public class DummySimpleScoreEasyScoreCalculator<Solution_> implements EasyScore
 
     @Override
     public Score calculateScore(Solution_ solution_) {
-        return SimpleScore.valueOf(0);
+        return SimpleScore.of(0);
     }
 
 }

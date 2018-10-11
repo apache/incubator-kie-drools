@@ -28,9 +28,9 @@ public class SimpleLongScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapt
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
-        SimpleLongScore score = SimpleLongScore.valueOf(1234L);
+        SimpleLongScore score = SimpleLongScore.of(1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
-        score = SimpleLongScore.valueOfUninitialized(-7, 1234L);
+        score = SimpleLongScore.ofUninitialized(-7, 1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
     }
 

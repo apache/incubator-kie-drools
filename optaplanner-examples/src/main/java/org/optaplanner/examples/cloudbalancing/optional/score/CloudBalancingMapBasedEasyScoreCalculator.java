@@ -49,7 +49,7 @@ public class CloudBalancingMapBasedEasyScoreCalculator implements EasyScoreCalcu
         int hardScore = sumHardScore(cpuPowerUsageMap, memoryUsageMap, networkBandwidthUsageMap);
         int softScore = sumSoftScore(usedComputerSet);
 
-        return HardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.of(hardScore, softScore);
     }
 
     private void visitProcessList(Map<CloudComputer, Integer> cpuPowerUsageMap,

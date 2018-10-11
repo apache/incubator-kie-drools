@@ -67,7 +67,7 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
                 softScore -= computer.getCost();
             }
         }
-        return HardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.of(hardScore, softScore);
     }
 
 }

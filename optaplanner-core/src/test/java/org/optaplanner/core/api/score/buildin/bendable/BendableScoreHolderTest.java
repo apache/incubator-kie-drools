@@ -39,13 +39,13 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, -1);
-        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
-        assertEquals(BendableScore.valueOf(new int[]{-9}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-9}, new int[]{0, 0}), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10);
@@ -79,11 +79,11 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999);
         callOnDelete(medium2Undo);
 
-        assertEquals(BendableScore.valueOf(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
-        assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
+        assertEquals(BendableScore.of(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.ofUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(BendableScore.valueOf(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(BendableScore.of(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

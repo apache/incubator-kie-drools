@@ -54,7 +54,7 @@ public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<Invest
         }
         // Maximize expected return
         softScore += solution.calculateExpectedReturnMicros();
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.of(hardScore, softScore);
     }
 
 }

@@ -30,8 +30,8 @@ public class HardSoftScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                HardSoftScore.valueOf(-10, -2),
-                HardSoftScore.valueOfUninitialized(-7, -10, -2));
+                HardSoftScore.of(-10, -2),
+                HardSoftScore.ofUninitialized(-7, -10, -2));
     }
 
     @Entity

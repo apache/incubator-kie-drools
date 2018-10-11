@@ -130,20 +130,20 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
         assertCompareToEquals(aWeight, bWeight);
 
-        a0.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -1000));
-        b0.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -1000));
+        a0.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -1000));
+        b0.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -1000));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts, total scores and worst scores are equal
         assertCompareToEquals(aWeight, bWeight);
 
-        b0.setAverageAndTotalScoreForTesting(SimpleScore.valueOf(-1000));
-        b1.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -400));
+        b0.setAverageAndTotalScoreForTesting(SimpleScore.of(-1000));
+        b1.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -400));
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts and total scores are equal, A loses on worst score (tie-breaker)
         assertCompareToOrder(aWeight, bWeight);
 
-        b1.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-101, -400));
+        b1.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-101, -400));
         b.accumulateResults(benchmarkReport);
         // ranks are equal, uninitialized variable count is bigger in B
         assertCompareToOrder(bWeight, aWeight);

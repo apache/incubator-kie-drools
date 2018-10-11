@@ -107,7 +107,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 }
             }
         }
-        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
+        return HardMediumSoftLongScore.of(hardScore, mediumScore, softScore);
     }
 
     private enum MachinePeriodStatus {

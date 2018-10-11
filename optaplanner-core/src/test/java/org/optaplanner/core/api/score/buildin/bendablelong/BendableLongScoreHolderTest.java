@@ -39,13 +39,13 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, -1L);
-        assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
+        assertEquals(BendableLongScore.of(new long[]{-1L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
-        assertEquals(BendableLongScore.valueOf(new long[]{-9L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
+        assertEquals(BendableLongScore.of(new long[]{-9L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
+        assertEquals(BendableLongScore.of(new long[]{-1L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10L);
@@ -79,11 +79,11 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999L);
         callOnDelete(medium2Undo);
 
-        assertEquals(BendableLongScore.valueOf(new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(0));
-        assertEquals(BendableLongScore.valueOfUninitialized(-7, new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(-7));
+        assertEquals(BendableLongScore.of(new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(0));
+        assertEquals(BendableLongScore.ofUninitialized(-7, new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(BendableLongScore.valueOf(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(BendableLongScore.of(new long[]{-1L}, new long[]{0L, 0L}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(BendableLongScore.of(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

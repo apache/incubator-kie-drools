@@ -33,13 +33,29 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         String[] scoreTokens = parseScoreTokens(SimpleLongScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleLongScore.class, scoreString, scoreTokens[0]);
         long score = parseLevelAsLong(SimpleLongScore.class, scoreString, scoreTokens[1]);
-        return valueOfUninitialized(initScore, score);
+        return ofUninitialized(initScore, score);
     }
 
+    public static SimpleLongScore ofUninitialized(int initScore, long score) {
+        return new SimpleLongScore(initScore, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, long)}
+     */
+    @Deprecated
     public static SimpleLongScore valueOfUninitialized(int initScore, long score) {
         return new SimpleLongScore(initScore, score);
     }
 
+    public static SimpleLongScore of(long score) {
+        return new SimpleLongScore(0, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(long)}
+     */
+    @Deprecated
     public static SimpleLongScore valueOf(long score) {
         return new SimpleLongScore(0, score);
     }

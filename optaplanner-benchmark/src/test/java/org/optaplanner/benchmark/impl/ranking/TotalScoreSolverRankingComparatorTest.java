@@ -107,20 +107,20 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         b.accumulateResults(benchmarkReport);
         assertCompareToEquals(comparator, a, b);
 
-        a0.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -1000));
-        b1.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -400));
+        a0.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -1000));
+        b1.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -400));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count and total score are equal, A is worse on worst score (tie-breaker)
         assertCompareToOrder(comparator, a, b);
 
-        b0.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-100, -1000));
+        b0.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-100, -1000));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in B
         assertCompareToOrder(comparator, b, a);
 
-        b0.setAverageAndTotalScoreForTesting(SimpleScore.valueOf(-1000));
-        b1.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-99, -400));
+        b0.setAverageAndTotalScoreForTesting(SimpleScore.of(-1000));
+        b1.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-99, -400));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in A
         assertCompareToOrder(comparator, a, b);

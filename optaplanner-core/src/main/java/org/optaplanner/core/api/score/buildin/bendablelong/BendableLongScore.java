@@ -51,7 +51,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         for (int i = 0; i < softScores.length; i++) {
             softScores[i] = parseLevelAsLong(BendableLongScore.class, scoreString, scoreTokens[2][i]);
         }
-        return valueOfUninitialized(initScore, hardScores, softScores);
+        return ofUninitialized(initScore, hardScores, softScores);
     }
 
     /**
@@ -61,6 +61,14 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
+    public static BendableLongScore ofUninitialized(int initScore, long[] hardScores, long[] softScores) {
+        return new BendableLongScore(initScore, hardScores, softScores);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, long[], long[])}
+     */
+    @Deprecated
     public static BendableLongScore valueOfUninitialized(int initScore, long[] hardScores, long[] softScores) {
         return new BendableLongScore(initScore, hardScores, softScores);
     }
@@ -71,12 +79,54 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
+    public static BendableLongScore of(long[] hardScores, long[] softScores) {
+        return new BendableLongScore(0, hardScores, softScores);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(long[], long[])}
+     */
+    @Deprecated
     public static BendableLongScore valueOf(long[] hardScores, long[] softScores) {
         return new BendableLongScore(0, hardScores, softScores);
     }
 
+    /**
+     * Creates a new {@link BendableLongScore}.
+     * @param hardLevelsSize at least 0
+     * @param softLevelsSize at least 0
+     * @return never null
+     */
     public static BendableLongScore zero(int hardLevelsSize, int softLevelsSize) {
         return new BendableLongScore(0, new long[hardLevelsSize], new long[softLevelsSize]);
+    }
+
+    /**
+     * Creates a new {@link BendableLongScore}.
+     * @param hardLevelsSize at least 0
+     * @param softLevelsSize at least 0
+     * @param hardLevel at least 0, less than hardLevelsSize
+     * @param hardScore any
+     * @return never null
+     */
+    public static BendableLongScore ofHard(int hardLevelsSize, int softLevelsSize, int hardLevel, long hardScore) {
+        long[] hardScores = new long[hardLevelsSize];
+        hardScores[hardLevel] = hardScore;
+        return new BendableLongScore(0, hardScores, new long[softLevelsSize]);
+    }
+
+    /**
+     * Creates a new {@link BendableLongScore}.
+     * @param hardLevelsSize at least 0
+     * @param softLevelsSize at least 0
+     * @param softLevel at least 0, less than softLevelsSize
+     * @param softScore any
+     * @return never null
+     */
+    public static BendableLongScore ofSoft(int hardLevelsSize, int softLevelsSize, int softLevel, long softScore) {
+        long[] softScores = new long[softLevelsSize];
+        softScores[softLevel] = softScore;
+        return new BendableLongScore(0, new long[hardLevelsSize], softScores);
     }
 
     // ************************************************************************

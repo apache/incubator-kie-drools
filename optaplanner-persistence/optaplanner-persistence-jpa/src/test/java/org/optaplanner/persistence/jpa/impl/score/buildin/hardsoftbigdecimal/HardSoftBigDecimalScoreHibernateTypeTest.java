@@ -31,8 +31,8 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")),
-                HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
+                HardSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")),
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
     }
 
     @Entity

@@ -94,7 +94,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
         hardScore += hardWeight;
         registerConstraintMatch(kcontext,
                 () -> hardScore -= hardWeight,
-                () -> HardMediumSoftLongScore.valueOf(hardWeight, 0L, 0L));
+                () -> HardMediumSoftLongScore.of(hardWeight, 0L, 0L));
     }
 
     /**
@@ -105,7 +105,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
         mediumScore += mediumWeight;
         registerConstraintMatch(kcontext,
                 () -> mediumScore -= mediumWeight,
-                () -> HardMediumSoftLongScore.valueOf(0L, mediumWeight, 0L));
+                () -> HardMediumSoftLongScore.of(0L, mediumWeight, 0L));
     }
 
     /**
@@ -116,7 +116,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
         softScore += softWeight;
         registerConstraintMatch(kcontext,
                 () -> softScore -= softWeight,
-                () -> HardMediumSoftLongScore.valueOf(0L, 0L, softWeight));
+                () -> HardMediumSoftLongScore.of(0L, 0L, softWeight));
     }
 
     /**
@@ -135,12 +135,12 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
                     mediumScore -= mediumWeight;
                     softScore -= softWeight;
                 },
-                () -> HardMediumSoftLongScore.valueOf(hardWeight, mediumWeight, softWeight));
+                () -> HardMediumSoftLongScore.of(hardWeight, mediumWeight, softWeight));
     }
 
     @Override
     public HardMediumSoftLongScore extractScore(int initScore) {
-        return HardMediumSoftLongScore.valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
+        return HardMediumSoftLongScore.ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
 }

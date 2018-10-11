@@ -78,7 +78,7 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (BigDecimal) levelNumbers[hardLevelsSize + i];
         }
-        return BendableBigDecimalScore.valueOfUninitialized(initScore, hardScores, softScores);
+        return BendableBigDecimalScore.ofUninitialized(initScore, hardScores, softScores);
     }
 
     public BendableBigDecimalScore createScore(BigDecimal... scores) {
@@ -92,7 +92,7 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
                     + ")'s length (" + scores.length
                     + ") is not levelsSize (" + levelsSize + ").");
         }
-        return BendableBigDecimalScore.valueOfUninitialized(initScore,
+        return BendableBigDecimalScore.ofUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }

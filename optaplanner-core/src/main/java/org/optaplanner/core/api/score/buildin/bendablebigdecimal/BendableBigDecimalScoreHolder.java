@@ -134,7 +134,7 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder<BendableB
                     BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
                     Arrays.fill(newSoftScores, BigDecimal.ZERO);
                     newHardScores[hardLevel] = weight;
-                    return BendableBigDecimalScore.valueOf(newHardScores, newSoftScores);
+                    return BendableBigDecimalScore.of(newHardScores, newSoftScores);
                 });
     }
 
@@ -154,7 +154,7 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder<BendableB
                     BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
                     Arrays.fill(newSoftScores, BigDecimal.ZERO);
                     newSoftScores[softLevel] = weight;
-                    return BendableBigDecimalScore.valueOf(newHardScores, newSoftScores);
+                    return BendableBigDecimalScore.of(newHardScores, newSoftScores);
                 });
     }
 
@@ -187,7 +187,7 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder<BendableB
                         softScores[i] = softScores[i].subtract(softWeights[i]);
                     }
                 },
-                () -> BendableBigDecimalScore.valueOf(hardWeights, softWeights));
+                () -> BendableBigDecimalScore.of(hardWeights, softWeights));
     }
 
     @Override

@@ -48,15 +48,43 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         BigDecimal hardScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
         BigDecimal mediumScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
         BigDecimal softScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[3]);
-        return valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
+        return ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
+    public static HardMediumSoftBigDecimalScore ofUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+        return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal, BigDecimal, BigDecimal)}
+     */
+    @Deprecated
     public static HardMediumSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
     }
 
+    public static HardMediumSoftBigDecimalScore of(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+        return new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(BigDecimal, BigDecimal, BigDecimal)}
+     */
+    @Deprecated
     public static HardMediumSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
+    }
+
+    public static HardMediumSoftBigDecimalScore ofHard(BigDecimal hardScore) {
+        return new HardMediumSoftBigDecimalScore(0, hardScore, BigDecimal.ZERO, BigDecimal.ZERO);
+    }
+
+    public static HardMediumSoftBigDecimalScore ofMedium(BigDecimal mediumScore) {
+        return new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, mediumScore, BigDecimal.ZERO);
+    }
+
+    public static HardMediumSoftBigDecimalScore ofSoft(BigDecimal softScore) {
+        return new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, softScore);
     }
 
     // ************************************************************************

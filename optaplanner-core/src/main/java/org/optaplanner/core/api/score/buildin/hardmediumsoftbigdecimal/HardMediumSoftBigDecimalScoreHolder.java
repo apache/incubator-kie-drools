@@ -98,7 +98,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
         registerConstraintMatch(kcontext,
                 () -> hardScore = hardScore.subtract(hardWeight),
-                () -> HardMediumSoftBigDecimalScore.valueOf(hardWeight, BigDecimal.ZERO, BigDecimal.ZERO));
+                () -> HardMediumSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO, BigDecimal.ZERO));
     }
 
     /**
@@ -113,7 +113,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         mediumScore = (mediumScore == null) ? mediumWeight : mediumScore.add(mediumWeight);
         registerConstraintMatch(kcontext,
                 () -> mediumScore = mediumScore.subtract(mediumWeight),
-                () -> HardMediumSoftBigDecimalScore.valueOf(BigDecimal.ZERO, mediumWeight, BigDecimal.ZERO));
+                () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, mediumWeight, BigDecimal.ZERO));
     }
 
     /**
@@ -128,7 +128,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> softScore = softScore.subtract(softWeight),
-                () -> HardMediumSoftBigDecimalScore.valueOf(BigDecimal.ZERO, BigDecimal.ZERO, softWeight));
+                () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, softWeight));
     }
 
     /**
@@ -147,12 +147,12 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
                     mediumScore = mediumScore.subtract(mediumWeight);
                     softScore = softScore.subtract(softWeight);
                 },
-                () -> HardMediumSoftBigDecimalScore.valueOf(hardWeight, mediumWeight, softWeight));
+                () -> HardMediumSoftBigDecimalScore.of(hardWeight, mediumWeight, softWeight));
     }
 
     @Override
     public HardMediumSoftBigDecimalScore extractScore(int initScore) {
-        return HardMediumSoftBigDecimalScore.valueOfUninitialized(initScore,
+        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore,
                 hardScore == null ? BigDecimal.ZERO : hardScore,
                 mediumScore == null ? BigDecimal.ZERO : mediumScore,
                 softScore == null ? BigDecimal.ZERO : softScore);

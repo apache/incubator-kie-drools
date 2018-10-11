@@ -66,6 +66,16 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     private BendableBigDecimalScoreDefinition scoreDefinitionHSS = new BendableBigDecimalScoreDefinition(1, 2);
 
     @Test
+    public void of() {
+        assertEquals(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), ZERO, ZERO),
+                BendableBigDecimalScore.ofHard(1, 2, 0, BigDecimal.valueOf(-147)));
+        assertEquals(scoreDefinitionHSS.createScore(ZERO, BigDecimal.valueOf(-258), ZERO),
+                BendableBigDecimalScore.ofSoft(1, 2, 0, BigDecimal.valueOf(-258)));
+        assertEquals(scoreDefinitionHSS.createScore(ZERO, ZERO, BigDecimal.valueOf(-369)),
+                BendableBigDecimalScore.ofSoft(1, 2, 1, BigDecimal.valueOf(-369)));
+    }
+
+    @Test
     public void parseScore() {
         assertEquals(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),

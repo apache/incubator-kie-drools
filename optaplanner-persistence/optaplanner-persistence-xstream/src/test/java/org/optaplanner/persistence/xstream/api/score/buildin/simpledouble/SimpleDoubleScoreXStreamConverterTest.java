@@ -26,9 +26,9 @@ public class SimpleDoubleScoreXStreamConverterTest extends AbstractScoreXStreamC
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleDoubleScoreWrapper(null));
-        SimpleDoubleScore score = SimpleDoubleScore.valueOf(1234.4321);
+        SimpleDoubleScore score = SimpleDoubleScore.of(1234.4321);
         assertSerializeAndDeserialize(score, new TestSimpleDoubleScoreWrapper(score));
-        score = SimpleDoubleScore.valueOfUninitialized(-7, 1234.4321);
+        score = SimpleDoubleScore.ofUninitialized(-7, 1234.4321);
         assertSerializeAndDeserialize(score, new TestSimpleDoubleScoreWrapper(score));
     }
 

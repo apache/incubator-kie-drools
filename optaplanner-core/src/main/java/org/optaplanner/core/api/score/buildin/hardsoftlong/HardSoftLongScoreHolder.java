@@ -84,7 +84,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder<HardSoftLongSco
         hardScore += hardWeight;
         registerConstraintMatch(kcontext,
                 () -> hardScore -= hardWeight,
-                () -> HardSoftLongScore.valueOf(hardWeight, 0L));
+                () -> HardSoftLongScore.of(hardWeight, 0L));
     }
 
     /**
@@ -95,7 +95,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder<HardSoftLongSco
         softScore += softWeight;
         registerConstraintMatch(kcontext,
                 () -> softScore -= softWeight,
-                () -> HardSoftLongScore.valueOf(0L, softWeight));
+                () -> HardSoftLongScore.of(0L, softWeight));
     }
 
     /**
@@ -110,12 +110,12 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder<HardSoftLongSco
                     hardScore -= hardWeight;
                     softScore -= softWeight;
                 },
-                () -> HardSoftLongScore.valueOf(hardWeight, softWeight));
+                () -> HardSoftLongScore.of(hardWeight, softWeight));
     }
 
     @Override
     public HardSoftLongScore extractScore(int initScore) {
-        return HardSoftLongScore.valueOfUninitialized(initScore, hardScore, softScore);
+        return HardSoftLongScore.ofUninitialized(initScore, hardScore, softScore);
     }
 
 }

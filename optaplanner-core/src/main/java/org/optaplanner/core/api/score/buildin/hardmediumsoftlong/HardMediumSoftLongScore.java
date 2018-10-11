@@ -45,15 +45,43 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
         long hardScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[1]);
         long mediumScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[2]);
         long softScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[3]);
-        return valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
+        return ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
+    public static HardMediumSoftLongScore ofUninitialized(int initScore, long hardScore, long mediumScore, long softScore) {
+        return new HardMediumSoftLongScore(initScore, hardScore, mediumScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, long, long, long)}
+     */
+    @Deprecated
     public static HardMediumSoftLongScore valueOfUninitialized(int initScore, long hardScore, long mediumScore, long softScore) {
         return new HardMediumSoftLongScore(initScore, hardScore, mediumScore, softScore);
     }
 
+    public static HardMediumSoftLongScore of(long hardScore, long mediumScore, long softScore) {
+        return new HardMediumSoftLongScore(0, hardScore, mediumScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(long, long, long)}
+     */
+    @Deprecated
     public static HardMediumSoftLongScore valueOf(long hardScore, long mediumScore, long softScore) {
         return new HardMediumSoftLongScore(0, hardScore, mediumScore, softScore);
+    }
+
+    public static HardMediumSoftLongScore ofHard(long hardScore) {
+        return new HardMediumSoftLongScore(0, hardScore, 0, 0);
+    }
+
+    public static HardMediumSoftLongScore ofMedium(long mediumScore) {
+        return new HardMediumSoftLongScore(0, 0, mediumScore, 0);
+    }
+
+    public static HardMediumSoftLongScore ofSoft(long softScore) {
+        return new HardMediumSoftLongScore(0, 0, 0, softScore);
     }
 
     // ************************************************************************

@@ -39,7 +39,7 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -0.01);
-        assertEquals(HardSoftDoubleScore.valueOf(-0.01, -0.00), scoreHolder.extractScore(0));
+        assertEquals(HardSoftDoubleScore.of(-0.01, -0.00), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -0.08);
@@ -70,11 +70,11 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, -9.99, -9.99);
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftDoubleScore.valueOf(-503.01, -40.20), scoreHolder.extractScore(0));
-        assertEquals(HardSoftDoubleScore.valueOfUninitialized(-7, -503.01, -40.20), scoreHolder.extractScore(-7));
+        assertEquals(HardSoftDoubleScore.of(-503.01, -40.20), scoreHolder.extractScore(0));
+        assertEquals(HardSoftDoubleScore.ofUninitialized(-7, -503.01, -40.20), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftDoubleScore.valueOf(-0.01, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftDoubleScore.valueOf(0.0, -0.20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardSoftDoubleScore.of(-0.01, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardSoftDoubleScore.of(0.0, -0.20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

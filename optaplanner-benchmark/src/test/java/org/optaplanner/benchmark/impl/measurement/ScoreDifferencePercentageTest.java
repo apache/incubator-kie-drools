@@ -27,73 +27,73 @@ public class ScoreDifferencePercentageTest {
 
     @Test(expected = IllegalStateException.class)
     public void calculateScoreDifferencePercentageException() {
-        BendableScore score1 = BendableScore.valueOf(new int[]{1, 2, 3}, new int[]{4, 5});
-        BendableScore score2 = BendableScore.valueOf(new int[]{1, 2}, new int[]{4, 5});
+        BendableScore score1 = BendableScore.of(new int[]{1, 2, 3}, new int[]{4, 5});
+        BendableScore score2 = BendableScore.of(new int[]{1, 2}, new int[]{4, 5});
         ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
     }
 
     @Test
     public void calculateScoreDifferencePercentage() {
         double tolerance = 0.00001;
-        SimpleScore score1 = SimpleScore.valueOf(-100);
-        SimpleScore score2 = SimpleScore.valueOf(-100);
+        SimpleScore score1 = SimpleScore.of(-100);
+        SimpleScore score2 = SimpleScore.of(-100);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(0.0, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        score1 = SimpleScore.valueOf(100);
-        score2 = SimpleScore.valueOf(100);
+        score1 = SimpleScore.of(100);
+        score2 = SimpleScore.of(100);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(0.0, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        score1 = SimpleScore.valueOf(-100);
-        score2 = SimpleScore.valueOf(-10);
+        score1 = SimpleScore.of(-100);
+        score2 = SimpleScore.of(-10);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(0.9, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        score1 = SimpleScore.valueOf(100);
-        score2 = SimpleScore.valueOf(10);
+        score1 = SimpleScore.of(100);
+        score2 = SimpleScore.of(10);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(-0.9, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        score1 = SimpleScore.valueOf(-100);
-        score2 = SimpleScore.valueOf(-1);
+        score1 = SimpleScore.of(-100);
+        score2 = SimpleScore.of(-1);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(0.99, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        score1 = SimpleScore.valueOf(100);
-        score2 = SimpleScore.valueOf(1);
+        score1 = SimpleScore.of(100);
+        score2 = SimpleScore.of(1);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
         assertEquals(-0.99, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
 
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-100, -1);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-100, -1);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
         assertEquals(0.0, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
         assertEquals(0.0, scoreDifferencePercentage.getPercentageLevels()[1], tolerance);
 
-        hardSoftScore1 = HardSoftScore.valueOf(-100, -100);
-        hardSoftScore2 = HardSoftScore.valueOf(-1, -10);
+        hardSoftScore1 = HardSoftScore.of(-100, -100);
+        hardSoftScore2 = HardSoftScore.of(-1, -10);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
         assertEquals(0.99, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
         assertEquals(0.9, scoreDifferencePercentage.getPercentageLevels()[1], tolerance);
 
-        hardSoftScore1 = HardSoftScore.valueOf(100, 100);
-        hardSoftScore2 = HardSoftScore.valueOf(1, 10);
+        hardSoftScore1 = HardSoftScore.of(100, 100);
+        hardSoftScore2 = HardSoftScore.of(1, 10);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
         assertEquals(-0.99, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
         assertEquals(-0.9, scoreDifferencePercentage.getPercentageLevels()[1], tolerance);
 
-        hardSoftScore1 = HardSoftScore.valueOf(100, -100);
-        hardSoftScore2 = HardSoftScore.valueOf(-100, 200);
+        hardSoftScore1 = HardSoftScore.of(100, -100);
+        hardSoftScore2 = HardSoftScore.of(-100, 200);
         scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
         assertEquals(-2, scoreDifferencePercentage.getPercentageLevels()[0], tolerance);
@@ -103,13 +103,13 @@ public class ScoreDifferencePercentageTest {
     @Test
     public void add() {
         double tolerance = 0.00001;
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
-        hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        hardSoftScore1 = HardSoftScore.of(-100, -1);
+        hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
@@ -121,13 +121,13 @@ public class ScoreDifferencePercentageTest {
     @Test
     public void subtract() {
         double tolerance = 0.00001;
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
-        hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        hardSoftScore1 = HardSoftScore.of(-100, -1);
+        hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
@@ -139,8 +139,8 @@ public class ScoreDifferencePercentageTest {
     @Test
     public void multiply() {
         double tolerance = 0.00001;
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
@@ -156,8 +156,8 @@ public class ScoreDifferencePercentageTest {
     @Test
     public void divide() {
         double tolerance = 0.00001;
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
@@ -172,13 +172,13 @@ public class ScoreDifferencePercentageTest {
 
     @Test(expected = IllegalStateException.class)
     public void addWithWrongDimension() {
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
-        SimpleScore score1 = SimpleScore.valueOf(-100);
-        SimpleScore score2 = SimpleScore.valueOf(-200);
+        SimpleScore score1 = SimpleScore.of(-100);
+        SimpleScore score2 = SimpleScore.of(-200);
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
 
@@ -187,13 +187,13 @@ public class ScoreDifferencePercentageTest {
 
     @Test(expected = IllegalStateException.class)
     public void subtractWithWrongDimension() {
-        HardSoftScore hardSoftScore1 = HardSoftScore.valueOf(-100, -1);
-        HardSoftScore hardSoftScore2 = HardSoftScore.valueOf(-200, -10);
+        HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
+        HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
         ScoreDifferencePercentage scoreDifferencePercentage =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1, hardSoftScore2);
 
-        SimpleScore score1 = SimpleScore.valueOf(-100);
-        SimpleScore score2 = SimpleScore.valueOf(-200);
+        SimpleScore score1 = SimpleScore.of(-100);
+        SimpleScore score2 = SimpleScore.of(-200);
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
 

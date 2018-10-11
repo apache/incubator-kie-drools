@@ -71,12 +71,12 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
         score += weight;
         registerConstraintMatch(kcontext,
                 () -> score -= weight,
-                () -> SimpleLongScore.valueOf(weight));
+                () -> SimpleLongScore.of(weight));
     }
 
     @Override
     public SimpleLongScore extractScore(int initScore) {
-        return SimpleLongScore.valueOfUninitialized(initScore, score);
+        return SimpleLongScore.ofUninitialized(initScore, score);
     }
 
 }

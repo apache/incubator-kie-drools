@@ -161,7 +161,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
 
     @Override
     public HardSoftScore calculateScore() {
-        return HardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.of(hardScore, softScore);
     }
 
 }

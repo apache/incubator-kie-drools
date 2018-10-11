@@ -38,10 +38,10 @@ public class AbstractSolutionTest {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
         assertEquals(null, solution.getScore());
-        solution.setScore(SimpleScore.valueOf(-10));
-        assertEquals(SimpleScore.valueOf(-10), solution.getScore());
-        solution.setScore(SimpleScore.valueOf(-2));
-        assertEquals(SimpleScore.valueOf(-2), solution.getScore());
+        solution.setScore(SimpleScore.of(-10));
+        assertEquals(SimpleScore.of(-10), solution.getScore());
+        solution.setScore(SimpleScore.of(-2));
+        assertEquals(SimpleScore.of(-2), solution.getScore());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(entityList);
         TestdataEntity singleEntity = new TestdataEntity("se1");
         solution.setSingleEntity(singleEntity);
-        SimpleScore score = SimpleScore.valueOf(-10);
+        SimpleScore score = SimpleScore.of(-10);
         solution.setScore(score);
         assertCollectionContainsExactly(solution.getProblemFactList(), singleValue, v1, v2, v3);
     }

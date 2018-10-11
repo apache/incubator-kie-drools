@@ -45,7 +45,7 @@ public class ScoreHolderTest {
         return new AbstractScoreHolder(constraintMatchEnabled, SimpleScore.ZERO) {
             @Override
             public Score<?> extractScore(int initScore) {
-                return SimpleScore.valueOf(0);
+                return SimpleScore.of(0);
             }
 
             @Override

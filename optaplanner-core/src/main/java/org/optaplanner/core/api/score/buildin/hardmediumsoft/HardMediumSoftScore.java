@@ -48,12 +48,20 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
         return ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
+    public static HardMediumSoftScore ofUninitialized(int initScore, int hardScore, int mediumScore, int softScore) {
+        return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
+    }
+
     /**
      * @deprecated in favor of {@link #ofUninitialized(int, int, int, int)}
      */
     @Deprecated
     public static HardMediumSoftScore valueOfUninitialized(int initScore, int hardScore, int mediumScore, int softScore) {
-        return ofUninitialized(initScore, hardScore, mediumScore, softScore);
+        return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
+    }
+
+    public static HardMediumSoftScore of(int hardScore, int mediumScore, int softScore) {
+        return new HardMediumSoftScore(0, hardScore, mediumScore, softScore);
     }
 
     /**
@@ -61,14 +69,6 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      */
     @Deprecated
     public static HardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
-        return of(hardScore, mediumScore, softScore);
-    }
-
-    public static HardMediumSoftScore ofUninitialized(int initScore, int hardScore, int mediumScore, int softScore) {
-        return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
-    }
-
-    public static HardMediumSoftScore of(int hardScore, int mediumScore, int softScore) {
         return new HardMediumSoftScore(0, hardScore, mediumScore, softScore);
     }
 

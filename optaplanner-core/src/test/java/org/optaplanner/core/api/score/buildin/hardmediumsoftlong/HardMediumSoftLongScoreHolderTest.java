@@ -39,13 +39,13 @@ public class HardMediumSoftLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1L);
-        assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
-        assertEquals(HardMediumSoftLongScore.valueOf(-9L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-9L, 0L, 0L), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, -10L);
@@ -79,11 +79,11 @@ public class HardMediumSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMediumConstraintMatch(medium2Undo, -9999L);
         callOnDelete(medium2Undo);
 
-        assertEquals(HardMediumSoftLongScore.valueOf(-7004001L, -50020L, -600300L), scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftLongScore.valueOfUninitialized(-7, -7004001L, -50020L, -600300L), scoreHolder.extractScore(-7));
+        assertEquals(HardMediumSoftLongScore.of(-7004001L, -50020L, -600300L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.ofUninitialized(-7, -7004001L, -50020L, -600300L), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardMediumSoftLongScore.valueOf(0L, 0L, -300L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardMediumSoftLongScore.of(0L, 0L, -300L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

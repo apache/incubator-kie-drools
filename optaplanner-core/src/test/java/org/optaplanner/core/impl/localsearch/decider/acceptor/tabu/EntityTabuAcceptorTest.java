@@ -48,7 +48,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e4 = new TestdataEntity("e4");
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(0));
+        solverScope.setBestScore(SimpleScore.of(0));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -128,7 +128,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e4 = new TestdataEntity("e4");
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(0));
+        solverScope.setBestScore(SimpleScore.of(0));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -225,7 +225,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e1 = new TestdataEntity("e1");
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.valueOf(-100));
+        solverScope.setBestScore(SimpleScore.of(-100));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -258,7 +258,7 @@ public class EntityTabuAcceptorTest {
         Move move = mock(Move.class);
         when(move.getPlanningEntities()).thenReturn((Collection) Arrays.asList(entities));
         LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
-        moveScope.setScore(SimpleScore.valueOf(score));
+        moveScope.setScore(SimpleScore.of(score));
         return moveScope;
     }
 

@@ -69,7 +69,7 @@ public class NQueensMapBasedEasyScoreCalculator implements EasyScoreCalculator<N
                 descendingDiagonalIndexCountMap.put(descendingDiagonalIndex, descendingDiagonalIndexCount);
             }
         }
-        return SimpleScore.valueOf(score);
+        return SimpleScore.of(score);
     }
 
 }

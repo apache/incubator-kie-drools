@@ -49,10 +49,10 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, -0.03); // Overwrite existing
 
-        assertEquals(SimpleDoubleScore.valueOfUninitialized(0, -10.03), scoreHolder.extractScore(0));
-        assertEquals(SimpleDoubleScore.valueOfUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
+        assertEquals(SimpleDoubleScore.ofUninitialized(0, -10.03), scoreHolder.extractScore(0));
+        assertEquals(SimpleDoubleScore.ofUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleDoubleScore.valueOf(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertEquals(SimpleDoubleScore.of(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
     }
 

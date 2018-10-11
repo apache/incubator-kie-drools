@@ -27,7 +27,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void of() {
-        assertEquals(HardMediumSoftScore.of(-147, 0, -0),
+        assertEquals(HardMediumSoftScore.of(-147, 0, 0),
                 HardMediumSoftScore.ofHard(-147));
         assertEquals(HardMediumSoftScore.of(0, -258, 0),
                 HardMediumSoftScore.ofMedium(-258));

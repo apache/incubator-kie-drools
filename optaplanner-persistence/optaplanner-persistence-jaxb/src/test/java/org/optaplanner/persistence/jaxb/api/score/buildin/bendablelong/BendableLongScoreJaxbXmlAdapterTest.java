@@ -28,9 +28,9 @@ public class BendableLongScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAda
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableLongScoreWrapper(null));
-        BendableLongScore score = BendableLongScore.valueOf(new long[]{1000L, 200L}, new long[]{34L});
+        BendableLongScore score = BendableLongScore.of(new long[]{1000L, 200L}, new long[]{34L});
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
-        score = BendableLongScore.valueOfUninitialized(-7, new long[]{1000L, 200L}, new long[]{34L});
+        score = BendableLongScore.ofUninitialized(-7, new long[]{1000L, 200L}, new long[]{34L});
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
     }
 

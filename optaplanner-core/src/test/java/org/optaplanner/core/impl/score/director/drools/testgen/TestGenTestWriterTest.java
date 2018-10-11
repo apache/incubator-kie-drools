@@ -69,7 +69,7 @@ public class TestGenTestWriterTest {
         writer.setScoreDrlList(Arrays.asList("x", "y"));
         writer.setConstraintMatchEnabled(true);
         writer.setCorruptedScoreException(new TestGenCorruptedScoreException(
-                SimpleScore.valueOf(1), SimpleScore.valueOf(0)));
+                SimpleScore.of(1), SimpleScore.of(0)));
 
         StringWriter sw = new StringWriter();
         writer.print(journal, sw);

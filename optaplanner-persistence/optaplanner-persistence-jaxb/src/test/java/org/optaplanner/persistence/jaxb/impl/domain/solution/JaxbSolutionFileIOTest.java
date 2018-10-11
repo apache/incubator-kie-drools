@@ -52,7 +52,7 @@ public class JaxbSolutionFileIOTest {
         original.setValueList(Arrays.asList(originalV1, new JaxbTestdataValue("v2")));
         original.setEntityList(Arrays.asList(
                 new JaxbTestdataEntity("e1"), new JaxbTestdataEntity("e2", originalV1), new JaxbTestdataEntity("e3")));
-        original.setScore(SimpleScore.valueOf(-123));
+        original.setScore(SimpleScore.of(-123));
         solutionFileIO.write(original, file);
         JaxbTestdataSolution copy = solutionFileIO.read(file);
 
@@ -64,7 +64,7 @@ public class JaxbSolutionFileIOTest {
         JaxbTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
         assertSame(copyV1, copyE2.getValue());
-        assertEquals(SimpleScore.valueOf(-123), copy.getScore());
+        assertEquals(SimpleScore.of(-123), copy.getScore());
     }
 
 }

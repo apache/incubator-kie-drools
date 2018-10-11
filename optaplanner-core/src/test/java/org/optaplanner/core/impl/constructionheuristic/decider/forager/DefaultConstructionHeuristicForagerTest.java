@@ -34,12 +34,12 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
     public void checkPickEarlyNever() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.NEVER);
-        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.valueOfUninitialized(-8, -100));
-        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOfUninitialized(-7, -110)));
+        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.ofUninitialized(-8, -100));
+        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.ofUninitialized(-7, -110)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOfUninitialized(-7, -100)));
+        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.ofUninitialized(-7, -100)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOfUninitialized(-7, -90)));
+        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.ofUninitialized(-7, -90)));
         assertEquals(false, forager.isQuitEarly());
     }
 
@@ -47,10 +47,10 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
     public void checkPickEarlyFirstNonDeterioratingScore() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE);
-        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.valueOfUninitialized(-8, -100));
-        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOfUninitialized(-7, -110)));
+        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.ofUninitialized(-8, -100));
+        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.ofUninitialized(-7, -110)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOfUninitialized(-7, -100)));
+        forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.ofUninitialized(-7, -100)));
         assertEquals(true, forager.isQuitEarly());
     }
 
@@ -58,12 +58,12 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
     public void checkPickEarlyFirstFeasibleScore() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE);
-        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.valueOfUninitialized(-8, 0, -100));
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, -1, -110)));
+        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.ofUninitialized(-8, 0, -100));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, -1, -110)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, -1, -90)));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, -1, -90)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, 0, -110)));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, 0, -110)));
         assertEquals(true, forager.isQuitEarly());
     }
 
@@ -71,12 +71,12 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
     public void checkPickEarlyFirstFeasibleScoreOrNonDeterioratingHard() {
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD);
-        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.valueOfUninitialized(-8, -10, -100));
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, -11, -110)));
+        ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.ofUninitialized(-8, -10, -100));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, -11, -110)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, -11, -90)));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, -11, -90)));
         assertEquals(false, forager.isQuitEarly());
-        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOfUninitialized(-7, -10, -110)));
+        forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.ofUninitialized(-7, -10, -110)));
         assertEquals(true, forager.isQuitEarly());
     }
 

@@ -30,8 +30,8 @@ public class SimpleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                SimpleScore.valueOf(-10),
-                SimpleScore.valueOfUninitialized(-7, -10));
+                SimpleScore.of(-10),
+                SimpleScore.ofUninitialized(-7, -10));
     }
 
     @Entity

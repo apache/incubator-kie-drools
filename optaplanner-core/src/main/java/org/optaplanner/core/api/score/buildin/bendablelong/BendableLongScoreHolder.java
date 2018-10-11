@@ -129,7 +129,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
                     long[] newHardScores = new long[hardScores.length];
                     long[] newSoftScores = new long[softScores.length];
                     newHardScores[hardLevel] = weight;
-                    return BendableLongScore.valueOf(newHardScores, newSoftScores);
+                    return BendableLongScore.of(newHardScores, newSoftScores);
                 });
     }
 
@@ -147,7 +147,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
                     long[] newHardScores = new long[hardScores.length];
                     long[] newSoftScores = new long[softScores.length];
                     newSoftScores[softLevel] = weight;
-                    return BendableLongScore.valueOf(newHardScores, newSoftScores);
+                    return BendableLongScore.of(newHardScores, newSoftScores);
                 });
     }
 
@@ -180,7 +180,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
                         softScores[i] -= softWeights[i];
                     }
                 },
-                () -> BendableLongScore.valueOf(hardWeights, softWeights));
+                () -> BendableLongScore.of(hardWeights, softWeights));
     }
 
     @Override

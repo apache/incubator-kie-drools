@@ -73,12 +73,12 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
         score += weight;
         registerConstraintMatch(kcontext,
                 () -> score -= weight,
-                () -> SimpleDoubleScore.valueOf(weight));
+                () -> SimpleDoubleScore.of(weight));
     }
 
     @Override
     public SimpleDoubleScore extractScore(int initScore) {
-        return SimpleDoubleScore.valueOfUninitialized(initScore, score);
+        return SimpleDoubleScore.ofUninitialized(initScore, score);
     }
 
 }

@@ -40,7 +40,7 @@ public class SimpleScoreDefinitionTest {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-1));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(Integer.MAX_VALUE, optimisticBound.getScore());
     }
@@ -50,7 +50,7 @@ public class SimpleScoreDefinitionTest {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-1));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(-1, optimisticBound.getScore());
     }
@@ -60,7 +60,7 @@ public class SimpleScoreDefinitionTest {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-1));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(-1, pessimisticBound.getScore());
     }
@@ -70,7 +70,7 @@ public class SimpleScoreDefinitionTest {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-1));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getScore());
     }

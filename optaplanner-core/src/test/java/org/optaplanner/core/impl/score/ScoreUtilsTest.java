@@ -39,21 +39,21 @@ public class ScoreUtilsTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleScore.valueOf(-1000), ScoreUtils.parseScore(SimpleScore.class, "-1000"));
-        assertEquals(SimpleLongScore.valueOf(-1000L), ScoreUtils.parseScore(SimpleLongScore.class, "-1000"));
-        assertEquals(SimpleDoubleScore.valueOf(-1000.0), ScoreUtils.parseScore(SimpleDoubleScore.class, "-1000.0"));
-        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("-1000")),
+        assertEquals(SimpleScore.of(-1000), ScoreUtils.parseScore(SimpleScore.class, "-1000"));
+        assertEquals(SimpleLongScore.of(-1000L), ScoreUtils.parseScore(SimpleLongScore.class, "-1000"));
+        assertEquals(SimpleDoubleScore.of(-1000.0), ScoreUtils.parseScore(SimpleDoubleScore.class, "-1000.0"));
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-1000")),
                 ScoreUtils.parseScore(SimpleBigDecimalScore.class, "-1000"));
-        assertEquals(HardSoftScore.valueOf(-1000, -200), ScoreUtils.parseScore(HardSoftScore.class, "-1000hard/-200soft"));
-        assertEquals(HardSoftLongScore.valueOf(-1000L, -200L), ScoreUtils.parseScore(HardSoftLongScore.class, "-1000hard/-200soft"));
-        assertEquals(HardSoftDoubleScore.valueOf(-1000.0, -200.0), ScoreUtils.parseScore(HardSoftDoubleScore.class, "-1000hard/-200soft"));
-        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-1000"), new BigDecimal("-200")),
+        assertEquals(HardSoftScore.of(-1000, -200), ScoreUtils.parseScore(HardSoftScore.class, "-1000hard/-200soft"));
+        assertEquals(HardSoftLongScore.of(-1000L, -200L), ScoreUtils.parseScore(HardSoftLongScore.class, "-1000hard/-200soft"));
+        assertEquals(HardSoftDoubleScore.of(-1000.0, -200.0), ScoreUtils.parseScore(HardSoftDoubleScore.class, "-1000hard/-200soft"));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-1000"), new BigDecimal("-200")),
                 ScoreUtils.parseScore(HardSoftBigDecimalScore.class, "-1000hard/-200soft"));
         assertEquals(HardMediumSoftScore.of(-1000, -200, -30), ScoreUtils.parseScore(HardMediumSoftScore.class, "-1000hard/-200medium/-30soft"));
-        assertEquals(HardMediumSoftLongScore.valueOf(-1000L, -200L, -30L), ScoreUtils.parseScore(HardMediumSoftLongScore.class, "-1000hard/-200medium/-30soft"));
-        assertEquals(BendableScore.valueOf(new int[] {-1000}, new int[]{-200, -30}), ScoreUtils.parseScore(BendableScore.class, "[-1000]hard/[-200/-30]soft"));
-        assertEquals(BendableLongScore.valueOf(new long[] {-1000L}, new long[]{-200L, -30L}), ScoreUtils.parseScore(BendableLongScore.class, "[-1000]hard/[-200/-30]soft"));
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[] {new BigDecimal("-1000")}, new BigDecimal[]{new BigDecimal("-200"), new BigDecimal("-30")}),
+        assertEquals(HardMediumSoftLongScore.of(-1000L, -200L, -30L), ScoreUtils.parseScore(HardMediumSoftLongScore.class, "-1000hard/-200medium/-30soft"));
+        assertEquals(BendableScore.of(new int[] {-1000}, new int[]{-200, -30}), ScoreUtils.parseScore(BendableScore.class, "[-1000]hard/[-200/-30]soft"));
+        assertEquals(BendableLongScore.of(new long[] {-1000L}, new long[]{-200L, -30L}), ScoreUtils.parseScore(BendableLongScore.class, "[-1000]hard/[-200/-30]soft"));
+        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] {new BigDecimal("-1000")}, new BigDecimal[]{new BigDecimal("-200"), new BigDecimal("-30")}),
                 ScoreUtils.parseScore(BendableBigDecimalScore.class, "[-1000]hard/[-200/-30]soft"));
     }
 

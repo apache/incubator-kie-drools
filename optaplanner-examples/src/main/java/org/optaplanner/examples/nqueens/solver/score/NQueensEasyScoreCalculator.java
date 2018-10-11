@@ -48,7 +48,7 @@ public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> 
                 }
             }
         }
-        return SimpleScore.valueOf(score);
+        return SimpleScore.of(score);
     }
 
 }

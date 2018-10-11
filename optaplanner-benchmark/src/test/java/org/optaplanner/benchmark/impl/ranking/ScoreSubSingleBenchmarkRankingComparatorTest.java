@@ -37,13 +37,13 @@ public class ScoreSubSingleBenchmarkRankingComparatorTest {
         a.setScore(null);
         SubSingleBenchmarkResult b = new SubSingleBenchmarkResult(singleBenchmarkResult, 1);
         b.setSucceeded(true);
-        b.setScore(SimpleScore.valueOfUninitialized(-7, -1));
+        b.setScore(SimpleScore.ofUninitialized(-7, -1));
         SubSingleBenchmarkResult c = new SubSingleBenchmarkResult(singleBenchmarkResult, 2);
         c.setSucceeded(true);
-        c.setScore(SimpleScore.valueOf(-300));
+        c.setScore(SimpleScore.of(-300));
         SubSingleBenchmarkResult d = new SubSingleBenchmarkResult(singleBenchmarkResult, 3);
         d.setSucceeded(true);
-        d.setScore(SimpleScore.valueOf(-20));
+        d.setScore(SimpleScore.of(-20));
         assertCompareToOrder(comparator, a, b, c, d);
     }
 

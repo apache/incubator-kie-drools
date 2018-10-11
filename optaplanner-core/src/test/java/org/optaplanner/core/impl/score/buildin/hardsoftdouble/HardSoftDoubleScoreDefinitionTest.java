@@ -45,7 +45,7 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScoreDefinition scoreDefinition = new HardSoftDoubleScoreDefinition();
         HardSoftDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftDoubleScore.valueOf(-1.7, -2.2));
+                HardSoftDoubleScore.of(-1.7, -2.2));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getHardScore(), 0.0);
         assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getSoftScore(), 0.0);
@@ -56,7 +56,7 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScoreDefinition scoreDefinition = new HardSoftDoubleScoreDefinition();
         HardSoftDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftDoubleScore.valueOf(-1.7, -2.2));
+                HardSoftDoubleScore.of(-1.7, -2.2));
         assertEquals(0, optimisticBound.getInitScore());
         assertEquals(-1.7, optimisticBound.getHardScore(), 0.0);
         assertEquals(-2.2, optimisticBound.getSoftScore(), 0.0);
@@ -67,7 +67,7 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScoreDefinition scoreDefinition = new HardSoftDoubleScoreDefinition();
         HardSoftDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftDoubleScore.valueOf(-1.7, -2.2));
+                HardSoftDoubleScore.of(-1.7, -2.2));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(-1.7, pessimisticBound.getHardScore(), 0.0);
         assertEquals(-2.2, pessimisticBound.getSoftScore(), 0.0);
@@ -78,7 +78,7 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScoreDefinition scoreDefinition = new HardSoftDoubleScoreDefinition();
         HardSoftDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftDoubleScore.valueOf(-1, -2));
+                HardSoftDoubleScore.of(-1, -2));
         assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getHardScore(), 0.0);
         assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getSoftScore(), 0.0);

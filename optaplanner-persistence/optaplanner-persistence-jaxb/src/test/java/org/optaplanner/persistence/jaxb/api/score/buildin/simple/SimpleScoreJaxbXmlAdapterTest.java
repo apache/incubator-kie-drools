@@ -28,9 +28,9 @@ public class SimpleScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTe
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
-        SimpleScore score = SimpleScore.valueOf(1234);
+        SimpleScore score = SimpleScore.of(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
-        score = SimpleScore.valueOfUninitialized(-7, 1234);
+        score = SimpleScore.ofUninitialized(-7, 1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
     }
 

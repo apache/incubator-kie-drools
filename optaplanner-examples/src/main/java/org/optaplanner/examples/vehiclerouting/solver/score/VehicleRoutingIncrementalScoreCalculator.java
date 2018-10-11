@@ -232,7 +232,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
 
     @Override
     public HardSoftLongScore calculateScore() {
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.of(hardScore, softScore);
     }
 
 }

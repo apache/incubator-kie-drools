@@ -39,15 +39,39 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
         int initScore = parseInitScore(HardSoftScore.class, scoreString, scoreTokens[0]);
         int hardScore = parseLevelAsInt(HardSoftScore.class, scoreString, scoreTokens[1]);
         int softScore = parseLevelAsInt(HardSoftScore.class, scoreString, scoreTokens[2]);
-        return valueOfUninitialized(initScore, hardScore, softScore);
+        return ofUninitialized(initScore, hardScore, softScore);
     }
 
+    public static HardSoftScore ofUninitialized(int initScore, int hardScore, int softScore) {
+        return new HardSoftScore(initScore, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, int, int)}
+     */
+    @Deprecated
     public static HardSoftScore valueOfUninitialized(int initScore, int hardScore, int softScore) {
         return new HardSoftScore(initScore, hardScore, softScore);
     }
 
+    public static HardSoftScore of(int hardScore, int softScore) {
+        return new HardSoftScore(0, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(int, int)}
+     */
+    @Deprecated
     public static HardSoftScore valueOf(int hardScore, int softScore) {
         return new HardSoftScore(0, hardScore, softScore);
+    }
+
+    public static HardSoftScore ofHard(int hardScore) {
+        return new HardSoftScore(0, hardScore, 0);
+    }
+
+    public static HardSoftScore ofSoft(int softScore) {
+        return new HardSoftScore(0, 0, softScore);
     }
 
     // ************************************************************************

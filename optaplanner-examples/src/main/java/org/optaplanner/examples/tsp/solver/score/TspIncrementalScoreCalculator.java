@@ -90,7 +90,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
 
     @Override
     public SimpleLongScore calculateScore() {
-        return SimpleLongScore.valueOf(score);
+        return SimpleLongScore.of(score);
     }
 
 }

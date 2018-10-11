@@ -35,25 +35,25 @@ public class StatisticUtilsTest {
 
     @Test
     public void singleDetermineStandardDeviationDoubles() throws Exception {
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = Arrays.asList(createSubSingleBenchmarkResult(SimpleScore.valueOf(0), 0));
-        assertArrayEquals(new double[]{0d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOf(0), subSingleBenchmarkResultList.size()), DELTA);
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = Arrays.asList(createSubSingleBenchmarkResult(SimpleScore.of(0), 0));
+        assertArrayEquals(new double[]{0d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.of(0), subSingleBenchmarkResultList.size()), DELTA);
     }
 
     @Test
     public void multipleDetermineStandardDeviationDoubles() throws Exception {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(2);
-        subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-2), 0));
-        subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-4), 1));
-        assertArrayEquals(new double[]{1d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOf(-3), subSingleBenchmarkResultList.size()), DELTA);
+        subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.of(-2), 0));
+        subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.of(-4), 1));
+        assertArrayEquals(new double[]{1d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.of(-3), subSingleBenchmarkResultList.size()), DELTA);
     }
 
     @Test
     public void largeDetermineStandardDeviationDoubles() throws Exception {
         long[] subSingleBenchmarkScores = new long[]{-19289560268L, -19345935795L, -19715516752L, -19589259253L, -19390707618L, -19641410518L};
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(6);
-        SimpleLongScore averageScore = SimpleLongScore.valueOf(0);
+        SimpleLongScore averageScore = SimpleLongScore.of(0);
         for (int i = 0; i < subSingleBenchmarkScores.length; i++) {
-            SimpleLongScore current = SimpleLongScore.valueOf(subSingleBenchmarkScores[i]);
+            SimpleLongScore current = SimpleLongScore.of(subSingleBenchmarkScores[i]);
             subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(current, i));
             averageScore = averageScore.add(current);
         }

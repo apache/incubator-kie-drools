@@ -194,7 +194,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
 
     @Override
     public Score calculateScore() {
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.of(hardScore, softScore);
     }
 
 }

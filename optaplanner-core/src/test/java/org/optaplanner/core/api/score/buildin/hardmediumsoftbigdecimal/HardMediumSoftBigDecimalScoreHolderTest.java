@@ -40,13 +40,13 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, new BigDecimal("-0.01"));
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, new BigDecimal("-0.08"));
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.09"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.09"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, new BigDecimal("-0.10"));
@@ -80,11 +80,11 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         scoreHolder.addMediumConstraintMatch(medium2Undo, new BigDecimal("-99.99"));
         callOnDelete(medium2Undo);
 
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(-7));
+        assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("-3.00")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardMediumSoftBigDecimalScore.of(new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("-3.00")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

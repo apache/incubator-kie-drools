@@ -28,9 +28,9 @@ public class SimpleBigDecimalScoreXStreamConverterTest extends AbstractScoreXStr
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleBigDecimalScoreWrapper(null));
-        SimpleBigDecimalScore score = SimpleBigDecimalScore.valueOf(new BigDecimal("1234.4321"));
+        SimpleBigDecimalScore score = SimpleBigDecimalScore.of(new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
-        score = SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("1234.4321"));
+        score = SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
     }
 

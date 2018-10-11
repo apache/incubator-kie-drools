@@ -43,15 +43,39 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         int initScore = parseInitScore(HardSoftBigDecimalScore.class, scoreString, scoreTokens[0]);
         BigDecimal hardScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
         BigDecimal softScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
-        return valueOfUninitialized(initScore, hardScore, softScore);
+        return ofUninitialized(initScore, hardScore, softScore);
     }
 
+    public static HardSoftBigDecimalScore ofUninitialized(int initScore, BigDecimal hardScore, BigDecimal softScore) {
+        return new HardSoftBigDecimalScore(initScore, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal, BigDecimal)}
+     */
+    @Deprecated
     public static HardSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore, BigDecimal softScore) {
         return new HardSoftBigDecimalScore(initScore, hardScore, softScore);
     }
 
+    public static HardSoftBigDecimalScore of(BigDecimal hardScore, BigDecimal softScore) {
+        return new HardSoftBigDecimalScore(0, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(BigDecimal, BigDecimal)}
+     */
+    @Deprecated
     public static HardSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal softScore) {
         return new HardSoftBigDecimalScore(0, hardScore, softScore);
+    }
+
+    public static HardSoftBigDecimalScore ofHard(BigDecimal hardScore) {
+        return new HardSoftBigDecimalScore(0, hardScore, BigDecimal.ZERO);
+    }
+
+    public static HardSoftBigDecimalScore ofSoft(BigDecimal softScore) {
+        return new HardSoftBigDecimalScore(0, BigDecimal.ZERO, softScore);
     }
 
     // ************************************************************************

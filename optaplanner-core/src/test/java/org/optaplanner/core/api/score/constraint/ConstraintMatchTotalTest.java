@@ -34,18 +34,18 @@ public class ConstraintMatchTotalTest {
         ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
         assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
 
-        ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.valueOf(-1));
-        assertEquals(SimpleScore.valueOf(-1), constraintMatchTotal.getScore());
-        ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.valueOf(-20));
-        assertEquals(SimpleScore.valueOf(-21), constraintMatchTotal.getScore());
+        ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
+        assertEquals(SimpleScore.of(-1), constraintMatchTotal.getScore());
+        ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.of(-20));
+        assertEquals(SimpleScore.of(-21), constraintMatchTotal.getScore());
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
-        ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.valueOf(-300));
-        assertEquals(SimpleScore.valueOf(-321), constraintMatchTotal.getScore());
+        ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.of(-300));
+        assertEquals(SimpleScore.of(-321), constraintMatchTotal.getScore());
 
         constraintMatchTotal.removeConstraintMatch(match2);
-        assertEquals(SimpleScore.valueOf(-301), constraintMatchTotal.getScore());
+        assertEquals(SimpleScore.of(-301), constraintMatchTotal.getScore());
         constraintMatchTotal.removeConstraintMatch(match1);
-        assertEquals(SimpleScore.valueOf(-300), constraintMatchTotal.getScore());
+        assertEquals(SimpleScore.of(-300), constraintMatchTotal.getScore());
         constraintMatchTotal.removeConstraintMatch(match3);
         assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
     }
@@ -55,7 +55,7 @@ public class ConstraintMatchTotalTest {
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.valueOf(-7))
+                new ConstraintMatchTotal("a.b", "c", SimpleScore.of(-7))
         );
         PlannerAssert.assertObjectsAreNotEqual(
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),

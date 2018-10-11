@@ -78,7 +78,7 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (Long) levelNumbers[hardLevelsSize + i];
         }
-        return BendableLongScore.valueOfUninitialized(initScore, hardScores, softScores);
+        return BendableLongScore.ofUninitialized(initScore, hardScores, softScores);
     }
 
     public BendableLongScore createScore(long... scores) {
@@ -92,7 +92,7 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
                     + ")'s length (" + scores.length
                     + ") is not levelsSize (" + levelsSize + ").");
         }
-        return BendableLongScore.valueOfUninitialized(initScore,
+        return BendableLongScore.ofUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }
@@ -115,7 +115,7 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
                     ? score.getSoftScore(i) : Long.MAX_VALUE;
         }
-        return BendableLongScore.valueOfUninitialized(0, hardScores, softScores);
+        return BendableLongScore.ofUninitialized(0, hardScores, softScores);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
                     ? score.getSoftScore(i) : Long.MIN_VALUE;
         }
-        return BendableLongScore.valueOfUninitialized(0, hardScores, softScores);
+        return BendableLongScore.ofUninitialized(0, hardScores, softScores);
     }
 
 }

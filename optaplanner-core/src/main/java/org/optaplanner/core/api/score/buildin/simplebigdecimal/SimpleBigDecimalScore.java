@@ -36,13 +36,29 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
         BigDecimal score = parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreTokens[1]);
-        return valueOfUninitialized(initScore, score);
+        return ofUninitialized(initScore, score);
     }
 
+    public static SimpleBigDecimalScore ofUninitialized(int initScore, BigDecimal score) {
+        return new SimpleBigDecimalScore(initScore, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal)}
+     */
+    @Deprecated
     public static SimpleBigDecimalScore valueOfUninitialized(int initScore, BigDecimal score) {
         return new SimpleBigDecimalScore(initScore, score);
     }
 
+    public static SimpleBigDecimalScore of(BigDecimal score) {
+        return new SimpleBigDecimalScore(0, score);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(BigDecimal)}
+     */
+    @Deprecated
     public static SimpleBigDecimalScore valueOf(BigDecimal score) {
         return new SimpleBigDecimalScore(0, score);
     }

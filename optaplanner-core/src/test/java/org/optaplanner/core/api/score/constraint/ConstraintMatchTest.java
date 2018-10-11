@@ -29,17 +29,17 @@ public class ConstraintMatchTest {
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.valueOf(-7))
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.of(-7))
         );
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.valueOf(-7))
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.of(-7))
         );
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.valueOf(-7))
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.of(-7))
         );
         PlannerAssert.assertObjectsAreNotEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),

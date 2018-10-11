@@ -40,15 +40,39 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         int initScore = parseInitScore(HardSoftLongScore.class, scoreString, scoreTokens[0]);
         long hardScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[1]);
         long softScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[2]);
-        return valueOfUninitialized(initScore, hardScore, softScore);
+        return ofUninitialized(initScore, hardScore, softScore);
     }
 
+    public static HardSoftLongScore ofUninitialized(int initScore, long hardScore, long softScore) {
+        return new HardSoftLongScore(initScore, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofUninitialized(int, long, long)}
+     */
+    @Deprecated
     public static HardSoftLongScore valueOfUninitialized(int initScore, long hardScore, long softScore) {
         return new HardSoftLongScore(initScore, hardScore, softScore);
     }
 
+    public static HardSoftLongScore of(long hardScore, long softScore) {
+        return new HardSoftLongScore(0, hardScore, softScore);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(long, long)}
+     */
+    @Deprecated
     public static HardSoftLongScore valueOf(long hardScore, long softScore) {
         return new HardSoftLongScore(0, hardScore, softScore);
+    }
+
+    public static HardSoftLongScore ofHard(long hardScore) {
+        return new HardSoftLongScore(0, hardScore, 0L);
+    }
+
+    public static HardSoftLongScore ofSoft(long softScore) {
+        return new HardSoftLongScore(0, 0L, softScore);
     }
 
     // ************************************************************************

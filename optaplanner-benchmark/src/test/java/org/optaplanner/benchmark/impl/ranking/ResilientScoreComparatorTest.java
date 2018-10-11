@@ -29,18 +29,18 @@ public class ResilientScoreComparatorTest {
         ResilientScoreComparator comparator = new ResilientScoreComparator();
 
         assertCompareToOrder(comparator,
-                SimpleScore.valueOf(-20),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-20),
+                SimpleScore.of(-1));
         assertCompareToOrder(comparator,
-                HardSoftScore.valueOf(-20, -300),
-                HardSoftScore.valueOf(-1, -4000));
+                HardSoftScore.of(-20, -300),
+                HardSoftScore.of(-1, -4000));
         assertCompareToOrder(comparator,
-                SimpleScore.valueOf(-4000),
-                HardSoftScore.valueOf(-300, -300),
-                HardSoftScore.valueOf(-20, -4000),
-                SimpleScore.valueOf(-20),
-                HardSoftScore.valueOf(-20, 4000),
-                SimpleScore.valueOf(-1));
+                SimpleScore.of(-4000),
+                HardSoftScore.of(-300, -300),
+                HardSoftScore.of(-20, -4000),
+                SimpleScore.of(-20),
+                HardSoftScore.of(-20, 4000),
+                SimpleScore.of(-1));
     }
 
 }

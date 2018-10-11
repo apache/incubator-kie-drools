@@ -88,7 +88,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B); // newNode
         node4B.setMove(mock(Move.class));
         node4B.setUndoMove(mock(Move.class));
-        node4B.setScore(SimpleScore.valueOfUninitialized(-96, 7));
+        node4B.setScore(SimpleScore.ofUninitialized(-96, 7));
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 

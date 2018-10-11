@@ -31,6 +31,20 @@ public class BendableScoreTest extends AbstractScoreTest {
     private BendableScoreDefinition scoreDefinitionSSS = new BendableScoreDefinition(0, 3);
 
     @Test
+    public void of() {
+        assertEquals(scoreDefinitionHSS.createScore(-147, 0, 0),
+                BendableScore.ofHard(1, 2, 0, -147));
+        assertEquals(scoreDefinitionHSS.createScore(0, -258, 0),
+                BendableScore.ofSoft(1, 2, 0, -258));
+        assertEquals(scoreDefinitionHSS.createScore(0, 0, -369),
+                BendableScore.ofSoft(1, 2, 1, -369));
+        assertEquals(scoreDefinitionHHH.createScore(0, 0, -369),
+                BendableScore.ofHard(3, 0, 2, -369));
+        assertEquals(scoreDefinitionSSS.createScore(0, 0, -369),
+                BendableScore.ofSoft(0, 3, 2, -369));
+    }
+
+    @Test
     public void parseScore() {
         assertEquals(scoreDefinitionHSS.createScore(-147, -258, -369),
                 scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft"));
