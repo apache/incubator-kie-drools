@@ -45,7 +45,6 @@ import org.kie.internal.executor.api.ExecutorService;
  */
 public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
 	
-    private TimeUnit timeunit = TimeUnit.valueOf(System.getProperty("org.kie.executor.timeunit", "SECONDS"));
     private long maxRunningTime = Long.parseLong(System.getProperty("org.kie.executor.running.max", "600"));
     
     private Executor executor;
@@ -246,7 +245,7 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
         	if (olderThan == null) {
         		olderThan = maxRunningTime;
         	}
-        	((RequeueAware) adminService).requeue(timeunit.convert(olderThan, TimeUnit.MILLISECONDS));
+        	((RequeueAware) adminService).requeue(TimeUnit.MILLISECONDS.convert(olderThan, executor.getTimeunit()));
         }
 	}
 

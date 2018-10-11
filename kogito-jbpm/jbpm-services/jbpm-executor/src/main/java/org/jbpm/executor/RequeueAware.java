@@ -20,8 +20,8 @@ public interface RequeueAware {
 
 	/**
 	 * Moves <code>RequestInfo</code> instances that are in running state longer than
-	 * given amount of time (in milliseconds)
-	 * @param olderThan amount of time in milliseconds from current time stamp
+	 * given amount of time (time unit depends on the <code>org.kie.executor.timeunit</code> system property)
+	 * @param olderThan amount of time from current time stamp
 	 */
 	void requeue(Long olderThan);
 	

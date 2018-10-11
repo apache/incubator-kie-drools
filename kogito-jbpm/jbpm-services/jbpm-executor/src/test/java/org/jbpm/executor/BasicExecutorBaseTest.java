@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,7 +32,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
 
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorJPAAuditService;
@@ -841,6 +846,57 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
         assertEquals(1, cancelledRequests.size());
 
+    }
+
+    @Test(timeout=10000)
+    public void testRequeueWithSeconds() throws Exception {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+
+        // simulate a job which was left RUNNING (e.g. node crash)
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        EntityManager em = emf.createEntityManager();
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+
+        org.jbpm.executor.entities.RequestInfo requestInfo = new org.jbpm.executor.entities.RequestInfo();
+        requestInfo.setCommandName("org.jbpm.executor.commands.PrintOutCommand");
+        requestInfo.setKey(businessKey);
+        requestInfo.setStatus(STATUS.RUNNING);
+        Date originalScheduledTime = new Date();
+        requestInfo.setTime(originalScheduledTime);
+        requestInfo.setMessage("Ready to execute");
+        requestInfo.setDeploymentId(null);
+        requestInfo.setRetries(0);
+        requestInfo.setPriority(5);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(ctxCMD);
+        requestInfo.setRequestData(bout.toByteArray());
+
+        em.persist(requestInfo);
+        em.close();
+        ut.commit();
+
+        ((RequeueAware) executorService).requeue(2L); // Executor's default time unit is SECOND
+        countDownListener.waitTillCompleted(EXTRA_TIME);
+
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
+        RequestInfo requestInfoAfterFirstRequeue = requests.get(0);
+
+        assertEquals("The job should not be requeued yet", STATUS.RUNNING, requestInfoAfterFirstRequeue.getStatus());
+        // To be sure that the job is not running yet we have to check the time of the last execution
+        assertEquals("The job should not be requeued yet", originalScheduledTime, requestInfoAfterFirstRequeue.getTime());
+
+        ((RequeueAware) executorService).requeue(2L); // Executor's default time unit is SECOND
+
+        countDownListener.waitTillCompleted(EXTRA_TIME);
+
+        requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
+        RequestInfo requestInfoAfterSecondRequeue = requests.get(0);
+
+        assertTrue("The job should be requeued and executed", requestInfoAfterSecondRequeue.getStatus() == STATUS.DONE);
     }
 
     private void compareRequestsAreNotSame(RequestInfo firstRequest, RequestInfo secondRequest) {
