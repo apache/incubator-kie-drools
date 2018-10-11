@@ -377,9 +377,9 @@ nameRef
        )  nameRefOtherToken*
     ;
 
-nameRefOtherToken // added some special cases here: we should rework a bit the lexing part, though --ev
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? //~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!'|'/'|'*'|'in'|',')
-        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|DIV|MUL|IN|COMMA)
+nameRefOtherToken
+    : { helper.followUp( _input.LT(1), _localctx==null ) }?
+        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|DIV|MUL|IN|COMMA)
     ;
 
 /********************************
@@ -710,10 +710,14 @@ ADD : '+';
 SUB : '-';
 MUL : '*';
 DIV : '/';
+BANG
+    : '!'
+    ;
 
 NOT
     : 'not'
     ;
+
 
 Identifier
 	:	JavaLetter JavaLetterOrDigit*
