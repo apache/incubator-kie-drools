@@ -134,6 +134,9 @@ public class NamedEntryPoint
 
     public void reset() {
         this.objectStore.clear();
+        if (tms != null) {
+            tms.clear();
+        }
     }
 
     public ObjectStore getObjectStore() {

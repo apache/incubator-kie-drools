@@ -46,7 +46,6 @@ import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
-import org.kie.internal.builder.conf.SessionCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
@@ -151,8 +150,6 @@ public class RuleBaseConfiguration
 
     private IndexPrecedenceOption indexPrecedenceOption;
 
-    private SessionCacheOption sessionCacheOption;
-
     // if "true", rulebase builder will try to split
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
@@ -209,7 +206,6 @@ public class RuleBaseConfiguration
         out.writeBoolean(phreakEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
-        out.writeObject(sessionCacheOption);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -241,7 +237,6 @@ public class RuleBaseConfiguration
         phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
-        sessionCacheOption = (SessionCacheOption) in.readObject();
     }
 
     /**
@@ -333,8 +328,6 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( SessionCacheOption.PROPERTY_NAME ) ) {
-            setSessionCacheOption(SessionCacheOption.determineOption(StringUtils.isEmpty(value) ? "none" : value));
         }
     }
 
@@ -476,8 +469,6 @@ public class RuleBaseConfiguration
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
         
-        setSessionCacheOption(SessionCacheOption.determineOption(this.chainedProperties.getProperty(SessionCacheOption.PROPERTY_NAME, "none")));
-
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
     }
@@ -737,16 +728,6 @@ public class RuleBaseConfiguration
         checkCanChange(); // throws an exception if a change isn't possible;
         this.classLoaderCacheEnabled = classLoaderCacheEnabled;
     }
-    
-    public SessionCacheOption getSessionCacheOption() {
-        return this.sessionCacheOption;
-    }
-    
-    public void setSessionCacheOption(SessionCacheOption sessionCacheOption) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.sessionCacheOption = sessionCacheOption;
-    }
-
     
     public boolean isDeclarativeAgenda() {
         return this.declarativeAgenda;
@@ -1202,8 +1183,6 @@ public class RuleBaseConfiguration
             setMBeansEnabled( ( (MBeansOption) option ).isEnabled());
         } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
-        } else if (option instanceof SessionCacheOption) {
-            setSessionCacheOption( (SessionCacheOption) option);
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }

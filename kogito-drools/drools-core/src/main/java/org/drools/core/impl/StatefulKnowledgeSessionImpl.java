@@ -88,7 +88,6 @@ import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode;
-import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -157,6 +156,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
 
+import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -246,8 +246,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Map<String, Object> runtimeServices;
 
-    private boolean alive = true;
-
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
 
@@ -256,6 +254,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private boolean stateless;
 
     private List<AsyncReceiveNode.AsyncReceiveMemory> receiveNodeMemories;
+
+    private transient StatefulSessionPool pool;
+    private transient boolean alive = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -512,7 +513,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.kBase;
     }
 
+    StatefulKnowledgeSessionImpl fromPool(StatefulSessionPool pool) {
+        this.pool = pool;
+        alive = true;
+        return this;
+    }
+
     public void dispose() {
+        alive = false;
+        if (pool != null) {
+            pool.release(this);
+            return;
+        }
+
         if (!agenda.dispose(this)) {
             return;
         }
@@ -540,9 +553,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (processRuntime != null) {
             this.processRuntime.dispose();
         }
-        if (timerService != null) {
-            this.timerService.shutdown();
-        }
+
+        this.timerService.shutdown();
 
         if (this.workItemManager != null) {
             ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
@@ -556,7 +568,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public boolean isAlive() {
-        return agenda.isAlive();
+        return alive && agenda.isAlive();
     }
 
     public void destroy() {
@@ -755,9 +767,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         InitialFact initialFact = InitialFactImpl.getInstance();
         InternalFactHandle handle = new DefaultFactHandle(0, initialFact, 0, entryPoint );
 
-        ClassObjectTypeConf otc = (ClassObjectTypeConf) entryPoint.getObjectTypeConfigurationRegistry()
-                                                                  .getObjectTypeConf(epId, initialFact);
-        ObjectTypeNode otn = otc.getConcreteObjectTypeNode();
+        ObjectTypeNode otn = entryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
             PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
             PropagationContext pctx = ctxFact.createPropagationContext( 0, PropagationContext.Type.INSERTION, null,
@@ -1104,16 +1114,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.opCounter.set(0);
         this.lastIdleTimestamp.set( -1 );
 
-        initDefaultEntryPoint();
+        this.defaultEntryPoint.reset();
         updateEntryPointsCache();
 
-        timerService = TimerServiceFactory.getTimerService(this.config);
+        timerService.reset();
 
         this.processRuntime = null;
 
         this.initialFactHandle = initInitialFact(kBase, null);
-
-        alive = true;
     }
 
     public void reset(int handleId,
