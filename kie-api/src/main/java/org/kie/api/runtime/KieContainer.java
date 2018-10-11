@@ -106,6 +106,15 @@ public interface KieContainer {
     KieBase newKieBase(String kBaseName, KieBaseConfiguration conf);
 
     /**
+     * Creates a new {@link KieContainerSessionsPool} storing the sessions created from this KieContainer.
+     * Don't forget to {@link KieContainerSessionsPool#shutdown()} the pool when you are done.
+     *
+     * @param initialSize the initial size of sessions in the pool
+     * @return created {@link KieContainerSessionsPool}
+     */
+    KieContainerSessionsPool newKieSessionsPool(int initialSize);
+
+    /**
      * Creates the default KieSession for this KieContainer
      * @throws RuntimeException if this KieContainer doesn't have any default KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
@@ -120,7 +129,7 @@ public interface KieContainer {
     KieSession newKieSession(KieSessionConfiguration conf);
 
     /**
-     * Creates the default KieSession for this KieContainer using the given Environment
+     * Creates the default {@link KieSession} for this KieContainer using the given Environment
      * @throws RuntimeException if this KieContainer doesn't have any default KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
      */

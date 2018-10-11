@@ -247,6 +247,24 @@
         },
         {
           "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieSessionsPool org.kie.api.KieBase::newKieSessionsPool(int)",
+          "package": "org.kie.api",
+          "classSimpleName": "KieBase",
+          "methodName": "newKieSessionsPool",
+          "elementKind": "method",
+          "justification": "add sessions pool"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainerSessionsPool org.kie.api.runtime.KieContainer::newKieSessionsPool(int)",
+          "package": "org.kie.api.runtime",
+          "classSimpleName": "KieContainer",
+          "methodName": "newKieSessionsPool",
+          "elementKind": "method",
+          "justification": "add sessions pool"
+        },
+        {
+          "code": "java.method.addedToInterface",
           "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::addCalendar(java.lang.String, java.lang.String)",
           "package": "org.kie.api.builder.model",
           "classSimpleName": "KieSessionModel",

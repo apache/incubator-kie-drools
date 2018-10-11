@@ -28,6 +28,7 @@ import org.kie.api.event.kiebase.KieBaseEventManager;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 
 /**
@@ -163,6 +164,15 @@ public interface KieBase extends KieBaseEventManager {
      * @return created {@link KieSession}
      */
     KieSession newKieSession();
+
+    /**
+     * Creates a new {@link KieSessionsPool} storing the sessions created from this KieBase.
+     * Don't forget to {@link KieSessionsPool#shutdown()} the pool when you are done.
+     *
+     * @param initialSize the initial size of sessions in the pool
+     * @return created {@link KieSessionsPool}
+     */
+    KieSessionsPool newKieSessionsPool(int initialSize);
 
     /**
      * Returns a collection of the {@link KieSession}s that exist in this {@link KieBase}.
