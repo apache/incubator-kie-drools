@@ -1123,6 +1123,35 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query> 
+
+  <named-query name="getErrorsByDeploymentId">
+    <query>
+     select
+      new org.kie.internal.runtime.error.ExecutionError(
+      error.errorId,
+      error.type,
+      error.deploymentId,
+      error.processInstanceId,
+      error.processId,
+      error.activityId,
+      error.activityName,
+      error.jobId,
+      error.errorMessage,
+      error.acknowledged,
+      error.acknowledgedBy,
+      error.acknowledgedAt,
+      error.errorDate
+      )
+      from
+        ExecutionErrorInfo error
+      where
+        error.acknowledged in (:ack) and
+        error.deploymentId = :deploymentId
+      order by 
+        error.errorDate DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query> 
   
   <named-query name="getTaskErrors">
     <query>

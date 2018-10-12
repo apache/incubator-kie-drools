@@ -16,13 +16,6 @@
 
 package org.jbpm.kie.services.impl.admin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -57,6 +50,13 @@ import org.kie.internal.runtime.error.ExecutionError;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -412,6 +412,33 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         assertTrue(error.isAcknowledged());
     }
 
+    @Test
+    public void testErrorByDeploymentId() {
+
+        try {
+            processService.startProcess(deploymentUnit.getIdentifier(), "BrokenScriptTask");
+        } catch (Exception e) {
+            // expected as this is broken script process
+        }
+
+        List<ExecutionError> errors = processAdminService.getErrors(true, new QueryContext());
+        assertNotNull(errors);
+        assertEquals(1, errors.size());
+
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+
+        // try non empty deploymentId
+        String deploymentId = error.getDeploymentId();
+        errors = processAdminService.getErrorsByDeploymentId(deploymentId, true, new QueryContext());
+        assertNotNull(errors);
+        assertEquals(1, errors.size());
+
+        // try empty deploymentId
+        errors = processAdminService.getErrorsByDeploymentId("empty-deployment-id", true, new QueryContext());
+        assertNotNull(errors);
+        assertEquals(0, errors.size());
+    }
     /*
      * Helper methods 
      */

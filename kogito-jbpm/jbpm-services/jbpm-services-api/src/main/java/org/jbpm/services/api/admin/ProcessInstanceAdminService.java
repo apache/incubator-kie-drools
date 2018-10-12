@@ -165,4 +165,12 @@ public interface ProcessInstanceAdminService {
      */
     List<ExecutionError> getErrors(boolean includeAcknowledged, QueryContext queryContext);
     
+    /**
+     * Returns all execution errors for a given deployment regardless of their type
+     * @param deploymentId deployment id that contains the errors
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByDeploymentId(String deploymentId, boolean includeAcknowledged, QueryContext queryContext);
 }

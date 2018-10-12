@@ -235,6 +235,16 @@ public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminServ
         return execErrors;
     }
     
+    @Override
+    public List<ExecutionError> getErrorsByDeploymentId(String containerId, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("deploymentId", containerId);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);
+
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByDeploymentId", params));
+        return execErrors;
+    }
     /*
      * Helper methods
      */

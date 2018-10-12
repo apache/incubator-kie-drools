@@ -558,7 +558,16 @@
 		  "methodName": "getProcessInstanceDescription",
 		  "elementKind": "method",
 		  "justification": "JBPM-6890: Adding the customTaskID as a unique identifier for an active"
-		 }
+		 },
+         {
+         "code": "java.method.addedToInterface",
+         "new": "method java.util.List<org.kie.internal.runtime.error.ExecutionError> org.jbpm.services.api.admin.ProcessInstanceAdminService::getErrorsByDeploymentId(java.lang.String, boolean, org.kie.api.runtime.query.QueryContext)",
+         "package": "org.jbpm.services.api.admin",
+         "classSimpleName": "ProcessInstanceAdminService",
+         "methodName": "getErrorsByDeploymentId",
+         "elementKind": "method",
+         "justification": "Added support for filtering errors by deployment id"
+         }
       ]
     }
   }
