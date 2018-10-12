@@ -43,6 +43,6 @@ public class StatefulSessionPool {
     }
 
     public void shutdown() {
-        pool.clear();
+        pool.shutdown();
     }
 }

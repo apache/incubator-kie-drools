@@ -16,6 +16,10 @@
 
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -26,10 +30,8 @@ public class ScalablePool<T> {
 
     private static final Logger log = LoggerFactory.getLogger(ScalablePool.class);
 
-    private final T[] fixedSizePool;
-    private volatile int cursor;
-
-    private java.util.Queue<T> dynamicPool;
+    private final java.util.Queue<T> pool = new ConcurrentLinkedQueue<T>();
+    private final List<T> resources = Collections.synchronizedList( new ArrayList<>() );
 
     private final Supplier<? extends T> supplier;
     private final Consumer<? super T> resetter;
@@ -40,55 +42,34 @@ public class ScalablePool<T> {
         this.resetter = resetter;
         this.disposer = disposer;
 
-        fixedSizePool = (T[]) new Object[initialSize];
         for (int i = 0; i < initialSize; i++) {
-            fixedSizePool[i] = this.supplier.get();
+            T t = this.supplier.get();
+            pool.offer( t );
+            resources.add( t );
         }
-        cursor = initialSize;
     }
 
     public T get() {
-        synchronized (fixedSizePool) {
-            if ( cursor > 0 ) {
-                return fixedSizePool[--cursor];
-            }
+        T t = pool.poll();
+        if (t != null) {
+            return t;
         }
-        if (dynamicPool == null) {
-            dynamicPool = new java.util.LinkedList<>();
-        } else {
-            synchronized (dynamicPool) {
-                if ( !dynamicPool.isEmpty() ) {
-                    return dynamicPool.poll();
-                }
-            }
-        }
-        return supplier.get();
+
+        t = this.supplier.get();
+        resources.add( t );
+        return t;
     }
 
     public void release(T t) {
         resetter.accept( t );
-        synchronized (fixedSizePool) {
-            if ( cursor < fixedSizePool.length ) {
-                fixedSizePool[cursor++] = t;
-                return;
-            }
-        }
-        synchronized (dynamicPool) {
-            dynamicPool.offer( t );
-        }
+        pool.offer( t );
     }
 
-    public void clear() {
-        for (int i = 0; i < fixedSizePool.length; i++) {
-            disposer.accept( fixedSizePool[i] );
-            fixedSizePool[i] = null;
+    public void shutdown() {
+        for (T t : resources) {
+            disposer.accept( t );
         }
-        if (dynamicPool != null) {
-            for (T t : dynamicPool) {
-                disposer.accept( t );
-            }
-            dynamicPool.clear();
-        }
+        pool.clear();
+        resources.clear();
     }
-
 }
