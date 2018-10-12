@@ -136,6 +136,8 @@ public class CompositeTypeImpl
                 }
             }
             return true;
+        } else if (o == null) {
+            return true; // a null-value can be assigned to any type.
         } else {
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
                 Method getter = EvalHelper.getGenericAccessor( o.getClass(), f.getKey() );
