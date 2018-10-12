@@ -1,9 +1,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
@@ -16,13 +14,9 @@ import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
-import org.kie.dmn.feel.lang.ast.ListNode;
-import org.kie.dmn.feel.lang.ast.NameDefNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.Msg;
 
 public class Functions {
@@ -44,12 +38,11 @@ public class Functions {
             String className = java.get("class");
             String methodSignature = java.get("method signature");
             if (className == null || methodSignature == null) {
-                throw new FEELCompilationError(Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, methodSignature));
+                throw new FEELCompilationError(
+                        Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, methodSignature));
             }
-            Expression methodCallExpr = FunctionDefs.asMethodCall(className, methodSignature, paramNames);
-//            DirectCompilerResult parameters = visit(ctx.formalParameters());
 
-            return methodCallExpr;
+            return FunctionDefs.asMethodCall(className, methodSignature, paramNames);
         } else {
             throw new FEELCompilationError(Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, null));
         }
