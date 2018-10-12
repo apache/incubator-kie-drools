@@ -459,3 +459,55 @@ drools.kbuilder.severity.duplicateRule = <INFO|WARNING|ERROR>
 drools.kbuilder.severity.duplicateFunction = <INFO|WARNING|ERROR>
 ----
 ====
+
+== Building and running Drools in a fat jar
+
+Many modules of Drools (e.g. drools-core, drools-compiler) have a file named `kie.conf` containing the names of the classes implementing the services
+provided by the corresponding module. When running Drools in a fat JAR, for example created by the Maven Shade Plugin, those various `kie.conf` files
+need to be merged, otherwise , the fat JAR will contain only 1 kie.conf from a single dependency, resulting into errors.  You can merge resources in
+the Maven Shade Plugin using transformers, like this:
+
+[source]
+----
+<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+    <resource>META-INF/kie.conf</resource>
+</transformer>
+----
+
+For instance this is required when running Drools in a Vert.x application. In this case the Maven Shade Plugin can be configured as it follows:
+
+[source]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.1.0</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <manifestEntries>
+                            <Main-Class>io.vertx.core.Launcher</Main-Class>
+                            <Main-Verticle>${main.verticle}</Main-Verticle>
+                        </manifestEntries>
+                    </transformer>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+                    </transformer>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <resource>META-INF/kie.conf</resource>
+                    </transformer>
+                </transformers>
+                <artifactSet>
+                </artifactSet>
+                <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
