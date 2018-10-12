@@ -15,6 +15,12 @@
  */
 package org.jbpm.process.core.timer.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -44,21 +50,15 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 public class GlobalTimerService implements TimerService, InternalSchedulerService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GlobalTimerService.class);
     
     protected TimerJobFactoryManager jobFactoryManager;
-    protected GlobalSchedulerService schedulerService;
-    protected RuntimeManager manager;
-    protected ConcurrentHashMap<Long, List<GlobalJobHandle>> timerJobsPerSession = new ConcurrentHashMap<Long, List<GlobalJobHandle>>();
+    protected final GlobalSchedulerService schedulerService;
+    protected final RuntimeManager manager;
+    protected final ConcurrentHashMap<Long, List<GlobalJobHandle>> timerJobsPerSession = new ConcurrentHashMap<Long, List<GlobalJobHandle>>();
  
     private String timerServiceId;
     
@@ -66,11 +66,16 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         this.manager = manager;
         this.schedulerService = schedulerService;
         this.schedulerService.initScheduler(this);
+        jobFactoryManager = initJobFactoryManager();
+    }
+
+    private TimerJobFactoryManager initJobFactoryManager() {
         try {
-            this.jobFactoryManager = (TimerJobFactoryManager) Class.forName("org.jbpm.persistence.timer.GlobalJPATimerJobFactoryManager").newInstance();
+            return (TimerJobFactoryManager ) Class.forName("org.jbpm.persistence.timer.GlobalJPATimerJobFactoryManager").newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -132,6 +137,13 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     @Override
     public long getCurrentTime() {
         return System.currentTimeMillis();
+    }
+
+    @Override
+    public void reset() {
+        schedulerService.initScheduler(this);
+        timerJobsPerSession.clear();
+        jobFactoryManager = initJobFactoryManager();
     }
 
     @Override

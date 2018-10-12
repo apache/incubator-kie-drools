@@ -15,6 +15,8 @@
  */
 package org.jbpm.process.core.timer.impl;
 
+import java.util.Collection;
+
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -25,8 +27,6 @@ import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.kie.api.time.SessionClock;
-
-import java.util.Collection;
 
 /**
  * Simple delegate for timer service that fetches the real instance of timer service from
@@ -45,7 +45,7 @@ import java.util.Collection;
  */
 public class RegisteredTimerServiceDelegate implements TimerService, InternalSchedulerService, SessionClock {
     
-    private TimerService timerService;
+    private final TimerService timerService;
     
     public RegisteredTimerServiceDelegate() {
         this("default");
@@ -105,4 +105,8 @@ public class RegisteredTimerServiceDelegate implements TimerService, InternalSch
         return timerService.getTimerJobInstances(id);
     }
 
+    @Override
+    public void reset() {
+        timerService.reset();
+    }
 }

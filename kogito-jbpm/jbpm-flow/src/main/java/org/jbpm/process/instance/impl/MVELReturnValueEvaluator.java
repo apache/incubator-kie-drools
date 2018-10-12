@@ -16,27 +16,23 @@
 
 package org.jbpm.process.instance.impl;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
-import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.spi.GlobalResolver;
-import org.drools.core.util.MVELSafeHelper;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.runtime.process.ProcessContext;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.mvel2.integration.VariableResolverFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.spi.GlobalResolver;
+import org.drools.core.util.MVELSafeHelper;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.process.ProcessContext;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELReturnValueEvaluator
     implements
@@ -91,13 +87,7 @@ public class MVELReturnValueEvaluator
             }
         }
 
-        InternalWorkingMemory internalWorkingMemory = null;
-        if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).getInternalWorkingMemory();
-        } else if( context.getKieRuntime() instanceof StatelessKnowledgeSession) {
-            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).getInternalWorkingMemory();
-        }
+        InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) context.getKieRuntime();
         
         VariableResolverFactory factory 
             = unit.getFactory( context, 
