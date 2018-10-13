@@ -46,20 +46,28 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
+import org.kie.internal.runtime.manager.context.CaseContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +89,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     private long workItemId = -1;
     private transient WorkItem workItem;
+    
+    private long exceptionHandlingProcessInstanceId = -1;
 
     protected WorkItemNode getWorkItemNode() {
         return (WorkItemNode) getNode();
@@ -142,6 +152,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             } catch (WorkItemHandlerNotFoundException wihnfe) {
                 getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
                 throw wihnfe;
+            } catch (ProcessWorkItemHandlerException handlerException) {
+                this.workItemId = workItem.getId();
+                handleWorkItemHandlerException(handlerException, workItem);
             } catch (Exception e) {
                 String exceptionName = e.getClass().getName();
                 ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
@@ -346,12 +359,25 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 throw wihnfe;
             }
         }
+        
+        if (exceptionHandlingProcessInstanceId > -1) {
+            ProcessInstance processInstance = null;
+            KieRuntime kruntime = getKieRuntimeForSubprocess();
+        
+            processInstance = (ProcessInstance) kruntime.getProcessInstance(exceptionHandlingProcessInstanceId);
+            
+
+            if (processInstance != null) {
+                processInstance.setState(ProcessInstance.STATE_ABORTED);
+            }
+        }
         super.cancel();
     }
 
     public void addEventListeners() {
         super.addEventListeners();
         addWorkItemListener();
+        addExceptionProcessListener();
     }
 
     private void addWorkItemListener() {
@@ -371,6 +397,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             workItemCompleted((WorkItem) event);
         } else if ("workItemAborted".equals(type)) {
             workItemAborted((WorkItem) event);
+        } else if (("processInstanceCompleted:" + exceptionHandlingProcessInstanceId).equals(type)) {
+            exceptionHandlingCompleted((ProcessInstance) event, null);
         } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getMetaData().get("UniqueId"))) {
 
             trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
@@ -380,7 +408,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public String[] getEventTypes() {
-        return new String[]{"workItemCompleted"};
+        if (exceptionHandlingProcessInstanceId > -1) {
+            return new String[] {"workItemCompleted", "processInstanceCompleted:" + exceptionHandlingProcessInstanceId };
+        } else {
+            return new String[]{"workItemCompleted"};
+        }
     }
 
     public void workItemAborted(WorkItem workItem) {
@@ -510,5 +542,126 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             }
         }
     }
+    
+    /*
+     * Work item handler exception handling 
+     */
+    
 
+    private void handleWorkItemHandlerException(ProcessWorkItemHandlerException handlerException, WorkItem workItem) {
+        Map<String, Object> parameters = new HashMap<>();
+        
+        parameters.put("DeploymentId", workItem.getDeploymentId());
+        parameters.put("ProcessInstanceId", workItem.getProcessInstanceId());
+        parameters.put("WorkItemId", workItem.getId());
+        parameters.put("NodeInstanceId", this.getId());
+        parameters.put("ErrorMessage", handlerException.getMessage());        
+        parameters.put("Error", handlerException);  
+        
+        // add all parameters of the work item to the newly started process instance
+        parameters.putAll(workItem.getParameters());
+        
+        KieRuntime kruntime = getKieRuntimeForSubprocess();       
+                
+        ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(handlerException.getProcessId(), parameters);
+        
+        this.exceptionHandlingProcessInstanceId = processInstance.getId(); 
+        ((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
+        ((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
+        
+        ((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
+        ((ProcessInstanceImpl) processInstance).setSignalCompletion(true);
+
+        kruntime.startProcessInstance(processInstance.getId());
+        if (processInstance.getState() == ProcessInstance.STATE_COMPLETED
+                || processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+            exceptionHandlingCompleted(processInstance, handlerException);
+        } else {
+            addExceptionProcessListener();
+        }
+    }
+
+    private void exceptionHandlingCompleted(ProcessInstance processInstance, ProcessWorkItemHandlerException handlerException) {
+        
+        if (handlerException == null) {
+            handlerException = (ProcessWorkItemHandlerException) ((WorkflowProcessInstance)processInstance).getVariable("Error");
+        }
+                
+        switch (handlerException.getStrategy()) {
+            case ABORT:
+                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
+                        .getKnowledgeRuntime().getWorkItemManager()).abortWorkItem(getWorkItem().getId());
+                break;
+            case RETHROW:
+                String exceptionName = handlerException.getCause().getClass().getName();
+                ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
+                if (exceptionScopeInstance == null) {
+                    throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute work item " + handlerException.getMessage(), handlerException.getCause());
+                }
+               
+                exceptionScopeInstance.handleException(exceptionName, handlerException.getCause());
+                break;
+            case RETRY:
+                Map<String, Object> parameters = new HashMap<>(getWorkItem().getParameters());
+                
+                parameters.putAll(((WorkflowProcessInstanceImpl)processInstance).getVariables());
+                
+                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
+                        .getKnowledgeRuntime().getWorkItemManager()).retryWorkItem(getWorkItem().getId(), parameters);
+                break;
+            case COMPLETE:
+                
+                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
+                        .getKnowledgeRuntime().getWorkItemManager()).completeWorkItem(getWorkItem().getId(), 
+                                ((WorkflowProcessInstanceImpl)processInstance).getVariables());                
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    public void addExceptionProcessListener() {
+        if (exceptionHandlingProcessInstanceId > -1) {
+            getProcessInstance().addEventListener("processInstanceCompleted:" + exceptionHandlingProcessInstanceId, this, true);
+        }
+    }
+
+    public void removeExceptionProcessListeners() {
+        super.removeEventListeners();
+        getProcessInstance().removeEventListener("processInstanceCompleted:" + exceptionHandlingProcessInstanceId, this, true);
+    }
+    
+    public long getExceptionHandlingProcessInstanceId() {
+        return exceptionHandlingProcessInstanceId;
+    }
+    
+    public void internalSetProcessInstanceId(long processInstanceId) {
+        this.exceptionHandlingProcessInstanceId = processInstanceId;
+    }
+    
+    protected KieRuntime getKieRuntimeForSubprocess() {
+        KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
+        if (manager != null) {
+            org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
+            
+            String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+            if (caseId != null) {
+                context = CaseContext.get(caseId);
+            }
+            
+            RuntimeEngine runtime = manager.getRuntimeEngine(context);
+            kruntime = (KieRuntime) runtime.getKieSession();
+        }  
+        
+        return kruntime;
+    }
+    
+    /*
+     * mainly for test coverage to easily switch between settings 
+     */
+    public static void setVariableStrictOption(boolean turnedOn) {
+        variableStrictEnabled = turnedOn;
+    }
 }

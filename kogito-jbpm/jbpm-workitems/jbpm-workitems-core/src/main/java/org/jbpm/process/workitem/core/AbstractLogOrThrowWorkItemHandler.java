@@ -22,6 +22,7 @@ import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public abstract class AbstractLogOrThrowWorkItemHandler implements WorkItemHandl
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractLogOrThrowWorkItemHandler.class);
     protected boolean logThrownException = false;
+    
+    protected String handlingProcessId;
+    protected String handlingStrategy;
 
     public void setLogThrownException(boolean logException) {
         this.logThrownException = logException;
@@ -42,6 +46,11 @@ public abstract class AbstractLogOrThrowWorkItemHandler implements WorkItemHandl
 
     protected void handleException(Throwable cause,
                                    Map<String, Object> handlerInfoMap) {
+        if (handlingProcessId != null && handlingStrategy != null) {
+            throw new ProcessWorkItemHandlerException(handlingProcessId, handlingStrategy, cause);
+        }
+        
+        
         String service = (String) handlerInfoMap.get("Interface");
         String operation = (String) handlerInfoMap.get("Operation");
 

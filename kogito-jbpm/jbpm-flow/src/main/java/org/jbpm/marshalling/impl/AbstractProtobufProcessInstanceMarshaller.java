@@ -247,6 +247,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     _task.addTimerInstanceId( id );
                 }
             }
+            _task.setErrorHandlingProcessInstanceId(((HumanTaskNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.HUMAN_TASK_NODE )
                     .setHumanTask( _task.build() );
@@ -261,6 +262,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     _wi.addTimerInstanceId( id );
                 }
             }
+            _wi.setErrorHandlingProcessInstanceId(((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.WORK_ITEM_NODE )
                     .setWorkItem( _wi.build() );
@@ -736,8 +738,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     for ( Long _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
                         timerInstances.add( _timerId );
                     }
-                    ((HumanTaskNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
+                    ((HumanTaskNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );                    
                 }
+                ((WorkItemNodeInstance) nodeInstance).internalSetProcessInstanceId( _content.getHumanTask().getErrorHandlingProcessInstanceId() );
                 break;
             case WORK_ITEM_NODE :
                 nodeInstance = new WorkItemNodeInstance();
@@ -749,6 +752,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     }
                     ((WorkItemNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
                 }
+                ((WorkItemNodeInstance) nodeInstance).internalSetProcessInstanceId( _content.getWorkItem().getErrorHandlingProcessInstanceId() );
                 break;
             case SUBPROCESS_NODE :
                 nodeInstance = new SubProcessNodeInstance();

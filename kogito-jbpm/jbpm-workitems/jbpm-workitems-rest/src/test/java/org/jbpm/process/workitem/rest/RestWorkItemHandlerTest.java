@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import static org.jbpm.process.workitem.rest.RESTWorkItemHandler.PARAM_CONNECT_TIMEOUT;
@@ -1163,5 +1164,37 @@ public class RestWorkItemHandlerTest {
         params.remove(PARAM_CONTENT_TYPE);
         assertNull(handler.getContentTypeAndCharset(params));
 
+    }
+    
+    @Test
+    public void testHandleErrorOnNotSuccessfulResponseHandlingException() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler("test", "COMPLETE", "user", "password");
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/notexisting");
+        workItem.setParameter("Method",
+                              "GET");
+        workItem.setParameter("HandleResponseErrors",
+                              "true");
+
+        WorkItemManager manager = new TestWorkItemManager();
+        try {
+            handler.executeWorkItem(workItem,
+                                    manager);
+            fail("Should throw exception as it was instructed to do so");
+        } catch (ProcessWorkItemHandlerException ex) {
+
+            RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
+            assertEquals(405,
+                         e.getStatus());
+            assertEquals(serverURL + "/notexisting",
+                         e.getEndoint());
+            assertEquals("",
+                         e.getResponse());
+            
+            assertEquals("test", ex.getProcessId());
+            assertEquals("COMPLETE", ex.getStrategy().name());
+        }
     }
 }

@@ -30,6 +30,7 @@ import org.jbpm.test.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
@@ -227,6 +228,31 @@ public class EmailWorkItemHandlerTest extends AbstractBaseTest {
         assertEquals( workItem.getParameter( "To" ), ((InternetAddress)msg.getRecipients( RecipientType.TO )[0]).getAddress() );
         assertNull( msg.getRecipients( RecipientType.CC ) );
         assertNull( msg.getRecipients( RecipientType.BCC ) );
+    }
+    
+    @Test
+    public void testSingleToHandleException() throws Exception {
+        EmailWorkItemHandler handler = new EmailWorkItemHandler("test", "COMPLETE");
+        handler.setConnection( null, null, null, null );
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "To", "person1@domain.com" );
+        workItem.setParameter( "From", "person2@domain.com" );
+        workItem.setParameter( "Reply-To", "person3@domain.com" );
+        workItem.setParameter( "Subject", "Subject 1" );
+        workItem.setParameter( "Body", "Body 1" );
+
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        try {
+            handler.executeWorkItem( workItem, manager );
+            fail("Should throw exception as it was instructed to do so");
+        } catch (ProcessWorkItemHandlerException ex) {
+            assertTrue(ex.getCause() instanceof NullPointerException);
+            assertEquals(null, ex.getCause().getMessage());
+            assertEquals("test", ex.getProcessId());
+            assertEquals("COMPLETE", ex.getStrategy().name());
+        }
+
     }
 }
 

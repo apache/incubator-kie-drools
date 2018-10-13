@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ public final class JBPMMessages {
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.processTimer);
     registry.add(org.jbpm.marshalling.impl.JBPMMessages.procTimer);
   }
-  public interface ProcessInstanceOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ProcessInstanceOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional string process_type = 1;
     /**
      * <code>optional string process_type = 1;</code>
      */
@@ -47,7 +47,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getProcessTypeBytes();
 
-    // optional int64 id = 2;
     /**
      * <code>optional int64 id = 2;</code>
      */
@@ -57,7 +56,6 @@ public final class JBPMMessages {
      */
     long getId();
 
-    // optional string process_id = 3;
     /**
      * <code>optional string process_id = 3;</code>
      */
@@ -72,7 +70,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getProcessIdBytes();
 
-    // optional int32 state = 4;
     /**
      * <code>optional int32 state = 4;</code>
      */
@@ -82,7 +79,6 @@ public final class JBPMMessages {
      */
     int getState();
 
-    // optional int64 node_instance_counter = 5;
     /**
      * <code>optional int64 node_instance_counter = 5;</code>
      */
@@ -92,7 +88,6 @@ public final class JBPMMessages {
      */
     long getNodeInstanceCounter();
 
-    // optional string process_xml = 11;
     /**
      * <code>optional string process_xml = 11;</code>
      */
@@ -107,7 +102,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getProcessXmlBytes();
 
-    // optional int64 parent_process_instance_id = 12;
     /**
      * <code>optional int64 parent_process_instance_id = 12;</code>
      */
@@ -117,7 +111,6 @@ public final class JBPMMessages {
      */
     long getParentProcessInstanceId();
 
-    // optional string description = 15;
     /**
      * <code>optional string description = 15;</code>
      */
@@ -132,7 +125,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getDescriptionBytes();
 
-    // optional bool signal_completion = 16 [default = true];
     /**
      * <code>optional bool signal_completion = 16 [default = true];</code>
      */
@@ -142,7 +134,6 @@ public final class JBPMMessages {
      */
     boolean getSignalCompletion();
 
-    // optional string deploymentId = 17;
     /**
      * <code>optional string deploymentId = 17;</code>
      */
@@ -157,7 +148,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getDeploymentIdBytes();
 
-    // optional string correlation_key = 18;
     /**
      * <code>optional string correlation_key = 18;</code>
      */
@@ -172,7 +162,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getCorrelationKeyBytes();
 
-    // optional int64 sla_timer_id = 19;
     /**
      * <code>optional int64 sla_timer_id = 19;</code>
      */
@@ -182,7 +171,6 @@ public final class JBPMMessages {
      */
     long getSlaTimerId();
 
-    // optional int64 sla_due_date = 20;
     /**
      * <code>optional int64 sla_due_date = 20;</code>
      */
@@ -192,7 +180,6 @@ public final class JBPMMessages {
      */
     long getSlaDueDate();
 
-    // optional int32 sla_compliance = 21;
     /**
      * <code>optional int32 sla_compliance = 21;</code>
      */
@@ -202,7 +189,6 @@ public final class JBPMMessages {
      */
     int getSlaCompliance();
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
      */
@@ -227,7 +213,6 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder getSwimlaneContextOrBuilder(
         int index);
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
      */
@@ -252,7 +237,6 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
         int index);
 
-    // repeated .org.jbpm.marshalling.Variable variable = 8;
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
      */
@@ -277,7 +261,6 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
         int index);
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
      */
@@ -302,12 +285,11 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder getExclusiveGroupOrBuilder(
         int index);
 
-    // repeated string completedNodeIds = 13;
     /**
      * <code>repeated string completedNodeIds = 13;</code>
      */
-    java.util.List<java.lang.String>
-    getCompletedNodeIdsList();
+    com.google.protobuf.ProtocolStringList
+        getCompletedNodeIdsList();
     /**
      * <code>repeated string completedNodeIds = 13;</code>
      */
@@ -322,7 +304,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getCompletedNodeIdsBytes(int index);
 
-    // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
      */
@@ -351,8 +332,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.ProcessInstance}
    */
   public static final class ProcessInstance extends
-      com.google.protobuf.GeneratedMessage
-      implements ProcessInstanceOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance)
+      ProcessInstanceOrBuilder {
     // Use ProcessInstance.newBuilder() to construct.
     private ProcessInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -399,8 +381,9 @@ public final class JBPMMessages {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              processType_ = input.readBytes();
+              processType_ = bs;
               break;
             }
             case 16: {
@@ -409,8 +392,9 @@ public final class JBPMMessages {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              processId_ = input.readBytes();
+              processId_ = bs;
               break;
             }
             case 32: {
@@ -456,8 +440,9 @@ public final class JBPMMessages {
               break;
             }
             case 90: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
-              processXml_ = input.readBytes();
+              processXml_ = bs;
               break;
             }
             case 96: {
@@ -466,11 +451,12 @@ public final class JBPMMessages {
               break;
             }
             case 106: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00040000) == 0x00040000)) {
                 completedNodeIds_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00040000;
               }
-              completedNodeIds_.add(input.readBytes());
+              completedNodeIds_.add(bs);
               break;
             }
             case 114: {
@@ -482,8 +468,9 @@ public final class JBPMMessages {
               break;
             }
             case 122: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000080;
-              description_ = input.readBytes();
+              description_ = bs;
               break;
             }
             case 128: {
@@ -492,13 +479,15 @@ public final class JBPMMessages {
               break;
             }
             case 138: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000200;
-              deploymentId_ = input.readBytes();
+              deploymentId_ = bs;
               break;
             }
             case 146: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000400;
-              correlationKey_ = input.readBytes();
+              correlationKey_ = bs;
               break;
             }
             case 152: {
@@ -537,7 +526,7 @@ public final class JBPMMessages {
           exclusiveGroup_ = java.util.Collections.unmodifiableList(exclusiveGroup_);
         }
         if (((mutable_bitField0_ & 0x00040000) == 0x00040000)) {
-          completedNodeIds_ = new com.google.protobuf.UnmodifiableLazyStringList(completedNodeIds_);
+          completedNodeIds_ = completedNodeIds_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00080000) == 0x00080000)) {
           iterationLevels_ = java.util.Collections.unmodifiableList(iterationLevels_);
@@ -763,10 +752,10 @@ public final class JBPMMessages {
       // @@protoc_insertion_point(enum_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceType)
     }
 
-    public interface SwimlaneContextInstanceOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface SwimlaneContextInstanceOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional string swimlane = 1;
       /**
        * <code>optional string swimlane = 1;</code>
        */
@@ -781,7 +770,6 @@ public final class JBPMMessages {
       com.google.protobuf.ByteString
           getSwimlaneBytes();
 
-      // optional string actor_id = 2;
       /**
        * <code>optional string actor_id = 2;</code>
        */
@@ -800,8 +788,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance}
      */
     public static final class SwimlaneContextInstance extends
-        com.google.protobuf.GeneratedMessage
-        implements SwimlaneContextInstanceOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance)
+        SwimlaneContextInstanceOrBuilder {
       // Use SwimlaneContextInstance.newBuilder() to construct.
       private SwimlaneContextInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -848,13 +837,15 @@ public final class JBPMMessages {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                swimlane_ = input.readBytes();
+                swimlane_ = bs;
                 break;
               }
               case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                actorId_ = input.readBytes();
+                actorId_ = bs;
                 break;
               }
             }
@@ -897,7 +888,6 @@ public final class JBPMMessages {
       }
 
       private int bitField0_;
-      // optional string swimlane = 1;
       public static final int SWIMLANE_FIELD_NUMBER = 1;
       private java.lang.Object swimlane_;
       /**
@@ -940,7 +930,6 @@ public final class JBPMMessages {
         }
       }
 
-      // optional string actor_id = 2;
       public static final int ACTOR_ID_FIELD_NUMBER = 2;
       private java.lang.Object actorId_;
       /**
@@ -990,7 +979,8 @@ public final class JBPMMessages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -1104,8 +1094,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance)
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor;
@@ -1231,7 +1222,6 @@ public final class JBPMMessages {
         }
         private int bitField0_;
 
-        // optional string swimlane = 1;
         private java.lang.Object swimlane_ = "";
         /**
          * <code>optional string swimlane = 1;</code>
@@ -1245,9 +1235,12 @@ public final class JBPMMessages {
         public java.lang.String getSwimlane() {
           java.lang.Object ref = swimlane_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            swimlane_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              swimlane_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -1305,7 +1298,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional string actor_id = 2;
         private java.lang.Object actorId_ = "";
         /**
          * <code>optional string actor_id = 2;</code>
@@ -1319,9 +1311,12 @@ public final class JBPMMessages {
         public java.lang.String getActorId() {
           java.lang.Object ref = actorId_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            actorId_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              actorId_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -1390,10 +1385,10 @@ public final class JBPMMessages {
       // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance)
     }
 
-    public interface NodeInstanceOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface NodeInstanceOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstance)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional int64 id = 1;
       /**
        * <code>optional int64 id = 1;</code>
        */
@@ -1403,7 +1398,6 @@ public final class JBPMMessages {
        */
       long getId();
 
-      // optional int64 node_id = 2;
       /**
        * <code>optional int64 node_id = 2;</code>
        */
@@ -1413,7 +1407,6 @@ public final class JBPMMessages {
        */
       long getNodeId();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent content = 4;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent content = 4;</code>
        */
@@ -1427,7 +1420,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder getContentOrBuilder();
 
-      // optional int32 level = 5;
       /**
        * <code>optional int32 level = 5;</code>
        */
@@ -1437,7 +1429,6 @@ public final class JBPMMessages {
        */
       int getLevel();
 
-      // optional int64 sla_timer_id = 6;
       /**
        * <code>optional int64 sla_timer_id = 6;</code>
        */
@@ -1447,7 +1438,6 @@ public final class JBPMMessages {
        */
       long getSlaTimerId();
 
-      // optional int64 sla_due_date = 7;
       /**
        * <code>optional int64 sla_due_date = 7;</code>
        */
@@ -1457,7 +1447,6 @@ public final class JBPMMessages {
        */
       long getSlaDueDate();
 
-      // optional int32 sla_compliance = 8;
       /**
        * <code>optional int32 sla_compliance = 8;</code>
        */
@@ -1471,8 +1460,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstance}
      */
     public static final class NodeInstance extends
-        com.google.protobuf.GeneratedMessage
-        implements NodeInstanceOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstance)
+        NodeInstanceOrBuilder {
       // Use NodeInstance.newBuilder() to construct.
       private NodeInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -1601,7 +1591,6 @@ public final class JBPMMessages {
       }
 
       private int bitField0_;
-      // optional int64 id = 1;
       public static final int ID_FIELD_NUMBER = 1;
       private long id_;
       /**
@@ -1617,7 +1606,6 @@ public final class JBPMMessages {
         return id_;
       }
 
-      // optional int64 node_id = 2;
       public static final int NODE_ID_FIELD_NUMBER = 2;
       private long nodeId_;
       /**
@@ -1633,7 +1621,6 @@ public final class JBPMMessages {
         return nodeId_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent content = 4;
       public static final int CONTENT_FIELD_NUMBER = 4;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent content_;
       /**
@@ -1655,7 +1642,6 @@ public final class JBPMMessages {
         return content_;
       }
 
-      // optional int32 level = 5;
       public static final int LEVEL_FIELD_NUMBER = 5;
       private int level_;
       /**
@@ -1671,7 +1657,6 @@ public final class JBPMMessages {
         return level_;
       }
 
-      // optional int64 sla_timer_id = 6;
       public static final int SLA_TIMER_ID_FIELD_NUMBER = 6;
       private long slaTimerId_;
       /**
@@ -1687,7 +1672,6 @@ public final class JBPMMessages {
         return slaTimerId_;
       }
 
-      // optional int64 sla_due_date = 7;
       public static final int SLA_DUE_DATE_FIELD_NUMBER = 7;
       private long slaDueDate_;
       /**
@@ -1703,7 +1687,6 @@ public final class JBPMMessages {
         return slaDueDate_;
       }
 
-      // optional int32 sla_compliance = 8;
       public static final int SLA_COMPLIANCE_FIELD_NUMBER = 8;
       private int slaCompliance_;
       /**
@@ -1731,7 +1714,8 @@ public final class JBPMMessages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -1880,8 +1864,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstance}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstance)
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor;
@@ -2057,7 +2042,6 @@ public final class JBPMMessages {
         }
         private int bitField0_;
 
-        // optional int64 id = 1;
         private long id_ ;
         /**
          * <code>optional int64 id = 1;</code>
@@ -2090,7 +2074,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 node_id = 2;
         private long nodeId_ ;
         /**
          * <code>optional int64 node_id = 2;</code>
@@ -2123,7 +2106,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent content = 4;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent content_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder> contentBuilder_;
@@ -2232,7 +2214,7 @@ public final class JBPMMessages {
           if (contentBuilder_ == null) {
             contentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder>(
-                    content_,
+                    getContent(),
                     getParentForChildren(),
                     isClean());
             content_ = null;
@@ -2240,7 +2222,6 @@ public final class JBPMMessages {
           return contentBuilder_;
         }
 
-        // optional int32 level = 5;
         private int level_ ;
         /**
          * <code>optional int32 level = 5;</code>
@@ -2273,7 +2254,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 sla_timer_id = 6;
         private long slaTimerId_ ;
         /**
          * <code>optional int64 sla_timer_id = 6;</code>
@@ -2306,7 +2286,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 sla_due_date = 7;
         private long slaDueDate_ ;
         /**
          * <code>optional int64 sla_due_date = 7;</code>
@@ -2339,7 +2318,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int32 sla_compliance = 8;
         private int slaCompliance_ ;
         /**
          * <code>optional int32 sla_compliance = 8;</code>
@@ -2383,10 +2361,10 @@ public final class JBPMMessages {
       // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstance)
     }
 
-    public interface ExclusiveGroupInstanceOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ExclusiveGroupInstanceOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance)
+        com.google.protobuf.MessageOrBuilder {
 
-      // repeated int64 group_node_instance_id = 1;
       /**
        * <code>repeated int64 group_node_instance_id = 1;</code>
        */
@@ -2404,8 +2382,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance}
      */
     public static final class ExclusiveGroupInstance extends
-        com.google.protobuf.GeneratedMessage
-        implements ExclusiveGroupInstanceOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance)
+        ExclusiveGroupInstanceOrBuilder {
       // Use ExclusiveGroupInstance.newBuilder() to construct.
       private ExclusiveGroupInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -2514,7 +2493,6 @@ public final class JBPMMessages {
         return PARSER;
       }
 
-      // repeated int64 group_node_instance_id = 1;
       public static final int GROUP_NODE_INSTANCE_ID_FIELD_NUMBER = 1;
       private java.util.List<java.lang.Long> groupNodeInstanceId_;
       /**
@@ -2543,7 +2521,8 @@ public final class JBPMMessages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -2655,8 +2634,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance)
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor;
@@ -2775,7 +2755,6 @@ public final class JBPMMessages {
         }
         private int bitField0_;
 
-        // repeated int64 group_node_instance_id = 1;
         private java.util.List<java.lang.Long> groupNodeInstanceId_ = java.util.Collections.emptyList();
         private void ensureGroupNodeInstanceIdIsMutable() {
           if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2827,7 +2806,8 @@ public final class JBPMMessages {
         public Builder addAllGroupNodeInstanceId(
             java.lang.Iterable<? extends java.lang.Long> values) {
           ensureGroupNodeInstanceIdIsMutable();
-          super.addAll(values, groupNodeInstanceId_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, groupNodeInstanceId_);
           onChanged();
           return this;
         }
@@ -2852,10 +2832,10 @@ public final class JBPMMessages {
       // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance)
     }
 
-    public interface NodeInstanceContentOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface NodeInstanceContentOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;</code>
        */
@@ -2865,7 +2845,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType getType();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode rule_set = 2;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode rule_set = 2;</code>
        */
@@ -2879,7 +2858,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder getRuleSetOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode human_task = 3;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode human_task = 3;</code>
        */
@@ -2893,7 +2871,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder getHumanTaskOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode work_item = 4;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode work_item = 4;</code>
        */
@@ -2907,7 +2884,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder getWorkItemOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode sub_process = 5;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode sub_process = 5;</code>
        */
@@ -2921,7 +2897,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder getSubProcessOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode milestone = 6;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode milestone = 6;</code>
        */
@@ -2935,7 +2910,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder getMilestoneOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode event = 7;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode event = 7;</code>
        */
@@ -2949,7 +2923,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder getEventOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode timer = 8;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode timer = 8;</code>
        */
@@ -2963,7 +2936,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder getTimerOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode join = 9;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode join = 9;</code>
        */
@@ -2977,7 +2949,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder getJoinOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode state = 10;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode state = 10;</code>
        */
@@ -2991,7 +2962,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder getStateOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode composite = 11;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode composite = 11;</code>
        */
@@ -3005,7 +2975,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder getCompositeOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;</code>
        */
@@ -3019,7 +2988,6 @@ public final class JBPMMessages {
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder getForEachOrBuilder();
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
       /**
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
        */
@@ -3037,8 +3005,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent}
      */
     public static final class NodeInstanceContent extends
-        com.google.protobuf.GeneratedMessage
-        implements NodeInstanceContentOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent)
+        NodeInstanceContentOrBuilder {
       // Use NodeInstanceContent.newBuilder() to construct.
       private NodeInstanceContent(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -3290,10 +3259,10 @@ public final class JBPMMessages {
         return PARSER;
       }
 
-      public interface RuleSetNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface RuleSetNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated int64 timer_instance_id = 1;
         /**
          * <code>repeated int64 timer_instance_id = 1;</code>
          */
@@ -3307,7 +3276,6 @@ public final class JBPMMessages {
          */
         long getTimerInstanceId(int index);
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
          */
@@ -3332,7 +3300,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder getMapEntryOrBuilder(
             int index);
 
-        // optional string rule_flow_group = 3;
         /**
          * <code>optional string rule_flow_group = 3;</code>
          */
@@ -3351,8 +3318,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode}
        */
       public static final class RuleSetNode extends
-          com.google.protobuf.GeneratedMessage
-          implements RuleSetNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
+          RuleSetNodeOrBuilder {
         // Use RuleSetNode.newBuilder() to construct.
         private RuleSetNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -3428,8 +3396,9 @@ public final class JBPMMessages {
                   break;
                 }
                 case 26: {
+                  com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000001;
-                  ruleFlowGroup_ = input.readBytes();
+                  ruleFlowGroup_ = bs;
                   break;
                 }
               }
@@ -3477,10 +3446,10 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        public interface TextMapEntryOrBuilder
-            extends com.google.protobuf.MessageOrBuilder {
+        public interface TextMapEntryOrBuilder extends
+            // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
+            com.google.protobuf.MessageOrBuilder {
 
-          // optional string name = 1;
           /**
            * <code>optional string name = 1;</code>
            */
@@ -3495,7 +3464,6 @@ public final class JBPMMessages {
           com.google.protobuf.ByteString
               getNameBytes();
 
-          // optional string value = 2;
           /**
            * <code>optional string value = 2;</code>
            */
@@ -3514,8 +3482,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry}
          */
         public static final class TextMapEntry extends
-            com.google.protobuf.GeneratedMessage
-            implements TextMapEntryOrBuilder {
+            com.google.protobuf.GeneratedMessage implements
+            // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
+            TextMapEntryOrBuilder {
           // Use TextMapEntry.newBuilder() to construct.
           private TextMapEntry(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
             super(builder);
@@ -3562,13 +3531,15 @@ public final class JBPMMessages {
                     break;
                   }
                   case 10: {
+                    com.google.protobuf.ByteString bs = input.readBytes();
                     bitField0_ |= 0x00000001;
-                    name_ = input.readBytes();
+                    name_ = bs;
                     break;
                   }
                   case 18: {
+                    com.google.protobuf.ByteString bs = input.readBytes();
                     bitField0_ |= 0x00000002;
-                    value_ = input.readBytes();
+                    value_ = bs;
                     break;
                   }
                 }
@@ -3611,7 +3582,6 @@ public final class JBPMMessages {
           }
 
           private int bitField0_;
-          // optional string name = 1;
           public static final int NAME_FIELD_NUMBER = 1;
           private java.lang.Object name_;
           /**
@@ -3654,7 +3624,6 @@ public final class JBPMMessages {
             }
           }
 
-          // optional string value = 2;
           public static final int VALUE_FIELD_NUMBER = 2;
           private java.lang.Object value_;
           /**
@@ -3704,7 +3673,8 @@ public final class JBPMMessages {
           private byte memoizedIsInitialized = -1;
           public final boolean isInitialized() {
             byte isInitialized = memoizedIsInitialized;
-            if (isInitialized != -1) return isInitialized == 1;
+            if (isInitialized == 1) return true;
+            if (isInitialized == 0) return false;
 
             memoizedIsInitialized = 1;
             return true;
@@ -3818,8 +3788,9 @@ public final class JBPMMessages {
            * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry}
            */
           public static final class Builder extends
-              com.google.protobuf.GeneratedMessage.Builder<Builder>
-             implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder {
+              com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+              // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry)
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
                 getDescriptor() {
               return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor;
@@ -3945,7 +3916,6 @@ public final class JBPMMessages {
             }
             private int bitField0_;
 
-            // optional string name = 1;
             private java.lang.Object name_ = "";
             /**
              * <code>optional string name = 1;</code>
@@ -3959,9 +3929,12 @@ public final class JBPMMessages {
             public java.lang.String getName() {
               java.lang.Object ref = name_;
               if (!(ref instanceof java.lang.String)) {
-                java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                    .toStringUtf8();
-                name_ = s;
+                com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                  name_ = s;
+                }
                 return s;
               } else {
                 return (java.lang.String) ref;
@@ -4019,7 +3992,6 @@ public final class JBPMMessages {
               return this;
             }
 
-            // optional string value = 2;
             private java.lang.Object value_ = "";
             /**
              * <code>optional string value = 2;</code>
@@ -4033,9 +4005,12 @@ public final class JBPMMessages {
             public java.lang.String getValue() {
               java.lang.Object ref = value_;
               if (!(ref instanceof java.lang.String)) {
-                java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                    .toStringUtf8();
-                value_ = s;
+                com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                  value_ = s;
+                }
                 return s;
               } else {
                 return (java.lang.String) ref;
@@ -4105,7 +4080,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // repeated int64 timer_instance_id = 1;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -4128,7 +4102,6 @@ public final class JBPMMessages {
           return timerInstanceId_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
         public static final int MAPENTRY_FIELD_NUMBER = 2;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> mapEntry_;
         /**
@@ -4164,7 +4137,6 @@ public final class JBPMMessages {
           return mapEntry_.get(index);
         }
 
-        // optional string rule_flow_group = 3;
         public static final int RULE_FLOW_GROUP_FIELD_NUMBER = 3;
         private java.lang.Object ruleFlowGroup_;
         /**
@@ -4215,7 +4187,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -4341,8 +4314,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor;
@@ -4516,7 +4490,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated int64 timer_instance_id = 1;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -4568,7 +4541,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -4582,7 +4556,6 @@ public final class JBPMMessages {
             return this;
           }
 
-          // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> mapEntry_ =
             java.util.Collections.emptyList();
           private void ensureMapEntryIsMutable() {
@@ -4724,7 +4697,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> values) {
             if (mapEntryBuilder_ == null) {
               ensureMapEntryIsMutable();
-              super.addAll(values, mapEntry_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, mapEntry_);
               onChanged();
             } else {
               mapEntryBuilder_.addAllMessages(values);
@@ -4822,7 +4796,6 @@ public final class JBPMMessages {
             return mapEntryBuilder_;
           }
 
-          // optional string rule_flow_group = 3;
           private java.lang.Object ruleFlowGroup_ = "";
           /**
            * <code>optional string rule_flow_group = 3;</code>
@@ -4836,9 +4809,12 @@ public final class JBPMMessages {
           public java.lang.String getRuleFlowGroup() {
             java.lang.Object ref = ruleFlowGroup_;
             if (!(ref instanceof java.lang.String)) {
-              java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                  .toStringUtf8();
-              ruleFlowGroup_ = s;
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                ruleFlowGroup_ = s;
+              }
               return s;
             } else {
               return (java.lang.String) ref;
@@ -4907,10 +4883,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode)
       }
 
-      public interface HumanTaskNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface HumanTaskNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // optional int64 work_item_id = 1;
         /**
          * <code>optional int64 work_item_id = 1;</code>
          */
@@ -4920,7 +4896,6 @@ public final class JBPMMessages {
          */
         long getWorkItemId();
 
-        // repeated int64 timer_instance_id = 2;
         /**
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
@@ -4933,13 +4908,23 @@ public final class JBPMMessages {
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
         long getTimerInstanceId(int index);
+
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        boolean hasErrorHandlingProcessInstanceId();
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        long getErrorHandlingProcessInstanceId();
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode}
        */
       public static final class HumanTaskNode extends
-          com.google.protobuf.GeneratedMessage
-          implements HumanTaskNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode)
+          HumanTaskNodeOrBuilder {
         // Use HumanTaskNode.newBuilder() to construct.
         private HumanTaskNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -5011,6 +4996,11 @@ public final class JBPMMessages {
                   input.popLimit(limit);
                   break;
                 }
+                case 24: {
+                  bitField0_ |= 0x00000002;
+                  errorHandlingProcessInstanceId_ = input.readInt64();
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -5054,7 +5044,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // optional int64 work_item_id = 1;
         public static final int WORK_ITEM_ID_FIELD_NUMBER = 1;
         private long workItemId_;
         /**
@@ -5070,7 +5059,6 @@ public final class JBPMMessages {
           return workItemId_;
         }
 
-        // repeated int64 timer_instance_id = 2;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -5093,14 +5081,31 @@ public final class JBPMMessages {
           return timerInstanceId_.get(index);
         }
 
+        public static final int ERROR_HANDLING_PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
+        private long errorHandlingProcessInstanceId_;
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        public boolean hasErrorHandlingProcessInstanceId() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        public long getErrorHandlingProcessInstanceId() {
+          return errorHandlingProcessInstanceId_;
+        }
+
         private void initFields() {
           workItemId_ = 0L;
           timerInstanceId_ = java.util.Collections.emptyList();
+          errorHandlingProcessInstanceId_ = 0L;
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -5114,6 +5119,9 @@ public final class JBPMMessages {
           }
           for (int i = 0; i < timerInstanceId_.size(); i++) {
             output.writeInt64(2, timerInstanceId_.get(i));
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeInt64(3, errorHandlingProcessInstanceId_);
           }
           getUnknownFields().writeTo(output);
         }
@@ -5136,6 +5144,10 @@ public final class JBPMMessages {
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeInt64Size(3, errorHandlingProcessInstanceId_);
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -5219,8 +5231,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
@@ -5257,6 +5270,8 @@ public final class JBPMMessages {
             bitField0_ = (bitField0_ & ~0x00000001);
             timerInstanceId_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
+            errorHandlingProcessInstanceId_ = 0L;
+            bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
 
@@ -5294,6 +5309,10 @@ public final class JBPMMessages {
               bitField0_ = (bitField0_ & ~0x00000002);
             }
             result.timerInstanceId_ = timerInstanceId_;
+            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.errorHandlingProcessInstanceId_ = errorHandlingProcessInstanceId_;
             result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
@@ -5323,6 +5342,9 @@ public final class JBPMMessages {
               }
               onChanged();
             }
+            if (other.hasErrorHandlingProcessInstanceId()) {
+              setErrorHandlingProcessInstanceId(other.getErrorHandlingProcessInstanceId());
+            }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
           }
@@ -5350,7 +5372,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // optional int64 work_item_id = 1;
           private long workItemId_ ;
           /**
            * <code>optional int64 work_item_id = 1;</code>
@@ -5383,7 +5404,6 @@ public final class JBPMMessages {
             return this;
           }
 
-          // repeated int64 timer_instance_id = 2;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -5435,7 +5455,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -5445,6 +5466,38 @@ public final class JBPMMessages {
           public Builder clearTimerInstanceId() {
             timerInstanceId_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+            return this;
+          }
+
+          private long errorHandlingProcessInstanceId_ ;
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public boolean hasErrorHandlingProcessInstanceId() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public long getErrorHandlingProcessInstanceId() {
+            return errorHandlingProcessInstanceId_;
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public Builder setErrorHandlingProcessInstanceId(long value) {
+            bitField0_ |= 0x00000004;
+            errorHandlingProcessInstanceId_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public Builder clearErrorHandlingProcessInstanceId() {
+            bitField0_ = (bitField0_ & ~0x00000004);
+            errorHandlingProcessInstanceId_ = 0L;
             onChanged();
             return this;
           }
@@ -5460,10 +5513,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode)
       }
 
-      public interface WorkItemNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface WorkItemNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // optional int64 work_item_id = 1;
         /**
          * <code>optional int64 work_item_id = 1;</code>
          */
@@ -5473,7 +5526,6 @@ public final class JBPMMessages {
          */
         long getWorkItemId();
 
-        // repeated int64 timer_instance_id = 2;
         /**
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
@@ -5486,13 +5538,23 @@ public final class JBPMMessages {
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
         long getTimerInstanceId(int index);
+
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        boolean hasErrorHandlingProcessInstanceId();
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        long getErrorHandlingProcessInstanceId();
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode}
        */
       public static final class WorkItemNode extends
-          com.google.protobuf.GeneratedMessage
-          implements WorkItemNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode)
+          WorkItemNodeOrBuilder {
         // Use WorkItemNode.newBuilder() to construct.
         private WorkItemNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -5564,6 +5626,11 @@ public final class JBPMMessages {
                   input.popLimit(limit);
                   break;
                 }
+                case 24: {
+                  bitField0_ |= 0x00000002;
+                  errorHandlingProcessInstanceId_ = input.readInt64();
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -5607,7 +5674,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // optional int64 work_item_id = 1;
         public static final int WORK_ITEM_ID_FIELD_NUMBER = 1;
         private long workItemId_;
         /**
@@ -5623,7 +5689,6 @@ public final class JBPMMessages {
           return workItemId_;
         }
 
-        // repeated int64 timer_instance_id = 2;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -5646,14 +5711,31 @@ public final class JBPMMessages {
           return timerInstanceId_.get(index);
         }
 
+        public static final int ERROR_HANDLING_PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
+        private long errorHandlingProcessInstanceId_;
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        public boolean hasErrorHandlingProcessInstanceId() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional int64 error_handling_process_instance_id = 3;</code>
+         */
+        public long getErrorHandlingProcessInstanceId() {
+          return errorHandlingProcessInstanceId_;
+        }
+
         private void initFields() {
           workItemId_ = 0L;
           timerInstanceId_ = java.util.Collections.emptyList();
+          errorHandlingProcessInstanceId_ = 0L;
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -5667,6 +5749,9 @@ public final class JBPMMessages {
           }
           for (int i = 0; i < timerInstanceId_.size(); i++) {
             output.writeInt64(2, timerInstanceId_.get(i));
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeInt64(3, errorHandlingProcessInstanceId_);
           }
           getUnknownFields().writeTo(output);
         }
@@ -5689,6 +5774,10 @@ public final class JBPMMessages {
             }
             size += dataSize;
             size += 1 * getTimerInstanceIdList().size();
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeInt64Size(3, errorHandlingProcessInstanceId_);
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -5772,8 +5861,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor;
@@ -5810,6 +5900,8 @@ public final class JBPMMessages {
             bitField0_ = (bitField0_ & ~0x00000001);
             timerInstanceId_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
+            errorHandlingProcessInstanceId_ = 0L;
+            bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
 
@@ -5847,6 +5939,10 @@ public final class JBPMMessages {
               bitField0_ = (bitField0_ & ~0x00000002);
             }
             result.timerInstanceId_ = timerInstanceId_;
+            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.errorHandlingProcessInstanceId_ = errorHandlingProcessInstanceId_;
             result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
@@ -5876,6 +5972,9 @@ public final class JBPMMessages {
               }
               onChanged();
             }
+            if (other.hasErrorHandlingProcessInstanceId()) {
+              setErrorHandlingProcessInstanceId(other.getErrorHandlingProcessInstanceId());
+            }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
           }
@@ -5903,7 +6002,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // optional int64 work_item_id = 1;
           private long workItemId_ ;
           /**
            * <code>optional int64 work_item_id = 1;</code>
@@ -5936,7 +6034,6 @@ public final class JBPMMessages {
             return this;
           }
 
-          // repeated int64 timer_instance_id = 2;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -5988,7 +6085,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -5998,6 +6096,38 @@ public final class JBPMMessages {
           public Builder clearTimerInstanceId() {
             timerInstanceId_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+            return this;
+          }
+
+          private long errorHandlingProcessInstanceId_ ;
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public boolean hasErrorHandlingProcessInstanceId() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public long getErrorHandlingProcessInstanceId() {
+            return errorHandlingProcessInstanceId_;
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public Builder setErrorHandlingProcessInstanceId(long value) {
+            bitField0_ |= 0x00000004;
+            errorHandlingProcessInstanceId_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional int64 error_handling_process_instance_id = 3;</code>
+           */
+          public Builder clearErrorHandlingProcessInstanceId() {
+            bitField0_ = (bitField0_ & ~0x00000004);
+            errorHandlingProcessInstanceId_ = 0L;
             onChanged();
             return this;
           }
@@ -6013,10 +6143,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode)
       }
 
-      public interface SubProcessNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface SubProcessNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // optional int64 process_instance_id = 1;
         /**
          * <code>optional int64 process_instance_id = 1;</code>
          */
@@ -6026,7 +6156,6 @@ public final class JBPMMessages {
          */
         long getProcessInstanceId();
 
-        // repeated int64 timer_instance_id = 2;
         /**
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
@@ -6044,8 +6173,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode}
        */
       public static final class SubProcessNode extends
-          com.google.protobuf.GeneratedMessage
-          implements SubProcessNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode)
+          SubProcessNodeOrBuilder {
         // Use SubProcessNode.newBuilder() to construct.
         private SubProcessNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -6160,7 +6290,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // optional int64 process_instance_id = 1;
         public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
         private long processInstanceId_;
         /**
@@ -6176,7 +6305,6 @@ public final class JBPMMessages {
           return processInstanceId_;
         }
 
-        // repeated int64 timer_instance_id = 2;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -6206,7 +6334,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -6325,8 +6454,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor;
@@ -6456,7 +6586,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // optional int64 process_instance_id = 1;
           private long processInstanceId_ ;
           /**
            * <code>optional int64 process_instance_id = 1;</code>
@@ -6489,7 +6618,6 @@ public final class JBPMMessages {
             return this;
           }
 
-          // repeated int64 timer_instance_id = 2;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -6541,7 +6669,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -6566,10 +6695,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode)
       }
 
-      public interface MilestoneNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface MilestoneNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated int64 timer_instance_id = 1;
         /**
          * <code>repeated int64 timer_instance_id = 1;</code>
          */
@@ -6587,8 +6716,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode}
        */
       public static final class MilestoneNode extends
-          com.google.protobuf.GeneratedMessage
-          implements MilestoneNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode)
+          MilestoneNodeOrBuilder {
         // Use MilestoneNode.newBuilder() to construct.
         private MilestoneNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -6697,7 +6827,6 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        // repeated int64 timer_instance_id = 1;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -6726,7 +6855,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -6838,8 +6968,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor;
@@ -6958,7 +7089,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated int64 timer_instance_id = 1;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7010,7 +7140,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -7035,15 +7166,17 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode)
       }
 
-      public interface EventNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface EventNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode)
+          com.google.protobuf.MessageOrBuilder {
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode}
        */
       public static final class EventNode extends
-          com.google.protobuf.GeneratedMessage
-          implements EventNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode)
+          EventNodeOrBuilder {
         // Use EventNode.newBuilder() to construct.
         private EventNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -7132,7 +7265,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -7232,8 +7366,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor;
@@ -7344,10 +7479,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode)
       }
 
-      public interface TimerNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface TimerNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // optional int64 timer_id = 1;
         /**
          * <code>optional int64 timer_id = 1;</code>
          */
@@ -7361,8 +7496,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode}
        */
       public static final class TimerNode extends
-          com.google.protobuf.GeneratedMessage
-          implements TimerNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode)
+          TimerNodeOrBuilder {
         // Use TimerNode.newBuilder() to construct.
         private TimerNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -7453,7 +7589,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // optional int64 timer_id = 1;
         public static final int TIMER_ID_FIELD_NUMBER = 1;
         private long timerId_;
         /**
@@ -7475,7 +7610,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -7582,8 +7718,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor;
@@ -7696,7 +7833,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // optional int64 timer_id = 1;
           private long timerId_ ;
           /**
            * <code>optional int64 timer_id = 1;</code>
@@ -7740,10 +7876,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode)
       }
 
-      public interface JoinNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface JoinNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
          */
@@ -7772,8 +7908,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode}
        */
       public static final class JoinNode extends
-          com.google.protobuf.GeneratedMessage
-          implements JoinNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode)
+          JoinNodeOrBuilder {
         // Use JoinNode.newBuilder() to construct.
         private JoinNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -7869,10 +8006,10 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        public interface JoinTriggerOrBuilder
-            extends com.google.protobuf.MessageOrBuilder {
+        public interface JoinTriggerOrBuilder extends
+            // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger)
+            com.google.protobuf.MessageOrBuilder {
 
-          // optional int64 node_id = 1;
           /**
            * <code>optional int64 node_id = 1;</code>
            */
@@ -7882,7 +8019,6 @@ public final class JBPMMessages {
            */
           long getNodeId();
 
-          // optional int32 counter = 2;
           /**
            * <code>optional int32 counter = 2;</code>
            */
@@ -7896,8 +8032,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger}
          */
         public static final class JoinTrigger extends
-            com.google.protobuf.GeneratedMessage
-            implements JoinTriggerOrBuilder {
+            com.google.protobuf.GeneratedMessage implements
+            // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger)
+            JoinTriggerOrBuilder {
           // Use JoinTrigger.newBuilder() to construct.
           private JoinTrigger(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
             super(builder);
@@ -7993,7 +8130,6 @@ public final class JBPMMessages {
           }
 
           private int bitField0_;
-          // optional int64 node_id = 1;
           public static final int NODE_ID_FIELD_NUMBER = 1;
           private long nodeId_;
           /**
@@ -8009,7 +8145,6 @@ public final class JBPMMessages {
             return nodeId_;
           }
 
-          // optional int32 counter = 2;
           public static final int COUNTER_FIELD_NUMBER = 2;
           private int counter_;
           /**
@@ -8032,7 +8167,8 @@ public final class JBPMMessages {
           private byte memoizedIsInitialized = -1;
           public final boolean isInitialized() {
             byte isInitialized = memoizedIsInitialized;
-            if (isInitialized != -1) return isInitialized == 1;
+            if (isInitialized == 1) return true;
+            if (isInitialized == 0) return false;
 
             memoizedIsInitialized = 1;
             return true;
@@ -8146,8 +8282,9 @@ public final class JBPMMessages {
            * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger}
            */
           public static final class Builder extends
-              com.google.protobuf.GeneratedMessage.Builder<Builder>
-             implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder {
+              com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+              // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger)
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
                 getDescriptor() {
               return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor;
@@ -8269,7 +8406,6 @@ public final class JBPMMessages {
             }
             private int bitField0_;
 
-            // optional int64 node_id = 1;
             private long nodeId_ ;
             /**
              * <code>optional int64 node_id = 1;</code>
@@ -8302,7 +8438,6 @@ public final class JBPMMessages {
               return this;
             }
 
-            // optional int32 counter = 2;
             private int counter_ ;
             /**
              * <code>optional int32 counter = 2;</code>
@@ -8346,7 +8481,6 @@ public final class JBPMMessages {
           // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger)
         }
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;
         public static final int TRIGGER_FIELD_NUMBER = 1;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger> trigger_;
         /**
@@ -8388,7 +8522,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -8495,8 +8630,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor;
@@ -8640,7 +8776,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger> trigger_ =
             java.util.Collections.emptyList();
           private void ensureTriggerIsMutable() {
@@ -8782,7 +8917,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger> values) {
             if (triggerBuilder_ == null) {
               ensureTriggerIsMutable();
-              super.addAll(values, trigger_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, trigger_);
               onChanged();
             } else {
               triggerBuilder_.addAllMessages(values);
@@ -8891,10 +9027,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode)
       }
 
-      public interface StateNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface StateNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated int64 timer_instance_id = 1;
         /**
          * <code>repeated int64 timer_instance_id = 1;</code>
          */
@@ -8912,8 +9048,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode}
        */
       public static final class StateNode extends
-          com.google.protobuf.GeneratedMessage
-          implements StateNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode)
+          StateNodeOrBuilder {
         // Use StateNode.newBuilder() to construct.
         private StateNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -9022,7 +9159,6 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        // repeated int64 timer_instance_id = 1;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 1;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -9051,7 +9187,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -9163,8 +9300,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor;
@@ -9283,7 +9421,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated int64 timer_instance_id = 1;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -9335,7 +9472,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -9360,10 +9498,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode)
       }
 
-      public interface CompositeContextNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface CompositeContextNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated int64 timer_instance_id = 2;
         /**
          * <code>repeated int64 timer_instance_id = 2;</code>
          */
@@ -9377,7 +9515,6 @@ public final class JBPMMessages {
          */
         long getTimerInstanceId(int index);
 
-        // repeated .org.jbpm.marshalling.Variable variable = 3;
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
          */
@@ -9402,7 +9539,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
             int index);
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
          */
@@ -9427,7 +9563,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
             int index);
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
          */
@@ -9452,7 +9587,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder getExclusiveGroupOrBuilder(
             int index);
 
-        // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
          */
@@ -9481,8 +9615,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode}
        */
       public static final class CompositeContextNode extends
-          com.google.protobuf.GeneratedMessage
-          implements CompositeContextNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode)
+          CompositeContextNodeOrBuilder {
         // Use CompositeContextNode.newBuilder() to construct.
         private CompositeContextNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -9635,7 +9770,6 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        // repeated int64 timer_instance_id = 2;
         public static final int TIMER_INSTANCE_ID_FIELD_NUMBER = 2;
         private java.util.List<java.lang.Long> timerInstanceId_;
         /**
@@ -9658,7 +9792,6 @@ public final class JBPMMessages {
           return timerInstanceId_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.Variable variable = 3;
         public static final int VARIABLE_FIELD_NUMBER = 3;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
         /**
@@ -9694,7 +9827,6 @@ public final class JBPMMessages {
           return variable_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;
         public static final int NODE_INSTANCE_FIELD_NUMBER = 4;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_;
         /**
@@ -9730,7 +9862,6 @@ public final class JBPMMessages {
           return nodeInstance_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;
         public static final int EXCLUSIVE_GROUP_FIELD_NUMBER = 5;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> exclusiveGroup_;
         /**
@@ -9766,7 +9897,6 @@ public final class JBPMMessages {
           return exclusiveGroup_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;
         public static final int ITERATIONLEVELS_FIELD_NUMBER = 6;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_;
         /**
@@ -9812,7 +9942,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -9952,8 +10083,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor;
@@ -10240,7 +10372,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated int64 timer_instance_id = 2;
           private java.util.List<java.lang.Long> timerInstanceId_ = java.util.Collections.emptyList();
           private void ensureTimerInstanceIdIsMutable() {
             if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10292,7 +10423,8 @@ public final class JBPMMessages {
           public Builder addAllTimerInstanceId(
               java.lang.Iterable<? extends java.lang.Long> values) {
             ensureTimerInstanceIdIsMutable();
-            super.addAll(values, timerInstanceId_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timerInstanceId_);
             onChanged();
             return this;
           }
@@ -10306,7 +10438,6 @@ public final class JBPMMessages {
             return this;
           }
 
-          // repeated .org.jbpm.marshalling.Variable variable = 3;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
             java.util.Collections.emptyList();
           private void ensureVariableIsMutable() {
@@ -10448,7 +10579,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
             if (variableBuilder_ == null) {
               ensureVariableIsMutable();
-              super.addAll(values, variable_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, variable_);
               onChanged();
             } else {
               variableBuilder_.addAllMessages(values);
@@ -10546,7 +10678,6 @@ public final class JBPMMessages {
             return variableBuilder_;
           }
 
-          // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_ =
             java.util.Collections.emptyList();
           private void ensureNodeInstanceIsMutable() {
@@ -10688,7 +10819,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> values) {
             if (nodeInstanceBuilder_ == null) {
               ensureNodeInstanceIsMutable();
-              super.addAll(values, nodeInstance_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, nodeInstance_);
               onChanged();
             } else {
               nodeInstanceBuilder_.addAllMessages(values);
@@ -10786,7 +10918,6 @@ public final class JBPMMessages {
             return nodeInstanceBuilder_;
           }
 
-          // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> exclusiveGroup_ =
             java.util.Collections.emptyList();
           private void ensureExclusiveGroupIsMutable() {
@@ -10928,7 +11059,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> values) {
             if (exclusiveGroupBuilder_ == null) {
               ensureExclusiveGroupIsMutable();
-              super.addAll(values, exclusiveGroup_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, exclusiveGroup_);
               onChanged();
             } else {
               exclusiveGroupBuilder_.addAllMessages(values);
@@ -11026,7 +11158,6 @@ public final class JBPMMessages {
             return exclusiveGroupBuilder_;
           }
 
-          // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_ =
             java.util.Collections.emptyList();
           private void ensureIterationLevelsIsMutable() {
@@ -11168,7 +11299,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> values) {
             if (iterationLevelsBuilder_ == null) {
               ensureIterationLevelsIsMutable();
-              super.addAll(values, iterationLevels_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, iterationLevels_);
               onChanged();
             } else {
               iterationLevelsBuilder_.addAllMessages(values);
@@ -11277,10 +11409,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode)
       }
 
-      public interface ForEachNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface ForEachNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
          */
@@ -11305,7 +11437,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
             int index);
 
-        // repeated .org.jbpm.marshalling.Variable variable = 2;
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
          */
@@ -11330,7 +11461,6 @@ public final class JBPMMessages {
         org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
             int index);
 
-        // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
          */
@@ -11359,8 +11489,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode}
        */
       public static final class ForEachNode extends
-          com.google.protobuf.GeneratedMessage
-          implements ForEachNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
+          ForEachNodeOrBuilder {
         // Use ForEachNode.newBuilder() to construct.
         private ForEachNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -11478,7 +11609,6 @@ public final class JBPMMessages {
           return PARSER;
         }
 
-        // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;
         public static final int NODE_INSTANCE_FIELD_NUMBER = 1;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_;
         /**
@@ -11514,7 +11644,6 @@ public final class JBPMMessages {
           return nodeInstance_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.Variable variable = 2;
         public static final int VARIABLE_FIELD_NUMBER = 2;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
         /**
@@ -11550,7 +11679,6 @@ public final class JBPMMessages {
           return variable_.get(index);
         }
 
-        // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;
         public static final int ITERATIONLEVELS_FIELD_NUMBER = 3;
         private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_;
         /**
@@ -11594,7 +11722,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -11715,8 +11844,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor;
@@ -11944,7 +12074,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_ =
             java.util.Collections.emptyList();
           private void ensureNodeInstanceIsMutable() {
@@ -12086,7 +12215,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> values) {
             if (nodeInstanceBuilder_ == null) {
               ensureNodeInstanceIsMutable();
-              super.addAll(values, nodeInstance_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, nodeInstance_);
               onChanged();
             } else {
               nodeInstanceBuilder_.addAllMessages(values);
@@ -12184,7 +12314,6 @@ public final class JBPMMessages {
             return nodeInstanceBuilder_;
           }
 
-          // repeated .org.jbpm.marshalling.Variable variable = 2;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
             java.util.Collections.emptyList();
           private void ensureVariableIsMutable() {
@@ -12326,7 +12455,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
             if (variableBuilder_ == null) {
               ensureVariableIsMutable();
-              super.addAll(values, variable_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, variable_);
               onChanged();
             } else {
               variableBuilder_.addAllMessages(values);
@@ -12424,7 +12554,6 @@ public final class JBPMMessages {
             return variableBuilder_;
           }
 
-          // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;
           private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_ =
             java.util.Collections.emptyList();
           private void ensureIterationLevelsIsMutable() {
@@ -12566,7 +12695,8 @@ public final class JBPMMessages {
               java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> values) {
             if (iterationLevelsBuilder_ == null) {
               ensureIterationLevelsIsMutable();
-              super.addAll(values, iterationLevels_);
+              com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, iterationLevels_);
               onChanged();
             } else {
               iterationLevelsBuilder_.addAllMessages(values);
@@ -12675,10 +12805,10 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
       }
 
-      public interface AsyncEventNodeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface AsyncEventNodeOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode)
+          com.google.protobuf.MessageOrBuilder {
 
-        // optional string event_type = 1;
         /**
          * <code>optional string event_type = 1;</code>
          */
@@ -12697,8 +12827,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode}
        */
       public static final class AsyncEventNode extends
-          com.google.protobuf.GeneratedMessage
-          implements AsyncEventNodeOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode)
+          AsyncEventNodeOrBuilder {
         // Use AsyncEventNode.newBuilder() to construct.
         private AsyncEventNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -12745,8 +12876,9 @@ public final class JBPMMessages {
                   break;
                 }
                 case 10: {
+                  com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000001;
-                  eventType_ = input.readBytes();
+                  eventType_ = bs;
                   break;
                 }
               }
@@ -12789,7 +12921,6 @@ public final class JBPMMessages {
         }
 
         private int bitField0_;
-        // optional string event_type = 1;
         public static final int EVENT_TYPE_FIELD_NUMBER = 1;
         private java.lang.Object eventType_;
         /**
@@ -12838,7 +12969,8 @@ public final class JBPMMessages {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           memoizedIsInitialized = 1;
           return true;
@@ -12945,8 +13077,9 @@ public final class JBPMMessages {
          * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode)
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
@@ -13061,7 +13194,6 @@ public final class JBPMMessages {
           }
           private int bitField0_;
 
-          // optional string event_type = 1;
           private java.lang.Object eventType_ = "";
           /**
            * <code>optional string event_type = 1;</code>
@@ -13075,9 +13207,12 @@ public final class JBPMMessages {
           public java.lang.String getEventType() {
             java.lang.Object ref = eventType_;
             if (!(ref instanceof java.lang.String)) {
-              java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                  .toStringUtf8();
-              eventType_ = s;
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                eventType_ = s;
+              }
               return s;
             } else {
               return (java.lang.String) ref;
@@ -13147,7 +13282,6 @@ public final class JBPMMessages {
       }
 
       private int bitField0_;
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType type_;
       /**
@@ -13163,7 +13297,6 @@ public final class JBPMMessages {
         return type_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode rule_set = 2;
       public static final int RULE_SET_FIELD_NUMBER = 2;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode ruleSet_;
       /**
@@ -13185,7 +13318,6 @@ public final class JBPMMessages {
         return ruleSet_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode human_task = 3;
       public static final int HUMAN_TASK_FIELD_NUMBER = 3;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode humanTask_;
       /**
@@ -13207,7 +13339,6 @@ public final class JBPMMessages {
         return humanTask_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode work_item = 4;
       public static final int WORK_ITEM_FIELD_NUMBER = 4;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode workItem_;
       /**
@@ -13229,7 +13360,6 @@ public final class JBPMMessages {
         return workItem_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode sub_process = 5;
       public static final int SUB_PROCESS_FIELD_NUMBER = 5;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode subProcess_;
       /**
@@ -13251,7 +13381,6 @@ public final class JBPMMessages {
         return subProcess_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode milestone = 6;
       public static final int MILESTONE_FIELD_NUMBER = 6;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode milestone_;
       /**
@@ -13273,7 +13402,6 @@ public final class JBPMMessages {
         return milestone_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode event = 7;
       public static final int EVENT_FIELD_NUMBER = 7;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode event_;
       /**
@@ -13295,7 +13423,6 @@ public final class JBPMMessages {
         return event_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode timer = 8;
       public static final int TIMER_FIELD_NUMBER = 8;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode timer_;
       /**
@@ -13317,7 +13444,6 @@ public final class JBPMMessages {
         return timer_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode join = 9;
       public static final int JOIN_FIELD_NUMBER = 9;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode join_;
       /**
@@ -13339,7 +13465,6 @@ public final class JBPMMessages {
         return join_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode state = 10;
       public static final int STATE_FIELD_NUMBER = 10;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode state_;
       /**
@@ -13361,7 +13486,6 @@ public final class JBPMMessages {
         return state_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode composite = 11;
       public static final int COMPOSITE_FIELD_NUMBER = 11;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode composite_;
       /**
@@ -13383,7 +13507,6 @@ public final class JBPMMessages {
         return composite_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;
       public static final int FOR_EACH_FIELD_NUMBER = 12;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode forEach_;
       /**
@@ -13405,7 +13528,6 @@ public final class JBPMMessages {
         return forEach_;
       }
 
-      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
       public static final int ASYNC_EVENT_FIELD_NUMBER = 13;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode asyncEvent_;
       /**
@@ -13445,7 +13567,8 @@ public final class JBPMMessages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -13636,8 +13759,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent)
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor;
@@ -13966,7 +14090,6 @@ public final class JBPMMessages {
         }
         private int bitField0_;
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType type_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType.RULE_SET_NODE;
         /**
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;</code>
@@ -14002,7 +14125,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode rule_set = 2;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode ruleSet_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder> ruleSetBuilder_;
@@ -14111,7 +14233,7 @@ public final class JBPMMessages {
           if (ruleSetBuilder_ == null) {
             ruleSetBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder>(
-                    ruleSet_,
+                    getRuleSet(),
                     getParentForChildren(),
                     isClean());
             ruleSet_ = null;
@@ -14119,7 +14241,6 @@ public final class JBPMMessages {
           return ruleSetBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode human_task = 3;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode humanTask_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder> humanTaskBuilder_;
@@ -14228,7 +14349,7 @@ public final class JBPMMessages {
           if (humanTaskBuilder_ == null) {
             humanTaskBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder>(
-                    humanTask_,
+                    getHumanTask(),
                     getParentForChildren(),
                     isClean());
             humanTask_ = null;
@@ -14236,7 +14357,6 @@ public final class JBPMMessages {
           return humanTaskBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode work_item = 4;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode workItem_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder> workItemBuilder_;
@@ -14345,7 +14465,7 @@ public final class JBPMMessages {
           if (workItemBuilder_ == null) {
             workItemBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder>(
-                    workItem_,
+                    getWorkItem(),
                     getParentForChildren(),
                     isClean());
             workItem_ = null;
@@ -14353,7 +14473,6 @@ public final class JBPMMessages {
           return workItemBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode sub_process = 5;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode subProcess_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder> subProcessBuilder_;
@@ -14462,7 +14581,7 @@ public final class JBPMMessages {
           if (subProcessBuilder_ == null) {
             subProcessBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder>(
-                    subProcess_,
+                    getSubProcess(),
                     getParentForChildren(),
                     isClean());
             subProcess_ = null;
@@ -14470,7 +14589,6 @@ public final class JBPMMessages {
           return subProcessBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode milestone = 6;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode milestone_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder> milestoneBuilder_;
@@ -14579,7 +14697,7 @@ public final class JBPMMessages {
           if (milestoneBuilder_ == null) {
             milestoneBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder>(
-                    milestone_,
+                    getMilestone(),
                     getParentForChildren(),
                     isClean());
             milestone_ = null;
@@ -14587,7 +14705,6 @@ public final class JBPMMessages {
           return milestoneBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode event = 7;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode event_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder> eventBuilder_;
@@ -14696,7 +14813,7 @@ public final class JBPMMessages {
           if (eventBuilder_ == null) {
             eventBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder>(
-                    event_,
+                    getEvent(),
                     getParentForChildren(),
                     isClean());
             event_ = null;
@@ -14704,7 +14821,6 @@ public final class JBPMMessages {
           return eventBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode timer = 8;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode timer_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder> timerBuilder_;
@@ -14813,7 +14929,7 @@ public final class JBPMMessages {
           if (timerBuilder_ == null) {
             timerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder>(
-                    timer_,
+                    getTimer(),
                     getParentForChildren(),
                     isClean());
             timer_ = null;
@@ -14821,7 +14937,6 @@ public final class JBPMMessages {
           return timerBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode join = 9;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode join_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder> joinBuilder_;
@@ -14930,7 +15045,7 @@ public final class JBPMMessages {
           if (joinBuilder_ == null) {
             joinBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder>(
-                    join_,
+                    getJoin(),
                     getParentForChildren(),
                     isClean());
             join_ = null;
@@ -14938,7 +15053,6 @@ public final class JBPMMessages {
           return joinBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode state = 10;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode state_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder> stateBuilder_;
@@ -15047,7 +15161,7 @@ public final class JBPMMessages {
           if (stateBuilder_ == null) {
             stateBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder>(
-                    state_,
+                    getState(),
                     getParentForChildren(),
                     isClean());
             state_ = null;
@@ -15055,7 +15169,6 @@ public final class JBPMMessages {
           return stateBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode composite = 11;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode composite_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder> compositeBuilder_;
@@ -15164,7 +15277,7 @@ public final class JBPMMessages {
           if (compositeBuilder_ == null) {
             compositeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder>(
-                    composite_,
+                    getComposite(),
                     getParentForChildren(),
                     isClean());
             composite_ = null;
@@ -15172,7 +15285,6 @@ public final class JBPMMessages {
           return compositeBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode forEach_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder> forEachBuilder_;
@@ -15281,7 +15393,7 @@ public final class JBPMMessages {
           if (forEachBuilder_ == null) {
             forEachBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder>(
-                    forEach_,
+                    getForEach(),
                     getParentForChildren(),
                     isClean());
             forEach_ = null;
@@ -15289,7 +15401,6 @@ public final class JBPMMessages {
           return forEachBuilder_;
         }
 
-        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
         private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode asyncEvent_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder> asyncEventBuilder_;
@@ -15398,7 +15509,7 @@ public final class JBPMMessages {
           if (asyncEventBuilder_ == null) {
             asyncEventBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder>(
-                    asyncEvent_,
+                    getAsyncEvent(),
                     getParentForChildren(),
                     isClean());
             asyncEvent_ = null;
@@ -15418,7 +15529,6 @@ public final class JBPMMessages {
     }
 
     private int bitField0_;
-    // optional string process_type = 1;
     public static final int PROCESS_TYPE_FIELD_NUMBER = 1;
     private java.lang.Object processType_;
     /**
@@ -15461,7 +15571,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int64 id = 2;
     public static final int ID_FIELD_NUMBER = 2;
     private long id_;
     /**
@@ -15477,7 +15586,6 @@ public final class JBPMMessages {
       return id_;
     }
 
-    // optional string process_id = 3;
     public static final int PROCESS_ID_FIELD_NUMBER = 3;
     private java.lang.Object processId_;
     /**
@@ -15520,7 +15628,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int32 state = 4;
     public static final int STATE_FIELD_NUMBER = 4;
     private int state_;
     /**
@@ -15536,7 +15643,6 @@ public final class JBPMMessages {
       return state_;
     }
 
-    // optional int64 node_instance_counter = 5;
     public static final int NODE_INSTANCE_COUNTER_FIELD_NUMBER = 5;
     private long nodeInstanceCounter_;
     /**
@@ -15552,7 +15658,6 @@ public final class JBPMMessages {
       return nodeInstanceCounter_;
     }
 
-    // optional string process_xml = 11;
     public static final int PROCESS_XML_FIELD_NUMBER = 11;
     private java.lang.Object processXml_;
     /**
@@ -15595,7 +15700,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int64 parent_process_instance_id = 12;
     public static final int PARENT_PROCESS_INSTANCE_ID_FIELD_NUMBER = 12;
     private long parentProcessInstanceId_;
     /**
@@ -15611,7 +15715,6 @@ public final class JBPMMessages {
       return parentProcessInstanceId_;
     }
 
-    // optional string description = 15;
     public static final int DESCRIPTION_FIELD_NUMBER = 15;
     private java.lang.Object description_;
     /**
@@ -15654,7 +15757,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional bool signal_completion = 16 [default = true];
     public static final int SIGNAL_COMPLETION_FIELD_NUMBER = 16;
     private boolean signalCompletion_;
     /**
@@ -15670,7 +15772,6 @@ public final class JBPMMessages {
       return signalCompletion_;
     }
 
-    // optional string deploymentId = 17;
     public static final int DEPLOYMENTID_FIELD_NUMBER = 17;
     private java.lang.Object deploymentId_;
     /**
@@ -15713,7 +15814,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional string correlation_key = 18;
     public static final int CORRELATION_KEY_FIELD_NUMBER = 18;
     private java.lang.Object correlationKey_;
     /**
@@ -15756,7 +15856,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int64 sla_timer_id = 19;
     public static final int SLA_TIMER_ID_FIELD_NUMBER = 19;
     private long slaTimerId_;
     /**
@@ -15772,7 +15871,6 @@ public final class JBPMMessages {
       return slaTimerId_;
     }
 
-    // optional int64 sla_due_date = 20;
     public static final int SLA_DUE_DATE_FIELD_NUMBER = 20;
     private long slaDueDate_;
     /**
@@ -15788,7 +15886,6 @@ public final class JBPMMessages {
       return slaDueDate_;
     }
 
-    // optional int32 sla_compliance = 21;
     public static final int SLA_COMPLIANCE_FIELD_NUMBER = 21;
     private int slaCompliance_;
     /**
@@ -15804,7 +15901,6 @@ public final class JBPMMessages {
       return slaCompliance_;
     }
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;
     public static final int SWIMLANE_CONTEXT_FIELD_NUMBER = 6;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance> swimlaneContext_;
     /**
@@ -15840,7 +15936,6 @@ public final class JBPMMessages {
       return swimlaneContext_.get(index);
     }
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;
     public static final int NODE_INSTANCE_FIELD_NUMBER = 7;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_;
     /**
@@ -15876,7 +15971,6 @@ public final class JBPMMessages {
       return nodeInstance_.get(index);
     }
 
-    // repeated .org.jbpm.marshalling.Variable variable = 8;
     public static final int VARIABLE_FIELD_NUMBER = 8;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
     /**
@@ -15912,7 +16006,6 @@ public final class JBPMMessages {
       return variable_.get(index);
     }
 
-    // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;
     public static final int EXCLUSIVE_GROUP_FIELD_NUMBER = 10;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> exclusiveGroup_;
     /**
@@ -15948,13 +16041,12 @@ public final class JBPMMessages {
       return exclusiveGroup_.get(index);
     }
 
-    // repeated string completedNodeIds = 13;
     public static final int COMPLETEDNODEIDS_FIELD_NUMBER = 13;
     private com.google.protobuf.LazyStringList completedNodeIds_;
     /**
      * <code>repeated string completedNodeIds = 13;</code>
      */
-    public java.util.List<java.lang.String>
+    public com.google.protobuf.ProtocolStringList
         getCompletedNodeIdsList() {
       return completedNodeIds_;
     }
@@ -15978,7 +16070,6 @@ public final class JBPMMessages {
       return completedNodeIds_.getByteString(index);
     }
 
-    // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;
     public static final int ITERATIONLEVELS_FIELD_NUMBER = 14;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_;
     /**
@@ -16039,7 +16130,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -16284,8 +16376,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstanceOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance)
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstanceOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_descriptor;
@@ -16504,8 +16597,7 @@ public final class JBPMMessages {
           result.exclusiveGroup_ = exclusiveGroupBuilder_.build();
         }
         if (((bitField0_ & 0x00040000) == 0x00040000)) {
-          completedNodeIds_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              completedNodeIds_);
+          completedNodeIds_ = completedNodeIds_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00040000);
         }
         result.completedNodeIds_ = completedNodeIds_;
@@ -16755,7 +16847,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // optional string process_type = 1;
       private java.lang.Object processType_ = "";
       /**
        * <code>optional string process_type = 1;</code>
@@ -16769,9 +16860,12 @@ public final class JBPMMessages {
       public java.lang.String getProcessType() {
         java.lang.Object ref = processType_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          processType_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            processType_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -16829,7 +16923,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 id = 2;
       private long id_ ;
       /**
        * <code>optional int64 id = 2;</code>
@@ -16862,7 +16955,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string process_id = 3;
       private java.lang.Object processId_ = "";
       /**
        * <code>optional string process_id = 3;</code>
@@ -16876,9 +16968,12 @@ public final class JBPMMessages {
       public java.lang.String getProcessId() {
         java.lang.Object ref = processId_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          processId_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            processId_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -16936,7 +17031,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int32 state = 4;
       private int state_ ;
       /**
        * <code>optional int32 state = 4;</code>
@@ -16969,7 +17063,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 node_instance_counter = 5;
       private long nodeInstanceCounter_ ;
       /**
        * <code>optional int64 node_instance_counter = 5;</code>
@@ -17002,7 +17095,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string process_xml = 11;
       private java.lang.Object processXml_ = "";
       /**
        * <code>optional string process_xml = 11;</code>
@@ -17016,9 +17108,12 @@ public final class JBPMMessages {
       public java.lang.String getProcessXml() {
         java.lang.Object ref = processXml_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          processXml_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            processXml_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -17076,7 +17171,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 parent_process_instance_id = 12;
       private long parentProcessInstanceId_ ;
       /**
        * <code>optional int64 parent_process_instance_id = 12;</code>
@@ -17109,7 +17203,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string description = 15;
       private java.lang.Object description_ = "";
       /**
        * <code>optional string description = 15;</code>
@@ -17123,9 +17216,12 @@ public final class JBPMMessages {
       public java.lang.String getDescription() {
         java.lang.Object ref = description_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          description_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            description_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -17183,7 +17279,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional bool signal_completion = 16 [default = true];
       private boolean signalCompletion_ = true;
       /**
        * <code>optional bool signal_completion = 16 [default = true];</code>
@@ -17216,7 +17311,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string deploymentId = 17;
       private java.lang.Object deploymentId_ = "";
       /**
        * <code>optional string deploymentId = 17;</code>
@@ -17230,9 +17324,12 @@ public final class JBPMMessages {
       public java.lang.String getDeploymentId() {
         java.lang.Object ref = deploymentId_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          deploymentId_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            deploymentId_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -17290,7 +17387,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string correlation_key = 18;
       private java.lang.Object correlationKey_ = "";
       /**
        * <code>optional string correlation_key = 18;</code>
@@ -17304,9 +17400,12 @@ public final class JBPMMessages {
       public java.lang.String getCorrelationKey() {
         java.lang.Object ref = correlationKey_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          correlationKey_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            correlationKey_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -17364,7 +17463,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 sla_timer_id = 19;
       private long slaTimerId_ ;
       /**
        * <code>optional int64 sla_timer_id = 19;</code>
@@ -17397,7 +17495,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 sla_due_date = 20;
       private long slaDueDate_ ;
       /**
        * <code>optional int64 sla_due_date = 20;</code>
@@ -17430,7 +17527,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int32 sla_compliance = 21;
       private int slaCompliance_ ;
       /**
        * <code>optional int32 sla_compliance = 21;</code>
@@ -17463,7 +17559,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance> swimlaneContext_ =
         java.util.Collections.emptyList();
       private void ensureSwimlaneContextIsMutable() {
@@ -17605,7 +17700,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance> values) {
         if (swimlaneContextBuilder_ == null) {
           ensureSwimlaneContextIsMutable();
-          super.addAll(values, swimlaneContext_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, swimlaneContext_);
           onChanged();
         } else {
           swimlaneContextBuilder_.addAllMessages(values);
@@ -17703,7 +17799,6 @@ public final class JBPMMessages {
         return swimlaneContextBuilder_;
       }
 
-      // repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> nodeInstance_ =
         java.util.Collections.emptyList();
       private void ensureNodeInstanceIsMutable() {
@@ -17845,7 +17940,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> values) {
         if (nodeInstanceBuilder_ == null) {
           ensureNodeInstanceIsMutable();
-          super.addAll(values, nodeInstance_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, nodeInstance_);
           onChanged();
         } else {
           nodeInstanceBuilder_.addAllMessages(values);
@@ -17943,7 +18039,6 @@ public final class JBPMMessages {
         return nodeInstanceBuilder_;
       }
 
-      // repeated .org.jbpm.marshalling.Variable variable = 8;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
         java.util.Collections.emptyList();
       private void ensureVariableIsMutable() {
@@ -18085,7 +18180,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
         if (variableBuilder_ == null) {
           ensureVariableIsMutable();
-          super.addAll(values, variable_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, variable_);
           onChanged();
         } else {
           variableBuilder_.addAllMessages(values);
@@ -18183,7 +18279,6 @@ public final class JBPMMessages {
         return variableBuilder_;
       }
 
-      // repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> exclusiveGroup_ =
         java.util.Collections.emptyList();
       private void ensureExclusiveGroupIsMutable() {
@@ -18325,7 +18420,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> values) {
         if (exclusiveGroupBuilder_ == null) {
           ensureExclusiveGroupIsMutable();
-          super.addAll(values, exclusiveGroup_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, exclusiveGroup_);
           onChanged();
         } else {
           exclusiveGroupBuilder_.addAllMessages(values);
@@ -18423,7 +18519,6 @@ public final class JBPMMessages {
         return exclusiveGroupBuilder_;
       }
 
-      // repeated string completedNodeIds = 13;
       private com.google.protobuf.LazyStringList completedNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureCompletedNodeIdsIsMutable() {
         if (!((bitField0_ & 0x00040000) == 0x00040000)) {
@@ -18434,9 +18529,9 @@ public final class JBPMMessages {
       /**
        * <code>repeated string completedNodeIds = 13;</code>
        */
-      public java.util.List<java.lang.String>
+      public com.google.protobuf.ProtocolStringList
           getCompletedNodeIdsList() {
-        return java.util.Collections.unmodifiableList(completedNodeIds_);
+        return completedNodeIds_.getUnmodifiableView();
       }
       /**
        * <code>repeated string completedNodeIds = 13;</code>
@@ -18489,7 +18584,8 @@ public final class JBPMMessages {
       public Builder addAllCompletedNodeIds(
           java.lang.Iterable<java.lang.String> values) {
         ensureCompletedNodeIdsIsMutable();
-        super.addAll(values, completedNodeIds_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, completedNodeIds_);
         onChanged();
         return this;
       }
@@ -18516,7 +18612,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> iterationLevels_ =
         java.util.Collections.emptyList();
       private void ensureIterationLevelsIsMutable() {
@@ -18658,7 +18753,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> values) {
         if (iterationLevelsBuilder_ == null) {
           ensureIterationLevelsIsMutable();
-          super.addAll(values, iterationLevels_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, iterationLevels_);
           onChanged();
         } else {
           iterationLevelsBuilder_.addAllMessages(values);
@@ -18767,10 +18863,10 @@ public final class JBPMMessages {
     // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance)
   }
 
-  public interface VariableOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface VariableOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.Variable)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional string name = 1;
     /**
      * <code>optional string name = 1;</code>
      */
@@ -18785,7 +18881,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // optional int32 strategy_index = 2;
     /**
      * <code>optional int32 strategy_index = 2;</code>
      *
@@ -18803,7 +18898,6 @@ public final class JBPMMessages {
      */
     int getStrategyIndex();
 
-    // optional bytes value = 3;
     /**
      * <code>optional bytes value = 3;</code>
      */
@@ -18817,8 +18911,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.Variable}
    */
   public static final class Variable extends
-      com.google.protobuf.GeneratedMessage
-      implements VariableOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.Variable)
+      VariableOrBuilder {
     // Use Variable.newBuilder() to construct.
     private Variable(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -18865,8 +18960,9 @@ public final class JBPMMessages {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              name_ = input.readBytes();
+              name_ = bs;
               break;
             }
             case 16: {
@@ -18919,7 +19015,6 @@ public final class JBPMMessages {
     }
 
     private int bitField0_;
-    // optional string name = 1;
     public static final int NAME_FIELD_NUMBER = 1;
     private java.lang.Object name_;
     /**
@@ -18962,7 +19057,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int32 strategy_index = 2;
     public static final int STRATEGY_INDEX_FIELD_NUMBER = 2;
     private int strategyIndex_;
     /**
@@ -18986,7 +19080,6 @@ public final class JBPMMessages {
       return strategyIndex_;
     }
 
-    // optional bytes value = 3;
     public static final int VALUE_FIELD_NUMBER = 3;
     private com.google.protobuf.ByteString value_;
     /**
@@ -19010,7 +19103,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -19131,8 +19225,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.Variable}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.Variable)
+        org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_Variable_descriptor;
@@ -19265,7 +19360,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // optional string name = 1;
       private java.lang.Object name_ = "";
       /**
        * <code>optional string name = 1;</code>
@@ -19279,9 +19373,12 @@ public final class JBPMMessages {
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          name_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -19339,7 +19436,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int32 strategy_index = 2;
       private int strategyIndex_ ;
       /**
        * <code>optional int32 strategy_index = 2;</code>
@@ -19388,7 +19484,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional bytes value = 3;
       private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes value = 3;</code>
@@ -19435,10 +19530,10 @@ public final class JBPMMessages {
     // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.Variable)
   }
 
-  public interface WorkItemOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface WorkItemOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.WorkItem)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional int64 id = 1;
     /**
      * <code>optional int64 id = 1;</code>
      */
@@ -19448,7 +19543,6 @@ public final class JBPMMessages {
      */
     long getId();
 
-    // optional int64 process_instances_id = 2;
     /**
      * <code>optional int64 process_instances_id = 2;</code>
      */
@@ -19458,7 +19552,6 @@ public final class JBPMMessages {
      */
     long getProcessInstancesId();
 
-    // optional string name = 3;
     /**
      * <code>optional string name = 3;</code>
      */
@@ -19473,7 +19566,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // optional int32 state = 4;
     /**
      * <code>optional int32 state = 4;</code>
      */
@@ -19483,7 +19575,6 @@ public final class JBPMMessages {
      */
     int getState();
 
-    // repeated .org.jbpm.marshalling.Variable variable = 5;
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
@@ -19508,7 +19599,6 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
         int index);
 
-    // optional string deployment_id = 6;
     /**
      * <code>optional string deployment_id = 6;</code>
      */
@@ -19523,7 +19613,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getDeploymentIdBytes();
 
-    // optional int64 node_instance_id = 7;
     /**
      * <code>optional int64 node_instance_id = 7;</code>
      */
@@ -19533,7 +19622,6 @@ public final class JBPMMessages {
      */
     long getNodeInstanceId();
 
-    // optional int64 node_id = 8;
     /**
      * <code>optional int64 node_id = 8;</code>
      */
@@ -19547,8 +19635,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.WorkItem}
    */
   public static final class WorkItem extends
-      com.google.protobuf.GeneratedMessage
-      implements WorkItemOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.WorkItem)
+      WorkItemOrBuilder {
     // Use WorkItem.newBuilder() to construct.
     private WorkItem(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -19605,8 +19694,9 @@ public final class JBPMMessages {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              name_ = input.readBytes();
+              name_ = bs;
               break;
             }
             case 32: {
@@ -19623,8 +19713,9 @@ public final class JBPMMessages {
               break;
             }
             case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              deploymentId_ = input.readBytes();
+              deploymentId_ = bs;
               break;
             }
             case 56: {
@@ -19680,7 +19771,6 @@ public final class JBPMMessages {
     }
 
     private int bitField0_;
-    // optional int64 id = 1;
     public static final int ID_FIELD_NUMBER = 1;
     private long id_;
     /**
@@ -19696,7 +19786,6 @@ public final class JBPMMessages {
       return id_;
     }
 
-    // optional int64 process_instances_id = 2;
     public static final int PROCESS_INSTANCES_ID_FIELD_NUMBER = 2;
     private long processInstancesId_;
     /**
@@ -19712,7 +19801,6 @@ public final class JBPMMessages {
       return processInstancesId_;
     }
 
-    // optional string name = 3;
     public static final int NAME_FIELD_NUMBER = 3;
     private java.lang.Object name_;
     /**
@@ -19755,7 +19843,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int32 state = 4;
     public static final int STATE_FIELD_NUMBER = 4;
     private int state_;
     /**
@@ -19771,7 +19858,6 @@ public final class JBPMMessages {
       return state_;
     }
 
-    // repeated .org.jbpm.marshalling.Variable variable = 5;
     public static final int VARIABLE_FIELD_NUMBER = 5;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
     /**
@@ -19807,7 +19893,6 @@ public final class JBPMMessages {
       return variable_.get(index);
     }
 
-    // optional string deployment_id = 6;
     public static final int DEPLOYMENT_ID_FIELD_NUMBER = 6;
     private java.lang.Object deploymentId_;
     /**
@@ -19850,7 +19935,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int64 node_instance_id = 7;
     public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 7;
     private long nodeInstanceId_;
     /**
@@ -19866,7 +19950,6 @@ public final class JBPMMessages {
       return nodeInstanceId_;
     }
 
-    // optional int64 node_id = 8;
     public static final int NODE_ID_FIELD_NUMBER = 8;
     private long nodeId_;
     /**
@@ -19895,7 +19978,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -20051,8 +20135,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.WorkItem}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.WorkItemOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.WorkItem)
+        org.jbpm.marshalling.impl.JBPMMessages.WorkItemOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_WorkItem_descriptor;
@@ -20265,7 +20350,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // optional int64 id = 1;
       private long id_ ;
       /**
        * <code>optional int64 id = 1;</code>
@@ -20298,7 +20382,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 process_instances_id = 2;
       private long processInstancesId_ ;
       /**
        * <code>optional int64 process_instances_id = 2;</code>
@@ -20331,7 +20414,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional string name = 3;
       private java.lang.Object name_ = "";
       /**
        * <code>optional string name = 3;</code>
@@ -20345,9 +20427,12 @@ public final class JBPMMessages {
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          name_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -20405,7 +20490,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int32 state = 4;
       private int state_ ;
       /**
        * <code>optional int32 state = 4;</code>
@@ -20438,7 +20522,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // repeated .org.jbpm.marshalling.Variable variable = 5;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
         java.util.Collections.emptyList();
       private void ensureVariableIsMutable() {
@@ -20580,7 +20663,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
         if (variableBuilder_ == null) {
           ensureVariableIsMutable();
-          super.addAll(values, variable_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, variable_);
           onChanged();
         } else {
           variableBuilder_.addAllMessages(values);
@@ -20678,7 +20762,6 @@ public final class JBPMMessages {
         return variableBuilder_;
       }
 
-      // optional string deployment_id = 6;
       private java.lang.Object deploymentId_ = "";
       /**
        * <code>optional string deployment_id = 6;</code>
@@ -20692,9 +20775,12 @@ public final class JBPMMessages {
       public java.lang.String getDeploymentId() {
         java.lang.Object ref = deploymentId_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          deploymentId_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            deploymentId_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -20752,7 +20838,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 node_instance_id = 7;
       private long nodeInstanceId_ ;
       /**
        * <code>optional int64 node_instance_id = 7;</code>
@@ -20785,7 +20870,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int64 node_id = 8;
       private long nodeId_ ;
       /**
        * <code>optional int64 node_id = 8;</code>
@@ -20829,10 +20913,10 @@ public final class JBPMMessages {
     // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.WorkItem)
   }
 
-  public interface ProcessTimerOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ProcessTimerOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessTimer)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional .org.jbpm.marshalling.ProcessTimer.TimerInstance timer = 1;
     /**
      * <code>optional .org.jbpm.marshalling.ProcessTimer.TimerInstance timer = 1;</code>
      */
@@ -20846,7 +20930,6 @@ public final class JBPMMessages {
      */
     org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder getTimerOrBuilder();
 
-    // optional .org.drools.core.marshalling.Trigger trigger = 2;
     /**
      * <code>optional .org.drools.core.marshalling.Trigger trigger = 2;</code>
      */
@@ -20864,8 +20947,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.ProcessTimer}
    */
   public static final class ProcessTimer extends
-      com.google.protobuf.GeneratedMessage
-      implements ProcessTimerOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessTimer)
+      ProcessTimerOrBuilder {
     // Use ProcessTimer.newBuilder() to construct.
     private ProcessTimer(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -20976,10 +21060,10 @@ public final class JBPMMessages {
       return PARSER;
     }
 
-    public interface TimerInstanceOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface TimerInstanceOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessTimer.TimerInstance)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional int64 id = 1;
       /**
        * <code>optional int64 id = 1;</code>
        */
@@ -20989,7 +21073,6 @@ public final class JBPMMessages {
        */
       long getId();
 
-      // optional int64 timer_id = 2;
       /**
        * <code>optional int64 timer_id = 2;</code>
        */
@@ -20999,7 +21082,6 @@ public final class JBPMMessages {
        */
       long getTimerId();
 
-      // optional int64 delay = 3;
       /**
        * <code>optional int64 delay = 3;</code>
        */
@@ -21009,7 +21091,6 @@ public final class JBPMMessages {
        */
       long getDelay();
 
-      // optional int64 period = 4;
       /**
        * <code>optional int64 period = 4;</code>
        */
@@ -21019,7 +21100,6 @@ public final class JBPMMessages {
        */
       long getPeriod();
 
-      // optional int64 process_instance_id = 5;
       /**
        * <code>optional int64 process_instance_id = 5;</code>
        */
@@ -21029,7 +21109,6 @@ public final class JBPMMessages {
        */
       long getProcessInstanceId();
 
-      // optional int64 activated_time = 6;
       /**
        * <code>optional int64 activated_time = 6;</code>
        */
@@ -21039,7 +21118,6 @@ public final class JBPMMessages {
        */
       long getActivatedTime();
 
-      // optional int64 last_triggered = 7;
       /**
        * <code>optional int64 last_triggered = 7;</code>
        */
@@ -21049,7 +21127,6 @@ public final class JBPMMessages {
        */
       long getLastTriggered();
 
-      // optional int32 DEPRECATED_sessionId = 8;
       /**
        * <code>optional int32 DEPRECATED_sessionId = 8;</code>
        */
@@ -21059,7 +21136,6 @@ public final class JBPMMessages {
        */
       int getDEPRECATEDSessionId();
 
-      // optional int64 sessionId = 9;
       /**
        * <code>optional int64 sessionId = 9;</code>
        */
@@ -21069,7 +21145,6 @@ public final class JBPMMessages {
        */
       long getSessionId();
 
-      // optional int32 repeatLimit = 10;
       /**
        * <code>optional int32 repeatLimit = 10;</code>
        */
@@ -21083,8 +21158,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessTimer.TimerInstance}
      */
     public static final class TimerInstance extends
-        com.google.protobuf.GeneratedMessage
-        implements TimerInstanceOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessTimer.TimerInstance)
+        TimerInstanceOrBuilder {
       // Use TimerInstance.newBuilder() to construct.
       private TimerInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -21220,7 +21296,6 @@ public final class JBPMMessages {
       }
 
       private int bitField0_;
-      // optional int64 id = 1;
       public static final int ID_FIELD_NUMBER = 1;
       private long id_;
       /**
@@ -21236,7 +21311,6 @@ public final class JBPMMessages {
         return id_;
       }
 
-      // optional int64 timer_id = 2;
       public static final int TIMER_ID_FIELD_NUMBER = 2;
       private long timerId_;
       /**
@@ -21252,7 +21326,6 @@ public final class JBPMMessages {
         return timerId_;
       }
 
-      // optional int64 delay = 3;
       public static final int DELAY_FIELD_NUMBER = 3;
       private long delay_;
       /**
@@ -21268,7 +21341,6 @@ public final class JBPMMessages {
         return delay_;
       }
 
-      // optional int64 period = 4;
       public static final int PERIOD_FIELD_NUMBER = 4;
       private long period_;
       /**
@@ -21284,7 +21356,6 @@ public final class JBPMMessages {
         return period_;
       }
 
-      // optional int64 process_instance_id = 5;
       public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 5;
       private long processInstanceId_;
       /**
@@ -21300,7 +21371,6 @@ public final class JBPMMessages {
         return processInstanceId_;
       }
 
-      // optional int64 activated_time = 6;
       public static final int ACTIVATED_TIME_FIELD_NUMBER = 6;
       private long activatedTime_;
       /**
@@ -21316,7 +21386,6 @@ public final class JBPMMessages {
         return activatedTime_;
       }
 
-      // optional int64 last_triggered = 7;
       public static final int LAST_TRIGGERED_FIELD_NUMBER = 7;
       private long lastTriggered_;
       /**
@@ -21332,7 +21401,6 @@ public final class JBPMMessages {
         return lastTriggered_;
       }
 
-      // optional int32 DEPRECATED_sessionId = 8;
       public static final int DEPRECATED_SESSIONID_FIELD_NUMBER = 8;
       private int dEPRECATEDSessionId_;
       /**
@@ -21348,7 +21416,6 @@ public final class JBPMMessages {
         return dEPRECATEDSessionId_;
       }
 
-      // optional int64 sessionId = 9;
       public static final int SESSIONID_FIELD_NUMBER = 9;
       private long sessionId_;
       /**
@@ -21364,7 +21431,6 @@ public final class JBPMMessages {
         return sessionId_;
       }
 
-      // optional int32 repeatLimit = 10;
       public static final int REPEATLIMIT_FIELD_NUMBER = 10;
       private int repeatLimit_;
       /**
@@ -21395,7 +21461,8 @@ public final class JBPMMessages {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -21565,8 +21632,9 @@ public final class JBPMMessages {
        * Protobuf type {@code org.jbpm.marshalling.ProcessTimer.TimerInstance}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessTimer.TimerInstance)
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor;
@@ -21760,7 +21828,6 @@ public final class JBPMMessages {
         }
         private int bitField0_;
 
-        // optional int64 id = 1;
         private long id_ ;
         /**
          * <code>optional int64 id = 1;</code>
@@ -21793,7 +21860,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 timer_id = 2;
         private long timerId_ ;
         /**
          * <code>optional int64 timer_id = 2;</code>
@@ -21826,7 +21892,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 delay = 3;
         private long delay_ ;
         /**
          * <code>optional int64 delay = 3;</code>
@@ -21859,7 +21924,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 period = 4;
         private long period_ ;
         /**
          * <code>optional int64 period = 4;</code>
@@ -21892,7 +21956,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 process_instance_id = 5;
         private long processInstanceId_ ;
         /**
          * <code>optional int64 process_instance_id = 5;</code>
@@ -21925,7 +21988,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 activated_time = 6;
         private long activatedTime_ ;
         /**
          * <code>optional int64 activated_time = 6;</code>
@@ -21958,7 +22020,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 last_triggered = 7;
         private long lastTriggered_ ;
         /**
          * <code>optional int64 last_triggered = 7;</code>
@@ -21991,7 +22052,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int32 DEPRECATED_sessionId = 8;
         private int dEPRECATEDSessionId_ ;
         /**
          * <code>optional int32 DEPRECATED_sessionId = 8;</code>
@@ -22024,7 +22084,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int64 sessionId = 9;
         private long sessionId_ ;
         /**
          * <code>optional int64 sessionId = 9;</code>
@@ -22057,7 +22116,6 @@ public final class JBPMMessages {
           return this;
         }
 
-        // optional int32 repeatLimit = 10;
         private int repeatLimit_ ;
         /**
          * <code>optional int32 repeatLimit = 10;</code>
@@ -22102,7 +22160,6 @@ public final class JBPMMessages {
     }
 
     private int bitField0_;
-    // optional .org.jbpm.marshalling.ProcessTimer.TimerInstance timer = 1;
     public static final int TIMER_FIELD_NUMBER = 1;
     private org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance timer_;
     /**
@@ -22124,7 +22181,6 @@ public final class JBPMMessages {
       return timer_;
     }
 
-    // optional .org.drools.core.marshalling.Trigger trigger = 2;
     public static final int TRIGGER_FIELD_NUMBER = 2;
     private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_;
     /**
@@ -22153,7 +22209,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -22267,8 +22324,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.ProcessTimer}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.ProcessTimerOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessTimer)
+        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_descriptor;
@@ -22408,7 +22466,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // optional .org.jbpm.marshalling.ProcessTimer.TimerInstance timer = 1;
       private org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance timer_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder> timerBuilder_;
@@ -22517,7 +22574,7 @@ public final class JBPMMessages {
         if (timerBuilder_ == null) {
           timerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder>(
-                  timer_,
+                  getTimer(),
                   getParentForChildren(),
                   isClean());
           timer_ = null;
@@ -22525,7 +22582,6 @@ public final class JBPMMessages {
         return timerBuilder_;
       }
 
-      // optional .org.drools.core.marshalling.Trigger trigger = 2;
       private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
@@ -22634,7 +22690,7 @@ public final class JBPMMessages {
         if (triggerBuilder_ == null) {
           triggerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder>(
-                  trigger_,
+                  getTrigger(),
                   getParentForChildren(),
                   isClean());
           trigger_ = null;
@@ -22653,10 +22709,10 @@ public final class JBPMMessages {
     // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessTimer)
   }
 
-  public interface IterationLevelOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface IterationLevelOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.IterationLevel)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional string id = 1;
     /**
      * <code>optional string id = 1;</code>
      */
@@ -22671,7 +22727,6 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getIdBytes();
 
-    // optional int32 level = 2;
     /**
      * <code>optional int32 level = 2;</code>
      */
@@ -22685,8 +22740,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.IterationLevel}
    */
   public static final class IterationLevel extends
-      com.google.protobuf.GeneratedMessage
-      implements IterationLevelOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.IterationLevel)
+      IterationLevelOrBuilder {
     // Use IterationLevel.newBuilder() to construct.
     private IterationLevel(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -22733,8 +22789,9 @@ public final class JBPMMessages {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              id_ = input.readBytes();
+              id_ = bs;
               break;
             }
             case 16: {
@@ -22782,7 +22839,6 @@ public final class JBPMMessages {
     }
 
     private int bitField0_;
-    // optional string id = 1;
     public static final int ID_FIELD_NUMBER = 1;
     private java.lang.Object id_;
     /**
@@ -22825,7 +22881,6 @@ public final class JBPMMessages {
       }
     }
 
-    // optional int32 level = 2;
     public static final int LEVEL_FIELD_NUMBER = 2;
     private int level_;
     /**
@@ -22848,7 +22903,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -22962,8 +23018,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.IterationLevel}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.IterationLevel)
+        org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_IterationLevel_descriptor;
@@ -23087,7 +23144,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // optional string id = 1;
       private java.lang.Object id_ = "";
       /**
        * <code>optional string id = 1;</code>
@@ -23101,9 +23157,12 @@ public final class JBPMMessages {
       public java.lang.String getId() {
         java.lang.Object ref = id_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          id_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            id_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -23161,7 +23220,6 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional int32 level = 2;
       private int level_ ;
       /**
        * <code>optional int32 level = 2;</code>
@@ -23205,10 +23263,10 @@ public final class JBPMMessages {
     // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.IterationLevel)
   }
 
-  public interface VariableContainerOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface VariableContainerOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.VariableContainer)
+      com.google.protobuf.MessageOrBuilder {
 
-    // repeated .org.jbpm.marshalling.Variable variable = 1;
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
      */
@@ -23237,8 +23295,9 @@ public final class JBPMMessages {
    * Protobuf type {@code org.jbpm.marshalling.VariableContainer}
    */
   public static final class VariableContainer extends
-      com.google.protobuf.GeneratedMessage
-      implements VariableContainerOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.VariableContainer)
+      VariableContainerOrBuilder {
     // Use VariableContainer.newBuilder() to construct.
     private VariableContainer(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -23334,7 +23393,6 @@ public final class JBPMMessages {
       return PARSER;
     }
 
-    // repeated .org.jbpm.marshalling.Variable variable = 1;
     public static final int VARIABLE_FIELD_NUMBER = 1;
     private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
     /**
@@ -23376,7 +23434,8 @@ public final class JBPMMessages {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -23483,8 +23542,9 @@ public final class JBPMMessages {
      * Protobuf type {@code org.jbpm.marshalling.VariableContainer}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.jbpm.marshalling.impl.JBPMMessages.VariableContainerOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.VariableContainer)
+        org.jbpm.marshalling.impl.JBPMMessages.VariableContainerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_VariableContainer_descriptor;
@@ -23628,7 +23688,6 @@ public final class JBPMMessages {
       }
       private int bitField0_;
 
-      // repeated .org.jbpm.marshalling.Variable variable = 1;
       private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
         java.util.Collections.emptyList();
       private void ensureVariableIsMutable() {
@@ -23770,7 +23829,8 @@ public final class JBPMMessages {
           java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
         if (variableBuilder_ == null) {
           ensureVariableIsMutable();
-          super.addAll(values, variable_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, variable_);
           onChanged();
         } else {
           variableBuilder_.addAllMessages(values);
@@ -23934,127 +23994,127 @@ public final class JBPMMessages {
           .newFileScopedGeneratedExtension(
         org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
         org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_Variable_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_WorkItem_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessTimer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_IterationLevel_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_VariableContainer_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -24070,7 +24130,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\0320org/drools/core" +
-      "/marshalling/droolsmessages.proto\"\335\035\n\017Pr" +
+      "/marshalling/droolsmessages.proto\"\265\036\n\017Pr" +
       "ocessInstance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002i" +
       "d\030\002 \001(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001" +
       "(\005\022\035\n\025node_instance_counter\030\005 \001(\003\022\023\n\013pro" +
@@ -24097,7 +24157,7 @@ public final class JBPMMessages {
       "vel\030\005 \001(\005\022\024\n\014sla_timer_id\030\006 \001(\003\022\024\n\014sla_d" +
       "ue_date\030\007 \001(\003\022\026\n\016sla_compliance\030\010 \001(\005\0328\n" +
       "\026ExclusiveGroupInstance\022\036\n\026group_node_in" +
-      "stance_id\030\001 \003(\003\032\214\023\n\023NodeInstanceContent\022",
+      "stance_id\030\001 \003(\003\032\344\023\n\023NodeInstanceContent\022",
       "D\n\004type\030\001 \001(\01626.org.jbpm.marshalling.Pro" +
       "cessInstance.NodeInstanceType\022W\n\010rule_se" +
       "t\030\002 \001(\0132E.org.jbpm.marshalling.ProcessIn" +
@@ -24132,241 +24192,244 @@ public final class JBPMMessages {
       "stance.NodeInstanceContent.RuleSetNode.T" +
       "extMapEntry\022\027\n\017rule_flow_group\030\003 \001(\t\032+\n\014" +
       "TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
-      "\t\032@\n\rHumanTaskNode\022\024\n\014work_item_id\030\001 \001(\003" +
-      "\022\031\n\021timer_instance_id\030\002 \003(\003\032?\n\014WorkItemN" +
-      "ode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_insta" +
-      "nce_id\030\002 \003(\003\032H\n\016SubProcessNode\022\033\n\023proces" +
-      "s_instance_id\030\001 \001(\003\022\031\n\021timer_instance_id" +
-      "\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer_instanc",
-      "e_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimerNode\022\020\n\010" +
-      "timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007trigger\030\001" +
-      " \003(\0132N.org.jbpm.marshalling.ProcessInsta" +
-      "nce.NodeInstanceContent.JoinNode.JoinTri" +
-      "gger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001 \001(\003\022\017\n\007" +
-      "counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021timer_inst" +
-      "ance_id\030\001 \003(\003\032\304\002\n\024CompositeContextNode\022\031" +
-      "\n\021timer_instance_id\030\002 \003(\003\0220\n\010variable\030\003 " +
-      "\003(\0132\036.org.jbpm.marshalling.Variable\022I\n\rn" +
-      "ode_instance\030\004 \003(\01322.org.jbpm.marshallin",
-      "g.ProcessInstance.NodeInstance\022U\n\017exclus" +
-      "ive_group\030\005 \003(\0132<.org.jbpm.marshalling.P" +
-      "rocessInstance.ExclusiveGroupInstance\022=\n" +
-      "\017iterationLevels\030\006 \003(\0132$.org.jbpm.marsha" +
-      "lling.IterationLevel\032\311\001\n\013ForEachNode\022I\n\r" +
-      "node_instance\030\001 \003(\01322.org.jbpm.marshalli" +
-      "ng.ProcessInstance.NodeInstance\0220\n\010varia" +
-      "ble\030\002 \003(\0132\036.org.jbpm.marshalling.Variabl" +
-      "e\022=\n\017iterationLevels\030\003 \003(\0132$.org.jbpm.ma" +
-      "rshalling.IterationLevel\032$\n\016AsyncEventNo",
-      "de\022\022\n\nevent_type\030\001 \001(\t\"\250\002\n\020NodeInstanceT" +
-      "ype\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUMAN_TASK_NOD" +
-      "E\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NO" +
-      "DE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005" +
-      "\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE" +
-      "_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rF" +
-      "OR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVEN" +
-      "T_SUBPROCESS_NODE\020\014\022\024\n\020ASYNC_EVENT_NODE\020" +
-      "\r\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016strategy_" +
-      "index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\305\001\n\010WorkItem\022",
-      "\n\n\002id\030\001 \001(\003\022\034\n\024process_instances_id\030\002 \001(" +
-      "\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variab" +
-      "le\030\005 \003(\0132\036.org.jbpm.marshalling.Variable" +
-      "\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_instance" +
-      "_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\350\002\n\014ProcessTi" +
-      "mer\022?\n\005timer\030\001 \001(\01320.org.jbpm.marshallin" +
-      "g.ProcessTimer.TimerInstance\0225\n\007trigger\030" +
-      "\002 \001(\0132$.org.drools.core.marshalling.Trig" +
-      "ger\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010tim" +
-      "er_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001",
-      "(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n\016activ" +
-      "ated_time\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022" +
-      "\034\n\024DEPRECATED_sessionId\030\010 \001(\005\022\021\n\tsession" +
-      "Id\030\t \001(\003\022\023\n\013repeatLimit\030\n \001(\005\"+\n\016Iterati" +
-      "onLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021Va" +
-      "riableContainer\0220\n\010variable\030\001 \003(\0132\036.org." +
-      "jbpm.marshalling.Variable:i\n\020process_ins" +
-      "tance\022(.org.drools.core.marshalling.Proc" +
-      "essData\030\n \003(\0132%.org.jbpm.marshalling.Pro" +
-      "cessInstance:[\n\twork_item\022(.org.drools.c",
-      "ore.marshalling.ProcessData\030\013 \003(\0132\036.org." +
-      "jbpm.marshalling.WorkItem::\n\010timer_id\022(." +
-      "org.drools.core.marshalling.ProcessData\030" +
-      "\r \001(\003:c\n\rprocess_timer\022(.org.drools.core" +
-      ".marshalling.ProcessData\030\014 \003(\0132\".org.jbp" +
-      "m.marshalling.ProcessTimer:a\n\nproc_timer" +
-      "\022).org.drools.core.marshalling.Timers.Ti" +
-      "mer\030d \001(\0132\".org.jbpm.marshalling.Process" +
-      "TimerB)\n\031org.jbpm.marshalling.implB\014JBPM" +
-      "Messages"
+      "\t\032l\n\rHumanTaskNode\022\024\n\014work_item_id\030\001 \001(\003" +
+      "\022\031\n\021timer_instance_id\030\002 \003(\003\022*\n\"error_han" +
+      "dling_process_instance_id\030\003 \001(\003\032k\n\014WorkI" +
+      "temNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_i" +
+      "nstance_id\030\002 \003(\003\022*\n\"error_handling_proce" +
+      "ss_instance_id\030\003 \001(\003\032H\n\016SubProcessNode\022\033",
+      "\n\023process_instance_id\030\001 \001(\003\022\031\n\021timer_ins" +
+      "tance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer" +
+      "_instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimer" +
+      "Node\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007t" +
+      "rigger\030\001 \003(\0132N.org.jbpm.marshalling.Proc" +
+      "essInstance.NodeInstanceContent.JoinNode" +
+      ".JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001" +
+      " \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021ti" +
+      "mer_instance_id\030\001 \003(\003\032\304\002\n\024CompositeConte" +
+      "xtNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010var",
+      "iable\030\003 \003(\0132\036.org.jbpm.marshalling.Varia" +
+      "ble\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm.ma" +
+      "rshalling.ProcessInstance.NodeInstance\022U" +
+      "\n\017exclusive_group\030\005 \003(\0132<.org.jbpm.marsh" +
+      "alling.ProcessInstance.ExclusiveGroupIns" +
+      "tance\022=\n\017iterationLevels\030\006 \003(\0132$.org.jbp" +
+      "m.marshalling.IterationLevel\032\311\001\n\013ForEach" +
+      "Node\022I\n\rnode_instance\030\001 \003(\01322.org.jbpm.m" +
+      "arshalling.ProcessInstance.NodeInstance\022" +
+      "0\n\010variable\030\002 \003(\0132\036.org.jbpm.marshalling",
+      ".Variable\022=\n\017iterationLevels\030\003 \003(\0132$.org" +
+      ".jbpm.marshalling.IterationLevel\032$\n\016Asyn" +
+      "cEventNode\022\022\n\nevent_type\030\001 \001(\t\"\250\002\n\020NodeI" +
+      "nstanceType\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUMAN_" +
+      "TASK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SUBPR" +
+      "OCESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nEVEN" +
+      "T_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022" +
+      "\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_NOD" +
+      "E\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013" +
+      "\022\031\n\025EVENT_SUBPROCESS_NODE\020\014\022\024\n\020ASYNC_EVE",
+      "NT_NODE\020\r\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016s" +
+      "trategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\305\001\n\010W" +
+      "orkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instances" +
+      "_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220" +
+      "\n\010variable\030\005 \003(\0132\036.org.jbpm.marshalling." +
+      "Variable\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_" +
+      "instance_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\350\002\n\014P" +
+      "rocessTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm.ma" +
+      "rshalling.ProcessTimer.TimerInstance\0225\n\007" +
+      "trigger\030\002 \001(\0132$.org.drools.core.marshall",
+      "ing.Trigger\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001(" +
+      "\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006pe" +
+      "riod\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022" +
+      "\026\n\016activated_time\030\006 \001(\003\022\026\n\016last_triggere" +
+      "d\030\007 \001(\003\022\034\n\024DEPRECATED_sessionId\030\010 \001(\005\022\021\n" +
+      "\tsessionId\030\t \001(\003\022\023\n\013repeatLimit\030\n \001(\005\"+\n" +
+      "\016IterationLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001" +
+      "(\005\"E\n\021VariableContainer\0220\n\010variable\030\001 \003(" +
+      "\0132\036.org.jbpm.marshalling.Variable:i\n\020pro" +
+      "cess_instance\022(.org.drools.core.marshall",
+      "ing.ProcessData\030\n \003(\0132%.org.jbpm.marshal" +
+      "ling.ProcessInstance:[\n\twork_item\022(.org." +
+      "drools.core.marshalling.ProcessData\030\013 \003(" +
+      "\0132\036.org.jbpm.marshalling.WorkItem::\n\010tim" +
+      "er_id\022(.org.drools.core.marshalling.Proc" +
+      "essData\030\r \001(\003:c\n\rprocess_timer\022(.org.dro" +
+      "ols.core.marshalling.ProcessData\030\014 \003(\0132\"" +
+      ".org.jbpm.marshalling.ProcessTimer:a\n\npr" +
+      "oc_timer\022).org.drools.core.marshalling.T" +
+      "imers.Timer\030d \001(\0132\".org.jbpm.marshalling",
+      ".ProcessTimerB)\n\031org.jbpm.marshalling.im" +
+      "plB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_org_jbpm_marshalling_ProcessInstance_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessInstance_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_descriptor,
-              new java.lang.String[] { "ProcessType", "Id", "ProcessId", "State", "NodeInstanceCounter", "ProcessXml", "ParentProcessInstanceId", "Description", "SignalCompletion", "DeploymentId", "CorrelationKey", "SlaTimerId", "SlaDueDate", "SlaCompliance", "SwimlaneContext", "NodeInstance", "Variable", "ExclusiveGroup", "CompletedNodeIds", "IterationLevels", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor,
-              new java.lang.String[] { "Swimlane", "ActorId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(1);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor,
-              new java.lang.String[] { "Id", "NodeId", "Content", "Level", "SlaTimerId", "SlaDueDate", "SlaCompliance", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(2);
-          internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor,
-              new java.lang.String[] { "GroupNodeInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(3);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor,
-              new java.lang.String[] { "Type", "RuleSet", "HumanTask", "WorkItem", "SubProcess", "Milestone", "Event", "Timer", "Join", "State", "Composite", "ForEach", "AsyncEvent", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", "MapEntry", "RuleFlowGroup", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor.getNestedTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor,
-              new java.lang.String[] { "Name", "Value", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(1);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor,
-              new java.lang.String[] { "WorkItemId", "TimerInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(2);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor,
-              new java.lang.String[] { "WorkItemId", "TimerInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(3);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor,
-              new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(4);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(5);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor,
-              new java.lang.String[] { });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(6);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor,
-              new java.lang.String[] { "TimerId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(7);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor,
-              new java.lang.String[] { "Trigger", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor.getNestedTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor,
-              new java.lang.String[] { "NodeId", "Counter", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(8);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(9);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor,
-              new java.lang.String[] { "TimerInstanceId", "Variable", "NodeInstance", "ExclusiveGroup", "IterationLevels", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(10);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor,
-              new java.lang.String[] { "NodeInstance", "Variable", "IterationLevels", });
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(11);
-          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor,
-              new java.lang.String[] { "EventType", });
-          internal_static_org_jbpm_marshalling_Variable_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_Variable_descriptor,
-              new java.lang.String[] { "Name", "StrategyIndex", "Value", });
-          internal_static_org_jbpm_marshalling_WorkItem_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_WorkItem_descriptor,
-              new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", });
-          internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
-            getDescriptor().getMessageTypes().get(3);
-          internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessTimer_descriptor,
-              new java.lang.String[] { "Timer", "Trigger", });
-          internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor =
-            internal_static_org_jbpm_marshalling_ProcessTimer_descriptor.getNestedTypes().get(0);
-          internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor,
-              new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", "DEPRECATEDSessionId", "SessionId", "RepeatLimit", });
-          internal_static_org_jbpm_marshalling_IterationLevel_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_IterationLevel_descriptor,
-              new java.lang.String[] { "Id", "Level", });
-          internal_static_org_jbpm_marshalling_VariableContainer_descriptor =
-            getDescriptor().getMessageTypes().get(5);
-          internal_static_org_jbpm_marshalling_VariableContainer_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_jbpm_marshalling_VariableContainer_descriptor,
-              new java.lang.String[] { "Variable", });
-          processInstance.internalInit(descriptor.getExtensions().get(0));
-          workItem.internalInit(descriptor.getExtensions().get(1));
-          timerId.internalInit(descriptor.getExtensions().get(2));
-          processTimer.internalInit(descriptor.getExtensions().get(3));
-          procTimer.internalInit(descriptor.getExtensions().get(4));
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           org.drools.core.marshalling.impl.ProtobufMessages.getDescriptor(),
         }, assigner);
+    internal_static_org_jbpm_marshalling_ProcessInstance_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessInstance_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_descriptor,
+        new java.lang.String[] { "ProcessType", "Id", "ProcessId", "State", "NodeInstanceCounter", "ProcessXml", "ParentProcessInstanceId", "Description", "SignalCompletion", "DeploymentId", "CorrelationKey", "SlaTimerId", "SlaDueDate", "SlaCompliance", "SwimlaneContext", "NodeInstance", "Variable", "ExclusiveGroup", "CompletedNodeIds", "IterationLevels", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_descriptor,
+        new java.lang.String[] { "Swimlane", "ActorId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(1);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_descriptor,
+        new java.lang.String[] { "Id", "NodeId", "Content", "Level", "SlaTimerId", "SlaDueDate", "SlaCompliance", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(2);
+    internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_descriptor,
+        new java.lang.String[] { "GroupNodeInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_descriptor.getNestedTypes().get(3);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor,
+        new java.lang.String[] { "Type", "RuleSet", "HumanTask", "WorkItem", "SubProcess", "Milestone", "Event", "Timer", "Join", "State", "Composite", "ForEach", "AsyncEvent", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor,
+        new java.lang.String[] { "TimerInstanceId", "MapEntry", "RuleFlowGroup", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor.getNestedTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_descriptor,
+        new java.lang.String[] { "Name", "Value", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(1);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor,
+        new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(2);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor,
+        new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(3);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor,
+        new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(4);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor,
+        new java.lang.String[] { "TimerInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(5);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor,
+        new java.lang.String[] { });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(6);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor,
+        new java.lang.String[] { "TimerId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(7);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor,
+        new java.lang.String[] { "Trigger", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor.getNestedTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor,
+        new java.lang.String[] { "NodeId", "Counter", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(8);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor,
+        new java.lang.String[] { "TimerInstanceId", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(9);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor,
+        new java.lang.String[] { "TimerInstanceId", "Variable", "NodeInstance", "ExclusiveGroup", "IterationLevels", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(10);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor,
+        new java.lang.String[] { "NodeInstance", "Variable", "IterationLevels", });
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(11);
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor,
+        new java.lang.String[] { "EventType", });
+    internal_static_org_jbpm_marshalling_Variable_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_Variable_descriptor,
+        new java.lang.String[] { "Name", "StrategyIndex", "Value", });
+    internal_static_org_jbpm_marshalling_WorkItem_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_WorkItem_descriptor,
+        new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", });
+    internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessTimer_descriptor,
+        new java.lang.String[] { "Timer", "Trigger", });
+    internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor =
+      internal_static_org_jbpm_marshalling_ProcessTimer_descriptor.getNestedTypes().get(0);
+    internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor,
+        new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", "DEPRECATEDSessionId", "SessionId", "RepeatLimit", });
+    internal_static_org_jbpm_marshalling_IterationLevel_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_IterationLevel_descriptor,
+        new java.lang.String[] { "Id", "Level", });
+    internal_static_org_jbpm_marshalling_VariableContainer_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_org_jbpm_marshalling_VariableContainer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_jbpm_marshalling_VariableContainer_descriptor,
+        new java.lang.String[] { "Variable", });
+    processInstance.internalInit(descriptor.getExtensions().get(0));
+    workItem.internalInit(descriptor.getExtensions().get(1));
+    timerId.internalInit(descriptor.getExtensions().get(2));
+    processTimer.internalInit(descriptor.getExtensions().get(3));
+    procTimer.internalInit(descriptor.getExtensions().get(4));
+    org.drools.core.marshalling.impl.ProtobufMessages.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

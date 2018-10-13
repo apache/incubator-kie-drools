@@ -103,10 +103,12 @@ message ProcessInstance {
         message HumanTaskNode {
             optional int64 work_item_id = 1;
             repeated int64 timer_instance_id = 2;
+            optional int64 error_handling_process_instance_id = 3;
         }
         message WorkItemNode {
             optional int64 work_item_id = 1;
             repeated int64 timer_instance_id = 2;
+            optional int64 error_handling_process_instance_id = 3;
         }
         message SubProcessNode {
             optional int64 process_instance_id = 1;

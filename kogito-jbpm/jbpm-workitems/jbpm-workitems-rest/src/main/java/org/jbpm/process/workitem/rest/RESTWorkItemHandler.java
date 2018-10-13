@@ -21,7 +21,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -479,6 +478,217 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
             connectionManager.setMaxTotal(totalPoolConnections);
             connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
         }
+    }
+    
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     */
+    public RESTWorkItemHandler(String handlingProcessId,
+                               String handlingStrategy,
+                               String username,
+                               String password) {
+        this(username,
+             password,
+             false);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param doCacheClient - true/false setting for client cache
+     */
+    public RESTWorkItemHandler(String handlingProcessId,
+                               String handlingStrategy,
+                               String username,
+                               String password,
+                               boolean doCacheClient) {
+        this(username,
+             password,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     */
+    public RESTWorkItemHandler(String handlingProcessId,
+                               String handlingStrategy,
+                               String username,
+                               String password,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.BASIC;
+        this.classLoader = this.getClass().getClassLoader();
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader, 
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        this(classLoader,
+             false);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader,
+                               boolean doCacheClient, 
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+        this.type = AuthenticationType.NONE;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute,
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+        this.type = AuthenticationType.NONE;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader,
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        this(username,
+             password,
+             classLoader,
+             false);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader,
+                               boolean doCacheClient,
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        this(username,
+             password,
+             classLoader,
+             doCacheClient,
+             DEFAULT_TOTAL_POOL_CONNECTIONS,
+             DEFAULT_MAX_POOL_CONNECTIONS_PER_ROUTE);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param classLoader - given classloader
+     * @param doCacheClient - true/false setting for client cache
+     * @param totalPoolConnections - max pool connections if caching client is used
+     * @param maxPoolConnectionsPerRoute - max pool connections per route if caching client is used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     */
+    public RESTWorkItemHandler(String username,
+                               String password,
+                               ClassLoader classLoader,
+                               boolean doCacheClient,
+                               int totalPoolConnections,
+                               int maxPoolConnectionsPerRoute,
+                               String handlingProcessId,
+                               String handlingStrategy) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.BASIC;
+        this.classLoader = classLoader;
+        this.doCacheClient = doCacheClient;
+        if (doCacheClient) {
+            connectionManager.setMaxTotal(totalPoolConnections);
+            connectionManager.setDefaultMaxPerRoute(maxPoolConnectionsPerRoute);
+        }
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
     }
 
     public String getAuthUrl() {

@@ -25,6 +25,7 @@ import org.jbpm.process.workitem.core.TestWorkItemManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.Mockito;
@@ -114,5 +115,36 @@ public class WebServiceWorkItemHandlerTest {
                      authorizationPolicy.getUserName());
         assertEquals("testpassword",
                      authorizationPolicy.getPassword());
+    }
+    
+    @Test
+    public void testExecuteSyncOperationHandlingException() throws Exception {
+
+        when(clients.containsKey(anyObject())).thenReturn(true);
+        when(clients.get(anyObject())).thenReturn(null);
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Interface",
+                              "someInterface");
+        workItem.setParameter("Operation",
+                              "someOperation");
+        workItem.setParameter("Parameter",
+                              "myParam");
+        workItem.setParameter("Mode",
+                              "SYNC");
+
+        WebServiceWorkItemHandler handler = new WebServiceWorkItemHandler("test", "COMPLETE", kieSession);
+        handler.setClients(clients);
+        try {
+            handler.executeWorkItem(workItem,
+                                manager);
+            fail("Should throw exception as it was instructed to do so");
+        } catch (ProcessWorkItemHandlerException ex) {
+                
+            assertEquals("Unable to create client for web service someInterface - someOperation", ex.getCause().getMessage());
+            assertEquals("test", ex.getProcessId());
+            assertEquals("COMPLETE", ex.getStrategy().name());
+        }
     }
 }

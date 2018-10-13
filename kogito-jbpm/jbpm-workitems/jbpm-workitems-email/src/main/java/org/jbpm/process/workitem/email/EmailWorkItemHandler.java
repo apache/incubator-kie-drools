@@ -50,6 +50,24 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	public EmailWorkItemHandler(String host, String port, String userName, String password, String startTls) {
 		setConnection(host, port, userName, password, startTls);
 	}
+	
+	public EmailWorkItemHandler(String handlingProcessId,
+                                String handlingStrategy) {
+	    this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    public EmailWorkItemHandler(String host, String port, String userName, String password, String handlingProcessId, String handlingStrategy) {
+        setConnection(host, port, userName, password);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    public EmailWorkItemHandler(String host, String port, String userName, String password, String startTls, String handlingProcessId, String handlingStrategy) {
+        setConnection(host, port, userName, password, startTls);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
 
 	public void setConnection(String host, String port, String userName, String password) {
 		connection = new Connection();

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_CmtqUPgcEeGZaN4J4fh7nQ" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_isCheckedItem" structureRef="java.lang.Boolean"/>
+  <bpmn2:itemDefinition id="__D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_isCheckedCheckboxOutputItem" structureRef="java.lang.Boolean"/>
+  <bpmn2:process id="com.sample.boolean" drools:packageName="com.sample" name="boolean" isExecutable="true">
+    <bpmn2:property id="isChecked" itemSubjectRef="_isCheckedItem"/>
+    <bpmn2:startEvent id="_CACE7A0D-46E6-49CB-AE0D-B83505BCCC4E" drools:bgcolor="#9acd32" name="">
+      <bpmn2:outgoing>_DFE3E214-3CF2-4B4D-88E0-F8B10861D257</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940" drools:bgcolor="#fafad2" drools:taskName="BooleanHumanTask" drools:scriptFormat="http://www.java.com/java" name="BooleanHumanTask">
+      <bpmn2:incoming>_DFE3E214-3CF2-4B4D-88E0-F8B10861D257</bpmn2:incoming>
+      <bpmn2:outgoing>_A55DAD1A-1B8C-43F2-80CD-6EDEA6FAC2A6</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_CmuRYPgcEeGZaN4J4fh7nQ">
+        <bpmn2:dataInput id="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataOutput id="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_isCheckedCheckboxOutput" drools:dtype="Boolean" itemSubjectRef="__D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_isCheckedCheckboxOutputItem" name="isCheckedCheckbox"/>
+        <bpmn2:inputSet id="_CmuRYvgcEeGZaN4J4fh7nQ"/>
+        <bpmn2:outputSet id="_CmuRYfgcEeGZaN4J4fh7nQ">
+          <bpmn2:dataOutputRefs>_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_isCheckedCheckboxOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_CmuRY_gcEeGZaN4J4fh7nQ">
+        <bpmn2:targetRef>_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_CmuRZPgcEeGZaN4J4fh7nQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_CmuRZfgcEeGZaN4J4fh7nQ">BooleanHumanTask</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_CmuRZvgcEeGZaN4J4fh7nQ">_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_CmuRZ_gcEeGZaN4J4fh7nQ">
+        <bpmn2:sourceRef>_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_isCheckedCheckboxOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>isChecked</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="_CmuRaPgcEeGZaN4J4fh7nQ">
+        <bpmn2:resourceAssignmentExpression id="_CmuRafgcEeGZaN4J4fh7nQ">
+          <bpmn2:formalExpression id="_CmuRavgcEeGZaN4J4fh7nQ">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_DFE3E214-3CF2-4B4D-88E0-F8B10861D257" sourceRef="_CACE7A0D-46E6-49CB-AE0D-B83505BCCC4E" targetRef="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940"/>
+    <bpmn2:scriptTask id="_A7108496-2AE9-4445-A921-8B045F29AB68" drools:bgcolor="#fafad2" name="debug" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_A55DAD1A-1B8C-43F2-80CD-6EDEA6FAC2A6</bpmn2:incoming>
+      <bpmn2:outgoing>_AD2621A6-F7DC-4BF9-8196-15BC5C3F7A77</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(isChecked.getClass() + " value " + isChecked);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_A55DAD1A-1B8C-43F2-80CD-6EDEA6FAC2A6" sourceRef="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940" targetRef="_A7108496-2AE9-4445-A921-8B045F29AB68"/>
+    <bpmn2:endEvent id="_DAB6EAB9-E38E-4533-B502-ED4AF8CA6262" drools:bgcolor="#ff6347" name="">
+      <bpmn2:incoming>_AD2621A6-F7DC-4BF9-8196-15BC5C3F7A77</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_AD2621A6-F7DC-4BF9-8196-15BC5C3F7A77" sourceRef="_A7108496-2AE9-4445-A921-8B045F29AB68" targetRef="_DAB6EAB9-E38E-4533-B502-ED4AF8CA6262"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_CmuRa_gcEeGZaN4J4fh7nQ">
+    <bpmndi:BPMNPlane id="_CmuRbPgcEeGZaN4J4fh7nQ" bpmnElement="com.sample.boolean">
+      <bpmndi:BPMNShape id="_CmuRbfgcEeGZaN4J4fh7nQ" bpmnElement="_CACE7A0D-46E6-49CB-AE0D-B83505BCCC4E">
+        <dc:Bounds height="30.0" width="30.0" x="315.0" y="160.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CmuRbvgcEeGZaN4J4fh7nQ" bpmnElement="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940">
+        <dc:Bounds height="78.0" width="131.0" x="409.0" y="136.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_CmuRb_gcEeGZaN4J4fh7nQ" bpmnElement="_DFE3E214-3CF2-4B4D-88E0-F8B10861D257" sourceElement="_CmuRbfgcEeGZaN4J4fh7nQ" targetElement="_CmuRbvgcEeGZaN4J4fh7nQ">
+        <di:waypoint xsi:type="dc:Point" x="330.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="474.5" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_CmuRcPgcEeGZaN4J4fh7nQ" bpmnElement="_A7108496-2AE9-4445-A921-8B045F29AB68">
+        <dc:Bounds height="80.0" width="100.0" x="585.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_CmuRcfgcEeGZaN4J4fh7nQ" bpmnElement="_A55DAD1A-1B8C-43F2-80CD-6EDEA6FAC2A6" sourceElement="_CmuRbvgcEeGZaN4J4fh7nQ" targetElement="_CmuRcPgcEeGZaN4J4fh7nQ">
+        <di:waypoint xsi:type="dc:Point" x="474.5" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="635.0" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_CmuRcvgcEeGZaN4J4fh7nQ" bpmnElement="_DAB6EAB9-E38E-4533-B502-ED4AF8CA6262">
+        <dc:Bounds height="28.0" width="28.0" x="729.0" y="155.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_CmuRc_gcEeGZaN4J4fh7nQ" bpmnElement="_AD2621A6-F7DC-4BF9-8196-15BC5C3F7A77" sourceElement="_CmuRcPgcEeGZaN4J4fh7nQ" targetElement="_CmuRcvgcEeGZaN4J4fh7nQ">
+        <di:waypoint xsi:type="dc:Point" x="635.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="743.0" y="169.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

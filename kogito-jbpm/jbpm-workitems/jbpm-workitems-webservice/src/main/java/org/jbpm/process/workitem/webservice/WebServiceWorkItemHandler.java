@@ -141,6 +141,118 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         this.username = username;
         this.password = password;
     }
+    
+    /**
+     * Used when no authentication is required
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param ksession - kie session
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession ksession) {
+        this(ksession, null, null);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param kieSession - kie session
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession kieSession,
+                                     String username,
+                                     String password) {
+        this.ksession = kieSession;
+        this.username = username;
+        this.password = password;
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param ksession - kie session
+     * @param classloader - classloader to use
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession ksession,
+                                     ClassLoader classloader) {
+        this(ksession, classloader, null, null);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param ksession - kie session
+     * @param classloader - classloader to use
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession ksession,
+                                     ClassLoader classloader,
+                                     String username,
+                                     String password) {
+        this.ksession = ksession;
+        this.classLoader = classloader;
+        this.username = username;
+        this.password = password;
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Used when no authentication is required
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param ksession - kie session
+     * @param timeout - connection timeout
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession ksession,
+                                     int timeout) {
+        this(ksession, timeout, null, null);
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
+
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param handlingProcessId - process id to handle exception
+     * @param handlingStrategy - strategy to be applied after handling exception process is completed
+     * @param ksession - kie session
+     * @param timeout - connection timeout
+     * @param username - basic auth username
+     * @param password - basic auth password
+     */
+    public WebServiceWorkItemHandler(String handlingProcessId,
+                                     String handlingStrategy,
+                                     KieSession ksession,
+                                     int timeout,
+                                     String username,
+                                     String password) {
+        this.ksession = ksession;
+        this.asyncTimeout = timeout;
+        this.username = username;
+        this.password = password;
+        this.handlingProcessId = handlingProcessId;
+        this.handlingStrategy = handlingStrategy;
+    }
 
     public void executeWorkItem(WorkItem workItem,
                                 final WorkItemManager manager) {
