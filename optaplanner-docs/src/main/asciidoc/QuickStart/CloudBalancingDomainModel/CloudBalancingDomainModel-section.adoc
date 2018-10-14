@@ -14,7 +14,7 @@ A separate object in the domain model must represent a full data set of problem,
 
 . Draw a class diagram of your domain model. 
 . Normalize it to remove duplicate data.
-. Write down some _sample instances_ for each class. Sample instances are entity properties that are relevant for planning purposes.
+. Write down some sample instances for each class. 
 
 * ``Computer``: represents a computer with certain hardware and maintenance costs. 
 +
@@ -22,7 +22,7 @@ In this example, the sample instances for the `Computer` class are: `cpuPower`, 
 * ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner. 
 +
 Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
-* ``CloudBalance``: represents the distribution of processes between computers. Contains every `Computer` and `Process` for a certain data set. 
+* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set. 
 +
 For an object representing the full data set and solution, a sample instance holding the _score_ must be present. Planner can calculate and compare the scores for different solutions; the solution with the highest score is the optimal solution. Therefore, the sample instance for `CloudBalance` is `score`.
 
