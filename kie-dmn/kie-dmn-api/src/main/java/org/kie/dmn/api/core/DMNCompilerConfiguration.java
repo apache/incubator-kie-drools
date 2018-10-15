@@ -26,4 +26,6 @@ public interface DMNCompilerConfiguration {
     public void addExtensions (List<DMNExtensionRegister> extensions);
     public void addExtension (DMNExtensionRegister extension);
 
+    public void addListener(AfterGeneratingSourcesListener listener);
+
 }

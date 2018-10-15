@@ -16,7 +16,10 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -27,6 +30,7 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.runtime.rule.DataSource;
+import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -43,6 +47,12 @@ import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
+
+    List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
+
+    public void register(AfterGeneratingSourcesListener listener) {
+        afterGeneratingSourcesListeners.add(listener);
+    }
 
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
@@ -90,6 +100,10 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sources[i] = "src/main/java" + className.replace( '.', '/' ) + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             srcMfs.write( sources[i], javaSource.getBytes() );
+        }
+
+        for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
+            listener.accept(Arrays.asList(sources));
         }
 
         CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, projectClassLoader);
