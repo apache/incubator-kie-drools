@@ -139,11 +139,15 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder<HardMediumSof
                 () -> HardMediumSoftScore.of(hardWeight, mediumWeight, softWeight));
     }
 
-    public void match(RuleContext kcontext) {
-        match(kcontext, 1);
+    public void reward(RuleContext kcontext) {
+        reward(kcontext, 1);
     }
 
-    public void match(RuleContext kcontext, int weightMultiplier) {
+    public void penalize(RuleContext kcontext) {
+        reward(kcontext, -1);
+    }
+
+    public void reward(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Integer> consumer = matchExecutorMap.get(rule);
         if (consumer == null) {
@@ -154,7 +158,11 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder<HardMediumSof
         consumer.accept(kcontext, weightMultiplier);
     }
 
-    public void match(RuleContext kcontext, int hardWeightMultiplier, int mediumWeightMultiplier, int softWeightMultiplier) {
+    public void penalize(RuleContext kcontext, int weightMultiplier) {
+        reward(kcontext, - weightMultiplier);
+    }
+
+    public void penalize(RuleContext kcontext, int hardWeightMultiplier, int mediumWeightMultiplier, int softWeightMultiplier) {
         throw new UnsupportedOperationException(); // TODO
     }
 

@@ -102,6 +102,16 @@ public class DroolsScoreDirector<Solution_>
                         + ") must have an initScore (" + constraintWeight.getInitScore() + ") equal to 0.\n"
                         + "Maybe validate your " + constraintWeightPackClass.getSimpleName() + " data input.");
             }
+            if (!getScoreDefinition().isPositive(constraintWeight)) {
+                Class<?> constraintWeightPackClass = getSolutionDescriptor().getConstraintWeightPackDescriptor()
+                        .getConstraintWeightPackClass();
+                throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
+                        + ") for constraintPackage (" + rule.getPackageName()
+                        + ") and constraintName (" + rule.getName()
+                        + ") of constraintWeightPackClass (" + constraintWeightPackClass
+                        + ") must have a positive or zero constraintWeight (" + constraintWeight + ").\n"
+                        + "Maybe validate your " + constraintWeightPackClass.getSimpleName() + " data input.");
+            }
             if (constraintWeight instanceof AbstractBendableScore) {
                 AbstractBendableScore bendableConstraintWeight = (AbstractBendableScore) constraintWeight;
                 AbstractBendableScoreDefinition scoreDefinition = (AbstractBendableScoreDefinition)

@@ -93,20 +93,20 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             weightPack.setId(0L);
 
             // TODO refactor this to allow setting pos/neg, weight and score level
-            readIntConstraintLine(ROOM_CONFLICT, hardScore -> weightPack.setRoomConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
-            readIntConstraintLine(DONT_GO_IN_OVERTIME, hardScore -> weightPack.setDontGoInOvertime(HardMediumSoftScore.ofHard(-hardScore)), "");
-            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, hardScore -> weightPack.setRequiredAttendanceConflict(HardMediumSoftScore.ofHard(-hardScore)), "");
-            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, hardScore -> weightPack.setRequiredRoomCapacity(HardMediumSoftScore.ofHard(-hardScore)), "");
-            readIntConstraintLine(START_AND_END_ON_SAME_DAY, hardScore -> weightPack.setStartAndEndOnSameDay(HardMediumSoftScore.ofHard(-hardScore)), "");
+            readIntConstraintLine(ROOM_CONFLICT, hardScore -> weightPack.setRoomConflict(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintLine(DONT_GO_IN_OVERTIME, hardScore -> weightPack.setDontGoInOvertime(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, hardScore -> weightPack.setRequiredAttendanceConflict(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, hardScore -> weightPack.setRequiredRoomCapacity(HardMediumSoftScore.ofHard(hardScore)), "");
+            readIntConstraintLine(START_AND_END_ON_SAME_DAY, hardScore -> weightPack.setStartAndEndOnSameDay(HardMediumSoftScore.ofHard(hardScore)), "");
 
-            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> weightPack.setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(-mediumScore)), "");
-            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> weightPack.setPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(-mediumScore)), "");
+            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> weightPack.setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
+            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, mediumScore -> weightPack.setPreferredAttendanceConflict(HardMediumSoftScore.ofMedium(mediumScore)), "");
 
-            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, softScore -> weightPack.setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore.ofSoft(-softScore)), "");
-            readIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, softScore -> weightPack.setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore.ofSoft(-softScore)), "");
-            readIntConstraintLine(OVERLAPPING_MEETINGS, softScore -> weightPack.setOverlappingMeetings(HardMediumSoftScore.ofSoft(-softScore)), "");
-            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, softScore -> weightPack.setAssignLargerRoomsFirst(HardMediumSoftScore.ofSoft(-softScore)), "");
-            readIntConstraintLine(ROOM_STABILITY, softScore -> weightPack.setRoomStability(HardMediumSoftScore.ofSoft(-softScore)), "");
+            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, softScore -> weightPack.setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, softScore -> weightPack.setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintLine(OVERLAPPING_MEETINGS, softScore -> weightPack.setOverlappingMeetings(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, softScore -> weightPack.setAssignLargerRoomsFirst(HardMediumSoftScore.ofSoft(softScore)), "");
+            readIntConstraintLine(ROOM_STABILITY, softScore -> weightPack.setRoomStability(HardMediumSoftScore.ofSoft(softScore)), "");
 
             solution.setWeightPack(weightPack);
         }
@@ -480,20 +480,20 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             MeetingWeightPack weightPack = solution.getWeightPack();
 
             // TODO refactor this to allow setting pos/neg, weight and score level
-            writeIntConstraintLine(ROOM_CONFLICT, -weightPack.getRoomConflict().getHardScore(), "");
-            writeIntConstraintLine(DONT_GO_IN_OVERTIME, -weightPack.getDontGoInOvertime().getHardScore(), "");
-            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, -weightPack.getRequiredAttendanceConflict().getHardScore(), "");
-            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, -weightPack.getRequiredRoomCapacity().getHardScore(), "");
-            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, -weightPack.getStartAndEndOnSameDay().getHardScore(), "");
+            writeIntConstraintLine(ROOM_CONFLICT, weightPack.getRoomConflict().getHardScore(), "");
+            writeIntConstraintLine(DONT_GO_IN_OVERTIME, weightPack.getDontGoInOvertime().getHardScore(), "");
+            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, weightPack.getRequiredAttendanceConflict().getHardScore(), "");
+            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, weightPack.getRequiredRoomCapacity().getHardScore(), "");
+            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, weightPack.getStartAndEndOnSameDay().getHardScore(), "");
             nextRow();
-            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, -weightPack.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
-            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, -weightPack.getPreferredAttendanceConflict().getMediumScore(), "");
+            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, weightPack.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
+            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, weightPack.getPreferredAttendanceConflict().getMediumScore(), "");
             nextRow();
-            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, -weightPack.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
-            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, -weightPack.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
-            writeIntConstraintLine(OVERLAPPING_MEETINGS, -weightPack.getOverlappingMeetings().getSoftScore(), "");
-            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, -weightPack.getAssignLargerRoomsFirst().getSoftScore(), "");
-            writeIntConstraintLine(ROOM_STABILITY, -weightPack.getRoomStability().getSoftScore(), "");
+            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, weightPack.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
+            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, weightPack.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
+            writeIntConstraintLine(OVERLAPPING_MEETINGS, weightPack.getOverlappingMeetings().getSoftScore(), "");
+            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, weightPack.getAssignLargerRoomsFirst().getSoftScore(), "");
+            writeIntConstraintLine(ROOM_STABILITY, weightPack.getRoomStability().getSoftScore(), "");
 
             autoSizeColumnsWithHeader();
         }

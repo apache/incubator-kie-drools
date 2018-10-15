@@ -42,31 +42,31 @@ public class MeetingWeightPack extends AbstractPersistable {
     public static final String ROOM_STABILITY = "Room stability";
 
     @ConstraintWeight(ROOM_CONFLICT)
-    private HardMediumSoftScore roomConflict = HardMediumSoftScore.ofHard(-1);
+    private HardMediumSoftScore roomConflict = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(DONT_GO_IN_OVERTIME)
-    private HardMediumSoftScore dontGoInOvertime = HardMediumSoftScore.ofHard(-1);
+    private HardMediumSoftScore dontGoInOvertime = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(REQUIRED_ATTENDANCE_CONFLICT)
-    private HardMediumSoftScore requiredAttendanceConflict = HardMediumSoftScore.ofHard(-1);
+    private HardMediumSoftScore requiredAttendanceConflict = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(REQUIRED_ROOM_CAPACITY)
-    private HardMediumSoftScore requiredRoomCapacity = HardMediumSoftScore.ofHard(-1);
+    private HardMediumSoftScore requiredRoomCapacity = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(START_AND_END_ON_SAME_DAY)
-    private HardMediumSoftScore startAndEndOnSameDay = HardMediumSoftScore.ofHard(-1);
+    private HardMediumSoftScore startAndEndOnSameDay = HardMediumSoftScore.ofHard(1);
 
     @ConstraintWeight(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT)
-    private HardMediumSoftScore requiredAndPreferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
+    private HardMediumSoftScore requiredAndPreferredAttendanceConflict = HardMediumSoftScore.ofMedium(1);
     @ConstraintWeight(PREFERRED_ATTENDANCE_CONFLICT)
-    private HardMediumSoftScore preferredAttendanceConflict = HardMediumSoftScore.ofMedium(-1);
+    private HardMediumSoftScore preferredAttendanceConflict = HardMediumSoftScore.ofMedium(1);
 
     @ConstraintWeight(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE)
-    private HardMediumSoftScore doAllMeetingsAsSoonAsPossible = HardMediumSoftScore.ofSoft(-1);
+    private HardMediumSoftScore doAllMeetingsAsSoonAsPossible = HardMediumSoftScore.ofSoft(1);
     @ConstraintWeight(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS)
-    private HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings = HardMediumSoftScore.ofSoft(-100);
+    private HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings = HardMediumSoftScore.ofSoft(100);
     @ConstraintWeight(OVERLAPPING_MEETINGS)
-    private HardMediumSoftScore overlappingMeetings = HardMediumSoftScore.ofSoft(-10);
+    private HardMediumSoftScore overlappingMeetings = HardMediumSoftScore.ofSoft(10);
     @ConstraintWeight(ASSIGN_LARGER_ROOMS_FIRST)
-    private HardMediumSoftScore assignLargerRoomsFirst = HardMediumSoftScore.ofSoft(-1);
+    private HardMediumSoftScore assignLargerRoomsFirst = HardMediumSoftScore.ofSoft(1);
     @ConstraintWeight(ROOM_STABILITY)
-    private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(-1);
+    private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(1);
 
     public MeetingWeightPack() {
     }
