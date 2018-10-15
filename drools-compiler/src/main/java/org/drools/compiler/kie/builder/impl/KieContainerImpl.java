@@ -202,6 +202,13 @@ public class KieContainerImpl
         return results;
     }
 
+    public Results updateToKieModule(InternalKieModule newKM) {
+        checkNotClasspathKieProject();
+        Results results = update(((KieModuleKieProject) kProject).getInternalKieModule(), newKM);
+        containerReleaseId = newKM.getReleaseId();
+        return results;
+    }
+
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         ReleaseId installedReleaseId = getReleaseId();
         if (currentReleaseId.getGroupId().equals(installedReleaseId.getGroupId()) &&
@@ -227,17 +234,17 @@ public class KieContainerImpl
 
     private Results update(final InternalKieModule currentKM, final ReleaseId newReleaseId) {
         final InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
-        if (newKM == null) {
-            return null;
-        }
-        final KieJarChangeSet cs = currentKM.getChanges( newKM );
+        return newKM == null ? null : update( currentKM, newKM );
+    }
 
+    private Results update( InternalKieModule currentKM, InternalKieModule newKM ) {
+        final KieJarChangeSet cs = currentKM.getChanges( newKM );
         List<String> modifiedClassNames = getModifiedClasses(cs);
         final boolean modifyingUsedClass = isModifyingUsedClass( modifiedClassNames, getClassLoader() );
         final Collection<Class<?>> modifiedClasses = reinitModifiedClasses( newKM, modifiedClassNames, getClassLoader(), modifyingUsedClass );
         final Collection<String> unchangedResources = getUnchangedResources( newKM, cs );
 
-        Map<String, KieBaseModel> currentKieBaseModels = ((KieModuleKieProject) kProject).updateToModule( newKM );
+        Map<String, KieBaseModel> currentKieBaseModels = ((KieModuleKieProject ) kProject).updateToModule( newKM );
 
         final ResultsImpl results = new ResultsImpl();
 
@@ -252,7 +259,7 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 final InternalKnowledgeBase kBase = (InternalKnowledgeBase) kBaseEntry.getValue();
-                KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newReleaseId, newKM,
+                KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
                                                                          cs, modifiedClasses, modifyingUsedClass, unchangedResources,
                                                                          results, newKieBaseModel, currentKieBaseModel );
                 kBase.enqueueModification( currentKM.createKieBaseUpdater( context ) );

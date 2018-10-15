@@ -17,6 +17,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -227,9 +228,16 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
         KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
+        if (scannerFactoryService == null) {
+            throw new RuntimeException( "Cannot instance a maven based KieScanner, is kie-ci on the classpath?" );
+        }
         InternalKieScanner scanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
         scanner.setKieContainer(kieContainer);
         return scanner;
+    }
+
+    public KieScanner newKieScanner(KieContainer kieContainer, Path repositoryFolder) {
+        return new KieFileSystemScannerImpl( kieContainer, repositoryFolder );
     }
 
     public KieResources getResources() {
