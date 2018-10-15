@@ -27,9 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.sql.DataSource;
+
 import org.dashbuilder.DataSetCore;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.sql.SQLDataSetProvider;
+import org.dashbuilder.dataprovider.sql.SQLDataSourceLocator;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookupBuilder;
 import org.dashbuilder.dataset.DataSetLookupFactory;
@@ -40,6 +43,7 @@ import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.dashbuilder.dataset.def.SQLDataSetDefBuilder;
+import org.dashbuilder.dataset.def.SQLDataSourceDef;
 import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.group.DateIntervalType;
@@ -92,9 +96,13 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     
     private Function<String, String> dataSourceResolver = input -> input;
     
+    private DataSourceResolverSQLDataSourceLocator dataSourceLocator;
     
     public QueryServiceImpl() {
         ServiceRegistry.get().register(QueryService.class.getSimpleName(), this);
+        // override data source locator to resolve the data source name if given as expression
+        SQLDataSetProvider sqlDataSetProvider = SQLDataSetProvider.get();
+        this.dataSourceLocator = apply(sqlDataSetProvider);        
     }
 
     public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
@@ -127,6 +135,11 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
  
     public void setDataSourceResolver(Function<String, String> dataSourceResolver) {
         this.dataSourceResolver = dataSourceResolver;
+        this.dataSourceLocator.setDataSourceResolver(dataSourceResolver);
+    }
+    
+    protected Function<String, String> getDataSourceResolver() {
+        return dataSourceResolver;
     }
 
     public void init() {
@@ -181,9 +194,7 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
 
             DataSetDef sqlDef = builder.buildDef();
             try {
-                dataSetDefRegistry.registerDataSetDef(sqlDef);
-                // resolve data source after registration so the expression (if used) is stored in db
-                ((SQLDataSetDef) sqlDef).setDataSource(dataSourceResolver.apply(sqlQueryDefinition.getSource()));
+                dataSetDefRegistry.registerDataSetDef(sqlDef);                
                 DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
                 if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider, userGroupCallback, metadata));
@@ -375,5 +386,43 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     public void onDeactivate(DeploymentEvent event) {
         // no op
 
+    }
+    
+    public DataSourceResolverSQLDataSourceLocator apply(SQLDataSetProvider sqlDataSetProvider) {
+        if (!(sqlDataSetProvider.getDataSourceLocator() instanceof DataSourceResolverSQLDataSourceLocator)) {
+                    
+            sqlDataSetProvider.setDataSourceLocator(new DataSourceResolverSQLDataSourceLocator(sqlDataSetProvider.getDataSourceLocator(), 
+                    getDataSourceResolver()));
+        }
+        
+        return (DataSourceResolverSQLDataSourceLocator) sqlDataSetProvider.getDataSourceLocator();
+    }
+    
+    private class DataSourceResolverSQLDataSourceLocator implements SQLDataSourceLocator {
+
+        private SQLDataSourceLocator delegate;
+        private Function<String, String> dataSourceResolver;
+        
+        public DataSourceResolverSQLDataSourceLocator(SQLDataSourceLocator delegate, Function<String, String> dataSourceResolver) {
+            this.delegate = delegate;
+            this.dataSourceResolver = dataSourceResolver;
+        }               
+
+        @Override
+        public DataSource lookup(SQLDataSetDef def) throws Exception {
+            def.setDataSource(this.dataSourceResolver.apply(def.getDataSource()));
+            return delegate.lookup(def);
+        }
+
+        @Override
+        public List<SQLDataSourceDef> list() {
+            return delegate.list();
+        }
+        
+        protected void setDataSourceResolver(Function<String, String> dataSourceResolver) {
+            this.dataSourceResolver = dataSourceResolver;
+        }
+        
+        
     }
 }
