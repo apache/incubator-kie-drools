@@ -544,7 +544,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .collect(joining(", ")));
                 List<MeetingAssignment> meetingAssignmentList = meetingAssignmentMap.get(meeting);
                 if (meetingAssignmentList.size() != 1) {
-                    throw new IllegalStateException("Impossible state");
+                    throw new IllegalStateException("Impossible state: the meeting (" + meeting
+                            + ") does not have exactly one assignment, but " + meetingAssignmentList.size()
+                            + " assignments instead.");
                 }
                 MeetingAssignment meetingAssignment = meetingAssignmentList.get(0);
                 TimeGrain startingTimeGrain = meetingAssignment.getStartingTimeGrain();
