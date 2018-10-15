@@ -61,24 +61,24 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder<HardMediumSof
     public void putConstraintWeight(Rule rule, HardMediumSoftScore constraintWeight) {
         BiConsumer<RuleContext, Integer> matchExecutor;
         if (constraintWeight.equals(HardMediumSoftScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {};
+            matchExecutor = (RuleContext kcontext, Integer weightMultiplier) -> {};
         } else if (constraintWeight.getInitScore() != 0) {
             throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else if (constraintWeight.getMediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight)
-                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Integer weightMultiplier)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * weightMultiplier);
         } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getSoftScore() == 0) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight)
-                    -> addMediumConstraintMatch(kcontext, constraintWeight.getMediumScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Integer weightMultiplier)
+                    -> addMediumConstraintMatch(kcontext, constraintWeight.getMediumScore() * weightMultiplier);
         } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getMediumScore() == 0) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight)
-                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Integer weightMultiplier)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore() * weightMultiplier);
         } else {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight)
+            matchExecutor = (RuleContext kcontext, Integer weightMultiplier)
                     -> addMultiConstraintMatch(kcontext,
-                    constraintWeight.getHardScore() * matchWeight,
-                    constraintWeight.getMediumScore() * matchWeight,
-                    constraintWeight.getSoftScore() * matchWeight);
+                    constraintWeight.getHardScore() * weightMultiplier,
+                    constraintWeight.getMediumScore() * weightMultiplier,
+                    constraintWeight.getSoftScore() * weightMultiplier);
         }
         matchExecutorMap.put(rule, matchExecutor);
     }
@@ -143,7 +143,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder<HardMediumSof
         match(kcontext, 1);
     }
 
-    public void match(RuleContext kcontext, int matchWeight) {
+    public void match(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Integer> consumer = matchExecutorMap.get(rule);
         if (consumer == null) {
@@ -151,10 +151,10 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder<HardMediumSof
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
         }
-        consumer.accept(kcontext, matchWeight);
+        consumer.accept(kcontext, weightMultiplier);
     }
 
-    public void match(RuleContext kcontext, int hardMatchWeight, int mediumMatchWeight, int softMatchWeight) {
+    public void match(RuleContext kcontext, int hardWeightMultiplier, int mediumWeightMultiplier, int softWeightMultiplier) {
         throw new UnsupportedOperationException(); // TODO
     }
 
