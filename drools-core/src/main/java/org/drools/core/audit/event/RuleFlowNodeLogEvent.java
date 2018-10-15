@@ -85,7 +85,7 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
                 msg = "BEFORE PROCESS NODE EXITED";
                 break;
             case AFTER_RULEFLOW_NODE_EXITED :
-                msg = "AFTER PROCESS NODE TRIGGERED";
+                msg = "AFTER PROCESS NODE EXITED";
                 break;
             default:
                 return super.toString();
