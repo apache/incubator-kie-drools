@@ -122,7 +122,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     protected void createRuleToConstraintWeightExtractorMap(KieBase kieBase) {
         ConstraintWeightPackDescriptor<Solution_> packDescriptor = solutionDescriptor.getConstraintWeightPackDescriptor();
         if (packDescriptor == null) {
-            ruleToConstraintWeightExtractorMap = null;
+            ruleToConstraintWeightExtractorMap = new LinkedHashMap<>(0);
             return;
         }
         Collection<ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptors = packDescriptor.getConstraintWeightDescriptors();
