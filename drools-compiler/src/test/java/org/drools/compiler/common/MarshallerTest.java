@@ -35,7 +35,7 @@ public class MarshallerTest {
 
             assertEquals(3, ksession.fireAllRules());
 
-            ReadSessionResult serialisedStatefulKnowledgeSession = ProtobufTestMarshaller.getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase(), true, true);
+            ReadSessionResult serialisedStatefulKnowledgeSession = ProtobufTestMarshaller.getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase());
             ksession = serialisedStatefulKnowledgeSession.getSession();
 
             ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
