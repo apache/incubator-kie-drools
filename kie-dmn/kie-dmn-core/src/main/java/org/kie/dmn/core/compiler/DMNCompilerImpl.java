@@ -36,6 +36,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
@@ -114,9 +115,15 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.evaluatorCompiler = cc.isUseExecModelCompiler() ?
-                new ExecModelDMNEvaluatorCompiler( this ) :
-                new DMNEvaluatorCompiler( this );
+        if (cc.isUseExecModelCompiler()) {
+            ExecModelDMNEvaluatorCompiler evaluatorCompiler = new ExecModelDMNEvaluatorCompiler(this);
+            for(AfterGeneratingSourcesListener l : dmnCompilerConfig.getAfterGeneratingSourcesListeners()) {
+                evaluatorCompiler.register(l);
+            }
+            this.evaluatorCompiler = evaluatorCompiler;
+        } else {
+            this.evaluatorCompiler = new DMNEvaluatorCompiler(this);
+        }
     }
     
     private void addDRGElementCompiler(DRGElementCompiler compiler) {

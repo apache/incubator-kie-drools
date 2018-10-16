@@ -52,6 +52,11 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
         listeners.add(listener);
     }
 
+    @Override
+    public List<AfterGeneratingSourcesListener> getAfterGeneratingSourcesListeners() {
+        return listeners;
+    }
+
     public List<DMNExtensionRegister> getRegisteredExtensions() {
         return this.registeredExtensions;
     }
