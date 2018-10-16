@@ -26,6 +26,7 @@ import java.nio.file.WatchService;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.drools.core.impl.InternalKieContainer;
@@ -53,8 +54,18 @@ public class KieFileSystemScannerImpl extends AbstractKieScanner<InternalKieModu
 
     @Override
     protected InternalKieModule internalScan() {
-        String newKJar = findNewFileName( watchService.poll() );
-        return newKJar == null ? null : InternalKieModule.createKieModule(kieContainer.getReleaseId(), new File(repositoryFolder.toString(), newKJar));
+        WatchKey watchKey = null;
+        try {
+            watchKey = watchService.poll(5, TimeUnit.SECONDS);
+            String newKJar = findNewFileName( watchKey );
+            return newKJar == null ? null : InternalKieModule.createKieModule(kieContainer.getReleaseId(), new File(repositoryFolder.toString(), newKJar));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (watchKey != null) {
+                watchKey.reset();
+            }
+        }
     }
 
     @Override

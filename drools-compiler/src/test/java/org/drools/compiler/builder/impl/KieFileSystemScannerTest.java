@@ -44,7 +44,7 @@ public class KieFileSystemScannerTest {
 
     @Test
     public void testSnapshot() throws Exception {
-        Path tempDir = Files.createTempDirectory(FileSystems.getDefault().getPath("."), null);
+        Path tempDir = Files.createTempDirectory(FileSystems.getDefault().getPath("./target"), null);
         File file = null;
 
         try {
@@ -81,7 +81,7 @@ public class KieFileSystemScannerTest {
 
     @Test
     public void testFixedVersion() throws Exception {
-        Path tempDir = Files.createTempDirectory(FileSystems.getDefault().getPath("."), null);
+        Path tempDir = Files.createTempDirectory(FileSystems.getDefault().getPath("./target"), null);
         File file2 = null;
         File file3 = null;
 
