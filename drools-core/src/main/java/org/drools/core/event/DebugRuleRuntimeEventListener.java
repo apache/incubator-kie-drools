@@ -16,8 +16,10 @@
 
 package org.drools.core.event;
 
-import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;
-import org.kie.api.event.rule.*;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ public class DebugRuleRuntimeEventListener
     implements
     RuleRuntimeEventListener {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(org.kie.api.event.rule.DebugRuleRuntimeEventListener.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(DebugRuleRuntimeEventListener.class);
 
     public DebugRuleRuntimeEventListener() {
         // intentionally left blank
