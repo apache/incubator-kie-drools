@@ -194,7 +194,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Value <= `78`
 * Search space <= `10^2301`
 |* Unrealistic
-* http://mat.gsia.cmu.edu/TOURN/[TTP]
+* http://mat.tepper.cmu.edu/TOURN/[TTP]
 |* Custom <<moveListFactory,MoveListFactory>>
 
 |<<cheapTimeScheduling,Cheap time scheduling>>

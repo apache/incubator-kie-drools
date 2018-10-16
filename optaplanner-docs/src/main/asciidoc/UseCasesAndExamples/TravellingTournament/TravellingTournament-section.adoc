@@ -21,7 +21,7 @@ Soft constraints:
 
 * Minimize the total distance traveled by all teams.
 
-The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website (which contains the world records too)].
+The problem is defined on http://mat.tepper.cmu.edu/TOURN/[Michael Trick's website (which contains the world records too)].
 
 
 [[travelingTournamentProblemSize]]
