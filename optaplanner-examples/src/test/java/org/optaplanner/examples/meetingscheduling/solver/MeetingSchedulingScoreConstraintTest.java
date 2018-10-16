@@ -43,9 +43,9 @@ public class MeetingSchedulingScoreConstraintTest {
     private MeetingSchedule getMeetingSchedule(int numberOfEntities) {
         // After getting the solution, need to set AttendanceList for it. And for every meeting Required & Preferred attendance lists
         MeetingSchedule solution = new MeetingSchedule();
-        MeetingWeightPack parametrization = new MeetingWeightPack();
-        parametrization.setId(0L);
-        solution.setWeightPack(parametrization);
+        MeetingWeightPack weightPack = new MeetingWeightPack();
+        weightPack.setId(0L);
+        solution.setWeightPack(weightPack);
 
         List<Meeting> meetingList = new ArrayList<>();
         List<Day> dayList = new ArrayList<>();
@@ -100,7 +100,7 @@ public class MeetingSchedulingScoreConstraintTest {
     @Test
     public void roomStability() {
         MeetingSchedule solution = getMeetingSchedule(6);
-        MeetingWeightPack parametrization = solution.getWeightPack();
+        MeetingWeightPack weightPack = solution.getWeightPack();
         List<Attendance> aList = new ArrayList<>();
         for (int i = 0; i < solution.getMeetingList().size(); i++) {
             Meeting m = solution.getMeetingList().get(i);
@@ -131,7 +131,7 @@ public class MeetingSchedulingScoreConstraintTest {
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(2));
         ma1.setRoom(solution.getRoomList().get(1));
 
-        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability().getSoftScore(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -weightPack.getRoomStability().getSoftScore(), solution);
 
         /* Scenario 2: should penalize
                 t0  t1  t2  t3  t4  t5
@@ -140,7 +140,7 @@ public class MeetingSchedulingScoreConstraintTest {
            r1              |  m1   |
         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(3));
-        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability().getSoftScore(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -weightPack.getRoomStability().getSoftScore(), solution);
 
         /* Scenario 3: should penalize
                 t0  t1  t2  t3  t4  t5
@@ -149,7 +149,7 @@ public class MeetingSchedulingScoreConstraintTest {
            r1                 |  m1   |
         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(4));
-        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability().getSoftScore(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -weightPack.getRoomStability().getSoftScore(), solution);
 
         /* Scenario 4: shouldn't penalize
                 t0  t1  t2  t3  t4  t5
@@ -180,7 +180,7 @@ public class MeetingSchedulingScoreConstraintTest {
         MeetingAssignment ma2 = solution.getMeetingAssignmentList().get(2);
         ma2.setStartingTimeGrain(solution.getTimeGrainList().get(4));
         ma2.setRoom(solution.getRoomList().get(0));
-        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability().getSoftScore() * 2, solution);
+        scoreVerifier.assertSoftWeight("Room stability", -weightPack.getRoomStability().getSoftScore() * 2, solution);
     }
 
 }
