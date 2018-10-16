@@ -17,17 +17,10 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.drools.core.impl.InternalKieContainer;
 import org.kie.api.builder.KieScanner;
@@ -38,69 +31,52 @@ public class KieFileSystemScannerImpl extends AbstractKieScanner<InternalKieModu
 
     private final Path repositoryFolder;
 
-    private WatchService watchService;
-
-    public KieFileSystemScannerImpl( KieContainer kieContainer, Path repositoryFolder ) {
+    public KieFileSystemScannerImpl(final KieContainer kieContainer, final Path repositoryFolder ) {
         this.kieContainer = ( InternalKieContainer ) kieContainer;
         this.repositoryFolder = repositoryFolder;
-
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-            repositoryFolder.register( watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY );
-        } catch (IOException e) {
-            throw new RuntimeException( e );
-        }
     }
 
     @Override
     protected InternalKieModule internalScan() {
-        WatchKey watchKey = null;
-        try {
-            watchKey = watchService.poll(5, TimeUnit.SECONDS);
-            String newKJar = findNewFileName( watchKey );
-            return newKJar == null ? null : InternalKieModule.createKieModule(kieContainer.getReleaseId(), new File(repositoryFolder.toString(), newKJar));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (watchKey != null) {
-                watchKey.reset();
-            }
-        }
+        final File newKJar = findNewFile();
+        return newKJar == null ? null : InternalKieModule.createKieModule(kieContainer.getReleaseId(), newKJar);
     }
 
     @Override
-    protected void internalUpdate( InternalKieModule kmodule ) {
+    protected void internalUpdate(final InternalKieModule kmodule ) {
         (( KieContainerImpl ) kieContainer).updateToKieModule( kmodule );
     }
 
-    private String findNewFileName( WatchKey key ) {
-        if (key == null) {
+    private File findNewFile() {
+        final File[] files = repositoryFolder.toFile().listFiles((dir, name) -> name.startsWith(kieContainer.getReleaseId().getArtifactId() + "-") && name.endsWith(".jar" ));
+        final List<File> jarFiles;
+        if (files != null) {
+            jarFiles = Arrays.asList(files);
+        } else {
             return null;
         }
-        List<String> modifiedJars = key.pollEvents().stream()
-                .map( e -> e.context().toString() ).distinct()
-                .filter( s -> s.startsWith( kieContainer.getReleaseId().getArtifactId() + "-") && s.endsWith( ".jar" ))
-                .collect(Collectors.toList());
 
-        if (modifiedJars.isEmpty()) {
+        if (jarFiles.isEmpty()) {
             return null;
         }
-        if (modifiedJars.size() > 1) {
-            Collections.sort(modifiedJars, new VersionComparator( kieContainer.getReleaseId().getArtifactId().length()+1 ).reversed());
+        if (jarFiles.size() > 1) {
+            jarFiles.sort(new VersionComparator(kieContainer.getReleaseId().getArtifactId().length() + 1).reversed());
         }
-        return modifiedJars.get(0);
+        return jarFiles.get(0);
     }
 
-    private static class VersionComparator implements Comparator<String> {
+    private static class VersionComparator implements Comparator<File> {
         private final int headLength;
 
-        private VersionComparator( int headLength ) {
+        private VersionComparator(final int headLength ) {
             this.headLength = headLength;
         }
 
         @Override
-        public int compare( String s1, String s2 ) {
-            return new ComparableVersion(s1.substring( headLength, s1.length()-4 )).compareTo( new ComparableVersion( s2.substring( headLength, s1.length()-4 ) ) );
+        public int compare(final File s1, final File s2 ) {
+            final String s1Name = s1.getName();
+            final String s2Name = s2.getName();
+            return new ComparableVersion(s1Name.substring( headLength, s1Name.length()-4 )).compareTo( new ComparableVersion( s2Name.substring( headLength, s1Name.length()-4 ) ) );
         }
     }
 }
