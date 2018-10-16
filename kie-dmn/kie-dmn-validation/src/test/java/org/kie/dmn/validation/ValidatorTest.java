@@ -330,7 +330,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     public void testDMNv1_2_ch11Modified() {
         // DROOLS-2832
         List<DMNMessage> validate = validator.validate(getReader("v1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class),
-                                                       // DROOLS-2893: VALIDATE_SCHEMA, 
+                                                       VALIDATE_SCHEMA, 
                                                        VALIDATE_MODEL,
                                                        VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
