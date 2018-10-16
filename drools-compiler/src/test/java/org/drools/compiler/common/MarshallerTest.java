@@ -17,31 +17,36 @@ public class MarshallerTest {
 
     @Test
     public void testAgendaDoNotSerializeObject() throws Exception {
-        String str =
-                "import java.util.Collection\n" +
-                        "rule R1 when\n" +
-                        "    String(this == \"x\" || this == \"y\" || this == \"z\")\n" +
-                        "then\n" +
-                        "end\n";
+        KieSession ksession = null;
+        try {
+            String str =
+                    "import java.util.Collection\n" +
+                            "rule R1 when\n" +
+                            "    String(this == \"x\" || this == \"y\" || this == \"z\")\n" +
+                            "then\n" +
+                            "end\n";
 
-        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
+            KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+            ksession = kbase.newKieSession();
 
-        ksession.insert("x");
-        ksession.insert("y");
-        ksession.insert("z");
+            ksession.insert("x");
+            ksession.insert("y");
+            ksession.insert("z");
 
-        assertEquals(3, ksession.fireAllRules());
+            assertEquals(3, ksession.fireAllRules());
 
-        ReadSessionResult serialisedStatefulKnowledgeSession = ProtobufTestMarshaller.getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase(), true, true);
-        ksession = serialisedStatefulKnowledgeSession.getSession();
+            ReadSessionResult serialisedStatefulKnowledgeSession = ProtobufTestMarshaller.getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase(), true, true);
+            ksession = serialisedStatefulKnowledgeSession.getSession();
 
-        ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
+            ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
 
-        assertEquals(0, ksession.fireAllRules());
-        assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> ml.getObject().size() > 0));
-//        assertFalse(deserializedMessage.getRuleData().getEntryPointList().stream().flatMap(ep -> ep.getHandleList().stream()).anyMatch(ml -> ml.getObject() != null));
-
+            assertEquals(0, ksession.fireAllRules());
+            assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> ml.getObject().size() > 0));
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
@@ -54,12 +59,19 @@ public class MarshallerTest {
                         "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
-        assertEquals(3, ksession.fireAllRules());
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
+            assertEquals(3, ksession.fireAllRules());
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertEquals(0, ksession.fireAllRules());
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
@@ -72,11 +84,18 @@ public class MarshallerTest {
                         "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertEquals(3, ksession.fireAllRules());
+            assertEquals(3, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
@@ -93,17 +112,24 @@ public class MarshallerTest {
                         "end";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
 
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
+            ksession.insert(new Person("Mark", 37));
+            ksession.insert(new Person("Edson", 35));
+            ksession.insert(new Person("Mario", 40));
 
-        assertEquals(1, ksession.fireAllRules());
+            assertEquals(1, ksession.fireAllRules());
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertEquals(0, ksession.fireAllRules());
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
@@ -120,15 +146,22 @@ public class MarshallerTest {
                         "end";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
 
-        ksession.insert(new Person("Mark", 37));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
+            ksession.insert(new Person("Mark", 37));
+            ksession.insert(new Person("Edson", 35));
+            ksession.insert(new Person("Mario", 40));
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertEquals(1, ksession.fireAllRules());
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
@@ -142,9 +175,11 @@ public class MarshallerTest {
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL)
                 .build(EqualityBehaviorOption.EQUALITY);
-        KieSession ksession = kbase.newKieSession();
+        KieSession ksession = null;
 
         try {
+            kbase.newKieSession();
+
             ksession.insert("Luca");
             ksession.insert(2L);
             ksession.insert(10);
@@ -176,9 +211,10 @@ public class MarshallerTest {
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL)
                 .build(EqualityBehaviorOption.EQUALITY);
-        KieSession ksession = kbase.newKieSession();
+        KieSession ksession = null;
 
         try {
+            ksession = kbase.newKieSession();
             ksession.insert("Luca");
             ksession.insert(2L);
 
