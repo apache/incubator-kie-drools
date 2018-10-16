@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -56,6 +57,42 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         if (constraintMatchEnabled) {
             assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.00")), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        SimpleBigDecimalScoreHolder scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
+        Rule constraint1 = mockRule("constraint1");
+        scoreHolder.putConstraintWeight(constraint1, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
+        Rule constraint2 = mockRule("constraint2");
+        scoreHolder.putConstraintWeight(constraint2, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
+
+        scoreHolder.penalize(mockRuleContext(constraint1));
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.0")), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(constraint2), new BigDecimal("2.0"));
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-210.0")), scoreHolder.extractScore(0));
+
+        scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
+        Rule constraint3 = mockRule("constraint3");
+        scoreHolder.putConstraintWeight(constraint3, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
+        Rule constraint4 = mockRule("constraint4");
+        scoreHolder.putConstraintWeight(constraint4, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
+
+        scoreHolder.reward(mockRuleContext(constraint3));
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("10.0")), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(constraint4), new BigDecimal("3.0"));
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("310.0")), scoreHolder.extractScore(0));
     }
 
 }

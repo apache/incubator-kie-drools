@@ -40,6 +40,11 @@ public abstract class AbstractScoreHolderTest {
     }
 
     protected RuleContext mockRuleContext(String ruleName, Object... justifications) {
+        Rule rule = mockRule(ruleName);
+        return mockRuleContext(rule, justifications);
+    }
+
+    protected RuleContext mockRuleContext(Rule rule, Object... justifications) {
         if (justifications.length == 0) {
             justifications = new Object[]{DEFAULT_JUSTIFICATION};
         }
@@ -59,11 +64,15 @@ public abstract class AbstractScoreHolderTest {
 
         };
         when(kcontext.getMatch()).thenReturn(agendaItem);
+        when(kcontext.getRule()).thenReturn(rule);
+        return kcontext;
+    }
+
+    protected Rule mockRule(String ruleName) {
         Rule rule = mock(Rule.class);
         when(rule.getPackageName()).thenReturn(getClass().getPackage().getName());
         when(rule.getName()).thenReturn(ruleName);
-        when(kcontext.getRule()).thenReturn(rule);
-        return kcontext;
+        return rule;
     }
 
     protected void callOnUpdate(RuleContext ruleContext) {

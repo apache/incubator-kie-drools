@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -86,6 +87,45 @@ public class HardMediumSoftLongScoreHolderTest extends AbstractScoreHolderTest {
             assertEquals(HardMediumSoftLongScore.of(0L, 0L, -300L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardMediumSoftLongScoreHolder scoreHolder = new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.putConstraintWeight(hard1, HardMediumSoftLongScore.ofHard(10L));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.putConstraintWeight(hard2, HardMediumSoftLongScore.ofHard(100L));
+        Rule medium1 = mockRule("medium1");
+        scoreHolder.putConstraintWeight(medium1, HardMediumSoftLongScore.ofMedium(10L));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.putConstraintWeight(soft1, HardMediumSoftLongScore.ofSoft(10L));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.putConstraintWeight(soft2, HardMediumSoftLongScore.ofSoft(100L));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardMediumSoftLongScore.of(-10L, 0L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, 0L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(medium1), 9L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 10L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 310L), scoreHolder.extractScore(0));
     }
 
 }

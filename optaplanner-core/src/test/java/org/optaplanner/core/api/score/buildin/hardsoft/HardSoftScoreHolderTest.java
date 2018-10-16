@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -77,6 +78,40 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
             assertEquals(HardSoftScore.of(0, -20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardSoftScoreHolder scoreHolder = new HardSoftScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.putConstraintWeight(hard1, HardSoftScore.ofHard(10));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.putConstraintWeight(hard2, HardSoftScore.ofHard(100));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.putConstraintWeight(soft1, HardSoftScore.ofSoft(10));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.putConstraintWeight(soft2, HardSoftScore.ofSoft(100));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardSoftScore.of(-10, 0), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2);
+        assertEquals(HardSoftScore.of(-210, 0), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardSoftScore.of(-210, 10), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3);
+        assertEquals(HardSoftScore.of(-210, 310), scoreHolder.extractScore(0));
     }
 
 }

@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.bendablelong;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -86,6 +87,45 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
             assertEquals(BendableLongScore.of(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(constraintMatchEnabled, 1, 2);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.putConstraintWeight(hard1, BendableLongScore.ofHard(1, 2, 0, 10L));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.putConstraintWeight(hard2, BendableLongScore.ofHard(1, 2, 0, 100L));
+        Rule medium1 = mockRule("medium1");
+        scoreHolder.putConstraintWeight(medium1, BendableLongScore.ofSoft(1, 2, 0, 10L));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.putConstraintWeight(soft1, BendableLongScore.ofSoft(1, 2, 1, 10L));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.putConstraintWeight(soft2, BendableLongScore.ofSoft(1, 2, 1, 100L));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(BendableLongScore.of(new long[]{-10L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2L);
+        assertEquals(BendableLongScore.of(new long[]{-210L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(medium1), 9L);
+        assertEquals(BendableLongScore.of(new long[]{-210L}, new long[]{-90L, 0L}), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(BendableLongScore.of(new long[]{-210L}, new long[]{-90L, 10L}), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3L);
+        assertEquals(BendableLongScore.of(new long[]{-210L}, new long[]{-90L, 310L}), scoreHolder.extractScore(0));
     }
 
 }

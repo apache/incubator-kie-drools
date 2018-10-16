@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -79,6 +80,40 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
             assertEquals(HardSoftBigDecimalScore.of(BigDecimal.ZERO, new BigDecimal("-0.20")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardSoftBigDecimalScoreHolder scoreHolder = new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.putConstraintWeight(hard1, HardSoftBigDecimalScore.ofHard(new BigDecimal("10.0")));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.putConstraintWeight(hard2, HardSoftBigDecimalScore.ofHard(new BigDecimal("100.0")));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.putConstraintWeight(soft1, HardSoftBigDecimalScore.ofSoft(new BigDecimal("10.0")));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.putConstraintWeight(soft2, HardSoftBigDecimalScore.ofSoft(new BigDecimal("100.0")));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("0.0")), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), new BigDecimal("2.0"));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("0.0")), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("10.0")), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), new BigDecimal("3.0"));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("310.0")), scoreHolder.extractScore(0));
     }
 
 }

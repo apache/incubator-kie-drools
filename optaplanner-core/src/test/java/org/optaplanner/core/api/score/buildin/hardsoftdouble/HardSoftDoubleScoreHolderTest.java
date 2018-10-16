@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -77,6 +78,40 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
             assertEquals(HardSoftDoubleScore.of(0.0, -0.20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardSoftDoubleScoreHolder scoreHolder = new HardSoftDoubleScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.putConstraintWeight(hard1, HardSoftDoubleScore.ofHard(10.0));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.putConstraintWeight(hard2, HardSoftDoubleScore.ofHard(100.0));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.putConstraintWeight(soft1, HardSoftDoubleScore.ofSoft(10.0));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.putConstraintWeight(soft2, HardSoftDoubleScore.ofSoft(100.0));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardSoftDoubleScore.of(-10.0, 0.0), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2.0);
+        assertEquals(HardSoftDoubleScore.of(-210.0, 0.0), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardSoftDoubleScore.of(-210.0, 10.0), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3.0);
+        assertEquals(HardSoftDoubleScore.of(-210.0, 310.0), scoreHolder.extractScore(0));
     }
 
 }

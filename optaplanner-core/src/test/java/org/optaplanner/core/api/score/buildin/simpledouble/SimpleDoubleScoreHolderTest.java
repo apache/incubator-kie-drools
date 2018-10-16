@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -54,6 +55,42 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         if (constraintMatchEnabled) {
             assertEquals(SimpleDoubleScore.of(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        SimpleDoubleScoreHolder scoreHolder = new SimpleDoubleScoreHolder(constraintMatchEnabled);
+        Rule constraint1 = mockRule("constraint1");
+        scoreHolder.putConstraintWeight(constraint1, SimpleDoubleScore.of(10.0));
+        Rule constraint2 = mockRule("constraint2");
+        scoreHolder.putConstraintWeight(constraint2, SimpleDoubleScore.of(100.0));
+
+        scoreHolder.penalize(mockRuleContext(constraint1));
+        assertEquals(SimpleDoubleScore.of(-10.0), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(constraint2), 2.0);
+        assertEquals(SimpleDoubleScore.of(-210.0), scoreHolder.extractScore(0));
+
+        scoreHolder = new SimpleDoubleScoreHolder(constraintMatchEnabled);
+        Rule constraint3 = mockRule("constraint3");
+        scoreHolder.putConstraintWeight(constraint3, SimpleDoubleScore.of(10.0));
+        Rule constraint4 = mockRule("constraint4");
+        scoreHolder.putConstraintWeight(constraint4, SimpleDoubleScore.of(100.0));
+
+        scoreHolder.reward(mockRuleContext(constraint3));
+        assertEquals(SimpleDoubleScore.of(10.0), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(constraint4), 3.0);
+        assertEquals(SimpleDoubleScore.of(310.0), scoreHolder.extractScore(0));
     }
 
 }

@@ -23,6 +23,8 @@ import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -30,7 +32,9 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  */
 public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongScore> {
 
-    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorMap = new LinkedHashMap<>();
+    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorByNumberMap = new LinkedHashMap<>();
+    /** Slower than {@link #matchExecutorByNumberMap} */
+    protected final Map<Rule, BiConsumer<RuleContext, BendableLongScore>> matchExecutorByScoreMap = new LinkedHashMap<>();
 
     private long[] hardScores;
     private long[] softScores;
@@ -108,11 +112,104 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
                 };
             }
         }
-        matchExecutorMap.put(rule, matchExecutor);
+        matchExecutorByNumberMap.put(rule, matchExecutor);
+        matchExecutorByScoreMap.put(rule, (RuleContext kcontext, BendableLongScore weightMultiplier) -> {
+            long[] hardWeights = new long[hardScores.length];
+            long[] softWeights = new long[softScores.length];
+            for (int i = 0; i < hardWeights.length; i++) {
+                hardWeights[i] = constraintWeight.getHardScore(i) * weightMultiplier.getHardScore(i);
+            }
+            for (int i = 0; i < softWeights.length; i++) {
+                softWeights[i] = constraintWeight.getSoftScore(i) * weightMultiplier.getSoftScore(i);
+            }
+            addMultiConstraintMatch(kcontext, hardWeights, softWeights);
+        });
     }
 
     // ************************************************************************
-    // Worker methods
+    // Penalize and reward methods
+    // ************************************************************************
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void penalize(RuleContext kcontext) {
+        reward(kcontext, -1L);
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void penalize(RuleContext kcontext, long weightMultiplier) {
+        reward(kcontext, -weightMultiplier);
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score level.
+     * Slower than {@link #penalize(RuleContext, long)}.
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeightsMultiplier elements at least 0
+     * @param softWeightsMultiplier elements at least 0
+     */
+    public void penalize(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {
+        long[] negatedHardWeightsMultiplier = new long[hardScores.length];
+        long[] negatedSoftWeightsMultiplier = new long[softScores.length];
+        for (int i = 0; i < negatedHardWeightsMultiplier.length; i++) {
+            negatedHardWeightsMultiplier[i] = -hardWeightsMultiplier[i];
+        }
+        for (int i = 0; i < negatedSoftWeightsMultiplier.length; i++) {
+            negatedSoftWeightsMultiplier[i] = -softWeightsMultiplier[i];
+        }
+        reward(kcontext, negatedHardWeightsMultiplier, negatedSoftWeightsMultiplier);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight}.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void reward(RuleContext kcontext) {
+        reward(kcontext, 1L);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void reward(RuleContext kcontext, long weightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
+     * Slower than {@link #reward(RuleContext, long)}.
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeightsMultiplier elements at least 0
+     * @param softWeightsMultiplier elements at least 0
+     */
+    public void reward(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, BendableLongScore> matchExecutor = matchExecutorByScoreMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, BendableLongScore.of(hardWeightsMultiplier, softWeightsMultiplier));
+    }
+
+    // ************************************************************************
+    // Other match methods
     // ************************************************************************
 
     /**

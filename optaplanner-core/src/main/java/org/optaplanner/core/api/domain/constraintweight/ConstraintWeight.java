@@ -19,11 +19,16 @@ package org.optaplanner.core.api.domain.constraintweight;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.optaplanner.core.api.score.Score;
+
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property (or a field) set the score weight multiplier and score level of a constraint.
+ * Specifies that a bean property (or a field) set the constraint weight and score level of a constraint.
+ * For example, with a constraint weight of {@code 2soft},
+ * a constraint match penalization with weightMultiplier {@code 3}
+ * will result in a {@link Score} of {@code -6soft}.
  * <p>
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link ConstraintWeightPack} class.
  */
