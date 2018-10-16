@@ -67,6 +67,15 @@ public class DMNAssemblerService implements KieAssemblerService {
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
+    private DMNCompilerConfigurationImpl compilerConfiguration;
+
+    public DMNAssemblerService(DMNCompilerConfigurationImpl compilerConfiguration) {
+        this.compilerConfiguration = compilerConfiguration;
+    }
+
+    public DMNAssemblerService() {
+    }
+
     @Override
     public ResourceType getResourceType() {
         return ResourceType.DMN;
@@ -76,7 +85,13 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
+        if(compilerConfiguration == null) {
+            compilerConfiguration = getDefaultCompilerConfiguration(kbuilderImpl, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        }
+        DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> {
+
+            return DMNFactory.newCompiler(compilerConfiguration);
+        });
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
         if (resources.size() == 1) {
             // quick path:
@@ -124,7 +139,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
+        DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> DMNFactory.newCompiler(getDefaultCompilerConfiguration(kbuilderImpl, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration())));
 
         Collection<DMNModel> dmnModels = new ArrayList<>();
         for (PackageRegistry pr : kbuilderImpl.getPackageRegistry().values()) {
@@ -207,12 +222,10 @@ public class DMNAssemblerService implements KieAssemblerService {
         return "".equals(val) || Boolean.parseBoolean(val);
     }
 
-    private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
+    private DMNCompilerConfigurationImpl getDefaultCompilerConfiguration(KnowledgeBuilderImpl kbuilderImpl, DMNCompilerConfigurationImpl config) {
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
 
-        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles);
-
-        return DMNFactory.newCompiler(compilerConfig);
+        return compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles, config);
     }
 
     /**
@@ -220,11 +233,11 @@ public class DMNAssemblerService implements KieAssemblerService {
      * @param classLoader 
      * @param chainedProperties applies properties --it does not do any classloading nor profile loading based on these properites, just passes the values. 
      * @param dmnProfiles applies these DMNProfile(s) to the DMNCompilerConfiguration
+     * @param config
      * @return
      */
-    public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
-        DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
-        
+    public static DMNCompilerConfigurationImpl compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles, DMNCompilerConfigurationImpl config) {
+
         config.setRootClassLoader(classLoader);
 
         Map<String, String> dmnPrefs = new HashMap<>();
