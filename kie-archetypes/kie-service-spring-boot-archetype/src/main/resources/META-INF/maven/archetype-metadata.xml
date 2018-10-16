@@ -65,10 +65,12 @@
       <includes>
         <include>**/*.html</include>
         <include>**/*.properties</include>
+        <include>**/*.txt</include>
       </includes>
       <excludes>
         <exclude>**/*.jpg</exclude>
         <exclude>**/*.css</exclude>
+        <exclude>**/*.ico</exclude>
       </excludes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
@@ -82,10 +84,12 @@
       <includes>
         <include>**/*.jpg</include>
         <include>**/*.css</include>
+        <include>**/*.ico</include>
       </includes>
       <excludes>
         <exclude>**/*.html</exclude>
         <exclude>**/*.properties</exclude>
+        <exclude>**/*.txt</exclude>
       </excludes>
     </fileSet>
     <fileSet packaged="true" encoding="UTF-8">
