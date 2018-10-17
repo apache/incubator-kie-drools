@@ -16,9 +16,6 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public enum EngineTestConfiguration {
     ALPHA_NETWORK_COMPILER_TRUE,
     ALPHA_NETWORK_COMPILER_FALSE,
