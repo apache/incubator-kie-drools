@@ -16,17 +16,13 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
@@ -35,11 +31,7 @@ import org.kie.api.runtime.KieContainer;
  */
 public final class KieBaseUtil {
 
-    public static KieBase getDefaultKieBaseFromKieBuilder(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                                          final KieBuilder kbuilder) {
-        if (kieBaseTestConfiguration.useCanonicalModel()) {
-            generateKieModuleForCanonicalModel( kbuilder );
-        }
+    public static KieBase getDefaultKieBaseFromKieBuilder(final KieBuilder kbuilder) {
         return getDefaultKieBaseFromKieModule(kbuilder.getKieModule());
     }
 
@@ -55,30 +47,20 @@ public final class KieBaseUtil {
             final KieBaseTestConfiguration kieBaseTestConfiguration, final String... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration,
                 classLoaderFromClass, true, resources);
-        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
+        return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
     public static KieBase getKieBaseFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
             final Resource... resources) {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resources);
-        if (kieBaseTestConfiguration.useCanonicalModel()) {
-            generateKieModuleForCanonicalModel( kieBuilder );
-        }
-        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
-    }
-
-    private static void generateKieModuleForCanonicalModel(KieBuilder kieBuilder) {
-        KieServices ks = KieServices.get();
-        InternalKieModule kieModule = ( InternalKieModule ) kieBuilder.getKieModule();
-
-        ks.getRepository().addKieModule( kieModule );
+        return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
     public static KieBase getKieBaseFromDRLResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
             final Resource... resources) {
         generateDRLResourceTargetPath(resources);
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resources);
-        return getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kieBuilder);
+        return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
     private static void generateDRLResourceTargetPath(final Resource[] resources) {
@@ -122,11 +104,5 @@ public final class KieBaseUtil {
 
     private KieBaseUtil() {
         // Creating instances of util classes should not be possible.
-    }
-
-    public static KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty( "drools.alphaNetworkCompiler", "true" );
-        return kproj;
     }
 }

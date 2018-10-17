@@ -44,8 +44,7 @@ public final class KieSessionUtil {
 
     public static Session getKieSessionFromKieBaseModel(final String moduleGroupId, final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                         final KieSessionTestConfiguration kieSessionTestConfiguration, final Resource... resources) {
-        final KieModuleModel module = KieUtil.createKieModuleModel(kieBaseTestConfiguration.useAlphaNetwork());
-
+        final KieModuleModel module = KieUtil.createKieModuleModel(kieBaseTestConfiguration.useAlphaNetworkCompiler());
         final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
 
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);

@@ -515,7 +515,7 @@ public class IncrementalCompilationCepTest {
         ksession.insert(new SimpleEvent("3", "MY_CODE", 21));
         ksession.fireAllRules();
 
-        if (kieBaseTestConfiguration.useCanonicalModel()) {
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
             assertEquals(3, counter1.get());
         } else {
             assertEquals(5, counter1.get());

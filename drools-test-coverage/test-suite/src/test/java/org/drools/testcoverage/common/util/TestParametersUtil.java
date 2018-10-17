@@ -26,7 +26,7 @@ public final class TestParametersUtil {
 
     public static boolean TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL = true;
     public static boolean TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL = true;
-    public static boolean TEST_WITH_ALPHA_NETWORK = Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"));
+    private static final boolean TEST_WITH_ALPHA_NETWORK = Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"));
 
     /**
      * Prepares collection of KieBaseTestConfiguration.

@@ -19,21 +19,18 @@ package org.drools.testcoverage.common.util;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.modelcompiler.ExecutableModelFlowProject;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseOption;
-
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_DSL;
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.FLOW_WITH_ALPHA_NETWORK;
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_DSL;
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.PATTERN_WITH_ALPHA_NETWORK;
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_FROM_DRL;
-import static org.drools.testcoverage.common.util.KieBaseModelProvider.RunType.STANDARD_WITH_ALPHA_NETWORK;
 
 /**
  * Represents various tested KieBase configurations.
@@ -47,10 +44,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     CLOUD_IDENTITY {
-        @Override
-        public RunType runType() {
-            return STANDARD_FROM_DRL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -59,6 +52,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -88,10 +91,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     CLOUD_IDENTITY_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return STANDARD_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -101,6 +100,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -129,10 +138,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     CLOUD_IDENTITY_MODEL_FLOW {
-        @Override
-        public RunType runType() {
-            return FLOW_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -141,6 +146,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -171,10 +186,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return FLOW_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -184,6 +195,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -212,10 +233,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_IDENTITY_MODEL_PATTERN {
-        @Override
-        public RunType runType() {
-            return PATTERN_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -224,6 +241,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -253,10 +280,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return PATTERN_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -266,6 +289,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -294,10 +327,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     CLOUD_EQUALITY {
-        @Override
-        public RunType runType() {
-            return STANDARD_FROM_DRL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -306,6 +335,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -335,10 +374,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     CLOUD_EQUALITY_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return STANDARD_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -348,6 +383,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -376,10 +421,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     CLOUD_EQUALITY_MODEL_FLOW {
-        @Override
-        public RunType runType() {
-            return FLOW_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -388,6 +429,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -417,10 +468,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return FLOW_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -430,6 +477,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -458,10 +515,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_EQUALITY_MODEL_PATTERN {
-        @Override
-        public RunType runType() {
-            return PATTERN_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -470,6 +523,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return false;
         }
 
@@ -499,10 +562,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return PATTERN_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -512,6 +571,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return false;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return true;
         }
 
         @Override
@@ -540,10 +609,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     STREAM_IDENTITY {
-        @Override
-        public RunType runType() {
-            return STANDARD_FROM_DRL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -553,6 +618,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -581,10 +656,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     STREAM_IDENTITY_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return STANDARD_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -593,6 +664,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
@@ -622,10 +703,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     STREAM_IDENTITY_MODEL_FLOW {
-        @Override
-        public RunType runType() {
-            return FLOW_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -635,6 +712,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -663,10 +750,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return FLOW_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -675,6 +758,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
@@ -704,10 +797,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_IDENTITY_MODEL_PATTERN {
-        @Override
-        public RunType runType() {
-            return PATTERN_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -717,6 +806,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -745,10 +844,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return PATTERN_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -757,6 +852,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
@@ -786,10 +891,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     STREAM_EQUALITY {
-        @Override
-        public RunType runType() {
-            return STANDARD_FROM_DRL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -799,6 +900,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -828,10 +939,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     STREAM_EQUALITY_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return STANDARD_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -840,6 +947,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
@@ -869,10 +986,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     STREAM_EQUALITY_MODEL_FLOW {
-        @Override
-        public RunType runType() {
-            return FLOW_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -882,6 +995,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -910,10 +1033,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is used.
      */
     STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return FLOW_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -922,6 +1041,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelFlowProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
@@ -951,10 +1080,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_EQUALITY_MODEL_PATTERN {
-        @Override
-        public RunType runType() {
-            return PATTERN_DSL;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -964,6 +1089,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         @Override
         public boolean isStreamMode() {
             return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
+            return false;
         }
 
         @Override
@@ -993,10 +1128,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK {
-        @Override
-        public RunType runType() {
-            return PATTERN_WITH_ALPHA_NETWORK;
-        }
 
         @Override
         public boolean isIdentity() {
@@ -1005,6 +1136,16 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
         @Override
         public boolean isStreamMode() {
+            return true;
+        }
+
+        @Override
+        public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
+            return Optional.of(ExecutableModelProject.class);
+        }
+
+        @Override
+        public boolean useAlphaNetworkCompiler() {
             return true;
         }
 
