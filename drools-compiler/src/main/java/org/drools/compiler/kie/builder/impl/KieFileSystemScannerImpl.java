@@ -17,7 +17,6 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -29,15 +28,15 @@ import org.kie.api.runtime.KieContainer;
 
 public class KieFileSystemScannerImpl extends AbstractKieScanner<InternalKieModule> implements KieScanner {
 
-    private final Path repositoryFolder;
+    private final File repositoryFolder;
     private final String kjarFileHead;
     private final VersionComparator versionComparator;
 
-    public KieFileSystemScannerImpl(final KieContainer kieContainer, final Path repositoryFolder ) {
+    public KieFileSystemScannerImpl(final KieContainer kieContainer, final String repositoryFolder ) {
         this.kieContainer = ( InternalKieContainer ) kieContainer;
         this.kjarFileHead = kieContainer.getReleaseId().getArtifactId() + "-";
         this.versionComparator = new VersionComparator( kjarFileHead.length() );
-        this.repositoryFolder = repositoryFolder;
+        this.repositoryFolder = new File( repositoryFolder );
     }
 
     @Override
@@ -52,7 +51,7 @@ public class KieFileSystemScannerImpl extends AbstractKieScanner<InternalKieModu
     }
 
     private File findNewFile() {
-        File[] files = repositoryFolder.toFile().listFiles((dir, name) -> name.startsWith(kjarFileHead) && name.endsWith(".jar" ));
+        File[] files = repositoryFolder.listFiles((dir, name) -> name.startsWith(kjarFileHead) && name.endsWith(".jar" ));
         if (files == null || files.length == 0) {
             return null;
         }

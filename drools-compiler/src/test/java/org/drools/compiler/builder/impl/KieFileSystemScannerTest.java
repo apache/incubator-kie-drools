@@ -58,7 +58,7 @@ public class KieFileSystemScannerTest {
             KieSession ksession = kieContainer.newKieSession();
             checkKSession( ksession, "R1" );
 
-            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir );
+            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir.toString() );
             scanner.scanNow();
 
             ksession = kieContainer.newKieSession();
@@ -98,7 +98,7 @@ public class KieFileSystemScannerTest {
             KieSession ksession = kieContainer.newKieSession();
             checkKSession( ksession, "R1" );
 
-            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir );
+            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir.toString() );
             scanner.scanNow();
 
             ksession = kieContainer.newKieSession();
@@ -140,7 +140,7 @@ public class KieFileSystemScannerTest {
             KieSession ksession = kieContainer.newKieSession();
             checkKSession( ksession, "R1" );
 
-            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir );
+            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir.toString() );
 
             file2 = write( createKieJar( ks, releaseIdOld, "R2" ), tempDir, releaseIdOld );
             scanner.scanNow();

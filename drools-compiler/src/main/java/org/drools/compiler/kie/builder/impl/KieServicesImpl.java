@@ -17,7 +17,6 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.nio.file.Path;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -236,7 +235,7 @@ public class KieServicesImpl implements InternalKieServices {
         return scanner;
     }
 
-    public KieScanner newKieScanner(KieContainer kieContainer, Path repositoryFolder) {
+    public KieScanner newKieScanner(KieContainer kieContainer, String repositoryFolder) {
         return new KieFileSystemScannerImpl( kieContainer, repositoryFolder );
     }
 
