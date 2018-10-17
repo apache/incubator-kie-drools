@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -37,7 +36,6 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
@@ -50,9 +48,9 @@ import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;

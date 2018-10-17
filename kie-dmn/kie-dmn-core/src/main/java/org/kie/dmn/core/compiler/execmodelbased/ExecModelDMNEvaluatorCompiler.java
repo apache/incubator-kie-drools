@@ -92,21 +92,24 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
-        String[] sources = new String[GeneratorsEnum.values().length];
+        String[] fileNames = new String[GeneratorsEnum.values().length];
+        List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
 
-        for (int i = 0; i < sources.length; i++) {
+        for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = pkgName + "." + clasName + generator.type;
-            sources[i] = "src/main/java" + className.replace( '.', '/' ) + ".java";
+            String fileName = "src/main/java/" + className.replace('.', '/') + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
-            srcMfs.write( sources[i], javaSource.getBytes() );
+            fileNames[i] = fileName;
+            generatedSources.add(new AfterGeneratingSourcesListener.GeneratedSource(fileName, javaSource));
+            srcMfs.write( fileNames[i], javaSource.getBytes() );
         }
 
         for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
-            listener.accept(Arrays.asList(sources));
+            listener.accept(generatedSources);
         }
 
-        CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, projectClassLoader);
+        CompilationResult res = getCompiler().compile(fileNames, srcMfs, trgMfs, projectClassLoader);
 
         CompilationProblem[] errors = res.getErrors();
         if (errors != null && errors.length > 0) {
