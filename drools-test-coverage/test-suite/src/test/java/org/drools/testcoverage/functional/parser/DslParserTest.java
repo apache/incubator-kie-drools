@@ -44,13 +44,9 @@ public class DslParserTest extends ParserTest {
         for (File f : getFiles("dsl", "dslr")) {
             final String dslPath = f.getAbsolutePath();
             final File dsl = new File(dslPath.substring(0, dslPath.length() - 1));
-            set.add(new Object[] { dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY });
-            if (TestParametersUtil.TEST_EXECUTABLE_MODEL_WITH_FLOW_DSL ) {
-                set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
-            }
-            if (TestParametersUtil.TEST_EXECUTABLE_MODEL_WITH_PATTERN_DSL ) {
-                set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
-            }
+            set.add(new Object[] {dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY});
+            set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
+            set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
         }
 
         return set;
