@@ -330,7 +330,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     public void testDMNv1_2_ch11Modified() {
         // DROOLS-2832
         List<DMNMessage> validate = validator.validate(getReader("v1_2/ch11MODIFIED.dmn", DMNRuntimeTest.class),
-                                                       // DROOLS-2893: VALIDATE_SCHEMA, 
+                                                       VALIDATE_SCHEMA, 
                                                        VALIDATE_MODEL,
                                                        VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
@@ -339,9 +339,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testDMNv1_2_ch11() {
         // DROOLS-2832
-        List<DMNMessage> validate = validator.validate(getReader("DMNv12_ch11.dmn"),
-                                                       // DROOLS-2893: VALIDATE_SCHEMA, 
-                                                       VALIDATE_MODEL);
+        List<DMNMessage> validate = validator.validate(getReader("DMNv12_ch11.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL);
 
         // DMN v1.2 CH11 example for Adjudication does not define decision logic nor typeRef:
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
