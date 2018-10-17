@@ -41,6 +41,7 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -2323,6 +2324,43 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("A Decision Table"), is("NOT Allowed"));
+    }
+
+    @Test
+    public void testAssignNullToAllowedValues() {
+        // DROOLS-3132 DMN assign null to ItemDefinition with allowedValues
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("assignNullToAllowedValues.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("an input letter", null);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        DMNRuntimeUtil.formatMessages(dmnResult.getMessages());
+        assertThat(dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_24e8b31b-9505-4f52-93af-6dd9ef39c72a")), is(true));
+        assertThat(dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_09945fda-2b89-4148-8758-0bcb91a66e4a")), is(true));
+    }
+
+    @Test
+    public void testAssignNullToAllowedValuesExplicitingNull() {
+        // DROOLS-3132 DMN assign null to ItemDefinition with allowedValues
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("assignNullToAllowedValuesExplicitingNull.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("an input letter", null);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("hardcoded letter").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("hardcoded letter").getResult(), nullValue());
+        assertThat(dmnResult.getDecisionResultByName("decision over the input letter").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("decision over the input letter").getResult(), nullValue());
     }
 }
 
