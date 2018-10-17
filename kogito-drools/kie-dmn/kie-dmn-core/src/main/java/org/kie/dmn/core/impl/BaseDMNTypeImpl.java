@@ -21,13 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.MapBackedType;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -167,7 +164,7 @@ public abstract class BaseDMNTypeImpl
     
     @Override
     public boolean isAssignableValue(Object value) {
-        if ( value == null ) {
+        if (value == null && allowedValues == null) {
             return true; // a null-value can be assigned to any type.
         } 
         // try first to recurse in case of Collection..

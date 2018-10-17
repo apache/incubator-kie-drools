@@ -341,7 +341,7 @@ public class DMNRuntimeImpl
                                            Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                            getIdentifier( bkm ),
                                            getDependencyIdentifier(bkm, dep),
-                                           MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
+                                           MsgUtil.clipString(Objects.toString(result.getContext().get(dep.getName())), 50),
                                            ((DMNBaseNode) dep).getType()
                                            );
                     return;
@@ -499,7 +499,7 @@ public class DMNRuntimeImpl
                                 Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
                                 getIdentifier( decision ),
                                 getDependencyIdentifier(decision, dep),
-                                MsgUtil.clipString(result.getContext().get(dep.getName()).toString(), 50),
+                                MsgUtil.clipString(Objects.toString(result.getContext().get(dep.getName())), 50),
                                 ((DMNBaseNode) dep).getType()
                                 );
                         reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
