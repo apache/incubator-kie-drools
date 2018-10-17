@@ -178,7 +178,7 @@ public class MarshallerTest {
         KieSession ksession = null;
 
         try {
-            kbase.newKieSession();
+            ksession = kbase.newKieSession();
 
             ksession.insert("Luca");
             ksession.insert(2L);
@@ -196,7 +196,9 @@ public class MarshallerTest {
 
             assertEquals(1, ksession.fireAllRules());
         } finally {
-            ksession.dispose();
+            if (ksession != null) {
+                ksession.dispose();
+            }
         }
     }
 
