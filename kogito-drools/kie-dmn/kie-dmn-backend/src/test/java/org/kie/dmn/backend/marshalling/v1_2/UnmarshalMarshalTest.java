@@ -43,13 +43,18 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.validation.Languages;
+import org.xmlunit.validation.ValidationProblem;
+import org.xmlunit.validation.ValidationResult;
+import org.xmlunit.validation.Validator;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class UnmarshalMarshalTest {
 
-    private static final StreamSource DMN12_SCHEMA_SOURCE = null; // DROOLS-2893: new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN12.xsd").getFile());
+    private static final StreamSource DMN12_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN12.xsd").getFile());
     protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
     
     @Test
@@ -84,17 +89,16 @@ public class UnmarshalMarshalTest {
         FileInputStream fis = new FileInputStream( inputXMLFile );
                 
         Definitions unmarshal = marshaller.unmarshal( new InputStreamReader( fis ) );
-
-        // DROOLS-2893 DMN v1.2 Serialization degraded mode without XSD
-        //        Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-        //        v.setSchemaSource(schemaSource);
-        //        ValidationResult validateInputResult = v.validateInstance(new StreamSource( inputXMLFile ));
-        //        if (!validateInputResult.isValid()) {
-        //            for ( ValidationProblem p : validateInputResult.getProblems()) {
-        //                System.err.println(p);
-        //            }
-        //        }
-        //        assertTrue(validateInputResult.isValid());
+        
+        Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setSchemaSource(schemaSource);
+        ValidationResult validateInputResult = v.validateInstance(new StreamSource( inputXMLFile ));
+        if (!validateInputResult.isValid()) {
+            for ( ValidationProblem p : validateInputResult.getProblems()) {
+                System.err.println(p);
+            }
+        }
+        assertTrue(validateInputResult.isValid());
 
         final File subdirFile = new File(baseOutputDir, subdir);
         if (!subdirFile.mkdirs()) {
@@ -114,15 +118,14 @@ public class UnmarshalMarshalTest {
             marshaller.marshal(unmarshal, targetFos);
         }
         
-        // DROOLS-2893 DMN v1.2 Serialization degraded mode without XSD
-        //        // Should also validate output XML:
-        //        ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));
-        //        if (!validateOutputResult.isValid()) {
-        //            for ( ValidationProblem p : validateOutputResult.getProblems()) {
-        //                System.err.println(p);
-        //            }
-        //        }
-        //        assertTrue(validateOutputResult.isValid());
+        // Should also validate output XML:
+        ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));
+        if (!validateOutputResult.isValid()) {
+            for ( ValidationProblem p : validateOutputResult.getProblems()) {
+                System.err.println(p);
+            }
+        }
+        assertTrue(validateOutputResult.isValid());
         
         System.out.println("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile( inputXMLFile ).build();
