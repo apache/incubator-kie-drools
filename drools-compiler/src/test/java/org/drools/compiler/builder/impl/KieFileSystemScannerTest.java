@@ -123,6 +123,37 @@ public class KieFileSystemScannerTest {
         }
     }
 
+    @Test
+    public void testDoNotUpgradeOnOlderVersion() throws Exception {
+        Path tempDir = Files.createTempDirectory(FileSystems.getDefault().getPath("./target"), null);
+        File file2 = null;
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            ReleaseId releaseIdNew = ks.newReleaseId( "org.kie", "scanner-test", "1.1.0" );
+            ReleaseId releaseIdOld = ks.newReleaseId( "org.kie", "scanner-test", "1.0.0" );
+
+            createKieJar( ks, releaseIdNew, "R1" );
+
+            KieContainer kieContainer = ks.newKieContainer( releaseIdNew );
+
+            KieSession ksession = kieContainer.newKieSession();
+            checkKSession( ksession, "R1" );
+
+            KieScanner scanner = ks.newKieScanner( kieContainer, tempDir );
+
+            file2 = write( createKieJar( ks, releaseIdOld, "R2" ), tempDir, releaseIdOld );
+            scanner.scanNow();
+            ksession = kieContainer.newKieSession();
+            checkKSession( ksession, "R1" );
+        } finally {
+            if (file2 != null) {
+                file2.delete();
+            }
+            Files.delete(tempDir);
+        }
+    }
+
     private void checkKSession( KieSession ksession, Object... results ) {
         checkKSession(true, ksession, results);
     }
