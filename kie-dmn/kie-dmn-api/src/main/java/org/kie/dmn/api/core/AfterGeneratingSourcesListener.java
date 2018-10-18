@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface AfterGeneratingSourcesListener {
 
-    void accept(List<GeneratedSource> generatedSource);
+    boolean accept(List<GeneratedSource> generatedSource);
 
     class GeneratedSource {
 

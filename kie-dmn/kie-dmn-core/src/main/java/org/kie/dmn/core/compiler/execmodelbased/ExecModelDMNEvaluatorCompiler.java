@@ -84,7 +84,9 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         String decisionName = dt.getParent() instanceof DRGElement ? dtName : ( dt.getId() != null ? dt.getId() :  "_" + UUID.randomUUID().toString() );
         DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
         AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+        if(evaluator != null) {
+            evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+        }
         return evaluator;
     }
 
@@ -97,6 +99,23 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         String[] fileNames = new String[GeneratorsEnum.values().length];
         List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
 
+        generateSources(ctx, dTableModel, pkgName, clasName, srcMfs, fileNames, generatedSources);
+
+        boolean compile = true;
+        for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
+            compile = listener.accept(generatedSources);
+        }
+
+        if(compile) {
+            compileGeneratedClass(srcMfs, trgMfs, fileNames);
+            defineClassInClassLoader(trgMfs);
+            return createInvoker(pkgName, clasName);
+        } else {
+            return null;
+        }
+    }
+
+    private void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, String pkgName, String clasName, MemoryFileSystem srcMfs, String[] fileNames, List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources) {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = pkgName + "." + clasName + generator.type;
@@ -106,26 +125,28 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             generatedSources.add(new AfterGeneratingSourcesListener.GeneratedSource(fileName, javaSource));
             srcMfs.write( fileNames[i], javaSource.getBytes() );
         }
+    }
 
-        for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
-            listener.accept(generatedSources);
+    private AbstractModelEvaluator createInvoker(String pkgName, String clasName) {
+        try {
+            Class<?> evalClass = projectClassLoader.loadClass(pkgName + "." + clasName + "Evaluator");
+            return (AbstractModelEvaluator) evalClass.newInstance();
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Unknown decision table: " + clasName, e);
         }
+    }
 
+    private void defineClassInClassLoader(MemoryFileSystem trgMfs) {
+        trgMfs.getFileNames().stream().forEach(f -> projectClassLoader.defineClass(f.replace('/', '.').substring(0, f.length() - ".class".length()), trgMfs.getBytes(f)));
+    }
+
+    private void compileGeneratedClass(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, String[] fileNames) {
         CompilationResult res = getCompiler().compile(fileNames, srcMfs, trgMfs, projectClassLoader);
 
         CompilationProblem[] errors = res.getErrors();
         if (errors != null && errors.length > 0) {
-            Stream.of(errors).forEach( System.err::println );
+            Stream.of(errors).forEach(System.err::println);
             throw new RuntimeException();
-        }
-
-        trgMfs.getFileNames().stream().forEach( f -> projectClassLoader.defineClass( f.replace( '/', '.' ).substring( 0, f.length()-".class".length() ), trgMfs.getBytes( f ) ) );
-
-        try {
-            Class<?> evalClass = projectClassLoader.loadClass( pkgName + "." + clasName + "Evaluator" );
-            return (AbstractModelEvaluator) evalClass.newInstance();
-        } catch (Exception e) {
-            throw new UnsupportedOperationException( "Unknown decision table: " + clasName, e );
         }
     }
 
