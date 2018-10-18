@@ -212,12 +212,21 @@ public interface KieServices {
     KieContainer newKieContainer(String containerId, ReleaseId releaseId, ClassLoader classLoader);
 
     /**
-     * Creates a KieScanner to automatically discover if there are new releases of the KieModule
+     * Creates a maven based KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer
      * @param kieContainer kieContainer
      * @return new kie scanner
      */
     KieScanner newKieScanner(KieContainer kieContainer);
+
+    /**
+     * Creates a file system based KieScanner to automatically discover if there are new releases of the KieModule
+     * (and its dependencies) wrapped by the given KieContainer
+     * @param kieContainer kieContainer
+     * @param repositoryFolder The folder where the new releases will be dropped
+     * @return new kie scanner
+     */
+    KieScanner newKieScanner(KieContainer kieContainer, String repositoryFolder);
 
     /**
      * Creates a new KieBuilder to build the KieModule contained in the given folder
