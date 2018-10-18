@@ -122,7 +122,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         private Map<Integer, LocalTime> columnIndexToEndTimeMap;
 
         private TestConferenceSchedulingScoreRulesReader(XSSFWorkbook workbook, ConferenceSolution initialSolution) {
-            super(workbook);
+            super(workbook, ConferenceSchedulingApp.SOLVER_CONFIG);
             this.numberOfSheets = workbook.getNumberOfSheets();
             this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;
             this.initialSolution = initialSolution;

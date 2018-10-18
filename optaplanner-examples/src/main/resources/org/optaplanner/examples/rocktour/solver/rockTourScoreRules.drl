@@ -22,72 +22,66 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockStandstill;
-import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
-// Hard constraints
+//  Hard constraints ussually
 // ############################################################################
 
-rule "Schedule every required show"
+rule "Required show"
     when
         RockShow(required == true, date == null)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1000);
+        scoreHolder.penalize(kcontext);
 end
 
-rule "Schedule as many shows as possible"
+rule "Unassigned show"
     when
-        RockTourParametrization($weight : missedShowPenalty != 0)
         RockShow(bus != null, date == null)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
 
 // ############################################################################
-// Medium constraints
+// Medium constraints ussually
 // ############################################################################
 
-rule "Maximize revenue opportunity"
+rule "Revenue opportunity"
     when
-        RockTourParametrization($weight : revenueOpportunity != 0)
         RockShow(date != null, $revenueOpportunity : revenueOpportunity)
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, $weight * $revenueOpportunity);
+        scoreHolder.reward(kcontext, $revenueOpportunity);
 end
 
-rule "Minimize driving time"
+rule "Driving time to show per second"
     when
-        RockTourParametrization($weight : drivingTimeCostPerSecond != 0)
         RockShow(previousStandstill != null, $drivingTime : drivingTimeFromPreviousStandstill)
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - $weight * $drivingTime);
+        scoreHolder.penalize(kcontext, $drivingTime);
 end
 
-//rule "Minimize driving time to bus ending location"
-//    when
-//        RockTourParametrization($weight : drivingTimeCostPerSecond != 0)
-//        RockShow(nextShow == null, bus != null, $drivingTime : drivingTimeToBusArrivalLocation)
-//    then
-//        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $drivingTime);
-//end
-
-rule "Visit sooner than later"
+rule "Driving time to bus arrival per second"
     when
-        RockTourParametrization($weight : delayCostPerDay != 0)
+        RockShow(nextShow == null, bus != null, $drivingTime : drivingTimeToBusArrivalLocation)
+    then
+        scoreHolder.penalize(kcontext, $drivingTime);
+end
+
+rule "Delay show cost per day"
+    when
         RockShow(date != null, $daysAfterBusDeparture : daysAfterBusDeparture)
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - $weight * $daysAfterBusDeparture);
+        scoreHolder.penalize(kcontext, $daysAfterBusDeparture);
 end
 
 // ############################################################################
-// Soft constraints
+// Soft constraints ussually
 // ############################################################################
 
-rule "Avoid long driving times"
+rule "Shorten driving time per millisecond squared"
     when
         RockShow(previousStandstill != null, $drivingTime : drivingTimeFromPreviousStandstill)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $drivingTime* $drivingTime);
+        scoreHolder.penalize(kcontext, $drivingTime * $drivingTime);
 end

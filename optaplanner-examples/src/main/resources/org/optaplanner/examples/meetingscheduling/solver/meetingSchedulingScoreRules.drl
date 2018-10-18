@@ -33,7 +33,7 @@ import org.optaplanner.examples.meetingscheduling.domain.MeetingWeightPack;
 global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
-// Hard constraints
+// Hard constraints usually
 // ############################################################################
 
 rule "Room conflict"
@@ -80,7 +80,7 @@ rule "Start and end on same day"
 end
 
 // ############################################################################
-// Medium constraints
+// Medium constraints usually
 // ############################################################################
 
 rule "Required and preferred attendance conflict"
@@ -106,7 +106,7 @@ rule "Preferred attendance conflict"
 end
 
 // ############################################################################
-// Soft constraints
+// Soft constraints usually
 // ############################################################################
 
 rule "Do all meetings as soon as possible"

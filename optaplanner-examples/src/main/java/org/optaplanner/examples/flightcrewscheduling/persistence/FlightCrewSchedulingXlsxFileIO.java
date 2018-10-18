@@ -42,8 +42,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
 import org.optaplanner.examples.flightcrewscheduling.domain.Airport;
@@ -80,7 +78,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         private Map<String, Airport> airportMap;
 
         public FlightCrewSchedulingXlsxReader(XSSFWorkbook workbook) {
-            super(workbook);
+            super(workbook, FlightCrewSchedulingApp.SOLVER_CONFIG);
         }
 
         @Override
@@ -110,16 +108,16 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("Description");
             FlightCrewParametrization parametrization = new FlightCrewParametrization();
             parametrization.setId(0L);
-            readLongConstraintLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
+            readLongConstraintParameterLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
                     parametrization::setLoadBalanceFlightDurationTotalPerEmployee,
                     "Soft penalty per 0.001 minute difference with the average flight duration total per employee.");
-            readIntConstraintLine(REQUIRED_SKILL, null,
+            readIntConstraintParameterLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");
-            readIntConstraintLine(FLIGHT_CONFLICT, null,
+            readIntConstraintParameterLine(FLIGHT_CONFLICT, null,
                     "Hard penalty per 2 flights of an employee that directly overlap");
-            readIntConstraintLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
+            readIntConstraintParameterLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
                     "Hard penalty per 2 sequential flights of an employee with no viable transfer from the arrival airport to the departure airport");
-            readIntConstraintLine(EMPLOYEE_UNAVAILABILITY, null,
+            readIntConstraintParameterLine(EMPLOYEE_UNAVAILABILITY, null,
                     "Hard penalty per flight assignment to an employee that is unavailable");
             solution.setParametrization(parametrization);
         }
@@ -381,17 +379,17 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nextHeaderCell("Description");
             FlightCrewParametrization parametrization = solution.getParametrization();
 
-            writeLongConstraintLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
+            writeLongConstraintParameterLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
                     parametrization::getLoadBalanceFlightDurationTotalPerEmployee,
                     "Soft penalty per 0.001 minute difference with the average flight duration total per employee.");
             nextRow();
-            writeIntConstraintLine(REQUIRED_SKILL, null,
+            writeIntConstraintParameterLine(REQUIRED_SKILL, null,
                     "Hard penalty per missing required skill for a flight assignment");
-            writeIntConstraintLine(FLIGHT_CONFLICT, null,
+            writeIntConstraintParameterLine(FLIGHT_CONFLICT, null,
                     "Hard penalty per 2 flights of an employee that directly overlap");
-            writeIntConstraintLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
+            writeIntConstraintParameterLine(TRANSFER_BETWEEN_TWO_FLIGHTS, null,
                     "Hard penalty per 2 sequential flights of an employee with no viable transfer from the arrival airport to the departure airport");
-            writeIntConstraintLine(EMPLOYEE_UNAVAILABILITY, null,
+            writeIntConstraintParameterLine(EMPLOYEE_UNAVAILABILITY, null,
                     "Hard penalty per flight assignment to an employee that is unavailable");
             autoSizeColumnsWithHeader();
         }
@@ -606,36 +604,6 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 }
             }
             return hourToAssignmentListMap;
-        }
-
-        private void writeScoreView() {
-            nextSheet("Score view", 1, 3, true);
-            nextRow();
-            nextHeaderCell("Score");
-            nextCell().setCellValue(solution.getScore() == null ? "Not yet solved" : solution.getScore().toShortString());
-            nextRow();
-            nextRow();
-            nextHeaderCell("Constraint match");
-            nextHeaderCell("Match score");
-            nextHeaderCell("Total score");
-            for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotalList) {
-                nextRow();
-                nextHeaderCell(constraintMatchTotal.getConstraintName());
-                nextCell();
-                nextCell().setCellValue(constraintMatchTotal.getScore().toShortString());
-                List<ConstraintMatch> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
-                constraintMatchList.sort(Comparator.comparing(ConstraintMatch::getScore));
-                for (ConstraintMatch constraintMatch : constraintMatchList) {
-                    nextRow();
-                    nextCell().setCellValue("    " + constraintMatch.getJustificationList().stream()
-                            .filter(o -> o instanceof FlightAssignment).map(o -> ((FlightAssignment) o).getFlight().toString())
-                            .collect(joining(", ")));
-                    nextCell().setCellValue(constraintMatch.getScore().toShortString());
-                    nextCell();
-                    nextCell();
-                }
-            }
-            autoSizeColumnsWithHeader();
         }
 
     }

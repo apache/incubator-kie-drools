@@ -19,6 +19,7 @@ package org.optaplanner.examples.rocktour.domain;
 import java.util.Collections;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -32,8 +33,8 @@ public class RockTourSolution extends AbstractPersistable {
 
     private String tourName;
 
-    @ProblemFactProperty
-    private RockTourParametrization parametrization;
+    @ConstraintWeightPackProvider
+    private RockTourWeightPack weightPack;
 
     @ProblemFactProperty
     private RockBus bus;
@@ -69,12 +70,12 @@ public class RockTourSolution extends AbstractPersistable {
         this.tourName = tourName;
     }
 
-    public RockTourParametrization getParametrization() {
-        return parametrization;
+    public RockTourWeightPack getWeightPack() {
+        return weightPack;
     }
 
-    public void setParametrization(RockTourParametrization parametrization) {
-        this.parametrization = parametrization;
+    public void setWeightPack(RockTourWeightPack weightPack) {
+        this.weightPack = weightPack;
     }
 
     public RockBus getBus() {

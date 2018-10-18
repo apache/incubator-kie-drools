@@ -44,13 +44,20 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static java.util.stream.Collectors.*;
 
 public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
@@ -83,6 +90,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     public static abstract class AbstractXlsxReader<Solution_> {
 
         protected final XSSFWorkbook workbook;
+        protected final ScoreDefinition scoreDefinition;
 
         protected Solution_ solution;
 
@@ -92,13 +100,17 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected int currentRowNumber;
         protected int currentColumnNumber;
 
-        public AbstractXlsxReader(XSSFWorkbook workbook) {
+        public AbstractXlsxReader(XSSFWorkbook workbook, String solverConfigResource) {
             this.workbook = workbook;
+            ScoreDirectorFactory<Solution_> scoreDirectorFactory
+                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource)
+                    .buildSolver().getScoreDirectorFactory();
+            scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
         }
 
         public abstract Solution_ read();
 
-        protected void readIntConstraintLine(String name, Consumer<Integer> consumer, String constraintDescription) {
+        protected void readIntConstraintParameterLine(String name, Consumer<Integer> consumer, String constraintDescription) {
             nextRow();
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -125,7 +137,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell(constraintDescription);
         }
 
-        protected void readLongConstraintLine(String name, Consumer<Long> consumer, String constraintDescription) {
+        protected void readLongConstraintParameterLine(String name, Consumer<Long> consumer, String constraintDescription) {
             nextRow();
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -316,6 +328,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     public static abstract class AbstractXlsxWriter<Solution_> {
 
         protected final Solution_ solution;
+        protected final Score score;
+        protected final ScoreDefinition scoreDefinition;
         protected final List<ConstraintMatchTotal> constraintMatchTotalList;
         protected final Map<Object, Indictment> indictmentMap;
 
@@ -344,9 +358,10 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             ScoreDirectorFactory<Solution_> scoreDirectorFactory
                     = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource)
                     .buildSolver().getScoreDirectorFactory();
+            scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
             try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
-                scoreDirector.calculateScore();
+                score = scoreDirector.calculateScore();
                 constraintMatchTotalList = new ArrayList<>(scoreDirector.getConstraintMatchTotals());
                 constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScore));
                 indictmentMap = scoreDirector.getIndictmentMap();
@@ -387,7 +402,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             return style;
         }
 
-        protected void writeIntConstraintLine(String name, int value, String constraintDescription) {
+        protected void writeIntConstraintParameterLine(String name, int value, String constraintDescription) {
             nextRow();
             nextHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -395,7 +410,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell(constraintDescription);
         }
 
-        protected void writeIntConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {
+        protected void writeIntConstraintParameterLine(String name, Supplier<Integer> supplier, String constraintDescription) {
             nextRow();
             nextHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -407,7 +422,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell(constraintDescription);
         }
 
-        protected void writeLongConstraintLine(String name, Supplier<Long> supplier, String constraintDescription) {
+        protected void writeLongConstraintParameterLine(String name, Supplier<Long> supplier, String constraintDescription) {
             nextRow();
             nextHeaderCell(name);
             XSSFCell weightCell = nextCell();
@@ -417,6 +432,57 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 weightCell.setCellValue("n/a");
             }
             nextHeaderCell(constraintDescription);
+        }
+
+        protected void writeScoreConstraintHeaders() {
+            nextRow();
+            nextHeaderCell("Constraint");
+            nextHeaderCell("Score weight");
+            nextHeaderCell("Description");
+        }
+
+        protected <Score_ extends Score<Score_>> void writeScoreConstraintLine(
+                String constraintName, Score_ constraintScore, String constraintDescription) {
+            nextRow();
+            nextHeaderCell(constraintName);
+            nextCell().setCellValue(constraintScore.toString());
+            nextHeaderCell(constraintDescription);
+        }
+
+        protected void writeScoreView() {
+            nextSheet("Score view", 1, 3, true);
+            nextRow();
+            nextHeaderCell("Score");
+            nextCell().setCellValue(score == null ? "Not yet solved" : score.toShortString());
+            nextRow();
+            nextRow();
+            nextHeaderCell("Constraint match");
+            nextHeaderCell("Match score");
+            nextHeaderCell("Total score");
+            if (!score.isSolutionInitialized()) {
+                nextRow();
+                nextHeaderCell("Unassigned variables");
+                nextCell();
+                nextCell().setCellValue(score.getInitScore());
+            }
+            for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotalList) {
+                nextRow();
+                nextHeaderCell(constraintMatchTotal.getConstraintName());
+                nextCell();
+                nextCell().setCellValue(constraintMatchTotal.getScore().toShortString());
+                List<ConstraintMatch> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
+                constraintMatchList.sort(Comparator.comparing(ConstraintMatch::getScore));
+                for (ConstraintMatch constraintMatch : constraintMatchList) {
+                    nextRow();
+                    nextCell().setCellValue("    " + constraintMatch.getJustificationList().stream()
+                            .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
+                            .collect(joining(", ")));
+                    nextCell().setCellValue(constraintMatch.getScore().toShortString());
+                    nextCell();
+                    nextCell();
+                }
+            }
+            autoSizeColumnsWithHeader();
         }
 
         protected void nextSheet(String sheetName, int colSplit, int rowSplit, boolean view) {

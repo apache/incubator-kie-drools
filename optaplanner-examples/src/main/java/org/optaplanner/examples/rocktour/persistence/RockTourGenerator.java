@@ -37,8 +37,8 @@ import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockLocation;
 import org.optaplanner.examples.rocktour.domain.RockShow;
-import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
+import org.optaplanner.examples.rocktour.domain.RockTourWeightPack;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.*;
@@ -74,9 +74,9 @@ public class RockTourGenerator extends LoggingMain {
         RockTourSolution solution = new RockTourSolution();
         solution.setId(0L);
         solution.setTourName(fileName);
-        RockTourParametrization parametrization = new RockTourParametrization();
-        parametrization.setId(0L);
-        solution.setParametrization(parametrization);
+        RockTourWeightPack weightPack = new RockTourWeightPack();
+        weightPack.setId(0L);
+        solution.setWeightPack(weightPack);
 
         createShowList(solution, locationDataArray);
 
