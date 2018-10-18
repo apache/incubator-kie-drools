@@ -394,7 +394,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel ) {
+        public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
             throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBuilderConfiguration -> TODO" );
         }
 
