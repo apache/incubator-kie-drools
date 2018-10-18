@@ -117,7 +117,8 @@ public final class TestParametersUtil {
      */
     public static Collection<Object[]> getKieBaseConfigurations() {
         final List<EngineTestConfiguration> engineTestConfigurations = Arrays.stream(EngineTestConfiguration.values())
-                .filter(config -> TEST_WITH_ALPHA_NETWORK || config != EngineTestConfiguration.ALPHA_NETWORK_COMPILER_TRUE)
+                .filter(config -> (TEST_WITH_ALPHA_NETWORK || config != EngineTestConfiguration.ALPHA_NETWORK_COMPILER_TRUE)
+                        && config != EngineTestConfiguration.EQUALITY_MODE)
                 .collect(Collectors.toList());
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }
@@ -144,8 +145,8 @@ public final class TestParametersUtil {
                                                                               final boolean testAlsoExecutableModel) {
         final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
         engineTestConfigurations.add(streamOrCloudConfig);
+        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
         engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
-        engineTestConfigurations.add(EngineTestConfiguration.EQUALITY_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_OFF);
         engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
 
