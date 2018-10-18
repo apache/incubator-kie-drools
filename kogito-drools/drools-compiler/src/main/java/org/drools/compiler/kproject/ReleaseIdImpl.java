@@ -39,7 +39,10 @@ public class ReleaseIdImpl extends org.appformer.maven.support.AFReleaseIdImpl i
         super(groupId, artifactId, version, type);
     }
 
-    public static ReleaseIdImpl adapt(org.appformer.maven.support.AFReleaseId r ) {
+    public static ReleaseId adapt(org.appformer.maven.support.AFReleaseId r ) {
+        if (r instanceof ReleaseId) {
+            return ( ReleaseId ) r;
+        }
         final ReleaseIdImpl newReleaseIdImpl = new ReleaseIdImpl(r.getGroupId(), r.getArtifactId(), r.getVersion(), ((org.appformer.maven.support.AFReleaseIdImpl) r).getType());
         if (r.isSnapshot()) {
             newReleaseIdImpl.setSnapshotVersion(r.getVersion());

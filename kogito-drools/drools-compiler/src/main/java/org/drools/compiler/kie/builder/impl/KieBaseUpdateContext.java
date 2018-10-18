@@ -38,14 +38,14 @@ public class KieBaseUpdateContext {
     public final KieBaseModelImpl newKieBaseModel;
     public final KieBaseModelImpl currentKieBaseModel;
 
-    public KieBaseUpdateContext( KieProject kProject, InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
+    public KieBaseUpdateContext( KieProject kProject, InternalKnowledgeBase kBase, InternalKieModule currentKM,
                                  InternalKieModule newKM, KieJarChangeSet cs, Collection<Class<?>> modifiedClasses,
                                  boolean modifyingUsedClass, Collection<String> unchangedResources, ResultsImpl results,
                                  KieBaseModelImpl newKieBaseModel, KieBaseModelImpl currentKieBaseModel ) {
         this.kProject = kProject;
         this.kBase = kBase;
         this.currentKM = currentKM;
-        this.newReleaseId = newReleaseId;
+        this.newReleaseId = newKM.getReleaseId();
         this.newKM = newKM;
         this.cs = cs;
         this.modifiedClasses = modifiedClasses;

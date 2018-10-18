@@ -23,12 +23,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -51,6 +54,8 @@ import org.kie.internal.utils.NoDepsClassLoaderResolver;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
@@ -140,6 +145,17 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default CompilationCache getCompilationCache( String kbaseName) { return null; }
+
+    static InternalKieModule createKieModule( ReleaseId releaseId, File jar ) {
+        try (ZipFile zipFile = new ZipFile( jar )) {
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
+            KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+            setDefaultsforEmptyKieModule(kieModuleModel);
+            return kieModuleModel != null ? InternalKieModuleProvider.get(adapt( releaseId ), kieModuleModel, jar) : null;
+        } catch ( Exception e ) {
+        }
+        return null;
+    }
 
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;

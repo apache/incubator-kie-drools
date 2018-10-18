@@ -227,9 +227,16 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
         KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
+        if (scannerFactoryService == null) {
+            throw new RuntimeException( "Cannot instance a maven based KieScanner, is kie-ci on the classpath?" );
+        }
         InternalKieScanner scanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
         scanner.setKieContainer(kieContainer);
         return scanner;
+    }
+
+    public KieScanner newKieScanner(KieContainer kieContainer, String repositoryFolder) {
+        return new KieFileSystemScannerImpl( kieContainer, repositoryFolder );
     }
 
     public KieResources getResources() {

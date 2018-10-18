@@ -50,8 +50,8 @@ import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.scanner.event.KieScannerStatusChangeEventImpl;
-import org.kie.scanner.event.KieScannerUpdateResultsEventImpl;
+import org.drools.compiler.kie.builder.impl.event.KieScannerStatusChangeEventImpl;
+import org.drools.compiler.kie.builder.impl.event.KieScannerUpdateResultsEventImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
