@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 // @ConstraintWeights
 
-@ConstraintWeightPack(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
-public class MeetingWeightPack extends AbstractPersistable {
+@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
+public class MeetingConstraintConfiguration extends AbstractPersistable {
 
     public static final String ROOM_CONFLICT = "Room conflict";
     public static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
@@ -68,10 +68,10 @@ public class MeetingWeightPack extends AbstractPersistable {
     @ConstraintWeight(ROOM_STABILITY)
     private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(1);
 
-    public MeetingWeightPack() {
+    public MeetingConstraintConfiguration() {
     }
 
-    public MeetingWeightPack(long id) {
+    public MeetingConstraintConfiguration(long id) {
         super(id);
     }
 

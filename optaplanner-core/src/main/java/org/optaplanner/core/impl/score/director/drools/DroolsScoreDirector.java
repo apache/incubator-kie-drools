@@ -93,24 +93,24 @@ public class DroolsScoreDirector<Solution_>
                 (Rule rule, Function<Solution_, Score> extractor) -> {
             Score constraintWeight = extractor.apply(workingSolution);
             if (constraintWeight.getInitScore() != 0) {
-                Class<?> constraintWeightPackClass = getSolutionDescriptor().getConstraintWeightPackDescriptor()
-                        .getConstraintWeightPackClass();
+                Class<?> constraintConfigurationClass = getSolutionDescriptor().getConstraintConfigurationDescriptor()
+                        .getConstraintConfigurationClass();
                 throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
                         + ") for constraintPackage (" + rule.getPackageName()
                         + ") and constraintName (" + rule.getName()
-                        + ") of constraintWeightPackClass (" + constraintWeightPackClass
+                        + ") of constraintConfigurationClass (" + constraintConfigurationClass
                         + ") must have an initScore (" + constraintWeight.getInitScore() + ") equal to 0.\n"
-                        + "Maybe validate your " + constraintWeightPackClass.getSimpleName() + " data input.");
+                        + "Maybe validate your " + constraintConfigurationClass.getSimpleName() + " data input.");
             }
             if (!getScoreDefinition().isPositive(constraintWeight)) {
-                Class<?> constraintWeightPackClass = getSolutionDescriptor().getConstraintWeightPackDescriptor()
-                        .getConstraintWeightPackClass();
+                Class<?> constraintConfigurationClass = getSolutionDescriptor().getConstraintConfigurationDescriptor()
+                        .getConstraintConfigurationClass();
                 throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
                         + ") for constraintPackage (" + rule.getPackageName()
                         + ") and constraintName (" + rule.getName()
-                        + ") of constraintWeightPackClass (" + constraintWeightPackClass
+                        + ") of constraintConfigurationClass (" + constraintConfigurationClass
                         + ") must have a positive or zero constraintWeight (" + constraintWeight + ").\n"
-                        + "Maybe validate your " + constraintWeightPackClass.getSimpleName() + " data input.");
+                        + "Maybe validate your " + constraintConfigurationClass.getSimpleName() + " data input.");
             }
             if (constraintWeight instanceof AbstractBendableScore) {
                 AbstractBendableScore bendableConstraintWeight = (AbstractBendableScore) constraintWeight;
@@ -118,18 +118,18 @@ public class DroolsScoreDirector<Solution_>
                         getSolutionDescriptor().getScoreDefinition();
                 if (bendableConstraintWeight.getHardLevelsSize() != scoreDefinition.getHardLevelsSize()
                         || bendableConstraintWeight.getSoftLevelsSize() != scoreDefinition.getSoftLevelsSize()) {
-                    Class<?> constraintWeightPackClass = getSolutionDescriptor().getConstraintWeightPackDescriptor()
-                            .getConstraintWeightPackClass();
+                    Class<?> constraintConfigurationClass = getSolutionDescriptor().getConstraintConfigurationDescriptor()
+                            .getConstraintConfigurationClass();
                     throw new IllegalArgumentException("The bendable constraintWeight (" + constraintWeight
                             + ") for constraintPackage (" + rule.getPackageName()
                             + ") and constraintName (" + rule.getName()
-                            + ") of constraintWeightPackClass (" + constraintWeightPackClass
+                            + ") of constraintConfigurationClass (" + constraintConfigurationClass
                             + ") has a hardLevelsSize (" + bendableConstraintWeight.getHardLevelsSize()
                             + ") or a softLevelsSize (" + bendableConstraintWeight.getSoftLevelsSize()
                             + ") that doesn't match the score definition's hardLevelsSize ("
                             + scoreDefinition.getHardLevelsSize()
                             + ") or softLevelsSize (" + scoreDefinition.getSoftLevelsSize() + ").\n"
-                            + "Maybe validate your " + constraintWeightPackClass.getSimpleName() + " data input.");
+                            + "Maybe validate your " + constraintConfigurationClass.getSimpleName() + " data input.");
                 }
             }
             workingScoreHolder.putConstraintWeight(rule, constraintWeight);

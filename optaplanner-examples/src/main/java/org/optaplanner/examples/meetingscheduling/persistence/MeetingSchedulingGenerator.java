@@ -31,8 +31,8 @@ import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingWeightPack;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
@@ -190,9 +190,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         random = new Random(37);
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
-        MeetingWeightPack weightPack = new MeetingWeightPack();
-        weightPack.setId(0L);
-        meetingSchedule.setWeightPack(weightPack);
+        MeetingConstraintConfiguration constraintConfiguration = new MeetingConstraintConfiguration();
+        constraintConfiguration.setId(0L);
+        meetingSchedule.setConstraintConfiguration(constraintConfiguration);
 
         createMeetingListAndAttendanceList(meetingSchedule, meetingListSize);
         createTimeGrainList(meetingSchedule, timeGrainListSize);

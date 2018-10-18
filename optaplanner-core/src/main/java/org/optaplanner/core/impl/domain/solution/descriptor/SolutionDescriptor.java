@@ -40,8 +40,8 @@ import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -73,7 +73,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
-import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightPackDescriptor;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -155,7 +155,7 @@ public class SolutionDescriptor<Solution_> {
     private SolutionCloner<Solution_> solutionCloner;
 
     private AutoDiscoverMemberType autoDiscoverMemberType;
-    private MemberAccessor constraintWeightPackMemberAccessor;
+    private MemberAccessor constraintConfigurationMemberAccessor;
     private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
@@ -163,7 +163,7 @@ public class SolutionDescriptor<Solution_> {
     private MemberAccessor scoreMemberAccessor;
     private ScoreDefinition scoreDefinition;
 
-    private ConstraintWeightPackDescriptor<Solution_> constraintWeightPackDescriptor;
+    private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
 
@@ -236,9 +236,9 @@ public class SolutionDescriptor<Solution_> {
                     + ") must have 1 member with a " + PlanningScore.class.getSimpleName() + " annotation.\n"
                     + "Maybe add a getScore() method with a " + PlanningScore.class.getSimpleName() + " annotation.");
         }
-        if (constraintWeightPackMemberAccessor != null) {
+        if (constraintConfigurationMemberAccessor != null) {
             // The scoreDefinition is definitely initialized at this point.
-            constraintWeightPackDescriptor.processAnnotations(descriptorPolicy, scoreDefinition);
+            constraintConfigurationDescriptor.processAnnotations(descriptorPolicy, scoreDefinition);
         }
     }
 
@@ -348,8 +348,8 @@ public class SolutionDescriptor<Solution_> {
                 member, entityClassList);
         if (annotationClass == null) {
             return;
-        } else if (annotationClass.equals(ConstraintWeightPackProvider.class)) {
-            processConstraintWeightPackProviderAnnotation(descriptorPolicy, member, annotationClass);
+        } else if (annotationClass.equals(ConstraintConfigurationProvider.class)) {
+            processConstraintConfigurationProviderAnnotation(descriptorPolicy, member, annotationClass);
         } else if (annotationClass.equals(ProblemFactProperty.class)
                 || annotationClass.equals(ProblemFactCollectionProperty.class)) {
             processProblemFactPropertyAnnotation(descriptorPolicy, member, annotationClass);
@@ -364,7 +364,7 @@ public class SolutionDescriptor<Solution_> {
     private Class<? extends Annotation> extractFactEntityOrScoreAnnotationClassOrAutoDiscover(
             Member member, List<Class<?>> entityClassList) {
         Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
-                ConstraintWeightPackProvider.class,
+                ConstraintConfigurationProvider.class,
                 ProblemFactProperty.class, ProblemFactCollectionProperty.class,
                 PlanningEntityProperty.class, PlanningEntityCollectionProperty.class,
                 PlanningScore.class);
@@ -398,12 +398,12 @@ public class SolutionDescriptor<Solution_> {
                     }
                     if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(elementType))) {
                         annotationClass = PlanningEntityCollectionProperty.class;
-                    } else if (elementType.isAnnotationPresent(ConstraintWeightPack.class)) {
+                    } else if (elementType.isAnnotationPresent(ConstraintConfiguration.class)) {
                         throw new IllegalStateException("The autoDiscoverMemberType (" + autoDiscoverMemberType
                                 + ") cannot accept a member (" + member
                                 + ") of type (" + type
                                 + ") with an elementType (" + elementType
-                                + ") that has a " + ConstraintWeightPack.class.getSimpleName() + " annotation.\n"
+                                + ") that has a " + ConstraintConfiguration.class.getSimpleName() + " annotation.\n"
                                 + "Maybe use a member of the type (" + elementType + ") directly instead of a "
                                 + Collection.class.getSimpleName() + " or array of that type.");
                     } else {
@@ -416,8 +416,8 @@ public class SolutionDescriptor<Solution_> {
                             + ") which is an implementation of " + Map.class.getSimpleName() + ".");
                 } else if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(type))) {
                     annotationClass = PlanningEntityProperty.class;
-                } else if (type.isAnnotationPresent(ConstraintWeightPack.class)) {
-                    annotationClass = ConstraintWeightPackProvider.class;
+                } else if (type.isAnnotationPresent(ConstraintConfiguration.class)) {
+                    annotationClass = ConstraintConfigurationProvider.class;
                 } else {
                     annotationClass = ProblemFactProperty.class;
                 }
@@ -426,15 +426,15 @@ public class SolutionDescriptor<Solution_> {
         return annotationClass;
     }
 
-    private void processConstraintWeightPackProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+    private void processConstraintConfigurationProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_READ_METHOD, annotationClass);
-        if (constraintWeightPackMemberAccessor != null) {
-            if (!constraintWeightPackMemberAccessor.getName().equals(memberAccessor.getName())
-                    || !constraintWeightPackMemberAccessor.getClass().equals(memberAccessor.getClass())) {
+        if (constraintConfigurationMemberAccessor != null) {
+            if (!constraintConfigurationMemberAccessor.getName().equals(memberAccessor.getName())
+                    || !constraintConfigurationMemberAccessor.getClass().equals(memberAccessor.getClass())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + ConstraintWeightPackProvider.class.getSimpleName()
+                        + ") has a " + ConstraintConfigurationProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
                         + "Maybe the annotation is defined on both the field and its getter.");
@@ -443,19 +443,19 @@ public class SolutionDescriptor<Solution_> {
             return;
         }
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
-        constraintWeightPackMemberAccessor = memberAccessor;
-        // Every ConstraintWeightPack is also a problem fact
+        constraintConfigurationMemberAccessor = memberAccessor;
+        // Every ConstraintConfiguration is also a problem fact
         problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
 
-        Class<?> constraintWeightPackClass = constraintWeightPackMemberAccessor.getType();
-        if (!constraintWeightPackClass.isAnnotationPresent(ConstraintWeightPack.class)) {
+        Class<?> constraintConfigurationClass = constraintConfigurationMemberAccessor.getType();
+        if (!constraintConfigurationClass.isAnnotationPresent(ConstraintConfiguration.class)) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") has a " + ConstraintWeightPackProvider.class.getSimpleName()
+                    + ") has a " + ConstraintConfigurationProvider.class.getSimpleName()
                     + " annotated member (" + member + ") that does not return a class ("
-                    + constraintWeightPackClass + ") that has a "
-                    + ConstraintWeightPack.class.getSimpleName() + " annotation.");
+                    + constraintConfigurationClass + ") that has a "
+                    + ConstraintConfiguration.class.getSimpleName() + " annotation.");
         }
-        constraintWeightPackDescriptor = new ConstraintWeightPackDescriptor<>(this, constraintWeightPackClass);
+        constraintConfigurationDescriptor = new ConstraintConfigurationDescriptor<>(this, constraintConfigurationClass);
     }
 
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
@@ -505,9 +505,9 @@ public class SolutionDescriptor<Solution_> {
         MemberAccessor duplicate;
         Class<? extends Annotation> otherAnnotationClass;
         String memberName = memberAccessor.getName();
-        if (constraintWeightPackMemberAccessor != null && constraintWeightPackMemberAccessor.getName().equals(memberName)) {
-            duplicate = constraintWeightPackMemberAccessor;
-            otherAnnotationClass = ConstraintWeightPackProvider.class;
+        if (constraintConfigurationMemberAccessor != null && constraintConfigurationMemberAccessor.getName().equals(memberName)) {
+            duplicate = constraintConfigurationMemberAccessor;
+            otherAnnotationClass = ConstraintConfigurationProvider.class;
         } else if (problemFactMemberAccessorMap.containsKey(memberName)) {
             duplicate = problemFactMemberAccessorMap.get(memberName);
             otherAnnotationClass = ProblemFactProperty.class;
@@ -835,12 +835,12 @@ public class SolutionDescriptor<Solution_> {
     // Model methods
     // ************************************************************************
 
-    public MemberAccessor getConstraintWeightPackMemberAccessor() {
-        return constraintWeightPackMemberAccessor;
+    public MemberAccessor getConstraintConfigurationMemberAccessor() {
+        return constraintConfigurationMemberAccessor;
     }
 
-    public ConstraintWeightPackDescriptor<Solution_> getConstraintWeightPackDescriptor() {
-        return constraintWeightPackDescriptor;
+    public ConstraintConfigurationDescriptor<Solution_> getConstraintConfigurationDescriptor() {
+        return constraintConfigurationDescriptor;
     }
 
     public Set<Class<?>> getEntityClassSet() {

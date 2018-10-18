@@ -25,9 +25,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPackProvider;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -42,11 +42,11 @@ import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFac
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class ConstraintWeightPackDescriptor<Solution_> {
+public class ConstraintConfigurationDescriptor<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    private final Class<?> constraintWeightPackClass;
+    private final Class<?> constraintConfigurationClass;
     private String constraintPackage;
 
     private final Map<String, ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptorMap;
@@ -55,9 +55,9 @@ public class ConstraintWeightPackDescriptor<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public ConstraintWeightPackDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> constraintWeightPackClass) {
+    public ConstraintConfigurationDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> constraintConfigurationClass) {
         this.solutionDescriptor = solutionDescriptor;
-        this.constraintWeightPackClass = constraintWeightPackClass;
+        this.constraintConfigurationClass = constraintConfigurationClass;
         constraintWeightDescriptorMap = new LinkedHashMap<>();
     }
 
@@ -74,7 +74,7 @@ public class ConstraintWeightPackDescriptor<Solution_> {
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
-        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(constraintWeightPackClass, ConstraintWeightPack.class)) {
+        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(constraintConfigurationClass, ConstraintConfiguration.class)) {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
                 if (member instanceof Method && potentiallyOverwritingMethodList.stream().anyMatch(
@@ -90,25 +90,25 @@ public class ConstraintWeightPackDescriptor<Solution_> {
                     .forEach(member -> potentiallyOverwritingMethodList.add((Method) member));
         }
         if (constraintWeightDescriptorMap.isEmpty()) {
-            throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+            throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
                     + ") must have at least 1 member with a "
                     + ConstraintWeight.class.getSimpleName() + " annotation.");
         }
     }
 
     private void processPackAnnotation(DescriptorPolicy descriptorPolicy) {
-        ConstraintWeightPack packAnnotation = constraintWeightPackClass.getAnnotation(ConstraintWeightPack.class);
-        // If a @ConstraintWeightPack extends a @ConstraintWeightPack, their constraintPackage might differ.
+        ConstraintConfiguration packAnnotation = constraintConfigurationClass.getAnnotation(ConstraintConfiguration.class);
+        // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
         // So the ConstraintWeightDescriptors parse this too.
         constraintPackage = packAnnotation.constraintPackage();
         if (constraintPackage.equals("")) {
-            constraintPackage = constraintWeightPackClass.getPackage().getName();
+            constraintPackage = constraintConfigurationClass.getPackage().getName();
         }
         if (packAnnotation == null) {
-            throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
-                    + ") has been specified as a " + ConstraintWeightPackProvider.class.getSimpleName()
+            throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
+                    + ") has been specified as a " + ConstraintConfigurationProvider.class.getSimpleName()
                     + " in the solution class (" + solutionDescriptor.getSolutionClass() + ")," +
-                    " but does not have a " + ConstraintWeightPack.class.getSimpleName() + " annotation.");
+                    " but does not have a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
         }
     }
 
@@ -119,14 +119,14 @@ public class ConstraintWeightPackDescriptor<Solution_> {
                     member, FIELD_OR_READ_METHOD, ConstraintWeight.class);
             if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
                 MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
-                throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+                throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
                         + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by a member (" + duplicate + ").\n"
                         + "Maybe the annotation is defined on both the field and its getter.");
             }
             if (!scoreDefinition.getScoreClass().isAssignableFrom(memberAccessor.getType())) {
-                throw new IllegalStateException("The constraintWeightPackClass (" + constraintWeightPackClass
+                throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
                         + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") with a return type (" + memberAccessor.getType()
@@ -148,12 +148,12 @@ public class ConstraintWeightPackDescriptor<Solution_> {
         return solutionDescriptor;
     }
 
-    public Class<?> getConstraintWeightPackClass() {
-        return constraintWeightPackClass;
+    public Class<?> getConstraintConfigurationClass() {
+        return constraintConfigurationClass;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + constraintWeightPackClass.getName() + ")";
+        return getClass().getSimpleName() + "(" + constraintConfigurationClass.getName() + ")";
     }
 }

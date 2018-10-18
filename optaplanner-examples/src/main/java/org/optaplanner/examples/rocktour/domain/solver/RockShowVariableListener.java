@@ -97,11 +97,11 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         }
 
         // HOS = Hours of service (in terms of driving regulations)
-        long earlyLateBreakDrivingSecondsBudget = solution.getWeightPack().getEarlyLateBreakDrivingSecondsBudget();
-        long nightDrivingSecondsBudget = solution.getWeightPack().getNightDrivingSecondsBudget();
-        long hosWeekDrivingSecondsBudget = solution.getWeightPack().getHosWeekDrivingSecondsBudget();
-        int hosWeekConsecutiveDrivingDaysBudget = solution.getWeightPack().getHosWeekConsecutiveDrivingDaysBudget();
-        int hosWeekRestDays = solution.getWeightPack().getHosWeekRestDays();
+        long earlyLateBreakDrivingSecondsBudget = solution.getConstraintConfiguration().getEarlyLateBreakDrivingSecondsBudget();
+        long nightDrivingSecondsBudget = solution.getConstraintConfiguration().getNightDrivingSecondsBudget();
+        long hosWeekDrivingSecondsBudget = solution.getConstraintConfiguration().getHosWeekDrivingSecondsBudget();
+        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration().getHosWeekConsecutiveDrivingDaysBudget();
+        int hosWeekRestDays = solution.getConstraintConfiguration().getHosWeekRestDays();
 
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
         LocalDate arrivalDate = previousStandstill.getDepartureDate();

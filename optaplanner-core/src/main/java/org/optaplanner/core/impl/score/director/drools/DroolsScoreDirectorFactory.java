@@ -31,8 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
-import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightPackDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -120,12 +120,12 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     }
 
     protected void createRuleToConstraintWeightExtractorMap(KieBase kieBase) {
-        ConstraintWeightPackDescriptor<Solution_> packDescriptor = solutionDescriptor.getConstraintWeightPackDescriptor();
-        if (packDescriptor == null) {
+        ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor = solutionDescriptor.getConstraintConfigurationDescriptor();
+        if (constraintConfigurationDescriptor == null) {
             ruleToConstraintWeightExtractorMap = new LinkedHashMap<>(0);
             return;
         }
-        Collection<ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptors = packDescriptor.getConstraintWeightDescriptors();
+        Collection<ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptors = constraintConfigurationDescriptor.getConstraintWeightDescriptors();
         ruleToConstraintWeightExtractorMap = new LinkedHashMap<>(constraintWeightDescriptors.size());
         for (ConstraintWeightDescriptor<Solution_> constraintWeightDescriptor : constraintWeightDescriptors) {
             String constraintPackage = constraintWeightDescriptor.getConstraintPackage();
@@ -134,7 +134,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
             if (rule == null) {
                 Rule potentialRule = kieBase.getKiePackages().stream().flatMap(kiePackage -> kiePackage.getRules().stream())
                         .filter(selectedRule -> selectedRule.getName().equals(constraintName)).findFirst().orElse(null);
-                throw new IllegalStateException("The constraintWeightPackClass (" + packDescriptor.getConstraintWeightPackClass()
+                throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationDescriptor.getConstraintConfigurationClass()
                         + ") has a " + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + constraintWeightDescriptor.getMemberAccessor()
                         + ") with constraintPackage/rulePackage (" + constraintPackage

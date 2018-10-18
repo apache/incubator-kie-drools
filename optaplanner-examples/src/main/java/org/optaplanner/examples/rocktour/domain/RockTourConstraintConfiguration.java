@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.rocktour.domain;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@ConstraintWeightPack(constraintPackage = "org.optaplanner.examples.rocktour.solver")
-public class RockTourWeightPack extends AbstractPersistable {
+@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.rocktour.solver")
+public class RockTourConstraintConfiguration extends AbstractPersistable {
 
     public static final String EARLY_LATE_BREAK_DRIVING_SECONDS = "Early late break driving seconds budget";
     public static final String NIGHT_DRIVING_SECONDS = "Night driving seconds budget";
@@ -67,10 +67,10 @@ public class RockTourWeightPack extends AbstractPersistable {
     @ConstraintWeight(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED)
     private HardMediumSoftLongScore shortenDrivingTimePerMillisecondSquared = HardMediumSoftLongScore.ofSoft(1);
 
-    public RockTourWeightPack() {
+    public RockTourConstraintConfiguration() {
     }
 
-    public RockTourWeightPack(long id) {
+    public RockTourConstraintConfiguration(long id) {
         super(id);
     }
 

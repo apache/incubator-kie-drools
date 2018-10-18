@@ -23,8 +23,8 @@ import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -132,7 +132,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
         if (matchExecutor == null) {
             throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
         matchExecutor.accept(kcontext, weightMultiplier);
     }
@@ -150,7 +150,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
         if (matchExecutor == null) {
             throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintWeightPack.class.getSimpleName() + " annotated class.");
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
         matchExecutor.accept(kcontext, HardSoftBigDecimalScore.of(hardWeightMultiplier, softWeightMultiplier));
     }

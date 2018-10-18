@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.domain.constraintweight.descriptor;
 
 import java.util.function.Function;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintWeightPack;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
  */
 public class ConstraintWeightDescriptor<Solution_> {
 
-    private final ConstraintWeightPackDescriptor<Solution_> constraintWeightPackDescriptor;
+    private final ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
 
     private final String constraintPackage;
     private final String constraintName;
@@ -39,17 +39,17 @@ public class ConstraintWeightDescriptor<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public ConstraintWeightDescriptor(ConstraintWeightPackDescriptor<Solution_> constraintWeightPackDescriptor,
+    public ConstraintWeightDescriptor(ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor,
             MemberAccessor memberAccessor) {
-        this.constraintWeightPackDescriptor = constraintWeightPackDescriptor;
+        this.constraintConfigurationDescriptor = constraintConfigurationDescriptor;
         ConstraintWeight constraintWeightAnnotation = memberAccessor.getAnnotation(ConstraintWeight.class);
         String constraintPackage = constraintPackage = constraintWeightAnnotation.constraintPackage();
         if (constraintPackage.isEmpty()) {
-            // If a @ConstraintWeightPack extends a @ConstraintWeightPack, their constraintPackage might differ.
-            ConstraintWeightPack packAnnotation = memberAccessor.getDeclaringClass().getAnnotation(ConstraintWeightPack.class);
+            // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
+            ConstraintConfiguration packAnnotation = memberAccessor.getDeclaringClass().getAnnotation(ConstraintConfiguration.class);
             if (packAnnotation == null) {
-                throw new IllegalStateException("Impossible state: " + ConstraintWeightPackDescriptor.class.getSimpleName()
-                        + " only reflects over members with a " + ConstraintWeightPack.class.getSimpleName() + " annotation.");
+                throw new IllegalStateException("Impossible state: " + ConstraintConfigurationDescriptor.class.getSimpleName()
+                        + " only reflects over members with a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
             }
             constraintPackage = packAnnotation.constraintPackage();
             if (constraintPackage.isEmpty()) {
@@ -74,10 +74,11 @@ public class ConstraintWeightDescriptor<Solution_> {
     }
 
     public Function<Solution_, Score> createExtractionFunction() {
-        MemberAccessor packMemberAccessor = constraintWeightPackDescriptor.getSolutionDescriptor().getConstraintWeightPackMemberAccessor();
+        MemberAccessor constraintConfigurationMemberAccessor = constraintConfigurationDescriptor.getSolutionDescriptor()
+                .getConstraintConfigurationMemberAccessor();
         return (Solution_ solution) -> {
-            Object pack = packMemberAccessor.executeGetter(solution);
-            return (Score) memberAccessor.executeGetter(pack);
+            Object constraintConfiguration = constraintConfigurationMemberAccessor.executeGetter(solution);
+            return (Score) memberAccessor.executeGetter(constraintConfiguration);
         };
     }
 

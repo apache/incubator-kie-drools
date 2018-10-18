@@ -19,24 +19,20 @@ package org.optaplanner.core.api.domain.constraintweight;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
+
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that the class holds a number {@link ConstraintWeight} annotated members.
- * It holds a {@link ConstraintWeight weight} for each of the constraints.
- * This is usually the type of a field or property of the {@link @PlanningSolution}
- * annotated with {@link ConstraintWeightPackProvider}.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link ConstraintConfiguration}.
+ * This property is automatically a {@link ProblemFactProperty} too, so no need to declare that explicitly.
+ * <p>
+ * The type of this property (or field) must have a {@link ConstraintConfiguration} annotation.
  */
-@Target({TYPE})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
-public @interface ConstraintWeightPack {
-
-    /**
-     * The namespace of the constraints.
-     *
-     * @return defaults to the annotated class's package.
-     */
-    String constraintPackage() default "";
+public @interface ConstraintConfigurationProvider {
 
 }

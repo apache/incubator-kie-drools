@@ -30,7 +30,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * a constraint match penalization with weightMultiplier {@code 3}
  * will result in a {@link Score} of {@code -6soft}.
  * <p>
- * It is specified on a getter of a java bean property (or directly on a field) of a {@link ConstraintWeightPack} class.
+ * It is specified on a getter of a java bean property (or directly on a field) of a {@link ConstraintConfiguration} class.
  */
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)
@@ -41,7 +41,7 @@ public @interface ConstraintWeight {
      * <p>
      * The constraint id is this constraint package
      * concatenated with ":" and {@link #value() the constraint name}.
-     * @return defaults to {@link ConstraintWeightPack#constraintPackage()}
+     * @return defaults to {@link ConstraintConfiguration#constraintPackage()}
      */
     String constraintPackage() default "";
 
