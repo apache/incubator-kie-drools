@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.scanner.event;
+package org.drools.compiler.kie.builder.impl.event;
 
 import java.util.Iterator;
 

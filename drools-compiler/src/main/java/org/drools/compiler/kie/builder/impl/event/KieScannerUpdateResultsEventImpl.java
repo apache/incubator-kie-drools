@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.scanner.event;
+package org.drools.compiler.kie.builder.impl.event;
 
 import org.kie.api.builder.Results;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
