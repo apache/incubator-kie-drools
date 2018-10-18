@@ -16,84 +16,30 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.io.IOException;
 import java.util.Collection;
 
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.testcoverage.common.model.Cell;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
-import org.drools.testcoverage.common.util.SerializationHelper;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class CellTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+public class CellTest extends AbstractCellTest {
 
     public CellTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+        super(kieBaseTestConfiguration);
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testCell() throws IOException, ClassNotFoundException {
-
-        final String drl = "package evalmodify;\n" +
-                "\n" +
-                "import " + Cell.class.getCanonicalName() + "\n" +
-                "import java.lang.Integer\n" +
-                "\n" +
-                "rule \"test eval\"\n" +
-                "    when\n" +
-                "        cell1 : Cell(value1:value != 0)\n" +
-                "        cell2 : Cell(value2:value < value1)\n" +
-                "        eval (true)\n" +
-                "    then\n" +
-                "        cell2.setValue(value2 + 1);\n" +
-                "        update(cell2);\n" +
-                "end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cell-test", kieBaseTestConfiguration, drl);
-        final Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES,
-                new ObjectMarshallingStrategy[]{new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
-        KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_REALTIME.getKieSessionConfiguration(), env);
-        try {
-            final Cell cell1 = new Cell(9);
-            final Cell cell = new Cell(0);
-
-            session.insert(cell1);
-            session.insert(cell);
-
-            session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-
-            session.fireAllRules();
-            if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(9, cell.getValue());
-            } else {
-                assertEquals(0, cell.getValue());
-            }
-        } finally {
-            session.dispose();
-        }
     }
 
     @Test
