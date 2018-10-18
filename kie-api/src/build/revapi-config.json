@@ -280,6 +280,15 @@
           "methodName": "getCalendars",
           "elementKind": "method",
           "justification": "allow to set Calendars on a KieSession in a declartive way"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.KieScanner org.kie.api.KieServices::newKieScanner(org.kie.api.runtime.KieContainer, java.lang.String)",
+          "package": "org.kie.api",
+          "classSimpleName": "KieServices",
+          "methodName": "newKieScanner",
+          "elementKind": "method",
+          "justification": "allow KieScanner to work with a plain file system"
         }
       ]
     }
