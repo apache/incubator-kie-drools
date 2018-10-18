@@ -197,7 +197,7 @@ public class CanonicalKieModule implements InternalKieModule {
                     .map( kieModule::getResource )
                     .collect( toList() );
             if (!processResources.isEmpty()) {
-                KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel ) );
+                KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, moduleClassLoader ) );
                 ProcessBuilder processBuilder = kbuilder.getProcessBuilder();
                 if (processBuilder != null) {
                     for (Resource processResource : processResources) {
@@ -636,8 +636,8 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel ) {
-        return internalKieModule.getBuilderConfiguration( kBaseModel );
+    public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
+        return internalKieModule.getBuilderConfiguration( kBaseModel, classLoader );
     }
 
     @Override

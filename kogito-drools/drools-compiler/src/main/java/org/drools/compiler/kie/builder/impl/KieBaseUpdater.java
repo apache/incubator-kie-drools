@@ -57,7 +57,7 @@ public class KieBaseUpdater implements Runnable {
 
     @Override
     public void run() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( ctx.kBase, ctx.newKM.getBuilderConfiguration( ctx.newKieBaseModel ) );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( ctx.kBase, ctx.newKM.getBuilderConfiguration( ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
