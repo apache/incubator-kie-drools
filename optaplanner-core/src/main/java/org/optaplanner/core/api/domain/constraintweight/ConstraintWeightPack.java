@@ -25,7 +25,8 @@ import static java.lang.annotation.RetentionPolicy.*;
 /**
  * Specifies that the class holds a number {@link ConstraintWeight} annotated members.
  * It holds a {@link ConstraintWeight weight} for each of the constraints.
- * A pack is usually a field or property of the {@link @PlanningSolution}.
+ * This is usually the type of a field or property of the {@link @PlanningSolution}
+ * annotated with {@link ConstraintWeightPackProvider}.
  */
 @Target({TYPE})
 @Retention(RUNTIME)

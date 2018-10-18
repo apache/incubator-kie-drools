@@ -32,7 +32,6 @@ public class RockTourWeightPack extends AbstractPersistable {
     public static final String HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET = "HOS week consecutive driving days budget";
     public static final String HOS_WEEK_REST_DAYS = "HOS week rest days";
 
-
     public static final String REQUIRED_SHOW = "Required show";
     public static final String UNASSIGNED_SHOW = "Unassigned show";
 
