@@ -78,7 +78,7 @@ public class MultipleSheetsLoadingTest {
         }
         Assertions.assertThat(results).as("Some errors/warnings found").isEmpty();
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
+        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final Set<String> resultSet = new HashSet<String>();

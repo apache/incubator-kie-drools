@@ -61,7 +61,7 @@ public class NullInListInFromTest {
     public void testNullValueInFrom() {
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
+        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<Integer>();

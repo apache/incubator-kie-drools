@@ -81,7 +81,7 @@ public class NonStringCompareTest {
         final KieBuilder kbuilder = build(factFieldValueForDrl);
         Assertions.assertThat(kbuilder.getResults().getMessages(Level.ERROR)).isEmpty();
 
-        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder);
+        final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final KieSession ksession = kbase.newKieSession();
 
         try {
