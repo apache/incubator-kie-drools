@@ -34,6 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExecModelDMNDeferredEvaluatorCompiler extends ExecModelDMNEvaluatorCompiler {
+    List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
+
+    public void register(AfterGeneratingSourcesListener listener) {
+        afterGeneratingSourcesListeners.add(listener);
+    }
+
 
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNDeferredEvaluatorCompiler.class);
 

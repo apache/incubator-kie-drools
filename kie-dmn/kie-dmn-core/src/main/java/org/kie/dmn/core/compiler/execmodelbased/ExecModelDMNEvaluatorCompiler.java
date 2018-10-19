@@ -51,13 +51,6 @@ import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
-
-    List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
-
-    public void register(AfterGeneratingSourcesListener listener) {
-        afterGeneratingSourcesListeners.add(listener);
-    }
-
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
     enum GeneratorsEnum {
@@ -103,18 +96,9 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         generateSources(ctx, dTableModel, pkgName, clasName, srcMfs, fileNames, generatedSources);
 
-        boolean compile = true;
-        for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
-            compile = listener.accept(generatedSources);
-        }
-
-        if(compile) {
-            compileGeneratedClass(srcMfs, trgMfs, fileNames);
-            defineClassInClassLoader(trgMfs);
-            return createInvoker(pkgName, clasName);
-        } else {
-            return null;
-        }
+        compileGeneratedClass(srcMfs, trgMfs, fileNames);
+        defineClassInClassLoader(trgMfs);
+        return createInvoker(pkgName, clasName);
     }
 
     protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, String pkgName, String clasName, MemoryFileSystem srcMfs, String[] fileNames, List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources) {
