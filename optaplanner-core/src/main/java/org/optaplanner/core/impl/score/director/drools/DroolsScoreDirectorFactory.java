@@ -142,7 +142,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
                         + ") for which no Drools rule exist in the DRL.\n"
                         + (potentialRule != null ? "Maybe the constraintPackage (" + constraintPackage + ") is wrong,"
                         + " because there is a rule with the same ruleName (" + constraintName
-                        + "), but in a different rulePackage (" + rule.getPackageName() + ")."
+                        + "), but in a different rulePackage (" + potentialRule.getPackageName() + ")."
                         : "Maybe there is a typo in the constraintName (" + constraintName
                         + ") so it not identical to the constraint's ruleName."));
             }

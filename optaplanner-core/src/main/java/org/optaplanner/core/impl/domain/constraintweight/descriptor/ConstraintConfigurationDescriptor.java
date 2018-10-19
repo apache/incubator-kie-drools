@@ -98,17 +98,17 @@ public class ConstraintConfigurationDescriptor<Solution_> {
 
     private void processPackAnnotation(DescriptorPolicy descriptorPolicy) {
         ConstraintConfiguration packAnnotation = constraintConfigurationClass.getAnnotation(ConstraintConfiguration.class);
-        // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
-        // So the ConstraintWeightDescriptors parse this too.
-        constraintPackage = packAnnotation.constraintPackage();
-        if (constraintPackage.equals("")) {
-            constraintPackage = constraintConfigurationClass.getPackage().getName();
-        }
         if (packAnnotation == null) {
             throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
                     + ") has been specified as a " + ConstraintConfigurationProvider.class.getSimpleName()
                     + " in the solution class (" + solutionDescriptor.getSolutionClass() + ")," +
                     " but does not have a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
+        }
+        // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
+        // So the ConstraintWeightDescriptors parse this too.
+        constraintPackage = packAnnotation.constraintPackage();
+        if (constraintPackage.equals("")) {
+            constraintPackage = constraintConfigurationClass.getPackage().getName();
         }
     }
 
