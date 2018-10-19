@@ -560,26 +560,26 @@ public class DMNRuntimeImpl
             if( missingInput ) {
                 return false;
             }
-            if( decision.getEvaluator() == null ) {
-                // try read the evaluator from the class loader
 
-                System.out.println("+++++ dr = " + dr);
+            // try read the evaluator from the class loader
 
-                Optional<String> modelFiles;
-                try {
-                    InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
-                    if(resourceAsStream != null) {
-                        modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream) ));
-                    } else {
-                        modelFiles = Optional.empty();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException( e );
+            System.out.println("+++++ dr = " + dr);
+
+            Optional<String> modelFiles;
+            try {
+                InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
+                if(resourceAsStream != null) {
+                    modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream) ));
+                } else {
+                    modelFiles = Optional.empty();
                 }
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
 
-                System.out.println("modelFiles = " + modelFiles);
+            System.out.println("modelFiles = " + modelFiles);
 
-
+            if( decision.getEvaluator() == null ) {
 
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.WARN,
