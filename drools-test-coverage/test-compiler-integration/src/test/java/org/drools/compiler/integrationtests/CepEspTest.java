@@ -101,23 +101,19 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
-public class CepEspTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+public class CepEspTest extends AbstractCepEspTest {
 
     public CepEspTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+        super(kieBaseTestConfiguration);
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
@@ -1451,48 +1447,6 @@ public class CepEspTest {
 
         public void setDuration(final Long duration) {
             this.duration = duration;
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testAssertBehaviorOnEntryPoints() {
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
-                                                                           "org/drools/compiler/integrationtests/test_CEP_AssertBehaviorOnEntryPoints.drl");
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final StockTick st1 = new StockTick(1, "RHT", 10, 10);
-            final StockTick st2 = new StockTick(1, "RHT", 10, 10);
-            final StockTick st3 = new StockTick(2, "RHT", 15, 20);
-
-            final AgendaEventListener ael1 = mock(AgendaEventListener.class);
-            ksession.addEventListener(ael1);
-            final EntryPoint ep1 = ksession.getEntryPoint("stocktick stream");
-
-            final FactHandle fh1 = ep1.insert(st1);
-            final FactHandle fh1_2 = ep1.insert(st1);
-            final FactHandle fh2 = ep1.insert(st2);
-            final FactHandle fh3 = ep1.insert(st3);
-
-            if (kieBaseTestConfiguration.isIdentity()) {
-                assertSame(fh1, fh1_2);
-                assertNotSame(fh1, fh2);
-                assertNotSame(fh1, fh3);
-                assertNotSame(fh2, fh3);
-
-                ksession.fireAllRules();
-                // must have fired 3 times, one for each event identity
-                verify(ael1, times(3)).afterMatchFired(any(AfterMatchFiredEvent.class));
-            } else {
-                assertSame(fh1, fh1_2);
-                assertSame(fh1, fh2);
-                assertNotSame(fh1, fh3);
-
-                ksession.fireAllRules();
-                // must have fired 2 times, one for each event equality
-                verify(ael1, times(2)).afterMatchFired(any(AfterMatchFiredEvent.class));
-            }
-        } finally {
-            ksession.dispose();
         }
     }
 
@@ -3201,62 +3155,6 @@ public class CepEspTest {
             ksession.dispose();
         }
     }
-
-    @Test
-    public void testDuplicateFiring2() {
-
-        final String drl = "package org.test;\n" +
-                     "import " + StockTick.class.getCanonicalName() + ";\n " +
-                     "" +
-                     "global java.util.List list \n" +
-                     "" +
-                     "declare StockTick @role(event) end \n" +
-                     "" +
-                     "rule Tick when $s : StockTick() then System.out.println( $s ); end \n" +
-                     "" +
-                     "rule \"slidingTimeCount\"\n" +
-                     "when\n" +
-                     "\t$n: Number ( intValue > 0 ) from accumulate ( $e: StockTick() over window:time(3s), count($e))\n" +
-                     "then\n" +
-                     "  list.add( $n ); \n" +
-                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
-                     "end" +
-                     "";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
-        final ArrayList list = new ArrayList();
-        try {
-            final SessionPseudoClock clock = ksession.getSessionClock();
-            ksession.setGlobal("list", list);
-
-            //insert events
-            for (int i = 1; i < 3; i++) {
-                final StockTick event = new StockTick((i - 1), "XXX", 1.0, 0);
-                clock.advanceTime(1001, TimeUnit.MILLISECONDS);
-                ksession.insert(event);
-                ksession.fireAllRules();
-            }
-
-            clock.advanceTime(3001, TimeUnit.MILLISECONDS);
-            final StockTick event = new StockTick(3, "XXX", 1.0, 0);
-            ksession.insert(event);
-            ksession.fireAllRules();
-
-            clock.advanceTime(3001, TimeUnit.MILLISECONDS);
-            final StockTick event2 = new StockTick(3, "XXX", 1.0, 0);
-            ksession.insert(event2);
-            ksession.fireAllRules();
-        } finally {
-            ksession.dispose();
-            if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(Arrays.asList(1L, 2L, 1L, 1L), list);
-            } else {
-                assertEquals(Arrays.asList(1L, 2L, 1L), list);
-            }
-        }
-    }
-
 
     @Test
     public void testPastEventExipration() {

@@ -41,12 +41,10 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
-public class DeclareTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+public class DeclareTest extends AbstractDeclareTest {
 
     public DeclareTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+        super(kieBaseTestConfiguration);
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
@@ -279,100 +277,6 @@ public class DeclareTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, sb.toString());
         final KieSession ksession = kbase.newKieSession();
         ksession.dispose();
-    }
-
-    @Test
-    public void testDeclaresWithArrayFields() {
-        final String drl = "package org.drools.compiler.integrationtests.drl; \n" +
-                "import " + Person.class.getName() + ";\n" +
-                "\n" +
-                "global java.util.List list;" +
-                "\n" +
-                "declare Cheese\n" +
-                "   name : String = \"ched\" \n" +
-                "end \n" +
-                "" +
-                "declare X\n" +
-                "    fld \t: String   = \"xx\"                                      @key \n" +
-                "    achz\t: Cheese[] \n" +
-                "    astr\t: String[] " + " = new String[] {\"x\", \"y11\" } \n" +
-                "    aint\t: int[] \n" +
-                "    sint\t: short[] \n" +
-                "    bint\t: byte[] \n" +
-                "    lint\t: long[] \n" +
-                "    dint\t: double[] \n" +
-                "    fint\t: float[] \n" +
-                "    zint\t: Integer[] " + " = new Integer[] {2,3}                   @key \n" +
-                "    aaaa\t: String[][] \n" +
-                "    bbbb\t: int[][] \n" +
-                "    aprs\t: Person[] " + " = new Person[] { } \n" +
-                "end\n" +
-                "\n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "\n" +
-                "then\n" +
-                "    X x = new X( \"xx\", \n" +
-                "                 new Cheese[0], \n" +
-                "                 new String[] { \"x\", \"y22\" }, \n" +
-                "                 new int[] { 7, 9 }, \n" +
-                "                 new short[] { 3, 4 }, \n" +
-                "                 new byte[] { 1, 2 }, \n" +
-                "                 new long[] { 100L, 200L }, \n" +
-                "                 new double[] { 3.2, 4.4 }, \n" +
-                "                 new float[] { 3.2f, 4.4f }, \n" +
-                "                 new Integer[] { 2, 3 }, \n" +
-                "                 new String[2][3], \n" +
-                "                 new int[5][3], \n" +
-                "                 null \n" +
-                "    ); \n" +
-                "   insert( x );\n" +
-                "   " +
-                "   X x2 = new X(); \n" +
-                "   x2.setAint( new int[2] ); \n " +
-                "   x2.getAint()[0] = 7; \n" +
-                "   insert( x2 );\n" +
-                "   " +
-                "   if ( x.hashCode() == x2.hashCode() ) list.add( \"hash\" );  \n" +
-                "   " +
-                "   if( x.equals( x2 ) ) list.add( \"equals\" );  \n" +
-                "   " +
-                "   list.add( x.getAint(  )[0] );  \n" +
-                "end \n" +
-                "\n" +
-                "rule \"Check\"\n" +
-                "when\n" +
-                "    X( astr != null,               \n" +
-                "       astr.length > 0,            \n" +
-                "       astr[0] == \"x\",           \n" +
-                "       $x : astr[1],               \n" +
-                "       aint[0] == 7  )             \n" +
-                "then\n" +
-                " System.out.println(\"Fired!!!!!!!!!!!!!!\" + $x); \n" +
-                "    list.add( $x );\n" +
-                "end \n" +
-                "";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("declare-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal( "list", list );
-
-            ksession.fireAllRules();
-            System.out.println(list);
-            assertTrue( list.contains( "hash" ) );
-            assertTrue( list.contains( "equals" ) );
-            assertTrue( list.contains( 7 ) );
-            // The X instances are considered equal so when using EQUALITY, the second insert doesn't insert anything,
-            // therefore, the fire produced by the second insert should be checked just with IDENTITY.
-            if (kieBaseTestConfiguration.isIdentity()) {
-                assertTrue( list.contains( "y11" ) );
-            }
-            assertTrue( list.contains( "y22" ) );
-        } finally {
-            ksession.dispose();
-        }
     }
 
     @Test

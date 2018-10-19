@@ -657,11 +657,11 @@ public class RuleUnitTest {
         final String path = "org/kie/test/MyRuleUnit";
         final KieFileSystem kfs = ks.newKieFileSystem();
         kfs.generateAndWritePomXML(releaseId);
-        kfs.writeKModuleXML(ks.newKieModuleModel().toXML())
+        kfs.writeKModuleXML(kieModuleModel.toXML())
                 .write("src/main/resources/" + path + ".drl", drl1)
                 .write("src/main/java/" + path + ".java", javaRuleUnit);
 
-        final KieModule kieModule = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId, kieModuleModel, kfs);
+        KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, kfs);
         final KieContainer kcontainer = ks.newKieContainer(releaseId);
         final KieBase kbase = kcontainer.getKieBase();
         final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);

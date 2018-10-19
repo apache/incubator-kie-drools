@@ -66,8 +66,7 @@ public class DeclarationWithOrTest {
     @Test
     public void testBindingWithOrInLHS() {
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
-
-        final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder).newKieSession();
+        final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder).newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);

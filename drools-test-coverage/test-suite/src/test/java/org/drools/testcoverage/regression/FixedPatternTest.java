@@ -69,7 +69,7 @@ public class FixedPatternTest {
         final Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.xls", getClass());
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, resource);
 
-        final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBaseTestConfiguration, kbuilder).newKieSession();
+        final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder).newKieSession();
 
         final List<Long> list = new ArrayList<Long>();
         ksession.setGlobal("list", list);

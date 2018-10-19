@@ -16,7 +16,6 @@
 
 package org.drools.testcoverage.common.util;
 
-
 import org.drools.core.ClockType;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
@@ -29,61 +28,14 @@ import org.kie.api.runtime.conf.ClockTypeOption;
  */
 public enum KieSessionTestConfiguration implements KieSessionModelProvider {
 
-    STATEFUL_REALTIME (true) {
-        @Override
-        public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
-            kieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
-            kieSessionModel.setClockType(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
-            kieSessionModel.setDefault(true);
-            return kieSessionModel;
-        }
+    STATEFUL_REALTIME(true, false),
+    STATEFUL_PSEUDO(true, true),
+    STATELESS_REALTIME(false, false);
 
-        @Override
-        public KieSessionConfiguration getKieSessionConfiguration() {
-            final KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
-            kieSessionConfiguration.setOption(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
-            return kieSessionConfiguration;
-        }
-    },
+    public static final String KIE_SESSION_MODEL_NAME = "KieSessionModelName";
 
-    STATEFUL_PSEUDO (true) {
-        @Override
-        public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
-            kieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
-            kieSessionModel.setClockType(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.toString()));
-            kieSessionModel.setDefault(true);
-            return kieSessionModel;
-        }
-
-        @Override
-        public KieSessionConfiguration getKieSessionConfiguration() {
-            final KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
-            kieSessionConfiguration.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.toString()));
-            return kieSessionConfiguration;
-        }
-    },
-
-    STATELESS_REALTIME (false) {
-        @Override
-        public KieSessionModel getKieSessionModel(KieBaseModel kieBaseModel) {
-            final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
-            kieSessionModel.setType(KieSessionModel.KieSessionType.STATELESS);
-            kieSessionModel.setClockType(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
-            kieSessionModel.setDefault(true);
-            return kieSessionModel;
-        }
-
-        @Override
-        public KieSessionConfiguration getKieSessionConfiguration() {
-            final KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
-            kieSessionConfiguration.setOption(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
-            return kieSessionConfiguration;
-        }
-    };
-
-    private boolean stateful = false;
+    private final boolean stateful;
+    private final boolean pseudoClock;
 
     public boolean isStateful() {
         return stateful;
@@ -91,7 +43,39 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
 
     KieSessionTestConfiguration(final boolean stateful) {
         this.stateful = stateful;
+        this.pseudoClock = false;
     }
-    
-    public static final String KIE_SESSION_MODEL_NAME = "KieSessionModelName";
+
+    KieSessionTestConfiguration(final boolean stateful, final boolean pseudoClock) {
+        this.stateful = stateful;
+        this.pseudoClock = pseudoClock;
+    }
+
+    @Override
+    public KieSessionModel getKieSessionModel(final KieBaseModel kieBaseModel) {
+        final KieSessionModel kieSessionModel = kieBaseModel.newKieSessionModel(KIE_SESSION_MODEL_NAME);
+        if (stateful) {
+            kieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
+        } else {
+            kieSessionModel.setType(KieSessionModel.KieSessionType.STATELESS);
+        }
+        if (pseudoClock) {
+            kieSessionModel.setClockType(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.toString()));
+        } else {
+            kieSessionModel.setClockType(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
+        }
+        kieSessionModel.setDefault(true);
+        return kieSessionModel;
+    }
+
+    @Override
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        final KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
+        if (pseudoClock) {
+            kieSessionConfiguration.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.toString()));
+        } else {
+            kieSessionConfiguration.setOption(ClockTypeOption.get(ClockType.REALTIME_CLOCK.toString()));
+        }
+        return kieSessionConfiguration;
+    }
 }
