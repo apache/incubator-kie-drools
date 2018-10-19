@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.util.IoUtils;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
@@ -558,6 +561,26 @@ public class DMNRuntimeImpl
                 return false;
             }
             if( decision.getEvaluator() == null ) {
+                // try read the evaluator from the class loader
+
+                System.out.println("+++++ dr = " + dr);
+
+                Optional<String> modelFiles;
+                try {
+                    InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
+                    if(resourceAsStream != null) {
+                        modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream) ));
+                    } else {
+                        modelFiles = Optional.empty();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException( e );
+                }
+
+                System.out.println("modelFiles = " + modelFiles);
+
+
+
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.WARN,
                                                             decision.getSource(),

@@ -111,4 +111,8 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     public boolean isUseExecModelCompiler() {
         return getOption(ExecModelCompilerOption.class).isUseExecModelCompiler();
     }
+
+    public boolean isDeferredCompilation() {
+        return getOption(ExecModelCompilerDeferredOption.class).isDeferred();
+    }
 }
