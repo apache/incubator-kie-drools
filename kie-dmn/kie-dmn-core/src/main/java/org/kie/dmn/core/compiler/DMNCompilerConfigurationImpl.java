@@ -80,6 +80,8 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
             return (T) new CoerceDecisionServiceSingletonOutputOption(properties.get(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
         } else if (ExecModelCompilerOption.class.equals(option)) {
             return (T) new ExecModelCompilerOption(properties.get(ExecModelCompilerOption.PROPERTY_NAME));
+        }else if (ExecModelCompilerDeferredOption.class.equals(option)) {
+            return (T) new ExecModelCompilerDeferredOption(properties.get(ExecModelCompilerDeferredOption.PROPERTY_NAME));
         }
         return null;
     }
