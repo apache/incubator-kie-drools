@@ -70,6 +70,20 @@ Please notice however any existing `KieBase` which was obtained via `newKieBase(
 The `KieScanner` will only pickup changes to deployed jars if it is using a SNAPSHOT, version range, the LATEST, or the RELEASE setting.
 Fixed versions will not automatically update at runtime.
 
+In case you don't want to install a maven repository, it is also possible to have a `KieScanner` that works
+by simply fetching update from a folder of a plain file system. You can create such a `KieScanner` as simply as
+
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieScanner kScanner = kieServices.newKieScanner( kContainer, "/myrepo/kjars" );
+----
+====
+
+where "/myrepo/kjars" will be the folder where the `KieScanner` will look for kjar updates. The jar files placed in this folder
+have to follow the maven convention and then have to be a name in the form {artifactId}-{versionId}.jar
+
 == Maven Versions and Dependencies
 
 
