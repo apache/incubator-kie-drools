@@ -18,8 +18,10 @@ package org.kie.dmn.core.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,12 +58,15 @@ import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +112,7 @@ public class DMNRuntimeImpl
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
-    
+
     @Override
     public DMNModel getModelById(String namespace, String modelId) {
         Objects.requireNonNull(namespace, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "namespace"));
@@ -563,21 +568,36 @@ public class DMNRuntimeImpl
 
             // try read the evaluator from the class loader
 
-            System.out.println("+++++ dr = " + dr);
+            if(decision.getDecision().getExpression() instanceof DecisionTable) {
 
-            Optional<String> modelFiles;
-            try {
-                InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
-                if(resourceAsStream != null) {
-                    modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream) ));
-                } else {
-                    modelFiles = Optional.empty();
+                System.out.println("+++++ dr = " + dr);
+
+                Optional<String> modelFiles;
+                try {
+                    InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
+                    if (resourceAsStream != null) {
+                        modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream)));
+                    } else {
+                        modelFiles = Optional.empty();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException( e );
-            }
 
-            System.out.println("modelFiles = " + modelFiles);
+                System.out.println("modelFiles = " + modelFiles);
+
+                DecisionTable decisionTable = (DecisionTable) decision.getDecision().getExpression();
+
+                DMNFEELHelper feel = new DMNFEELHelper(getRootClassLoader(), Collections.EMPTY_LIST);
+
+                DMNModel model = ((DMNResultImpl) result).getModel();
+
+                DTableModel dTableModel = new DTableModel(feel, (DMNModelImpl) model, decision.getName(), decision.getName(), decisionTable);
+
+//                String className = pkgName + "." + clasName + generator.type;
+//                String fileName = Paths.get("src/main/java", className.replace('.', '/') + ".java").toString();
+                System.out.println("dTableModel = " + dTableModel);
+            }
 
             if( decision.getEvaluator() == null ) {
 
@@ -653,7 +673,10 @@ public class DMNRuntimeImpl
                 reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
             }
             return true;
-        } finally {
+        } catch(Exception e) {
+            logger.error("Error", e);
+            throw new RuntimeException(e);
+        } finally{
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result );
         }
     }
