@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfiguration;
 
 @PlanningSolution(autoDiscoverMemberType = AutoDiscoverMemberType.GETTER)
 public class TestdataAutoDiscoverGetterSolution extends TestdataObject {
@@ -34,6 +35,7 @@ public class TestdataAutoDiscoverGetterSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverGetterSolution.class, TestdataEntity.class);
     }
 
+    private TestdataConstraintConfiguration constraintConfiguration;
     private TestdataObject singleProblemFactField;
     private List<TestdataValue> problemFactListField;
 
@@ -57,6 +59,14 @@ public class TestdataAutoDiscoverGetterSolution extends TestdataObject {
         this.problemFactListField = problemFactList;
         this.entityListField = entityList;
         this.otherEntityField = otherEntity;
+    }
+
+    public TestdataConstraintConfiguration getConstraintConfiguration() {
+        return constraintConfiguration;
+    }
+
+    public void setConstraintConfiguration(TestdataConstraintConfiguration constraintConfiguration) {
+        this.constraintConfiguration = constraintConfiguration;
     }
 
     public TestdataObject getSingleProblemFact() {

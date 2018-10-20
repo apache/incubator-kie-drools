@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfiguration;
 
 @PlanningSolution(autoDiscoverMemberType = AutoDiscoverMemberType.FIELD)
 public class TestdataAutoDiscoverFieldSolution extends TestdataObject {
@@ -34,6 +35,7 @@ public class TestdataAutoDiscoverFieldSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverFieldSolution.class, TestdataEntity.class);
     }
 
+    private TestdataConstraintConfiguration constraintConfiguration;
     private TestdataObject singleProblemFact;
     @ValueRangeProvider(id = "valueRange")
     private List<TestdataValue> problemFactList;

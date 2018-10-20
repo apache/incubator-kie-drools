@@ -65,6 +65,10 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         return constraintWeightDescriptorMap.values();
     }
 
+    public ConstraintWeightDescriptor<Solution_> getConstraintWeightDescriptor(String propertyName) {
+        return constraintWeightDescriptorMap.get(propertyName);
+    }
+
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************
