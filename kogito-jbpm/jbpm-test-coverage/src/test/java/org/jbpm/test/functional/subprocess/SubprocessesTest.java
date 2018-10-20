@@ -59,8 +59,6 @@ public class SubprocessesTest extends JbpmTestCase {
     private static final String HELLO_WORLD_PROCESS = "org/jbpm/test/functional/common/HelloWorldProcess1.bpmn";
     private static final String HELLO_WORLD_PROCESS_ID = "org.jbpm.test.functional.common.HelloWorldProcess1";
 
-    private static final boolean JAVA8_9 = System.getProperty("java.version").contains("1.8") || System.getProperty("java.version").startsWith("9.");
-
     private KieSession ksession;
 
     public SubprocessesTest() {
@@ -122,13 +120,9 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8_9) {
-            assertChangedVariable(process, "variable", null, "parameters");
-            assertChangedVariable(process, "undefined", null, "parameters");
-        } else {
-            assertChangedVariable(process, "undefined", null, "parameters");
-            assertChangedVariable(process, "variable", null, "parameters");
-        }
+        assertChangedVariable(process, "variable", null, "parameters");
+        assertChangedVariable(process, "undefined", null, "parameters");
+
         assertProcessStarted(process, PROCESS_ID_3);
         long id = process.current().<IterableProcessEventListener.CachedProcessStartedEvent>getEvent().getProcessInstanceId();
         assertNextNode(process, P3_START);
@@ -172,13 +166,9 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8_9) {
-            assertChangedVariable(process, "variable", null, "parameters");
-            assertChangedVariable(process, "undefined", null, "parameters");
-        } else {
-            assertChangedVariable(process, "undefined", null, "parameters");
-            assertChangedVariable(process, "variable", null, "parameters");
-        }
+        assertChangedVariable(process, "variable", null, "parameters");
+        assertChangedVariable(process, "undefined", null, "parameters");
+
         assertProcessStarted(process, PROCESS_ID_3);
         long id = process.current().<CachedProcessStartedEvent>getEvent().getProcessInstanceId();
         assertNextNode(process, P3_START);
@@ -609,13 +599,9 @@ public class SubprocessesTest extends JbpmTestCase {
         assertTriggered(process, "parameter mapping");
 
         // subprocess is started
-        if (JAVA8_9) {
-            assertChangedVariable(process, "variable", null, "parameters");
-            assertChangedVariable(process, "undefined", null, "parameters");
-        } else {
-            assertChangedVariable(process, "undefined", null, "parameters");
-            assertChangedVariable(process, "variable", null, "parameters");
-        }
+        assertChangedVariable(process, "variable", null, "parameters");
+        assertChangedVariable(process, "undefined", null, "parameters");
+
         assertProcessStarted(process, PROCESS_ID_3);
         assertNextNode(process, P3_START);
         assertTriggered(process, P3_SIGNAL);
