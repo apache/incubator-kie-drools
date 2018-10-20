@@ -453,7 +453,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextSheet("Score view", 1, 3, true);
             nextRow();
             nextHeaderCell("Score");
-            nextCell().setCellValue(score == null ? "Not yet solved" : score.toShortString());
+            nextCell().setCellValue(score.toShortString());
             nextRow();
             nextRow();
             nextHeaderCell("Constraint match");
