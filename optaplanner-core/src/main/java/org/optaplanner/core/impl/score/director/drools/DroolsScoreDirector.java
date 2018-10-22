@@ -27,6 +27,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
@@ -105,8 +106,8 @@ public class DroolsScoreDirector<Solution_>
             if (!getScoreDefinition().isPositive(constraintWeight)) {
                 Class<?> constraintConfigurationClass = getSolutionDescriptor().getConstraintConfigurationDescriptor()
                         .getConstraintConfigurationClass();
-                throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
-                        + ") for constraintPackage (" + rule.getPackageName()
+                throw new IllegalArgumentException("The @" + ConstraintWeight.class.getSimpleName()
+                        + " annotation for constraintPackage (" + rule.getPackageName()
                         + ") and constraintName (" + rule.getName()
                         + ") of constraintConfigurationClass (" + constraintConfigurationClass
                         + ") must have a positive or zero constraintWeight (" + constraintWeight + ").\n"

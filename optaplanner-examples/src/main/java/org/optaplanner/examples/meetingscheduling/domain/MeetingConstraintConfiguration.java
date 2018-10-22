@@ -21,8 +21,6 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-// @ConstraintWeights
-
 @ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.meetingscheduling.solver")
 public class MeetingConstraintConfiguration extends AbstractPersistable {
 

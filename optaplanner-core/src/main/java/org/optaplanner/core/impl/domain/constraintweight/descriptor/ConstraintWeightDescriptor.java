@@ -43,15 +43,16 @@ public class ConstraintWeightDescriptor<Solution_> {
             MemberAccessor memberAccessor) {
         this.constraintConfigurationDescriptor = constraintConfigurationDescriptor;
         ConstraintWeight constraintWeightAnnotation = memberAccessor.getAnnotation(ConstraintWeight.class);
-        String constraintPackage = constraintPackage = constraintWeightAnnotation.constraintPackage();
+        String constraintPackage = constraintWeightAnnotation.constraintPackage();
         if (constraintPackage.isEmpty()) {
             // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
-            ConstraintConfiguration packAnnotation = memberAccessor.getDeclaringClass().getAnnotation(ConstraintConfiguration.class);
-            if (packAnnotation == null) {
+            ConstraintConfiguration constraintConfigurationAnnotation = memberAccessor.getDeclaringClass()
+                    .getAnnotation(ConstraintConfiguration.class);
+            if (constraintConfigurationAnnotation == null) {
                 throw new IllegalStateException("Impossible state: " + ConstraintConfigurationDescriptor.class.getSimpleName()
                         + " only reflects over members with a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
             }
-            constraintPackage = packAnnotation.constraintPackage();
+            constraintPackage = constraintConfigurationAnnotation.constraintPackage();
             if (constraintPackage.isEmpty()) {
                 constraintPackage = memberAccessor.getDeclaringClass().getPackage().getName();
             }
