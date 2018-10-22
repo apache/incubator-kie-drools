@@ -37,6 +37,9 @@ public enum FunctionKind {
                 return c;
             }
         }
+        if ("Java".equalsIgnoreCase(v)) {
+            return FunctionKind.JAVA;
+        }
         throw new IllegalArgumentException(v);
     }
 
