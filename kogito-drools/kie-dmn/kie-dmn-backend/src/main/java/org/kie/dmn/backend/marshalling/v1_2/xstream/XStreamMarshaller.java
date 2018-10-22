@@ -288,6 +288,7 @@ public class XStreamMarshaller
         //      xStream.alias("description", xsd:string.class );
 
         // DMN v1.2:
+        // Note, to comply with NS for XStream need also to adjust entries inside DMNModelInstrumentedBaseConverter
         xStream.alias("annotation", TRuleAnnotationClause.class);
         xStream.alias("annotationEntry", TRuleAnnotation.class);
         xStream.registerConverter(new RuleAnnotationClauseConverter(xStream));
@@ -303,6 +304,8 @@ public class XStreamMarshaller
         xStream.alias("DMNShape", DMNShape.class);
         xStream.registerConverter(new DMNShapeConverter(xStream));
         xStream.alias("FillColor", Color.class);
+        xStream.alias("StrokeColor", Color.class);
+        xStream.alias("FontColor", Color.class);
         xStream.registerConverter(new ColorConverter(xStream));
         xStream.alias("Bounds", Bounds.class);
         xStream.registerConverter(new BoundsConverter(xStream));

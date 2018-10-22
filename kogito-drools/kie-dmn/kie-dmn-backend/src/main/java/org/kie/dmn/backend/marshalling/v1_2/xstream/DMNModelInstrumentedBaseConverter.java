@@ -101,6 +101,8 @@ public abstract class DMNModelInstrumentedBaseConverter
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "Size", dmndiPrefix), "Size");
 
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "FillColor", dmndiPrefix), "FillColor");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "StrokeColor", dmndiPrefix), "StrokeColor");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "FontColor", dmndiPrefix), "FontColor");
 
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DI, "waypoint", diPrefix), "waypoint");
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DC, "Bounds", dcPrefix), "Bounds");

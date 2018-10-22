@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/dmn/definitions/_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5" id="_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5" namespace="http://www.trisotech.com/dmn/definitions/_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5"          exporter="DMN Modeler" exporterVersion="6.1.12.1" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decision id="_effe75d4-4cfa-4808-8fcf-0a9839f9080b" name="hardcoded decision">
+        <semantic:variable name="hardcoded decision" id="_f71ac816-28a7-42ba-bae8-abf6db6fb67f" typeRef="number"/>
+        <semantic:knowledgeRequirement id="_a9b5a13c-9ed0-4f92-8137-76c2f2894725">
+            <semantic:requiredKnowledge href="#_0f961ca7-8c74-4105-8ad7-ef91f836fcc8"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_54de5c02-0210-4b6c-ad4c-1fe8f405101e" typeRef="number">
+            <semantic:literalExpression id="literal__54de5c02-0210-4b6c-ad4c-1fe8f405101e">
+                <semantic:text>hardcoded java max call</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_0d6c93b0-3a8c-4c5e-b6eb-f43a802841e5" name="p1"/>
+                <semantic:literalExpression id="_9ad85909-e59b-437a-9be4-becfb424729b">
+                    <semantic:text>1</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_dcd3609d-8424-418e-8401-59f3ad777566" name="p2"/>
+                <semantic:literalExpression id="_1648157c-e0c4-4000-bbc1-50172202894a">
+                    <semantic:text>99</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+    <semantic:businessKnowledgeModel id="_0f961ca7-8c74-4105-8ad7-ef91f836fcc8" name="hardcoded java max call">
+        <semantic:variable name="hardcoded java max call" id="_21cb052e-8dd4-44f2-9d78-5a7881aeceee" typeRef="number"/>
+        <semantic:encapsulatedLogic id="_d927501d-6daa-4951-86e8-2511eccfae39" kind="Java" typeRef="number">
+            <semantic:formalParameter name="p1" id="_02910b4a-e313-4652-952e-83ab381d6ded"/>
+            <semantic:formalParameter name="p2" id="_7e7e55b4-2412-4c09-9022-1c213d4479a8"/>
+            <semantic:context>
+                <semantic:contextEntry id="_bbab19a3-eb7c-49f5-befa-f31b2fc4cf6f">
+                    <semantic:variable name="class" id="_5a8853a5-c36e-4770-8536-69d1f4adcb30" typeRef="string"/>
+                    <semantic:literalExpression id="_09ccfb58-98da-4e7b-8426-1fca2c00b1f2">
+                        <semantic:text>"java.lang.Math"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_84aa6cc8-7248-4389-9ff4-7398ffa257a1">
+                    <semantic:variable name="method signature" id="_785fc763-4fd5-47d4-9ca6-f2e5e0c05630" typeRef="string"/>
+                    <semantic:literalExpression id="_c64dcffc-173a-496f-b4a9-e5036b109193">
+                        <semantic:text>"max(double, double)"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_668adc17-78bd-4adb-a3ca-d97c500b3aeb" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_294316b3-f333-4453-a0a0-280dd921e6b5" dmnElementRef="_effe75d4-4cfa-4808-8fcf-0a9839f9080b">
+                <dc:Bounds x="356" y="180" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="359" y="204"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_9a38816f-2c70-414b-8dda-10404605e5d8" dmnElementRef="_0f961ca7-8c74-4105-8ad7-ef91f836fcc8">
+                <dc:Bounds x="564" y="179.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="25.999999999999996" width="77.48234558105469" x="592.1086668968201" y="196.49152535907294"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_61677870-3fda-4e55-8fd8-ae475f5ba264" dmnElementRef="_a9b5a13c-9ed0-4f92-8137-76c2f2894725">
+                <di:waypoint x="564" y="209.4915253590729"/>
+                <di:waypoint x="509" y="210"/>
+                <dmndi:DMNLabel sharedStyle="LS_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

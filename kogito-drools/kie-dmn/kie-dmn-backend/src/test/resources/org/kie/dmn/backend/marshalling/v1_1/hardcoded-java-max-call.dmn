@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.12.1" id="_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_6ea3f4ee-7c6b-4cf8-8ba1-a86e538244b5" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:decision id="_effe75d4-4cfa-4808-8fcf-0a9839f9080b" name="hardcoded decision">
+    <dmn11:variable id="_f71ac816-28a7-42ba-bae8-abf6db6fb67f" name="hardcoded decision" typeRef="feel:number"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_0f961ca7-8c74-4105-8ad7-ef91f836fcc8"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:invocation id="_54de5c02-0210-4b6c-ad4c-1fe8f405101e" typeRef="feel:number">
+      <dmn11:literalExpression id="literal__54de5c02-0210-4b6c-ad4c-1fe8f405101e">
+        <dmn11:text>hardcoded java max call</dmn11:text>
+      </dmn11:literalExpression>
+      <dmn11:binding>
+        <dmn11:parameter id="_0d6c93b0-3a8c-4c5e-b6eb-f43a802841e5" name="p1"/>
+        <dmn11:literalExpression id="_9ad85909-e59b-437a-9be4-becfb424729b">
+          <dmn11:text>1</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:binding>
+      <dmn11:binding>
+        <dmn11:parameter id="_dcd3609d-8424-418e-8401-59f3ad777566" name="p2"/>
+        <dmn11:literalExpression id="_1648157c-e0c4-4000-bbc1-50172202894a">
+          <dmn11:text>99</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:binding>
+    </dmn11:invocation>
+  </dmn11:decision>
+  <dmn11:businessKnowledgeModel id="_0f961ca7-8c74-4105-8ad7-ef91f836fcc8" name="hardcoded java max call">
+    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_d927501d-6daa-4951-86e8-2511eccfae39" typeRef="feel:number">
+      <dmn11:formalParameter id="_02910b4a-e313-4652-952e-83ab381d6ded" name="p1"/>
+      <dmn11:formalParameter id="_7e7e55b4-2412-4c09-9022-1c213d4479a8" name="p2"/>
+      <dmn11:context>
+        <dmn11:contextEntry>
+          <dmn11:variable id="_5a8853a5-c36e-4770-8536-69d1f4adcb30" name="class" typeRef="feel:string"/>
+          <dmn11:literalExpression id="_09ccfb58-98da-4e7b-8426-1fca2c00b1f2">
+            <dmn11:text>"java.lang.Math"</dmn11:text>
+          </dmn11:literalExpression>
+        </dmn11:contextEntry>
+        <dmn11:contextEntry>
+          <dmn11:variable id="_785fc763-4fd5-47d4-9ca6-f2e5e0c05630" name="method signature" typeRef="feel:string"/>
+          <dmn11:literalExpression id="_c64dcffc-173a-496f-b4a9-e5036b109193">
+            <dmn11:text>"max(double, double)"</dmn11:text>
+          </dmn11:literalExpression>
+        </dmn11:contextEntry>
+      </dmn11:context>
+    </dmn11:encapsulatedLogic>
+    <dmn11:variable id="_21cb052e-8dd4-44f2-9d78-5a7881aeceee" name="hardcoded java max call" typeRef="feel:number"/>
+  </dmn11:businessKnowledgeModel>
+</dmn11:definitions>
