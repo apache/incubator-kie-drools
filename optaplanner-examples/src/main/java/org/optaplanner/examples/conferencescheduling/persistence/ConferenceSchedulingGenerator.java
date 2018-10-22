@@ -37,7 +37,7 @@ import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
@@ -246,9 +246,9 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         ConferenceSolution solution = new ConferenceSolution();
         solution.setId(0L);
         solution.setConferenceName(conferenceNameGenerator.generateNextValue());
-        ConferenceParametrization parametrization = new ConferenceParametrization();
-        parametrization.setId(0L);
-        solution.setParametrization(parametrization);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration();
+        constraintConfiguration.setId(0L);
+        solution.setConstraintConfiguration(constraintConfiguration);
 
         createTalkTypeList(solution);
         createTimeslotList(solution, timeslotListSize);

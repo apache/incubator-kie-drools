@@ -8,7 +8,7 @@ import java.util.HashSet;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
@@ -17,7 +17,7 @@ import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.*;
 
 public class ConferenceSchedulingScoreHardConstraintTest {
 
@@ -37,7 +37,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         TalkType talkType1 = new TalkType(0L, "type1");
         TalkType talkType2 = new TalkType(1L, "type2");
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Arrays.asList(talkType1, talkType2))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2))
@@ -64,7 +64,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Room room2 = new Room(2L).withTalkTypeSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2))
@@ -116,7 +116,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withTalkTypeSet(Collections.singleton(talkType))
                 .withUnavailableTimeslotSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
@@ -157,7 +157,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Talk talk1 = createTalk(1L).withTalkType(talkType);
 
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -219,7 +219,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
@@ -262,7 +262,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -343,7 +343,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -412,7 +412,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -459,7 +459,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -518,7 +518,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -595,7 +595,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -656,7 +656,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -696,7 +696,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())

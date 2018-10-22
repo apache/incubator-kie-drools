@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
@@ -17,7 +18,7 @@ import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.*;
 
 public class ConferenceSchedulingScoreSoftConstraintTest {
 
@@ -26,7 +27,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void themeConflict() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String theme1 = "theme1";
         String theme2 = "theme2";
@@ -53,13 +54,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setThemeTrackConflict(1);
+        constraintConfiguration.setThemeTrackConflict(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(THEME_TRACK_CONFLICT, 0, solution);
         // talks with overlapping time slots without theme track conflict
         talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2)));
@@ -72,7 +73,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         talk1.withTimeslot(slot1).withThemeTrackTagSet(new HashSet<>(Arrays.asList(theme1, theme2, theme3)));
         scoreVerifier.assertSoftWeight(THEME_TRACK_CONFLICT, -2, solution);
         // talks with overlapping time slots with 2 theme track conflicts and theme conflict weight 2
-        parametrization.setThemeTrackConflict(2);
+        constraintConfiguration.setThemeTrackConflict(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(THEME_TRACK_CONFLICT, -4, solution);
         // talks with non overlapping time slots and theme track conflicts
         talk2.setTimeslot(slot3);
@@ -81,7 +82,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void sectorConflict() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String sector1 = "sector1";
         String sector2 = "sector2";
@@ -109,16 +110,16 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setSectorConflict(1);
+        constraintConfiguration.setSectorConflict(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(SECTOR_CONFLICT, 0, solution);
         // talks with overlapping time slots without sector conflict
-        parametrization.setSectorConflict(1);
+        constraintConfiguration.setSectorConflict(HardMediumSoftScore.ofSoft(1));
         talk1.withTimeslot(slot1).withSectorTagSet(new HashSet<>(Arrays.asList(sector1, sector2)));
         talk2.withTimeslot(slot2).withSectorTagSet(new HashSet<>(Arrays.asList(sector3, sector4)));
         scoreVerifier.assertSoftWeight(SECTOR_CONFLICT, 0, solution);
@@ -129,7 +130,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         talk1.withTimeslot(slot1).withSectorTagSet(new HashSet<>(Arrays.asList(sector1, sector2, sector3)));
         scoreVerifier.assertSoftWeight(SECTOR_CONFLICT, -2, solution);
         // talks with overlapping time slots with 2 sector conflicts and sector conflict weight 2
-        parametrization.setSectorConflict(2);
+        constraintConfiguration.setSectorConflict(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(SECTOR_CONFLICT, -4, solution);
         // talks with non overlapping time slots and sector conflicts
         talk2.setTimeslot(slot3);
@@ -138,7 +139,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void languageDiversity() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         TalkType talkType = new TalkType(0L, "type1");
         String language1 = "language1";
         String language2 = "language2";
@@ -157,7 +158,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         Talk talk2 = createTalk(2L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Collections.emptyList())
@@ -165,7 +166,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withSpeakerList(Collections.emptyList());
         scoreVerifier.assertSoftWeight(LANGUAGE_DIVERSITY, 0, solution);
         // 2 talks with the same language and the same time slot
-        parametrization.setLanguageDiversity(1);
+        constraintConfiguration.setLanguageDiversity(HardMediumSoftScore.ofSoft(1));
         talk1.withTimeslot(slot1).withLanguage(language1);
         talk2.withTimeslot(slot1).withLanguage(language1);
         scoreVerifier.assertSoftWeight(LANGUAGE_DIVERSITY, 0, solution);
@@ -173,7 +174,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         talk2.withLanguage(language2);
         scoreVerifier.assertSoftWeight(LANGUAGE_DIVERSITY, 1, solution);
         // 2 talks with the same time slot with different languages and language diversity weight = 2
-        parametrization.setLanguageDiversity(2);
+        constraintConfiguration.setLanguageDiversity(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(LANGUAGE_DIVERSITY, 2, solution);
         // 2 talks with different time slots with different languages
         talk2.withTimeslot(slot2);
@@ -185,7 +186,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void speakerPreferredTimeslot() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -210,13 +211,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerPreferredTimeslotTags(1);
+        constraintConfiguration.setSpeakerPreferredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker without preferred time slot tag
         slot1.setTagSet(Collections.emptySet());
@@ -231,10 +232,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2, tag3)));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -1, solution);
         // talk with 1 speaker, speaker with preferred time slot tag, time slot without matching tag, weight = 2
-        parametrization.setSpeakerPreferredTimeslotTags(2);
+        constraintConfiguration.setSpeakerPreferredTimeslotTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, -2, solution);
         // talk with 1 speaker, speaker with preferred time slot tag, time slot with matching tag
-        parametrization.setSpeakerPreferredTimeslotTags(1);
+        constraintConfiguration.setSpeakerPreferredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         speaker1.setPreferredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS, 0, solution);
@@ -276,7 +277,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void talkPreferredTimeslotTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -288,13 +289,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkPreferredTimeslotTags(1);
+        constraintConfiguration.setTalkPreferredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk without preferred time slot tags
         slot1.setTagSet(Collections.emptySet());
@@ -309,10 +310,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -1, solution);
         // talk with preferred time slot tag, time slot without matching tag, weight = 2
-        parametrization.setTalkPreferredTimeslotTags(2);
+        constraintConfiguration.setTalkPreferredTimeslotTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, -2, solution);
         // talk with required time slot tag, time slot with matching tag
-        parametrization.setTalkPreferredTimeslotTags(1);
+        constraintConfiguration.setTalkPreferredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_TIMESLOT_TAGS, 0, solution);
         // talk with 2 preferred time slot tags
@@ -327,7 +328,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void speakerUndesiredTimeslot() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -352,13 +353,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerUndesiredTimeslotTags(1);
+        constraintConfiguration.setSpeakerUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker without undesired time slot tag
         slot1.setTagSet(Collections.emptySet());
@@ -379,10 +380,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         // talk with 1 speaker, speaker with undesired time slot tag, time slot with matching tag, weight = 2
-        parametrization.setSpeakerUndesiredTimeslotTags(2);
+        constraintConfiguration.setSpeakerUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         // talk with 1 speaker, speaker with 2 undesired time slot tags
-        parametrization.setSpeakerUndesiredTimeslotTags(1);
+        constraintConfiguration.setSpeakerUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         speaker1.setUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS, 0, solution);
@@ -412,7 +413,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void talkUndesiredTimeslotTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -424,13 +425,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkUndesiredTimeslotTags(1);
+        constraintConfiguration.setTalkUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         // talk without undesired time slot tags
         slot1.setTagSet(Collections.emptySet());
         talk1.withTimeslot(slot1);
@@ -450,10 +451,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -1, solution);
         // talk with undesired time slot tag, time slot with matching tag, weight = 2
-        parametrization.setTalkUndesiredTimeslotTags(2);
+        constraintConfiguration.setTalkUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -2, solution);
         // talk with 2 undesired time slot tags
-        parametrization.setTalkUndesiredTimeslotTags(1);
+        constraintConfiguration.setTalkUndesiredTimeslotTags(HardMediumSoftScore.ofSoft(1));
         talk1.withTimeslot(slot1).withUndesiredTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_TIMESLOT_TAGS, -0, solution);
@@ -465,7 +466,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void speakerPreferredRoomTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
@@ -488,13 +489,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Arrays.asList(room1))
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerPreferredRoomTags(1);
+        constraintConfiguration.setSpeakerPreferredRoomTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker without preferred room tag
         room1.setTagSet(Collections.emptySet());
@@ -506,10 +507,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         room1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -1, solution);
         // talk with 1 speaker, speaker with preferred room tag, room without matching tag, weight = 2
-        parametrization.setSpeakerPreferredRoomTags(2);
+        constraintConfiguration.setSpeakerPreferredRoomTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, -2, solution);
         // talk with 1 speaker, speaker with required room tag, room with matching tag
-        parametrization.setSpeakerPreferredRoomTags(1);
+        constraintConfiguration.setSpeakerPreferredRoomTags(HardMediumSoftScore.ofSoft(1));
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(SPEAKER_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker, speaker with 2 required room tags
@@ -546,20 +547,20 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void talkPreferredRoomTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkPreferredRoomTags(1);
+        constraintConfiguration.setTalkPreferredRoomTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         // talk without preferred room tags
         room1.setTagSet(Collections.emptySet());
@@ -574,10 +575,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         room1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -1, solution);
         // talk with preferred room tag, room without matching tag, weight = 2
-        parametrization.setTalkPreferredRoomTags(2);
+        constraintConfiguration.setTalkPreferredRoomTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, -2, solution);
         // talk with preferred room tag, room with matching tag
-        parametrization.setTalkPreferredRoomTags(1);
+        constraintConfiguration.setTalkPreferredRoomTags(HardMediumSoftScore.ofSoft(1));
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(TALK_PREFERRED_ROOM_TAGS, 0, solution);
         // talk with two preferred room tags
@@ -592,7 +593,7 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void speakerUndesiredRoomTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         String tag3 = "tag3";
@@ -616,13 +617,13 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Arrays.asList(room1))
                 .withSpeakerList(Arrays.asList(speaker1, speaker2));
-        parametrization.setSpeakerUndesiredRoomTags(1);
+        constraintConfiguration.setSpeakerUndesiredRoomTags(HardMediumSoftScore.ofSoft(1));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
         // talk with 1 speaker without undesired room tags
         room1.setTagSet(Collections.emptySet());
@@ -639,10 +640,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -1, solution);
         // talk with 1 speaker, speaker with undesired room tag, room with matching tag, weight = 2
-        parametrization.setSpeakerUndesiredRoomTags(2);
+        constraintConfiguration.setSpeakerUndesiredRoomTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, -2, solution);
         // talk with 1 speaker, speaker with 2 undesired room tags
-        parametrization.setSpeakerUndesiredRoomTags(1);
+        constraintConfiguration.setSpeakerUndesiredRoomTags(HardMediumSoftScore.ofSoft(1));
         speaker1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         room1.setTagSet(Collections.emptySet());
         scoreVerifier.assertSoftWeight(SPEAKER_UNDESIRED_ROOM_TAGS, 0, solution);
@@ -676,20 +677,20 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
 
     @Test
     public void talkUndesiredRoomTag() {
-        ConferenceParametrization parametrization = new ConferenceParametrization(1L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(1L);
         String tag1 = "tag1";
         String tag2 = "tag2";
         TalkType talkType = new TalkType(0L, "type1");
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(parametrization)
+                .withConstraintConfiguration(constraintConfiguration)
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
                 .withRoomList(Collections.emptyList())
                 .withSpeakerList(Collections.emptyList());
-        parametrization.setTalkUndesiredRoomTags(1);
+        constraintConfiguration.setTalkUndesiredRoomTags(HardMediumSoftScore.ofSoft(1));
         // talk without undesired room tags
         room1.setTagSet(Collections.emptySet());
         talk1.withRoom(room1);
@@ -707,10 +708,10 @@ public class ConferenceSchedulingScoreSoftConstraintTest {
         room1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -1, solution);
         // talk with undesired room tag, room with matching tag, weight = 2
-        parametrization.setTalkUndesiredRoomTags(2);
+        constraintConfiguration.setTalkUndesiredRoomTags(HardMediumSoftScore.ofSoft(2));
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, -2, solution);
         // talk with 2 undesired room tags
-        parametrization.setTalkUndesiredRoomTags(1);
+        constraintConfiguration.setTalkUndesiredRoomTags(HardMediumSoftScore.ofSoft(1));
         room1.setTagSet(Collections.emptySet());
         talk1.withUndesiredRoomTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         scoreVerifier.assertSoftWeight(TALK_UNDESIRED_ROOM_TAGS, 0, solution);

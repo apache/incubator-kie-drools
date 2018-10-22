@@ -19,7 +19,7 @@ package org.optaplanner.examples.conferencescheduling.solver;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
@@ -33,30 +33,26 @@ global HardMediumSoftScoreHolder scoreHolder;
 
 rule "Talk type of timeslot"
     when
-        ConferenceParametrization($weight : talkTypeOfTimeslot != 0)
         Talk(timeslot != null, !getTimeslot().getTalkTypeSet().contains(getTalkType()))
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 rule "Talk type of room"
     when
-        ConferenceParametrization($weight : talkTypeOfRoom != 0)
         Talk(room != null, !getRoom().getTalkTypeSet().contains(getTalkType()))
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Room unavailable timeslot"
     when
-        ConferenceParametrization($weight : roomUnavailableTimeslot != 0)
         Talk(hasUnavailableRoom())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Room conflict"
     when
-        ConferenceParametrization($weight : roomConflict != 0)
         Talk(timeslot != null, $timeslot : timeslot,
                 room != null, $room : room,
                 $leftId : id)
@@ -64,20 +60,18 @@ rule "Room conflict"
                 room == $room,
                 id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Speaker unavailable timeslot"
     when
-        ConferenceParametrization($weight : speakerUnavailableTimeslot != 0)
         Talk(hasAnyUnavailableSpeaker())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Speaker conflict"
     when
-        ConferenceParametrization($weight : speakerConflict != 0)
         $speaker : Speaker()
         Talk(hasSpeaker($speaker),
                 timeslot != null, $timeslot : timeslot,
@@ -86,76 +80,67 @@ rule "Speaker conflict"
                 timeslot != null, getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -$weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Speaker required timeslot tags"
     when
-        ConferenceParametrization($weight : speakerRequiredTimeslotTags != 0)
         Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker prohibited timeslot tags"
     when
-        ConferenceParametrization($weight : speakerProhibitedTimeslotTags != 0)
         Talk($count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk required timeslot tags"
     when
-        ConferenceParametrization($weight : talkRequiredTimeslotTags != 0)
         Talk($count : missingRequiredTimeslotTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk prohibited timeslot tags"
     when
-        ConferenceParametrization($weight : talkProhibitedTimeslotTags != 0)
         Talk($count : prevailingProhibitedTimeslotTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker required room tags"
     when
-        ConferenceParametrization($weight : speakerRequiredRoomTags != 0)
         Talk($count : missingSpeakerRequiredRoomTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker prohibited room tags"
     when
-        ConferenceParametrization($weight : speakerProhibitedRoomTags != 0)
         Talk($count : prevailingSpeakerProhibitedRoomTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk required room tags"
     when
-        ConferenceParametrization($weight : talkRequiredRoomTags != 0)
         Talk($count : missingRequiredRoomTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk prohibited room tags"
     when
-        ConferenceParametrization($weight : talkProhibitedRoomTags != 0)
         Talk($count : prevailingProhibitedRoomTagCount() > 0)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $count * $weight);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk prerequisite talks"
     when
-        ConferenceParametrization($weight : talkPrerequisiteTalks != 0)
         $talk : Talk(timeslot != null, getPrerequisiteTalkSet().size() > 0)
         $count : Number(this > 0) from accumulate(
             $reqTalk : Talk($talk.getPrerequisiteTalkSet().contains(this), timeslot == null ||
@@ -163,43 +148,42 @@ rule "Talk prerequisite talks"
             count($reqTalk)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $count.intValue());
+        scoreHolder.penalize(kcontext, $count.intValue());
 end
 
 rule "Consecutive talks pause"
     when
-        ConferenceParametrization($weight : consecutiveTalksPause != 0, $minimumPause : minimumConsecutiveTalksPauseInMinutes)
+        ConferenceConstraintConfiguration($minimumPause : minimumConsecutiveTalksPauseInMinutes)
         $talk: Talk(timeslot != null, $id : id, $timeslot : getTimeslot())
         Talk(timeslot != null, $id < id, hasMutualSpeaker($talk), !getTimeslot().pauseExists($timeslot, $minimumPause))
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
+
 // ############################################################################
 // Medium constraints
 // ############################################################################
+
 rule "Talk mutually-exclusive-talks tags"
     when
-        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
-        $rightTalk : Talk(timeslot != null, overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
+        $rightTalk : Talk(timeslot != null,
+                overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
                 timeslot.isOnSameDayAs($timeslot),
                 id > $leftId)
     then
-        if ($rightTalk.getTimeslot().overlaps($leftTalk.getTimeslot())) { // Medium constraint if they overlap as well:
-            scoreHolder.addMultiConstraintMatch(kcontext, 0,
-                - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk),
-                - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
-        } else {
-            scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk));
-        }
+        // TODO Split up into 2 constraints
+        // Medium constraint if they overlap as well
+        boolean overlapping = $rightTalk.getTimeslot().overlaps($leftTalk.getTimeslot());
+        int count = $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk);
+        scoreHolder.penalize(kcontext, 0, overlapping ? count : 0, count);
 end
 
 rule "Published timeslot"
     when
-        ConferenceParametrization($weight : publishedTimeslot != 0)
         Talk(publishedTimeslot != null, timeslot != publishedTimeslot)
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
 
 // ############################################################################
@@ -208,7 +192,6 @@ end
 
 rule "Theme track conflict"
     when
-        ConferenceParametrization($weight : themeTrackConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
@@ -216,12 +199,11 @@ rule "Theme track conflict"
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk));
+        scoreHolder.penalize(kcontext, $rightTalk.overlappingThemeTrackCount($leftTalk));
 end
 
 rule "Sector conflict"
     when
-        ConferenceParametrization($weight : sectorConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
@@ -229,12 +211,11 @@ rule "Sector conflict"
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingSectorCount($leftTalk));
+        scoreHolder.penalize(kcontext, $rightTalk.overlappingSectorCount($leftTalk));
 end
 
 rule "Audience type diversity"
     when
-        ConferenceParametrization($weight : audienceTypeDiversity != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         // Timeslot.overlaps() is deliberately not used
@@ -242,12 +223,11 @@ rule "Audience type diversity"
                 overlappingAudienceTypeCount($leftTalk) > 0,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $weight * $rightTalk.overlappingAudienceTypeCount($leftTalk));
+        scoreHolder.reward(kcontext, $rightTalk.overlappingAudienceTypeCount($leftTalk));
 end
 
 rule "Audience type theme track conflict"
     when
-        ConferenceParametrization($weight : themeTrackConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
@@ -256,13 +236,12 @@ rule "Audience type theme track conflict"
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingThemeTrackCount($leftTalk)
+        scoreHolder.penalize(kcontext, $rightTalk.overlappingThemeTrackCount($leftTalk)
                 * $rightTalk.overlappingAudienceTypeCount($leftTalk));
 end
 
 rule "Audience level diversity"
     when
-        ConferenceParametrization($weight : audienceLevelDiversity != 0)
         Talk(timeslot != null, $timeslot : timeslot,
                 $audienceLevel : audienceLevel,
                 $leftId : id)
@@ -271,12 +250,11 @@ rule "Audience level diversity"
                 audienceLevel != $audienceLevel,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+        scoreHolder.reward(kcontext);
 end
 
 rule "Audience level flow per content violation"
     when
-        ConferenceParametrization($weight : audienceLevelFlowPerContentViolation != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $audienceLevel : audienceLevel)
         $rightTalk : Talk(timeslot != null,
@@ -284,12 +262,11 @@ rule "Audience level flow per content violation"
                 audienceLevel < $audienceLevel,
                 !timeslot.endsBefore($timeslot))
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
+        scoreHolder.penalize(kcontext, $rightTalk.overlappingContentCount($leftTalk));
 end
 
 rule "Content conflict"
     when
-        ConferenceParametrization($weight : contentConflict != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot,
                 $leftId : id)
         $rightTalk : Talk(timeslot != null,
@@ -297,12 +274,11 @@ rule "Content conflict"
                 getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $rightTalk.overlappingContentCount($leftTalk));
+        scoreHolder.penalize(kcontext, $rightTalk.overlappingContentCount($leftTalk));
 end
 
 rule "Language diversity"
     when
-        ConferenceParametrization($weight : languageDiversity != 0)
         Talk(timeslot != null, $timeslot : timeslot,
                 $language : language,
                 $leftId : id)
@@ -311,118 +287,105 @@ rule "Language diversity"
                 language != $language,
                 id > $leftId)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $weight);
+        scoreHolder.reward(kcontext);
 end
 
 rule "Speaker preferred timeslot tags"
     when
-        ConferenceParametrization($weight : speakerPreferredTimeslotTags != 0)
         Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk preferred timeslot tags"
     when
-        ConferenceParametrization($weight : talkPreferredTimeslotTags != 0)
         Talk($count : missingPreferredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker undesired timeslot tags"
     when
-        ConferenceParametrization($weight : speakerUndesiredTimeslotTags != 0)
         Talk($count : prevailingSpeakerUndesiredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk undesired timeslot tags"
     when
-        ConferenceParametrization($weight : talkUndesiredTimeslotTags != 0)
         Talk($count : prevailingUndesiredTimeslotTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker preferred room tags"
     when
-        ConferenceParametrization($weight : speakerPreferredRoomTags != 0)
         Talk($count : missingSpeakerPreferredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk preferred room tags"
     when
-        ConferenceParametrization($weight : talkPreferredRoomTags != 0)
         Talk($count : missingPreferredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Speaker undesired room tags"
     when
-        ConferenceParametrization($weight : speakerUndesiredRoomTags != 0)
         Talk($count : prevailingSpeakerUndesiredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Talk undesired room tags"
     when
-        ConferenceParametrization($weight : talkUndesiredRoomTags != 0)
         Talk($count : prevailingUndesiredRoomTagCount() > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * $count);
+        scoreHolder.penalize(kcontext, $count);
 end
 
 rule "Same day talks"
     when
-        ConferenceParametrization($weight : sameDayTalks != 0)
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
         $rightTalk :  Talk(timeslot != null, id > $leftId, !timeslot.isOnSameDayAs($timeslot),
             overlappingContentCount($leftTalk) > 0 || overlappingThemeTrackCount($leftTalk) > 0)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight * ($rightTalk.overlappingThemeTrackCount($leftTalk)
-            + $rightTalk.overlappingContentCount($leftTalk)));
+        scoreHolder.penalize(kcontext,
+            $rightTalk.overlappingThemeTrackCount($leftTalk) + $rightTalk.overlappingContentCount($leftTalk));
 end
 
 rule "Popular talks"
     when
-        ConferenceParametrization($weight : popularTalks != 0)
         Talk(room != null, $leftRoom : room, $leftFavoriteCount : favoriteCount)
         Talk(room != null, favoriteCount < $leftFavoriteCount, room.getCapacity() > $leftRoom.getCapacity)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Crowd control"
     when
-        ConferenceParametrization($weight : crowdControl != 0)
         $talk : Talk(timeslot != null, crowdControlRisk > 0)
         $overlappingNonZeroCrowdControlRiskTalksCount : Number(this != 1) from accumulate(
             $overlappingTalk : Talk(timeslot != null, id != $talk.getId(), crowdControlRisk > 0, timeslot.overlaps($talk.getTimeslot)),
             count($overlappingTalk)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Published room"
     when
-        ConferenceParametrization($weight : publishedRoom != 0)
         Talk(publishedRoom != null, room != publishedRoom)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Room stability"
     when
-        ConferenceParametrization($weight : roomStability != 0)
         $talk : Talk(timeslot != null, $timeslot : timeslot, $room : room, $id : id)
         Talk(timeslot != null, overlappingThemeTrackCount($talk) > 0, $id < id, timeslot.isOnSameDayAs($timeslot), $room != room)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+        scoreHolder.penalize(kcontext);
 end

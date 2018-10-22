@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -39,7 +38,7 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
@@ -83,9 +82,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         solution = new ConferenceSolution();
         solution.setId(0L);
         solution.setConferenceName(getConferenceName());
-        ConferenceParametrization parametrization = new ConferenceParametrization();
-        parametrization.setId(0L);
-        solution.setParametrization(parametrization);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration();
+        constraintConfiguration.setId(0L);
+        solution.setConstraintConfiguration(constraintConfiguration);
 
         importTalkTypeList();
         importTrackIdSet();

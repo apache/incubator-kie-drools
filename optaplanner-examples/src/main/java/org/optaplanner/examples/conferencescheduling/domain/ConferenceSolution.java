@@ -18,11 +18,11 @@ package org.optaplanner.examples.conferencescheduling.domain;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -30,8 +30,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class ConferenceSolution extends AbstractPersistable {
 
     private String conferenceName;
-    @ProblemFactProperty
-    private ConferenceParametrization parametrization;
+    @ConstraintConfigurationProvider
+    private ConferenceConstraintConfiguration constraintConfiguration;
 
     @ProblemFactCollectionProperty
     private List<TalkType> talkTypeList;
@@ -75,12 +75,12 @@ public class ConferenceSolution extends AbstractPersistable {
         this.conferenceName = conferenceName;
     }
 
-    public ConferenceParametrization getParametrization() {
-        return parametrization;
+    public ConferenceConstraintConfiguration getConstraintConfiguration() {
+        return constraintConfiguration;
     }
 
-    public void setParametrization(ConferenceParametrization parametrization) {
-        this.parametrization = parametrization;
+    public void setConstraintConfiguration(ConferenceConstraintConfiguration constraintConfiguration) {
+        this.constraintConfiguration = constraintConfiguration;
     }
 
     public List<TalkType> getTalkTypeList() {
@@ -135,8 +135,8 @@ public class ConferenceSolution extends AbstractPersistable {
     // With methods
     // ************************************************************************
 
-    public ConferenceSolution withParametrization(ConferenceParametrization parametrization) {
-        this.parametrization = parametrization;
+    public ConferenceSolution withConstraintConfiguration(ConferenceConstraintConfiguration constraintConfiguration) {
+        this.constraintConfiguration = constraintConfiguration;
         return this;
     }
 

@@ -42,6 +42,12 @@ Luckily, defining constraints in Planner is very flexible through the following 
 Take the time to acquaint yourself with the first three techniques.
 Once you understand them, formalizing most business constraints becomes straightforward.
 
+[NOTE]
+====
+Do not presume that your business knows all its score constraints in advance.
+Expect score constraints to be added, changed or removed after the first releases.
+====
+
 
 [[scoreConstraintSignum]]
 === Score Constraint Signum (Positive or Negative)
@@ -62,20 +68,18 @@ This explains why the score of a solution of four queens is the negative of the 
 
 Negative and positive constraints can be combined, even in the same score level.
 
-[NOTE]
-====
-Do not presume that your business knows all its score constraints in advance.
-Expect score constraints to be added or changed after the first releases.
-====
-
-When a constraint activates (because the negative constraint is broken or the positive constraint is fulfilled) on a certain planning entity set, it is called a __constraint match__.
+When a constraint activates (because the negative constraint is broken or the positive constraint is fulfilled)
+on a certain planning entity set, it is called a __constraint match__.
 
 
 [[scoreConstraintWeight]]
 === Score Constraint Weight
 
 Not all score constraints are equally important.
-If breaking one constraint is equally bad as breaking another constraint x times, then those two constraints have a different weight (but they are in the same score level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two "fuel tank usage" constraint matches:
+If breaking one constraint is equally bad as breaking another constraint x times,
+then those two constraints have a different weight (but they are in the same score level).
+For example in vehicle routing, you can make one _unhappy driver_ constraint match count
+as much as two _fuel tank usage_ constraint matches:
 
 image::ScoreCalculation/scoreWeighting.png[align="center"]
 
@@ -85,7 +89,8 @@ Alternatively, score weighting is also often used to create social <<fairnessSco
 For example, a nurse, who requests a free day, pays a higher weight on New Years eve than on a normal day.
 
 The weight of a constraint match can be dynamically based on the planning entities involved.
-For example in cloud balance, the weight of the soft constraint match for an active `Computer` is the `cost` of that `Computer` (which differs per computer).
+For example in cloud balance, the weight of the soft constraint match for an active `Computer`
+is the maintenance `cost` of that `Computer` (which differs per computer).
 
 Putting a good weight on a constraint can be a difficult analytical decision, because it is about making choices and tradeoffs with other constraints.
 Don't spend too much time on it at the start of an implementation.
@@ -106,19 +111,22 @@ Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSof
 [[scoreLevel]]
 === Score Constraint Level (hard, soft, ...)
 
-Sometimes a score constraint outranks another score constraint, no matter how many times the other is broken.
+Sometimes a score constraint outranks another score constraint, no matter how many times the latter is broken.
 In that case, those score constraints are in different levels.
-For example, a nurse cannot do two shifts at the same time (due to the constraints of physical reality), this outranks all nurse happiness constraints.
+For example, a nurse cannot do two shifts at the same time (due to the constraints of physical reality),
+so this outranks all nurse happiness constraints.
 
 Most use cases have only two score levels, hard and soft.
 The levels of two scores are compared lexicographically.
 The first score level gets compared first.
 If those differ, the remaining score levels are ignored.
-For example, a score that breaks `0` hard constraints and `1000000` soft constraints is better than a score that breaks `1` hard constraint and `0` soft constraints.
+For example, a score that breaks `0` hard constraints and `1000000` soft constraints is better
+than a score that breaks `1` hard constraint and `0` soft constraints.
 
 image::ScoreCalculation/scoreLevels.png[align="center"]
 
-If there are two (or more) score levels, for example a hard and soft level, then a score is _feasible_ if no hard constraints are broken.
+If there are two (or more) score levels, for example <<hardSoftScore,HardSoftScore>>,
+then a score is _feasible_ if no hard constraints are broken.
 
 [NOTE]
 ====
@@ -144,22 +152,24 @@ Furthermore, it will likely create a <<scoreTrap,score trap>>.
 For example in cloud balance if a `Computer` has seven CPU too little for its ``Process``es, then it must be weighted seven times as much as if it had only one CPU too little.
 ====
 
-Three or more score levels are supported.
-For example: a company might decide that profit outranks employee satisfaction (or vice versa), while both are outranked by the constraints of physical reality.
+Three or more score levels are also supported.
+For example: a company might decide that profit outranks employee satisfaction (or vice versa),
+while both are outranked by the constraints of physical reality.
 
 [NOTE]
 ====
-To model fairness or load balancing, there is <<fairnessScoreConstraints,no need to use lots of score levels>>
+To model <<fairnessScoreConstraints,fairness or load balancing>>, there is no need to use lots of score levels
 (even though Planner can handle many score levels).
 ====
 
-Most use cases use a `Score` with two weights, such as <<hardSoftScore,HardSoftScore>>.
+Most use cases use a `Score` with two or three weights,
+such as <<hardSoftScore,HardSoftScore>> and <<hardMediumSoftScore,HardMediumSoftScore>>.
 
 
 [[paretoScoring]]
 === Pareto Scoring (AKA Multi-objective Optimization Scoring)
 
-Far less common is the use case of pareto optimization, which is also known under the more confusing term multi-objective optimization.
+Far less common is the use case of pareto optimization, which is also known as _multi-objective optimization_.
 In pareto scoring, score constraints are in the same score level, yet they are not weighted against each other.
 When two scores are compared, each of the score constraints are compared individually and the score with the most dominating score constraints wins.
 Pareto scoring can even be combined with score levels and score constraint weighting.
@@ -276,7 +286,8 @@ Most use cases use a ``HardSoftScore``.
 
 [NOTE]
 ====
-To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson), see <<integration,the integration chapter>>.
+To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson),
+see <<integration,the integration chapter>>.
 ====
 
 
@@ -1041,7 +1052,7 @@ Alternatively, you can also specify the trend for each score level separately:
 [[invalidScoreDetection]]
 === Invalid Score Detection
 
-When you put <<environmentMode,the `environmentMode`>>in `FULL_ASSERT` (or ``FAST_ASSERT``),
+When you put the <<environmentMode,`environmentMode`>> in `FULL_ASSERT` (or ``FAST_ASSERT``),
 it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
 However, that will not verify that your score calculator actually implements your score constraints as your business desires.
 For example, one score rule might consistently match the wrong pattern.
@@ -1133,8 +1144,9 @@ If some parts of a constraint can be calculated once, when the `Solver` starts, 
 [[pointlessConstraints]]
 === Pointless Constraints
 
-If you know a certain constraint can never be broken (or it is always broken), you need not write a score constraint for it.
-For example in n queens, the score calculation does not check if multiple queens occupy the same column, because a ``Queen``'s `column` never changes and every `Solution` starts with each `Queen` on a different ``column``.
+If you know a certain constraint can never be broken (or it is always broken), do not write a score constraint for it.
+For example in n queens, the score calculation does not check if multiple queens occupy the same column,
+because a ``Queen``'s `column` never changes and every `Solution` starts with each `Queen` on a different ``column``.
 
 [NOTE]
 ====

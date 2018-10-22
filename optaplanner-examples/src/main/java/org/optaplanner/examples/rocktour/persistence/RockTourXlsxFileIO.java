@@ -42,7 +42,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
@@ -120,22 +119,6 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             constraintConfiguration.setShortenDrivingTimePerMillisecondSquared(readScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
                     "Avoid long driving times: Penalty per millisecond of continuous driving time squared."));
             solution.setConstraintConfiguration(constraintConfiguration);
-        }
-
-        protected void readScoreConstraintHeaders() {
-            nextRow(true);
-            readHeaderCell("Constraint");
-            readHeaderCell("Score weight");
-            readHeaderCell("Description");
-        }
-
-        protected <Score_ extends Score<Score_>> Score_ readScoreConstraintLine(
-                String constraintName, String constraintDescription) {
-            nextRow();
-            readHeaderCell(constraintName);
-            String scoreString = nextStringCell().getStringCellValue();
-            readHeaderCell(constraintDescription);
-            return (Score_) scoreDefinition.parseScore(scoreString);
         }
 
         private void readBus() {

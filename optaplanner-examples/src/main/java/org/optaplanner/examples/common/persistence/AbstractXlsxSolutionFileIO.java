@@ -164,6 +164,22 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell(constraintDescription);
         }
 
+        protected void readScoreConstraintHeaders() {
+            nextRow(true);
+            readHeaderCell("Constraint");
+            readHeaderCell("Score weight");
+            readHeaderCell("Description");
+        }
+
+        protected <Score_ extends Score<Score_>> Score_ readScoreConstraintLine(
+                String constraintName, String constraintDescription) {
+            nextRow();
+            readHeaderCell(constraintName);
+            String scoreString = nextStringCell().getStringCellValue();
+            readHeaderCell(constraintDescription);
+            return (Score_) scoreDefinition.parseScore(scoreString);
+        }
+
         protected String currentPosition() {
             return "Sheet (" + currentSheet.getSheetName() + ") cell ("
                     + (currentRowNumber + 1) + CellReference.convertNumToColString(currentColumnNumber) + ")";
