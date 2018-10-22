@@ -89,6 +89,11 @@ public class UnmarshalMarshalTest {
     }
 
     @Test
+    public void test_hardcoded_java_max_call() throws Exception {
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "hardcoded-java-max-call.dmn");
+    }
+
+    @Test
     public void testDish() throws Exception {
         testRoundTrip("", "dish-decision.xml");
     }

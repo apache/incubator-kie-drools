@@ -73,6 +73,16 @@ public class UnmarshalMarshalTest {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DecisionService20180911v12.dmn");
     }
 
+    @Test
+    public void testV12_DiamondWithColors() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "diamondWithColors.dmn");
+    }
+
+    @Test
+    public void test_hardcoded_java_max_call() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "hardcoded-java-max-call.dmn");
+    }
+
     public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
         DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
         testRoundTrip(subdir, xmlfile, marshaller, DMN12_SCHEMA_SOURCE);

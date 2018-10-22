@@ -76,7 +76,7 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
         super.writeAttributes(writer, parent);
         
         FunctionDefinition fd = (FunctionDefinition) parent;
-        writer.addAttribute(KIND, fd.getKind().toString());
+        writer.addAttribute(KIND, fd.getKind().value());
     }
 
     public FunctionDefinitionConverter(XStream xstream) {
