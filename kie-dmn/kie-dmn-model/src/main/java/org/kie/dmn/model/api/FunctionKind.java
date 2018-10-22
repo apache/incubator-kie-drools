@@ -37,7 +37,7 @@ public enum FunctionKind {
                 return c;
             }
         }
-        if (v.equalsIgnoreCase("Java")) {
+        if ("Java".equalsIgnoreCase(v)) {
             return FunctionKind.JAVA;
         }
         throw new IllegalArgumentException(v);
