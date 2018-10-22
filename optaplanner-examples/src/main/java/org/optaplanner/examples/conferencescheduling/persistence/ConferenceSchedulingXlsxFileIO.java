@@ -766,7 +766,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         private void writeConfiguration() {
-            nextSheet("Configuration", 1, 3, false);
+            nextSheet("Configuration", 1, 4, false);
             nextRow();
             nextHeaderCell("Conference name");
             nextCell().setCellValue(solution.getConferenceName());
