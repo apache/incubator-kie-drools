@@ -71,7 +71,7 @@ public interface ScoreDefinition<S extends Score> {
      * @param score never null
      * @return true if the score is higher or equal to {@link #getZeroScore()}
      */
-    default boolean isPositive(S score) {
+    default boolean isPositiveOrZero(S score) {
         return score.compareTo(getZeroScore()) >= 0;
     }
 
@@ -79,7 +79,7 @@ public interface ScoreDefinition<S extends Score> {
      * @param score never null
      * @return true if the score is lower or equal to {@link #getZeroScore()}
      */
-    default boolean isNegative(S score) {
+    default boolean isNegativeOrZero(S score) {
         return score.compareTo(getZeroScore()) <= 0;
     }
 

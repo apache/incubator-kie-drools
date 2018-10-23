@@ -103,7 +103,7 @@ public class DroolsScoreDirector<Solution_>
                         + ") must have an initScore (" + constraintWeight.getInitScore() + ") equal to 0.\n"
                         + "Maybe validate your " + constraintConfigurationClass.getSimpleName() + " data input.");
             }
-            if (!getScoreDefinition().isPositive(constraintWeight)) {
+            if (!getScoreDefinition().isPositiveOrZero(constraintWeight)) {
                 Class<?> constraintConfigurationClass = getSolutionDescriptor().getConstraintConfigurationDescriptor()
                         .getConstraintConfigurationClass();
                 throw new IllegalArgumentException("The @" + ConstraintWeight.class.getSimpleName()
