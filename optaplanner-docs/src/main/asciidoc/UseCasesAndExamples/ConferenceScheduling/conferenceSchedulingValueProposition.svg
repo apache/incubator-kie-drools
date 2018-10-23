@@ -13,7 +13,7 @@
     height="600"
     id="svg2"
     version="1.1"
-    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+    inkscape:version="0.92.3 (2405546, 2018-03-11)"
     sodipodi:docname="conferenceSchedulingValueProposition.svg"
     inkscape:export-filename="conferenceSchedulingValueProposition.png"
     inkscape:export-xdpi="96"
@@ -173,6 +173,7 @@
      d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
      id="path5767" />
 </marker>
+
 
 
 
@@ -1465,7 +1466,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.2783333"
-     inkscape:cx="400.00001"
+     inkscape:cx="302.9987"
      inkscape:cy="300.00001"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
@@ -2707,30 +2708,7 @@
          style="font-weight:bold;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle">Used by</flowPara></flowRoot>    <g
        id="g13685"
        transform="translate(117.95239,159.99995)" />
-    <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
-       id="flowRoot18713"
-       xml:space="preserve"
-       transform="translate(217.79733,5.4512831)"><flowRegion
-         id="flowRegion18715"><rect
-           style="font-size:20px;text-align:center;text-anchor:middle"
-           y="144.54872"
-           x="382.20267"
-           height="280"
-           width="170"
-           id="rect18717" /></flowRegion><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara6931">Voxxed Zurich</flowPara><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara4314"> </flowPara><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara4341">Red Hat Summit</flowPara><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara6910"> </flowPara><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara14850" /><flowPara
-         style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara4321"> </flowPara></flowRoot>    <path
+    <path
        style="fill:#c8b100"
        d=""
        id="path438"
@@ -2745,7 +2723,28 @@
        d=""
        id="path628"
        inkscape:connector-curvature="0" />
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot588"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 6;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"><flowRegion
+         id="flowRegion590"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;fill-opacity:1;stroke:none"><rect
+           id="rect592"
+           width="170"
+           height="260"
+           x="600"
+           y="150"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;fill-opacity:1;stroke:none" /></flowRegion><flowPara
+         id="flowPara594"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Devoxx Belgium</flowPara><flowPara
+         id="flowPara596"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial" /><flowPara
+         id="flowPara598"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Red Hat Summit</flowPara><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial"
+         id="flowPara600" /><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial"
+         id="flowPara602">Voxxed Zurich</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
