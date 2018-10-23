@@ -484,6 +484,7 @@ public class DMNRuntimeImpl
                 return false;
             }
         }
+        System.out.println("----- d = " + d);
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
@@ -570,43 +571,6 @@ public class DMNRuntimeImpl
             }
             if( missingInput ) {
                 return false;
-            }
-
-            DMNExpressionEvaluator evaluator = decision.getEvaluator();
-            System.out.println("evaluator = " + evaluator);
-            if (evaluator == null && decision.getDecision().getExpression() instanceof DecisionTable) {
-                List<String> modelFiles = DMNRuleClassFile.getClassFile(getRootClassLoader());
-
-                DecisionTable decisionTable = (DecisionTable) decision.getDecision().getExpression();
-
-                DMNFEELHelper feel = new DMNFEELHelper(getRootClassLoader(), Collections.EMPTY_LIST);
-
-                DMNModel model = result.getModel();
-
-                DTableModel dTableModel = new DTableModel(feel, (DMNModelImpl) model, decision.getName(), decision.getName(), decisionTable);
-
-                String pkgName = dTableModel.getNamespace();
-                String tableName = dTableModel.getTableName();
-                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR;
-
-                String className = pkgName + "." + tableName + generator.type;
-
-                Optional<String> generatedClass = modelFiles.stream().filter(ms -> ms.equals(className)).findFirst();
-
-                generatedClass.ifPresent(gc -> {
-                    try {
-                        Class<?> clazz = getRootClassLoader().loadClass(gc);
-                        AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
-
-                        System.out.println("evaluatorInstance = " + evaluatorInstance);
-                        evaluatorInstance.initParameters(feel, new DMNCompilerContext(feel), dTableModel, (DMNBaseNode)d);
-                        System.out.println("Parameter init");
-                        decision.setEvaluator(evaluatorInstance);
-
-                    } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
             }
 
             if( decision.getEvaluator() == null ) {

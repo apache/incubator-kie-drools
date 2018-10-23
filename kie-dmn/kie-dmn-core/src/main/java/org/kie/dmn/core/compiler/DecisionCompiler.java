@@ -126,13 +126,8 @@ public class DecisionCompiler implements DRGElementCompiler {
                 ctx.setVariable(importedType.getKey(), importedType.getValue());
             }
 
-            DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig();
-            List<String> modelFiles = DMNRuleClassFile.getClassFile(dmnCompilerConfig.getRootClassLoader());
-
-            if(modelFiles.size() == 0) {
-                DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression(ctx, model, di, di.getName(), di.getDecision().getExpression());
-                di.setEvaluator(evaluator);
-            }
+            DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression(ctx, model, di, di.getName(), di.getDecision().getExpression());
+            di.setEvaluator(evaluator);
         } finally {
             ctx.exitFrame();
         }

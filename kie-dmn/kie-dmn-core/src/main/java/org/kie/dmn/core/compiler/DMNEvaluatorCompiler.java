@@ -2,6 +2,7 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -24,6 +26,10 @@ import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.compiler.execmodelbased.AbstractModelEvaluator;
+import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
+import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -107,7 +113,38 @@ public class DMNEvaluatorCompiler {
         } else if ( expression instanceof LiteralExpression ) {
             return compileLiteralExpression( ctx, model, node, exprName, (LiteralExpression) expression );
         } else if ( expression instanceof DecisionTable ) {
-            return compileDecisionTable( ctx, model, node, exprName, (DecisionTable) expression );
+            DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig();
+            List<String> modelFiles = DMNRuleClassFile.getClassFile(dmnCompilerConfig.getRootClassLoader());
+            if(modelFiles.size() == 0) {
+                return compileDecisionTable(ctx, model, node, exprName, (DecisionTable) expression);
+            } else {
+                DecisionTable decisionTable = (DecisionTable) expression;
+                DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, node.getName(), node.getName(), decisionTable);
+
+                String pkgName = dTableModel.getNamespace();
+                String tableName = dTableModel.getTableName();
+                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR;
+
+                String className = pkgName + "." + tableName + generator.type;
+
+                Optional<String> generatedClass = modelFiles.stream().filter(ms -> ms.equals(className)).findFirst();
+
+                return generatedClass.map(gc -> {
+                    try {
+                        Class<?> clazz = dmnCompilerConfig.getRootClassLoader().loadClass(gc);
+                        AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
+
+                        System.out.println("evaluatorInstance = " + evaluatorInstance);
+                        evaluatorInstance.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+                        System.out.println("Parameter init");
+
+                        return evaluatorInstance;
+
+                    } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).orElseThrow(() -> new RuntimeException("Cannot instantiate evaluator"));
+            }
         } else if ( expression instanceof FunctionDefinition ) {
             return compileFunctionDefinition( ctx, model, node, exprName, (FunctionDefinition) expression );
         } else if ( expression instanceof Context ) {
