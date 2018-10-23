@@ -65,7 +65,9 @@ public class InformationItemConverter
         super.writeAttributes(writer, parent);
         InformationItem ii = (InformationItem) parent;
         
-        if ( ii.getTypeRef() != null ) writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName( ii.getTypeRef() ) );
+        if (ii.getTypeRef() != null) {
+            writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName(ii.getTypeRef(), ii));
+        }
     }
 
 }
