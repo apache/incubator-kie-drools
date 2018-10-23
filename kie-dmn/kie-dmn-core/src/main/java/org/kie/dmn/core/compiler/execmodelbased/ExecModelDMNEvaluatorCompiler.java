@@ -53,13 +53,13 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
-    enum GeneratorsEnum {
+    public static enum GeneratorsEnum {
         EVALUATOR("Evaluator", new EvaluatorSourceGenerator()),
         UNIT("DTUnit", new UnitSourceGenerator()),
         EXEC_MODEL("ExecModel", new ExecModelSourceGenerator()),
         UNARY_TESTS("UnaryTests", new UnaryTestsSourceGenerator());
 
-        String type;
+        public String type;
         SourceGenerator sourceGenerator;
 
         GeneratorsEnum( String type, SourceGenerator sourceGenerator) {

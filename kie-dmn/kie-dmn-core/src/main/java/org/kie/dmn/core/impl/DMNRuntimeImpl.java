@@ -50,6 +50,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
@@ -63,6 +64,7 @@ import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -594,9 +596,24 @@ public class DMNRuntimeImpl
 
                 DTableModel dTableModel = new DTableModel(feel, (DMNModelImpl) model, decision.getName(), decision.getName(), decisionTable);
 
-//                String className = pkgName + "." + clasName + generator.type;
-//                String fileName = Paths.get("src/main/java", className.replace('.', '/') + ".java").toString();
-                System.out.println("dTableModel = " + dTableModel);
+
+                String pkgName = dTableModel.getNamespace();
+                String clasName = dTableModel.getTableName();
+                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EXEC_MODEL;
+
+                String className = pkgName + "." + clasName + generator.type;
+                String fileName = Paths.get("src/main/java", className.replace('.', '/')).toString();
+
+                Class<?> clazz = getRootClassLoader().loadClass(fileName);
+
+                System.out.println("clazz = " + clazz);
+
+                Object evaluatorInstance = clazz.newInstance();
+
+                System.out.println("evaluatorInstance = " + evaluatorInstance);
+
+                decision.setEvaluator((DMNExpressionEvaluator) evaluatorInstance);
+
             }
 
             if( decision.getEvaluator() == null ) {
