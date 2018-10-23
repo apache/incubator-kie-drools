@@ -218,7 +218,7 @@
           "classSimpleName": "BendableScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -228,7 +228,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendable",
           "classSimpleName": "BendableScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -239,7 +239,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendable",
           "classSimpleName": "BendableScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -251,7 +251,7 @@
           "classSimpleName": "BendableBigDecimalScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -261,7 +261,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendablebigdecimal",
           "classSimpleName": "BendableBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -272,7 +272,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendablebigdecimal",
           "classSimpleName": "BendableBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -284,7 +284,7 @@
           "classSimpleName": "BendableLongScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -294,7 +294,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendablelong",
           "classSimpleName": "BendableLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -305,7 +305,7 @@
           "package": "org.optaplanner.core.api.score.buildin.bendablelong",
           "classSimpleName": "BendableLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -317,7 +317,7 @@
           "classSimpleName": "HardMediumSoftScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -327,7 +327,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoft",
           "classSimpleName": "HardMediumSoftScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -338,7 +338,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoft",
           "classSimpleName": "HardMediumSoftScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -350,7 +350,7 @@
           "classSimpleName": "HardMediumSoftBigDecimalScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -360,7 +360,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal",
           "classSimpleName": "HardMediumSoftBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -371,7 +371,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal",
           "classSimpleName": "HardMediumSoftBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -383,7 +383,7 @@
           "classSimpleName": "HardMediumSoftLongScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -393,7 +393,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoftlong",
           "classSimpleName": "HardMediumSoftLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -404,7 +404,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardmediumsoftlong",
           "classSimpleName": "HardMediumSoftLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -416,7 +416,7 @@
           "classSimpleName": "HardSoftScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -426,7 +426,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoft",
           "classSimpleName": "HardSoftScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -437,7 +437,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoft",
           "classSimpleName": "HardSoftScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -449,7 +449,7 @@
           "classSimpleName": "HardSoftBigDecimalScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -459,7 +459,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftbigdecimal",
           "classSimpleName": "HardSoftBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -470,7 +470,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftbigdecimal",
           "classSimpleName": "HardSoftBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -482,7 +482,7 @@
           "classSimpleName": "HardSoftDoubleScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -492,7 +492,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftdouble",
           "classSimpleName": "HardSoftDoubleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -503,7 +503,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftdouble",
           "classSimpleName": "HardSoftDoubleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -515,7 +515,7 @@
           "classSimpleName": "HardSoftLongScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -525,7 +525,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftlong",
           "classSimpleName": "HardSoftLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -536,7 +536,7 @@
           "package": "org.optaplanner.core.api.score.buildin.hardsoftlong",
           "classSimpleName": "HardSoftLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -548,7 +548,7 @@
           "classSimpleName": "SimpleScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -558,7 +558,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simple",
           "classSimpleName": "SimpleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -569,7 +569,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simple",
           "classSimpleName": "SimpleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -581,7 +581,7 @@
           "classSimpleName": "SimpleBigDecimalScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -591,7 +591,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simplebigdecimal",
           "classSimpleName": "SimpleBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -602,7 +602,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simplebigdecimal",
           "classSimpleName": "SimpleBigDecimalScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -614,7 +614,7 @@
           "classSimpleName": "SimpleDoubleScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -624,7 +624,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simpledouble",
           "classSimpleName": "SimpleDoubleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -635,7 +635,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simpledouble",
           "classSimpleName": "SimpleDoubleScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -647,7 +647,7 @@
           "classSimpleName": "SimpleLongScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -657,7 +657,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simplelong",
           "classSimpleName": "SimpleLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -668,7 +668,7 @@
           "package": "org.optaplanner.core.api.score.buildin.simplelong",
           "classSimpleName": "SimpleLongScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -678,7 +678,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "AbstractScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.generics.elementNowParameterized",
@@ -687,7 +687,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "AbstractScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -696,7 +696,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "AbstractScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -707,7 +707,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "AbstractScoreHolder",
           "elementKind": "class",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -719,7 +719,7 @@
           "classSimpleName": "ScoreHolder",
           "methodName": "extractScore",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.method.addedToInterface",
@@ -728,7 +728,7 @@
           "classSimpleName": "ScoreHolder",
           "methodName": "putConstraintWeight",
           "elementKind": "method",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.generics.elementNowParameterized",
@@ -737,7 +737,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "ScoreHolder",
           "elementKind": "interface",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -746,7 +746,7 @@
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "ScoreHolder",
           "elementKind": "interface",
-          "justification": "ScoreHolder now has at the Score type as a generic type parameter."
+          "justification": "ScoreHolder now has the Score type as a generic type parameter."
         }
       ]
     }
