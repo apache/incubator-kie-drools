@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +63,7 @@ public class ExecModelDMNDeferredEvaluatorCompiler extends ExecModelDMNEvaluator
         String[] fileNames = new String[GeneratorsEnum.values().length];
         List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
 
-        generateSources(ctx, dTableModel, pkgName, clasName, srcMfs, fileNames, generatedSources);
+        generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
 
         for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
             listener.accept(generatedSources);

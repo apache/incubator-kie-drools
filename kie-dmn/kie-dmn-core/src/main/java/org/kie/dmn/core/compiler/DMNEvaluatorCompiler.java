@@ -121,11 +121,7 @@ public class DMNEvaluatorCompiler {
                 DecisionTable decisionTable = (DecisionTable) expression;
                 DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, node.getName(), node.getName(), decisionTable);
 
-                String pkgName = dTableModel.getNamespace();
-                String tableName = dTableModel.getTableName();
-                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR;
-
-                String className = pkgName + "." + tableName + generator.type;
+                String className = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
 
                 Optional<String> generatedClass = modelFiles.stream().filter(ms -> ms.equals(className)).findFirst();
 

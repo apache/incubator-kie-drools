@@ -16,14 +16,11 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -32,7 +29,6 @@ import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.util.IoUtils;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -103,17 +99,17 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         String[] fileNames = new String[GeneratorsEnum.values().length];
         List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
 
-        generateSources(ctx, dTableModel, pkgName, clasName, srcMfs, fileNames, generatedSources);
+        generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
 
         compileGeneratedClass(srcMfs, trgMfs, fileNames);
         defineClassInClassLoader(trgMfs);
         return createInvoker(pkgName, clasName);
     }
 
-    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, String pkgName, String clasName, MemoryFileSystem srcMfs, String[] fileNames, List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources) {
+    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources) {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
-            String className = pkgName + "." + clasName + generator.type;
+            String className = dTableModel.getGeneratedClassName(generator);
             String fileName = Paths.get("src/main/java", className.replace('.', '/') + ".java").toString();
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
