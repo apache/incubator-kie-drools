@@ -13,7 +13,7 @@ ifdef::DM,PAM[]
 {URL_UPLOADED_DECISION_TABLES}[{UPLOADED_DECISION_TABLES}].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-<<_decision_tables_in_spreadsheets>>.
+xref:decision-tables-con_decision-tables[].
 endif::[]
 
 == Hit policies
