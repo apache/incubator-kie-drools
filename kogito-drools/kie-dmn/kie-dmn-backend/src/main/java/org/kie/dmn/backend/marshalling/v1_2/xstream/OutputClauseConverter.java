@@ -72,7 +72,9 @@ public class OutputClauseConverter extends DMNElementConverter {
         OutputClause oc = (OutputClause) parent;
         
         if (oc.getName() != null) writer.addAttribute(NAME, oc.getName());
-        if (oc.getTypeRef() != null) writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName(oc.getTypeRef()));
+        if (oc.getTypeRef() != null) {
+            writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName(oc.getTypeRef(), oc));
+        }
     }
 
     public OutputClauseConverter(XStream xstream) {

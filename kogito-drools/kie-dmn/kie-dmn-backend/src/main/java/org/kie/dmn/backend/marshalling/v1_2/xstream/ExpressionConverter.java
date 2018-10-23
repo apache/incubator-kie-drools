@@ -16,13 +16,11 @@
 
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
-import org.kie.dmn.model.api.*;
-import org.kie.dmn.model.v1_2.*;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.model.api.Expression;
 
 public abstract class ExpressionConverter
         extends DMNElementConverter {
@@ -55,6 +53,8 @@ public abstract class ExpressionConverter
         super.writeAttributes(writer, parent);
         Expression e = (Expression) parent;
         
-        if ( e.getTypeRef() != null ) writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName( e.getTypeRef() ) );
+        if (e.getTypeRef() != null) {
+            writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName(e.getTypeRef(), e));
+        }
     }
 }
