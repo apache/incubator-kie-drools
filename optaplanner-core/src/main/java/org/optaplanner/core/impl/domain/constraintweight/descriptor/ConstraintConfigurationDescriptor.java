@@ -47,7 +47,6 @@ public class ConstraintConfigurationDescriptor<Solution_> {
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     private final Class<?> constraintConfigurationClass;
-    private String constraintPackage;
 
     private final Map<String, ConstraintWeightDescriptor<Solution_>> constraintWeightDescriptorMap;
 
@@ -109,11 +108,7 @@ public class ConstraintConfigurationDescriptor<Solution_> {
                     " but does not have a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
         }
         // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
-        // So the ConstraintWeightDescriptors parse this too.
-        constraintPackage = packAnnotation.constraintPackage();
-        if (constraintPackage.equals("")) {
-            constraintPackage = constraintConfigurationClass.getPackage().getName();
-        }
+        // So the ConstraintWeightDescriptors parse packAnnotation.constraintPackage() instead.
     }
 
     private void processParameterAnnotation(DescriptorPolicy descriptorPolicy, Member member,
