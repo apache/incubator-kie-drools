@@ -24,29 +24,36 @@ public class RuleUnitRegistryTest {
 
     @Test
     public void getRuleUnitDescr() {
+        // TODO
     }
 
     @Test
     public void getRuleUnitFor() {
+        // TODO
     }
 
     @Test
     public void getRuleUnitFor1() {
+        // TODO
     }
 
     @Test
     public void getNamedRuleUnit() {
+        // TODO
     }
 
     @Test
     public void registerRuleUnit() {
+        // TODO
     }
 
     @Test
     public void add() {
+        // TODO
     }
 
     @Test
     public void hasUnits() {
+        // TODO
     }
 }
