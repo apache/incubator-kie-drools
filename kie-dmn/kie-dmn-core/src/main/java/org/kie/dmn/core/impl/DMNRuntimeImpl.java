@@ -64,6 +64,7 @@ import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.util.Msg;
@@ -574,18 +575,7 @@ public class DMNRuntimeImpl
             DMNExpressionEvaluator evaluator = decision.getEvaluator();
             System.out.println("evaluator = " + evaluator);
             if (evaluator == null && decision.getDecision().getExpression() instanceof DecisionTable) {
-                List<String> modelFiles;
-                try {
-                    InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
-                    if (resourceAsStream != null) {
-                        String allClasses = new String(IoUtils.readBytesFromInputStream(resourceAsStream));
-                        modelFiles = Arrays.asList(allClasses.split("\\n"));
-                    } else {
-                        modelFiles = new ArrayList<>();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                List<String> modelFiles = DMNRuleClassFile.getClassFile(getRootClassLoader());
 
                 System.out.println("modelFiles = " + modelFiles);
 
