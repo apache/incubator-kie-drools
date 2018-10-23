@@ -128,8 +128,7 @@ public class DMNEvaluatorCompiler {
                     try {
                         Class<?> clazz = rootClassLoader.loadClass(gc);
                         AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
-
-                        evaluatorInstance.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+                        evaluatorInstance.initParameters(ctx, dTableModel, node);
 
                         return evaluatorInstance;
 

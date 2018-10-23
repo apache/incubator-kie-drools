@@ -133,4 +133,8 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         this.node = node;
         return this;
     }
+
+    public AbstractModelEvaluator initParameters( DMNCompilerContext ctx, DTableModel dTableModel, DMNBaseNode node) {
+        return initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+    }
 }
