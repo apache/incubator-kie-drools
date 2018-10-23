@@ -34,11 +34,17 @@ public class ConstraintWeightDescriptorTest {
                 = TestdataConstraintConfigurationSolution.buildSolutionDescriptor();
         ConstraintConfigurationDescriptor<TestdataConstraintConfigurationSolution> constraintConfigurationDescriptor
                 = solutionDescriptor.getConstraintConfigurationDescriptor();
+
         ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> firstWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
+        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
+                firstWeightDescriptor.getConstraintPackage());
         assertEquals("First weight", firstWeightDescriptor.getConstraintName());
+
         ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> secondWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
+        assertEquals("packageOverwrittenOnField",
+                secondWeightDescriptor.getConstraintPackage());
         assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
 
         TestdataConstraintConfigurationSolution solution = new TestdataConstraintConfigurationSolution("solution");
@@ -67,7 +73,7 @@ public class ConstraintWeightDescriptorTest {
 
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> secondWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
-        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
+        assertEquals("packageOverwrittenOnField",
                 secondWeightDescriptor.getConstraintPackage());
         assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
 

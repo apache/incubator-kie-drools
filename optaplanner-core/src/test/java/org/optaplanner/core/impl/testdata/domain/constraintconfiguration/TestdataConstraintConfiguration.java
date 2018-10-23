@@ -44,7 +44,7 @@ public class TestdataConstraintConfiguration extends TestdataObject {
         this.firstWeight = firstWeight;
     }
 
-    @ConstraintWeight("Second weight")
+    @ConstraintWeight(constraintPackage = "packageOverwrittenOnField", value = "Second weight")
     public SimpleScore getSecondWeight() {
         return secondWeight;
     }
