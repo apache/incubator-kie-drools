@@ -58,14 +58,23 @@ public class ConstraintWeightDescriptorTest {
                 = TestdataExtendedConstraintConfigurationSolution.buildExtendedSolutionDescriptor();
         ConstraintConfigurationDescriptor<TestdataExtendedConstraintConfigurationSolution> constraintConfigurationDescriptor
                 = solutionDescriptor.getConstraintConfigurationDescriptor();
+
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> firstWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
+        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
+                firstWeightDescriptor.getConstraintPackage());
         assertEquals("First weight", firstWeightDescriptor.getConstraintName());
+
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> secondWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
+        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
+                secondWeightDescriptor.getConstraintPackage());
         assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
+
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> thirdWeightDescriptor
                 = constraintConfigurationDescriptor.getConstraintWeightDescriptor("thirdWeight");
+        assertEquals(TestdataExtendedConstraintConfigurationSolution.class.getPackage().getName(),
+                thirdWeightDescriptor.getConstraintPackage());
         assertEquals("Third weight", thirdWeightDescriptor.getConstraintName());
 
         TestdataExtendedConstraintConfigurationSolution solution = new TestdataExtendedConstraintConfigurationSolution("solution");
