@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -570,17 +571,15 @@ public class DMNRuntimeImpl
 
             // try read the evaluator from the class loader
 
-            if(decision.getDecision().getExpression() instanceof DecisionTable) {
-
-                System.out.println("+++++ dr = " + dr);
-
-                Optional<String> modelFiles;
+            if (decision.getDecision().getExpression() instanceof DecisionTable) {
+                List<String> modelFiles;
                 try {
                     InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
                     if (resourceAsStream != null) {
-                        modelFiles = Optional.of(new String(IoUtils.readBytesFromInputStream(resourceAsStream)));
+                        String allClasses = new String(IoUtils.readBytesFromInputStream(resourceAsStream));
+                        modelFiles = Arrays.asList(allClasses.split("\\n"));
                     } else {
-                        modelFiles = Optional.empty();
+                        modelFiles = new ArrayList<>();
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -592,28 +591,34 @@ public class DMNRuntimeImpl
 
                 DMNFEELHelper feel = new DMNFEELHelper(getRootClassLoader(), Collections.EMPTY_LIST);
 
-                DMNModel model = ((DMNResultImpl) result).getModel();
+                DMNModel model = result.getModel();
 
                 DTableModel dTableModel = new DTableModel(feel, (DMNModelImpl) model, decision.getName(), decision.getName(), decisionTable);
 
-
                 String pkgName = dTableModel.getNamespace();
-                String clasName = dTableModel.getTableName();
-                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EXEC_MODEL;
+                String tableName = dTableModel.getTableName();
+                ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator = ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR;
 
-                String className = pkgName + "." + clasName + generator.type;
-                String fileName = Paths.get("src/main/java", className.replace('.', '/')).toString();
+                String className = pkgName + "." + tableName + generator.type;
 
-                Class<?> clazz = getRootClassLoader().loadClass(fileName);
+                Optional<String> generatedClass = modelFiles.stream().filter(ms -> ms.equals(className)).findFirst();
 
-                System.out.println("clazz = " + clazz);
+                generatedClass.ifPresent(gc -> {
+                    try {
+                        System.out.println("gc = " + gc);
+                        Class<?> clazz = getRootClassLoader().loadClass(gc);
 
-                Object evaluatorInstance = clazz.newInstance();
+                        System.out.println("clazz = " + clazz);
 
-                System.out.println("evaluatorInstance = " + evaluatorInstance);
+                        Object evaluatorInstance = clazz.newInstance();
 
-                decision.setEvaluator((DMNExpressionEvaluator) evaluatorInstance);
+                        System.out.println("evaluatorInstance = " + evaluatorInstance);
 
+                        decision.setEvaluator((DMNExpressionEvaluator) evaluatorInstance);
+                    } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
 
             if( decision.getEvaluator() == null ) {
