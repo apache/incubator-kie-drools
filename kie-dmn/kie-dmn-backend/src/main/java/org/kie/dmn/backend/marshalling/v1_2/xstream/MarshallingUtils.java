@@ -22,14 +22,14 @@ import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.kie.dmn.model.api.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
-import org.kie.dmn.model.v1_2.*;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.Relation;
 
 public final class MarshallingUtils {
 
@@ -52,9 +52,14 @@ public final class MarshallingUtils {
         }
     }
     
-    public static String formatQName(QName qname) {
-        if ( !XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix()) ) {
-            return qname.getPrefix() + ":" + qname.getLocalPart();
+    public static String formatQName(QName qname, DMNModelInstrumentedBase parent) {
+        if (!XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix())) {
+            String nsForPrefix = parent.getNamespaceURI(qname.getPrefix());
+            if (parent.getURIFEEL().equals(nsForPrefix)) {
+                return qname.getLocalPart(); // DMN v1.2 feel comes without a prefix.
+            } else {
+                return qname.getPrefix() + "." + qname.getLocalPart(); // DMN v1.2 namespace typeRef lookup is done with dot.
+            }
         } else {
             return qname.toString();
         }
