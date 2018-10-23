@@ -571,7 +571,9 @@ public class DMNRuntimeImpl
 
             // try read the evaluator from the class loader
 
-            if (decision.getDecision().getExpression() instanceof DecisionTable) {
+            DMNExpressionEvaluator evaluator = decision.getEvaluator();
+            System.out.println("evaluator = " + evaluator);
+            if (evaluator == null && decision.getDecision().getExpression() instanceof DecisionTable) {
                 List<String> modelFiles;
                 try {
                     InputStream resourceAsStream = getRootClassLoader().getResourceAsStream("META-INF/kie/dmn");
