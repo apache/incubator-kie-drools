@@ -36,4 +36,12 @@ public class EvaluatorResultImpl implements EvaluatorResult {
     public ResultType getResultType() {
         return code;
     }
+
+    @Override
+    public String toString() {
+        return "EvaluatorResultImpl{" +
+                "result=" + result +
+                ", code=" + code +
+                '}';
+    }
 }

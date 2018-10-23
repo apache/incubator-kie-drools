@@ -60,10 +60,12 @@ import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.compiler.execmodelbased.AbstractModelEvaluator;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
@@ -570,14 +572,10 @@ public class DMNRuntimeImpl
                 return false;
             }
 
-            // try read the evaluator from the class loader
-
             DMNExpressionEvaluator evaluator = decision.getEvaluator();
             System.out.println("evaluator = " + evaluator);
             if (evaluator == null && decision.getDecision().getExpression() instanceof DecisionTable) {
                 List<String> modelFiles = DMNRuleClassFile.getClassFile(getRootClassLoader());
-
-                System.out.println("modelFiles = " + modelFiles);
 
                 DecisionTable decisionTable = (DecisionTable) decision.getDecision().getExpression();
 
@@ -597,16 +595,14 @@ public class DMNRuntimeImpl
 
                 generatedClass.ifPresent(gc -> {
                     try {
-                        System.out.println("gc = " + gc);
                         Class<?> clazz = getRootClassLoader().loadClass(gc);
-
-                        System.out.println("clazz = " + clazz);
-
-                        Object evaluatorInstance = clazz.newInstance();
+                        AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
 
                         System.out.println("evaluatorInstance = " + evaluatorInstance);
+                        evaluatorInstance.initParameters(feel, new DMNCompilerContext(feel), dTableModel, (DMNBaseNode)d);
+                        System.out.println("Parameter init");
+                        decision.setEvaluator(evaluatorInstance);
 
-                        decision.setEvaluator((DMNExpressionEvaluator) evaluatorInstance);
                     } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
                         throw new RuntimeException(e);
                     }
@@ -629,6 +625,7 @@ public class DMNRuntimeImpl
             }
             try {
                 EvaluatorResult er = decision.getEvaluator().evaluate( this, result );
+                System.out.println("er = " + er);
                 if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                     Object value = er.getResult();
                     if( ! decision.getResultType().isCollection() && value instanceof Collection &&

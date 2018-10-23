@@ -51,11 +51,8 @@ public class ExecModelDMNDeferredEvaluatorCompiler extends ExecModelDMNEvaluator
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
         String decisionName = dt.getParent() instanceof DRGElement ? dtName : ( dt.getId() != null ? dt.getId() :  "_" + UUID.randomUUID().toString() );
         DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
-        AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        if(evaluator != null) {
-            evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
-        }
-        return evaluator;
+        generateEvaluator( ctx, dTableModel );
+        return null;
     }
 
     public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
