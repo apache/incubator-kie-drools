@@ -114,25 +114,22 @@ public class DMNEvaluatorCompiler {
             return compileLiteralExpression( ctx, model, node, exprName, (LiteralExpression) expression );
         } else if ( expression instanceof DecisionTable ) {
             DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig();
-            List<String> modelFiles = DMNRuleClassFile.getClassFile(dmnCompilerConfig.getRootClassLoader());
-            if(modelFiles.size() == 0) {
+            ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
+            DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(rootClassLoader);
+            if(!dmnRuleClassFile.hasCompiledClasses()) {
                 return compileDecisionTable(ctx, model, node, exprName, (DecisionTable) expression);
             } else {
                 DecisionTable decisionTable = (DecisionTable) expression;
                 DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, node.getName(), node.getName(), decisionTable);
-
                 String className = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
-
-                Optional<String> generatedClass = modelFiles.stream().filter(ms -> ms.equals(className)).findFirst();
+                Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
 
                 return generatedClass.map(gc -> {
                     try {
-                        Class<?> clazz = dmnCompilerConfig.getRootClassLoader().loadClass(gc);
+                        Class<?> clazz = rootClassLoader.loadClass(gc);
                         AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
 
-                        System.out.println("evaluatorInstance = " + evaluatorInstance);
                         evaluatorInstance.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
-                        System.out.println("Parameter init");
 
                         return evaluatorInstance;
 
