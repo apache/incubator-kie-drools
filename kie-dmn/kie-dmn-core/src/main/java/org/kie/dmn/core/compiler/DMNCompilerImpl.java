@@ -58,6 +58,8 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
+import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -116,9 +118,13 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        if (cc.isDeferredCompilation()) {
+
+        DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader());
+        if (!dmnRuleClassFile.hasCompiledClasses()) {
+            this.evaluatorCompiler = new ExecModelDMNClassLoaderCompiler(this, dmnRuleClassFile);
+        } else if (cc.isDeferredCompilation()) {
             ExecModelDMNMavenSourceCompiler evaluatorCompiler = new ExecModelDMNMavenSourceCompiler(this);
-            for(AfterGeneratingSourcesListener l : dmnCompilerConfig.getAfterGeneratingSourcesListeners()) {
+            for (AfterGeneratingSourcesListener l : dmnCompilerConfig.getAfterGeneratingSourcesListeners()) {
                 evaluatorCompiler.register(l);
             }
             this.evaluatorCompiler = evaluatorCompiler;

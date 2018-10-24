@@ -39,7 +39,6 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
         afterGeneratingSourcesListeners.add(listener);
     }
 
-
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNMavenSourceCompiler.class);
 
     public ExecModelDMNMavenSourceCompiler(DMNCompilerImpl compiler) {
@@ -55,11 +54,8 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
     }
 
     public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
-        String pkgName = dTableModel.getNamespace();
-        String clasName = dTableModel.getTableName();
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
-        MemoryFileSystem trgMfs = new MemoryFileSystem();
         String[] fileNames = new String[GeneratorsEnum.values().length];
         List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
 

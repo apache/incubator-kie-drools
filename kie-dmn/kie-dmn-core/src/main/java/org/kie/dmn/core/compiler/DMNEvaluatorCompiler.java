@@ -2,7 +2,6 @@ package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -113,30 +111,7 @@ public class DMNEvaluatorCompiler {
         } else if ( expression instanceof LiteralExpression ) {
             return compileLiteralExpression( ctx, model, node, exprName, (LiteralExpression) expression );
         } else if ( expression instanceof DecisionTable ) {
-            DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig();
-            ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
-            DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(rootClassLoader);
-            if(!dmnRuleClassFile.hasCompiledClasses()) {
-                return compileDecisionTable(ctx, model, node, exprName, (DecisionTable) expression);
-            } else {
-                DecisionTable decisionTable = (DecisionTable) expression;
-                DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, node.getName(), node.getName(), decisionTable);
-                String className = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
-                Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
-
-                return generatedClass.map(gc -> {
-                    try {
-                        Class<?> clazz = rootClassLoader.loadClass(gc);
-                        AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
-                        evaluatorInstance.initParameters(ctx, dTableModel, node);
-
-                        return evaluatorInstance;
-
-                    } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).orElseThrow(() -> new RuntimeException("Cannot instantiate evaluator"));
-            }
+            return compileDecisionTable(ctx, model, node, exprName, (DecisionTable) expression);
         } else if ( expression instanceof FunctionDefinition ) {
             return compileFunctionDefinition( ctx, model, node, exprName, (FunctionDefinition) expression );
         } else if ( expression instanceof Context ) {
@@ -159,6 +134,14 @@ public class DMNEvaluatorCompiler {
                                    node.getIdentifierString() );
         }
         return null;
+    }
+
+    protected ClassLoader getRootClassLoader() {
+        return getDmnCompilerConfig().getRootClassLoader();
+    }
+
+    protected DMNCompilerConfigurationImpl getDmnCompilerConfig() {
+        return (DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig();
     }
 
     private DMNExpressionEvaluator compileInvocation(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, Invocation expression) {
