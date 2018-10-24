@@ -65,10 +65,10 @@ public class DMNAssemblerService implements KieAssemblerService {
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
-    private DMNCompilerConfigurationImpl compilerConfiguration;
+    private DMNCompilerConfigurationImpl externalCompilerConfiguration;
 
-    public DMNAssemblerService(DMNCompilerConfigurationImpl compilerConfiguration) {
-        this.compilerConfiguration = compilerConfiguration;
+    public DMNAssemblerService(DMNCompilerConfigurationImpl externalCompilerConfiguration) {
+        this.externalCompilerConfiguration = externalCompilerConfiguration;
     }
 
     public DMNAssemblerService() {
@@ -83,8 +83,12 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        if(compilerConfiguration == null) {
+        DMNCompilerConfigurationImpl compilerConfiguration;
+        // Beware: compilerConfiguration can't be cached in DMNAssemblerService
+        if (externalCompilerConfiguration == null) {
             compilerConfiguration = getDefaultCompilerConfiguration(kbuilderImpl, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        } else {
+            compilerConfiguration = externalCompilerConfiguration;
         }
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> {
 
