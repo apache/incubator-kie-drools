@@ -11,7 +11,7 @@ import org.drools.core.util.IoUtils;
 
 public class DMNRuleClassFile {
 
-    private final static String RULE_CLASS_FILE_NAME = "META-INF/kie/dmn";
+    public final static String RULE_CLASS_FILE_NAME = "META-INF/kie/dmn";
     private ClassLoader classLoader;
     private List<String> classFile;
 
