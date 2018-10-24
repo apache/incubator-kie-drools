@@ -484,7 +484,6 @@ public class DMNRuntimeImpl
                 return false;
             }
         }
-        System.out.println("----- d = " + d);
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
@@ -589,7 +588,6 @@ public class DMNRuntimeImpl
             }
             try {
                 EvaluatorResult er = decision.getEvaluator().evaluate( this, result );
-                System.out.println("er = " + er);
                 if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                     Object value = er.getResult();
                     if( ! decision.getResultType().isCollection() && value instanceof Collection &&
