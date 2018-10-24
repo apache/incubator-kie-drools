@@ -6,8 +6,11 @@
 [[conferenceSchedulingProblemDescription]]
 == Problem Description
 
-Assign each conference talk to a timeslot and a room.
-Timeslots can overlap. Read/write to/from an `*.xlsx` file that can be edited with LibreOffice or Excel too.
+Assign each conference talk to a timeslot and a room, after the talks have been accepted.
+
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingMilestonesTimeline.png[align="center"]
+
+Timeslots can overlap. It reads/writse to/from an `*.xlsx` file that can be edited with LibreOffice or Excel.
 
 Hard constraints:
 
@@ -58,6 +61,8 @@ Soft constraints:
  to avoid having most participants going to the same room.
 * Published room: Minimize the number of talks scheduled in different rooms than published ones.
 * Room stability: Talks with common theme track tag should be scheduled in the same room throughout the day.
+
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingConstraints.png[align="center"]
 
 
 [[conferenceSchedulingValueProposition]]
