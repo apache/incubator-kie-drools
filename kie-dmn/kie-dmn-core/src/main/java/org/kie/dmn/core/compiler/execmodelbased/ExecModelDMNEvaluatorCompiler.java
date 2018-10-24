@@ -49,7 +49,7 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
-    public static enum GeneratorsEnum {
+    enum GeneratorsEnum {
         EVALUATOR("Evaluator", new EvaluatorSourceGenerator()),
         UNIT("DTUnit", new UnitSourceGenerator()),
         EXEC_MODEL("ExecModel", new ExecModelSourceGenerator()),
@@ -72,6 +72,16 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     @Override
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
+        String decisionName = getDecisionTableName(dtName, dt);
+        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
+        AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
+        if(evaluator != null) {
+            evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+        }
+        return evaluator;
+    }
+
+    protected String getDecisionTableName(String dtName, DecisionTable dt) {
         String decisionName;
         if (dt.getParent() instanceof DRGElement) {
             decisionName = dtName;
@@ -82,12 +92,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                 decisionName = "_" + UUID.randomUUID().toString();
             }
         }
-        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
-        AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        if(evaluator != null) {
-            evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
-        }
-        return evaluator;
+        return decisionName;
     }
 
     public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
