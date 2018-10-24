@@ -393,6 +393,7 @@
               <settings.localRepository>${settings.localRepository}</settings.localRepository>
               <!--Container port for as-client tests-->
               <container.port>${container.port}</container.port>
+              <container.id>${container.id}</container.id>
             </systemPropertyVariables>
           </configuration>
         </plugin>
@@ -699,7 +700,7 @@
       <properties>
         <container.id>tomcat9x</container.id>
         <container.port>8080</container.port>
-        <org.jbpm.persistence.ds>java:comp/env/jdbc/jbpm</org.jbpm.persistence.ds>
+        <org.jbpm.persistence.ds>java:comp/env/jbpmDs</org.jbpm.persistence.ds>
         <container.tm>JBossTS</container.tm>
         <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
         <org.jbpm.datasource.driver.factory>org.apache.tomcat.jdbc.naming.GenericNamingResourcesFactory</org.jbpm.datasource.driver.factory>
@@ -743,6 +744,32 @@
                     <dependency>
                       <groupId>org.jboss.spec.javax.security.jacc</groupId>
                       <artifactId>jboss-jacc-api_1.5_spec</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jboss.spec.javax.transaction</groupId>
+                      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jboss.integration</groupId>
+                      <artifactId>narayana-tomcat</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jboss.narayana.jta</groupId>
+                      <artifactId>narayana-jta</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jboss</groupId>
+                      <artifactId>jboss-transaction-spi</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jboss.logging</groupId>
+                      <artifactId>jboss-logging</artifactId>
+                    </dependency>
+
+                    <!-- TODO: A temporary workaround until tomcat 9.0.13 is released -->
+                    <dependency>
+                      <groupId>org.apache.tomcat</groupId>
+                      <artifactId>tomcat-dbcp</artifactId>
                     </dependency>
                   </dependencies>
                 </container>
@@ -792,6 +819,7 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-jdk14</artifactId>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss.spec.javax.security.jacc</groupId>
@@ -803,15 +831,41 @@
         <dependency>
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>
+          <scope>test</scope>
         </dependency>
         <!-- arquillian-tomcat-remote-9 not released yet -->
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
           <artifactId>arquillian-tomcat-remote-7</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <!-- Narayana integration -->
+        <dependency>
+          <groupId>org.jboss.integration</groupId>
+          <artifactId>narayana-tomcat</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.narayana.jta</groupId>
+          <artifactId>narayana-jta</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-transaction-spi</artifactId>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss.logging</groupId>
           <artifactId>jboss-logging</artifactId>
+          <scope>test</scope>
+        </dependency>
+
+        <!-- TODO: A temporary workaround until tomcat 9.0.13 is released -->
+        <dependency>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>tomcat-dbcp</artifactId>
+          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>

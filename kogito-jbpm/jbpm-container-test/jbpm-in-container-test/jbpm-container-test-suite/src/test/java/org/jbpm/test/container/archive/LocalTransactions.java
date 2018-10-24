@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 public class LocalTransactions {
 
+    private static final String CONTAINER_ID = System.getProperty("container.id", "");
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalTransactions.class);
 
     public static final String ARCHIVE_NAME = "local-transactions";
@@ -49,7 +51,6 @@ public class LocalTransactions {
     public static final String RULES_TRANSACTIONS = "transactions-rules.drl";
 
     public static final String LOCAL_TRANSACTIONS_PATH = "org/jbpm/test/container/archive/localtransactions/";
-
 
     private WebArchive war;
 
@@ -88,9 +89,12 @@ public class LocalTransactions {
         war.addAsResource(getClass().getResource("/persistence.xml"),
                 ArchivePaths.create("META-INF/persistence.xml"));
 
-        war.addAsWebResource(getClass().getResource("localtransactions/tomcat-context.xml"),
-                ArchivePaths.create("META-INF/context.xml"));
-
+        if (CONTAINER_ID.startsWith("tomcat")) {
+            war.addAsWebResource(getClass().getResource("localtransactions/tomcat-context.xml"),
+                                 ArchivePaths.create("META-INF/context.xml"));
+            war.addAsWebInfResource(getClass().getResource("localtransactions/web.xml"),
+                                    ArchivePaths.create("web.xml"));
+        }
         war.addAsResource(getClass().getResource("localtransactions/jbossts-properties.xml"), ArchivePaths.create("jbossts-properties.xml"));
 
         return war;

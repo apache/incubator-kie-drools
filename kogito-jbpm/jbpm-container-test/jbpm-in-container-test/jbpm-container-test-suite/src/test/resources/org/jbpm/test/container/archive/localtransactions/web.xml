@@ -1,0 +1,5 @@
+<web-app>
+  <listener>
+    <listener-class>org.jboss.narayana.tomcat.jta.NarayanaJtaServletContextListener</listener-class>
+  </listener>
+</web-app>
