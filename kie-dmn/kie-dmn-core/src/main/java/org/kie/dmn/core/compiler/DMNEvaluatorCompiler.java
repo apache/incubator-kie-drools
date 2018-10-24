@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
@@ -25,9 +24,7 @@ import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
-import org.kie.dmn.core.compiler.execmodelbased.AbstractModelEvaluator;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
