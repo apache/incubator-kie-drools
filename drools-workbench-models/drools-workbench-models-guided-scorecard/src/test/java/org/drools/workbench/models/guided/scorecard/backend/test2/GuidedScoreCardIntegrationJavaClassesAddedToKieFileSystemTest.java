@@ -26,8 +26,7 @@ import java.util.Map;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
 import org.drools.workbench.models.guided.scorecard.backend.test1.ApplicantAttribute;
 import org.junit.Test;
@@ -36,7 +35,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Data;
@@ -219,7 +217,6 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
     }
 
     protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
-        RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
         Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
         RuleImpl ruleImpl;
         for (String pkgName : possiblePackages) {
@@ -227,7 +224,7 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
                 if (ruleImpl != null) {
-                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+                    RuleUnitDescription descr = ikb.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
                         return descr.getRuleUnitClass();
                     }

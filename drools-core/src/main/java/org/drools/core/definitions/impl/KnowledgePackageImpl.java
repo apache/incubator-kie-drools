@@ -51,7 +51,7 @@ import org.drools.core.rule.InvalidRulePackage;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
@@ -128,7 +128,7 @@ public class KnowledgePackageImpl
 
     private transient TypeResolver typeResolver;
 
-    private transient RuleUnitRegistry ruleUnitRegistry;
+    private transient RuleUnitDescriptionLoader ruleUnitDescriptionLoader;
 
     private transient AtomicBoolean inUse = new AtomicBoolean(false);
 
@@ -650,11 +650,11 @@ public class KnowledgePackageImpl
 
     public void setTypeResolver(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
-        this.ruleUnitRegistry = new RuleUnitRegistry(typeResolver);
+        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(typeResolver);
     }
 
-    public RuleUnitRegistry getRuleUnitRegistry() {
-        return ruleUnitRegistry;
+    public RuleUnitDescriptionLoader getRuleUnitDescriptionLoader() {
+        return ruleUnitDescriptionLoader;
     }
 
     public void addWindowDeclaration(WindowDeclaration window) {

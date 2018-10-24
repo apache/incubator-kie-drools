@@ -247,8 +247,8 @@ public class PatternBuilder
         if (firstXpathChunk.getInlineCast() != null) {
             return firstXpathChunk.getInlineCast();
         }
-        return context.getPkg().getRuleUnitRegistry()
-                .getRuleUnitFor(context.getRule())
+        return context.getPkg().getRuleUnitDescriptionLoader()
+                .getDescription(context.getRule())
                 .flatMap(ruDescr -> ruDescr.getDatasourceType(identifier))
                 .map(Class::getCanonicalName)
                 .orElse(null);

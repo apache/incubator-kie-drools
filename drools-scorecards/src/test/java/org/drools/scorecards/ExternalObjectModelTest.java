@@ -15,27 +15,21 @@
 
 package org.drools.scorecards;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.kie.pmml.pmml_4_2.PMML4Compiler;
-import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
-import org.kie.pmml.pmml_4_2.PMML4Helper;
-import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
-import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.scorecards.example.Applicant;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,37 +38,25 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.api.pmml.PMML4Data;
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.PMML4Compiler;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
+import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
+import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.drools.scorecards.ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL;
 
 //@Ignore
 public class ExternalObjectModelTest {
@@ -314,37 +296,5 @@ public class ExternalObjectModelTest {
         Map reasonCodesMap = (Map)resultHolder.getResultValue("ScoreCard", "ranking");
         assertNotNull( reasonCodesMap );
         assertEquals( expectedRanking, new ArrayList( reasonCodesMap.keySet() ) );
-    }
-
-    protected Class<? extends RuleUnit> getStartingRuleUnit(String startingRule, InternalKnowledgeBase ikb, List<String> possiblePackages) {
-        RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
-        Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
-        RuleImpl ruleImpl = null;
-        for (String pkgName : possiblePackages) {
-            if (pkgs.containsKey(pkgName)) {
-                InternalKnowledgePackage pkg = pkgs.get(pkgName);
-                ruleImpl = pkg.getRule(startingRule);
-                if (ruleImpl != null) {
-                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
-                    if (descr != null) {
-                        return descr.getRuleUnitClass();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    protected List<String> calculatePossiblePackageNames(String modelId, String... knownPackageNames) {
-        List<String> packageNames = new ArrayList<>();
-        String javaModelId = modelId.replaceAll("\\s", "");
-        if (knownPackageNames != null && knownPackageNames.length > 0) {
-            for (String knownPkgName : knownPackageNames) {
-                packageNames.add(knownPkgName + "." + javaModelId);
-            }
-        }
-        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
-        packageNames.add(basePkgName);
-        return packageNames;
     }
 }

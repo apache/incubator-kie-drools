@@ -85,7 +85,7 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.TripleStore;
 import org.kie.api.builder.ReleaseId;
@@ -185,7 +185,7 @@ public class KnowledgeBaseImpl
     private String containerId;
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
 
-    private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
+    private RuleUnitDescriptionRegistry ruleUnitDescriptionRegistry = new RuleUnitDescriptionRegistry();
 
     private SessionConfiguration sessionConfiguration;
 
@@ -935,7 +935,7 @@ public class KnowledgeBaseImpl
                 }
             }
 
-            ruleUnitRegistry.add(newPkg.getRuleUnitRegistry());
+            ruleUnitDescriptionRegistry.add(newPkg.getRuleUnitDescriptionLoader());
 
             this.eventSupport.fireAfterPackageAdded( newPkg );
         }
@@ -1794,12 +1794,12 @@ public class KnowledgeBaseImpl
        return this.kieContainer;
     }
 
-    public RuleUnitRegistry getRuleUnitRegistry() {
-        return ruleUnitRegistry;
+    public RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry() {
+        return ruleUnitDescriptionRegistry;
     }
 
     public boolean hasUnits() {
-        return ruleUnitRegistry.hasUnits();
+        return ruleUnitDescriptionRegistry.hasUnits();
     }
 
     public List<AsyncReceiveNode> getReceiveNodes() {

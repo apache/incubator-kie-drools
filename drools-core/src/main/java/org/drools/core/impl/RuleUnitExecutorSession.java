@@ -32,7 +32,7 @@ import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.ruleunit.RuleUnitFactory;
 import org.drools.core.ruleunit.RuleUnitGuardSystem;
 import org.drools.core.spi.Activation;
@@ -61,7 +61,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     private RuleUnitFactory ruleUnitFactory;
     private RuleUnit currentRuleUnit;
-    private RuleUnitDescr currentRuDescr;
+    private RuleUnitDescription currentRuDescr;
 
     private AtomicBoolean suspended = new AtomicBoolean( false );
 
@@ -268,14 +268,14 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         ruleUnitGuardSystem.removeActivation( activation );
     }
 
-    private RuleUnitDescr bindRuleUnit( RuleUnit ruleUnit ) {
+    private RuleUnitDescription bindRuleUnit(RuleUnit ruleUnit ) {
         suspended.set( false );
         currentRuleUnit = ruleUnit;
         currentRuleUnit.onStart();
 
         factHandlesMap.computeIfAbsent( ruleUnit.getClass(), x -> session.getEntryPoint( RULE_UNIT_ENTRY_POINT ).insert( ruleUnit ) );
 
-        RuleUnitDescr ruDescr = session.kBase.getRuleUnitRegistry().getRuleUnitDescr( ruleUnit );
+        RuleUnitDescription ruDescr = session.kBase.getRuleUnitDescriptionRegistry().getDescriptionForUnit(ruleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( new RuleUnitGlobals( ruDescr, ruleUnit ) );
         ruDescr.bindDataSources( session, ruleUnit );
 
@@ -347,10 +347,10 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     public static class RuleUnitGlobals implements Globals {
-        private final RuleUnitDescr ruDescr;
+        private final RuleUnitDescription ruDescr;
         private final RuleUnit ruleUnit;
 
-        private RuleUnitGlobals( RuleUnitDescr ruDescr, RuleUnit ruleUnit ) {
+        private RuleUnitGlobals(RuleUnitDescription ruDescr, RuleUnit ruleUnit ) {
             this.ruDescr = ruDescr;
             this.ruleUnit = ruleUnit;
         }

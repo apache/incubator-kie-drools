@@ -227,7 +227,7 @@ public class KiePackagesBuilder {
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
-            pkg.getRuleUnitRegistry().getRuleUnitFor( ruleImpl );
+            pkg.getRuleUnitDescriptionLoader().getDescription(ruleImpl );
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );

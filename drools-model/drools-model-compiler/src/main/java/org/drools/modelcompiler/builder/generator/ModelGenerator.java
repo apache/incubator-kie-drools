@@ -40,7 +40,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
-import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.javaparser.ast.Modifier;
@@ -164,7 +164,7 @@ public class ModelGenerator {
 
         setDialectFromRuleDescr(context, ruleDescr);
 
-        RuleUnitDescr ruleUnitDescr = context.getRuleUnitDescr();
+        RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
 
@@ -386,7 +386,7 @@ public class ModelGenerator {
         return result;
     }
 
-    private static void createUnitData( RuleContext context, RuleUnitDescr ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
+    private static void createUnitData(RuleContext context, RuleUnitDescription ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
         if (ruleUnitDescr != null) {
             for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
                 addUnitData(context, unitVar.getKey(), unitVar.getValue().getGenericReturnType(), ruleVariablesBlock);

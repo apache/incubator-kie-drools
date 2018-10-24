@@ -17,13 +17,9 @@ package org.kie.pmml.pmml_4_2.model.mining;
 
 
 import org.drools.core.base.WrappedStatefulKnowledgeSessionForRHS;
-import org.drools.core.datasources.InternalDataSource;
-import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleUnitExecutorSession;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -31,16 +27,10 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.KieContext;
 import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.PMML4Data;
 
 @PropertyReactive
 public class SegmentExecution implements Comparable<SegmentExecution> {
@@ -179,9 +169,9 @@ public class SegmentExecution implements Comparable<SegmentExecution> {
 			throw new IllegalStateException("Unable to apply segment model: No rule unit class name is available");
 		}
 		Class<? extends RuleUnit> ruleUnitClass = null;
-		RuleUnitRegistry rur = ((KnowledgeBaseImpl)helper.getKieRuntime().getKieBase()).getRuleUnitRegistry();
+		RuleUnitDescriptionRegistry rur = ((KnowledgeBaseImpl)helper.getKieRuntime().getKieBase()).getRuleUnitDescriptionRegistry();
 		RuleUnit ruOld = ((WrappedStatefulKnowledgeSessionForRHS)helper.getKieRuntime()).getRuleUnitExecutor().getCurrentRuleUnit();
-		RuleUnitDescr rud = rur.getNamedRuleUnit(ruleUnitClassName).orElse(null);
+		RuleUnitDescription rud = rur.getDescription(ruleUnitClassName).orElse(null);
 		if (rud != null) {
 			ruleUnitClass = rud.getRuleUnitClass();
 		} else {
