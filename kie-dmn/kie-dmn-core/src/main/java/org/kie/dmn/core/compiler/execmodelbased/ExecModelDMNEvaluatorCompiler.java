@@ -49,6 +49,10 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
+    public ExecModelDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
+        super(compiler);
+    }
+
     enum GeneratorsEnum {
         EVALUATOR("Evaluator", new EvaluatorSourceGenerator()),
         UNIT("DTUnit", new UnitSourceGenerator()),
@@ -65,10 +69,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     private ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
-
-    public ExecModelDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
-        super(compiler);
-    }
 
     @Override
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {

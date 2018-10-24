@@ -18,7 +18,6 @@ package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
@@ -27,7 +26,6 @@ import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

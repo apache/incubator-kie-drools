@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -27,7 +28,9 @@ import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.compiler.execmodelbased.AbstractModelEvaluator;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -73,8 +76,25 @@ public class DMNEvaluatorCompiler {
 
     protected final DMNCompilerImpl compiler;
 
-    public DMNEvaluatorCompiler(DMNCompilerImpl compiler) {
+    protected DMNEvaluatorCompiler(DMNCompilerImpl compiler) {
         this.compiler = compiler;
+    }
+
+    public static DMNEvaluatorCompiler dmnEvaluatorCompilerFactory(DMNCompilerImpl dmnCompiler, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(dmnCompilerConfig.getRootClassLoader());
+        if (dmnRuleClassFile.hasCompiledClasses()) {
+            return new ExecModelDMNClassLoaderCompiler(dmnCompiler, dmnRuleClassFile);
+        } else if (dmnCompilerConfig.isDeferredCompilation()) {
+            ExecModelDMNMavenSourceCompiler evaluatorCompiler = new ExecModelDMNMavenSourceCompiler(dmnCompiler);
+            for (AfterGeneratingSourcesListener l : dmnCompilerConfig.getAfterGeneratingSourcesListeners()) {
+                evaluatorCompiler.register(l);
+            }
+            return evaluatorCompiler;
+        } else if (dmnCompilerConfig.isUseExecModelCompiler()) {
+            return new ExecModelDMNEvaluatorCompiler(dmnCompiler);
+        } else {
+            return new DMNEvaluatorCompiler(dmnCompiler);
+        }
     }
 
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
