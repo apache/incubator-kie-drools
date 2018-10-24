@@ -59,7 +59,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         EXEC_MODEL("ExecModel", new ExecModelSourceGenerator()),
         UNARY_TESTS("UnaryTests", new UnaryTestsSourceGenerator());
 
-        public String type;
+        String type;
         SourceGenerator sourceGenerator;
 
         GeneratorsEnum( String type, SourceGenerator sourceGenerator) {

@@ -16,13 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +29,6 @@ import javax.xml.namespace.QName;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.util.IoUtils;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
@@ -51,7 +45,6 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
@@ -60,19 +53,12 @@ import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
-import org.kie.dmn.core.compiler.DMNCompilerContext;
-import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.compiler.DMNOption;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
-import org.kie.dmn.core.compiler.execmodelbased.AbstractModelEvaluator;
-import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
-import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -571,9 +557,7 @@ public class DMNRuntimeImpl
             if( missingInput ) {
                 return false;
             }
-
             if( decision.getEvaluator() == null ) {
-
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.WARN,
                                                             decision.getSource(),
@@ -646,10 +630,7 @@ public class DMNRuntimeImpl
                 reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
             }
             return true;
-        } catch(Exception e) {
-            logger.error("Error", e);
-            throw new RuntimeException(e);
-        } finally{
+        } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result );
         }
     }

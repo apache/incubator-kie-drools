@@ -17,12 +17,10 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -31,7 +29,6 @@ import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
-import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
@@ -125,9 +122,8 @@ public class DecisionCompiler implements DRGElementCompiler {
             for (Entry<String, DMNType> importedType : importedTypes.entrySet()) {
                 ctx.setVariable(importedType.getKey(), importedType.getValue());
             }
-
-            DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression(ctx, model, di, di.getName(), di.getDecision().getExpression());
-            di.setEvaluator(evaluator);
+            DMNExpressionEvaluator evaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, di, di.getName(), di.getDecision().getExpression() );
+            di.setEvaluator( evaluator );
         } finally {
             ctx.exitFrame();
         }
