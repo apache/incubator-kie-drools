@@ -135,7 +135,7 @@ public class PMMLExecutor {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
                 if (ruleImpl != null) {
-                    RuleUnitDescription descr = pkg.getRuleUnitDescriptionLoader().getDescription(ruleImpl).orElse(null);
+                    RuleUnitDescription descr = internalKnowledgeBase.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
                         return descr.getRuleUnitClass();
                     }
