@@ -120,7 +120,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         addDRGElementCompilers(cc.getDRGElementCompilers());
 
         DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader());
-        if (!dmnRuleClassFile.hasCompiledClasses()) {
+        if (dmnRuleClassFile.hasCompiledClasses()) {
             this.evaluatorCompiler = new ExecModelDMNClassLoaderCompiler(this, dmnRuleClassFile);
         } else if (cc.isDeferredCompilation()) {
             ExecModelDMNMavenSourceCompiler evaluatorCompiler = new ExecModelDMNMavenSourceCompiler(this);
