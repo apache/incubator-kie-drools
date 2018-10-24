@@ -12,6 +12,8 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingMilestonesTi
 
 Timeslots can overlap. It reads/writse to/from an `*.xlsx` file that can be edited with LibreOffice or Excel.
 
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingProblem.png[align="center"]
+
 Hard constraints:
 
 * Talk type of timeslot: The type of a talk must match the timeslot's talk type.
