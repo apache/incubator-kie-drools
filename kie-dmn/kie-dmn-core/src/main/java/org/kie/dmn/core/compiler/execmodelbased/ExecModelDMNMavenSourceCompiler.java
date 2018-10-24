@@ -32,7 +32,7 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExecModelDMNDeferredEvaluatorCompiler extends ExecModelDMNEvaluatorCompiler {
+public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompiler {
     List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
 
     public void register(AfterGeneratingSourcesListener listener) {
@@ -40,9 +40,9 @@ public class ExecModelDMNDeferredEvaluatorCompiler extends ExecModelDMNEvaluator
     }
 
 
-    static final Logger logger = LoggerFactory.getLogger(ExecModelDMNDeferredEvaluatorCompiler.class);
+    static final Logger logger = LoggerFactory.getLogger(ExecModelDMNMavenSourceCompiler.class);
 
-    public ExecModelDMNDeferredEvaluatorCompiler(DMNCompilerImpl compiler) {
+    public ExecModelDMNMavenSourceCompiler(DMNCompilerImpl compiler) {
         super(compiler);
     }
 

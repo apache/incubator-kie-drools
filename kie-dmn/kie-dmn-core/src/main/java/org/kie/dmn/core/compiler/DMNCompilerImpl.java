@@ -58,7 +58,7 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
-import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNDeferredEvaluatorCompiler;
+import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
@@ -117,7 +117,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
         if (cc.isDeferredCompilation()) {
-            ExecModelDMNDeferredEvaluatorCompiler evaluatorCompiler = new ExecModelDMNDeferredEvaluatorCompiler(this);
+            ExecModelDMNMavenSourceCompiler evaluatorCompiler = new ExecModelDMNMavenSourceCompiler(this);
             for(AfterGeneratingSourcesListener l : dmnCompilerConfig.getAfterGeneratingSourcesListeners()) {
                 evaluatorCompiler.register(l);
             }
