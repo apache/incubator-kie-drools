@@ -25,10 +25,15 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.DecisionTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExecModelDMNClassLoaderCompiler extends DMNEvaluatorCompiler {
 
     private DMNRuleClassFile dmnRuleClassFile;
+
+    static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
+
 
     public ExecModelDMNClassLoaderCompiler(DMNCompilerImpl compiler, DMNRuleClassFile dmnRuleClassFile) {
         super(compiler);
@@ -47,6 +52,7 @@ public class ExecModelDMNClassLoaderCompiler extends DMNEvaluatorCompiler {
                 AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
                 evaluatorInstance.initParameters(ctx, dTableModel, node);
 
+                logger.debug("Read compiled evaluator from class loader: " + className);
                 return evaluatorInstance;
             } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
