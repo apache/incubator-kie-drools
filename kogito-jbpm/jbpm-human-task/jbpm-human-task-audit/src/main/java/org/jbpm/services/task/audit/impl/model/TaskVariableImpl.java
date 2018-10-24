@@ -19,23 +19,18 @@ package org.jbpm.services.task.audit.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.kie.internal.task.api.TaskVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
+@Table(name = "TaskVariableImpl", indexes = {
+        @Index(name = "IDX_TaskVariableImpl_taskId", columnList = "taskId"),
+        @Index(name = "IDX_TaskVariableImpl_pInstId", columnList = "processInstanceId"),
+        @Index(name = "IDX_TaskVariableImpl_processId", columnList = "processId")
+})
 @SequenceGenerator(name = "taskVarIdSeq", sequenceName = "TASK_VAR_ID_SEQ", allocationSize = 1)
 public class TaskVariableImpl implements TaskVariable, Serializable {
 
@@ -44,7 +39,6 @@ public class TaskVariableImpl implements TaskVariable, Serializable {
     
     @Transient
     private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.task.var.log.length", "4000"));
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskVarIdSeq")

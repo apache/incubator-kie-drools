@@ -879,3 +879,7 @@
     create index IDX_AuditTaskImpl_name on AuditTaskImpl(name);
     create index IDX_AuditTaskImpl_processId on AuditTaskImpl(processId);
     create index IDX_AuditTaskImpl_status on AuditTaskImpl(status);
+
+    create index IDX_TaskVariableImpl_taskId on TaskVariableImpl(taskId);
+    create index IDX_TaskVariableImpl_pInstId on TaskVariableImpl(processInstanceId);
+    create index IDX_TaskVariableImpl_processId on TaskVariableImpl(processId);
