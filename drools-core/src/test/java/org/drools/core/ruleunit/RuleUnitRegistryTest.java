@@ -16,6 +16,9 @@
 
 package org.drools.core.ruleunit;
 
+import java.math.BigDecimal;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -44,7 +47,10 @@ public class RuleUnitRegistryTest {
 
     @Test
     public void registerRuleUnit() {
-        // TODO
+        final TestRuleUnit testRuleUnit = createTestRuleUnit();
+        final RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
+        ruleUnitRegistry.registerRuleUnit("testRuleUnit", () -> TestRuleUnit.class);
+
     }
 
     @Test
@@ -55,5 +61,12 @@ public class RuleUnitRegistryTest {
     @Test
     public void hasUnits() {
         // TODO
+    }
+
+    private TestRuleUnit createTestRuleUnit() {
+        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
+        final SimpleFact simpleFact = new SimpleFact("testValue");
+        testRuleUnit.addSimpleFact(simpleFact);
+        return testRuleUnit;
     }
 }
