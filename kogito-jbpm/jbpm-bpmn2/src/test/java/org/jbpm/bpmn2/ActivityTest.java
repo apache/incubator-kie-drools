@@ -2112,4 +2112,30 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             assertTrue(re.getCause().getCause() instanceof RuntimeException);
         });        
     }
+    
+    @RequirePersistence
+    @Test
+    public void testCallActivityChain() throws Exception {
+        try {
+            System.setProperty("org.jbpm.correlationkey.length", "70");
+            KieBase kbase = createKnowledgeBase("correlationkey/Process1.bpmn2",
+                    "correlationkey/Process2.bpmn2",
+                    "correlationkey/Process3.bpmn2",
+                    "correlationkey/Process4.bpmn2",
+                    "correlationkey/Process5.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            Map<String, Object> params = new HashMap<String, Object>();        
+            ProcessInstance processInstance = ksession.startProcess(
+                    "src.Process1", params);
+            assertProcessInstanceCompleted(processInstance);
+            
+            ProcessInstanceLog log = logService.findProcessInstances("src.Process5").get(0);
+            assertNotNull(log);
+            assertNotNull(log.getCorrelationKey());
+            assertTrue(log.getCorrelationKey().startsWith(processInstance.getId() + ":src.Process2:"));
+            assertTrue(log.getCorrelationKey().contains(":src.Process4"));
+        } finally {
+            System.clearProperty("org.jbpm.correlationkey.length");
+        }
+    }
 }

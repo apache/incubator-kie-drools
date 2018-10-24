@@ -27,18 +27,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.jbpm.persistence.api.PersistentCorrelationKey;
 import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
-import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name="correlationKeyInfoIdSeq", sequenceName="CORRELATION_KEY_ID_SEQ")
 public class CorrelationKeyInfo implements PersistentCorrelationKey, Serializable {
 
 	private static final long serialVersionUID = 4469298702447675428L;
+	private static final Logger logger = LoggerFactory.getLogger(CorrelationKeyInfo.class);
+	
+	@Transient
+    private final int CORRELATION_KEY_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.correlationkey.length", "255"));
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="correlationKeyInfoIdSeq")
@@ -75,6 +81,10 @@ public class CorrelationKeyInfo implements PersistentCorrelationKey, Serializabl
     }
 
     public void setName(String name) {
+        if (name != null && name.length() > CORRELATION_KEY_LOG_LENGTH) {
+            name = name.substring(0, CORRELATION_KEY_LOG_LENGTH);
+            logger.warn("CorrelationKey content was trimmed as it was too long (more than {} characters)", CORRELATION_KEY_LOG_LENGTH);
+        }
         this.name = name;
     }
     
