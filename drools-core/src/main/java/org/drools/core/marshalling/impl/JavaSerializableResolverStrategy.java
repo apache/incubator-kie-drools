@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -66,7 +67,15 @@ public class JavaSerializableResolverStrategy
                             byte[] object,
                             ClassLoader classloader) {
         try (ByteArrayInputStream bs = new ByteArrayInputStream(object)) {
-            is = new ObjectInputStream(bs);
+            is = new ObjectInputStream(bs) {
+                @Override
+                protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+
+                    System.out.println("+++++++++++++++++++++++ classloader = " + classloader);
+                    String cname = desc.getName();
+                    return Class.forName(cname, true, classloader);
+                }
+            };
             return read(is);
         } catch (Exception e) {
             throw new RuntimeException(e);
