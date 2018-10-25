@@ -30,7 +30,7 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
@@ -140,7 +140,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     void setTypeResolver(TypeResolver typeResolver);
 
-    RuleUnitRegistry getRuleUnitRegistry();
+    RuleUnitDescriptionLoader getRuleUnitDescriptionLoader();
 
     ClassFieldAccessorStore getClassFieldAccessorStore();
 

@@ -29,7 +29,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.ruleunit.RuleUnitDescr;
+import org.drools.core.ruleunit.RuleUnitDescription;
 
 import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
@@ -42,7 +42,7 @@ public class DeclarationScopeResolver {
     private final InternalKnowledgePackage           pkg;
 
     private RuleImpl rule;
-    private Optional<RuleUnitDescr> ruleUnitDescr = Optional.empty();
+    private Optional<RuleUnitDescription> ruleUnitDescr = Optional.empty();
 
     protected DeclarationScopeResolver() {
         this( new HashMap<String, Class<?>>(), new Stack<RuleConditionElement>() );
@@ -68,7 +68,7 @@ public class DeclarationScopeResolver {
 
     public void setRule(RuleImpl rule) {
         this.rule = rule;
-        this.ruleUnitDescr = pkg.getRuleUnitRegistry().getRuleUnitFor( rule );
+        this.ruleUnitDescr = pkg.getRuleUnitDescriptionLoader().getDescription(rule );
     }
 
     public RuleConditionElement peekBuildStack() {

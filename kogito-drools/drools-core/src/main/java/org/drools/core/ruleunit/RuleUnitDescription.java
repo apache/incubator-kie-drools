@@ -36,7 +36,7 @@ import org.kie.api.runtime.rule.RuleUnit;
 
 import static org.drools.core.util.ClassUtils.getter2property;
 
-public class RuleUnitDescr {
+public class RuleUnitDescription {
     private final Class<? extends RuleUnit> ruleUnitClass;
 
     private final Map<String, String> datasources = new HashMap<>();
@@ -44,7 +44,7 @@ public class RuleUnitDescr {
 
     private final Map<String, Method> varAccessors = new HashMap<>();
 
-    public RuleUnitDescr( Class<? extends RuleUnit> ruleUnitClass ) {
+    public RuleUnitDescription(Class<? extends RuleUnit> ruleUnitClass ) {
         this.ruleUnitClass = ruleUnitClass;
         indexUnitVars();
     }

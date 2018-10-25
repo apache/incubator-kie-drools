@@ -204,7 +204,7 @@ public class RuleBuildContext extends PackageBuildContext {
     }
 
     public Optional<EntryPointId> getEntryPointId(String name) {
-        return getPkg().getRuleUnitRegistry().getRuleUnitFor(getRule()).flatMap(ruDescr -> ruDescr.getEntryPointId(name));
+        return getPkg().getRuleUnitDescriptionLoader().getDescription(getRule()).flatMap(ruDescr -> ruDescr.getEntryPointId(name));
     }
 
     private String extractClassNameFromSourcePath() {
