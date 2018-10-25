@@ -85,6 +85,15 @@
       <artifactId>jbpm-human-task-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>

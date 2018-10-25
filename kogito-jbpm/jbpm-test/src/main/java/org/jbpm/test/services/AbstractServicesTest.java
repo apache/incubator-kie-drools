@@ -124,10 +124,10 @@ public abstract class AbstractServicesTest {
         return createKieJar(ks, releaseId, resources, null);
     }
 
-    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources, Map<String, String> extraResources) {
+    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources, Map<String, String> extraResources, ReleaseId... dependencies) {
 
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
-        kfs.writePomXML(getPom(releaseId));
+        kfs.writePomXML(getPom(releaseId, dependencies));
 
         DeploymentDescriptor customDescriptor = createDeploymentDescriptor();
 
