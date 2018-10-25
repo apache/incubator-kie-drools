@@ -83,17 +83,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        DMNCompilerConfigurationImpl compilerConfiguration;
-        // Beware: compilerConfiguration can't be cached in DMNAssemblerService
-        if (externalCompilerConfiguration == null) {
-            compilerConfiguration = getDefaultCompilerConfiguration(kbuilderImpl, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
-        } else {
-            compilerConfiguration = externalCompilerConfiguration;
-        }
-        DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> {
-
-            return DMNFactory.newCompiler(compilerConfiguration);
-        });
+        DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
         if (resources.size() == 1) {
             // quick path:
@@ -141,7 +131,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> DMNFactory.newCompiler(getDefaultCompilerConfiguration(kbuilderImpl, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration())));
+        DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 
         Collection<DMNModel> dmnModels = new ArrayList<>();
         for (PackageRegistry pr : kbuilderImpl.getPackageRegistry().values()) {
@@ -224,10 +214,18 @@ public class DMNAssemblerService implements KieAssemblerService {
         return "".equals(val) || Boolean.parseBoolean(val);
     }
 
-    private DMNCompilerConfigurationImpl getDefaultCompilerConfiguration(KnowledgeBuilderImpl kbuilderImpl, DMNCompilerConfigurationImpl config) {
+    private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
+        DMNCompilerConfigurationImpl compilerConfiguration;
 
-        return compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles, config);
+        // Beware: compilerConfiguration can't be cached in DMNAssemblerService
+        if (externalCompilerConfiguration == null) {
+            compilerConfiguration = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        } else {
+            compilerConfiguration = externalCompilerConfiguration;
+        }
+
+        return DMNFactory.newCompiler(compilerConfiguration);
     }
 
     /**
