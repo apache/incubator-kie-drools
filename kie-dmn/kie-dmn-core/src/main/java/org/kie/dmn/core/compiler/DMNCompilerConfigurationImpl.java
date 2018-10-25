@@ -38,6 +38,7 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     private List<FEELProfile> feelProfiles = new ArrayList<>();
     private ClassLoader rootClassLoader = ClassLoaderUtil.findDefaultClassLoader();
     private List<AfterGeneratingSourcesListener> listeners = new ArrayList<>();
+    private Boolean deferredCompilation = false;
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -80,8 +81,6 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
             return (T) new CoerceDecisionServiceSingletonOutputOption(properties.get(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
         } else if (ExecModelCompilerOption.class.equals(option)) {
             return (T) new ExecModelCompilerOption(properties.get(ExecModelCompilerOption.PROPERTY_NAME));
-        }else if (ExecModelCompilerDeferredOption.class.equals(option)) {
-            return (T) new ExecModelCompilerDeferredOption(properties.get(ExecModelCompilerDeferredOption.PROPERTY_NAME));
         }
         return null;
     }
@@ -115,6 +114,10 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     }
 
     public boolean isDeferredCompilation() {
-        return getOption(ExecModelCompilerDeferredOption.class).isDeferred();
+        return deferredCompilation;
+    }
+
+    public void setDeferredCompilation(Boolean deferredCompilation) {
+        this.deferredCompilation = deferredCompilation;
     }
 }
