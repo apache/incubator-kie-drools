@@ -25,8 +25,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
@@ -327,7 +326,6 @@ public class PMML4ExecutionHelper {
             throw new IllegalStateException("Cannot determine starting rule unit. KieBase is null");
         }
         InternalKnowledgeBase ikb = (InternalKnowledgeBase) kbase;
-        RuleUnitRegistry unitRegistry = ikb.getRuleUnitRegistry();
         Map<String, InternalKnowledgePackage> pkgs = ikb.getPackagesMap();
         RuleImpl ruleImpl;
         for (String pkgName : calculatePossiblePackageNames()) {
@@ -335,7 +333,7 @@ public class PMML4ExecutionHelper {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
                 if (ruleImpl != null) {
-                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+                    RuleUnitDescription descr = ikb.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
                         return descr.getRuleUnitClass();
                     }

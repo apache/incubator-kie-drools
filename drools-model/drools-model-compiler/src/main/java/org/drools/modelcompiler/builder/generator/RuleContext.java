@@ -21,8 +21,8 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -38,7 +38,6 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 
 public class RuleContext {
@@ -60,7 +59,7 @@ public class RuleContext {
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
 
-    private RuleUnitDescr ruleUnitDescr;
+    private RuleUnitDescription ruleUnitDescr;
     private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
 
     private Map<String, String> aggregatePatternMap = new HashMap<>();
@@ -118,8 +117,8 @@ public class RuleContext {
             }
         }
 
-        RuleUnitRegistry ruleUnitRegistry = kbuilder.getPackageRegistry( packageModel.getName() ).getPackage().getRuleUnitRegistry();
-        Optional<RuleUnitDescr> ruDescr = ruleUnitRegistry.getRuleUnitFor( unitName );
+        RuleUnitDescriptionLoader ruleUnitDescriptionLoader = kbuilder.getPackageRegistry(packageModel.getName() ).getPackage().getRuleUnitDescriptionLoader();
+        Optional<RuleUnitDescription> ruDescr = ruleUnitDescriptionLoader.getDescription(unitName );
         if (ruDescr.isPresent()) {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
@@ -131,7 +130,7 @@ public class RuleContext {
         return generatePatternDSL;
     }
 
-    public RuleUnitDescr getRuleUnitDescr() {
+    public RuleUnitDescription getRuleUnitDescr() {
         return ruleUnitDescr;
     }
 

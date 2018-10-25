@@ -25,17 +25,16 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.drools.core.ruleunit.RuleUnitDescr;
-import org.drools.core.ruleunit.RuleUnitRegistry;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.kie.api.KieBase;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.PMML4Data;
-import org.kie.api.pmml.PMML4Result;
 
 public class PMMLExecutor {
     private KieBase kieBase;
@@ -129,15 +128,14 @@ public class PMMLExecutor {
         List<String> possiblePackages = calculatePossiblePackageNames(modelId, knownPackageNames);
         InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) kieBase;
 
-        RuleUnitRegistry unitRegistry = internalKnowledgeBase.getRuleUnitRegistry();
         Map<String,InternalKnowledgePackage> pkgs = internalKnowledgeBase.getPackagesMap();
-        RuleImpl ruleImpl = null;
+        RuleImpl ruleImpl;
         for (String pkgName: possiblePackages) {
             if (pkgs.containsKey(pkgName)) {
                 InternalKnowledgePackage pkg = pkgs.get(pkgName);
                 ruleImpl = pkg.getRule(startingRule);
                 if (ruleImpl != null) {
-                    RuleUnitDescr descr = unitRegistry.getRuleUnitFor(ruleImpl).orElse(null);
+                    RuleUnitDescription descr = internalKnowledgeBase.getRuleUnitDescriptionRegistry().getDescription(ruleImpl).orElse(null);
                     if (descr != null) {
                         return descr.getRuleUnitClass();
                     }
