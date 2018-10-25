@@ -16,7 +16,7 @@
 
 package org.kie.dmn.api.core;
 
-class GeneratedSource {
+public class GeneratedSource {
 
     private final String fileName;
     private final String sourceContent;

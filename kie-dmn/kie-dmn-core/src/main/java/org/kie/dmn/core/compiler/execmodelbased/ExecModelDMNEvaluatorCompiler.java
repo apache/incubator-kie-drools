@@ -30,7 +30,7 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.runtime.rule.DataSource;
-import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
+import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -102,7 +102,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
         String[] fileNames = new String[GeneratorsEnum.values().length];
-        List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
+        List<GeneratedSource> generatedSources = new ArrayList<>();
 
         generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
 
@@ -111,14 +111,14 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         return createInvoker(pkgName, clasName);
     }
 
-    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources) {
+    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<GeneratedSource> generatedSources) {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = dTableModel.getGeneratedClassName(generator);
             String fileName = Paths.get("src/main/java", className.replace('.', '/') + ".java").toString();
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
-            generatedSources.add(new AfterGeneratingSourcesListener.GeneratedSource(fileName, javaSource));
+            generatedSources.add(new GeneratedSource(fileName, javaSource));
             srcMfs.write( fileNames[i], javaSource.getBytes() );
         }
     }

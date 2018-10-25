@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
+import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -55,7 +56,7 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         String[] fileNames = new String[GeneratorsEnum.values().length];
-        List<AfterGeneratingSourcesListener.GeneratedSource> generatedSources = new ArrayList<>();
+        List<GeneratedSource> generatedSources = new ArrayList<>();
 
         generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
 
