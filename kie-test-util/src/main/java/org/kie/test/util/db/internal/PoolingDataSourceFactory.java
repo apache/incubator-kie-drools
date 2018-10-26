@@ -39,8 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used by {@link PoolingDataSourceWrapper} to created an instance of tomcat-dbcp pooling data source.
- * For creating a {@link PoolingDataSourceWrapper} instance, please refer to {@link org.kie.test.util.db.DataSourceFactory}.
+ * This class is used by {@link PoolingDataSourceWrapperImpl} to created an instance of tomcat-dbcp pooling data source.
+ * For creating a {@link PoolingDataSourceWrapperImpl} instance, please refer to {@link org.kie.test.util.db.DataSourceFactory}.
  */
 final class PoolingDataSourceFactory {
 

@@ -28,7 +28,6 @@ import javax.persistence.Persistence;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
-import org.kie.test.util.db.internal.PoolingDataSourceWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
 import org.kie.test.util.db.internal.DatabaseProvider;
-import org.kie.test.util.db.internal.PoolingDataSourceWrapper;
+import org.kie.test.util.db.internal.PoolingDataSourceWrapperImpl;
 
 /**
  * Creates instances of {@link PoolingDataSourceWrapper} that can be used for testing purposes.
@@ -38,7 +38,7 @@ public final class DataSourceFactory {
      * @return a new PoolingDataSourceWrapper instance
      */
     public static PoolingDataSourceWrapper setupPoolingDataSource(String datasourceName,
-                                                                  Properties driverProperties) {
+                                                                      Properties driverProperties) {
         return setupPoolingDataSource(datasourceName, driverProperties, new Properties());
     }
 
@@ -50,8 +50,8 @@ public final class DataSourceFactory {
      * @return a new PoolingDataSourceWrapper instance
      */
     public static PoolingDataSourceWrapper setupPoolingDataSource(String datasourceName,
-                                                                  Properties driverProperties,
-                                                                  Properties poolingProperties) {
+                                                                      Properties driverProperties,
+                                                                      Properties poolingProperties) {
         Properties sanitizedDriverProperties = new Properties();
         String driverClass = driverProperties.getProperty("driverClassName");
         DatabaseProvider databaseProvider = DatabaseProvider.fromDriverClassName(driverClass);
@@ -95,6 +95,6 @@ public final class DataSourceFactory {
         }
 
         String xaDataSourceClassName = driverProperties.getProperty("className");
-        return new PoolingDataSourceWrapper(datasourceName, xaDataSourceClassName, sanitizedDriverProperties, poolingProperties);
+        return new PoolingDataSourceWrapperImpl(datasourceName, xaDataSourceClassName, sanitizedDriverProperties, poolingProperties);
     }
 }

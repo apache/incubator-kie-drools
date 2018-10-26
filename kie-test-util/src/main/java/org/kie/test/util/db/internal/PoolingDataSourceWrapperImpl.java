@@ -16,11 +16,6 @@
 
 package org.kie.test.util.db.internal;
 
-/**
- * Wrapper for actual Pooling Data Source provided by tomcat DBCP library. This class offers data source with
- * XA transactions and connection pooling capabilities.
- */
-
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -31,24 +26,23 @@ import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 
 /**
  * Wrapper for actual Pooling Data Source provided by tomcat DBCP library. This class offers data source with
  * XA transactions and connection pooling capabilities.
  */
-public final class PoolingDataSourceWrapper implements DataSource {
+public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrapper {
 
-    private static final Logger logger = Logger.getLogger(PoolingDataSourceWrapper.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(PoolingDataSourceWrapperImpl.class.getSimpleName());
 
     private Properties driverProperties;
-    private Properties poolingProperties;
     private String uniqueName;
     private String className;
     private BasicManagedDataSource managedDataSource;
@@ -61,9 +55,9 @@ public final class PoolingDataSourceWrapper implements DataSource {
      * @param dsClassName Name of a class implementing {@link XADataSource} available in a JDBC driver on a classpath.
      * @param driverProperties Properties of a database driver.
      */
-    public PoolingDataSourceWrapper(final String uniqueName,
-                                    final String dsClassName,
-                                    final Properties driverProperties) {
+    public PoolingDataSourceWrapperImpl(final String uniqueName,
+                                        final String dsClassName,
+                                        final Properties driverProperties) {
         this(uniqueName, dsClassName, driverProperties, new Properties());
     }
 
@@ -74,14 +68,13 @@ public final class PoolingDataSourceWrapper implements DataSource {
      * @param driverProperties Properties of a database driver.
      * @param poolingProperties Properties of a pooling data source. See {@link BasicManagedDataSource} for details.
      */
-    public PoolingDataSourceWrapper(final String uniqueName,
-                                    final String dsClassName,
-                                    final Properties driverProperties,
-                                    final Properties poolingProperties) {
+    public PoolingDataSourceWrapperImpl(final String uniqueName,
+                                        final String dsClassName,
+                                        final Properties driverProperties,
+                                        final Properties poolingProperties) {
         this.uniqueName = uniqueName;
         this.className = dsClassName;
         this.driverProperties = copy(driverProperties);
-        this.poolingProperties = copy(poolingProperties);
         this.databaseProvider = DatabaseProvider.fromDriverClassName(className);
 
         final XADataSource xaDataSource = createXaDataSource();
@@ -91,7 +84,7 @@ public final class PoolingDataSourceWrapper implements DataSource {
                 jtaPropertyManager.getJTAEnvironmentBean().getTransactionSynchronizationRegistry();
 
         managedDataSource = (BasicManagedDataSource)
-                PoolingDataSourceFactory.createPoolingDataSource(tm, xaDataSource, tsr, poolingProperties);
+                PoolingDataSourceFactory.createPoolingDataSource(tm, xaDataSource, tsr, copy(poolingProperties));
 
         try {
             InitialContext initContext = new InitialContext();
@@ -190,10 +183,6 @@ public final class PoolingDataSourceWrapper implements DataSource {
 
     public String getClassName() {
         return className;
-    }
-
-    public Properties getPoolingProperties() {
-        return copy(poolingProperties);
     }
 
     public Connection getConnection() throws SQLException {
