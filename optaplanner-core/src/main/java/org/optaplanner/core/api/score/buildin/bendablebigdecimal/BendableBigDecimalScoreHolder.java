@@ -69,12 +69,11 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder<BendableB
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, BendableBigDecimalScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, BendableBigDecimalScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, BigDecimal> matchExecutor;
         if (constraintWeight.equals(BendableBigDecimalScore.zero(hardScores.length, softScores.length))) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else {
             Integer singleLevel = null;
             BigDecimal singleLevelWeight = null;

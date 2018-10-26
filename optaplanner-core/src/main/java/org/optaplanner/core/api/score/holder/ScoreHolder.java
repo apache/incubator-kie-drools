@@ -56,7 +56,7 @@ public interface ScoreHolder<Score_ extends Score> {
      * @param rule never null
      * @param constraintWeight never null, with {@link Score#getInitScore()} equal to 0.
      */
-    void putConstraintWeight(Rule rule, Score_ constraintWeight);
+    void configureConstraintWeight(Rule rule, Score_ constraintWeight);
 
     /**
      * Must be in sync with {@link ScoreDirector#isConstraintMatchEnabled()}

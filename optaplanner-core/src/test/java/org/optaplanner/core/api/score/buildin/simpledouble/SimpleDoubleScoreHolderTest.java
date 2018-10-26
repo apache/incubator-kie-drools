@@ -70,9 +70,9 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         SimpleDoubleScoreHolder scoreHolder = new SimpleDoubleScoreHolder(constraintMatchEnabled);
         Rule constraint1 = mockRule("constraint1");
-        scoreHolder.putConstraintWeight(constraint1, SimpleDoubleScore.of(10.0));
+        scoreHolder.configureConstraintWeight(constraint1, SimpleDoubleScore.of(10.0));
         Rule constraint2 = mockRule("constraint2");
-        scoreHolder.putConstraintWeight(constraint2, SimpleDoubleScore.of(100.0));
+        scoreHolder.configureConstraintWeight(constraint2, SimpleDoubleScore.of(100.0));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
         assertEquals(SimpleDoubleScore.of(-10.0), scoreHolder.extractScore(0));
@@ -82,9 +82,9 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
 
         scoreHolder = new SimpleDoubleScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
-        scoreHolder.putConstraintWeight(constraint3, SimpleDoubleScore.of(10.0));
+        scoreHolder.configureConstraintWeight(constraint3, SimpleDoubleScore.of(10.0));
         Rule constraint4 = mockRule("constraint4");
-        scoreHolder.putConstraintWeight(constraint4, SimpleDoubleScore.of(100.0));
+        scoreHolder.configureConstraintWeight(constraint4, SimpleDoubleScore.of(100.0));
 
         scoreHolder.reward(mockRuleContext(constraint3));
         assertEquals(SimpleDoubleScore.of(10.0), scoreHolder.extractScore(0));

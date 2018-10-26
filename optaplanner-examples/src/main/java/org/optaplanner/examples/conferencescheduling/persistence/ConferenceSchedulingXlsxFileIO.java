@@ -748,7 +748,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeAudienceLevelsView();
             writeContentsView();
             writeLanguagesView();
-            writeScoreView();
+            writeScoreView(justificationList -> justificationList.stream()
+                    .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
+                    .collect(joining(", ")));
             writeDaysSheets();
             return workbook;
         }
@@ -1013,11 +1015,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(talk.getFavoriteCount());
                 nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
-                XSSFCellStyle timeslotStyle = Objects.equals(talk.getTimeslot(), talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle;
+                XSSFCellStyle timeslotStyle = (talk.getPublishedTimeslot() == null || talk.getTimeslot() == talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle;
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
-                nextCell(Objects.equals(talk.getRoom(), talk.getPublishedRoom()) ? defaultStyle : republishedStyle)
+                nextCell((talk.getPublishedRoom() == null || talk.getRoom() == talk.getPublishedRoom()) ? defaultStyle : republishedStyle)
                         .setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));

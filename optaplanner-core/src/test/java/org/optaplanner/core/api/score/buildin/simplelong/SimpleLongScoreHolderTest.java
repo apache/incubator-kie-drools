@@ -70,9 +70,9 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         SimpleLongScoreHolder scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
         Rule constraint1 = mockRule("constraint1");
-        scoreHolder.putConstraintWeight(constraint1, SimpleLongScore.of(10L));
+        scoreHolder.configureConstraintWeight(constraint1, SimpleLongScore.of(10L));
         Rule constraint2 = mockRule("constraint2");
-        scoreHolder.putConstraintWeight(constraint2, SimpleLongScore.of(100L));
+        scoreHolder.configureConstraintWeight(constraint2, SimpleLongScore.of(100L));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
         assertEquals(SimpleLongScore.of(-10L), scoreHolder.extractScore(0));
@@ -82,9 +82,9 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
 
         scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
-        scoreHolder.putConstraintWeight(constraint3, SimpleLongScore.of(10L));
+        scoreHolder.configureConstraintWeight(constraint3, SimpleLongScore.of(10L));
         Rule constraint4 = mockRule("constraint4");
-        scoreHolder.putConstraintWeight(constraint4, SimpleLongScore.of(100L));
+        scoreHolder.configureConstraintWeight(constraint4, SimpleLongScore.of(100L));
 
         scoreHolder.reward(mockRuleContext(constraint3));
         assertEquals(SimpleLongScore.of(10L), scoreHolder.extractScore(0));

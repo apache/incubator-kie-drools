@@ -104,15 +104,15 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolder(constraintMatchEnabled, 1, 2);
         Rule hard1 = mockRule("hard1");
-        scoreHolder.putConstraintWeight(hard1, BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(hard1, BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("10.0")));
         Rule hard2 = mockRule("hard2");
-        scoreHolder.putConstraintWeight(hard2, BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(hard2, BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("100.0")));
         Rule medium1 = mockRule("medium1");
-        scoreHolder.putConstraintWeight(medium1, BendableBigDecimalScore.ofSoft(1, 2, 0, new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(medium1, BendableBigDecimalScore.ofSoft(1, 2, 0, new BigDecimal("10.0")));
         Rule soft1 = mockRule("soft1");
-        scoreHolder.putConstraintWeight(soft1, BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(soft1, BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("10.0")));
         Rule soft2 = mockRule("soft2");
-        scoreHolder.putConstraintWeight(soft2, BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(soft2, BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("100.0")));
 
         scoreHolder.penalize(mockRuleContext(hard1));
         assertEquals(BendableBigDecimalScore.of(new BigDecimal[]{new BigDecimal("-10.0")}, new BigDecimal[]{new BigDecimal("0.0"), new BigDecimal("0.0")}), scoreHolder.extractScore(0));

@@ -93,13 +93,13 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         HardSoftScoreHolder scoreHolder = new HardSoftScoreHolder(constraintMatchEnabled);
         Rule hard1 = mockRule("hard1");
-        scoreHolder.putConstraintWeight(hard1, HardSoftScore.ofHard(10));
+        scoreHolder.configureConstraintWeight(hard1, HardSoftScore.ofHard(10));
         Rule hard2 = mockRule("hard2");
-        scoreHolder.putConstraintWeight(hard2, HardSoftScore.ofHard(100));
+        scoreHolder.configureConstraintWeight(hard2, HardSoftScore.ofHard(100));
         Rule soft1 = mockRule("soft1");
-        scoreHolder.putConstraintWeight(soft1, HardSoftScore.ofSoft(10));
+        scoreHolder.configureConstraintWeight(soft1, HardSoftScore.ofSoft(10));
         Rule soft2 = mockRule("soft2");
-        scoreHolder.putConstraintWeight(soft2, HardSoftScore.ofSoft(100));
+        scoreHolder.configureConstraintWeight(soft2, HardSoftScore.ofSoft(100));
 
         scoreHolder.penalize(mockRuleContext(hard1));
         assertEquals(HardSoftScore.of(-10, 0), scoreHolder.extractScore(0));

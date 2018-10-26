@@ -49,12 +49,11 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, SimpleBigDecimalScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, SimpleBigDecimalScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, BigDecimal> matchExecutor;
         if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
                     -> addConstraintMatch(kcontext, constraintWeight.getScore().multiply(matchWeight));

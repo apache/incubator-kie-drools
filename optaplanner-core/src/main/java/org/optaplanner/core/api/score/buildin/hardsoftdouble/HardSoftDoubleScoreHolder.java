@@ -58,12 +58,11 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, HardSoftDoubleScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, HardSoftDoubleScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Double> matchExecutor;
         if (constraintWeight.equals(HardSoftDoubleScore.ZERO)) {
             matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else if (constraintWeight.getSoftScore() == 0.0) {
             matchExecutor = (RuleContext kcontext, Double matchWeight)
                     -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);

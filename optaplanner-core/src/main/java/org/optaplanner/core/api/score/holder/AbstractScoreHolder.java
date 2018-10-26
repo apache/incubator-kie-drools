@@ -79,6 +79,20 @@ public abstract class AbstractScoreHolder<Score_ extends Score> implements Score
     // Worker methods
     // ************************************************************************
 
+    @Override
+    public void configureConstraintWeight(Rule rule, Score_ constraintWeight) {
+        if (constraintWeight.getInitScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        }
+        if (constraintMatchEnabled) {
+            String constraintPackage = rule.getPackageName();
+            String constraintName = rule.getName();
+            String constraintId = constraintPackage + "/" + constraintName;
+            constraintMatchTotalMap.put(constraintId,
+                    new ConstraintMatchTotal(constraintPackage, constraintName, constraintWeight, zeroScore));
+        }
+    }
+
     protected void registerConstraintMatch(RuleContext kcontext,
             final Runnable constraintUndoListener, Supplier<Score> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
@@ -110,7 +124,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score> implements Score
         String constraintName = rule.getName();
         String constraintId = constraintPackage + "/" + constraintName;
         return constraintMatchTotalMap.computeIfAbsent(constraintId,
-                k -> new ConstraintMatchTotal(constraintPackage, constraintName, zeroScore));
+                k -> new ConstraintMatchTotal(constraintPackage, constraintName, null, zeroScore));
     }
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {

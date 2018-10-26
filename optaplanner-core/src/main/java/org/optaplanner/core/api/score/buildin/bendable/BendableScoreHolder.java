@@ -66,12 +66,11 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, BendableScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, BendableScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Integer> matchExecutor;
         if (constraintWeight.equals(BendableScore.zero(hardScores.length, softScores.length))) {
             matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else {
             Integer singleLevel = null;
             Integer singleLevelWeight = null;

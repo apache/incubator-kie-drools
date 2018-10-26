@@ -95,13 +95,13 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         HardSoftBigDecimalScoreHolder scoreHolder = new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
         Rule hard1 = mockRule("hard1");
-        scoreHolder.putConstraintWeight(hard1, HardSoftBigDecimalScore.ofHard(new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(hard1, HardSoftBigDecimalScore.ofHard(new BigDecimal("10.0")));
         Rule hard2 = mockRule("hard2");
-        scoreHolder.putConstraintWeight(hard2, HardSoftBigDecimalScore.ofHard(new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(hard2, HardSoftBigDecimalScore.ofHard(new BigDecimal("100.0")));
         Rule soft1 = mockRule("soft1");
-        scoreHolder.putConstraintWeight(soft1, HardSoftBigDecimalScore.ofSoft(new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(soft1, HardSoftBigDecimalScore.ofSoft(new BigDecimal("10.0")));
         Rule soft2 = mockRule("soft2");
-        scoreHolder.putConstraintWeight(soft2, HardSoftBigDecimalScore.ofSoft(new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(soft2, HardSoftBigDecimalScore.ofSoft(new BigDecimal("100.0")));
 
         scoreHolder.penalize(mockRuleContext(hard1));
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("0.0")), scoreHolder.extractScore(0));

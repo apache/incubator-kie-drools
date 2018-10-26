@@ -133,7 +133,7 @@ public class DroolsScoreDirector<Solution_>
                             + "Maybe validate your " + constraintConfigurationClass.getSimpleName() + " data input.");
                 }
             }
-            workingScoreHolder.putConstraintWeight(rule, constraintWeight);
+            workingScoreHolder.configureConstraintWeight(rule, constraintWeight);
         });
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
     }

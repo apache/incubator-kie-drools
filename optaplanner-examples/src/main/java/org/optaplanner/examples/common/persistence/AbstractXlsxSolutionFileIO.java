@@ -17,14 +17,15 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -53,11 +55,8 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static java.util.stream.Collectors.*;
 
 public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
@@ -346,7 +345,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected final Solution_ solution;
         protected final Score score;
         protected final ScoreDefinition scoreDefinition;
-        protected final List<ConstraintMatchTotal> constraintMatchTotalList;
+        protected final Collection<ConstraintMatchTotal> constraintMatchTotals;
         protected final Map<Object, Indictment> indictmentMap;
 
         protected XSSFWorkbook workbook;
@@ -354,6 +353,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCellStyle headerStyle;
         protected XSSFCellStyle defaultStyle;
+        protected XSSFCellStyle scoreStyle;
         protected XSSFCellStyle unavailableStyle;
         protected XSSFCellStyle pinnedStyle;
         protected XSSFCellStyle hardPenaltyStyle;
@@ -378,8 +378,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
                 score = scoreDirector.calculateScore();
-                constraintMatchTotalList = new ArrayList<>(scoreDirector.getConstraintMatchTotals());
-                constraintMatchTotalList.sort(Comparator.comparing(ConstraintMatchTotal::getScore));
+                constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
                 indictmentMap = scoreDirector.getIndictmentMap();
             }
         }
@@ -394,10 +393,12 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected void createStyles() {
             headerStyle = createStyle(null);
-            Font font = workbook.createFont();
-            font.setBold(true);
-            headerStyle.setFont(font);
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
             defaultStyle = createStyle(null);
+            scoreStyle = createStyle(null);
+            scoreStyle.setAlignment(HorizontalAlignment.RIGHT);
             unavailableStyle = createStyle(UNAVAILABLE_COLOR);
             pinnedStyle = createStyle(PINNED_COLOR);
             hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
@@ -465,39 +466,62 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell(constraintDescription);
         }
 
-        protected void writeScoreView() {
+        protected void writeScoreView(Function<List<Object>, String> justificationListFormatter) {
             nextSheet("Score view", 1, 3, true);
             nextRow();
             nextHeaderCell("Score");
             nextCell().setCellValue(score.toShortString());
             nextRow();
             nextRow();
-            nextHeaderCell("Constraint match");
+            nextHeaderCell("Constraint name");
+            nextHeaderCell("Constraint weight");
+            nextHeaderCell("Match count");
+            nextHeaderCell("Score");
+            nextHeaderCell("");
             nextHeaderCell("Match score");
-            nextHeaderCell("Total score");
+            nextHeaderCell("Justifications");
             if (!score.isSolutionInitialized()) {
                 nextRow();
                 nextHeaderCell("Unassigned variables");
                 nextCell();
+                nextCell();
                 nextCell().setCellValue(score.getInitScore());
             }
-            for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotalList) {
+            Comparator<ConstraintMatchTotal> constraintWeightComparator = Comparator.comparing(
+                    ConstraintMatchTotal::getConstraintWeight, Comparator.nullsLast(Comparator.reverseOrder()));
+            constraintMatchTotals.stream().sorted(constraintWeightComparator
+                    .thenComparing(ConstraintMatchTotal::getConstraintPackage)
+                    .thenComparing(ConstraintMatchTotal::getConstraintName)).forEach(constraintMatchTotal -> {
                 nextRow();
                 nextHeaderCell(constraintMatchTotal.getConstraintName());
-                nextCell();
-                nextCell().setCellValue(constraintMatchTotal.getScore().toShortString());
-                List<ConstraintMatch> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
-                constraintMatchList.sort(Comparator.comparing(ConstraintMatch::getScore));
-                for (ConstraintMatch constraintMatch : constraintMatchList) {
+                Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
+                nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
+                nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
+            });
+            nextRow();
+            nextRow();
+            constraintMatchTotals.stream().sorted(Comparator.<ConstraintMatchTotal, Score>comparing(ConstraintMatchTotal::getScore)
+                    .thenComparing(ConstraintMatchTotal::getConstraintPackage)
+                    .thenComparing(ConstraintMatchTotal::getConstraintName)).forEach(constraintMatchTotal -> {
+                nextRow();
+                nextHeaderCell(constraintMatchTotal.getConstraintName());
+                Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
+                nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
+                nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
+                constraintMatchTotal.getConstraintMatchSet().stream()
+                        .sorted(Comparator.<ConstraintMatch, Score>comparing(ConstraintMatch::getScore)).forEach(constraintMatch -> {
                     nextRow();
-                    nextCell().setCellValue("    " + constraintMatch.getJustificationList().stream()
-                            .filter(o -> o instanceof Talk).map(o -> ((Talk) o).getCode())
-                            .collect(joining(", ")));
-                    nextCell().setCellValue(constraintMatch.getScore().toShortString());
                     nextCell();
                     nextCell();
-                }
-            }
+                    nextCell();
+                    nextCell();
+                    nextCell();
+                    nextCell(scoreStyle).setCellValue(constraintMatch.getScore().toShortString());
+                    nextCell().setCellValue(justificationListFormatter.apply(constraintMatch.getJustificationList()));
+                });
+            });
             autoSizeColumnsWithHeader();
         }
 

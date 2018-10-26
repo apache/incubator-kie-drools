@@ -102,15 +102,15 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(constraintMatchEnabled, 1, 2);
         Rule hard1 = mockRule("hard1");
-        scoreHolder.putConstraintWeight(hard1, BendableLongScore.ofHard(1, 2, 0, 10L));
+        scoreHolder.configureConstraintWeight(hard1, BendableLongScore.ofHard(1, 2, 0, 10L));
         Rule hard2 = mockRule("hard2");
-        scoreHolder.putConstraintWeight(hard2, BendableLongScore.ofHard(1, 2, 0, 100L));
+        scoreHolder.configureConstraintWeight(hard2, BendableLongScore.ofHard(1, 2, 0, 100L));
         Rule medium1 = mockRule("medium1");
-        scoreHolder.putConstraintWeight(medium1, BendableLongScore.ofSoft(1, 2, 0, 10L));
+        scoreHolder.configureConstraintWeight(medium1, BendableLongScore.ofSoft(1, 2, 0, 10L));
         Rule soft1 = mockRule("soft1");
-        scoreHolder.putConstraintWeight(soft1, BendableLongScore.ofSoft(1, 2, 1, 10L));
+        scoreHolder.configureConstraintWeight(soft1, BendableLongScore.ofSoft(1, 2, 1, 10L));
         Rule soft2 = mockRule("soft2");
-        scoreHolder.putConstraintWeight(soft2, BendableLongScore.ofSoft(1, 2, 1, 100L));
+        scoreHolder.configureConstraintWeight(soft2, BendableLongScore.ofSoft(1, 2, 1, 100L));
 
         scoreHolder.penalize(mockRuleContext(hard1));
         assertEquals(BendableLongScore.of(new long[]{-10L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));

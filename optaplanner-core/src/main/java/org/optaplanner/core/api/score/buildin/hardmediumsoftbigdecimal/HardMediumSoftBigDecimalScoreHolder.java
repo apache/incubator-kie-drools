@@ -60,12 +60,11 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, HardMediumSoftBigDecimalScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, HardMediumSoftBigDecimalScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, BigDecimal> matchExecutor;
         if (constraintWeight.equals(HardMediumSoftBigDecimalScore.ZERO)) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else if (constraintWeight.getMediumScore().equals(BigDecimal.ZERO) && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
                     -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore().multiply(matchWeight));

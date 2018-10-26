@@ -48,12 +48,11 @@ public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, SimpleScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, SimpleScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Integer> matchExecutor;
         if (constraintWeight.equals(SimpleScore.ZERO)) {
             matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else {
             matchExecutor = (RuleContext kcontext, Integer matchWeight)
                     -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);

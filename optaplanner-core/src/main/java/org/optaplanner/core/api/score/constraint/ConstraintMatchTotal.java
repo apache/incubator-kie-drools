@@ -21,6 +21,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -31,6 +34,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     private final String constraintPackage;
     private final String constraintName;
+    private final Score constraintWeight;
 
     private final Set<ConstraintMatch> constraintMatchSet;
     private Score score;
@@ -41,9 +45,20 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
      * @param zeroScore never null
      */
     public ConstraintMatchTotal(String constraintPackage, String constraintName, Score zeroScore) {
+        this(constraintPackage, constraintName, null, zeroScore);
+    }
+
+    /**
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight null if {@link ConstraintWeight} isn't used for this constraint
+     * @param zeroScore never null
+     */
+    public ConstraintMatchTotal(String constraintPackage, String constraintName, Score constraintWeight, Score zeroScore) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         constraintMatchSet = new LinkedHashSet<>();
+        this.constraintWeight = constraintWeight;
         score = zeroScore;
     }
 
@@ -59,6 +74,16 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
      */
     public String getConstraintName() {
         return constraintName;
+    }
+
+    /**
+     * The value of the {@link ConstraintWeight} annotated member of the {@link ConstraintConfiguration}.
+     * It's independent to the state of the {@link PlanningVariable planning variables}.
+     * Do not confuse with {@link #getScore()}.
+     * @return null if {@link ConstraintWeight} isn't used for this constraint
+     */
+    public Score getConstraintWeight() {
+        return constraintWeight;
     }
 
     /**

@@ -72,9 +72,9 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         SimpleBigDecimalScoreHolder scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
         Rule constraint1 = mockRule("constraint1");
-        scoreHolder.putConstraintWeight(constraint1, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(constraint1, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
         Rule constraint2 = mockRule("constraint2");
-        scoreHolder.putConstraintWeight(constraint2, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(constraint2, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.0")), scoreHolder.extractScore(0));
@@ -84,9 +84,9 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
-        scoreHolder.putConstraintWeight(constraint3, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
+        scoreHolder.configureConstraintWeight(constraint3, SimpleBigDecimalScore.of(new BigDecimal("10.0")));
         Rule constraint4 = mockRule("constraint4");
-        scoreHolder.putConstraintWeight(constraint4, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
+        scoreHolder.configureConstraintWeight(constraint4, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
 
         scoreHolder.reward(mockRuleContext(constraint3));
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("10.0")), scoreHolder.extractScore(0));

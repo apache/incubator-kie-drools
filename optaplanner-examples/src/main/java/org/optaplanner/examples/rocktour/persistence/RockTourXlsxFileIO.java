@@ -329,7 +329,9 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             writeShowList();
             writeDrivingTime();
             writeStopsView();
-            writeScoreView();
+            writeScoreView(justificationList -> justificationList.stream()
+                    .filter(o -> o instanceof RockShow).map(o -> ((RockShow) o).getVenueName())
+                    .collect(joining(", ")));
             return workbook;
         }
 

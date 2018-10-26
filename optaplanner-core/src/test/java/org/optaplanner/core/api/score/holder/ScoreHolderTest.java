@@ -49,7 +49,7 @@ public class ScoreHolderTest {
             }
 
             @Override
-            public void putConstraintWeight(org.kie.api.definition.rule.Rule rule, Score constraintWeight) {
+            public void configureConstraintWeight(org.kie.api.definition.rule.Rule rule, Score constraintWeight) {
                 throw new UnsupportedOperationException();
             }
         };

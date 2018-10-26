@@ -61,12 +61,11 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
     // ************************************************************************
 
     @Override
-    public void putConstraintWeight(Rule rule, HardMediumSoftLongScore constraintWeight) {
+    public void configureConstraintWeight(Rule rule, HardMediumSoftLongScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Long> matchExecutor;
         if (constraintWeight.equals(HardMediumSoftLongScore.ZERO)) {
             matchExecutor = (RuleContext kcontext, Long matchWeight) -> {};
-        } else if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
         } else if (constraintWeight.getMediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
             matchExecutor = (RuleContext kcontext, Long matchWeight)
                     -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);

@@ -360,7 +360,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             writeEmployeeList();
             writeFlightListAndFlightAssignmentList();
             writeEmployeesView();
-            writeScoreView();
+            writeScoreView(justificationList -> justificationList.stream()
+                    .filter(o -> o instanceof FlightAssignment).map(o -> ((FlightAssignment) o).getFlight().toString())
+                    .collect(joining(", ")));
             return workbook;
         }
 

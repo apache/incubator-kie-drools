@@ -102,15 +102,15 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
     public void rewardPenalize(boolean constraintMatchEnabled) {
         BendableScoreHolder scoreHolder = new BendableScoreHolder(constraintMatchEnabled, 1, 2);
         Rule hard1 = mockRule("hard1");
-        scoreHolder.putConstraintWeight(hard1, BendableScore.ofHard(1, 2, 0, 10));
+        scoreHolder.configureConstraintWeight(hard1, BendableScore.ofHard(1, 2, 0, 10));
         Rule hard2 = mockRule("hard2");
-        scoreHolder.putConstraintWeight(hard2, BendableScore.ofHard(1, 2, 0, 100));
+        scoreHolder.configureConstraintWeight(hard2, BendableScore.ofHard(1, 2, 0, 100));
         Rule medium1 = mockRule("medium1");
-        scoreHolder.putConstraintWeight(medium1, BendableScore.ofSoft(1, 2, 0, 10));
+        scoreHolder.configureConstraintWeight(medium1, BendableScore.ofSoft(1, 2, 0, 10));
         Rule soft1 = mockRule("soft1");
-        scoreHolder.putConstraintWeight(soft1, BendableScore.ofSoft(1, 2, 1, 10));
+        scoreHolder.configureConstraintWeight(soft1, BendableScore.ofSoft(1, 2, 1, 10));
         Rule soft2 = mockRule("soft2");
-        scoreHolder.putConstraintWeight(soft2, BendableScore.ofSoft(1, 2, 1, 100));
+        scoreHolder.configureConstraintWeight(soft2, BendableScore.ofSoft(1, 2, 1, 100));
 
         scoreHolder.penalize(mockRuleContext(hard1));
         assertEquals(BendableScore.of(new int[]{-10}, new int[]{0, 0}), scoreHolder.extractScore(0));

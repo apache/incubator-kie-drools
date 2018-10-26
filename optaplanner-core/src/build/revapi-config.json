@@ -723,12 +723,12 @@
         },
         {
           "code": "java.method.addedToInterface",
-          "new": "method void org.optaplanner.core.api.score.holder.ScoreHolder<Score_ extends org.optaplanner.core.api.score.Score>::putConstraintWeight(org.kie.api.definition.rule.Rule, Score_)",
+          "new": "method void org.optaplanner.core.api.score.holder.ScoreHolder<Score_ extends org.optaplanner.core.api.score.Score>::configureConstraintWeight(org.kie.api.definition.rule.Rule, Score_)",
           "package": "org.optaplanner.core.api.score.holder",
           "classSimpleName": "ScoreHolder",
-          "methodName": "putConstraintWeight",
+          "methodName": "configureConstraintWeight",
           "elementKind": "method",
-          "justification": "ScoreHolder now has the Score type as a generic type parameter."
+          "justification": "ScoreHolder now is aware of the ConstraintWeights."
         },
         {
           "code": "java.generics.elementNowParameterized",
