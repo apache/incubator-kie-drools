@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -37,7 +36,6 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
@@ -50,9 +48,9 @@ import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -66,6 +64,15 @@ public class DMNAssemblerService implements KieAssemblerService {
     public static final String DMN_PROFILE_PREFIX = ORG_KIE_DMN_PREFIX + ".profiles.";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
+
+    private DMNCompilerConfigurationImpl externalCompilerConfiguration;
+
+    public DMNAssemblerService(DMNCompilerConfigurationImpl externalCompilerConfiguration) {
+        this.externalCompilerConfiguration = externalCompilerConfiguration;
+    }
+
+    public DMNAssemblerService() {
+    }
 
     @Override
     public ResourceType getResourceType() {
@@ -209,10 +216,16 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     private DMNCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
         List<DMNProfile> dmnProfiles = kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl));
+        DMNCompilerConfigurationImpl compilerConfiguration;
 
-        DMNCompilerConfiguration compilerConfig = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles);
+        // Beware: compilerConfiguration can't be cached in DMNAssemblerService
+        if (externalCompilerConfiguration == null) {
+            compilerConfiguration = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        } else {
+            compilerConfiguration = externalCompilerConfiguration;
+        }
 
-        return DMNFactory.newCompiler(compilerConfig);
+        return DMNFactory.newCompiler(compilerConfiguration);
     }
 
     /**
@@ -220,11 +233,11 @@ public class DMNAssemblerService implements KieAssemblerService {
      * @param classLoader 
      * @param chainedProperties applies properties --it does not do any classloading nor profile loading based on these properites, just passes the values. 
      * @param dmnProfiles applies these DMNProfile(s) to the DMNCompilerConfiguration
+     * @param config
      * @return
      */
-    public static DMNCompilerConfiguration compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles) {
-        DMNCompilerConfigurationImpl config = (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration();
-        
+    public static DMNCompilerConfigurationImpl compilerConfigWithKModulePrefs(ClassLoader classLoader, ChainedProperties chainedProperties, List<DMNProfile> dmnProfiles, DMNCompilerConfigurationImpl config) {
+
         config.setRootClassLoader(classLoader);
 
         Map<String, String> dmnPrefs = new HashMap<>();

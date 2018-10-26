@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.conf.Option;
+import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -36,6 +37,8 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     private List<DRGElementCompiler> drgElementCompilers = new ArrayList<>();
     private List<FEELProfile> feelProfiles = new ArrayList<>();
     private ClassLoader rootClassLoader = ClassLoaderUtil.findDefaultClassLoader();
+    private List<AfterGeneratingSourcesListener> listeners = new ArrayList<>();
+    private Boolean deferredCompilation = false;
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -43,6 +46,16 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     public void addExtension(DMNExtensionRegister extensionRegister) {
         this.registeredExtensions.add(extensionRegister);
+    }
+
+    @Override
+    public void addListener(AfterGeneratingSourcesListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public List<AfterGeneratingSourcesListener> getAfterGeneratingSourcesListeners() {
+        return listeners;
     }
 
     public List<DMNExtensionRegister> getRegisteredExtensions() {
@@ -98,5 +111,13 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     public boolean isUseExecModelCompiler() {
         return getOption(ExecModelCompilerOption.class).isUseExecModelCompiler();
+    }
+
+    public boolean isDeferredCompilation() {
+        return deferredCompilation;
+    }
+
+    public void setDeferredCompilation(Boolean deferredCompilation) {
+        this.deferredCompilation = deferredCompilation;
     }
 }

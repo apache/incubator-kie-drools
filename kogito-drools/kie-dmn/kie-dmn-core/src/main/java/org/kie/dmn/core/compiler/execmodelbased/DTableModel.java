@@ -291,6 +291,12 @@ public class DTableModel {
         return Optional.ofNullable( inputClause.getInputValues() ).map( UnaryTests::getText ).orElse(null);
     }
 
+    public String getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum generator) {
+        String pkgName = getNamespace();
+        String tableName = getTableName();
+        return pkgName + "." + tableName + generator.type;
+    }
+
     public static class DOutputModel {
         private final OutputClause outputClause;
         private List<UnaryTest> outputValues;
