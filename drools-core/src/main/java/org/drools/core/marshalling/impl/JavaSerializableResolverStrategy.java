@@ -69,11 +69,8 @@ public class JavaSerializableResolverStrategy
         try (ByteArrayInputStream bs = new ByteArrayInputStream(object)) {
             is = new ObjectInputStream(bs) {
                 @Override
-                protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-
-                    System.out.println("+++++++++++++++++++++++ classloader = " + classloader);
-                    String cname = desc.getName();
-                    return Class.forName(cname, true, classloader);
+                protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException {
+                    return Class.forName(desc.getName(), true, classloader);
                 }
             };
             return read(is);
