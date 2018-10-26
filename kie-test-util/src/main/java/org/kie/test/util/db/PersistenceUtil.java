@@ -137,6 +137,16 @@ public class PersistenceUtil {
      * @return PoolingDataSource that has been set up but _not_ initialized.
      */
     public static PoolingDataSourceWrapper setupPoolingDataSource(Properties dsProps, String datasourceName) {
+        String driverClass = dsProps.getProperty("driverClassName");
+
+        if (driverClass.startsWith("org.h2")) {
+            String jdbcUrl = dsProps.getProperty("url");
+            // fix an incomplete JDBC URL used by some tests
+            if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://")) {
+                dsProps.put("url", jdbcUrl + "tcp://localhost/target/persistence-test");
+            }
+            h2Server.start();
+        }
         return DataSourceFactory.setupPoolingDataSource(datasourceName, dsProps);
     }
 
@@ -228,6 +238,7 @@ public class PersistenceUtil {
         private Server realH2Server;
 
         public void start() {
+            System.out.println("running H2 server");
             if (realH2Server == null || !realH2Server.isRunning(false)) {
                 try {
                     DeleteDbFiles.execute("", "JPADroolsFlow", true);
