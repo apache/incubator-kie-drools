@@ -104,7 +104,7 @@ public class DMNRuntimeImpl
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
-    
+
     @Override
     public DMNModel getModelById(String namespace, String modelId) {
         Objects.requireNonNull(namespace, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "namespace"));

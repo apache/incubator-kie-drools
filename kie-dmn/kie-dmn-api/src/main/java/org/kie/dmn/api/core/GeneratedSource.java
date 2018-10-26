@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.ast;
+package org.kie.dmn.api.core;
 
-import org.kie.dmn.core.api.EvaluatorResult;
+public class GeneratedSource {
 
-public class EvaluatorResultImpl implements EvaluatorResult {
-    private final Object     result;
-    private final ResultType code;
+    private final String fileName;
+    private final String sourceContent;
 
-    public EvaluatorResultImpl(Object result, ResultType code) {
-        this.result = result;
-        this.code = code;
+    public GeneratedSource(String fileName, String sourceContent) {
+        this.fileName = fileName;
+        this.sourceContent = sourceContent;
     }
 
-    @Override
-    public Object getResult() {
-        return result;
+    public String getFileName() {
+        return fileName;
     }
 
-    @Override
-    public ResultType getResultType() {
-        return code;
+    public String getSourceContent() {
+        return sourceContent;
     }
 
     @Override
     public String toString() {
-        return "EvaluatorResultImpl{" +
-                "result=" + result +
-                ", code=" + code +
+        return "GeneratedSource{" +
+                "fileName='" + fileName + '\'' +
+                ", sourceContent='" + sourceContent + '\'' +
                 '}';
     }
 }
