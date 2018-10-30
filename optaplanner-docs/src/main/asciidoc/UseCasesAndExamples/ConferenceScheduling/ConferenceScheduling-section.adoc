@@ -14,7 +14,7 @@ Timeslots can overlap. It reads/writes to/from an `*.xlsx` file that can be edit
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingProblem.png[align="center"]
 
-Hard constraints:
+Hard constraints (unless configured otherwise):
 
 * Talk type of timeslot: The type of a talk must match the timeslot's talk type.
 * Room unavailable timeslots: A talk's room must be available during the talk's timeslot.
@@ -32,15 +32,15 @@ Hard constraints:
 ** Talk prohibited room tags: If a talk has a prohibited room tag, then it cannot be assigned to a room with that tag.
 * Talk prerequisite talks: A talk must be scheduled after all its prerequisite talks.
 * Consecutive talks pause: A speaker who has more than one talk must have a break between them.
-
-Medium constraints:
-
 * Talk mutually-exclusive-talks tags: Talks that share such tags must not be scheduled in overlapping timeslots.
+
+Medium constraints (unless configured otherwise):
+
 * Published timeslot: A published talk must not be scheduled at a different timeslot than currently published.
 If a hard constraint's input data changes after publishing (such as speaker unavailability), then this medium constraint will be
 minimally broken to attain a new feasible solution.
 
-Soft constraints:
+Soft constraints (unless configured otherwise):
 
 * Theme track conflict: Minimize the number of talks that share a same theme tag during overlapping timeslots.
 * Sector conflict: Minimize the number of talks that share a same sector tag during overlapping timeslots.
@@ -63,6 +63,8 @@ Soft constraints:
  to avoid having most participants going to the same room.
 * Published room: Minimize the number of talks scheduled in different rooms than published ones.
 * Room stability: Talks with common theme track tag should be scheduled in the same room throughout the day.
+
+Every constraint can be configured to use a different score level (hard/medium/soft) or a different score weight.
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingConstraints.png[align="center"]
 

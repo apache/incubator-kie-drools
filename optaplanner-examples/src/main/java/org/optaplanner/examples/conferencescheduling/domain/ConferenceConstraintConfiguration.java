@@ -100,11 +100,11 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     private HardMediumSoftScore talkPrerequisiteTalks = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(CONSECUTIVE_TALKS_PAUSE)
     private HardMediumSoftScore consecutiveTalksPause = HardMediumSoftScore.ofHard(1);
-
     @ConstraintWeight(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS)
-    private HardMediumSoftScore talkMutuallyExclusiveTalksTags = HardMediumSoftScore.of(0, 1, 1);
+    private HardMediumSoftScore talkMutuallyExclusiveTalksTags = HardMediumSoftScore.ofHard(1);
+
     @ConstraintWeight(PUBLISHED_TIMESLOT)
-    private HardMediumSoftScore publishedTimeslot = HardMediumSoftScore.ofMedium(10);
+    private HardMediumSoftScore publishedTimeslot = HardMediumSoftScore.ofMedium(1);
 
     @ConstraintWeight(THEME_TRACK_CONFLICT)
     private HardMediumSoftScore themeTrackConflict = HardMediumSoftScore.ofSoft(10);

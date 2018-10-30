@@ -169,14 +169,10 @@ rule "Talk mutually-exclusive-talks tags"
         $leftTalk : Talk(timeslot != null, $timeslot : timeslot, $leftId : id)
         $rightTalk : Talk(timeslot != null,
                 overlappingMutuallyExclusiveTalksTagCount($leftTalk) > 0,
-                timeslot.isOnSameDayAs($timeslot),
+                getTimeslot().overlaps($timeslot),
                 id > $leftId)
     then
-        // TODO Split up into 2 constraints
-        // Medium constraint if they overlap as well
-        boolean overlapping = $rightTalk.getTimeslot().overlaps($leftTalk.getTimeslot());
-        int count = $rightTalk.overlappingMutuallyExclusiveTalksTagCount($leftTalk);
-        scoreHolder.penalize(kcontext, 0, overlapping ? count : 0, count);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Published timeslot"
