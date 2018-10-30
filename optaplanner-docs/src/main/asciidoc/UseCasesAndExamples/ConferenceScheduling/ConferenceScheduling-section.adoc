@@ -10,7 +10,7 @@ Assign each conference talk to a timeslot and a room, after the talks have been 
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingMilestonesTimeline.png[align="center"]
 
-Timeslots can overlap. It reads/writse to/from an `*.xlsx` file that can be edited with LibreOffice or Excel.
+Timeslots can overlap. It reads/writes to/from an `*.xlsx` file that can be edited with LibreOffice or Excel.
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingProblem.png[align="center"]
 
