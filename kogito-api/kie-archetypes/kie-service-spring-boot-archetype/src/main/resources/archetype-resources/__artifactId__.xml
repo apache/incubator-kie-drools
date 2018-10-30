@@ -39,7 +39,7 @@
         </config-item>
         <config-item>
           <name>RuntimeStrategy</name>
-          <value>PER_PROCESS_INSTANCE</value>
+          <value>${runtimeStrategy}</value>
           <type>BPM</type>
         </config-item>
       </configItems>
