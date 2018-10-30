@@ -134,7 +134,7 @@ public class OrderByMoveIndexBlockingQueueTest {
         queue.startNextStep(1);
         executorService.submit(() -> queue.addMove(0, 1, 1, new DummyMove("b1"), SimpleScore.of(-1)));
         executorService.submit(() -> queue.addUndoableMove(1, 0, 4, new DummyMove("a4")));
-        executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0")));
+        executorService.submit(() -> queue.addUndoableMove(1, 1, 0, new DummyMove("b0"))).get();
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
         exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet or the next task finishes earlier
