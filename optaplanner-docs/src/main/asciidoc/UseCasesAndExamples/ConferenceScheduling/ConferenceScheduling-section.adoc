@@ -85,6 +85,13 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingValueProposi
 216talks-18timeslots-20rooms has 216 talks, 18 timeslots and 20 rooms with a search space of 10^552.
 ----
 
+
+[[conferenceSchedulingArchitecture]]
+== Architecture
+
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingArchitecture.png[align="center"]
+
+
 [[conferenceSchedulingDomainModel]]
 == Domain Model
 
