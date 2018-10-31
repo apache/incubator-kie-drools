@@ -289,6 +289,15 @@
           "methodName": "newKieScanner",
           "elementKind": "method",
           "justification": "allow KieScanner to work with a plain file system"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<java.lang.String> org.kie.api.runtime.process.CaseAssignment::getRoles()",
+          "package": "org.kie.api.runtime.process",
+          "classSimpleName": "CaseAssignment",
+          "methodName": "getRoles",
+          "elementKind": "method",
+          "justification": "ElasticSearch event emitter for runtime events"
         }
       ]
     }
