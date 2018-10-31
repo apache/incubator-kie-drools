@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_F0B56580-1EF4-4C01-A644-8A52BE5192BF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_FDA690FD-01C7-45B6-9795-B5F5ABEAB084" name="invocation" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_F0B56580-1EF4-4C01-A644-8A52BE5192BF">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_707D64B1-A986-44C5-964C-5D2C36F062E9" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_D119BDE4-C464-42D1-B793-01AA47540E25" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_72316B79-03E8-422A-A9C7-A3A8BAA84BC1" name="sex" isCollection="false">
+      <dmn:typeRef>tSex</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_BDADD363-1142-415A-8738-DFA23E9BB16C" name="tSex" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues id="_8E46E02B-BD30-4948-A2DA-18DEF8AA91F1">
+      <dmn:text>"male", "female"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_FC3D8DE7-B4B9-4AB2-997B-DFD269A6FDD8" name="Person">
+    <dmn:variable id="_7FC7AFFB-4E4B-4A85-9852-076ABBEF03CE" name="Person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_AF6F7A31-7508-4257-8184-5750291A3110" name="retire">
+    <dmn:variable id="_C4B89479-007B-499A-A8BA-5A989BB6EAA1" name="retire" typeRef="boolean"/>
+    <dmn:informationRequirement id="_B5B3CAB2-936A-414B-BE99-9579FEC2BDBD">
+      <dmn:requiredInput href="#_FC3D8DE7-B4B9-4AB2-997B-DFD269A6FDD8"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_FA3671AF-C5B4-4E59-92A6-0005EBEEFAFF">
+      <dmn:requiredKnowledge href="#_9CBD6D8C-30D4-4955-A824-012BF213ECB3"/>
+    </dmn:knowledgeRequirement>
+    <dmn:context id="_7F8F2FF0-E4F8-43F6-95D5-3EE3E933A3B2" typeRef="string">
+      <dmn:contextEntry>
+        <dmn:variable id="_ECC04D03-EBCE-420A-BD1D-10AE5D54045D" name="remains years" typeRef="number"/>
+        <dmn:invocation id="_2840FE4A-921D-4A43-B251-DFE46980038B" typeRef="string">
+          <dmn:literalExpression id="_6B03BA78-5F6B-4F2E-A29B-C937E30FEC21" typeRef="string">
+            <dmn:text>remains to retire</dmn:text>
+          </dmn:literalExpression>
+          <dmn:binding>
+            <dmn:parameter id="_600E4A16-4D94-4427-86CA-079E55FE8DF3" name="age" typeRef="string"/>
+            <dmn:literalExpression id="_8B6A6BA7-0F97-49FB-AAFD-708212ED34EE" typeRef="string">
+              <dmn:text>Person.age</dmn:text>
+            </dmn:literalExpression>
+          </dmn:binding>
+        </dmn:invocation>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_242D7733-E3F2-4F37-9DC7-C2855D75A756" name="sex" typeRef="string"/>
+        <dmn:literalExpression id="_3DCF8CAD-9272-4D92-A2CD-C4EE8283D557" typeRef="string">
+          <dmn:text>Person.sex</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_2D3B9F6D-CB5F-4578-9379-001F61F265C2" typeRef="string">
+          <dmn:text>(remains years &lt; 10 and sex == "male") or (remains years &lt; 20 and sex == "female")</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_9CBD6D8C-30D4-4955-A824-012BF213ECB3" name="remains to retire">
+    <dmn:variable id="_280FE0F4-AC93-4787-896C-5F2C2AC2040C" name="remains to retire" typeRef="string"/>
+    <dmn:encapsulatedLogic id="_EA7229BB-4F89-4FE9-A0EA-44C4B58BFCAE" typeRef="number" kind="FEEL">
+      <dmn:formalParameter id="_16A15200-5CDA-4486-B8B4-FC803206DAF4" name="age" typeRef="number"/>
+      <dmn:literalExpression id="_3567D2C2-5BEB-4094-A9E4-61C3C6E3C87C" typeRef="string">
+        <dmn:text>60 - age</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/">
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-_FC3D8DE7-B4B9-4AB2-997B-DFD269A6FDD8" dmnElementRef="_FC3D8DE7-B4B9-4AB2-997B-DFD269A6FDD8" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="411" y="335" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_AF6F7A31-7508-4257-8184-5750291A3110" dmnElementRef="_AF6F7A31-7508-4257-8184-5750291A3110" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="412" y="160" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_9CBD6D8C-30D4-4955-A824-012BF213ECB3" dmnElementRef="_9CBD6D8C-30D4-4955-A824-012BF213ECB3" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="614" y="289" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_B5B3CAB2-936A-414B-BE99-9579FEC2BDBD" dmnElementRef="_B5B3CAB2-936A-414B-BE99-9579FEC2BDBD">
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="461" y="360"/>
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="462" y="185"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_FA3671AF-C5B4-4E59-92A6-0005EBEEFAFF" dmnElementRef="_FA3671AF-C5B4-4E59-92A6-0005EBEEFAFF">
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="664" y="314"/>
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="462" y="185"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

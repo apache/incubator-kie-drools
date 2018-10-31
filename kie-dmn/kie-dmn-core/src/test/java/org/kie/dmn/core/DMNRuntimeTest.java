@@ -103,6 +103,27 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTest.class);
 
     @Test
+    public void testFunctionInvocation() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invocation.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_F0B56580-1EF4-4C01-A644-8A52BE5192BF",
+                                                   "invocation");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        final Map<String, Object> person = new HashMap<>();
+        person.put("age", 55);
+        person.put("sex", "male");
+        context.set("Person", person);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("retire"), is(true));
+    }
+
+    @Test
     public void testSimpleItemDefinition() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def" );
