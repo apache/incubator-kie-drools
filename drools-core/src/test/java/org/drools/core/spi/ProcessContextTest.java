@@ -146,6 +146,11 @@ public class ProcessContextTest {
         }
 
         @Override
+        public Collection<String> getRoles() {
+            return assignment.keySet();
+        }
+
+        @Override
         public Map<String, Object> getData() {
             return data;
         }
