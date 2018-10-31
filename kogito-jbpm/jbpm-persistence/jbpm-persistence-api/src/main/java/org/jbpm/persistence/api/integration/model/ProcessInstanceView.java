@@ -186,7 +186,7 @@ public class ProcessInstanceView implements InstanceView<ProcessInstance> {
         this.correlationKey = ((WorkflowProcessInstanceImpl)source).getCorrelationKey();
         this.date = new Date();
         this.id = source.getId();
-        this.initiator = (String) ((WorkflowProcessInstance)source).getMetaData().get("Initiator");
+        this.initiator = (String) ((WorkflowProcessInstanceImpl)source).getVariable("initiator");
         this.parentId = source.getParentProcessInstanceId();
         this.processId = source.getProcessId();
         this.processInstanceDescription = ((WorkflowProcessInstanceImpl)source).getDescription();

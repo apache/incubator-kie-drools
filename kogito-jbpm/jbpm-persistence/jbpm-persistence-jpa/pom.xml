@@ -224,6 +224,7 @@
               org.jbpm.process.instance.event,
               org.jbpm.process.instance.impl,
               org.jbpm.process.instance.timer,
+              org.jbpm.workflow.core,
               org.jbpm.workflow.instance.impl,
               org.jbpm.workflow.instance.node,
               org.kie.api,

@@ -30,6 +30,8 @@ import org.drools.persistence.api.TransactionManagerHelper;
 import org.jbpm.persistence.api.ProcessPersistenceContext;
 import org.jbpm.persistence.api.ProcessPersistenceContextManager;
 import org.jbpm.persistence.api.integration.EventManagerProvider;
+import org.jbpm.persistence.api.integration.InstanceView;
+import org.jbpm.persistence.api.integration.model.CaseInstanceView;
 import org.jbpm.persistence.api.integration.model.ProcessInstanceView;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.correlation.CorrelationPropertyInfo;
@@ -37,6 +39,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
@@ -93,7 +96,7 @@ public class JPAProcessInstanceManager
         context.persist(correlationKeyInfo);
         internalAddProcessInstance(processInstance);
         
-        EventManagerProvider.getInstance().get().create(new ProcessInstanceView(processInstance));
+        EventManagerProvider.getInstance().get().create(getInstanceViewFor(processInstance));
     }
     
     public void internalAddProcessInstance(ProcessInstance processInstance) {
@@ -132,49 +135,53 @@ public class JPAProcessInstanceManager
                 processInstanceInfo.updateLastReadDate();
                 
 
-                EventManagerProvider.getInstance().get().update(new ProcessInstanceView(processInstance));
+                EventManagerProvider.getInstance().get().update(getInstanceViewFor(processInstance));
   
             }
         	return processInstance;
         }
-
-    	// Make sure that the cmd scoped entity manager has started
-    	ProcessPersistenceContextManager ppcm 
-    	    = (ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
-    	ppcm.beginCommandScopedEntityManager();
-    	
-        ProcessPersistenceContext context = ppcm.getProcessPersistenceContext();
-        ProcessInstanceInfo processInstanceInfo = (ProcessInstanceInfo) context.findProcessInstanceInfo( id );
-        if ( processInstanceInfo == null ) {
-            return null;
-        }
-        processInstance = (org.jbpm.process.instance.ProcessInstance)
-        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
-        if (!readOnly) {
-            processInstanceInfo.updateLastReadDate();
-            TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
-            EventManagerProvider.getInstance().get().update(new ProcessInstanceView(processInstance));
-        }
-        if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
-	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
-	        if ( process == null ) {
-	            throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
-	        }
-	        processInstance.setProcess( process );
-        }
-        if ( processInstance.getKnowledgeRuntime() == null ) {
-            Long parentProcessInstanceId = (Long) ((ProcessInstanceImpl) processInstance).getMetaData().get("ParentProcessInstanceId");
-            if (parentProcessInstanceId != null) {
-                kruntime.getProcessInstance(parentProcessInstanceId);
+        try {
+        	// Make sure that the cmd scoped entity manager has started
+        	ProcessPersistenceContextManager ppcm 
+        	    = (ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
+        	ppcm.beginCommandScopedEntityManager();
+        	
+            ProcessPersistenceContext context = ppcm.getProcessPersistenceContext();
+            ProcessInstanceInfo processInstanceInfo = (ProcessInstanceInfo) context.findProcessInstanceInfo( id );
+            if ( processInstanceInfo == null ) {
+                return null;
             }
-            processInstance.setKnowledgeRuntime( kruntime );
-            
-            ((ProcessInstanceImpl) processInstance).reconnect();
-            if (readOnly) {
-                internalRemoveProcessInstance(processInstance);
+            processInstance = (org.jbpm.process.instance.ProcessInstance)
+            	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
+            if (!readOnly) {
+                processInstanceInfo.updateLastReadDate();
+                TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);            
+            }
+            if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
+    	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
+    	        if ( process == null ) {
+    	            throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
+    	        }
+    	        processInstance.setProcess( process );
+            }
+            if ( processInstance.getKnowledgeRuntime() == null ) {
+                Long parentProcessInstanceId = (Long) ((ProcessInstanceImpl) processInstance).getMetaData().get("ParentProcessInstanceId");
+                if (parentProcessInstanceId != null) {
+                    kruntime.getProcessInstance(parentProcessInstanceId);
+                }
+                processInstance.setKnowledgeRuntime( kruntime );
+                
+                ((ProcessInstanceImpl) processInstance).reconnect();
+                if (readOnly) {
+                    internalRemoveProcessInstance(processInstance);
+                }
+            }
+            return processInstance;
+        } finally {
+            if (!readOnly && processInstance != null) {
+                EventManagerProvider.getInstance().get().update(getInstanceViewFor(processInstance));
             }
         }
-        return processInstance;
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -190,7 +197,7 @@ public class JPAProcessInstanceManager
         }
         internalRemoveProcessInstance(processInstance);
         
-        EventManagerProvider.getInstance().get().delete(new ProcessInstanceView(processInstance));
+        EventManagerProvider.getInstance().get().delete(getInstanceViewFor(processInstance));
     }
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
@@ -244,6 +251,14 @@ public class JPAProcessInstanceManager
             return null;
         }
         return getProcessInstance(processInstanceId);
+    }
+    
+    protected InstanceView<ProcessInstance> getInstanceViewFor(ProcessInstance pi) {
+        if (((WorkflowProcess)pi.getProcess()).isDynamic()) {
+            return new CaseInstanceView(pi);
+        }
+        
+        return new ProcessInstanceView(pi);
     }
 
 }

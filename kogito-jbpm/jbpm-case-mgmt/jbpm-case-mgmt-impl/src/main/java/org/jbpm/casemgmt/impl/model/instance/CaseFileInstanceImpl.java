@@ -206,6 +206,11 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     }
     
     @Override
+    public Collection<String> getRoles() {
+        return roles.keySet();
+    }
+    
+    @Override
     public Collection<OrganizationalEntity> getAssignments(String roleName) {
         String[] roleNames = roleName.split(separator);
         Collection<OrganizationalEntity> foundAssignments = new ArrayList<>();
