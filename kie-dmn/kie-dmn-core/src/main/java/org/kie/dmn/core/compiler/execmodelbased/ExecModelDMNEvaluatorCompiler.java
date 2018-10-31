@@ -18,10 +18,11 @@ package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -38,6 +39,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
@@ -81,7 +83,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         return evaluator;
     }
 
-    protected String getDecisionTableName(String dtName, DecisionTable dt) {
+    protected static String getDecisionTableName(String dtName, DecisionTable dt) {
         String decisionName;
         if (dt.getParent() instanceof DRGElement) {
             decisionName = dtName;
@@ -89,7 +91,15 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             if (dt.getId() != null) {
                 decisionName = dt.getId();
             } else {
-                decisionName = "_" + UUID.randomUUID().toString();
+                DMNModelInstrumentedBase cursor = dt;
+                List<String> path = new ArrayList<>();
+                while (!(cursor instanceof DRGElement)) {
+                    int indexOf = cursor.getParent().getChildren().indexOf(cursor);
+                    path.add(String.valueOf(indexOf));
+                    cursor = cursor.getParent();
+                }
+                path.add(((DRGElement) cursor).getName());
+                decisionName = path.stream().sorted(Collections.reverseOrder()).collect(Collectors.joining("/"));
             }
         }
         return decisionName;

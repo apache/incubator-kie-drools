@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
@@ -80,6 +81,7 @@ public class DMNEvaluatorCompiler {
     public static DMNEvaluatorCompiler dmnEvaluatorCompilerFactory(DMNCompilerImpl dmnCompiler, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         DMNRuleClassFile dmnRuleClassFile = new DMNRuleClassFile(dmnCompilerConfig.getRootClassLoader());
         if (dmnRuleClassFile.hasCompiledClasses()) {
+            logger.debug("Using ExecModelDMNClassLoaderCompiler.");
             return new ExecModelDMNClassLoaderCompiler(dmnCompiler, dmnRuleClassFile);
         } else if (dmnCompilerConfig.isDeferredCompilation()) {
             ExecModelDMNMavenSourceCompiler evaluatorCompiler = new ExecModelDMNMavenSourceCompiler(dmnCompiler);
@@ -88,8 +90,10 @@ public class DMNEvaluatorCompiler {
             }
             return evaluatorCompiler;
         } else if (dmnCompilerConfig.isUseExecModelCompiler()) {
+            logger.debug("Using ExecModelDMNEvaluatorCompiler.");
             return new ExecModelDMNEvaluatorCompiler(dmnCompiler);
         } else {
+            logger.debug("default DMNEvaluatorCompiler.");
             return new DMNEvaluatorCompiler(dmnCompiler);
         }
     }
