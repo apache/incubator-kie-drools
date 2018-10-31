@@ -31,7 +31,7 @@ import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.test.JbpmAsyncJobTestCase;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.Test;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieSession;
@@ -104,19 +104,12 @@ public class ParallelAsyncJobsTest extends JbpmAsyncJobTestCase {
     }
     
     @Override
-    protected PoolingDataSource setupPoolingDataSource() {        
-        
+    protected PoolingDataSourceWrapper setupPoolingDataSource() {
         Properties dsProps = PersistenceUtil.getDatasourceProperties();
-        String jdbcUrl = dsProps.getProperty("url");
-        String driverClass = dsProps.getProperty("driverClassName");        
+        dsProps.setProperty("POOL_CONNECTIONS", "false");
 
         // Setup the datasource
-        PoolingDataSource ds1 = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
-        if (driverClass.startsWith("org.h2")) {
-            ds1.getDriverProperties().setProperty("url", jdbcUrl);
-        }
-        ds1.getDriverProperties().setProperty("POOL_CONNECTIONS", "false");
-        ds1.init();
+        PoolingDataSourceWrapper ds1 = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds");
         return ds1;
     }
 

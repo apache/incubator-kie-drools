@@ -55,7 +55,7 @@ import org.jbpm.services.task.impl.model.TaskDataImpl_;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.TaskImpl_;
 import org.jbpm.services.task.impl.model.UserImpl_;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -73,7 +73,7 @@ import org.kie.internal.task.api.model.InternalTaskData;
 @Ignore
 public class DistincVsJoinPerformanceTest extends HumanTaskServicesBaseTest {
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private EntityManagerFactory emf;
     
     private static final String stakeHolder = "vampire";

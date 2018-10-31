@@ -26,7 +26,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class MvelResolverDeploymentDescriptorManagerTest extends AbstractDeploym
 	protected static final String GROUP_ID = "org.jbpm.test";
 	protected static final String VERSION = "1.0.0";
 
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	private RuntimeManager manager;
 
 	@Before

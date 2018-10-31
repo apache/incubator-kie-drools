@@ -62,6 +62,7 @@
       <property name="hibernate.id.new_generator_mappings" value="false" />            
 
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
+      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>        
   </persistence-unit>
     

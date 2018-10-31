@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -48,7 +49,8 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -91,7 +93,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
     private boolean setupDataSource = false;
     private boolean sessionPersistence = false;
     private EntityManagerFactory emf;
-    private PoolingDataSource ds;
+    private PoolingDataSourceWrapper ds;
     private H2Server server = new H2Server();
     private TaskService taskService;
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
@@ -118,15 +120,15 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
         this.setupDataSource = setupDataSource;
     }
 
-    public static PoolingDataSource setupPoolingDataSource() {
-        PoolingDataSource pds = new PoolingDataSource();
-        pds.setUniqueName("jdbc/jbpm-ds");
-        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        pds.getDriverProperties().put("user", "sa");
-        pds.getDriverProperties().put("password", "");
-        pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=true");
-        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
-        pds.init();
+    public static PoolingDataSourceWrapper setupPoolingDataSource() {
+        Properties driverProperties = new Properties();
+        driverProperties.put("user", "sa");
+        driverProperties.put("password", "");
+        driverProperties.put("url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=true");
+        driverProperties.put("driverClassName", "org.h2.Driver");
+        driverProperties.put("className", "org.h2.jdbcx.JdbcDataSource");
+        
+        PoolingDataSourceWrapper pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", driverProperties);
         return pds;
     }
 
@@ -563,7 +565,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
         }
     }
 
-    public PoolingDataSource getDs() {
+    public PoolingDataSourceWrapper getDs() {
         return ds;
     }
 

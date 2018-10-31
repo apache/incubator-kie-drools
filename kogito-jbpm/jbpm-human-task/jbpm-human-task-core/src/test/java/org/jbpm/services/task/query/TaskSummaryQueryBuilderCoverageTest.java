@@ -25,7 +25,7 @@ import javax.persistence.Persistence;
 import org.jbpm.query.QueryBuilderCoverageTestUtil.ModuleSpecificInputFiller;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,7 +42,7 @@ public class TaskSummaryQueryBuilderCoverageTest extends HumanTaskServicesBaseTe
 
     private static final Logger logger = LoggerFactory.getLogger(TaskSummaryQueryBuilderCoverageTest.class);
 
-    private static PoolingDataSource pds;
+    private static PoolingDataSourceWrapper pds;
     private static EntityManagerFactory emf;
     private InternalTaskService taskService;
 

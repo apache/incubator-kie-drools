@@ -25,12 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.model.DeploymentUnit;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -54,7 +56,7 @@ public abstract class AbstractServicesTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractServicesTest.class);
 
-    protected PoolingDataSource ds;
+    protected PoolingDataSourceWrapper ds;
     protected DeploymentService deploymentService;
 
     protected abstract DeploymentUnit prepareDeploymentUnit() throws Exception;
@@ -178,16 +180,14 @@ public abstract class AbstractServicesTest {
     }
 
     protected void buildDatasource() {
-        ds = new PoolingDataSource();
-        ds.setUniqueName("jdbc/testDS1");
+        Properties driverProperties = new Properties();
+        driverProperties.put("user", "sa");
+        driverProperties.put("password", "sasa");
+        driverProperties.put("url", "jdbc:h2:mem:mydb");
+        driverProperties.put("driverClassName", "org.h2.Driver");
+        driverProperties.put("className", "org.h2.jdbcx.JdbcDataSource");
 
-        //NON XA CONFIGS
-        ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        ds.getDriverProperties().put("user", "sa");
-        ds.getDriverProperties().put("password", "sasa");
-        ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-
-        ds.init();
+        ds = DataSourceFactory.setupPoolingDataSource("jdbc/testDS1", driverProperties);
     }
 
     protected void closeDataSource() {

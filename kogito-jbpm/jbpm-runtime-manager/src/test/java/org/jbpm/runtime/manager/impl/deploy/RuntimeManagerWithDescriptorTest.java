@@ -25,7 +25,7 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -81,7 +81,7 @@ import static org.junit.Assert.assertTrue;
 
 public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescriptorTest {
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager;
     private static List<String> taskEvents;

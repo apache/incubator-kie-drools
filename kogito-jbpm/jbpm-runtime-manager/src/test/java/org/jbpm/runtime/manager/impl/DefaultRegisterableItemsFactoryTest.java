@@ -28,7 +28,7 @@ import org.jbpm.runtime.manager.impl.deploy.AbstractDeploymentDescriptorTest;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class DefaultRegisterableItemsFactoryTest extends AbstractDeploymentDescriptorTest {
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private RuntimeManager manager;
 
     @Before

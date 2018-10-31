@@ -19,7 +19,7 @@ package org.jbpm.services.task;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
@@ -27,7 +27,7 @@ import org.kie.internal.task.api.InternalTaskService;
 
 public class TaskAttachmentLocalTest extends TaskAttachmentBaseTest {
 
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	private EntityManagerFactory emf;
 	
 	@Before

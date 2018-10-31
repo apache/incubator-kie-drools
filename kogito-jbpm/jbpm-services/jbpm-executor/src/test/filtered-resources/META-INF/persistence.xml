@@ -25,7 +25,7 @@
       <property name="hibernate.connection.release_mode" value="after_transaction"/>
       <!-- needed for JTA testing  -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
-       
+      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
 

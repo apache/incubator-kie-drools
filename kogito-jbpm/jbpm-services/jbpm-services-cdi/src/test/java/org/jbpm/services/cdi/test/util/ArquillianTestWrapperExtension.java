@@ -15,12 +15,15 @@
  */
 package org.jbpm.services.cdi.test.util;
 
+import java.util.Properties;
+
 import org.jboss.arquillian.container.spi.ContainerRegistry;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 
 /**
  * Custom extension for arquillian to setup data source for all the tests that can be closed properly
@@ -32,20 +35,17 @@ public class ArquillianTestWrapperExtension implements LoadableExtension {
     }
 
     public static class DataSourceHandler {
-        private PoolingDataSource ds;
+        private PoolingDataSourceWrapper ds;
         
         public void init(@Observes BeforeSuite event, ContainerRegistry registry) {
-            ds = new PoolingDataSource();
-            ds.setUniqueName("jdbc/testDS1");
+            Properties driverProperties = new Properties();
+            driverProperties.put("user", "sa");
+            driverProperties.put("password", "sasa");
+            driverProperties.put("url", "jdbc:h2:mem:mydb");
+            driverProperties.put("driverClassName", "org.h2.Driver");
+            driverProperties.put("className", "org.h2.jdbcx.JdbcDataSource");
             
-            
-            //NON XA CONFIGS
-            ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-            ds.getDriverProperties().put("user", "sa");
-            ds.getDriverProperties().put("password", "sasa");
-            ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-             
-            ds.init();
+            ds = DataSourceFactory.setupPoolingDataSource("jdbc/testDS1", driverProperties);
         }
         
         public void close(@Observes AfterSuite event, ContainerRegistry registry) {

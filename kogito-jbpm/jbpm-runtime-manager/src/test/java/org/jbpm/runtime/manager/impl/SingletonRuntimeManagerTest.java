@@ -27,7 +27,7 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
 import org.junit.Before;
@@ -67,7 +67,7 @@ import static org.junit.Assert.*;
 
 public class SingletonRuntimeManagerTest extends AbstractBaseTest {
     
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;  
     private RuntimeManager manager;
     @Before

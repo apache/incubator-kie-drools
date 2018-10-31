@@ -52,7 +52,7 @@ import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +87,7 @@ import org.kie.internal.task.api.EventService;
 
 public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;  
     private RuntimeManager manager;
     private ExecutorService executorService;

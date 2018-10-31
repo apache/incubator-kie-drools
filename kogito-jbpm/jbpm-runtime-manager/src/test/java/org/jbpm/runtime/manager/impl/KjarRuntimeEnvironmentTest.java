@@ -29,7 +29,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -66,7 +66,7 @@ import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager; 
     

@@ -24,7 +24,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.query.QueryBuilderCoverageTestUtil.ModuleSpecificInputFiller;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ public class ExecutorQueryBuilderCoverageTest {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorQueryBuilderCoverageTest.class);
     
 
-    private static PoolingDataSource pds;
+    private static PoolingDataSourceWrapper pds;
     private static EntityManagerFactory emf;
     
     private ExecutorJPAAuditService auditService;

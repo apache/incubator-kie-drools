@@ -16,13 +16,16 @@
 
 package org.jbpm.services.task.wih;
 
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -32,7 +35,7 @@ public class HTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
 
     private EntityManagerFactory emf;
     private WorkItemHandler htWorkItemHandler;
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     
     @Before
     public void setUp() throws Exception {
@@ -61,15 +64,15 @@ public class HTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
 
     }
 
-    protected PoolingDataSource setupPoolingDataSource() {
-        PoolingDataSource pds = new PoolingDataSource();
-        pds.setUniqueName("jdbc/jbpm-ds");
-        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        pds.getDriverProperties().put("user", "sa");
-        pds.getDriverProperties().put("password", "");
-        pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
-        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
-        pds.init();
+    protected PoolingDataSourceWrapper setupPoolingDataSource() {
+        Properties driverProperties = new Properties();
+        driverProperties.put("user", "sa");
+        driverProperties.put("password", "");
+        driverProperties.put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
+        driverProperties.put("driverClassName", "org.h2.Driver");
+        driverProperties.put("className", "org.h2.jdbcx.JdbcDataSource");
+
+        PoolingDataSourceWrapper pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", driverProperties);
         return pds;
     }
 }

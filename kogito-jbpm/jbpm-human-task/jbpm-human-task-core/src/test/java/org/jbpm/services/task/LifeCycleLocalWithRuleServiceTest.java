@@ -37,7 +37,7 @@ import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -57,7 +57,7 @@ import org.kie.internal.task.api.model.ContentData;
 
 public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest {
 
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	private EntityManagerFactory emf;
 	
 	@BeforeClass
