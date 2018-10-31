@@ -70,7 +70,11 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Environment                                                       env;
 
     // this is a map to store node memory data indexed by node ID
-    public final Map<Integer, Object>                                              nodeMemories;
+    private final Map<Integer, Object>                                              nodeMemories;
+
+    public Map<Integer, Object> getNodeMemories() {
+        return nodeMemories;
+    }
 
     public Object                                                                  parameterObject;
     public ClassLoader                                                             classLoader;

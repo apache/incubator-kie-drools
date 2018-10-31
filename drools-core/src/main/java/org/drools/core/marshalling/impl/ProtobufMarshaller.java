@@ -52,7 +52,7 @@ public class ProtobufMarshaller
         implements
         InternalMarshaller {
 
-    private KieSessionInitializer initializer;
+    protected KieSessionInitializer initializer;
 
     public KieSessionInitializer getInitializer() {
         return initializer;
@@ -68,11 +68,11 @@ public class ProtobufMarshaller
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.TIMER_NODE_VALUE, new TimerNodeTimerInputMarshaller() );
     }
-    
-    KieBase                             kbase;
-    RuleBaseConfiguration               ruleBaseConfig;
-    MarshallingConfiguration            marshallingConfig;
-    ObjectMarshallingStrategyStore      strategyStore;
+
+    protected KieBase                             kbase;
+    protected RuleBaseConfiguration               ruleBaseConfig;
+    protected MarshallingConfiguration            marshallingConfig;
+    protected ObjectMarshallingStrategyStore      strategyStore;
 
     public ProtobufMarshaller(KieBase kbase,
                               MarshallingConfiguration marshallingConfig) {
@@ -115,7 +115,7 @@ public class ProtobufMarshaller
                                                                                     id,
                                                                                     environment,
                                                                                     (SessionConfiguration) config,
-                                                                                    initializer );
+                                                                                    initializer ).getSession();
         context.close();
         if ( ((SessionConfiguration) config).isKeepReference() ) {
             ((KnowledgeBaseImpl) this.kbase).addStatefulSession(session);

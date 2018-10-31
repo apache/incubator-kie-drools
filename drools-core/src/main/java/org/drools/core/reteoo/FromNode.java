@@ -21,11 +21,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -34,6 +36,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
@@ -175,42 +178,15 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
-        FactHandle _handle = null;
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
-        if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
-            if( map != null ) {
-                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
-                List<FactHandle> list = map.get( key );
-                if( list != null && ! list.isEmpty() ) {
-                    // it is a linked list, so the operation is fairly efficient
-                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
-                    if( list.isEmpty() ) {
-                        map.remove(key);
-                    }
-                }
-            }
-        }
 
-        InternalFactHandle handle;
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         object,
-                                                                         _handle.getRecency(),
-                                                                         objectTypeConf,
-                                                                         workingMemory,
-                                                                         null );
-        } else {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                         objectTypeConf,
-                                                                         workingMemory,
-                                                                         null );
-        }
-        return handle;
+        return workingMemory.getFactHandleFactory().newFactHandle(object,
+                                                                  objectTypeConf,
+                                                                  workingMemory,
+                                                                  null );
     }
 
 

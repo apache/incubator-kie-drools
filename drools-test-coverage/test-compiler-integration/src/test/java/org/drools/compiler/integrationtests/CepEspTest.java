@@ -2943,7 +2943,7 @@ public class CepEspTest extends AbstractCepEspTest {
             Thread.sleep(1100);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -2993,7 +2993,7 @@ public class CepEspTest extends AbstractCepEspTest {
             Thread.sleep(100);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -3041,7 +3041,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ks.insert(new StockTick(2, "AAA", 1.0, 0));
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -3077,7 +3077,7 @@ public class CepEspTest extends AbstractCepEspTest {
             Thread.sleep(1500);
 
             try {
-                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true, false);
+                ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -4430,7 +4430,7 @@ public class CepEspTest extends AbstractCepEspTest {
             assertEquals("JBPM", list.get(0));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -4483,7 +4483,7 @@ public class CepEspTest extends AbstractCepEspTest {
             assertEquals("JBPM", list.get(0));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -4526,7 +4526,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new StockTick(3, "JBPM", 50));
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -4613,7 +4613,7 @@ public class CepEspTest extends AbstractCepEspTest {
             assertEquals(1, ksession.getObjects().size());
 
             try {
-                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+                ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -5145,7 +5145,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
 
             try {
-                kieSessionDeserialized = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+                kieSessionDeserialized = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             } catch (final Exception e) {
                 e.printStackTrace();
                 fail(e.getMessage());
