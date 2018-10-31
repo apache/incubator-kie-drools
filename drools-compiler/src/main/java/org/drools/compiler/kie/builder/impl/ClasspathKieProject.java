@@ -23,10 +23,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -34,7 +32,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -45,6 +42,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -421,7 +419,8 @@ public class ClasspathKieProject extends AbstractKieProject {
 
         String path = null;
         try {
-            File f = (File)m.invoke( findVirtualFile( url ) );
+            Object content = url.openConnection().getContent();
+            File f = (File)m.invoke(content);
             path = f.getPath();
         } catch (Exception e) {
             log.error( "Error when reading virtual file from " + url.toString(), e );
@@ -456,20 +455,6 @@ public class ClasspathKieProject extends AbstractKieProject {
             log.error( "Error when reading virtual file from " + url.toString(), e );
         }
         return url.getPath();
-    }
-
-    private static Object findVirtualFile( URL url ) throws IOException {
-        URLConnection urlConnection = url.openConnection();
-        try {
-            if ( urlConnection.getClass().getName().equals( "org.jboss.vfs.protocol.VirtualFileURLConnection" ) ) {
-                Field f = urlConnection.getClass().getDeclaredField( "file" );
-                f.setAccessible( true );
-                return f.get( urlConnection );
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            // ignored
-        }
-        return urlConnection.getContent();
     }
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
