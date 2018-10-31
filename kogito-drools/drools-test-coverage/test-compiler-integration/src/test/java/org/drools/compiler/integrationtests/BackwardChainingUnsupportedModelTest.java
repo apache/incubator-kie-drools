@@ -340,7 +340,7 @@ public class BackwardChainingUnsupportedModelTest {
             assertContains(new String[]{"office", "cellar", "dining room"}, items);
 
             ksession.insert("go2");
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
 
             map = list.get(1);

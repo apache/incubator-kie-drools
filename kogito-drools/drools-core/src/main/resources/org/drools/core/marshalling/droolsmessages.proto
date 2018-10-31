@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package org.drools.core.marshalling;
 
 option java_package = "org.drools.core.marshalling.impl";
@@ -193,6 +195,12 @@ message NodeMemory {
         message FromContext {
             optional Tuple tuple = 1;
             repeated FactHandle handle = 2;
+            repeated FromObject object = 3;
+
+            message FromObject {
+                optional int32 strategy_index = 8;
+                optional bytes object = 9;
+            }
         }
     }
 
@@ -258,6 +266,10 @@ message Activation {
     optional int32 handle_id = 9;
     repeated int32 logical_dependency = 10;
     optional bool evaluated = 11;
+
+    optional int32 strategy_index = 12;
+    optional bytes object = 13;
+    optional int32 node_id = 14;
 }
 
 message Tuple {

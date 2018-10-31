@@ -17,6 +17,7 @@
 package org.drools.core.impl;
 
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -28,7 +29,8 @@ public class EnvironmentFactory {
             Environment env = new EnvironmentImpl();
             env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, 
                     new ObjectMarshallingStrategy [] {
-                        new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)
+                        new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT),
+                        new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)
                     });
         return env;
     }

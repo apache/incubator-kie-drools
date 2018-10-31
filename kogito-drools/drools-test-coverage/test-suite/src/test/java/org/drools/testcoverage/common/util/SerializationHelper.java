@@ -46,25 +46,12 @@ public class SerializationHelper {
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(final KieSession ksession,
                                                                                  final boolean dispose) throws IOException, ClassNotFoundException {
-        return getSerialisedStatefulKnowledgeSession(ksession, dispose, true);
-    }
-
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(final KieSession ksession,
-                                                                                 final boolean dispose,
-                                                                                 final boolean testRoundTrip) throws IOException, ClassNotFoundException {
-        return getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase(), dispose, testRoundTrip);
+        return getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase(), dispose);
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(final KieSession ksession,
                                                                                  final KieBase kbase,
                                                                                  final boolean dispose) throws IOException, ClassNotFoundException {
-        return getSerialisedStatefulKnowledgeSession(ksession, kbase, dispose, true);
-    }
-
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(final KieSession ksession,
-                                                                                 final KieBase kbase,
-                                                                                 final boolean dispose,
-                                                                                 final boolean testRoundTrip) throws IOException, ClassNotFoundException {
         final ProtobufMarshaller marshaller =
                 (ProtobufMarshaller) MarshallerFactory.newMarshaller(
                         kbase,
@@ -85,18 +72,6 @@ public class SerializationHelper {
 
         try (final ByteArrayInputStream bais = new ByteArrayInputStream(b1)) {
             ksession2 = marshaller.unmarshall(bais, ksession.getSessionConfiguration(), ksession.getEnvironment());
-        }
-
-        if (testRoundTrip) {
-            // Reserialize and check that byte arrays are the same
-            final byte[] b2;
-            try (final ByteArrayOutputStream bos2 = new ByteArrayOutputStream()) {
-                marshaller.marshall(bos2, ksession2, time);
-                b2 = bos2.toByteArray();
-            }
-
-            // bytes should be the same.
-            Assertions.assertThat(b1).isEqualTo(b2);
         }
 
         if (dispose) {

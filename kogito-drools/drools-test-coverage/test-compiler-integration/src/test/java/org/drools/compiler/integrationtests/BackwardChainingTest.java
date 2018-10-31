@@ -279,15 +279,15 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                                          100);
 
             ksession.insert("darth");
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
             assertEquals(1, list.size());
             assertEquals(p1, list.get(0));
 
             list.clear();
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.insert("yoda");
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
             assertEquals(1, list.size());
             assertEquals(p2, list.get(0));
@@ -334,10 +334,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                                          100);
 
             ksession.insert("darth");
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
             ksession.insert("yoda"); // darth exists, so yoda won't get created
-            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
             assertEquals(1, list.size());
             assertEquals(p1, list.get(0));

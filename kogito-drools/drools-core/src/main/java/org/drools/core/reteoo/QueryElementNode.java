@@ -149,7 +149,7 @@ public class QueryElementNode extends LeftTupleSource
                                                final LeftTuple leftTuple ) {
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( getId() );
+            Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().getNodeMemories().get( getId() );
             if( map != null ) {
                 _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) ).handle;
             }
@@ -398,7 +398,7 @@ public class QueryElementNode extends LeftTupleSource
                                                                Object[] objects) {
             ProtobufMessages.FactHandle _handle = null;
             if( context.getReaderContext() != null ) {
-                Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( node.getId() );
+                Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().getNodeMemories().get( node.getId() );
                 if( map != null ) {
                     QueryElementContext _context = map.get( PersisterHelper.createTupleKey( leftTuple ) );
                     if( _context != null ) {

@@ -173,7 +173,7 @@ public class AccumulateNode extends BetaNode {
         InternalFactHandle handle;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
+            Map<TupleKey, FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().getNodeMemories().get( getId() );
             if( map != null ) {
                 _handle = map.get( PersisterHelper.createTupleKey(leftTuple) );
             }
