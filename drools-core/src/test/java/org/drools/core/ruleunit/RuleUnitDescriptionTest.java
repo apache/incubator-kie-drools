@@ -40,13 +40,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-public class RuleUnitDescrTest {
+public class RuleUnitDescriptionTest {
 
-    private RuleUnitDescr ruleUnitDescr;
+    private RuleUnitDescription ruleUnitDescr;
 
     @Before
     public void prepareRuleUnitDescr() {
-        ruleUnitDescr = new RuleUnitDescr(TestRuleUnit.class);
+        ruleUnitDescr = new RuleUnitDescription(TestRuleUnit.class);
     }
 
     @Test

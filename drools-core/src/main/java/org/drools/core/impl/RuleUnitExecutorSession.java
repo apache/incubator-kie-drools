@@ -275,7 +275,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
         factHandlesMap.computeIfAbsent( ruleUnit.getClass(), x -> session.getEntryPoint( RULE_UNIT_ENTRY_POINT ).insert( ruleUnit ) );
 
-        RuleUnitDescription ruDescr = session.kBase.getRuleUnitDescriptionRegistry().getDescriptionForUnit(ruleUnit );
+        RuleUnitDescription ruDescr = session.kBase.getRuleUnitDescriptionRegistry().getDescription(ruleUnit );
         ( (Globals) session.getGlobalResolver() ).setDelegate( new RuleUnitGlobals( ruDescr, ruleUnit ) );
         ruDescr.bindDataSources( session, ruleUnit );
 

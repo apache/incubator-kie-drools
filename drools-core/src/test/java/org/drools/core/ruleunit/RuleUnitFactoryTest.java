@@ -18,55 +18,39 @@ package org.drools.core.ruleunit;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
-public class RuleUnitRegistryTest {
+public class RuleUnitFactoryTest {
 
     @Test
-    public void getRuleUnitDescr() {
+    public void bindVariable() {
         // TODO
     }
 
     @Test
-    public void getRuleUnitFor() {
+    public void getOrCreateRuleUnit() {
         // TODO
     }
 
     @Test
-    public void getRuleUnitFor1() {
+    public void getOrCreateRuleUnit1() {
         // TODO
     }
 
     @Test
-    public void getNamedRuleUnit() {
+    public void registerUnit() {
         // TODO
     }
 
     @Test
-    public void registerRuleUnit() {
-        final TestRuleUnit testRuleUnit = createTestRuleUnit();
-        final RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
-        ruleUnitRegistry.registerRuleUnit("testRuleUnit", () -> TestRuleUnit.class);
+    public void injectUnitVariables() {
+        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{}, BigDecimal.ZERO);
+        final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
 
-    }
-
-    @Test
-    public void add() {
-        // TODO
-    }
-
-    @Test
-    public void hasUnits() {
-        // TODO
-    }
-
-    private TestRuleUnit createTestRuleUnit() {
-        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
-        final SimpleFact simpleFact = new SimpleFact("testValue");
-        testRuleUnit.addSimpleFact(simpleFact);
-        return testRuleUnit;
     }
 }
