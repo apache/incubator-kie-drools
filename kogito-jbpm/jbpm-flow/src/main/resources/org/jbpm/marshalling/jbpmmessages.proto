@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 import "org/drools/core/marshalling/droolsmessages.proto";
 
 package org.jbpm.marshalling;

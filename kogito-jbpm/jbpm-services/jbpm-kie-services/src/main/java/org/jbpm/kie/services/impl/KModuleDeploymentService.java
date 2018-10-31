@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.bpmn2.ProcessDescriptor;
@@ -289,16 +291,15 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 			Object entry = getInstanceFromModel(model, kieContainer, contaxtParams);
 			builder.addConfiguration(model.getName(), (String) entry);
 		}
-		ObjectMarshallingStrategy[] mStrategies = new ObjectMarshallingStrategy[descriptor.getMarshallingStrategies().size() + 1];
-		int index = 0;
+		List<ObjectMarshallingStrategy> mStrategies = new ArrayList<>();
 		for (ObjectModel model : descriptor.getMarshallingStrategies()) {
 			Object strategy = getInstanceFromModel(model, kieContainer, contaxtParams);
-			mStrategies[index] = (ObjectMarshallingStrategy)strategy;
-			index++;
+			mStrategies.add((ObjectMarshallingStrategy)strategy);
 		}
 		// lastly add the main default strategy
-		mStrategies[index] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-		builder.addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, mStrategies);
+		mStrategies.add(new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT));
+		mStrategies.add(new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT));
+		builder.addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, mStrategies.toArray(new ObjectMarshallingStrategy[0]));
 
 		builder.addEnvironmentEntry("KieDeploymentDescriptor", descriptor);
 		builder.addEnvironmentEntry("KieContainer", kieContainer);
