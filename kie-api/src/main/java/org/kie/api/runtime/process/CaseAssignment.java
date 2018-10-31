@@ -60,4 +60,10 @@ public interface CaseAssignment {
      * @return returns all assignments for the given role
      */
     Collection<OrganizationalEntity> getAssignments(String roleName);
+    
+    /**
+     * Returns defined roles
+     * @return returns all roles
+     */
+    Collection<String> getRoles();
 }
