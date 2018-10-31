@@ -446,3 +446,78 @@ CREATE TRIGGER deploymentstore_deploymentunit_clob_after_delete_trigger
   WHEN (old.deploymentunit IS NOT NULL)
   EXECUTE PROCEDURE deploymentstore_deploymentunit_clob_after_delete();
 
+
+  
+-- executionerrorinfo.error_info for CLOB
+
+CREATE OR REPLACE FUNCTION executionerrorinfo_error_info_clob_before_insert()
+  RETURNS "trigger" AS
+$BODY$
+declare
+begin
+    insert into jbpm_active_clob (loid) values (cast(new.error_info as oid));
+    return new;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER executionerrorinfo_error_info_clob_before_insert_trigger
+  BEFORE INSERT
+  ON executionerrorinfo
+  FOR EACH ROW
+  WHEN (new.error_info IS NOT NULL)
+  EXECUTE PROCEDURE executionerrorinfo_error_info_clob_before_insert();
+
+CREATE OR REPLACE FUNCTION executionerrorinfo_error_info_clob_before_update()
+  RETURNS "trigger" AS
+$BODY$
+declare
+begin
+    insert into jbpm_active_clob (loid) values (cast(new.error_info as oid));
+    return new;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER executionerrorinfo_error_info_clob_before_update_trigger
+  BEFORE UPDATE
+  ON executionerrorinfo
+  FOR EACH ROW
+  WHEN (new.error_info IS NOT NULL AND old.error_info IS DISTINCT FROM new.error_info)
+  EXECUTE PROCEDURE executionerrorinfo_error_info_clob_before_update();
+
+CREATE OR REPLACE FUNCTION executionerrorinfo_error_info_clob_after_update()
+  RETURNS "trigger" AS
+$BODY$
+declare
+begin
+    delete from jbpm_active_clob where loid = cast(old.error_info as oid);
+    return new;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER executionerrorinfo_error_info_clob_after_update_trigger
+  AFTER UPDATE
+  ON executionerrorinfo
+  FOR EACH ROW
+  WHEN (old.error_info IS NOT NULL AND old.error_info IS DISTINCT FROM new.error_info)
+  EXECUTE PROCEDURE executionerrorinfo_error_info_clob_after_update();
+
+CREATE OR REPLACE FUNCTION executionerrorinfo_error_info_clob_after_delete()
+  RETURNS "trigger" AS
+$BODY$
+declare
+begin
+    delete from jbpm_active_clob where loid = cast(old.error_info as oid);
+    return old;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER executionerrorinfo_error_info_clob_after_delete_trigger
+  AFTER DELETE
+  ON executionerrorinfo
+  FOR EACH ROW
+  WHEN (old.error_info IS NOT NULL)
+  EXECUTE PROCEDURE executionerrorinfo_error_info_clob_after_delete();  
