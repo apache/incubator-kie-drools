@@ -85,6 +85,21 @@ public class SpreadsheetCompilerUnitTest {
     }
 
     @Test
+    public void testMultilineCommentsInDescription() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("/data/Multiline comment example.xls");
+        final String drl = converter.compile(stream,
+                                             InputType.XLS);
+
+        assertTrue(drl.contains("/* Say"));
+        assertTrue(drl.contains("Hello */"));
+        assertTrue(drl.contains("Goobye */"));
+        assertFalse(drl.contains("// Say"));
+
+        assertNotNull(drl);
+    }
+
+    @Test
     public void testLoadSpecificWorksheet() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/MultiSheetDST.xls" );

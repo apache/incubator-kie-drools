@@ -75,7 +75,7 @@ public class Rule extends AttributedDRLElement
         }
         out.writeLine("rule " + this._name);
         if (this._description != null) {
-            out.writeLine("\t// " + this._description);
+            out.writeLine("/* " + this._description + " */");
         }
 
         // metadata
