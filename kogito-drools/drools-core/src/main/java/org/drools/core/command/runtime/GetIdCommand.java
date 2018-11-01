@@ -18,10 +18,12 @@ package org.drools.core.command.runtime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -34,13 +36,30 @@ public class GetIdCommand
 
     private static final long serialVersionUID = 510l;
 
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
     
     public GetIdCommand() {
     }
 
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public Long execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        return ((StatefulKnowledgeSessionImpl)ksession).getIdentifier();
+        final Long identifier = ((StatefulKnowledgeSessionImpl)ksession).getIdentifier();
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                                                                                      identifier);
+        }
+
+        return identifier;
     }
 
     public String toString() {

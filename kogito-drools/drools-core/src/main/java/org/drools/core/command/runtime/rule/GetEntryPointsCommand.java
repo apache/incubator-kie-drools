@@ -19,8 +19,11 @@ package org.drools.core.command.runtime.rule;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.core.command.EntryPointCreator;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -30,7 +33,18 @@ public class GetEntryPointsCommand
     implements
     ExecutableCommand<Collection< ? extends EntryPoint>> {
 
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
+
     public GetEntryPointsCommand() {
+    }
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
     }
 
     public Collection< ? extends EntryPoint> execute(Context context) {
@@ -44,6 +58,12 @@ public class GetEntryPointsCommand
         for (EntryPoint ep : eps) {
             result.add(epCreator.getEntryPoint(ep.getEntryPointId()));
         }
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                                                                                      result);
+        }
+
         return result;
     }
 

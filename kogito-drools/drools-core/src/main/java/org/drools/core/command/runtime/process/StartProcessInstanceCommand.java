@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -35,6 +36,9 @@ public class StartProcessInstanceCommand implements ExecutableCommand<ProcessIns
     
     @XmlAttribute(required = true)
     private Long processInstanceId;
+
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
 
     public StartProcessInstanceCommand() {
     }
@@ -51,9 +55,23 @@ public class StartProcessInstanceCommand implements ExecutableCommand<ProcessIns
         this.processInstanceId = processInstanceId;
     }
 
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public ProcessInstance execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcessInstance(processInstanceId);
+        final ProcessInstance processInstance = (ProcessInstance) ksession.startProcessInstance(processInstanceId);
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                    processInstance);
+        }
+
         return processInstance;
     }
 

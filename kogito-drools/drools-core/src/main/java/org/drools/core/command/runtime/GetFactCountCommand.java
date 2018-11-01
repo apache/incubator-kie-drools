@@ -18,9 +18,11 @@ package org.drools.core.command.runtime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -31,10 +33,27 @@ public class GetFactCountCommand
     implements
     ExecutableCommand<Long> {
 
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public Long execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+        final Long factCount = ksession.getFactCount();
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                                                                                      factCount);
+        }
         
-        return ksession.getFactCount();
+        return factCount;
     }
 
     public String toString() {

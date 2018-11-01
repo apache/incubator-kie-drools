@@ -21,9 +21,11 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.Context;
@@ -35,11 +37,28 @@ public class GetProcessIdsCommand
     implements
     ExecutableCommand<List<String>> {
 
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public List<String> execute(Context context) {
     	List<String> result = new ArrayList<String>();
         for (Process p: ((RegistryContext) context).lookup( KieSession.class ).getKieBase().getProcesses()) {
         	result.add(p.getId());
         }
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                                                                                      new ArrayList<>(result));
+        }
+
         return result;
     }
 
