@@ -41,8 +41,9 @@ public class ExecModelDMNClassLoaderCompiler extends DMNEvaluatorCompiler {
     }
 
     @Override
-    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable decisionTable) {
-        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, node.getName(), node.getName(), decisionTable);
+    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
+        String decisionName = ExecModelDMNEvaluatorCompiler.getDecisionTableName(dtName, dt);
+        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
         String className = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
         Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
 
