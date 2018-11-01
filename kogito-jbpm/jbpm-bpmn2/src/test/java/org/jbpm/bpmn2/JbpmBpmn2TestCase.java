@@ -73,7 +73,7 @@ import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -138,7 +138,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     protected AuditLogService logService;
 
     protected static EntityManagerFactory emf;
-    private static PoolingDataSourceWrapper ds;
+    private static PoolingDataSource ds;
 
     private RequireLocking testReqLocking;
     private RequirePersistence testReqPersistence;
@@ -185,9 +185,18 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         this.pessimisticLocking = locking;
     }
 
-    public static PoolingDataSourceWrapper setupPoolingDataSource() {
+    public static PoolingDataSource setupPoolingDataSource() {
         Properties dsProps = PersistenceUtil.getDatasourceProperties();
-        return PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/testDS1");
+        String jdbcUrl = dsProps.getProperty("url");
+        String driverClass = dsProps.getProperty("driverClassName");
+
+        // Setup the datasource
+        PoolingDataSource ds1 = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/testDS1", false);
+        if( driverClass.startsWith("org.h2") ) { 
+            ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        }
+        ds1.init();
+        return ds1;
     }
 
     public void setPersistence(boolean sessionPersistence) {
@@ -202,7 +211,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         JbpmBpmn2TestCase.emf = emf;
     }
 
-    public void setPoolingDataSource(PoolingDataSourceWrapper ds) {
+    public void setPoolingDataSource(PoolingDataSource ds) {
         JbpmBpmn2TestCase.ds = ds;
     }
 

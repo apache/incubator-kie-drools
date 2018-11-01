@@ -23,14 +23,14 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.services.task.utils.TaskFluent;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.kie.api.task.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTotalCompletionTimeTest extends AbstractAssignmentTest {
 
-    protected PoolingDataSourceWrapper pds;
+    protected PoolingDataSource pds;
     protected EntityManagerFactory emf;
     protected Long taskIds[];
     protected static final String DARTH_VADER = "Darth Vader";

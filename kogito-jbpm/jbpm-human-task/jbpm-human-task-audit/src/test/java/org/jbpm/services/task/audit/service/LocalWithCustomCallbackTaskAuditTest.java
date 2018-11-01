@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.services.task.utils.TaskFluent;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,7 +44,7 @@ import org.kie.internal.task.api.AuditTask;
 
 public class LocalWithCustomCallbackTaskAuditTest extends HumanTaskServicesBaseTest {
 
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private EntityManagerFactory emf;
     private NullGroupsUserGroupCallback callback;
 

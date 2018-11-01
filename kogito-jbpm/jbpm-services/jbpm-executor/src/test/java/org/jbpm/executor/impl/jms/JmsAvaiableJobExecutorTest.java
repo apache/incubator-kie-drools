@@ -46,7 +46,7 @@ import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class JmsAvaiableJobExecutorTest  {
     private EmbeddedJMS jmsServer;   
     
     protected ExecutorService executorService;
-    protected PoolingDataSourceWrapper pds;
+    protected PoolingDataSource pds;
     protected EntityManagerFactory emf = null;
     
     @Before

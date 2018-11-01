@@ -21,7 +21,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.TaskQueryServiceBaseTest;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
@@ -29,7 +29,7 @@ import org.kie.internal.task.api.InternalTaskService;
 
 public class TaskQueryServiceLocalTest extends TaskQueryServiceBaseTest {
 
-	private PoolingDataSourceWrapper pds;
+	private PoolingDataSource pds;
 	private EntityManagerFactory emf;
 	
 	@Before

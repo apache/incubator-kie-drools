@@ -29,10 +29,6 @@
       <artifactId>drools-persistence-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
       <artifactId>narayana-jta</artifactId>
     </dependency>
@@ -47,10 +43,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-dbcp</artifactId>
     </dependency>
   </dependencies>
 

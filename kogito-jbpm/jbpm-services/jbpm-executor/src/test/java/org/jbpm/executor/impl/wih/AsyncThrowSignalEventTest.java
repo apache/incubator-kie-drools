@@ -31,7 +31,7 @@ import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 
 public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
 
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
     private RuntimeManager manager;
     private ExecutorService executorService;

@@ -23,7 +23,7 @@ import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.PropertyUserInfoImpl;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ import org.kie.internal.task.api.InternalTaskService;
 public class RuntimeTimeTaskConfiguratorTest extends AbstractBaseTest {
     private static String oldUserInfoValue;
     private static String oldUserInfoImpl;
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
 
     @BeforeClass
     public static void enter() {

@@ -23,7 +23,7 @@ import javax.persistence.Persistence;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.impl.strategy.RoundRobinAssignmentStrategy;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -92,7 +92,7 @@ public class RoundRobinAssignmentTest extends AbstractAssignmentTest {
     private static final String CRUSADERS = "Crusaders";
     private static final String WRONG_CRUSADERS = "Wrong Crusaders";
 
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private EntityManagerFactory emf;
 
     @Before

@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.jbpm.persistence.util.PersistenceUtil;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +45,10 @@ public class TestUtil {
     protected static final String PASSWORD = "password";
     protected static final String JDBC_URL = "url";
     
-    public static PoolingDataSourceWrapper setupPoolingDataSource() {
+    public static PoolingDataSource setupPoolingDataSource() {
         Properties dsProps = getDatasourceProperties();
-        PoolingDataSourceWrapper pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds");
+        PoolingDataSource pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
+        pds.init();
         
         return pds;
     }

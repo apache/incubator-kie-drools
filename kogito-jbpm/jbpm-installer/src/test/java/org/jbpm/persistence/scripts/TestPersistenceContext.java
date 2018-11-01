@@ -45,7 +45,7 @@ import org.jbpm.persistence.scripts.util.SQLCommandUtil;
 import org.jbpm.persistence.scripts.util.SQLScriptUtil;
 import org.jbpm.persistence.scripts.util.TestsUtil;
 import org.jbpm.persistence.util.PersistenceUtil;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -126,7 +126,7 @@ public final class TestPersistenceContext {
     public void executeScripts(final File scriptsRootFolder, String type) throws IOException, SQLException {
         testIsInitialized();
         final File[] sqlScripts = TestsUtil.getDDLScriptFilesByDatabaseType(scriptsRootFolder, databaseType, true);
-        final Connection connection = ((PoolingDataSourceWrapper) context.get(PersistenceUtil.DATASOURCE)).getConnection();
+        final Connection connection = ((PoolingDataSource) context.get(PersistenceUtil.DATASOURCE)).getConnection();
         connection.setAutoCommit(false);
         try {
             for (File script : sqlScripts) {

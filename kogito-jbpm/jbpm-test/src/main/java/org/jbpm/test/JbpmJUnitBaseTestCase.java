@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.naming.InitialContext;
@@ -46,8 +45,7 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.kie.test.util.db.DataSourceFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -129,7 +127,7 @@ public abstract class JbpmJUnitBaseTestCase {
     private String persistenceUnitName;
 
     private EntityManagerFactory emf;
-    private PoolingDataSourceWrapper ds;
+    private PoolingDataSource ds;
 
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 
@@ -855,21 +853,32 @@ public abstract class JbpmJUnitBaseTestCase {
         return this.ds;
     }
 
-    protected PoolingDataSourceWrapper setupPoolingDataSource() {
-        Properties driverProperties = new Properties();
-        driverProperties.put("user", "sa");
-        driverProperties.put("password", "");
-        driverProperties.put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
-        driverProperties.put("driverClassName", "org.h2.Driver");
-        driverProperties.put("className", "org.h2.jdbcx.JdbcDataSource");
-        
-        PoolingDataSourceWrapper pds = null;
+    protected PoolingDataSource setupPoolingDataSource() {
+        PoolingDataSource pds = new PoolingDataSource();
+        pds.setUniqueName("jdbc/jbpm-ds");
+        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
+        pds.getDriverProperties().put("user", "sa");
+        pds.getDriverProperties().put("password", "");
+        pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
+        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
         try {
-            pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", driverProperties);
+            pds.init();
         } catch (Exception e) {
             logger.warn("DBPOOL_MGR:Looks like there is an issue with creating db pool because of " + e.getMessage() + " cleaing up...");
+            try {
+                pds.close();
+            } catch (Exception ex) {
+                // ignore
+            }
             logger.debug("DBPOOL_MGR: attempting to create db pool again...");
-            pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", driverProperties);
+            pds = new PoolingDataSource();
+            pds.setUniqueName("jdbc/jbpm-ds");
+            pds.setClassName("org.h2.jdbcx.JdbcDataSource");
+            pds.getDriverProperties().put("user", "sa");
+            pds.getDriverProperties().put("password", "");
+            pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
+            pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
+            pds.init();         
             logger.debug("DBPOOL_MGR:Pool created after cleanup of leftover resources");
         }
         return pds;

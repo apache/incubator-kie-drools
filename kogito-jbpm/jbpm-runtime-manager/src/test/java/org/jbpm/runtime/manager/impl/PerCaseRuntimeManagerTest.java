@@ -33,7 +33,7 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class PerCaseRuntimeManagerTest extends AbstractBaseTest {
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager; 
     private EntityManagerFactory emf;

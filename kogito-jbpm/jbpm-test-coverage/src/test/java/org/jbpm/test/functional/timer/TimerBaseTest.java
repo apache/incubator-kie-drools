@@ -32,7 +32,7 @@ import javax.sql.DataSource;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.test.AbstractBaseTest;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public abstract class TimerBaseTest extends AbstractBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(TimerBaseTest.class);
 	
-	private static PoolingDataSourceWrapper pds;
+	private static PoolingDataSource pds;
     
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     
@@ -59,16 +59,21 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
     protected static final String PASSWORD = "password";
     protected static final String JDBC_URL = "url";
     
-    public static PoolingDataSourceWrapper setupPoolingDataSource() {
+    public static PoolingDataSource setupPoolingDataSource() {
         Properties dsProps = getDatasourceProperties();
-        PoolingDataSourceWrapper pds = null;
+        PoolingDataSource pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
         try {
-        	pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds");
+        	pds.init();
         } catch (Exception e) {
         	logger.warn("DBPOOL_MGR:Looks like there is an issue with creating db pool because of " + e.getMessage() + " cleaing up...");
+            try {
+                pds.close();
+            } catch (Exception ex) {
+                // ignore
+            }
         	logger.info("DBPOOL_MGR: attempting to create db pool again...");
-        	pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds");
-
+        	pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
+        	pds.init();        	
         	logger.info("DBPOOL_MGR:Pool created after cleanup of leftover resources");
         }
         

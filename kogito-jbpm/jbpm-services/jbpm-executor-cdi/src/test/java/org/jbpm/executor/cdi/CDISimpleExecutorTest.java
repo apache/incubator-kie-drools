@@ -27,7 +27,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.executor.BasicExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,7 +65,7 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
 
     }
 
-    private static PoolingDataSourceWrapper pds;
+    private static PoolingDataSource pds;
     
     @BeforeClass
     public static void beforeClass() {

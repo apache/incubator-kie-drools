@@ -26,7 +26,7 @@ import org.jbpm.persistence.correlation.JPACorrelationKeyFactory;
 import org.jbpm.query.QueryBuilderCoverageTestUtil.ModuleSpecificInputFiller;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.audit.BAMTaskSummaryQueryBuilder;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,7 +46,7 @@ public class TaskAuditQueryBuilderCoverageTest extends HumanTaskServicesBaseTest
 
     private static final Logger logger = LoggerFactory.getLogger(TaskAuditQueryBuilderCoverageTest.class);
 
-    private static PoolingDataSourceWrapper pds;
+    private static PoolingDataSource pds;
     private static EntityManagerFactory emf;
 
     private TaskJPAAuditService auditService;

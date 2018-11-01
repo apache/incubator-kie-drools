@@ -34,6 +34,11 @@
       <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}"/>
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}"/>
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}"/>
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}"/>
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
@@ -41,7 +46,6 @@
 
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="dbTesting" transaction-type="JTA">
@@ -106,6 +110,11 @@
       <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}"/>
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}"/>
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}"/>
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}"/>
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
@@ -113,7 +122,6 @@
 
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="dbTestingUpdate" transaction-type="JTA">
@@ -182,6 +190,11 @@
       <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}"/>
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}"/>
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}"/>
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}"/>
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
@@ -189,7 +202,6 @@
 
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="clearSchema" transaction-type="JTA">
@@ -270,6 +282,11 @@
       <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}"/>
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}"/>
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}"/>
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}"/>
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
@@ -277,7 +294,6 @@
 
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
 

@@ -29,8 +29,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Properties;
 
-import org.kie.test.util.db.DataSourceFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,13 +38,23 @@ import org.junit.Test;
 public class DBUserGroupCallbackImplTest {
 
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private Properties props;
 
     @Before
     public void setup() {
+
         Properties dsProps = loadDataSourceProperties();
-        pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", dsProps);
+
+        pds = new PoolingDataSource();
+        pds.setUniqueName("jdbc/jbpm-ds");
+        pds.setClassName(dsProps.getProperty("className"));
+        for (String propertyName : new String[]{"user", "password"}) {
+            pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+        }
+        setDatabaseSpecificDataSourceProperties(pds, dsProps);
+
+        pds.init();
 
         prepareDb();
 
@@ -202,5 +212,9 @@ public class DBUserGroupCallbackImplTest {
         callback.getGroupsForUser(null);
         fail("Should fail as it does not have valid configuration");
 
+    }
+
+    private void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) {
+        PersistenceUtil.setDatabaseSpecificDataSourceProperties(pds, dsProps);
     }
 }

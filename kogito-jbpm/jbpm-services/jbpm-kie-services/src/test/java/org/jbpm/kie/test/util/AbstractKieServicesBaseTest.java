@@ -77,7 +77,7 @@ public abstract class AbstractKieServicesBaseTest extends AbstractKieServicesTes
             fail("Thread 1's barrier was broken while waiting for the other threads!");
         }
     }
-
+    
     protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
@@ -92,17 +92,17 @@ public abstract class AbstractKieServicesBaseTest extends AbstractKieServicesTes
                 .newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
 
         kieBaseModel1.newKieSessionModel("ksession-test-2").setDefault(false)
-                .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") )
-                .newWorkItemHandlerModel("Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)");
+        .setType(KieSessionModel.KieSessionType.STATEFUL)
+        .setClockType( ClockTypeOption.get("realtime") )
+        .newWorkItemHandlerModel("Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)");
 
         kieBaseModel1.newKieSessionModel("ksession-test2").setDefault(false)
-                .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") );
+        .setType(KieSessionModel.KieSessionType.STATEFUL)
+        .setClockType( ClockTypeOption.get("realtime") );
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
-
+        
         kfs.write("src/main/resources/forms/DefaultProcess.ftl", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.ftl"));
         kfs.write("src/main/resources/forms/DefaultProcess.form", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.form"));
         kfs.write("src/main/resources/forms/DefaultProcess.frm", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.frm"));

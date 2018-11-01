@@ -24,7 +24,7 @@ import javax.persistence.Persistence;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +37,7 @@ import org.kie.internal.task.api.InternalTaskService;
 
 public class TaskExpirationDateTest extends HumanTaskServicesBaseTest{
 
-        private PoolingDataSourceWrapper pds;
+        private PoolingDataSource pds;
         private EntityManagerFactory emf;
         private static final Date TODAY = new Date();
 

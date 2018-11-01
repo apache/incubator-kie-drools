@@ -27,7 +27,7 @@ import javax.persistence.Persistence;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.impl.strategy.LoadBalanceAssignmentStrategy;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class LoadBalanceAssignmentStrategyTest extends AbstractAssignmentTest {
     private static final String NOBODIES = "Nobodies";
     private static final String CRUSADERS = "Crusaders";
     private static final String WRONG_CRUSADERS = "Wrong Crusaders";
-    private PoolingDataSourceWrapper pds;
+    private PoolingDataSource pds;
     private EntityManagerFactory emf;
     private ListMultimap<String, Task> tasks;
 	private Consumer<Task> complete = (task) -> {

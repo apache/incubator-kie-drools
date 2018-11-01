@@ -43,7 +43,7 @@ import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.test.listener.task.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.MVELUtils;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -185,9 +185,10 @@ public abstract class HumanTaskServicesBaseTest {
     protected static final String PASSWORD = "password";
     protected static final String JDBC_URL = "url";
 
-    protected static PoolingDataSourceWrapper setupPoolingDataSource() {
-        Properties dsProps = PersistenceUtil.getDatasourceProperties();
-        PoolingDataSourceWrapper pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds");
+    protected static PoolingDataSource setupPoolingDataSource() {
+        Properties dsProps = getDatasourceProperties();
+        PoolingDataSource pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
+        pds.init();
 
         return pds;
     }
