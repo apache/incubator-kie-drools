@@ -22,11 +22,13 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -38,6 +40,17 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
     /** generated serial version UID */
     private static final long serialVersionUID = 1471981530823361925L;
 
+    @XmlAttribute(name="out-identifier")
+    private String outIdentifier;
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
     public List<Long> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Set<WorkItem> workItems = ((WorkItemManager) ksession.getWorkItemManager()).getWorkItems();
@@ -45,6 +58,12 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
         for(WorkItem workItem : workItems ) { 
             workItemIds.add(workItem.getId());
         }
+
+        if ( this.outIdentifier != null ) {
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier,
+                                                                                      workItemIds);
+        }
+
         return workItemIds;
     }
 
