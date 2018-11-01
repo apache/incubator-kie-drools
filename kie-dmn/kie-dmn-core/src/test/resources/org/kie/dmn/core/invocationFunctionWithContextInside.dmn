@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github
+.com/kiegroup/drools/kie-dmn/_9BA28B4B-B13C-4E1E-9C7A-5F6B3D5CD4BE" xmlns:feel="http://www.omg
+.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_21F631B4-C897-4C1B-AF35-0FF9053C8D97" name="check weather" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg
+.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_9BA28B4B-B13C-4E1E-9C7A-5F6B3D5CD4BE">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_2EE0B976-1698-46CB-8BDB-7430B63F35D6" name="tForecast" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues id="_FFF5A854-F03D-4731-8621-E7D04632E140">
+      <dmn:text>"cloudy", "sunny", "windy"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_7FDFBB32-0354-467F-988D-EE0664A21075" name="tWeather" isCollection="false">
+    <dmn:itemComponent id="_1A02C05A-76BE-44C6-81FF-133E44BB3C27" name="wind blowing" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D57425CF-2856-482C-A0F4-27757CC33790" name="cloud ratio" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:businessKnowledgeModel id="_D036CEBC-34C6-4F5E-83FB-491D2A5A2D1F" name="compute forecast">
+    <dmn:variable id="_19C7C980-D4B8-4CD3-972B-86371F42A387" name="compute forecast" typeRef="tForecast"/>
+    <dmn:encapsulatedLogic id="_E35B247F-F8B7-4909-B55F-1AB2296321DC" typeRef="tForecast" kind="FEEL">
+      <dmn:formalParameter id="_6F827F60-01D0-45E6-8899-C68A546E46F4" name="weather" typeRef="tWeather"/>
+      <dmn:context id="_B233FBE7-FE04-4417-9D3D-ECF0434CC3E7" typeRef="string">
+        <dmn:contextEntry>
+          <dmn:variable id="_D8E4D3A5-49C0-4775-B8F1-25372A01A3FB" name="windy" typeRef="boolean"/>
+          <dmn:literalExpression id="_41E772CE-7DB8-4775-802B-49C581C494B6" typeRef="string">
+            <dmn:text>weather.wind blowing</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_73D039B2-6783-40E4-8A47-E1236493A621" name="cloudy" typeRef="boolean"/>
+          <dmn:literalExpression id="_549F4CD6-58BD-404E-9DA8-6F3D652C7737" typeRef="string">
+            <dmn:text>weather.cloud ratio > 0.50</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:literalExpression id="_7C36D377-9FDB-462E-B6A3-E9931BEB0B71" typeRef="string">
+            <dmn:text>if windy then "windy"
+else
+if cloudy then "cloudy" else "sunny"</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+      </dmn:context>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:decision id="_D0CEB122-0FB5-4128-A585-17D6B2E77FEA" name="go out">
+    <dmn:variable id="_F693EC95-22E2-426C-8060-1D0D95DEC543" name="go out" typeRef="boolean"/>
+    <dmn:informationRequirement id="_64B40896-F9EE-4134-A94C-1689258FE6FA">
+      <dmn:requiredDecision href="#_8B09B004-97F0-45BA-8D7D-2F4A4AB38E7E"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_D8A627AD-5F53-454B-AC07-7E5CDB0140DC" typeRef="string" hitPolicy="ANY" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_63F076EE-CD4B-4C23-8C91-2F4F46FB863E">
+        <dmn:inputExpression id="_2AEAEC1D-94AF-4BDB-91C1-DAA164B54D16" typeRef="tForecast">
+          <dmn:text>forecast</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues id="_4EBC91CF-C641-48B3-A81F-05F75FA59D49">
+          <dmn:text></dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:output id="_0792C87C-13C0-4F70-8E48-F1D1EE267B8F" name="output-1" typeRef="string">
+        <dmn:outputValues id="_A6367F77-7D99-470A-99A5-E2D11E9D36D3">
+          <dmn:text></dmn:text>
+        </dmn:outputValues>
+        <dmn:defaultOutputEntry id="_6C115712-ED1D-4A20-97B1-709BC8F3E50C" typeRef="string">
+          <dmn:text></dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:rule id="_34DE59C1-4BCB-4327-B2CC-0533E51B5F55">
+        <dmn:inputEntry id="_05264161-71D6-4ED6-833F-DB35EF982F13">
+          <dmn:text>"cloudy"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_664F8162-FF89-4F61-BDBB-6DACBCE4BDE5" typeRef="string">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_4F981F8C-186B-4549-80A8-A00B54095FDC">
+        <dmn:inputEntry id="_8E461D52-A8E1-4804-8373-A836C809FF82">
+          <dmn:text>"sunny"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_7903CFD9-7E4A-447E-9F61-AF0E3EE4889C" typeRef="string">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_FDFAD2BD-23CA-4D4A-8D3D-3D2A55A22240">
+        <dmn:inputEntry id="_06EC5E3A-7EF7-45E9-845F-98ABD724CA4A">
+          <dmn:text>"windy"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_A536C3B7-7680-4B04-A846-0470C084C2AA" typeRef="string">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_C667166E-494C-46A7-91CF-C8EB8ECBC0EF" name="current weather">
+    <dmn:variable id="_D667D3E7-83CF-4D85-A04C-B768FE680DCE" name="current weather" typeRef="tWeather"/>
+  </dmn:inputData>
+  <dmn:decision id="_8B09B004-97F0-45BA-8D7D-2F4A4AB38E7E" name="forecast">
+    <dmn:variable id="_7DEA7BC3-3F6D-4EE7-AD57-217DF69396C5" name="forecast" typeRef="tForecast"/>
+    <dmn:informationRequirement id="_07BEA41A-1748-4C7A-B3BE-C906E28E568E">
+      <dmn:requiredInput href="#_C667166E-494C-46A7-91CF-C8EB8ECBC0EF"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_52E01C11-182F-45A4-9F46-20B9A42FBF53">
+      <dmn:requiredKnowledge href="#_D036CEBC-34C6-4F5E-83FB-491D2A5A2D1F"/>
+    </dmn:knowledgeRequirement>
+    <dmn:invocation id="_D9498035-1A77-4B36-9F2F-78C6E1DE0365" typeRef="string">
+      <dmn:literalExpression id="_5381CBEB-BD3F-47E5-9C4D-5B4E7004D98E" typeRef="string">
+        <dmn:text>compute forecast</dmn:text>
+      </dmn:literalExpression>
+      <dmn:binding>
+        <dmn:parameter id="_DC8D7710-67C5-453F-A3C9-E282CCD7E819" name="weather" typeRef="tWeather"/>
+        <dmn:literalExpression id="_098095E4-2B04-4FF6-8994-F4125D4DE16F" typeRef="string">
+          <dmn:text>current weather</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+    </dmn:invocation>
+  </dmn:decision>
+  <dmndi:DMNDI xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/">
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-_D036CEBC-34C6-4F5E-83FB-491D2A5A2D1F" dmnElementRef="_D036CEBC-34C6-4F5E-83FB-491D2A5A2D1F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="542" y="226" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_D0CEB122-0FB5-4128-A585-17D6B2E77FEA" dmnElementRef="_D0CEB122-0FB5-4128-A585-17D6B2E77FEA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="216" y="65" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_C667166E-494C-46A7-91CF-C8EB8ECBC0EF" dmnElementRef="_C667166E-494C-46A7-91CF-C8EB8ECBC0EF" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="215" y="448" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_8B09B004-97F0-45BA-8D7D-2F4A4AB38E7E" dmnElementRef="_8B09B004-97F0-45BA-8D7D-2F4A4AB38E7E" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="216" y="226" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_64B40896-F9EE-4134-A94C-1689258FE6FA" dmnElementRef="_64B40896-F9EE-4134-A94C-1689258FE6FA">
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="266" y="251"/>
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="266" y="90"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_07BEA41A-1748-4C7A-B3BE-C906E28E568E" dmnElementRef="_07BEA41A-1748-4C7A-B3BE-C906E28E568E">
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="265" y="473"/>
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="266" y="251"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_52E01C11-182F-45A4-9F46-20B9A42FBF53" dmnElementRef="_52E01C11-182F-45A4-9F46-20B9A42FBF53">
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="592" y="251"/>
+        <di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="266" y="251"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

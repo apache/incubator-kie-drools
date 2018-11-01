@@ -133,6 +133,27 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     }
 
+    @Test
+    public void testFunctionInvocationFunctionWithContextInside() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invocationFunctionWithContextInside.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_9BA28B4B-B13C-4E1E-9C7A-5F6B3D5CD4BE",
+                                                   "check weather");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        final Map<String, Object> sunnyWeather = new HashMap<>();
+        sunnyWeather.put("wind blowing", false);
+        sunnyWeather.put("cloud ration", 0.3);
+        context.set("current weather", sunnyWeather);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("go out"), is(true));
+    }
+
     private void assertPersonRetireAge(final DMNRuntime runtime,
                                        final DMNModel dmnModel,
                                        final Map<String, Object> person,
