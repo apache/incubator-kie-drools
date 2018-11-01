@@ -110,23 +110,23 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        final Map<String, Object> maleFifeYearsRetired = new HashMap<>();
-        maleFifeYearsRetired.put("sex", "male");
-        maleFifeYearsRetired.put("age", "55");
+        final Map<String, Object> maleFiveYearsRetired = new HashMap<>();
+        maleFiveYearsRetired.put("sex", "male");
+        maleFiveYearsRetired.put("age", 55);
 
         final Map<String, Object> maleWillRetireThisYear = new HashMap<>();
-        maleFifeYearsRetired.put("sex", "male");
-        maleFifeYearsRetired.put("age", "50");
+        maleWillRetireThisYear.put("sex", "male");
+        maleWillRetireThisYear.put("age", 50);
 
         final Map<String, Object> femaleRetiredOneYear = new HashMap<>();
-        maleFifeYearsRetired.put("sex", "female");
-        maleFifeYearsRetired.put("age", "41");
+        femaleRetiredOneYear.put("sex", "female");
+        femaleRetiredOneYear.put("age", 41);
 
         final Map<String, Object> femaleWillRetireNextYear = new HashMap<>();
-        maleFifeYearsRetired.put("sex", "female");
-        maleFifeYearsRetired.put("age", "39");
+        femaleWillRetireNextYear.put("sex", "female");
+        femaleWillRetireNextYear.put("age", 39);
 
-        assertPersonRetireAge(runtime, dmnModel, maleFifeYearsRetired, true);
+        assertPersonRetireAge(runtime, dmnModel, maleFiveYearsRetired, true);
         assertPersonRetireAge(runtime, dmnModel, maleWillRetireThisYear, false);
         assertPersonRetireAge(runtime, dmnModel, femaleRetiredOneYear, true);
         assertPersonRetireAge(runtime, dmnModel, femaleWillRetireNextYear, false);
