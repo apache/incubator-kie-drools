@@ -144,7 +144,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         final Map<String, Object> sunnyWeather = new HashMap<>();
         sunnyWeather.put("wind blowing", false);
-        sunnyWeather.put("cloud ration", 0.3);
+        sunnyWeather.put("cloud ratio", 0.3);
         context.set("current weather", sunnyWeather);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
