@@ -15,8 +15,6 @@
 
 package org.drools.compiler.kproject.memory;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -26,6 +24,10 @@ import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.io.memory.MemoryFolder;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MemoryFolderTest {
     
@@ -199,4 +201,14 @@ public class MemoryFolderTest {
         assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main/"));
     }
 
+    @Test
+    public void testCreateAndCopyFolder() {
+        MemoryFileSystem memoryFileSystem = new MemoryFileSystem();
+
+        // this also creates a folder if it doesn't exist
+        final Folder emptyFolder = memoryFileSystem.getFolder("emptyfolder");
+        final MemoryFolder destinationFolder = new MemoryFolder(memoryFileSystem, "destinationfolder");
+        memoryFileSystem.createFolder(destinationFolder);
+        memoryFileSystem.copyFolder(emptyFolder, memoryFileSystem, destinationFolder);
+    }
 }
