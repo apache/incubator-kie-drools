@@ -110,17 +110,41 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
+        final Map<String, Object> maleFifeYearsRetired = new HashMap<>();
+        maleFifeYearsRetired.put("sex", "male");
+        maleFifeYearsRetired.put("age", "55");
+
+        final Map<String, Object> maleWillRetireThisYear = new HashMap<>();
+        maleFifeYearsRetired.put("sex", "male");
+        maleFifeYearsRetired.put("age", "50");
+
+        final Map<String, Object> femaleRetiredOneYear = new HashMap<>();
+        maleFifeYearsRetired.put("sex", "female");
+        maleFifeYearsRetired.put("age", "41");
+
+        final Map<String, Object> femaleWillRetireNextYear = new HashMap<>();
+        maleFifeYearsRetired.put("sex", "female");
+        maleFifeYearsRetired.put("age", "39");
+
+        assertPersonRetireAge(runtime, dmnModel, maleFifeYearsRetired, true);
+        assertPersonRetireAge(runtime, dmnModel, maleWillRetireThisYear, false);
+        assertPersonRetireAge(runtime, dmnModel, femaleRetiredOneYear, true);
+        assertPersonRetireAge(runtime, dmnModel, femaleWillRetireNextYear, false);
+
+    }
+
+    private void assertPersonRetireAge(final DMNRuntime runtime,
+                                       final DMNModel dmnModel,
+                                       final Map<String, Object> person,
+                                       final boolean isExpectedToRetire) {
         final DMNContext context = DMNFactory.newContext();
-        final Map<String, Object> person = new HashMap<>();
-        person.put("age", 55);
-        person.put("sex", "male");
         context.set("Person", person);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("retire"), is(true));
+        assertThat(result.get("retire"), is(isExpectedToRetire));
     }
 
     @Test

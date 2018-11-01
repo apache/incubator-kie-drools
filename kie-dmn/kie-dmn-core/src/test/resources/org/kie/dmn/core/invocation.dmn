@@ -49,7 +49,7 @@
       </dmn:contextEntry>
       <dmn:contextEntry>
         <dmn:literalExpression id="_2D3B9F6D-CB5F-4578-9379-001F61F265C2" typeRef="string">
-          <dmn:text>(remains years &lt; 10 and sex == "male") or (remains years &lt; 20 and sex == "female")</dmn:text>
+          <dmn:text>(remains years &lt; 10 and sex = "male") or (remains years &lt; 20 and sex = "female")</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
