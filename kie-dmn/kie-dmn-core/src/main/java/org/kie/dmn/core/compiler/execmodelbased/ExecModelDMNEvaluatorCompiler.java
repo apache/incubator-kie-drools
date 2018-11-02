@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +124,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = dTableModel.getGeneratedClassName(generator);
-            String fileName = Paths.get("src/main/java", className.replace('.', '/') + ".java").toString();
+            String fileName = "src/main/java/" + className.replace( '.', '/' ) + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
             generatedSources.add(new GeneratedSource(fileName, javaSource));
