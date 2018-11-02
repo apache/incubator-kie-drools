@@ -19,7 +19,7 @@
 <semantic:outputValues id="_A6367F77-7D99-470A-99A5-E2D11E9D36D3">
   <semantic:text></semantic:text>
 </semantic:outputValues>
-<semantic:defaultOutputEntry id="_6C115712-ED1D-4A20-97B1-709BC8F3E50C" typeRef="boolean">
+<semantic:defaultOutputEntry id="_6C115712-ED1D-4A20-97B1-709BC8F3E50C">
   <semantic:text></semantic:text>
 </semantic:defaultOutputEntry>
             </semantic:output>
