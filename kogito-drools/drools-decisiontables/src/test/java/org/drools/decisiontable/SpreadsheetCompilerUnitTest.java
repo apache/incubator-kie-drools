@@ -91,12 +91,26 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream,
                                              InputType.XLS);
 
-        assertTrue(drl.contains("/* Say"));
-        assertTrue(drl.contains("Hello */"));
-        assertTrue(drl.contains("Goobye */"));
-        assertFalse(drl.contains("// Say"));
+        Assertions.assertThat(drl).containsSequence("/* Say", "Hello */", "/* Say", "Goobye */");
+        Assertions.assertThat(drl).doesNotContain("// Say");
+    }
 
-        assertNotNull(drl);
+    @Test
+    public void testMultilineComplexCommentsInDescription() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("/data/Multiline comment example complex.xls");
+        final String drl = converter.compile(stream,
+                                             InputType.XLS);
+
+        Assertions.assertThat(drl).containsSequence("/* Do these actions:",
+                                                    "- Print Greeting",
+                                                    "- Set params: {message:'bye cruel world', status:'bye'} */",
+                                                    "/* Print message: \"Bye!\"",
+                                                    "Author: james@company.org */");
+
+        Assertions.assertThat(drl).doesNotContain("* - Print Greeting");
+        Assertions.assertThat(drl).doesNotContain("* - Set params: {message:'bye cruel world', status:'bye'}");
+        Assertions.assertThat(drl).doesNotContain("* Author: james@company.org");
     }
 
     @Test
