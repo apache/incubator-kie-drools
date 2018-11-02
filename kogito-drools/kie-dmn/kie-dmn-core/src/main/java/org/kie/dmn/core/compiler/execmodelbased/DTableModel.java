@@ -125,7 +125,7 @@ public class DTableModel {
         int index = 1;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
-            if (inputValuesText != null) {
+            if (inputValuesText != null && !inputValuesText.isEmpty()) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
             column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
@@ -149,7 +149,7 @@ public class DTableModel {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
-            if (defaultValue != null) {
+            if (defaultValue != null && !defaultValue.isEmpty()) {
                 output.compiledDefault = compileFeelExpression( output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue, 0 );
             }
         }
@@ -158,7 +158,7 @@ public class DTableModel {
     private List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
         String outputValuesText = Optional.ofNullable( output.outputClause.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
         output.typeRef = inferTypeRef(model, dt, output.outputClause);
-        if (outputValuesText != null) {
+        if (outputValuesText != null && !outputValuesText.isEmpty()) {
             return feel.evaluateUnaryTests( outputValuesText, variableTypes );
         }
         if (output.typeRef != model.getTypeRegistry().unknown() && output.typeRef.getAllowedValuesFEEL() != null) {
