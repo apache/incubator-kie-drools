@@ -20,12 +20,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.api.definition.rule.UnitVar;
 import org.kie.api.runtime.rule.RuleUnit;
 
 public class TestRuleUnit implements RuleUnit {
 
     private final Integer[] numbersArray;
-    private final BigDecimal number;
+
+    @UnitVar("numberVariable")
+    private BigDecimal number;
+
     private final List<String> stringList;
     private final List<SimpleFact> simpleFactList;
     // This is a little hack to be able to test unbinding of datasources.
@@ -33,6 +37,10 @@ public class TestRuleUnit implements RuleUnit {
     // This property is visible through getter as a datasource, but upon each call it gets switched
     // It should be called just twice(bind/unbind), so therefore we can test if this was unbound.
     public boolean bound = false;
+
+    public TestRuleUnit() {
+        this(new Integer[]{}, BigDecimal.ZERO);
+    }
 
     public TestRuleUnit(final Integer[] numbersArray, final BigDecimal number) {
         this.numbersArray = numbersArray;
@@ -68,11 +76,6 @@ public class TestRuleUnit implements RuleUnit {
 
     public void addString(final String string) {
         stringList.add(string);
-    }
-
-    @Override
-    public Identity getUnitIdentity() {
-        return null;
     }
 
     @Override

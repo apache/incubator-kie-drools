@@ -17,40 +17,89 @@
 package org.drools.core.ruleunit;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
+import org.drools.core.datasources.CursoredDataSource;
 import org.drools.core.impl.InternalRuleUnitExecutor;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.kie.api.runtime.rule.RuleUnit;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class RuleUnitFactoryTest {
 
-    @Test
-    public void bindVariable() {
-        // TODO
+    private RuleUnitFactory factory;
+
+    @Before
+    public void prepareRuleUnitFactory() {
+        factory = new RuleUnitFactory();
     }
 
     @Test
-    public void getOrCreateRuleUnit() {
-        // TODO
+    public void getOrCreateRuleUnitWithClass() {
+        final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
+        final TestRuleUnit testRuleUnit = factory.getOrCreateRuleUnit(ruleUnitExecutor, TestRuleUnit.class);
+        assertThat(testRuleUnit).isNotNull();
+        assertThat(factory.getOrCreateRuleUnit(ruleUnitExecutor, TestRuleUnit.class)).isSameAs(testRuleUnit);
+        verifyZeroInteractions(ruleUnitExecutor);
     }
 
     @Test
-    public void getOrCreateRuleUnit1() {
-        // TODO
+    public void getOrCreateRuleUnitWithClassName() {
+        final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
+        final RuleUnit testRuleUnit = factory.getOrCreateRuleUnit(ruleUnitExecutor, TestRuleUnit.class.getCanonicalName(), this.getClass().getClassLoader());
+        assertThat(testRuleUnit).isNotNull().isInstanceOf(TestRuleUnit.class);
+        assertThat(factory.getOrCreateRuleUnit(ruleUnitExecutor, TestRuleUnit.class)).isSameAs(testRuleUnit);
+        verifyZeroInteractions(ruleUnitExecutor);
     }
 
     @Test
     public void registerUnit() {
-        // TODO
-    }
-
-    @Test
-    public void injectUnitVariables() {
         final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{}, BigDecimal.ZERO);
         final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
 
+        assertThat(factory.registerUnit(ruleUnitExecutor, testRuleUnit)).isSameAs(testRuleUnit);
+        verifyZeroInteractions(ruleUnitExecutor);
+
+        assertThat(factory.getOrCreateRuleUnit(ruleUnitExecutor, TestRuleUnit.class)).isSameAs(testRuleUnit);
+        verifyZeroInteractions(ruleUnitExecutor);
+    }
+
+    @Test
+    public void injectUnitVariablesNoDataSourceInUnit() {
+        factory.bindVariable("numberVariable", BigDecimal.ONE);
+        factory.bindVariable("stringList", Collections.singletonList("test"));
+
+        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{}, BigDecimal.ZERO);
+        testRuleUnit.getStringList().add("bla");
+        final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
+
+        factory.injectUnitVariables(ruleUnitExecutor, testRuleUnit);
+        // Unassigned variables or numbers equal 0 should be reassigned if a variable exists.
+        assertThat(testRuleUnit.getNumber()).isEqualTo(BigDecimal.ONE);
+
+        // Others should remain the same.
+        assertThat(testRuleUnit.bound).isFalse();
+        assertThat(testRuleUnit.getNumbersArray()).isNotNull().isEmpty();
+        assertThat(testRuleUnit.getSimpleFactList()).isNotNull().isEmpty();
+        assertThat(testRuleUnit.getStringList()).isNotNull().hasSize(1).containsExactly("bla");
+
+        verifyZeroInteractions(ruleUnitExecutor);
+    }
+
+    @Test
+    public void injectUnitVariablesDataSourceInUnit() {
+        final CursoredDataSource<Object> dataSource = mock(CursoredDataSource.class);
+        final RuleUnitWithDataSource testRuleUnit = new RuleUnitWithDataSource(dataSource);
+        final InternalRuleUnitExecutor ruleUnitExecutor = mock(InternalRuleUnitExecutor.class);
+
+        factory.injectUnitVariables(ruleUnitExecutor, testRuleUnit);
+        verify(ruleUnitExecutor).bindDataSource(dataSource);
+        verifyNoMoreInteractions(ruleUnitExecutor);
     }
 }
