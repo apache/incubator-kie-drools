@@ -2375,16 +2375,16 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         checkEmptyinputValuesoutputValuesdefaultOutputEntry(runtime, dmnModel, -1, "negative");
     }
 
-    private static void checkEmptyinputValuesoutputValuesdefaultOutputEntry(final DMNRuntime runtime, final DMNModel dmnModel, int i, String string) {
+    private static void checkEmptyinputValuesoutputValuesdefaultOutputEntry(final DMNRuntime runtime, final DMNModel dmnModel, int my_number, String my_DT) {
         final DMNContext context = DMNFactory.newContext();
-        context.set("my number", i);
+        context.set("my number", my_number);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("my DT"), is(string));
+        assertThat(result.get("my DT"), is(my_DT));
     }
 }
 
