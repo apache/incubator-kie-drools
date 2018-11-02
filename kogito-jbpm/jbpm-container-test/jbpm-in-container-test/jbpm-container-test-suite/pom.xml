@@ -527,11 +527,11 @@
       <activation>
         <property>
           <name>container.profile</name>
-          <value>wildfly11</value>
+          <value>wildfly14</value>
         </property>
       </activation>
       <properties>
-        <container.id>wildfly11x</container.id>
+        <container.id>wildfly14x</container.id>
         <container.port>8080</container.port>
         <org.jbpm.persistence.ds>java:/jdbc/jbpm</org.jbpm.persistence.ds>
         <container.tm>org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform</container.tm>
@@ -548,7 +548,7 @@
                   <artifactInstaller>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-dist</artifactId>
-                    <version>${version.wildfly11}</version>
+                    <version>${version.wildfly14}</version>
                   </artifactInstaller>
                   <dependencies>
                     <dependency>
@@ -615,7 +615,7 @@
         </property>
       </activation>
       <properties>
-        <container.id>wildfly11x</container.id>
+        <container.id>wildfly14x</container.id>
         <container.port>8080</container.port>
         <org.jbpm.persistence.ds>java:/jdbc/jbpm</org.jbpm.persistence.ds>
         <container.tm>org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform</container.tm>

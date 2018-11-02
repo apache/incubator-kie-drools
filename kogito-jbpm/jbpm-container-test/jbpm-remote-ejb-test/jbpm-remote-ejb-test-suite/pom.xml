@@ -24,7 +24,7 @@
     <!-- properties connected with EJB services application END -->
 
     <!-- Container-related properties -->
-    <container.id>wildfly11x</container.id>
+    <container.id>wildfly14x</container.id>
 
     <!-- Default data source name applies to both supported containers -->
     <org.jbpm.persistence.ds>java:/jdbc/jbpm</org.jbpm.persistence.ds>
@@ -463,11 +463,12 @@
 
   <profiles>
     <profile>
+      <!-- temporary hack to let it test on jenkins <id>wildfly14</id>-->
       <id>wildfly11</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>wildfly11</value>
+          <value>wildfly14</value>
         </property>
       </activation>
       <build>
@@ -482,7 +483,7 @@
                   <artifactInstaller>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-dist</artifactId>
-                    <version>${version.wildfly11}</version>
+                    <version>${version.wildfly14}</version>
                   </artifactInstaller>
                 </container>
               </configuration>

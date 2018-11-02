@@ -63,7 +63,7 @@ public class ETaskQueryFilterTest extends RemoteEjbTest {
     public void testDescendingOrder() {
         startHumanTaskProcess(3, "john's task", "john");
 
-        List<TaskSummary> taskList = ejb.getTasksAssignedAsPotentialOwner("john", null, null, new QueryFilter(0, 0, "t.name", false));
+        List<TaskSummary> taskList = ejb.getTasksAssignedAsPotentialOwner("john", null, null, new QueryFilter(0, -1, "t.name", false));
         logger.info("### Potential owner task list: " + taskList);
 
         Assertions.assertThat(taskList).hasSize(3);
@@ -77,7 +77,7 @@ public class ETaskQueryFilterTest extends RemoteEjbTest {
     public void testAscendingOrder() {
         startHumanTaskProcess(3, "john's task", "john");
 
-        List<TaskSummary> taskList = ejb.getTasksAssignedAsPotentialOwner("john", null, null, new QueryFilter(0, 0, "t.name", true));
+        List<TaskSummary> taskList = ejb.getTasksAssignedAsPotentialOwner("john", null, null, new QueryFilter(0, -1, "t.name", true));
         logger.info("### Potential owner task list: " + taskList);
 
         Assertions.assertThat(taskList).hasSize(3);

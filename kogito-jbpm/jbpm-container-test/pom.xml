@@ -24,7 +24,7 @@
     <org.jbpm.datasource.connection.url>jdbc:h2:mem:test-db;MVCC=TRUE</org.jbpm.datasource.connection.url>
     <org.jbpm.datasource.username>sa</org.jbpm.datasource.username>
     <org.jbpm.datasource.password></org.jbpm.datasource.password>
-    <org.jbpm.datasource.driver.class>org.h2.Driver</org.jbpm.datasource.driver.class>
+    <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
     <org.jbpm.datasource.driver.jdbc.class>org.h2.Driver</org.jbpm.datasource.driver.jdbc.class>
     <org.jbpm.datasource.hostname/>
     <org.jbpm.datasource.port/>
@@ -39,8 +39,8 @@
      here or via system property when running the build (don't forget to use the `file://` prefix when
      referencing the zip from local filesystem). -->
     <eap7.download.url>file:///valid-url-for-eap-7-needs-to-be-specified-here-or-via-cmd-line</eap7.download.url>
-    
-    <version.wildfly11>11.0.0.Final</version.wildfly11>
+
+    <version.wildfly14>14.0.1.Final</version.wildfly14>
     <version.tomcat9>9.0.12</version.tomcat9>
     <!-- jboss-remoting version compatible with jboss-remote-naming -->
     <version.org.jboss.remoting.naming>4.0.18.Final</version.org.jboss.remoting.naming>

@@ -1,7 +1,7 @@
 jBPM remote EJB container tests
 =====================
 
-*This test suite tests remote access to jBPM engine via jbpm-services-ejb. This access is supported for WildFly 10 and EAP 7.*
+*This test suite tests remote access to jBPM engine via jbpm-services-ejb. This access is supported for WildFly 14 and EAP 7.*
 
 This test suite consists of four submodules:
 * jbpm-remote-ejb-test-app - Standalone WAR test application containing jbpm-services-ejb.
@@ -14,13 +14,13 @@ Tests are run using the command
 ```mvn clean install -Dcontainer.profile=<container-profile> <container-specific-params>```
 
 where `<container-profile>` is simply a particular container. Another container-specific parameters may also be configured (see the table below).
-Both supported containers (WildFly10 and EAP 7) will be downloaded automatically (in case of EAP 7, download URL has to be provided).
+Both supported containers (WildFly14 and EAP 7) will be downloaded automatically (in case of EAP 7, download URL has to be provided).
 
 The following table lists all currently supported combinations of parameters:
 
 | Container to run    | \<container-profile\> | \<container-specific params\>             |
 | -----------------   | --------------------- | ----------------------------------------- |
-|     WildFly10       | wildfly10             | *none*                                    |
+|     WildFly14       | wildfly14             | *none*                                    |
 |     EAP 7           | eap7                  | eap7.download.url                         |
 
 ## Database configuration
