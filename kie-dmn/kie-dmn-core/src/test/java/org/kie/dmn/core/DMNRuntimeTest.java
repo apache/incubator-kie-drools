@@ -2362,5 +2362,29 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("decision over the input letter").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("decision over the input letter").getResult(), nullValue());
     }
+
+    @Test
+    public void testEmptyinputValuesoutputValuesdefaultOutputEntry() {
+        // DROOLS-
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("EmptyinputValuesoutputValuesdefaultOutputEntry.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_31f2dde9-b27c-41f8-97b4-5c8dd728942e", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        checkEmptyinputValuesoutputValuesdefaultOutputEntry(runtime, dmnModel, 47, "positive");
+        checkEmptyinputValuesoutputValuesdefaultOutputEntry(runtime, dmnModel, -1, "negative");
+    }
+
+    private static void checkEmptyinputValuesoutputValuesdefaultOutputEntry(final DMNRuntime runtime, final DMNModel dmnModel, int my_number, String my_DT) {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("my number", my_number);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("my DT"), is(my_DT));
+    }
 }
 
