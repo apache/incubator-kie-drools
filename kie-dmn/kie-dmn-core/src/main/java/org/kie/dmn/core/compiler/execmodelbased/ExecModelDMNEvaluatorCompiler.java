@@ -124,7 +124,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = dTableModel.getGeneratedClassName(generator);
-            String fileName = "src/main/java" + className.replace( '.', '/' ) + ".java";
+            String fileName = "src/main/java/" + className.replace( '.', '/' ) + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
             generatedSources.add(new GeneratedSource(fileName, javaSource));
