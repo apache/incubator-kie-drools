@@ -20,6 +20,10 @@ import java.math.BigDecimal;
 
 public class TestRuleUnit2 extends TestRuleUnit {
 
+    public TestRuleUnit2() {
+        super();
+    }
+
     public TestRuleUnit2(Integer[] numbersArray, BigDecimal number) {
         super(numbersArray, number);
     }

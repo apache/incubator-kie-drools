@@ -16,29 +16,66 @@
 
 package org.drools.core.ruleunit;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.RuleUnitExecutorSession;
+import org.drools.core.spi.Activation;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleUnitGuardSystemTest {
 
+    private RuleUnitExecutorSession executorSession;
+    private RuleUnitGuardSystem guardSystem;
+
+    @Before
+    public void prepareGuardSystem() {
+        executorSession = mock(RuleUnitExecutorSession.class);
+        when(executorSession.internalExecuteUnit(anyObject())).thenReturn(1);
+        guardSystem = new RuleUnitGuardSystem(executorSession);
+    }
+
     @Test
     public void registerGuard() {
-        // TODO
+        assertThat(guardSystem.fireActiveUnits()).isEqualTo(0);
+
+        // Simulating that first fire sets new guard and current rule unit.
+        final TestRuleUnit testRuleUnit = new TestRuleUnit();
+        guardSystem.registerGuard(testRuleUnit, prepareActivation());
+        when(executorSession.getCurrentRuleUnit()).thenReturn(testRuleUnit);
+
+        assertThat(guardSystem.fireActiveUnits()).isEqualTo(1);
     }
 
     @Test
     public void removeActivation() {
-        // TODO
+        assertThat(guardSystem.fireActiveUnits()).isEqualTo(0);
+
+        final Activation activation = prepareActivation();
+
+        final TestRuleUnit testRuleUnit = new TestRuleUnit();
+        guardSystem.registerGuard(testRuleUnit, activation);
+        guardSystem.removeActivation(activation);
+        assertThat(guardSystem.fireActiveUnits()).isEqualTo(0);
     }
 
     @Test
-    public void fireActiveUnits() {
-        // TODO
+    public void fireActiveUnitsFromRuleUnit() {
+        final TestRuleUnit testRuleUnit = new TestRuleUnit();
+        when(executorSession.getCurrentRuleUnit()).thenReturn(testRuleUnit);
+
+        guardSystem.registerGuard(testRuleUnit, prepareActivation());
+        assertThat(guardSystem.fireActiveUnits(new TestRuleUnit2())).isEqualTo(0);
+        assertThat(guardSystem.fireActiveUnits(testRuleUnit)).isEqualTo(1);
     }
 
-    @Test
-    public void fireActiveUnits1() {
-        // TODO
+    private Activation prepareActivation() {
+        final Activation activation = mock(Activation.class);
+        when(activation.getRule()).thenReturn(new RuleImpl());
+        return activation;
     }
 }
