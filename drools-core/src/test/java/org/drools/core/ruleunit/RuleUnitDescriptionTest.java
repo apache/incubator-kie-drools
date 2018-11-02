@@ -106,19 +106,19 @@ public class RuleUnitDescriptionTest {
     public void getUnitVars() {
         final Collection<String> unitVars = ruleUnitDescr.getUnitVars();
         assertThat(unitVars).isNotEmpty();
-        assertThat(unitVars).hasSize(4);
-        assertThat(unitVars).containsExactlyInAnyOrder("number", "numbersArray", "stringList", "simpleFactList");
+        assertThat(unitVars).hasSize(5);
+        assertThat(unitVars).containsExactlyInAnyOrder("bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test
     public void getUnitVarAccessors() {
         final Map<String, Method> unitVarAccessors = ruleUnitDescr.getUnitVarAccessors();
         assertThat(unitVarAccessors).isNotEmpty();
-        assertThat(unitVarAccessors).hasSize(4);
-        assertThat(unitVarAccessors).containsKeys("number", "numbersArray", "stringList", "simpleFactList");
+        assertThat(unitVarAccessors).hasSize(5);
+        assertThat(unitVarAccessors).containsKeys("bound", "number", "numbersArray", "stringList", "simpleFactList");
         assertThat(unitVarAccessors.values())
                 .extracting("name", String.class)
-                .containsExactlyInAnyOrder("getNumber", "getNumbersArray", "getStringList", "getSimpleFactList");
+                .containsExactlyInAnyOrder("getBound", "getNumber", "getNumbersArray", "getStringList", "getSimpleFactList");
     }
 
     @Test
