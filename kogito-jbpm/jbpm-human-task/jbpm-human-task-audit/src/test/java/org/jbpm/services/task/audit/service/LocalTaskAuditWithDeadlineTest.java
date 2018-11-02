@@ -39,7 +39,7 @@ import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.test.listener.task.CountDownTaskEventListener;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ import org.kie.internal.task.api.model.InternalTask;
 
 public class LocalTaskAuditWithDeadlineTest extends HumanTaskServicesBaseTest {
 
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	private EntityManagerFactory emf;
 	
 	protected TaskAuditService taskAuditService;

@@ -31,7 +31,7 @@ import org.jbpm.casemgmt.impl.utils.DefaultCaseServiceConfigurator;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.test.services.AbstractCaseServicesTest;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 
@@ -41,7 +41,7 @@ public abstract class AbstractCaseServicesBaseTest extends AbstractCaseServicesT
     protected static final String GROUP_ID = "org.jbpm.cases";
     protected static final String VERSION = "1.0.0";
 
-    protected PoolingDataSource ds;    
+    protected PoolingDataSourceWrapper ds;
 
     protected static final String EMPTY_CASE_P_ID = "EmptyCase";
     protected static final String USER_TASK_STAGE_CASE_P_ID = "UserTaskWithStageCase";

@@ -46,7 +46,7 @@ import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.listener.process.NodeTriggeredCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AsyncContinuationSupportTest.class);
     
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager;
     private ExecutorService executorService;

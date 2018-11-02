@@ -18,14 +18,14 @@ package org.jbpm.executor;
 import javax.persistence.Persistence;
 
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 
 
 public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
     
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	
     
     @Before

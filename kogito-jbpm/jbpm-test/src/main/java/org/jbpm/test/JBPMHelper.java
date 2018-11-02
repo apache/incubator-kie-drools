@@ -28,7 +28,8 @@ import javax.persistence.Persistence;
 import org.h2.tools.Server;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
@@ -38,12 +39,16 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Since version 6.0 this class is deprecated. Instead <code>RuntimeManager</code> should be used directly.
  * See documentation on how to use <code>RuntimeManager</code>
  */
 public final class JBPMHelper {
+
+    private static final Logger log = LoggerFactory.getLogger(JBPMHelper.class);
 
     public static String[] processStateName = {"PENDING", "ACTIVE", "COMPLETED", "ABORTED", "SUSPENDED"};
     public static String[] txStateName = {"ACTIVE",
@@ -89,17 +94,13 @@ public final class JBPMHelper {
         }
     }
 
-    public static PoolingDataSource setupDataSource() {
+    public static PoolingDataSourceWrapper setupDataSource() {
+
         Properties properties = getProperties();
+        properties.put("className", "org.h2.jdbcx.JdbcDataSource");
         // create data source
-        PoolingDataSource pds = new PoolingDataSource();
-        pds.setUniqueName(properties.getProperty("persistence.datasource.name", "jdbc/jbpm-ds"));
-        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        pds.getDriverProperties().put("user", properties.getProperty("persistence.datasource.user", "sa"));
-        pds.getDriverProperties().put("password", properties.getProperty("persistence.datasource.password", ""));
-        pds.getDriverProperties().put("url", properties.getProperty("persistence.datasource.url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE"));
-        pds.getDriverProperties().put("driverClassName", properties.getProperty("persistence.datasource.driverClassName", "org.h2.Driver"));
-        pds.init();
+        final String dsName = properties.getProperty("persistence.datasource.name", "jdbc/jbpm-ds");
+        PoolingDataSourceWrapper pds = DataSourceFactory.setupPoolingDataSource(dsName, properties);
         return pds;
     }
 

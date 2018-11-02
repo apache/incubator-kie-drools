@@ -34,7 +34,7 @@ import javax.transaction.UserTransaction;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class ReconfiguredExecutorTest {
 
     private static final long EXTRA_TIME = 2000;
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private EntityManagerFactory emf = null;
     
     @Before

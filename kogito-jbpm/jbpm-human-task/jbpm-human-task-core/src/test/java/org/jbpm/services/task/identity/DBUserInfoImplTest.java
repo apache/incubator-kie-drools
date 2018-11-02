@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.persistence.util.PersistenceUtil;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,23 +40,13 @@ public class DBUserInfoImplTest {
     private static final Group PM = TaskModelProvider.getFactory().newGroup("PM");
     
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private Properties props;
 
     @Before
     public void setup() {
-
         Properties dsProps = loadDataSourceProperties();
-
-        pds = new PoolingDataSource();
-        pds.setUniqueName("jdbc/jbpm-ds");
-        pds.setClassName(dsProps.getProperty("className"));
-        for (String propertyName : new String[]{"user", "password"}) {
-            pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-        }
-        setDatabaseSpecificDataSourceProperties(pds, dsProps);
-
-        pds.init();
+        pds = DataSourceFactory.setupPoolingDataSource("jdbc/jbpm-ds", dsProps);
 
         prepareDb();
 
@@ -198,9 +188,5 @@ public class DBUserInfoImplTest {
         
         String id = userInfo.getEntityForEmail("john@jbpm.org");
         Assertions.assertThat(id).isEqualTo(JOHN.getId());
-    }
-
-    private void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) {
-        PersistenceUtil.setDatabaseSpecificDataSourceProperties(pds, dsProps);
     }
 }

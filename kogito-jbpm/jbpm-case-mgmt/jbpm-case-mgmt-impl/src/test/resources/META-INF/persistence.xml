@@ -90,6 +90,7 @@
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />
+      <property name="hibernate.connection.release_mode" value="after_transaction"/>
     </properties>
   </persistence-unit>
 

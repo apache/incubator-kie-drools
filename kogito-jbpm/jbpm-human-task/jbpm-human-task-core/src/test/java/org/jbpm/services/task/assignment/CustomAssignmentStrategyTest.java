@@ -19,7 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.strategy.CustomStrategy;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class CustomAssignmentStrategyTest extends AbstractAssignmentTest {
 
     private static final String WRONG_CRUSADERS = "Wrong Crusaders";
 
-    private PoolingDataSource pds;
+    private PoolingDataSourceWrapper pds;
     private EntityManagerFactory emf;
 
     @Before

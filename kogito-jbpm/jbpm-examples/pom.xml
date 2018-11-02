@@ -98,10 +98,14 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-test</artifactId>
     </dependency>
-      <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-test-util</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+    </dependency>
     <dependency>
     	<groupId>org.subethamail</groupId>
     	<artifactId>subethasmtp-wiser</artifactId>

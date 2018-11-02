@@ -27,7 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.test.util.PoolingDataSource;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class UserGroupInvocationTest extends HumanTaskServicesBaseTest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserGroupInvocationTest.class);
 
-	private PoolingDataSource pds;
+	private PoolingDataSourceWrapper pds;
 	private EntityManagerFactory emf;
 	protected CountInvokeUserGroupCallback callback;
 	
