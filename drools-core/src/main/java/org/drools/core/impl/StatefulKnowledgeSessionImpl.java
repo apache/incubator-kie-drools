@@ -1122,6 +1122,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.processRuntime = null;
 
         this.initialFactHandle = initInitialFact(kBase, null);
+
+        this.alive = true;
     }
 
     public void reset(int handleId,
