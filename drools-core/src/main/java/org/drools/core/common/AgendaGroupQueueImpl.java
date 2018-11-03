@@ -167,7 +167,7 @@ public class AgendaGroupQueueImpl
     }
 
     public void add(final Activation activation) {
-        if ( lastRemoved != null ) {
+        if ( lastRemoved != null && !sequential) {
             // this will only be set if sequential. Do not add Match's that are higher in salience + load order than the lastRemoved (fired)
             if ( lastRemoved == activation || lastRemoved  == visited || PhreakConflictResolver.doCompare( lastRemoved, activation ) < 0 ) {
                 return;
