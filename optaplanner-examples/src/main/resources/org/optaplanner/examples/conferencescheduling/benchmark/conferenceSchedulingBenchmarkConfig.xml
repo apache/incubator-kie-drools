@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/conferencescheduling</benchmarkDirectory>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/conferencescheduling/unsolved/18talks-6timeslots-5rooms.xlsx</inputSolutionFile>
+      <inputSolutionFile>data/conferencescheduling/unsolved/36talks-12timeslots-5rooms.xlsx</inputSolutionFile>
+      <inputSolutionFile>data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx</inputSolutionFile>
+      <inputSolutionFile>data/conferencescheduling/unsolved/108talks-18timeslots-10rooms.xlsx</inputSolutionFile>
+      <inputSolutionFile>data/conferencescheduling/unsolved/216talks-18timeslots-20rooms.xlsx</inputSolutionFile>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
+
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>15</minutesSpentLimit>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>First Fit</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit Decreasing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>LATE_ACCEPTANCE</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance 2 threads</name>
+    <solver>
+      <moveThreadCount>2</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>LATE_ACCEPTANCE</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance 4 threads</name>
+    <solver>
+      <moveThreadCount>4</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>LATE_ACCEPTANCE</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance 6 threads</name>
+    <solver>
+      <moveThreadCount>6</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>LATE_ACCEPTANCE</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>Tabu Search</name>
+    <solver>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>TABU_SEARCH</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search 2 threads</name>
+    <solver>
+      <moveThreadCount>2</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>TABU_SEARCH</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search 4 threads</name>
+    <solver>
+      <moveThreadCount>4</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>TABU_SEARCH</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search 6 threads</name>
+    <solver>
+      <moveThreadCount>6</moveThreadCount>
+      <constructionHeuristic/>
+      <localSearch>
+        <localSearchType>TABU_SEARCH</localSearchType>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>
