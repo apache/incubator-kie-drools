@@ -31,12 +31,15 @@ global HardMediumSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+// TODO Build-in hard constraint, remove it
 rule "Talk type of timeslot"
     when
         Talk(timeslot != null, !getTimeslot().getTalkTypeSet().contains(getTalkType()))
     then
         scoreHolder.penalize(kcontext);
 end
+
+// TODO Build-in hard constraint, remove it
 rule "Talk type of room"
     when
         Talk(room != null, !getRoom().getTalkTypeSet().contains(getTalkType()))
@@ -143,9 +146,10 @@ rule "Talk prerequisite talks"
     when
         $talk : Talk(timeslot != null, getPrerequisiteTalkSet().size() > 0)
         $count : Number(this > 0) from accumulate(
-            $reqTalk : Talk($talk.getPrerequisiteTalkSet().contains(this), timeslot == null ||
-                            !timeslot.endsBefore($talk.getTimeslot())),
-            count($reqTalk)
+            $prerequisiteTalk : Talk(timeslot != null,
+                    $talk.getPrerequisiteTalkSet().contains(this),
+                    !getTimeslot().endsBefore($talk.getTimeslot())),
+            count($prerequisiteTalk)
         )
     then
         scoreHolder.penalize(kcontext, $count.intValue());
@@ -364,7 +368,7 @@ rule "Crowd control"
     when
         $talk : Talk(timeslot != null, crowdControlRisk > 0)
         $overlappingNonZeroCrowdControlRiskTalksCount : Number(this != 1) from accumulate(
-            $overlappingTalk : Talk(timeslot != null, id != $talk.getId(), crowdControlRisk > 0, timeslot.overlaps($talk.getTimeslot)),
+            $overlappingTalk : Talk(timeslot != null, crowdControlRisk > 0, timeslot.overlaps($talk.getTimeslot), id != $talk.getId()),
             count($overlappingTalk)
         )
     then
