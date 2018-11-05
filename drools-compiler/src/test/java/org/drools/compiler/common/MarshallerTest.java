@@ -11,7 +11,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class MarshallerTest {
 
@@ -35,7 +36,7 @@ public class MarshallerTest {
 
             assertEquals(3, ksession.fireAllRules());
 
-            ReadSessionResult serialisedStatefulKnowledgeSession = ProtobufTestMarshaller.getSerialisedStatefulKnowledgeSession(ksession, ksession.getKieBase());
+            ReadSessionResult serialisedStatefulKnowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSessionWithMessage(ksession, ksession.getKieBase(), true);
             ksession = serialisedStatefulKnowledgeSession.getSession();
 
             ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();

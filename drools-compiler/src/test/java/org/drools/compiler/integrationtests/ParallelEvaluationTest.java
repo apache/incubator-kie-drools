@@ -619,7 +619,7 @@ public class ParallelEvaluationTest {
         }
     }
 
-    @Test(timeout = 20000L)
+    @Test(timeout = 40000L)
     public void testFireUntilHaltWithExpiration2() throws InterruptedException {
         String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
