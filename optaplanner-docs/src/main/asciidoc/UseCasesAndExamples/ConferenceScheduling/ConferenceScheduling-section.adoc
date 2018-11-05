@@ -14,7 +14,7 @@ Timeslots can overlap. It reads/writes to/from an `*.xlsx` file that can be edit
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingProblem.png[align="center"]
 
-Build-in hard constraints:
+Built-in hard constraints:
 
 * Talk type of timeslot: The type of a talk must match the timeslot's talk type.
 * Room unavailable timeslots: A talk's room must be available during the talk's timeslot.
