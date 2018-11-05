@@ -153,6 +153,7 @@ public class AgendaGroupQueueImpl
 
     public void reset() {
         this.priorityQueue.clear();
+        this.lastRemoved = null;
     }
 
     public Activation[] getAndClear() {
