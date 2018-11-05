@@ -16,6 +16,12 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
@@ -33,14 +39,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.time.SessionClock;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A Marshaller implementation that uses ProtoBuf as the marshalling
@@ -62,7 +61,7 @@ public class ProtobufMarshaller
         this.initializer = initializer;
     }
 
-    public static final Map<Integer, TimersInputMarshaller> TIMER_READERS = new HashMap<Integer, TimersInputMarshaller>();
+    public static final Map<Integer, TimersInputMarshaller> TIMER_READERS = new HashMap<>();
     static {
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
@@ -89,61 +88,20 @@ public class ProtobufMarshaller
 
     public StatefulKnowledgeSession unmarshall(final InputStream stream,
                                                KieSessionConfiguration config,
-                                               Environment environment) throws IOException,
-                                                                       ClassNotFoundException {
-        if ( config == null ) {
-            config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        }
-
-        if ( environment == null ) {
-            environment = KieServices.get().newEnvironment();
-        }
-
-        MarshallerReaderContext context = new MarshallerReaderContext( stream,
-                                                                       (KnowledgeBaseImpl) kbase,
-                                                                       RuleBaseNodes.getNodeMap( (KnowledgeBaseImpl) kbase ),
-                                                                       this.strategyStore,
-                                                                       TIMER_READERS,
-                                                                       this.marshallingConfig.isMarshallProcessInstances(),
-                                                                       this.marshallingConfig.isMarshallWorkItems(),
-                                                                       environment );
-
-        int id = ((KnowledgeBaseImpl) this.kbase).nextWorkingMemoryCounter();
-        RuleBaseConfiguration conf = ((KnowledgeBaseImpl) this.kbase).getConfiguration();
-
-        StatefulKnowledgeSessionImpl session = ProtobufInputMarshaller.readSession( context,
-                                                                                    id,
-                                                                                    environment,
-                                                                                    (SessionConfiguration) config,
-                                                                                    initializer ).getSession();
-        context.close();
-        if ( ((SessionConfiguration) config).isKeepReference() ) {
-            ((KnowledgeBaseImpl) this.kbase).addStatefulSession(session);
-        }
-        return session;
-
+                                               Environment environment) throws IOException, ClassNotFoundException {
+        return unmarshallWithMessage(stream, config, environment).getSession();
     }
 
     public void unmarshall(final InputStream stream,
-                           final KieSession ksession) throws IOException,
-                                                                   ClassNotFoundException {
-        MarshallerReaderContext context = new MarshallerReaderContext( stream,
-                                                                       (KnowledgeBaseImpl) kbase,
-                                                                       RuleBaseNodes.getNodeMap( (KnowledgeBaseImpl) kbase ),
-                                                                       this.strategyStore,
-                                                                       TIMER_READERS,
-                                                                       this.marshallingConfig.isMarshallProcessInstances(),
-                                                                       marshallingConfig.isMarshallWorkItems(),
-                                                                       ksession.getEnvironment() );
-
-        ProtobufInputMarshaller.readSession((StatefulKnowledgeSessionImpl) ksession,
-                                            context);
+                           final KieSession ksession) throws IOException, ClassNotFoundException {
+        MarshallerReaderContext context = getMarshallerReaderContext(stream, ksession.getEnvironment());
+        ProtobufInputMarshaller.readSession((StatefulKnowledgeSessionImpl) ksession, context);
         context.close();
     }
 
     public void marshall(final OutputStream stream,
                          final KieSession ksession) throws IOException {
-        marshall( stream, ksession, ksession.<SessionClock> getSessionClock().getCurrentTime() );
+        marshall( stream, ksession, ksession.getSessionClock().getCurrentTime() );
     }
 
     public void marshall(final OutputStream stream,
@@ -165,6 +123,42 @@ public class ProtobufMarshaller
 
     public MarshallingConfiguration getMarshallingConfiguration() {
         return marshallingConfig;
+    }
+
+    public ReadSessionResult unmarshallWithMessage(final InputStream stream,
+                                                   KieSessionConfiguration config,
+                                                   Environment environment) throws IOException, ClassNotFoundException {
+        if ( config == null ) {
+            config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        }
+
+        if ( environment == null ) {
+            environment = KieServices.get().newEnvironment();
+        }
+
+        MarshallerReaderContext context = getMarshallerReaderContext(stream, environment);
+        int id = ((KnowledgeBaseImpl) this.kbase).nextWorkingMemoryCounter();
+        ReadSessionResult readSessionResult = ProtobufInputMarshaller.readSession(context,
+                                                                                  id,
+                                                                                  environment,
+                                                                                  (SessionConfiguration) config,
+                                                                                  initializer);
+        context.close();
+        if ( ((SessionConfiguration) config).isKeepReference() ) {
+            ((KnowledgeBaseImpl) this.kbase).addStatefulSession(readSessionResult.getSession());
+        }
+        return readSessionResult;
+    }
+
+    private MarshallerReaderContext getMarshallerReaderContext(final InputStream inputStream, final Environment environment) throws IOException {
+        return new MarshallerReaderContext(inputStream,
+                                           (KnowledgeBaseImpl) kbase,
+                                           RuleBaseNodes.getNodeMap((KnowledgeBaseImpl) kbase),
+                                           this.strategyStore,
+                                           TIMER_READERS,
+                                           this.marshallingConfig.isMarshallProcessInstances(),
+                                           this.marshallingConfig.isMarshallWorkItems(),
+                                           environment);
     }
 
 }
