@@ -24,34 +24,39 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.conferencescheduling.solver")
 public class ConferenceConstraintConfiguration extends AbstractPersistable {
 
-    public static final String TALK_TYPE_OF_TIMESLOT = "Talk type of timeslot";
-    public static final String TALK_TYPE_OF_ROOM = "Talk type of room";
     public static final String ROOM_UNAVAILABLE_TIMESLOT = "Room unavailable timeslot";
     public static final String ROOM_CONFLICT = "Room conflict";
     public static final String SPEAKER_UNAVAILABLE_TIMESLOT = "Speaker unavailable timeslot";
     public static final String SPEAKER_CONFLICT = "Speaker conflict";
+    public static final String TALK_PREREQUISITE_TALKS = "Talk prerequisite talks";
+    public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS = "Talk mutually-exclusive-talks tags";
+    public static final String CONSECUTIVE_TALKS_PAUSE = "Consecutive talks pause";
+
     public static final String SPEAKER_REQUIRED_TIMESLOT_TAGS = "Speaker required timeslot tags";
-    public static final String SPEAKER_PROHIBITED_TIMESLOT_TAGs = "Speaker prohibited timeslot tags";
+    public static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS = "Speaker prohibited timeslot tags";
     public static final String TALK_REQUIRED_TIMESLOT_TAGS = "Talk required timeslot tags";
     public static final String TALK_PROHIBITED_TIMESLOT_TAGS = "Talk prohibited timeslot tags";
     public static final String SPEAKER_REQUIRED_ROOM_TAGS = "Speaker required room tags";
     public static final String SPEAKER_PROHIBITED_ROOM_TAGS = "Speaker prohibited room tags";
     public static final String TALK_REQUIRED_ROOM_TAGS = "Talk required room tags";
     public static final String TALK_PROHIBITED_ROOM_TAGS = "Talk prohibited room tags";
-    public static final String TALK_PREREQUISITE_TALKS = "Talk prerequisite talks";
-    public static final String CONSECUTIVE_TALKS_PAUSE = "Consecutive talks pause";
 
-    public static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS = "Talk mutually-exclusive-talks tags";
     public static final String PUBLISHED_TIMESLOT = "Published timeslot";
 
+    public static final String PUBLISHED_ROOM = "Published room";
     public static final String THEME_TRACK_CONFLICT = "Theme track conflict";
+    public static final String THEME_TRACK_ROOM_STABILITY = "Theme track room stability";
     public static final String SECTOR_CONFLICT = "Sector conflict";
     public static final String AUDIENCE_TYPE_DIVERSITY = "Audience type diversity";
     public static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT = "Audience type theme track conflict";
     public static final String AUDIENCE_LEVEL_DIVERSITY = "Audience level diversity";
-    public static final String AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION = "Audience level flow per content violation";
+    public static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION = "Content audience level flow violation";
     public static final String CONTENT_CONFLICT = "Content conflict";
     public static final String LANGUAGE_DIVERSITY = "Language diversity";
+    public static final String SAME_DAY_TALKS = "Same day talks";
+    public static final String POPULAR_TALKS = "Popular talks";
+    public static final String CROWD_CONTROL = "Crowd control";
+
     public static final String SPEAKER_PREFERRED_TIMESLOT_TAGS = "Speaker preferred timeslot tags";
     public static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS = "Speaker undesired timeslot tags";
     public static final String TALK_PREFERRED_TIMESLOT_TAGS = "Talk preferred timeslot tags";
@@ -60,18 +65,9 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     public static final String SPEAKER_UNDESIRED_ROOM_TAGS = "Speaker undesired room tags";
     public static final String TALK_PREFERRED_ROOM_TAGS = "Talk preferred room tags";
     public static final String TALK_UNDESIRED_ROOM_TAGS = "Talk undesired room tags";
-    public static final String SAME_DAY_TALKS = "Same day talks";
-    public static final String POPULAR_TALKS = "Popular talks";
-    public static final String CROWD_CONTROL = "Crowd control";
-    public static final String PUBLISHED_ROOM = "Published room";
-    public static final String ROOM_STABILITY = "Room stability";
 
     private int minimumConsecutiveTalksPauseInMinutes = 30;
 
-    @ConstraintWeight(TALK_TYPE_OF_TIMESLOT)
-    private HardMediumSoftScore talkTypeOfTimeslot = HardMediumSoftScore.ofHard(10_000);
-    @ConstraintWeight(TALK_TYPE_OF_ROOM)
-    private HardMediumSoftScore talkTypeOfRoom = HardMediumSoftScore.ofHard(10_000);
     @ConstraintWeight(ROOM_UNAVAILABLE_TIMESLOT)
     private HardMediumSoftScore roomUnavailableTimeslot = HardMediumSoftScore.ofHard(10_000);
     @ConstraintWeight(ROOM_CONFLICT)
@@ -80,9 +76,16 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     private HardMediumSoftScore speakerUnavailableTimeslot = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(SPEAKER_CONFLICT)
     private HardMediumSoftScore speakerConflict = HardMediumSoftScore.ofHard(1);
+    @ConstraintWeight(TALK_PREREQUISITE_TALKS)
+    private HardMediumSoftScore talkPrerequisiteTalks = HardMediumSoftScore.ofHard(1);
+    @ConstraintWeight(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS)
+    private HardMediumSoftScore talkMutuallyExclusiveTalksTags = HardMediumSoftScore.ofHard(1);
+    @ConstraintWeight(CONSECUTIVE_TALKS_PAUSE)
+    private HardMediumSoftScore consecutiveTalksPause = HardMediumSoftScore.ofHard(1);
+
     @ConstraintWeight(SPEAKER_REQUIRED_TIMESLOT_TAGS)
     private HardMediumSoftScore speakerRequiredTimeslotTags = HardMediumSoftScore.ofHard(1);
-    @ConstraintWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs)
+    @ConstraintWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS)
     private HardMediumSoftScore speakerProhibitedTimeslotTags = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(TALK_REQUIRED_TIMESLOT_TAGS)
     private HardMediumSoftScore talkRequiredTimeslotTags = HardMediumSoftScore.ofHard(1);
@@ -96,18 +99,16 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     private HardMediumSoftScore talkRequiredRoomTags = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(TALK_PROHIBITED_ROOM_TAGS)
     private HardMediumSoftScore talkProhibitedRoomTags = HardMediumSoftScore.ofHard(1);
-    @ConstraintWeight(TALK_PREREQUISITE_TALKS)
-    private HardMediumSoftScore talkPrerequisiteTalks = HardMediumSoftScore.ofHard(1);
-    @ConstraintWeight(CONSECUTIVE_TALKS_PAUSE)
-    private HardMediumSoftScore consecutiveTalksPause = HardMediumSoftScore.ofHard(1);
-    @ConstraintWeight(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS)
-    private HardMediumSoftScore talkMutuallyExclusiveTalksTags = HardMediumSoftScore.ofHard(1);
 
     @ConstraintWeight(PUBLISHED_TIMESLOT)
     private HardMediumSoftScore publishedTimeslot = HardMediumSoftScore.ofMedium(1);
 
+    @ConstraintWeight(PUBLISHED_ROOM)
+    private HardMediumSoftScore publishedRoom = HardMediumSoftScore.ofSoft(10);
     @ConstraintWeight(THEME_TRACK_CONFLICT)
     private HardMediumSoftScore themeTrackConflict = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight(THEME_TRACK_ROOM_STABILITY)
+    private HardMediumSoftScore themeTrackRoomStability = HardMediumSoftScore.ofSoft(10);
     @ConstraintWeight(SECTOR_CONFLICT)
     private HardMediumSoftScore sectorConflict = HardMediumSoftScore.ofSoft(10);
     @ConstraintWeight(AUDIENCE_TYPE_DIVERSITY)
@@ -116,12 +117,19 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     private HardMediumSoftScore audienceTypeThemeTrackConflict = HardMediumSoftScore.ofSoft(0);
     @ConstraintWeight(AUDIENCE_LEVEL_DIVERSITY)
     private HardMediumSoftScore audienceLevelDiversity = HardMediumSoftScore.ofSoft(1);
-    @ConstraintWeight(AUDIENCE_LEVEL_FLOW_PER_CONTENT_VIOLATION)
-    private HardMediumSoftScore audienceLevelFlowPerContentViolation = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION)
+    private HardMediumSoftScore contentAudienceLevelFlowViolation = HardMediumSoftScore.ofSoft(10);
     @ConstraintWeight(CONTENT_CONFLICT)
     private HardMediumSoftScore contentConflict = HardMediumSoftScore.ofSoft(100);
     @ConstraintWeight(LANGUAGE_DIVERSITY)
     private HardMediumSoftScore languageDiversity = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight(SAME_DAY_TALKS)
+    private HardMediumSoftScore sameDayTalks = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight(POPULAR_TALKS)
+    private HardMediumSoftScore popularTalks = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight(CROWD_CONTROL)
+    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofSoft(10);
+
     @ConstraintWeight(SPEAKER_PREFERRED_TIMESLOT_TAGS)
     private HardMediumSoftScore speakerPreferredTimeslotTags = HardMediumSoftScore.ofSoft(20);
     @ConstraintWeight(SPEAKER_UNDESIRED_TIMESLOT_TAGS)
@@ -138,16 +146,6 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     private HardMediumSoftScore talkPreferredRoomTags = HardMediumSoftScore.ofSoft(20);
     @ConstraintWeight(TALK_UNDESIRED_ROOM_TAGS)
     private HardMediumSoftScore talkUndesiredRoomTags = HardMediumSoftScore.ofSoft(20);
-    @ConstraintWeight(SAME_DAY_TALKS)
-    private HardMediumSoftScore sameDayTalks = HardMediumSoftScore.ofSoft(10);
-    @ConstraintWeight(POPULAR_TALKS)
-    private HardMediumSoftScore popularTalks = HardMediumSoftScore.ofSoft(10);
-    @ConstraintWeight(CROWD_CONTROL)
-    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofSoft(10);
-    @ConstraintWeight(PUBLISHED_ROOM)
-    private HardMediumSoftScore publishedRoom = HardMediumSoftScore.ofSoft(10);
-    @ConstraintWeight(ROOM_STABILITY)
-    private HardMediumSoftScore roomStability = HardMediumSoftScore.ofSoft(10);
 
     public ConferenceConstraintConfiguration() {
     }
@@ -166,22 +164,6 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
 
     public void setMinimumConsecutiveTalksPauseInMinutes(int minimumConsecutiveTalksPauseInMinutes) {
         this.minimumConsecutiveTalksPauseInMinutes = minimumConsecutiveTalksPauseInMinutes;
-    }
-
-    public HardMediumSoftScore getTalkTypeOfTimeslot() {
-        return talkTypeOfTimeslot;
-    }
-
-    public HardMediumSoftScore getTalkTypeOfRoom() {
-        return talkTypeOfRoom;
-    }
-
-    public void setTalkTypeOfRoom(HardMediumSoftScore talkTypeOfRoom) {
-        this.talkTypeOfRoom = talkTypeOfRoom;
-    }
-
-    public void setTalkTypeOfTimeslot(HardMediumSoftScore talkTypeOfTimeslot) {
-        this.talkTypeOfTimeslot = talkTypeOfTimeslot;
     }
 
     public HardMediumSoftScore getRoomUnavailableTimeslot() {
@@ -214,6 +196,30 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
 
     public void setSpeakerConflict(HardMediumSoftScore speakerConflict) {
         this.speakerConflict = speakerConflict;
+    }
+
+    public HardMediumSoftScore getTalkPrerequisiteTalks() {
+        return talkPrerequisiteTalks;
+    }
+
+    public void setTalkPrerequisiteTalks(HardMediumSoftScore talkPrerequisiteTalks) {
+        this.talkPrerequisiteTalks = talkPrerequisiteTalks;
+    }
+
+    public HardMediumSoftScore getTalkMutuallyExclusiveTalksTags() {
+        return talkMutuallyExclusiveTalksTags;
+    }
+
+    public void setTalkMutuallyExclusiveTalksTags(HardMediumSoftScore talkMutuallyExclusiveTalksTags) {
+        this.talkMutuallyExclusiveTalksTags = talkMutuallyExclusiveTalksTags;
+    }
+
+    public HardMediumSoftScore getConsecutiveTalksPause() {
+        return consecutiveTalksPause;
+    }
+
+    public void setConsecutiveTalksPause(HardMediumSoftScore consecutiveTalksPause) {
+        this.consecutiveTalksPause = consecutiveTalksPause;
     }
 
     public HardMediumSoftScore getSpeakerRequiredTimeslotTags() {
@@ -280,14 +286,6 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
         this.talkProhibitedRoomTags = talkProhibitedRoomTags;
     }
 
-    public HardMediumSoftScore getTalkMutuallyExclusiveTalksTags() {
-        return talkMutuallyExclusiveTalksTags;
-    }
-
-    public void setTalkMutuallyExclusiveTalksTags(HardMediumSoftScore talkMutuallyExclusiveTalksTags) {
-        this.talkMutuallyExclusiveTalksTags = talkMutuallyExclusiveTalksTags;
-    }
-
     public HardMediumSoftScore getPublishedTimeslot() {
         return publishedTimeslot;
     }
@@ -296,12 +294,28 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
         this.publishedTimeslot = publishedTimeslot;
     }
 
+    public HardMediumSoftScore getPublishedRoom() {
+        return publishedRoom;
+    }
+
+    public void setPublishedRoom(HardMediumSoftScore publishedRoom) {
+        this.publishedRoom = publishedRoom;
+    }
+
     public HardMediumSoftScore getThemeTrackConflict() {
         return themeTrackConflict;
     }
 
     public void setThemeTrackConflict(HardMediumSoftScore themeTrackConflict) {
         this.themeTrackConflict = themeTrackConflict;
+    }
+
+    public HardMediumSoftScore getThemeTrackRoomStability() {
+        return themeTrackRoomStability;
+    }
+
+    public void setThemeTrackRoomStability(HardMediumSoftScore themeTrackRoomStability) {
+        this.themeTrackRoomStability = themeTrackRoomStability;
     }
 
     public HardMediumSoftScore getSectorConflict() {
@@ -336,12 +350,12 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
         this.audienceLevelDiversity = audienceLevelDiversity;
     }
 
-    public HardMediumSoftScore getAudienceLevelFlowPerContentViolation() {
-        return audienceLevelFlowPerContentViolation;
+    public HardMediumSoftScore getContentAudienceLevelFlowViolation() {
+        return contentAudienceLevelFlowViolation;
     }
 
-    public void setAudienceLevelFlowPerContentViolation(HardMediumSoftScore audienceLevelFlowPerContentViolation) {
-        this.audienceLevelFlowPerContentViolation = audienceLevelFlowPerContentViolation;
+    public void setContentAudienceLevelFlowViolation(HardMediumSoftScore contentAudienceLevelFlowViolation) {
+        this.contentAudienceLevelFlowViolation = contentAudienceLevelFlowViolation;
     }
 
     public HardMediumSoftScore getContentConflict() {
@@ -358,6 +372,30 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
 
     public void setLanguageDiversity(HardMediumSoftScore languageDiversity) {
         this.languageDiversity = languageDiversity;
+    }
+
+    public HardMediumSoftScore getSameDayTalks() {
+        return sameDayTalks;
+    }
+
+    public void setSameDayTalks(HardMediumSoftScore sameDayTalks) {
+        this.sameDayTalks = sameDayTalks;
+    }
+
+    public HardMediumSoftScore getPopularTalks() {
+        return popularTalks;
+    }
+
+    public void setPopularTalks(HardMediumSoftScore popularTalks) {
+        this.popularTalks = popularTalks;
+    }
+
+    public HardMediumSoftScore getCrowdControl() {
+        return crowdControl;
+    }
+
+    public void setCrowdControl(HardMediumSoftScore crowdControl) {
+        this.crowdControl = crowdControl;
     }
 
     public HardMediumSoftScore getSpeakerPreferredTimeslotTags() {
@@ -422,61 +460,5 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
 
     public void setTalkUndesiredRoomTags(HardMediumSoftScore talkUndesiredRoomTags) {
         this.talkUndesiredRoomTags = talkUndesiredRoomTags;
-    }
-
-    public HardMediumSoftScore getTalkPrerequisiteTalks() {
-        return talkPrerequisiteTalks;
-    }
-
-    public void setTalkPrerequisiteTalks(HardMediumSoftScore talkPrerequisiteTalks) {
-        this.talkPrerequisiteTalks = talkPrerequisiteTalks;
-    }
-
-    public HardMediumSoftScore getConsecutiveTalksPause() {
-        return consecutiveTalksPause;
-    }
-
-    public void setConsecutiveTalksPause(HardMediumSoftScore consecutiveTalksPause) {
-        this.consecutiveTalksPause = consecutiveTalksPause;
-    }
-
-    public HardMediumSoftScore getSameDayTalks() {
-        return sameDayTalks;
-    }
-
-    public void setSameDayTalks(HardMediumSoftScore sameDayTalks) {
-        this.sameDayTalks = sameDayTalks;
-    }
-
-    public HardMediumSoftScore getPopularTalks() {
-        return popularTalks;
-    }
-
-    public void setPopularTalks(HardMediumSoftScore popularTalks) {
-        this.popularTalks = popularTalks;
-    }
-
-    public HardMediumSoftScore getCrowdControl() {
-        return crowdControl;
-    }
-
-    public void setCrowdControl(HardMediumSoftScore crowdControl) {
-        this.crowdControl = crowdControl;
-    }
-
-    public HardMediumSoftScore getPublishedRoom() {
-        return publishedRoom;
-    }
-
-    public void setPublishedRoom(HardMediumSoftScore publishedRoom) {
-        this.publishedRoom = publishedRoom;
-    }
-
-    public HardMediumSoftScore getRoomStability() {
-        return roomStability;
-    }
-
-    public void setRoomStability(HardMediumSoftScore roomStability) {
-        this.roomStability = roomStability;
     }
 }

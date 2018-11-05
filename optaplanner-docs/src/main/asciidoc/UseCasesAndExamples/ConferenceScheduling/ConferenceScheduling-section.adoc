@@ -14,13 +14,19 @@ Timeslots can overlap. It reads/writes to/from an `*.xlsx` file that can be edit
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingProblem.png[align="center"]
 
-Hard constraints (unless configured otherwise):
+Build-in hard constraints:
 
 * Talk type of timeslot: The type of a talk must match the timeslot's talk type.
 * Room unavailable timeslots: A talk's room must be available during the talk's timeslot.
+
+Hard constraints (unless configured otherwise):
+
 * Room conflict: Two talks can't use the same room during overlapping timeslots.
 * Speaker unavailable timeslots: Every talk's speaker must be available during the talk's timeslot.
 * Speaker conflict: Two talks can't share a speaker during overlapping timeslots.
+* Talk prerequisite talks: A talk must be scheduled after all its prerequisite talks.
+* Talk mutually-exclusive-talks tags: Talks that share such tags must not be scheduled in overlapping timeslots.
+* Consecutive talks pause: A speaker who has more than one talk must have a break between them.
 * Generic purpose timeslot and room tags
 ** Speaker required timeslot tags: If a speaker has a required timeslot tag, then all his/her talks must be assigned to a timeslot with that tag.
 ** Speaker prohibited timeslot tags: If a speaker has a prohibited timeslot tag, then all his/her talks cannot be assigned to a timeslot with that tag.
@@ -30,9 +36,6 @@ Hard constraints (unless configured otherwise):
 ** Speaker prohibited room tags: If a speaker has a prohibited room tag, then all his/her talks cannot be assigned to a room with that tag.
 ** Talk required room tags: If a talk has a required room tag, then it must be assigned to a room with that tag.
 ** Talk prohibited room tags: If a talk has a prohibited room tag, then it cannot be assigned to a room with that tag.
-* Talk prerequisite talks: A talk must be scheduled after all its prerequisite talks.
-* Consecutive talks pause: A speaker who has more than one talk must have a break between them.
-* Talk mutually-exclusive-talks tags: Talks that share such tags must not be scheduled in overlapping timeslots.
 
 Medium constraints (unless configured otherwise):
 
@@ -42,11 +45,18 @@ minimally broken to attain a new feasible solution.
 
 Soft constraints (unless configured otherwise):
 
+* Published room: Minimize the number of talks scheduled in different rooms than published ones.
 * Theme track conflict: Minimize the number of talks that share a same theme tag during overlapping timeslots.
+* Theme track room stability: Talks with common theme track tag should be scheduled in the same room throughout the day.
 * Sector conflict: Minimize the number of talks that share a same sector tag during overlapping timeslots.
 * Content audience level flow violation: For every content tag, schedule the introductory talks before the advanced talks.
 * Audience level diversity: For every timeslot, maximize the number of talks with a different audience level.
 * Language diversity: For every timeslot, maximize the number of talks with a different language.
+* Same day talks: All talks that share a theme track tag or content tag should be scheduled in the minimum number of days
+(ideally in the same day).
+* Popular talks: Talks with higher `favoriteCount` should be scheduled in larger rooms.
+* Crowd control: Talks with higher `crowdControlRisk` should be scheduled in pairs at the same timeslot
+ to avoid having most participants going to the same room.
 * Generic purpose timeslot and room tags
 ** Speaker preferred timeslot tag: If a speaker has a preferred timeslot tag, then all his/her talks should be assigned to a timeslot with that tag.
 ** Speaker undesired timeslot tag: If a speaker has a undesired timeslot tag, then all his/her talks should not be assigned to a timeslot with that tag.
@@ -56,13 +66,6 @@ Soft constraints (unless configured otherwise):
 ** Speaker undesired room tag: If a speaker has a undesired room tag, then all his/her talks should not be assigned to a room with that tag.
 ** Talk preferred room tag: If a talk has a preferred room tag, then it should be assigned to a room with that tag.
 ** Talk undesired room tag: If a talk has a undesired room tag, then it should not be assigned to a room with that tag.
-* Same day talks: All talks that share a same theme tag or content tag should be scheduled in the minimum number of days
-(ideally in the same day).
-* Popular talks: Talks with higher `favoriteCount` should be scheduled in larger rooms.
-* Crowd control: Talks with higher `crowdControlRisk` should be scheduled in pairs at the same timeslot
- to avoid having most participants going to the same room.
-* Published room: Minimize the number of talks scheduled in different rooms than published ones.
-* Room stability: Talks with common theme track tag should be scheduled in the same room throughout the day.
 
 Every constraint can be configured to use a different score level (hard/medium/soft) or a different score weight.
 
