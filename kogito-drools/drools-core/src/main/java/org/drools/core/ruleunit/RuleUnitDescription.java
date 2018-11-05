@@ -149,7 +149,7 @@ public class RuleUnitDescription {
 
     private void indexUnitVars() {
         for (Method m : ruleUnitClass.getMethods()) {
-            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 ) {
+            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 && !"getUnitIdentity".equals(m.getName())) {
                 String id = getter2property(m.getName());
                 if (id != null && !id.equals( "class" )) {
                     datasources.put( id, m.getName() );

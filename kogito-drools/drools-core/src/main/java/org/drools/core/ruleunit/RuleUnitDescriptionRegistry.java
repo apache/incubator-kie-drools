@@ -33,7 +33,7 @@ public class RuleUnitDescriptionRegistry {
 
     public RuleUnitDescriptionRegistry() { }
 
-    public RuleUnitDescription getDescriptionForUnit(final RuleUnit ruleUnit) {
+    public RuleUnitDescription getDescription(final RuleUnit ruleUnit) {
         final RuleUnitDescription ruleUnitDescr = ruleUnits.get(getUnitName(ruleUnit));
         if (ruleUnitDescr == null) {
             throw new IllegalStateException("Unknown RuleUnitDescription: " + getUnitName(ruleUnit));
