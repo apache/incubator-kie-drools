@@ -247,6 +247,24 @@ public class Talk extends AbstractPersistable {
         return false;
     }
 
+    public Integer getDurationInMinutes() {
+        return timeslot == null ? null : timeslot.getDurationInMinutes();
+    }
+
+    public boolean overlapsTime(Talk other) {
+        return timeslot != null && other.getTimeslot() != null && timeslot.overlapsTime(other.getTimeslot());
+    }
+
+    public int overlappingDurationInMinutes(Talk other) {
+        if (timeslot == null) {
+            return 0;
+        }
+        if (other.getTimeslot() == null) {
+            return 0;
+        }
+        return timeslot.getOverlapInMinutes(other.getTimeslot());
+    }
+
     @Override
     public String toString() {
         return code;
