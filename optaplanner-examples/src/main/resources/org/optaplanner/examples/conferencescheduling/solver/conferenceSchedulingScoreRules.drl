@@ -76,6 +76,45 @@ rule "Speaker conflict"
                 $talk2.overlappingDurationInMinutes($talk1));
 end
 
+rule "Talk prerequisite talks"
+    when
+        $talk1 : Talk(timeslot != null)
+        $talk2 : Talk(timeslot != null,
+                getPrerequisiteTalkSet().contains($talk1),
+                !getTimeslot().startsAfter($talk1.getTimeslot()))
+    then
+        scoreHolder.penalize(kcontext,
+                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
+end
+
+rule "Talk mutually-exclusive-talks tags"
+    when
+        $talk1 : Talk(timeslot != null,
+                $id1 : id)
+        $talk2 : Talk(timeslot != null,
+                overlappingMutuallyExclusiveTalksTagCount($talk1) > 0,
+                overlapsTime($talk1),
+                id > $id1)
+    then
+        scoreHolder.penalize(kcontext,
+            $talk2.overlappingMutuallyExclusiveTalksTagCount($talk1) * $talk2.overlappingDurationInMinutes($talk1));
+end
+
+rule "Consecutive talks pause"
+    when
+        ConferenceConstraintConfiguration($minimumPause : minimumConsecutiveTalksPauseInMinutes)
+        $talk1 : Talk(timeslot != null,
+                $id1 : id)
+        $talk2 : Talk(timeslot != null,
+                hasMutualSpeaker($talk1),
+                !getTimeslot().pauseExists($talk1.getTimeslot(), $minimumPause),
+                id > $id1)
+    then
+        scoreHolder.penalize(kcontext,
+                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
+end
+
+
 rule "Speaker required timeslot tags"
     when
         $talk : Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
@@ -138,44 +177,6 @@ rule "Talk prohibited room tags"
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
-end
-
-rule "Talk prerequisite talks"
-    when
-        $talk1 : Talk(timeslot != null)
-        $talk2 : Talk(timeslot != null,
-                getPrerequisiteTalkSet().contains($talk1),
-                !getTimeslot().startsAfter($talk1.getTimeslot()))
-    then
-        scoreHolder.penalize(kcontext,
-                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
-end
-
-rule "Consecutive talks pause"
-    when
-        ConferenceConstraintConfiguration($minimumPause : minimumConsecutiveTalksPauseInMinutes)
-        $talk1 : Talk(timeslot != null,
-                $id1 : id)
-        $talk2 : Talk(timeslot != null,
-                hasMutualSpeaker($talk1),
-                !getTimeslot().pauseExists($talk1.getTimeslot(), $minimumPause),
-                id > $id1)
-    then
-        scoreHolder.penalize(kcontext,
-                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
-end
-
-rule "Talk mutually-exclusive-talks tags"
-    when
-        $talk1 : Talk(timeslot != null,
-                $id1 : id)
-        $talk2 : Talk(timeslot != null,
-                overlappingMutuallyExclusiveTalksTagCount($talk1) > 0,
-                overlapsTime($talk1),
-                id > $id1)
-    then
-        scoreHolder.penalize(kcontext,
-            $talk2.overlappingMutuallyExclusiveTalksTagCount($talk1) * $talk2.overlappingDurationInMinutes($talk1));
 end
 
 // ############################################################################
@@ -325,6 +326,50 @@ rule "Language diversity"
                 $timeslot.getDurationInMinutes());
 end
 
+rule "Same day talks"
+    when
+        $talk1 : Talk(timeslot != null,
+                $id1 : id)
+        $talk2 :  Talk(timeslot != null,
+                overlappingContentCount($talk1) > 0 || overlappingThemeTrackCount($talk1) > 0,
+                !getTimeslot().isOnSameDayAs($talk1.getTimeslot()),
+                id > $id1)
+    then
+        scoreHolder.penalize(kcontext,
+                ($talk2.overlappingThemeTrackCount($talk1) + $talk2.overlappingContentCount($talk1))
+                * ($talk1.getDurationInMinutes() + $talk2.getDurationInMinutes()));
+end
+
+rule "Popular talks"
+    when
+        $talk1 : Talk(timeslot != null,
+                room != null, $room1 : room,
+                $favoriteCount1 : favoriteCount)
+        $talk2 : Talk(timeslot != null,
+                room != null,
+                favoriteCount < $favoriteCount1,
+                getRoom().getCapacity() > $room1.getCapacity())
+    then
+        scoreHolder.penalize(kcontext,
+                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
+end
+
+rule "Crowd control"
+    when
+        $talk : Talk(timeslot != null, $timeslot : timeslot,
+                crowdControlRisk > 0)
+        Number(this != 1) from accumulate(
+            // Timeslot.overlaps() is deliberately not used
+            $otherTalk : Talk(timeslot == $timeslot,
+                crowdControlRisk > 0,
+                this != $talk),
+            count($otherTalk)
+        )
+    then
+        scoreHolder.penalize(kcontext, $timeslot.getDurationInMinutes());
+end
+
+
 rule "Speaker preferred timeslot tags"
     when
         $talk : Talk($count : missingSpeakerPreferredTimeslotTagCount() > 0)
@@ -387,47 +432,4 @@ rule "Talk undesired room tags"
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
-end
-
-rule "Same day talks"
-    when
-        $talk1 : Talk(timeslot != null,
-                $id1 : id)
-        $talk2 :  Talk(timeslot != null,
-                overlappingContentCount($talk1) > 0 || overlappingThemeTrackCount($talk1) > 0,
-                !getTimeslot().isOnSameDayAs($talk1.getTimeslot()),
-                id > $id1)
-    then
-        scoreHolder.penalize(kcontext,
-                ($talk2.overlappingThemeTrackCount($talk1) + $talk2.overlappingContentCount($talk1))
-                * ($talk1.getDurationInMinutes() + $talk2.getDurationInMinutes()));
-end
-
-rule "Popular talks"
-    when
-        $talk1 : Talk(timeslot != null,
-                room != null, $room1 : room,
-                $favoriteCount1 : favoriteCount)
-        $talk2 : Talk(timeslot != null,
-                room != null,
-                favoriteCount < $favoriteCount1,
-                getRoom().getCapacity() > $room1.getCapacity())
-    then
-        scoreHolder.penalize(kcontext,
-                $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
-end
-
-rule "Crowd control"
-    when
-        $talk : Talk(timeslot != null, $timeslot : timeslot,
-                crowdControlRisk > 0)
-        Number(this != 1) from accumulate(
-            // Timeslot.overlaps() is deliberately not used
-            $otherTalk : Talk(timeslot == $timeslot,
-                crowdControlRisk > 0,
-                this != $talk),
-            count($otherTalk)
-        )
-    then
-        scoreHolder.penalize(kcontext, $timeslot.getDurationInMinutes());
 end
