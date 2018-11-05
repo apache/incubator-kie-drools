@@ -14,7 +14,7 @@ The different aspects, or life cycles, of working with KIE system, whether it's 
 ** For KIE this unit is a JAR.
 * *Test*
 +
-** Test KIE knowedge before it's deployed to the application.
+** Test KIE knowledge before it's deployed to the application.
 * *Deploy*
 +
 ** Deploys the unit to a location where applications may utilize (consume) them.
