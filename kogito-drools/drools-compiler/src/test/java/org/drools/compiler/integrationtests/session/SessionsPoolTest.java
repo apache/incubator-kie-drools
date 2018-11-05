@@ -23,13 +23,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieContainerSessionsPool;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.command.CommandFactory;
+import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
@@ -128,14 +134,6 @@ public class SessionsPoolTest {
 
     @Test
     public void testStatelessKieSessionsPool() {
-        String drl =
-                "global java.util.List list\n" +
-                "rule R1 when\n" +
-                "  $s: String()\n" +
-                "then\n" +
-                "  list.add($s);\n" +
-                "end\n";
-
         KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 1 );
         StatelessKieSession session = pool.newStatelessKieSession();
 
@@ -152,11 +150,11 @@ public class SessionsPoolTest {
     private KieContainer getKieContainer() {
         String drl =
                 "global java.util.List list\n" +
-                        "rule R1 when\n" +
-                        "  $s: String()\n" +
-                        "then\n" +
-                        "  list.add($s);\n" +
-                        "end\n";
+                "rule R1 when\n" +
+                "  $s: String()\n" +
+                "then\n" +
+                "  list.add($s);\n" +
+                "end\n";
 
         return new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
     }
@@ -167,5 +165,101 @@ public class SessionsPoolTest {
         ksession.insert( "test" );
         ksession.fireAllRules();
         assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testSegmentMemoriesReset() {
+        // DROOLS-3228
+        String drl =
+                "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "  String()\n" +
+                "  $i : AtomicInteger()\n" +
+                "  not Boolean()\n" +
+                "then\n" +
+                "  insert(true);\n" +
+                "  insert($i.incrementAndGet());\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when \n" +
+                "  String()\n" +
+                "  $i : AtomicInteger()\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "  Integer( this > 2 )\n" +
+                "then\n" +
+                "  list.add(\"OK\");\n" +
+                "end";
+
+        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
+
+        AtomicInteger i = new AtomicInteger(1);
+
+        KieSession ksession = pool.newKieSession();
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( i );
+        ksession.insert( "test" );
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals(0, list.size());
+
+        ksession = pool.newKieSession();
+
+        ksession.setGlobal( "list", list );
+        ksession.insert( i );
+        ksession.insert( "test" );
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals(1, list.size());
+
+        pool.shutdown();
+    }
+
+    @Test
+    public void testStatelessSequential() {
+        // DROOLS-3228
+        String drl =
+                "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "  String()\n" +
+                "  Integer()\n" +
+                "then\n" +
+                "  list.add(\"OK\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build( SequentialOption.YES );
+        KieSessionsPool pool = kbase.newKieSessionsPool( 1 );
+
+        StatelessKieSession ksession = pool.newStatelessKieSession();
+
+        List<String> list = new ArrayList<>();
+
+        List<Command> commands = new ArrayList<>(5);
+        commands.add(CommandFactory.newSetGlobal("list", list));
+        commands.add(CommandFactory.newInsert("test"));
+        commands.add(CommandFactory.newInsert(1));
+        commands.add(CommandFactory.newFireAllRules());
+        ksession.execute(CommandFactory.newBatchExecution(commands));
+
+        assertEquals(1, list.size());
+
+        list.clear();
+
+        ksession.execute(CommandFactory.newBatchExecution(commands));
+
+        assertEquals(1, list.size());
+
+        pool.shutdown();
     }
 }
