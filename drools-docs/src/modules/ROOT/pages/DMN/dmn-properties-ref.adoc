@@ -48,3 +48,18 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 ----
 //I removed `[source]` for this last snippet because it rendered unlike all the others in community output otherwise for some reason. (SJR)
 --
+
+org.kie.dmn.compiler.execmodel::
+When enabled, this property enables DMN decision table logic to be compiled into executable rule models.
+You can use this property to evaluate DMN decision table logic more efficiently.
+This property is helpful when the compilation was not originally performed during project compile time.
+Enabling this property may result in added compile time during the first evaluation by the {ENGINE}, but subsequent compilations are more efficient.
++
+--
+Default value: false
+
+[source]
+----
+-Dorg.kie.dmn.compiler.execmodel=true
+----
+--
