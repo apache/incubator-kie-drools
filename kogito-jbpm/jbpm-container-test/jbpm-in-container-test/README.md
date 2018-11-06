@@ -22,7 +22,7 @@ The following table lists all currently supported combinations of parameters:
 
 | Container to run    | \<container-profile\> | \<container-specific params\>                                                   |
 | -----------------   | --------------------- | ------------------------------------------------------------------------------- |
-|     WildFly14       | wildfly14             | *none*                                                                          |
+|     WildFly14       | wildfly               | *none*                                                                          |
 |     EAP 7           | eap7                  | eap7.download.url                                                               |
 |     Tomcat 9        | tomcat9               | *none*                                                                          |
 | Oracle WebLogic 12  | oracle-wls-12         | weblogic.home                                                                   |

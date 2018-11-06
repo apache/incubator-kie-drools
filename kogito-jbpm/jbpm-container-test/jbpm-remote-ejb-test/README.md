@@ -20,7 +20,7 @@ The following table lists all currently supported combinations of parameters:
 
 | Container to run    | \<container-profile\> | \<container-specific params\>             |
 | -----------------   | --------------------- | ----------------------------------------- |
-|     WildFly14       | wildfly14             | *none*                                    |
+|     WildFly14       | wildfly               | *none*                                    |
 |     EAP 7           | eap7                  | eap7.download.url                         |
 
 ## Database configuration

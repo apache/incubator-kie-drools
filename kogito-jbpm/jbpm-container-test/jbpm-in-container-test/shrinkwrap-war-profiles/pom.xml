@@ -184,11 +184,11 @@
     </profile>
 
     <profile>
-      <id>shrinkwrap-remote-wildfly14</id>
+      <id>shrinkwrap-remote-wildfly</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>wildfly14</value>
+          <value>wildfly</value>
         </property>
       </activation>
       <dependencies>
