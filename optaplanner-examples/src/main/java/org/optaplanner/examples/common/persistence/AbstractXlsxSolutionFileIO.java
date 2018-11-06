@@ -74,6 +74,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
+    protected static final XSSFColor DISABLED_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_3);
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
     protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
     protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
@@ -354,6 +355,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected XSSFCellStyle headerStyle;
         protected XSSFCellStyle defaultStyle;
         protected XSSFCellStyle scoreStyle;
+        protected XSSFCellStyle disabledScoreStyle;
         protected XSSFCellStyle unavailableStyle;
         protected XSSFCellStyle pinnedStyle;
         protected XSSFCellStyle hardPenaltyStyle;
@@ -399,6 +401,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             defaultStyle = createStyle(null);
             scoreStyle = createStyle(null);
             scoreStyle.setAlignment(HorizontalAlignment.RIGHT);
+            disabledScoreStyle = createStyle(DISABLED_COLOR);
+            disabledScoreStyle.setAlignment(HorizontalAlignment.RIGHT);
             unavailableStyle = createStyle(UNAVAILABLE_COLOR);
             pinnedStyle = createStyle(PINNED_COLOR);
             hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
@@ -462,7 +466,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 String constraintName, Score_ constraintScore, String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);
-            nextCell().setCellValue(constraintScore.toString());
+            nextCell(scoreDefinition.getZeroScore().equals(constraintScore) ? disabledScoreStyle : scoreStyle)
+                    .setCellValue(constraintScore.toString());
             nextHeaderCell(constraintDescription);
         }
 
