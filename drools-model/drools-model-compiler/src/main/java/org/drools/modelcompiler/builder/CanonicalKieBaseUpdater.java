@@ -122,8 +122,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 break;
                             case RULE:
                                 RuleImpl removedRule = oldKpkg.getRule( changedItemName );
-                                rulesToBeRemoved.add( removedRule );
-                                oldKpkg.removeRule( removedRule );
+                                if(removedRule != null) {
+                                    rulesToBeRemoved.add(removedRule);
+                                    oldKpkg.removeRule(removedRule);
+                                }
                                 break;
                             case DECLARATION:
                                 oldKpkg.removeTypeDeclaration( changedItemName );
@@ -132,7 +134,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
                         }
                     }
-                    if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
+                    if (kpkg != null && (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED)) {
                         switch (change.getType()) {
                             case GLOBAL:
                                 try {
