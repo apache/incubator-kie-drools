@@ -49,6 +49,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
     @Override
     public void run() {
+        super.run();
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
