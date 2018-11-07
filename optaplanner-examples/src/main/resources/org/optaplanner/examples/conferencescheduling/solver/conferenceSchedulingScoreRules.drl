@@ -187,7 +187,7 @@ rule "Published timeslot"
     when
         $talk : Talk(publishedTimeslot != null, timeslot != publishedTimeslot)
     then
-        scoreHolder.penalize(kcontext, $talk.getDurationInMinutes());
+        scoreHolder.penalize(kcontext);
 end
 
 // ############################################################################
@@ -198,7 +198,7 @@ rule "Published room"
     when
         $talk : Talk(timeslot != null, publishedRoom != null, room != publishedRoom)
     then
-        scoreHolder.penalize(kcontext, $talk.getDurationInMinutes());
+        scoreHolder.penalize(kcontext);
 end
 
 rule "Theme track conflict"

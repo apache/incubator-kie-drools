@@ -89,9 +89,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
     private static final String TALK_REQUIRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's room, per minute";
     private static final String TALK_PROHIBITED_ROOM_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's room, per minute";
 
-    private static final String PUBLISHED_TIMESLOT_DESCRIPTION = "Penalty per published talk with a different timeslot than its published timeslot, per minute";
+    private static final String PUBLISHED_TIMESLOT_DESCRIPTION = "Penalty per published talk with a different timeslot than its published timeslot, per match";
 
-    private static final String PUBLISHED_ROOM_DESCRIPTION = "Penalty per published talk with a different room than its published room, per minute";
+    private static final String PUBLISHED_ROOM_DESCRIPTION = "Penalty per published talk with a different room than its published room, per match";
     private static final String THEME_TRACK_CONFLICT_DESCRIPTION = "Penalty per common theme track of 2 talks with overlapping timeslots, per overlapping minute";
     private static final String THEME_TRACK_ROOM_STABILITY_DESCRIPTION = "Penalty per common theme track of 2 talks in a different room on the same day, per minute of either talk";
     private static final String SECTOR_CONFLICT_DESCRIPTION = "Penalty per common sector of 2 talks with overlapping timeslots, per overlapping minute";
