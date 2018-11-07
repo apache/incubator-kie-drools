@@ -101,3 +101,5 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingArchitecture
 == Domain Model
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingClassDiagram.png[align="center"]
+
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingSearchSpace.png[align="center"]
