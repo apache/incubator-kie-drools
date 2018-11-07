@@ -37,6 +37,6 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
     }
 
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
-        return internalKieModule.hasResource( CanonicalKieModule.MODEL_FILE ) ? new CanonicalKieModule( internalKieModule ) : internalKieModule;
+        return new CanonicalKieModule( internalKieModule );
     }
 }

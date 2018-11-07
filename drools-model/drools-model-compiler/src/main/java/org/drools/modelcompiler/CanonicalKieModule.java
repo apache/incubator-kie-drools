@@ -39,6 +39,7 @@ import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -132,9 +133,20 @@ public class CanonicalKieModule implements InternalKieModule {
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
+
+        KnowledgePackagesBuildResult knowledgePackagesBuildResult = internalKieModule.buildKnowledgePackages(kBaseModel, kieProject, messages);
+        if(knowledgePackagesBuildResult.hasErrors()) {
+            return null;
+        }
+
         CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf) );
         checkStreamMode( kBaseModel, conf, kpkgs.getKiePackages() );
-        return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
+        InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
+
+        kieBase.addPackages(knowledgePackagesBuildResult.getPkgs());
+
+
+        return kieBase;
     }
 
     private CanonicalKiePackages createKiePackages( KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf ) {
@@ -271,9 +283,14 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private static Collection<String> findRuleClassesNames( ClassLoader kieProjectCL) {
+        InputStream resourceAsStream = kieProjectCL.getResourceAsStream(MODEL_FILE);
+        if(resourceAsStream == null) {
+            return Collections.emptyList();
+        }
+
         String modelFiles;
         try {
-            modelFiles = new String( IoUtils.readBytesFromInputStream( kieProjectCL.getResourceAsStream( MODEL_FILE ) ) );
+            modelFiles = new String(IoUtils.readBytesFromInputStream(resourceAsStream) );
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
@@ -638,6 +655,11 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
         return internalKieModule.getBuilderConfiguration( kBaseModel, classLoader );
+    }
+
+    @Override
+    public KnowledgePackagesBuildResult buildKnowledgePackages(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages) {
+        return internalKieModule.buildKnowledgePackages(kBaseModel, kieProject, messages);
     }
 
     @Override
