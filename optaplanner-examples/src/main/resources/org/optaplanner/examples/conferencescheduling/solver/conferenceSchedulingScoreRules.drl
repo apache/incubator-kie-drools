@@ -114,6 +114,21 @@ rule "Consecutive talks pause"
                 $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
 end
 
+rule "Crowd control"
+    when
+        $talk : Talk(timeslot != null, $timeslot : timeslot,
+                crowdControlRisk > 0)
+        Number(this != 1) from accumulate(
+            // Timeslot.overlaps() is deliberately not used
+            $otherTalk : Talk(timeslot == $timeslot,
+                crowdControlRisk > 0,
+                this != $talk),
+            count($otherTalk)
+        )
+    then
+        scoreHolder.penalize(kcontext, $timeslot.getDurationInMinutes());
+end
+
 
 rule "Speaker required timeslot tags"
     when
@@ -352,21 +367,6 @@ rule "Popular talks"
     then
         scoreHolder.penalize(kcontext,
                 $talk1.getDurationInMinutes() + $talk2.getDurationInMinutes());
-end
-
-rule "Crowd control"
-    when
-        $talk : Talk(timeslot != null, $timeslot : timeslot,
-                crowdControlRisk > 0)
-        Number(this != 1) from accumulate(
-            // Timeslot.overlaps() is deliberately not used
-            $otherTalk : Talk(timeslot == $timeslot,
-                crowdControlRisk > 0,
-                this != $talk),
-            count($otherTalk)
-        )
-    then
-        scoreHolder.penalize(kcontext, $timeslot.getDurationInMinutes());
 end
 
 

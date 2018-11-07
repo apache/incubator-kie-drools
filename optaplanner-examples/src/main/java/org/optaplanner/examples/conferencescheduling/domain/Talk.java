@@ -603,4 +603,5 @@ public class Talk extends AbstractPersistable {
         this.room = room;
         return this;
     }
+
 }

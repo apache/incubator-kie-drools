@@ -79,6 +79,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
     private static final String TALK_PREREQUISITE_TALKS_DESCRIPTION = "Penalty per prerequisite talk of a talk that doesn't end before the second talk starts, per minute of either talk";
     private static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION = "Penalty per common mutually exclusive talks tag of 2 talks with overlapping timeslots, per overlapping minute";
     private static final String CONSECUTIVE_TALKS_PAUSE_DESCRIPTION = "Penalty per 2 consecutive talks for the same speaker with a pause less than the minimum pause, per minute of either talk";
+    private static final String CROWD_CONTROL_DESCRIPTION = "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
 
     private static final String SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's timeslot, per minute";
     private static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's timeslot, per minute";
@@ -103,7 +104,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
     private static final String LANGUAGE_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different language and the the same timeslot, per (overlapping) minute";
     private static final String SAME_DAY_TALKS_DESCRIPTION = "Penalty per common content or theme track of 2 talks with a different day, per minute of either talk";
     private static final String POPULAR_TALKS_DESCRIPTION = "Penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk";
-    private static final String CROWD_CONTROL_DESCRIPTION = "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
 
     private static final String SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's timeslot, per minute";
     private static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's timeslot, per minute";
@@ -196,6 +196,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION));
             constraintConfiguration.setConsecutiveTalksPause(readScoreConstraintLine(CONSECUTIVE_TALKS_PAUSE,
                     CONSECUTIVE_TALKS_PAUSE_DESCRIPTION));
+            constraintConfiguration.setCrowdControl(readScoreConstraintLine(CROWD_CONTROL,
+                    CROWD_CONTROL_DESCRIPTION));
 
             constraintConfiguration.setSpeakerRequiredTimeslotTags(readScoreConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAGS,
                     SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION));
@@ -241,8 +243,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SAME_DAY_TALKS_DESCRIPTION));
             constraintConfiguration.setPopularTalks(readScoreConstraintLine(POPULAR_TALKS,
                     POPULAR_TALKS_DESCRIPTION));
-            constraintConfiguration.setCrowdControl(readScoreConstraintLine(CROWD_CONTROL,
-                    CROWD_CONTROL_DESCRIPTION));
 
             constraintConfiguration.setSpeakerPreferredTimeslotTags(readScoreConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAGS,
                     SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION));
@@ -834,6 +834,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION);
             writeScoreConstraintLine(CONSECUTIVE_TALKS_PAUSE, constraintConfiguration.getConsecutiveTalksPause(),
                     CONSECUTIVE_TALKS_PAUSE_DESCRIPTION);
+            writeScoreConstraintLine(CROWD_CONTROL, constraintConfiguration.getCrowdControl(),
+                    CROWD_CONTROL_DESCRIPTION);
 
             writeScoreConstraintLine(SPEAKER_REQUIRED_TIMESLOT_TAGS, constraintConfiguration.getSpeakerRequiredTimeslotTags(),
                     SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION);
@@ -881,8 +883,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     SAME_DAY_TALKS_DESCRIPTION);
             writeScoreConstraintLine(POPULAR_TALKS, constraintConfiguration.getPopularTalks(),
                     POPULAR_TALKS_DESCRIPTION);
-            writeScoreConstraintLine(CROWD_CONTROL, constraintConfiguration.getCrowdControl(),
-                    CROWD_CONTROL_DESCRIPTION);
 
             writeScoreConstraintLine(SPEAKER_PREFERRED_TIMESLOT_TAGS, constraintConfiguration.getSpeakerPreferredTimeslotTags(),
                     SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION);
