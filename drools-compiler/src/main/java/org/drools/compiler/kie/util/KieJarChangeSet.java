@@ -44,6 +44,13 @@ public class KieJarChangeSet {
         return changes.keySet().contains(resourceName);
     }
 
+    public KieJarChangeSet merge(KieJarChangeSet other) {
+        KieJarChangeSet merged = new KieJarChangeSet();
+        merged.getChanges().putAll(this.changes);
+        merged.getChanges().putAll(other.changes);
+        return merged;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

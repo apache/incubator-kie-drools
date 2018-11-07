@@ -349,7 +349,8 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         }
 
-        return result;
+        KieJarChangeSet internalChanges = internalKieModule.getChanges(((CanonicalKieModule) newKieModule).internalKieModule);
+        return result.merge(internalChanges);
     }
 
     private ResourceChangeSet buildAllItemsChangeSet( Model oldModel, ChangeType changeType ) {
