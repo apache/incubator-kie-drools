@@ -31,6 +31,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
+import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
@@ -78,7 +79,10 @@ public class KieBaseUpdater implements Runnable {
                 clearInstancesOfModifiedClass( cls );
             }
             for (InternalKnowledgePackage pkg : ctx.kBase.getPackagesMap().values()) {
-                (( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" )).resetParserConfiguration();
+                DialectRuntimeData mvel = pkg.getDialectRuntimeRegistry().getDialectData("mvel");
+                if(mvel != null) {
+                    ((MVELDialectRuntimeData) mvel).resetParserConfiguration();
+                }
             }
         }
 
