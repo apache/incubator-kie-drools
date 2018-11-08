@@ -151,6 +151,13 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         return constraintConfigurationClass;
     }
 
+    public ConstraintWeightDescriptor<Solution_> findConstraintWeightDescriptor(String constraintPackage, String constraintName) {
+        return constraintWeightDescriptorMap.values().stream().filter(constraintWeightDescriptor
+                -> constraintWeightDescriptor.getConstraintPackage().equals(constraintPackage)
+                && constraintWeightDescriptor.getConstraintName().equals(constraintName))
+                .findFirst().orElse(null);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + constraintConfigurationClass.getName() + ")";
