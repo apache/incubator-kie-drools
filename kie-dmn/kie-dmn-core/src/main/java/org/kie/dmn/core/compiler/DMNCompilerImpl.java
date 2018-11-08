@@ -587,6 +587,15 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
+            if (!(localElement instanceof ItemDefinition)) {
+                // If this is an InformationItem, e.g. is a variable of a DRGElement, it allows all types in the language.
+                // if instead it was an ItemDefinition, we only limited to DMNTypeRegistryV12.ITEMDEF_TYPEREF_FEEL_BUILTIN as per specification chapter, and we are not entering in this branch.
+                for (String biName : BuiltInType.UNKNOWN.getNames()) { // additional check types: Any.
+                    if (biName.equals(typeRef.getLocalPart())) {
+                        return new QName(localElement.getURIFEEL(), typeRef.getLocalPart());
+                    }
+                }
+            }
             for (Entry<String, QName> alias : importAliases.entrySet()) {
                 String prefix = alias.getKey() + ".";
                 if (typeRef.getLocalPart().startsWith(prefix)) {
