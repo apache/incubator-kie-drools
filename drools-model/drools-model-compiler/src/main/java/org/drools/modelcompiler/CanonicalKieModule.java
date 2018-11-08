@@ -143,8 +143,12 @@ public class CanonicalKieModule implements InternalKieModule {
         checkStreamMode( kBaseModel, conf, kpkgs.getKiePackages() );
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        kieBase.addPackages(knowledgePackagesBuildResult.getPkgs());
-
+        Collection<KiePackage> pkgs = knowledgePackagesBuildResult.getPkgs();
+        for(KiePackage pk : pkgs) {
+            if(kieBase.getPackage(pk.getName()) == null) {
+                kieBase.addPackages(pkgs);
+            }
+        }
 
         return kieBase;
     }
