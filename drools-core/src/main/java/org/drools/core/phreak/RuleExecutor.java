@@ -18,11 +18,13 @@ package org.drools.core.phreak;
 import java.util.Comparator;
 
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.conflict.PhreakConflictResolver;
@@ -249,6 +251,9 @@ public class RuleExecutor {
 
         // The eager list must be evaluated first, as dynamic salience rules will impact the results of peekNextRule
         agenda.evaluateEagerList();
+
+        InternalAgendaGroup nextFocus = agenda.getNextFocus();
+        if (nextFocus.mustKeepWhenEmpty()) return true; // fixme only when it is not current group
 
         RuleAgendaItem nextRule = agenda.peekNextRule();
         return nextRule != null && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule));

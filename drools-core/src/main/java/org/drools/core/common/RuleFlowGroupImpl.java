@@ -422,4 +422,14 @@ public class RuleFlowGroupImpl
     public boolean isSequential() {
         return agendaGroup.isSequential();
     }
+
+    @Override
+    public void setKeepWhenEmpty(boolean keepWhenEmpty) {
+        agendaGroup.setKeepWhenEmpty(keepWhenEmpty);
+    }
+
+    @Override
+    public boolean mustKeepWhenEmpty() {
+        return agendaGroup.mustKeepWhenEmpty();
+    }
 }

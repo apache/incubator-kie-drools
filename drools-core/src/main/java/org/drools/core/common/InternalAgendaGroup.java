@@ -75,4 +75,13 @@ public interface InternalAgendaGroup extends AgendaGroup {
     boolean isRuleFlowListener();
 
     boolean isSequential();
+
+    /**
+     * Enables DROOLS-3282 behavior; will keep current agenda group
+     * even if current agenda group is empty
+     * @param keepWhenEmpty
+     */
+    void setKeepWhenEmpty(boolean keepWhenEmpty);
+
+    boolean mustKeepWhenEmpty();
 }

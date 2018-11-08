@@ -55,6 +55,7 @@ public class AgendaGroupQueueImpl
 
     private InternalWorkingMemory workingMemory;
     private boolean               autoDeactivate = true;
+    private boolean               keepWhenEmpty  = false;
     private Map<Long, String>     nodeInstances  = new ConcurrentHashMap<Long, String>();
 
     private volatile              boolean hasRuleFlowLister;
@@ -313,4 +314,13 @@ public class AgendaGroupQueueImpl
         return sequential;
     }
 
+    @Override
+    public void setKeepWhenEmpty(boolean keepWhenEmpty) {
+        this.keepWhenEmpty = true;
+    }
+
+    @Override
+    public boolean mustKeepWhenEmpty() {
+        return keepWhenEmpty;
+    }
 }
