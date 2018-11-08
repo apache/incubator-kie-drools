@@ -83,8 +83,12 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
         final TransactionSynchronizationRegistry tsr =
                 jtaPropertyManager.getJTAEnvironmentBean().getTransactionSynchronizationRegistry();
 
+        Properties sanitizedPoolingProperties = copy(poolingProperties);
+        sanitizedPoolingProperties.setProperty("username", driverProperties.getProperty("user"));
+        sanitizedPoolingProperties.setProperty("password", driverProperties.getProperty("password"));
+
         managedDataSource = (BasicManagedDataSource)
-                PoolingDataSourceFactory.createPoolingDataSource(tm, xaDataSource, tsr, copy(poolingProperties));
+                PoolingDataSourceFactory.createPoolingDataSource(tm, xaDataSource, tsr, sanitizedPoolingProperties);
 
         try {
             InitialContext initContext = new InitialContext();
@@ -113,24 +117,24 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
         }
 
         if (databaseProvider == DatabaseProvider.H2) {
-            invokeMethodOnXADataSource(xaDataSource, "setUser", getUsernameFromDriverProperties());
-            invokeMethodOnXADataSource(xaDataSource, "setPassword", getPasswordFromDriverProperties());
+            invokeMethodOnXADataSource(xaDataSource, "setUser", getUsernameFromDriverProperties(), String.class);
+            invokeMethodOnXADataSource(xaDataSource, "setPassword", getPasswordFromDriverProperties(), String.class);
         }
 
         if (databaseProvider != DatabaseProvider.DB2 && databaseProvider != DatabaseProvider.SYBASE) {
             setupUrlOnXADataSource(xaDataSource);
         } else {
-            invokeMethodOnXADataSource(xaDataSource, "setServerName", driverProperties.getProperty("serverName"));
-            invokeMethodOnXADataSource(xaDataSource, "setDatabaseName", driverProperties.getProperty("databaseName"));
+            invokeMethodOnXADataSource(xaDataSource, "setServerName", driverProperties.getProperty("serverName"), String.class);
+            invokeMethodOnXADataSource(xaDataSource, "setDatabaseName", driverProperties.getProperty("databaseName"), String.class);
             if (databaseProvider == DatabaseProvider.DB2) {
-                invokeMethodOnXADataSource(xaDataSource, "setDriverType", 4);
-                invokeMethodOnXADataSource(xaDataSource, "setPortNumber", Integer.valueOf(driverProperties.getProperty("portNumber")));
-                invokeMethodOnXADataSource(xaDataSource, "setResultSetHoldability", Integer.valueOf(driverProperties.getProperty("ResultSetHoldability")));
-                invokeMethodOnXADataSource(xaDataSource, "setDowngradeHoldCursorsUnderXa", Boolean.parseBoolean("DowngradeHoldCursorsUnderXa"));
+                invokeMethodOnXADataSource(xaDataSource, "setDriverType", 4, int.class);
+                invokeMethodOnXADataSource(xaDataSource, "setPortNumber", Integer.parseInt(driverProperties.getProperty("portNumber")), int.class);
+                invokeMethodOnXADataSource(xaDataSource, "setResultSetHoldability", Integer.parseInt(driverProperties.getProperty("ResultSetHoldability")), int.class);
+                invokeMethodOnXADataSource(xaDataSource, "setDowngradeHoldCursorsUnderXa", Boolean.parseBoolean(driverProperties.getProperty("DowngradeHoldCursorsUnderXa")), boolean.class);
             } else if (databaseProvider == DatabaseProvider.SYBASE) {
-                invokeMethodOnXADataSource(xaDataSource, "setPortNumber", Integer.valueOf(driverProperties.getProperty("portNumber")));
-                invokeMethodOnXADataSource(xaDataSource, "setPassword", driverProperties.getProperty("password"));
-                invokeMethodOnXADataSource(xaDataSource, "setUser", driverProperties.getProperty("user"));
+                invokeMethodOnXADataSource(xaDataSource, "setPortNumber", Integer.parseInt(driverProperties.getProperty("portNumber")), int.class);
+                invokeMethodOnXADataSource(xaDataSource, "setPassword", driverProperties.getProperty("password"), String.class);
+                invokeMethodOnXADataSource(xaDataSource, "setUser", driverProperties.getProperty("user"), String.class);
             }
         }
 
@@ -140,11 +144,11 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
     private void setupUrlOnXADataSource(final XADataSource xaDataSource) {
         String url = driverProperties.getProperty("url", driverProperties.getProperty("URL"));
         try {
-            invokeMethodOnXADataSource(xaDataSource, "setUrl", url);
+            invokeMethodOnXADataSource(xaDataSource, "setUrl", url, String.class);
         } catch (UnsupportedOperationException outerException) {
             logger.info("Unable to find \"setUrl\" method in db driver JAR. Trying \"setURL\" ");
             try {
-                invokeMethodOnXADataSource(xaDataSource, "setURL", url);
+                invokeMethodOnXADataSource(xaDataSource, "setURL", url, String.class);
             } catch (UnsupportedOperationException innerException) {
                 logger.info("Driver does not support setURL and setUrl method.");
                 throw innerException;
@@ -152,9 +156,9 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
         }
     }
 
-    private void invokeMethodOnXADataSource(XADataSource dataSource, String methodName, Object parameter) {
+    private void invokeMethodOnXADataSource(XADataSource dataSource, String methodName, Object parameter, Class type) {
         try {
-            dataSource.getClass().getMethod(methodName, new Class[]{parameter.getClass()}).invoke(dataSource, parameter);
+            dataSource.getClass().getMethod(methodName, new Class[]{type}).invoke(dataSource, parameter);
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Unable to invoke method \"" + methodName + "\" on XADataSource.");
         }
