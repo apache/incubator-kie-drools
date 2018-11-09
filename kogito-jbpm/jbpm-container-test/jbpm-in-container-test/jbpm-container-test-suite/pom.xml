@@ -548,7 +548,7 @@
                   <artifactInstaller>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-dist</artifactId>
-                    <version>${version.wildfly14}</version>
+                    <version>${version.org.wildfly}</version>
                   </artifactInstaller>
                   <dependencies>
                     <dependency>
