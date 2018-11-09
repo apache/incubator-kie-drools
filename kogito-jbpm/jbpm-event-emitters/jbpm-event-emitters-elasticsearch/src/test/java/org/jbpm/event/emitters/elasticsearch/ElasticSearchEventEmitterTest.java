@@ -156,7 +156,7 @@ public class ElasticSearchEventEmitterTest {
         emitter.close();
         
         assertThat(responseCollector).hasSize(1);
-        assertThat(responseCollector.get(0)).isEqualTo(expectedResult);
+        assertThat(responseCollector.get(0)).isEqualToNormalizingNewlines(expectedResult);
     }
     
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -227,7 +227,7 @@ public class ElasticSearchEventEmitterTest {
         emitter.close();
         
         assertThat(responseCollector).hasSize(1);
-        assertThat(responseCollector.get(0)).isEqualTo(expectedResult);
+        assertThat(responseCollector.get(0)).isEqualToNormalizingNewlines(expectedResult);
     }
     
     @Test
@@ -305,7 +305,7 @@ public class ElasticSearchEventEmitterTest {
         emitter.close();
         
         assertThat(responseCollector).hasSize(1);        
-        assertThat(responseCollector.get(0)).isEqualTo(expectedResult);
+        assertThat(responseCollector.get(0)).isEqualToNormalizingNewlines(expectedResult);
     }
     
     protected String read(InputStream input) {
