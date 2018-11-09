@@ -2386,5 +2386,21 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("my DT"), is(my_DT));
     }
+
+    @Test
+    public void testAnyExpression() {
+        // DROOLS-3279 DMN DRGElement typeRef to allow FEEL Any
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("any-expression.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_D8154592-7406-4E5A-B7F7-347984A92288", "_40F20B8D-84C1-4AC2-B28C-267892C15077");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("Hello World"));
+    }
 }
 
