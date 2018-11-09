@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,27 +17,69 @@ package org.drools.compiler.kie.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
-    private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
+    static class ChangeSet {
+        final ResourceChangeSet resourceChangeSet;
+        final Boolean isExecutableModel;
+
+        ChangeSet(ResourceChangeSet resourceChangeSet, Boolean isExecutableModel) {
+            this.resourceChangeSet = resourceChangeSet;
+            this.isExecutableModel = isExecutableModel;
+        }
+
+        ResourceChangeSet getResourceChangeSet() {
+            return resourceChangeSet;
+        }
+
+        @Override
+        public String toString() {
+            return "ChangeSet{" +
+                    "resourceChangeSet=" + resourceChangeSet +
+                    ", isExecutableModel=" + isExecutableModel +
+                    '}';
+        }
+    }
+
+
+    private final Map<String, ChangeSet> changes = new HashMap<>();
+
 
     public Map<String, ResourceChangeSet> getChanges() {
-        return changes;
+        return changes.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
+    }
+
+    public Map<String, ResourceChangeSet> getChangesWithExecutableModel() {
+        return changes.entrySet().stream()
+                .filter(es -> es.getValue().isExecutableModel)
+                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
+    }
+
+    public Map<String, ResourceChangeSet> getChangesWithoutExecutableModel() {
+        return changes.entrySet().stream()
+                .filter(es -> !es.getValue().isExecutableModel)
+                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
     }
 
     public void removeFile(String file) {
-        changes.put( file, new ResourceChangeSet( file, ChangeType.REMOVED ) );
+        changes.put( file, new ChangeSet(new ResourceChangeSet( file, ChangeType.REMOVED ), false)  );
     }
 
     public void addFile(String file) {
-        changes.put( file, new ResourceChangeSet( file, ChangeType.ADDED ) );
+        changes.put( file, new ChangeSet(new ResourceChangeSet( file, ChangeType.ADDED ), false) );
     }
 
     public void registerChanges(String file, ResourceChangeSet changeSet) {
-        changes.put( file, changeSet );
+        changes.put( file, new ChangeSet(changeSet, false) );
+    }
+
+    public void registerChanges(String file, ResourceChangeSet changeSet, Boolean isExecutableModel) {
+        changes.put( file, new ChangeSet(changeSet, isExecutableModel) );
     }
 
     public boolean contains(String resourceName) {
@@ -46,8 +88,8 @@ public class KieJarChangeSet {
 
     public KieJarChangeSet merge(KieJarChangeSet other) {
         KieJarChangeSet merged = new KieJarChangeSet();
-        merged.getChanges().putAll(this.changes);
-        merged.getChanges().putAll(other.changes);
+        merged.changes.putAll(this.changes);
+        merged.changes.putAll(other.changes);
         return merged;
     }
 
