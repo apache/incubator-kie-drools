@@ -538,7 +538,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final RuleImpl rule = pkg.getRule( "rule-1" );
         final EvalCondition eval = (EvalCondition) rule.getLhs().getChildren().get( 1 );
         final CompiledInvoker invoker = (CompiledInvoker) eval.getEvalExpression();
-        final List list = invoker.getMethodBytecode();
+        String s = invoker.getMethodBytecode();
     }
 
     @Test

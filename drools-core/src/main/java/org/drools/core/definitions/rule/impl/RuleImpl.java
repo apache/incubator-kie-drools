@@ -952,7 +952,7 @@ public class RuleImpl implements Externalizable,
         }
     }
 
-    public static java.util.List getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
+    public static String getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
         java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
         try {
             byte[] data = readBytesFromInputStream( is );
