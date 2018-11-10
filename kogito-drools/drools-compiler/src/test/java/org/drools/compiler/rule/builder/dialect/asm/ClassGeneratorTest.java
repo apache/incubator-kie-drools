@@ -27,7 +27,7 @@ public class ClassGeneratorTest {
     @Test
     public void testGenerateBean() {
         final String MY_NAME = "myName";
-        ClassGenerator generator = new ClassGenerator("pkg.Bean", getClass().getClassLoader())
+        ClassGenerator generator = new ClassGenerator("pkg.Bean1", getClass().getClassLoader())
                 .addField(ACC_PRIVATE | ACC_FINAL, "name", String.class);
 
         generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
@@ -51,7 +51,7 @@ public class ClassGeneratorTest {
     @Test
     public void testGenerateWithConstructorArg() {
         final String MY_NAME = "myName";
-        ClassGenerator generator = new ClassGenerator("pkg.Bean", getClass().getClassLoader())
+        ClassGenerator generator = new ClassGenerator("pkg.Bean2", getClass().getClassLoader())
                 .addField(ACC_PRIVATE | ACC_FINAL, "name", String.class);
 
         generator.addDefaultConstructor(new ClassGenerator.MethodBody() {

@@ -15,21 +15,21 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.WorkingMemory;
-import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
 
-import java.util.List;
-
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
-
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ACONST_NULL;
@@ -40,6 +40,8 @@ import static org.mvel2.asm.Opcodes.INVOKESTATIC;
 import static org.mvel2.asm.Opcodes.IRETURN;
 
 public class EvalGenerator {
+
+    private static final AtomicInteger evalId = new AtomicInteger();
 
     public static void generate(final EvalStub stub ,
                                 final Tuple tuple,
@@ -52,7 +54,7 @@ public class EvalGenerator {
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
         final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
 
-        final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory)
+        final ClassGenerator generator = createInvokerClassGenerator(stub, "_" + evalId.getAndIncrement(), workingMemory)
                 .setInterfaces(EvalExpression.class, CompiledInvoker.class);
 
         generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {

@@ -742,6 +742,11 @@ public final class ClassUtils {
         return interfaces;
     }
 
+    public static boolean isCaseSenstiveOS() {
+        String os =  System.getProperty("os.name").toUpperCase();
+        return os.contains( "WINDOWS" ) || os.contains( "MAC OS X" );
+    }
+
     public static boolean isWindows() {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "WINDOWS" );

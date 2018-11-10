@@ -18,7 +18,15 @@
   <properties>
     <java.module.name>org.kie.dmn.model</java.module.name>
   </properties>
-  
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

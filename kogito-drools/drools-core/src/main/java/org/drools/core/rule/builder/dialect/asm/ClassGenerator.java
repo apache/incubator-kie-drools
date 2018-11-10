@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -117,23 +118,12 @@ public class ClassGenerator {
             } else {
                 try {
                     clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
-                } catch (Exception e) {
-                    clazz = new InternalClassLoader(classLoader).defineClass(className, bytecode);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException( e );
                 }
             }
         }
         return clazz;
-    }
-
-    private static class InternalClassLoader extends ClassLoader {
-
-        InternalClassLoader(ClassLoader classLoader) {
-            super(classLoader);
-        }
-
-        Class<?> defineClass(String name, byte[] b) {
-            return defineClass(name, b, 0, b.length);
-        }
     }
 
     public void dumpGeneratedClass() {

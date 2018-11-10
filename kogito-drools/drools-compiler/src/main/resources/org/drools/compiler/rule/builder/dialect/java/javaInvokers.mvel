@@ -1,5 +1,5 @@
 @declare{"getMethodBytecode"}
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         return org.drools.core.definitions.rule.impl.RuleImpl.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
     }
 @end{}
@@ -167,10 +167,6 @@ public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, 
 @declare{"accumulateInvoker"}
 package @{package};
 
-import org.mvel2.asm.ClassReader;
-import org.mvel2.asm.util.TraceMethodVisitor;
-import org.drools.core.util.asm.MethodComparator.Tracer;
-import java.util.Collections;
 public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org.drools.core.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 510l;
@@ -284,7 +280,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     @includeNamed{"equals"}
 
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "@{'$'}@{className}" + ".class" );
 
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
@@ -300,7 +296,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
         } catch ( java.io.IOException e ) {
             throw new RuntimeException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
         }
-        return Collections.singletonList( bos );
+        return bos.toString();
     }
 }
 @end{}
@@ -334,7 +330,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Action, org.droo
             @end{","}, context );
     }
     
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         return null;
     }    
 }
@@ -363,7 +359,7 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueEvalu
             @end{","} );
     }
     
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         return null;
     }
 }

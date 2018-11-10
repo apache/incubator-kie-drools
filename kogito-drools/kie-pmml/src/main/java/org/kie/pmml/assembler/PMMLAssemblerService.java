@@ -41,6 +41,7 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.internal.assembler.KieAssemblerService;
@@ -48,7 +49,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMMLResource;
@@ -219,7 +219,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
 				}
 				if (!classesMap.isEmpty()) {
 					ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
-					projectClassLoader.reinitTypes();
+					if ( ClassUtils.isCaseSenstiveOS() ) {
+						projectClassLoader.reinitTypes();
+					}
 					projectClassLoader.storeClasses(classesMap);
 				}
 			}

@@ -16,8 +16,6 @@
 
 package org.drools.core.spi;
 
-import java.util.List;
-
 /**
  * This interface is used by semantic modules that are compiled
  * to bytecode. 
@@ -27,10 +25,10 @@ public interface CompiledInvoker
     Invoker {
 
     /**
-     * Generated code should be able to return a List which represents the bytecode.
+     * Generated code should be able to return a String which represents the bytecode.
      * The elements in the list will be used to compare one semantic invoker
      * with another by making sure each item in the list is equivalent (equals()).
      * There are utilities in the ASM package to retrieve the bytecode for this.
      */
-    public List getMethodBytecode();
+    String getMethodBytecode();
 }

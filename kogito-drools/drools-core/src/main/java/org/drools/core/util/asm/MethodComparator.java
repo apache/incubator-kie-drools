@@ -16,8 +16,6 @@
 
 package org.drools.core.util.asm;
 
-import java.util.List;
-
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.Attribute;
 import org.mvel2.asm.ClassReader;
@@ -25,9 +23,6 @@ import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.util.Printer;
-import org.mvel2.asm.util.Textifier;
-import org.mvel2.asm.util.TraceMethodVisitor;
 
 /**
  * The purpose of this utility it to check if 2 method implementations are equivalent, by comparing the bytecode.
@@ -46,25 +41,17 @@ public class MethodComparator {
                               final ClassReader class1,
                               final String method2,
                               final ClassReader class2) {
-
-        final List list1 = getMethodBytecode( method1,
-                                              class1 );
-        final List list2 = getMethodBytecode( method2,
-                                              class2 );
-
-        return compareBytecode( list1,
-                                list2 );
+        return getMethodBytecode( method1, class1 ).equals( getMethodBytecode( method2, class2 ) );
     }
 
     /**
      * This will return a series of bytecode instructions which can be used to compare one method with another.
      * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
      */
-    public List getMethodBytecode(final String methodName,
-                                  final ClassReader classReader) {
+    public String getMethodBytecode(final String methodName,
+                                    final ClassReader classReader) {
         final Tracer visit = new Tracer( methodName );
-        classReader.accept( visit,
-                            ClassReader.SKIP_DEBUG );
+        classReader.accept( visit, ClassReader.SKIP_DEBUG );
         return visit.getText();
     }
 
@@ -72,8 +59,8 @@ public class MethodComparator {
      * This will return a series of bytecode instructions which can be used to compare one method with another.
      * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
      */
-    public static List getMethodBytecode(final String methodName,
-                                         final byte[] bytes) {
+    public static String getMethodBytecode(final String methodName,
+                                           final byte[] bytes) {
         final Tracer visit = new Tracer( methodName );
         final ClassReader classReader = new ClassReader( bytes );
         classReader.accept( visit,
@@ -85,31 +72,19 @@ public class MethodComparator {
      * Compares 2 bytecode listings.
      * Returns true if they are identical.
      */
-    public static boolean compareBytecode(final List b1,
-                                          final List b2) {
-        if ( b1.size() != b2.size() ) {
-            return false;
-        }
-
-        for ( int i = 0; i < b1.size(); i++ ) {
-            if ( !(b1.get( i ).equals( b2.get( i ) )) ) {
-                return false;
-
-            }
-        }
-        return true;
+    public static boolean compareBytecode(String b1, String b2) {
+        return b1.equals( b2 );
     }
 
     public static class Tracer
         extends
         ClassVisitor {
 
-        private TraceMethodVisitor trace;
         private String             methodName;
-        private Printer            printer;
+        private String             text;
 
         public Tracer(final String methodName) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
             this.methodName = methodName;
         }
 
@@ -152,12 +127,7 @@ public class MethodComparator {
                                          final String signature,
                                          final String[] exceptions) {
 
-            if ( this.methodName.equals( name ) ) {
-                this.printer = new Textifier();
-                this.trace = new TraceMethodVisitor(printer);
-                return this.trace;
-            }
-            return null;
+            return this.methodName.equals( name ) ? new DumpMethodVisitor(this::setText) : null;
         }
 
         public void visitOuterClass(final String owner,
@@ -169,10 +139,13 @@ public class MethodComparator {
                                 final String debug) {
         }
 
-        public List<Object> getText() {
-            return this.printer.getText();
+        public String getText() {
+            return text;
         }
 
+        public void setText( String text ) {
+            this.text = text;
+        }
     }
 
     static class DummyAnnotationVisitor
@@ -180,7 +153,7 @@ public class MethodComparator {
         AnnotationVisitor {
 
         public DummyAnnotationVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
         }
 
         public void visit(final String name,
@@ -205,5 +178,4 @@ public class MethodComparator {
         }
 
     }
-
 }
