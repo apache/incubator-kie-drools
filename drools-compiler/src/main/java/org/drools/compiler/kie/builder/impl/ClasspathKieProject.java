@@ -38,6 +38,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
@@ -415,15 +416,26 @@ public class ClasspathKieProject extends AbstractKieProject {
                 log.warn( "Found virtual file " + url + " but org.jboss.vfs.VirtualFile is not available on the classpath" );
             }
         }
+        Method m2 = null;
+        try {
+            m2 = Class.forName("org.jboss.vfs.VFS").getMethod("getChild", URI.class);
+        } catch (Exception e) {
+            try {
+                // Try to retrieve the org.jboss.vfs.VFS class also on TCCL
+                m2 = Class.forName("org.jboss.vfs.VFS", true, Thread.currentThread().getContextClassLoader()).getMethod("getChild", URI.class);
+            } catch (Exception e1) {
+                // VFS is not available on the classpath - ignore
+                log.warn( "Found virtual file " + url + " but org.jboss.vfs.VFS is not available on the classpath" );
+            }
+        }
 
-        if (m == null) {
+        if (m == null || m2 == null) {
             return url.getPath();
         }
 
         String path = null;
         try {
-            Object content = url.openConnection().getContent();
-            File f = (File)m.invoke(content);
+            File f = (File)m.invoke( m2.invoke(null, url.toURI()) );
             path = f.getPath();
         } catch (Exception e) {
             log.error( "Error when reading virtual file from " + url.toString(), e );
