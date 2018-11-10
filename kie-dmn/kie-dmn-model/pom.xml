@@ -18,7 +18,7 @@
   <properties>
     <java.module.name>org.kie.dmn.model</java.module.name>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>

@@ -23,6 +23,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1202,6 +1204,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     private List<? extends KnowledgeBuilderResult> addRule(RuleBuildContext context) {
+        return System.getSecurityManager() == null ?
+                internalAddRule(context) :
+                AccessController.<List<? extends KnowledgeBuilderResult>>doPrivileged( new PrivilegedAction() {
+                    public List<? extends KnowledgeBuilderResult> run() {
+                        return internalAddRule(context);
+                    }
+                });
+    }
+
+    private List<? extends KnowledgeBuilderResult> internalAddRule(RuleBuildContext context) {
         RuleBuilder.build(context);
 
         context.getRule().setResource(context.getRuleDescr().getResource());
