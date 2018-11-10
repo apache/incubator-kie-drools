@@ -102,4 +102,10 @@ image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingArchitecture
 
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingClassDiagram.png[align="center"]
 
+
+[[conferenceSchedulingSearchSpace]]
+== Search space
+
+image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingOptimalIsImperfect.png[align="center"]
+
 image::UseCasesAndExamples/ConferenceScheduling/conferenceSchedulingSearchSpace.png[align="center"]
