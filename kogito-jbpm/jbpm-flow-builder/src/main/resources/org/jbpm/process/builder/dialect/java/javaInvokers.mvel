@@ -21,7 +21,7 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Actio
 	        @end{","} );
     }
     
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         return null;
     }    
 }
@@ -50,7 +50,7 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Retur
 	        @end{","} );
     }
     
-    public java.util.List getMethodBytecode() {
+    public String getMethodBytecode() {
         return null;
     }
 }
