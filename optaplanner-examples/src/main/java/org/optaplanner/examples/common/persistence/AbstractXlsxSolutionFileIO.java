@@ -251,7 +251,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected void readHeaderCell(String value) {
             XSSFCell cell = currentRow == null ? null : nextStringCell();
             if (cell == null || !cell.getStringCellValue().equals(value)) {
-                throw new IllegalStateException(currentPosition() + ": The cell (" + cell.getStringCellValue()
+                throw new IllegalStateException(currentPosition() + ": The cell ("
+                        + (cell == null ? null : cell.getStringCellValue())
                         + ") does not contain the expected value (" + value + ").");
             }
         }

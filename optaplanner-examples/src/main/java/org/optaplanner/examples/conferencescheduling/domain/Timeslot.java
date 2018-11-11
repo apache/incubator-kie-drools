@@ -156,11 +156,15 @@ public class Timeslot extends AbstractPersistable {
 
     public Timeslot withStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
         return this;
     }
 
     public Timeslot withEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
         return this;
     }
 }
