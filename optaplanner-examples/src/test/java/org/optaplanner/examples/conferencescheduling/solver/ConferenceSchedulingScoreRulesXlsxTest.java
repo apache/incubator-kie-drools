@@ -60,7 +60,7 @@ import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFi
 public class ConferenceSchedulingScoreRulesXlsxTest {
 
     @Parameterized.Parameters(name = "{4}")
-    public static Collection testSheetParameters() {
+    public static Collection<Object[]> testSheetParameters() {
         File testFile = new File(ConferenceSchedulingScoreRulesXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
