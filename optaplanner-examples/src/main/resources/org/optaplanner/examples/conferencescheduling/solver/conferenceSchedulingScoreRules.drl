@@ -119,6 +119,8 @@ rule "Crowd control"
         $talk : Talk(timeslot != null, $timeslot : timeslot,
                 crowdControlRisk > 0)
         Number(this != 1) from accumulate(
+            // TODO Analyse if this is better: getTimeslot().getStartDateTime().equals($timeslot.getStartDateTime())
+            // because from a crowd control perspective, only the start of the session matters
             // Timeslot.overlaps() is deliberately not used
             $otherTalk : Talk(timeslot == $timeslot,
                 crowdControlRisk > 0,
