@@ -25,12 +25,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name = "caseFileDataLogIdSeq", sequenceName = "CASE_FILE_DATA_LOG_ID_SEQ", allocationSize = 1)
 public class CaseFileDataLog implements Serializable {
 
+    private static final Logger logger = LoggerFactory.getLogger(CaseFileDataLog.class);
     private static final long serialVersionUID = 7667968668409641210L;
+    
+    @Transient
+    private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.cases.var.log.length", "255"));
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "caseFileDataLogIdSeq")
@@ -98,6 +106,10 @@ public class CaseFileDataLog implements Serializable {
     }
     
     public void setItemValue(String itemValue) {
+        if (itemValue != null && itemValue.length() > VARIABLE_LOG_LENGTH) {
+            itemValue = itemValue.substring(0, VARIABLE_LOG_LENGTH);
+            logger.warn("Variable content was trimmed as it was too long (more than {} characters)", VARIABLE_LOG_LENGTH);
+        }
         this.itemValue = itemValue;
     }
     

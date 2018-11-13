@@ -3334,4 +3334,51 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    
+    @Test
+    public void testStartEmptyCaseWithCaseFileValueTooLong() {
+        System.setProperty("org.jbpm.cases.var.log.length", "10");
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case data bit too long");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertNotNull(cInstance.getCaseFile());
+            assertEquals("my first case data bit too long", cInstance.getCaseFile().getData("name"));
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            Collection<VariableDesc> vars = runtimeDataService.getVariablesCurrentState(((CaseInstanceImpl) cInstance).getProcessInstanceId());
+            assertNotNull(vars);
+            assertEquals(3, vars.size());
+            Map<String, Object> mappedVars = vars.stream().collect(toMap(v -> v.getVariableId(), v -> v.getNewValue()));
+            assertEquals("my first case data bit too long", mappedVars.get("caseFile_name"));
+            assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
+            assertEquals("john", mappedVars.get("initiator"));
+            
+            Collection<CaseFileItem> caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1, caseFileItems.size());
+            mappedVars = caseFileItems.stream().collect(toMap(cs -> cs.getName(), cs -> cs.getValue()));
+            assertEquals("my first c", mappedVars.get("name"));           
+            
+            caseService.cancelCase(caseId);
+            CaseInstance instance = caseService.getCaseInstance(caseId);
+            Assertions.assertThat(instance.getStatus()).isEqualTo(CaseStatus.CANCELLED.getId());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+            System.clearProperty("org.jbpm.cases.var.log.length");
+        }
+    }
 }
