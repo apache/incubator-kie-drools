@@ -253,7 +253,9 @@ public class RuleExecutor {
         agenda.evaluateEagerList();
 
         InternalAgendaGroup nextFocus = agenda.getNextFocus();
-        if (nextFocus.mustKeepWhenEmpty()) return true; // fixme only when it is not current group
+        if (nextFocus != null && nextFocus.mustKeepWhenEmpty()) {
+            return true; // fixme only when it is not current group
+        }
 
         RuleAgendaItem nextRule = agenda.peekNextRule();
         return nextRule != null && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule));
