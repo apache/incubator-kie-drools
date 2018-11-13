@@ -46,6 +46,13 @@
         <artifactId>drlx-parser</artifactId>
     </dependency>
 
+    <!-- BigMath dependency to obtain BigDecimal advanced math -->
+    <dependency>
+        <groupId>ch.obermuhlner</groupId>
+        <artifactId>big-math</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
