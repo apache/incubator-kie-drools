@@ -22,9 +22,6 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
-  <properties>
-    <version.org.wildfly>14.0.1.Final</version.org.wildfly>
-  </properties>
   <build>
     <testResources>
       <testResource>
