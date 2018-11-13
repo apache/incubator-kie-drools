@@ -88,6 +88,7 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
     public abstract Map<String, WorkItemHandler> getWorkItemHandlers();
     public abstract Map<String, WorkItemHandler> getWorkItemHandlers(Map<String, Object> params);
     public abstract WorkItemManagerFactory getWorkItemManagerFactory();
+    public abstract void setWorkItemManagerFactory(WorkItemManagerFactory workItemManagerFactory);
 
     public abstract String getProcessInstanceManagerFactory();
 

@@ -327,6 +327,11 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         return this.workItemManagerFactory;
     }
 
+    @Override
+    public void setWorkItemManagerFactory(WorkItemManagerFactory workItemManagerFactory) {
+        this.workItemManagerFactory = workItemManagerFactory;
+    }
+
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
