@@ -43,7 +43,7 @@ public class CompositeAgendaTest {
         }
     }
 
-    @Test @Ignore
+    @Test(timeout = 20000)
     public void testCreateHaltDisposeAgenda() {
         final String drl = " import " + A.class.getCanonicalName() + ";\n" +
                 " declare A @role( event ) end\n" +
