@@ -100,6 +100,9 @@ public class MigrationManagerTest extends AbstractBaseTest {
     
     private static final String MULTIINSTANCE_ID_V1 = "MultiInstance-1";
     private static final String MULTIINSTANCE_ID_V2 = "MultiInstance-2";
+    
+    private static final String ADDTASKAFTERACTIVE_EXPR_ID_V1 = "process-migration-testv1.AddTaskAfterActiveExpr";
+    private static final String ADDTASKAFTERACTIVE_EXPR_ID_V2 = "process-migration-testv2.AddTaskAfterActiveExpr";
 
     private JPAAuditLogService auditService;
     
@@ -650,6 +653,50 @@ public class MigrationManagerTest extends AbstractBaseTest {
         assertEquals(DEPLOYMENT_ID_V2, task.getDeploymentId());
 
         managerV2.disposeRuntimeEngine(runtime);
+    }
+    
+    @Test
+    public void testAddTaskAfterActiveTaskNameExpression() {
+        createRuntimeManagers("migration/v1/AddTaskAfterActiveExpression-v1.bpmn2", "migration/v2/AddTaskAfterActiveExpression-v2.bpmn2");
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+        
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("s", "test");
+        
+        ProcessInstance pi1 = ksession.startProcess(ADDTASKAFTERACTIVE_EXPR_ID_V1, params);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState()); 
+        
+        TaskService taskService = runtime.getTaskService();   
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(pi1.getId(), Arrays.asList(Status.Reserved), "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        TaskSummary task = tasks.get(0);
+        assertNotNull(task);
+        assertEquals(ADDTASKAFTERACTIVE_EXPR_ID_V1, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, task.getDeploymentId());
+        assertEquals("Active Task test", task.getName());
+        managerV1.disposeRuntimeEngine(runtime);
+        
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, ADDTASKAFTERACTIVE_EXPR_ID_V2);        
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        MigrationReport report = migrationManager.migrate();        
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+        
+        assertMigratedProcessInstance(ADDTASKAFTERACTIVE_EXPR_ID_V2, pi1.getId(), ProcessInstance.STATE_ACTIVE);
+                
+        runtime = managerV2.getRuntimeEngine(EmptyContext.get());
+        taskService = runtime.getTaskService();        
+        assertMigratedTaskAndComplete(taskService, ADDTASKAFTERACTIVE_EXPR_ID_V2, pi1.getId(), "Active Task test");
+
+        managerV2.disposeRuntimeEngine(runtime);        
     }
     
     /*

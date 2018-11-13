@@ -43,6 +43,7 @@ import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerFactory;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
@@ -462,7 +463,7 @@ public class MigrationManager {
                                                         "where nodeInstanceId in (:ids) and processInstanceId = :processInstanceId");
                     nodeLogQuery
                                 .setParameter("nodeId", (String) upgradedNode.getMetaData().get("UniqueId"))
-                                .setParameter("nodeName", upgradedNode.getName())
+                                .setParameter("nodeName", VariableUtil.resolveVariable(upgradedNode.getName(), nodeInstance))
                                 .setParameter("nodeType", upgradedNode.getClass().getSimpleName())
                                 .setParameter("ids", nodeInstanceIds)
                                 .setParameter("processInstanceId", nodeInstance.getProcessInstance().getId());
@@ -482,8 +483,8 @@ public class MigrationManager {
                     // update task audit instance log with new deployment and process id
                     Query auditTaskLogQuery = em.createQuery("update AuditTaskImpl set name = :name, description = :description where taskId = :taskId");
                     auditTaskLogQuery
-                                     .setParameter("name", name)
-                                     .setParameter("description", description)
+                                     .setParameter("name", VariableUtil.resolveVariable(name, nodeInstance))
+                                     .setParameter("description", VariableUtil.resolveVariable(description, nodeInstance))
                                      .setParameter("taskId", taskId);
 
                     int auditTaskUpdated = auditTaskLogQuery.executeUpdate();
@@ -492,8 +493,8 @@ public class MigrationManager {
                     // update task  instance log with new deployment and process id
                     Query taskLogQuery = em.createQuery("update TaskImpl set name = :name, description = :description where id = :taskId");
                     taskLogQuery
-                                .setParameter("name", name)
-                                .setParameter("description", description)
+                                .setParameter("name", VariableUtil.resolveVariable(name, nodeInstance))
+                                .setParameter("description", VariableUtil.resolveVariable(description, nodeInstance))
                                 .setParameter("taskId", taskId);
 
                     int taskUpdated = taskLogQuery.executeUpdate();
