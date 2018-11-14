@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
@@ -38,10 +39,15 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class CanonicalKieBaseUpdater extends KieBaseUpdater {
+
+    List<ResourceChangeSet> processedChangesSet = new ArrayList<>();
 
     public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
         super(ctx);
@@ -49,7 +55,6 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
     @Override
     public void run() {
-        super.run();
         CanonicalKieModule oldKM = ( CanonicalKieModule ) ctx.currentKM;
         CanonicalKieModule newKM = ( CanonicalKieModule ) ctx.newKM;
 
@@ -60,6 +65,13 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         List<RuleImpl> rulesToBeAdded;
 
         Map<String, AtomicInteger> globalsCounter = new HashMap<>();
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
+        KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
+        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
+        removeResources(pkgbuilder);
 
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
@@ -77,7 +89,6 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
             rulesToBeRemoved = getAllRulesInKieBase( oldKM, ctx.currentKieBaseModel );
             rulesToBeAdded = getAllRulesInKieBase( newKM, ctx.newKieBaseModel );
-
         } else {
 
             ctx.kBase.processAllTypesDeclaration( newPkgs.getKiePackages() );
@@ -89,6 +100,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getResourceName() )) {
                     continue;
                 }
+
+                processedChangesSet.add(changeSet);
 
                 InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
                 InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
@@ -108,6 +121,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                         }
                     }
                 }
+
+                this.updateResource(pkgbuilder, ckbuilder, changeSet);
 
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();
@@ -163,6 +178,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
             }
         }
 
+//        super.run();
+
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );
 
@@ -171,7 +188,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         }
     }
 
-    private List<RuleImpl> getAllRulesInKieBase( CanonicalKieModule kieModule, KieBaseModelImpl model ) {
+    private List<RuleImpl> getAllRulesInKieBase(CanonicalKieModule kieModule, KieBaseModelImpl model ) {
         List<RuleImpl> rules = new ArrayList<>();
         for (KiePackage oldPkg : kieModule.getKiePackages( model ).getKiePackages()) {
             if (!isPackageInKieBase( ctx.currentKieBaseModel, oldPkg.getName() )) {
