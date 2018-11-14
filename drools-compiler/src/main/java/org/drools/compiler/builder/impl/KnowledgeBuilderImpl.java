@@ -2501,6 +2501,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         buildRules(packages);
     }
 
+    public void buildPackages2( Collection<CompositePackageDescr> packages ) {
+        initPackageRegistries(packages);
+        normalizeTypeAnnotations( packages );
+        buildTypeDeclarations(packages);
+        buildEntryPoints( packages );
+        buildOtherDeclarations(packages);
+        normalizeRuleAnnotations( packages );
+//        buildRules(packages);
+    }
+
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
             if ( StringUtils.isEmpty(packageDescr.getName()) ) {
