@@ -168,13 +168,7 @@ public class KieBaseUpdater implements Runnable {
         boolean shouldRebuild = ctx.modifyingUsedClass;
         if (ctx.modifyingUsedClass) {
             // invalidate accessors for old class
-            for (Class<?> cls : ctx.modifiedClasses) {
-                InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) ctx.kBase.getKiePackage( cls.getPackage().getName() ) );
-                if (kpackage != null) {
-                    kpackage.getClassFieldAccessorStore().removeClass( cls );
-                }
-            }
-
+            invalidateAccessorForOldClass();
             // there are modified classes used by this kbase, so it has to be completely updated
             updateAllResources(pkgbuilder, ckbuilder);
         } else {
@@ -182,6 +176,15 @@ public class KieBaseUpdater implements Runnable {
             shouldRebuild = updateResourcesIncrementally(pkgbuilder, ckbuilder) > 0;
         }
         return shouldRebuild;
+    }
+
+    protected void invalidateAccessorForOldClass() {
+        for (Class<?> cls : ctx.modifiedClasses) {
+            InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) ctx.kBase.getKiePackage(cls.getPackage().getName() ) );
+            if (kpackage != null) {
+                kpackage.getClassFieldAccessorStore().removeClass( cls );
+            }
+        }
     }
 
     private int updateResourcesIncrementally(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
@@ -238,7 +241,7 @@ public class KieBaseUpdater implements Runnable {
         return false;
     }
 
-    private void updateAllResources(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
+    protected void updateAllResources(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
         for (String resourceName : ctx.currentKM.getFileNames()) {
             if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.currentKM, ctx.newKieBaseModel, resourceName) ) {
                 Resource resource = ctx.currentKM.getResource(resourceName);

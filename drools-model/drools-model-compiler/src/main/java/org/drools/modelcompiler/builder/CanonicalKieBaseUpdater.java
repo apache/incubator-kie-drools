@@ -179,6 +179,11 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
             }
         }
 
+        if (ctx.modifyingUsedClass) {
+            invalidateAccessorForOldClass();
+            updateAllResources(pkgbuilder, ckbuilder);
+        }
+
         ((CompositeKnowledgeBuilderImpl)ckbuilder).build2();
 
         ctx.kBase.removeRules( rulesToBeRemoved );
