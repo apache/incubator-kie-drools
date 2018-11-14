@@ -442,10 +442,10 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
             EnclosedExpr leftCasted = castToBigDecimal(left.getExpression());
             EnclosedExpr rightCasted = castToBigDecimal(right.getExpression());
 
-            MethodCallExpr subtractCall = new MethodCallExpr(leftCasted, "pow");
-            subtractCall.addArgument(new MethodCallExpr(rightCasted, "intValue"));
-            subtractCall.addArgument(DECIMAL_128);
-            Expression result = groundToNullIfAnyIsNull(subtractCall, leftCasted, rightCasted);
+            MethodCallExpr powCall = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "pow");
+            powCall.addArgument(leftCasted);
+            powCall.addArgument(rightCasted);
+            Expression result = groundToNullIfAnyIsNull(powCall, leftCasted, rightCasted);
             return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.mergeFDs(left, right));
         }
     }

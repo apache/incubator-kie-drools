@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
@@ -521,6 +523,9 @@ public class CompiledFEELSupport {
         public FEELEvent event() { return event; }
     }
 
+    public static BigDecimal pow(BigDecimal l, BigDecimal r) {
+        return BigDecimalMath.pow( l, r, MathContext.DECIMAL128 );
+    }
 
 
 }
