@@ -31,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.function.BinaryOperator;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -174,7 +175,7 @@ public class InfixOpNode
             case DIV:
                 return div( left, right, ctx );
             case POW:
-                return math( left, right, ctx, (l, r) -> l.pow( r.intValue(), MathContext.DECIMAL128 ) );
+                return math( left, right, ctx, (l, r) -> BigDecimalMath.pow( l, r, MathContext.DECIMAL128 ) );
             case AND:
                 return and( left, right, ctx );
             case OR:

@@ -49,6 +49,7 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "5+2 ** 5", BigDecimal.valueOf( 37 ) , null},
                 { "5+2 ** 5+3", BigDecimal.valueOf( 40 ) , null},
                 { "5+2 ** (5+3)", BigDecimal.valueOf( 261 ) , null},
+                {"2 ** 3.5", new BigDecimal("11.31370849898476039041350979367758"), null},
                 { "10 + null", null , null},
                 { "null + 10", null , null},
                 { "10 - null", null , null},

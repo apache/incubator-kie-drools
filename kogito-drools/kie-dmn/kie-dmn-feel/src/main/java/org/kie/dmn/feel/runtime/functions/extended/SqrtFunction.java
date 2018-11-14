@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime.functions.extended;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
@@ -30,8 +31,6 @@ import java.math.RoundingMode;
 public class SqrtFunction
         extends BaseFEELFunction {
     public static final SqrtFunction INSTANCE = new SqrtFunction();
-
-    private static final BigDecimal TWO = new BigDecimal( 2.0, MathContext.DECIMAL128 );
 
     SqrtFunction() {
         super("sqrt");
@@ -48,9 +47,6 @@ public class SqrtFunction
     }
 
     static BigDecimal sqrt( BigDecimal arg ) { // can be modified later to short-circuit if precision is not needed
-        final BigDecimal low = new BigDecimal( Math.sqrt( arg.doubleValue() ), MathContext.DECIMAL128 ); // 16 decimal places
-        final BigDecimal mid = low.add( arg.subtract( low.pow( 2, MathContext.DECIMAL128 ) ).divide( low.multiply( TWO ), RoundingMode.HALF_EVEN ) ); // 32 decimal places
-        final BigDecimal high = mid.add( arg.subtract( mid.pow( 2, MathContext.DECIMAL128 ) ).divide( mid.multiply( TWO ), RoundingMode.HALF_EVEN ) ); // 34 decimal places
-        return high;
+        return BigDecimalMath.sqrt(arg, MathContext.DECIMAL128);
     }
 }
