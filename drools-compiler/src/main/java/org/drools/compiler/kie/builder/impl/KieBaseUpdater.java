@@ -16,7 +16,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -115,7 +114,7 @@ public class KieBaseUpdater implements Runnable {
 
     protected void removeResources(KnowledgeBuilderImpl pkgbuilder) {
         // remove resources first
-        for ( ResourceChangeSet rcs : getChangeSet()) {
+        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values()) {
             if ( rcs.getChangeType() == ChangeType.REMOVED ) {
                 String resourceName = rcs.getResourceName();
                 if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.currentKM, ctx.currentKieBaseModel, resourceName) ) {
@@ -123,10 +122,6 @@ public class KieBaseUpdater implements Runnable {
                 }
             }
         }
-    }
-
-    protected Collection<ResourceChangeSet> getChangeSet() {
-        return ctx.cs.getChanges().values();
     }
 
     protected void clearInstancesOfModifiedClass( Class<?> cls ) {
@@ -189,7 +184,7 @@ public class KieBaseUpdater implements Runnable {
 
     private int updateResourcesIncrementally(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
         int fileCount = ctx.modifiedClasses.size();
-        for ( ResourceChangeSet rcs : getChangeSet()) {
+        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values()) {
             fileCount += updateResource(kbuilder, ckbuilder, rcs);
         }
         return fileCount;
