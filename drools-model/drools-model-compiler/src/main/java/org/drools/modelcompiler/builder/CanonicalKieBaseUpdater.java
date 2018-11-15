@@ -184,7 +184,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
             updateAllResources(pkgbuilder, ckbuilder);
         }
 
-        ((CompositeKnowledgeBuilderImpl)ckbuilder).build2();
+        ((CompositeKnowledgeBuilderImpl)ckbuilder).buildWithoutRules();
 
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );

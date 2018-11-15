@@ -2501,14 +2501,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         buildRules(packages);
     }
 
-    public void buildPackages2( Collection<CompositePackageDescr> packages ) {
+    public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
         normalizeTypeAnnotations( packages );
         buildTypeDeclarations(packages);
         buildEntryPoints( packages );
         buildOtherDeclarations(packages);
         normalizeRuleAnnotations( packages );
-//        buildRules(packages);
     }
 
     protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
