@@ -35,6 +35,7 @@ import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.ProcessBuilder;
+import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
@@ -134,7 +135,7 @@ public class CanonicalKieModule implements InternalKieModule {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
 
-        KnowledgePackagesBuildResult knowledgePackagesBuildResult = internalKieModule.buildKnowledgePackages(kBaseModel, kieProject, messages);
+        KnowledgePackagesBuildResult knowledgePackagesBuildResult = ((AbstractKieModule)internalKieModule).buildKnowledgePackages(kBaseModel, kieProject, messages);
         if(knowledgePackagesBuildResult.hasErrors()) {
             return null;
         }
@@ -660,11 +661,6 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
         return internalKieModule.getBuilderConfiguration( kBaseModel, classLoader );
-    }
-
-    @Override
-    public KnowledgePackagesBuildResult buildKnowledgePackages(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages) {
-        return internalKieModule.buildKnowledgePackages(kBaseModel, kieProject, messages);
     }
 
     @Override
