@@ -2402,5 +2402,23 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("Hello World"));
     }
+
+    @Test
+    public void testGetEntriesGetValue() {
+        // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getResult(), is(Arrays.asList("value2")));
+        assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("using get value").getResult(), is("value2"));
+    }
 }
 
