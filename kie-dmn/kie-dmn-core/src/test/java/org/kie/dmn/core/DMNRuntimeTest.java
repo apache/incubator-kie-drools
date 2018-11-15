@@ -86,6 +86,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
@@ -2404,12 +2405,10 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @Test
-    public void testGetEntriesGetValue() {
+    public void testGetEntries() {
         // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
 
         final DMNContext emptyContext = DMNFactory.newContext();
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
@@ -2417,6 +2416,18 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("using get entries").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("using get entries").getResult(), is(Arrays.asList("value2")));
+    }
+
+    @Test
+    public void testGetValue() {
+        // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("using get value").getResult(), is("value2"));
     }

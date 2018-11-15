@@ -154,6 +154,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "get entries({key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
                 { "get entries({key0 : \"value0\", key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
                 { "get value({key0 : \"value0\", key1 : \"value1\"}, \"key1\")", "value1" , null},
+                { "get value({key0 : \"value0\", key1 : \"value1\"}, \"unexistent-key\")", null, null}, // no error.
         };
         return addAdditionalParameters(cases, false);
     }
