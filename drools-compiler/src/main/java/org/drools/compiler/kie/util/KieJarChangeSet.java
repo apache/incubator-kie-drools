@@ -22,7 +22,7 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
-    private final Map<String, ResourceChangeSet> changes = new HashMap<>();
+    private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
 
     public Map<String, ResourceChangeSet> getChanges() {
         return changes;
