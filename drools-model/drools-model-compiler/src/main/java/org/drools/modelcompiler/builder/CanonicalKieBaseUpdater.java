@@ -48,8 +48,6 @@ import org.kie.internal.builder.ResourceChangeSet;
 
 public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
-    List<ResourceChangeSet> processedChangesSet = new ArrayList<>();
-
     public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
         super(ctx);
     }
@@ -90,6 +88,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
             rulesToBeRemoved = getAllRulesInKieBase( oldKM, ctx.currentKieBaseModel );
             rulesToBeAdded = getAllRulesInKieBase( newKM, ctx.newKieBaseModel );
+
         } else {
 
             ctx.kBase.processAllTypesDeclaration( newPkgs.getKiePackages() );
@@ -101,8 +100,6 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getResourceName() )) {
                     continue;
                 }
-
-                processedChangesSet.add(changeSet);
 
                 InternalKnowledgePackage kpkg = ( InternalKnowledgePackage ) newPkgs.getKiePackage( changeSet.getResourceName() );
                 InternalKnowledgePackage oldKpkg = ctx.kBase.getPackage( changeSet.getResourceName() );
@@ -194,7 +191,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         }
     }
 
-    private List<RuleImpl> getAllRulesInKieBase(CanonicalKieModule kieModule, KieBaseModelImpl model ) {
+    private List<RuleImpl> getAllRulesInKieBase( CanonicalKieModule kieModule, KieBaseModelImpl model ) {
         List<RuleImpl> rules = new ArrayList<>();
         for (KiePackage oldPkg : kieModule.getKiePackages( model ).getKiePackages()) {
             if (!isPackageInKieBase( ctx.currentKieBaseModel, oldPkg.getName() )) {
