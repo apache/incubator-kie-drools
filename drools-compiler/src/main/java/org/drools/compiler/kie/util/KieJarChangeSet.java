@@ -54,24 +54,6 @@ public class KieJarChangeSet {
                 .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
     }
 
-    public Map<String, ResourceChangeSet> getChangesWithExecutableModel() {
-        return changes.entrySet().stream()
-                .filter(es -> es.getValue().isExecutableModel)
-                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
-    }
-
-    public Map<String, ChangeSet> getChangesFiltered() {
-        return changes.entrySet().stream()
-                .filter(es -> !es.getKey().startsWith("defaultpkg/Rules"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    public Map<String, ResourceChangeSet> getChangesWithoutExecutableModel() {
-        return changes.entrySet().stream()
-                .filter(es -> !es.getValue().isExecutableModel)
-                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
-    }
-
     public void removeFile(String file) {
         changes.put( file, new ChangeSet(new ResourceChangeSet( file, ChangeType.REMOVED ), false)  );
     }
@@ -94,8 +76,8 @@ public class KieJarChangeSet {
 
     public KieJarChangeSet merge(KieJarChangeSet other) {
         KieJarChangeSet merged = new KieJarChangeSet();
-        merged.changes.putAll(this.getChangesFiltered());
-        merged.changes.putAll(other.getChangesFiltered());
+        merged.changes.putAll(this.changes);
+        merged.changes.putAll(other.changes);
         return merged;
     }
 
