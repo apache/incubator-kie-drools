@@ -336,21 +336,21 @@ public class CanonicalKieModule implements InternalKieModule {
         for (Map.Entry<String, Model> entry : oldModels.entrySet()) {
             Model newModel = newModels.get( entry.getKey() );
             if ( newModel == null ) {
-                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.REMOVED ), true);
+                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.REMOVED ) );
                 continue;
             }
 
             Model oldModel = entry.getValue();
             for (ResourceChangeSet changeSet : calculateResourceChangeSet( oldModel, newModel )) {
                 if ( !changeSet.getChanges().isEmpty() ) {
-                    result.registerChanges( entry.getKey(), changeSet, true);
+                    result.registerChanges( entry.getKey(), changeSet );
                 }
             }
         }
 
         for (Map.Entry<String, Model> entry : newModels.entrySet()) {
             if ( oldModels.get( entry.getKey() ) == null ) {
-                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.ADDED ) , true);
+                result.registerChanges( entry.getKey(), buildAllItemsChangeSet( entry.getValue(), ChangeType.ADDED ) );
             }
         }
 

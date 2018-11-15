@@ -17,57 +17,27 @@ package org.drools.compiler.kie.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
-    static class ChangeSet {
-        final ResourceChangeSet resourceChangeSet;
-        final Boolean isExecutableModel;
-
-        ChangeSet(ResourceChangeSet resourceChangeSet, Boolean isExecutableModel) {
-            this.resourceChangeSet = resourceChangeSet;
-            this.isExecutableModel = isExecutableModel;
-        }
-
-        ResourceChangeSet getResourceChangeSet() {
-            return resourceChangeSet;
-        }
-
-        @Override
-        public String toString() {
-            return "ChangeSet{" +
-                    "resourceChangeSet=" + resourceChangeSet +
-                    ", isExecutableModel=" + isExecutableModel +
-                    '}';
-        }
-    }
-
-
-    private final Map<String, ChangeSet> changes = new HashMap<>();
-
+    private final Map<String, ResourceChangeSet> changes = new HashMap<>();
 
     public Map<String, ResourceChangeSet> getChanges() {
-        return changes.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().getResourceChangeSet()));
+        return changes;
     }
 
     public void removeFile(String file) {
-        changes.put( file, new ChangeSet(new ResourceChangeSet( file, ChangeType.REMOVED ), false)  );
+        changes.put( file, new ResourceChangeSet( file, ChangeType.REMOVED ) );
     }
 
     public void addFile(String file) {
-        changes.put( file, new ChangeSet(new ResourceChangeSet( file, ChangeType.ADDED ), false) );
+        changes.put( file, new ResourceChangeSet( file, ChangeType.ADDED ) );
     }
 
     public void registerChanges(String file, ResourceChangeSet changeSet) {
-        changes.put( file, new ChangeSet(changeSet, false) );
-    }
-
-    public void registerChanges(String file, ResourceChangeSet changeSet, Boolean isExecutableModel) {
-        changes.put( file, new ChangeSet(changeSet, isExecutableModel) );
+        changes.put( file, changeSet );
     }
 
     public boolean contains(String resourceName) {
