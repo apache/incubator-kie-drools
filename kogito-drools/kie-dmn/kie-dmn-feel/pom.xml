@@ -50,7 +50,6 @@
     <dependency>
         <groupId>ch.obermuhlner</groupId>
         <artifactId>big-math</artifactId>
-        <version>2.0.1</version>
     </dependency>
 
     <!-- Logging -->
