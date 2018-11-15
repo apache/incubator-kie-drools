@@ -42,17 +42,13 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.*;
+
 
 public class CaseInstanceAuditEventListener implements CaseEventListener, Cacheable {
 
     private static final Logger logger = LoggerFactory.getLogger(CaseInstanceAuditEventListener.class);
-    private static final String UPDATE_CASE_PROCESS_INST_ID_QUERY = "update CaseRoleAssignmentLog set processInstanceId =:piID where caseId =:caseId";
-    private static final String DELETE_CASE_ROLE_ASSIGNMENT_QUERY = "delete from CaseRoleAssignmentLog where caseId =:caseId and roleName =:role and entityId =:entity";
-    private static final String FIND_CASE_PROCESS_INST_ID_QUERY = "select processInstanceId from ProcessInstanceLog where correlationKey =:caseId";
     
-    private static final String FIND_CASE_DATA_QUERY = "select itemName from CaseFileDataLog where caseId =:caseId";
-    private static final String FIND_CASE_DATA_BY_NAME_QUERY = "select cfdl from CaseFileDataLog cfdl where cfdl.caseId =:caseId and cfdl.itemName =:itemName";
-    private static final String DELETE_CASE_DATA_BY_NAME_QUERY = "delete from CaseFileDataLog where caseId =:caseId and itemName in (:itemNames)";
     private TransactionalCommandService commandService;
     
     public CaseInstanceAuditEventListener(TransactionalCommandService commandService) {

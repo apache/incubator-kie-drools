@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 /**
  * Asynchronous log producer that puts audit log events into JMS queue.
@@ -87,7 +87,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
 
     private void initXStream() {
         if(xstream==null) {
-            xstream = createXStream();
+            xstream = createTrustingXStream();
             String[] voidDeny = {"void.class", "Void.class"};
             xstream.denyTypes(voidDeny);
         }
@@ -109,38 +109,46 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
         this.queue = queue;
     }
     
+    public boolean isTransacted() {
+        return transacted;
+    }
+
+    public void setTransacted(boolean transacted) {
+        this.transacted = transacted;
+    }
+    
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
-        sendMessage(log, BEFORE_NODE_ENTER_EVENT_TYPE);
+        sendMessage(log, BEFORE_NODE_ENTER_EVENT_TYPE, 8);
         ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().put("NodeInstanceLog", log);
     }
 
     @Override
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
         NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
-        sendMessage(log, AFTER_NODE_LEFT_EVENT_TYPE);   
+        sendMessage(log, AFTER_NODE_LEFT_EVENT_TYPE, 1);   
     }
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         List<org.kie.api.runtime.manager.audit.VariableInstanceLog> variables = indexManager.index(getBuilder(), event);
         for (org.kie.api.runtime.manager.audit.VariableInstanceLog log : variables) {  
-            sendMessage(log, AFTER_VAR_CHANGE_EVENT_TYPE);   
+            sendMessage(log, AFTER_VAR_CHANGE_EVENT_TYPE, 1);   
         }
     }
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
         ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event);
-        sendMessage(log, BEFORE_START_EVENT_TYPE);
+        sendMessage(log, BEFORE_START_EVENT_TYPE, 9);
         
     }
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
         ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event, null);
-        sendMessage(log, AFTER_COMPLETE_EVENT_TYPE);
+        sendMessage(log, AFTER_COMPLETE_EVENT_TYPE, 0);
     }
     
     @Override
@@ -149,7 +157,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     	NodeInstanceLog log = (NodeInstanceLog) ((NodeInstanceImpl) event.getNodeInstance()).getMetaData().get("NodeInstanceLog");
     	NodeInstanceLog logUpdated = (NodeInstanceLog) builder.buildEvent(event, log);
     	if (logUpdated != null) {
-    		sendMessage(log, AFTER_NODE_ENTER_EVENT_TYPE);
+    		sendMessage(log, AFTER_NODE_ENTER_EVENT_TYPE, 2);
     	}
     }
 
@@ -171,7 +179,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
     }
     
-    protected void sendMessage(Object messageContent, Integer eventType) {
+    protected void sendMessage(Object messageContent, Integer eventType, int priority) {
         if (connectionFactory == null && queue == null) {
             throw new IllegalStateException("ConnectionFactory and Queue cannot be null");
         }
@@ -185,7 +193,9 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
             String eventXml = xstream.toXML(messageContent);
             TextMessage message = queueSession.createTextMessage(eventXml);
             message.setIntProperty("EventType", eventType);
-            producer = queueSession.createProducer(queue);            
+            message.setStringProperty("LogType", "Process");
+            producer = queueSession.createProducer(queue);  
+            producer.setPriority(priority);
             producer.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Error when sending JMS message with working memory event", e);
@@ -215,14 +225,5 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
             }
         }
     }
-
-    public boolean isTransacted() {
-        return transacted;
-    }
-
-    public void setTransacted(boolean transacted) {
-        this.transacted = transacted;
-    }
-
 
 }

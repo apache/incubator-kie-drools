@@ -459,7 +459,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(1, taskInstanceLogs.size());
 
         UserTaskInstanceWithVarsDesc instance = taskInstanceLogs.get(0);
-        assertEquals(3, instance.getVariables().size());
+        assertEquals(2, instance.getVariables().size());
 
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceWithVarsQueryMapper.get(), new QueryContext(), QueryParam.equalsTo(COLUMN_TASK_VAR_NAME, "Comment"), QueryParam.equalsTo(COLUMN_TASK_VAR_VALUE, "Write a Document"));
         assertNotNull(taskInstanceLogs);

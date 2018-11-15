@@ -20,7 +20,6 @@
  */
 package org.jbpm.services.task.audit;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +50,6 @@ import org.slf4j.LoggerFactory;
 public class JPATaskLifeCycleEventListener extends PersistableEventListener implements TaskLifeCycleEventListener {
     
     private static final Logger logger = LoggerFactory.getLogger(JPATaskLifeCycleEventListener.class);
-    
-    private static final List<String> SKIPPED_TASK_VARIABLES = Arrays.asList(new String[]{"ActorId", "TaskName", "NodeName"});  
 
     public JPATaskLifeCycleEventListener(boolean flag) {
         super(null);
@@ -291,7 +288,6 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 
     @Override
     public void afterTaskReleasedEvent(TaskEvent event) {
-        String userId = event.getTaskContext().getUserId();
         Task ti = event.getTask();
         TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
         try {
@@ -756,7 +752,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
         TaskIndexerManager manager = TaskIndexerManager.get();
         
         for (Map.Entry<String, Object> variable : variables.entrySet()) {
-            if (SKIPPED_TASK_VARIABLES.contains(variable.getKey()) || variable.getValue() == null) {
+            if (TaskLifeCycleEventConstants.SKIPPED_TASK_VARIABLES.contains(variable.getKey()) || variable.getValue() == null) {
                 continue;
             }
             List<TaskVariable> taskVars = manager.index(task, variable.getKey(), variable.getValue());

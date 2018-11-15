@@ -31,7 +31,7 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createXStream;
+import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 /**
  * Asynchronous audit event receiver. Receives messages from JMS queue
@@ -65,7 +65,7 @@ public class AsyncAuditLogReceiver implements MessageListener {
 
     private void initXStream() {
         if(xstream==null) {
-            xstream = createXStream();
+            xstream = createTrustingXStream();
             String[] voidDeny = {"void.class", "Void.class"};
             xstream.denyTypes(voidDeny);
         }

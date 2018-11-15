@@ -16,22 +16,26 @@
 
 package org.jbpm.casemgmt.impl.event;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jbpm.casemgmt.api.event.CaseEventListener;
-import org.jbpm.casemgmt.impl.audit.CaseInstanceAuditEventListener;
+import org.jbpm.casemgmt.impl.audit.CaseInstanceAuditLoggerFactory;
 import org.jbpm.casemgmt.impl.wih.NotifyParentCaseEventListener;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.Closeable;
+import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;
@@ -73,7 +77,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
                 commandService = new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf());
             }
             
-            CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(commandService);
+            CaseEventListener auditEventListener = getCaseAuditEventListner(runtimeManager, commandService);
             caseEventListeners.add(auditEventListener);
             caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider));
             
@@ -144,5 +148,39 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
         parameters.put("kieContainer", runtimeManager.getKieContainer());
         
         return parameters;
+    }
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected CaseEventListener getCaseAuditEventListner(InternalRuntimeManager manager, TransactionalCommandService commandService) {
+        DeploymentDescriptor descriptor = manager.getDeploymentDescriptor();
+        if (descriptor == null) {
+            return CaseInstanceAuditLoggerFactory.newJPAInstance(commandService);
+        } else if (descriptor.getAuditMode() == AuditMode.JPA) {
+            if (descriptor.getPersistenceUnit().equals(descriptor.getAuditPersistenceUnit())) {
+                return CaseInstanceAuditLoggerFactory.newJPAInstance(commandService);
+            } else {                
+                return CaseInstanceAuditLoggerFactory.newJPAInstance(EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit()));
+            }
+        } else if (descriptor.getAuditMode() == AuditMode.JMS) {
+            
+            try {
+                Properties properties = new Properties();
+                InputStream input = manager.getEnvironment().getClassLoader().getResourceAsStream("/jbpm.audit.jms.properties");
+                if (input == null) {
+                    input = manager.getEnvironment().getClassLoader().getResourceAsStream("jbpm.audit.jms.properties");
+                }
+                properties.load(input);
+                
+                return CaseInstanceAuditLoggerFactory.newJMSInstance((Map)properties);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to create JMS audit logger", e);
+            }
+            
+        } else {
+            logger.warn("Audit mode {} is not supported for CaseInstance audit logs", descriptor.getAuditMode());
+        }
+        
+        // in case no other matched, return JPA based one
+        return CaseInstanceAuditLoggerFactory.newJPAInstance(commandService);
     }
 }

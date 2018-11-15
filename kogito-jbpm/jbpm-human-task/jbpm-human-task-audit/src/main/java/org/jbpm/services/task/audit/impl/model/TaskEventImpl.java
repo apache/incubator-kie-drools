@@ -20,13 +20,10 @@
  */
 package org.jbpm.services.task.audit.impl.model;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Date;
-
 import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -47,7 +44,9 @@ import org.kie.internal.task.api.model.TaskEvent;
 @Entity
 @Table(name = "TaskEvent")
 @SequenceGenerator(name = "taskEventIdSeq", sequenceName = "TASK_EVENT_ID_SEQ")
-public class TaskEventImpl implements TaskEvent, Externalizable {
+public class TaskEventImpl implements TaskEvent, Serializable {
+
+  private static final long serialVersionUID = 6304722095353315479L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskEventIdSeq")
@@ -151,66 +150,6 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
 
   public void setMessage(String message) {
     this.message = message;
-  }
-
-  @Override
-  public void readExternal(ObjectInput in) throws IOException,
-          ClassNotFoundException {
-	  id = in.readLong();
-	  
-	  processInstanceId = in.readLong();
-	  
-	  taskId = in.readLong();
-	  
-	  type = TaskEventType.valueOf(in.readUTF());
-
-      message = in.readUTF();
-
-	  userId = in.readUTF();
-	  
-	  workItemId = in.readLong();
-	  
-	  if (in.readBoolean()) {
-          logTime = new Date(in.readLong());
-      }
-  }
-
-  @Override
-  public void writeExternal(ObjectOutput out) throws IOException {
-	  out.writeLong( id );
-	  
-	  out.writeLong( processInstanceId );
-	  
-	  out.writeLong( taskId );
-	  
-	  if (type != null) {
-      	out.writeUTF(type.name());
-      } else {
-      	out.writeUTF("");
-      }
-
-      if (message != null) {
-        out.writeUTF(message);
-      } else {
-        out.writeUTF("");
-      }
-
-
-	  if (userId != null) {
-      	out.writeUTF(userId);
-      } else {
-      	out.writeUTF("");
-      }
-	  
-	  out.writeLong( workItemId );
-	  
-	  if (logTime != null) {
-          out.writeBoolean(true);
-          out.writeLong(logTime.getTime());
-      } else {
-          out.writeBoolean(false);
-      }
-
   }
 
   @Override
