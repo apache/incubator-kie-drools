@@ -1,10 +1,5 @@
 package org.kie.dmn.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.drools.modelcompiler.CanonicalKieModule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -22,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
@@ -234,17 +229,5 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
-    }
-
-    private Resource[] wrapWithDroolsModelResource(KieServices ks, Resource... original) {
-        List<Resource> resources = new ArrayList<>(Arrays.asList(original));
-        if(canonicalKieModule) {
-            resources.add(getDroolsModelResource(ks));
-        }
-        return resources.toArray(new Resource[0]);
-    }
-
-    private Resource getDroolsModelResource(KieServices ks) {
-        return ks.getResources().newClassPathResource("drools-model", this.getClass()).setTargetPath(CanonicalKieModule.MODEL_FILE);
     }
 }
