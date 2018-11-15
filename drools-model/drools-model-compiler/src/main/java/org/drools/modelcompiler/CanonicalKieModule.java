@@ -288,14 +288,9 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private static Collection<String> findRuleClassesNames( ClassLoader kieProjectCL) {
-        InputStream resourceAsStream = kieProjectCL.getResourceAsStream(MODEL_FILE);
-        if(resourceAsStream == null) {
-            return Collections.emptyList();
-        }
-
         String modelFiles;
         try {
-            modelFiles = new String(IoUtils.readBytesFromInputStream(resourceAsStream) );
+            modelFiles = new String( IoUtils.readBytesFromInputStream( kieProjectCL.getResourceAsStream( MODEL_FILE ) ) );
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
