@@ -65,6 +65,8 @@ public class BuiltInFunctions {
             new DecisionTableFunction(),
             new NotFunction(),
             new SortFunction(),
+            new GetEntriesFunction(),
+            new GetValueFunction()
             };
 
     public static FEELFunction[] getFunctions() {
