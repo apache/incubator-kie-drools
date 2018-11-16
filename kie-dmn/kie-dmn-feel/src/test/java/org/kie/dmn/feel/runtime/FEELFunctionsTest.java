@@ -150,7 +150,11 @@ public class FEELFunctionsTest extends BaseFEELTest {
                                                                                  BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ), null },
                 { "sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
-                { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null}
+                { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
+                { "get entries({key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
+                { "get entries({key0 : \"value0\", key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
+                { "get value({key0 : \"value0\", key1 : \"value1\"}, \"key1\")", "value1" , null},
+                { "get value({key0 : \"value0\", key1 : \"value1\"}, \"unexistent-key\")", null, null}, // no error.
         };
         return addAdditionalParameters(cases, false);
     }
