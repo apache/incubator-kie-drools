@@ -36,7 +36,9 @@ import org.kie.internal.concurrent.ExecutorProviderFactory;
 
 public class PhreakAsyncSendNode {
 
-    private static final Executor executor = ExecutorProviderFactory.getExecutorProvider().getExecutor();
+    private Executor executor() {
+        return ExecutorProviderFactory.getExecutorProvider().getExecutor();
+    }
 
     public void doNode(AsyncSendNode node,
                        AsyncSendMemory memory,
@@ -78,7 +80,7 @@ public class PhreakAsyncSendNode {
 
             LeftTuple finalLeftTuple = leftTuple;
 
-            executor.execute( () -> {
+            executor().execute( () -> {
                 // TODO context is not thread safe, it needs to be cloned
                 fetchAndSendResults( node, memory, wm, context, betaConstraints, alphaConstraints, dataProvider,
                         resultClass, finalLeftTuple, propagationContext );
