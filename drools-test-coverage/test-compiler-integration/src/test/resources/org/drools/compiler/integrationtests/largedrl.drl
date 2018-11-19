@@ -1,0 +1,10002 @@
+import org.drools.testcoverage.common.model.*;
+
+rule "R0"
+ when
+  $a : A( value > 0)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R1"
+ when
+  $a : A( value > 1)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R2"
+ when
+  $a : A( value > 2)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R3"
+ when
+  $a : A( value > 3)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R4"
+ when
+  $a : A( value > 4)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R5"
+ when
+  $a : A( value > 5)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R6"
+ when
+  $a : A( value > 6)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R7"
+ when
+  $a : A( value > 7)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R8"
+ when
+  $a : A( value > 8)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R9"
+ when
+  $a : A( value > 9)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R10"
+ when
+  $a : A( value > 10)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R11"
+ when
+  $a : A( value > 11)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R12"
+ when
+  $a : A( value > 12)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R13"
+ when
+  $a : A( value > 13)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R14"
+ when
+  $a : A( value > 14)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R15"
+ when
+  $a : A( value > 15)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R16"
+ when
+  $a : A( value > 16)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R17"
+ when
+  $a : A( value > 17)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R18"
+ when
+  $a : A( value > 18)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R19"
+ when
+  $a : A( value > 19)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R20"
+ when
+  $a : A( value > 20)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R21"
+ when
+  $a : A( value > 21)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R22"
+ when
+  $a : A( value > 22)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R23"
+ when
+  $a : A( value > 23)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R24"
+ when
+  $a : A( value > 24)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R25"
+ when
+  $a : A( value > 25)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R26"
+ when
+  $a : A( value > 26)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R27"
+ when
+  $a : A( value > 27)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R28"
+ when
+  $a : A( value > 28)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R29"
+ when
+  $a : A( value > 29)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R30"
+ when
+  $a : A( value > 30)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R31"
+ when
+  $a : A( value > 31)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R32"
+ when
+  $a : A( value > 32)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R33"
+ when
+  $a : A( value > 33)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R34"
+ when
+  $a : A( value > 34)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R35"
+ when
+  $a : A( value > 35)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R36"
+ when
+  $a : A( value > 36)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R37"
+ when
+  $a : A( value > 37)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R38"
+ when
+  $a : A( value > 38)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R39"
+ when
+  $a : A( value > 39)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R40"
+ when
+  $a : A( value > 40)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R41"
+ when
+  $a : A( value > 41)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R42"
+ when
+  $a : A( value > 42)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R43"
+ when
+  $a : A( value > 43)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R44"
+ when
+  $a : A( value > 44)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R45"
+ when
+  $a : A( value > 45)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R46"
+ when
+  $a : A( value > 46)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R47"
+ when
+  $a : A( value > 47)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R48"
+ when
+  $a : A( value > 48)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R49"
+ when
+  $a : A( value > 49)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R50"
+ when
+  $a : A( value > 50)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R51"
+ when
+  $a : A( value > 51)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R52"
+ when
+  $a : A( value > 52)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R53"
+ when
+  $a : A( value > 53)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R54"
+ when
+  $a : A( value > 54)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R55"
+ when
+  $a : A( value > 55)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R56"
+ when
+  $a : A( value > 56)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R57"
+ when
+  $a : A( value > 57)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R58"
+ when
+  $a : A( value > 58)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R59"
+ when
+  $a : A( value > 59)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R60"
+ when
+  $a : A( value > 60)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R61"
+ when
+  $a : A( value > 61)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R62"
+ when
+  $a : A( value > 62)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R63"
+ when
+  $a : A( value > 63)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R64"
+ when
+  $a : A( value > 64)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R65"
+ when
+  $a : A( value > 65)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R66"
+ when
+  $a : A( value > 66)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R67"
+ when
+  $a : A( value > 67)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R68"
+ when
+  $a : A( value > 68)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R69"
+ when
+  $a : A( value > 69)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R70"
+ when
+  $a : A( value > 70)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R71"
+ when
+  $a : A( value > 71)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R72"
+ when
+  $a : A( value > 72)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R73"
+ when
+  $a : A( value > 73)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R74"
+ when
+  $a : A( value > 74)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R75"
+ when
+  $a : A( value > 75)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R76"
+ when
+  $a : A( value > 76)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R77"
+ when
+  $a : A( value > 77)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R78"
+ when
+  $a : A( value > 78)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R79"
+ when
+  $a : A( value > 79)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R80"
+ when
+  $a : A( value > 80)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R81"
+ when
+  $a : A( value > 81)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R82"
+ when
+  $a : A( value > 82)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R83"
+ when
+  $a : A( value > 83)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R84"
+ when
+  $a : A( value > 84)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R85"
+ when
+  $a : A( value > 85)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R86"
+ when
+  $a : A( value > 86)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R87"
+ when
+  $a : A( value > 87)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R88"
+ when
+  $a : A( value > 88)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R89"
+ when
+  $a : A( value > 89)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R90"
+ when
+  $a : A( value > 90)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R91"
+ when
+  $a : A( value > 91)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R92"
+ when
+  $a : A( value > 92)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R93"
+ when
+  $a : A( value > 93)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R94"
+ when
+  $a : A( value > 94)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R95"
+ when
+  $a : A( value > 95)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R96"
+ when
+  $a : A( value > 96)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R97"
+ when
+  $a : A( value > 97)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R98"
+ when
+  $a : A( value > 98)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R99"
+ when
+  $a : A( value > 99)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R100"
+ when
+  $a : A( value > 100)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R101"
+ when
+  $a : A( value > 101)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R102"
+ when
+  $a : A( value > 102)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R103"
+ when
+  $a : A( value > 103)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R104"
+ when
+  $a : A( value > 104)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R105"
+ when
+  $a : A( value > 105)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R106"
+ when
+  $a : A( value > 106)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R107"
+ when
+  $a : A( value > 107)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R108"
+ when
+  $a : A( value > 108)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R109"
+ when
+  $a : A( value > 109)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R110"
+ when
+  $a : A( value > 110)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R111"
+ when
+  $a : A( value > 111)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R112"
+ when
+  $a : A( value > 112)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R113"
+ when
+  $a : A( value > 113)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R114"
+ when
+  $a : A( value > 114)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R115"
+ when
+  $a : A( value > 115)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R116"
+ when
+  $a : A( value > 116)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R117"
+ when
+  $a : A( value > 117)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R118"
+ when
+  $a : A( value > 118)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R119"
+ when
+  $a : A( value > 119)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R120"
+ when
+  $a : A( value > 120)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R121"
+ when
+  $a : A( value > 121)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R122"
+ when
+  $a : A( value > 122)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R123"
+ when
+  $a : A( value > 123)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R124"
+ when
+  $a : A( value > 124)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R125"
+ when
+  $a : A( value > 125)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R126"
+ when
+  $a : A( value > 126)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R127"
+ when
+  $a : A( value > 127)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R128"
+ when
+  $a : A( value > 128)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R129"
+ when
+  $a : A( value > 129)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R130"
+ when
+  $a : A( value > 130)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R131"
+ when
+  $a : A( value > 131)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R132"
+ when
+  $a : A( value > 132)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R133"
+ when
+  $a : A( value > 133)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R134"
+ when
+  $a : A( value > 134)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R135"
+ when
+  $a : A( value > 135)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R136"
+ when
+  $a : A( value > 136)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R137"
+ when
+  $a : A( value > 137)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R138"
+ when
+  $a : A( value > 138)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R139"
+ when
+  $a : A( value > 139)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R140"
+ when
+  $a : A( value > 140)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R141"
+ when
+  $a : A( value > 141)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R142"
+ when
+  $a : A( value > 142)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R143"
+ when
+  $a : A( value > 143)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R144"
+ when
+  $a : A( value > 144)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R145"
+ when
+  $a : A( value > 145)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R146"
+ when
+  $a : A( value > 146)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R147"
+ when
+  $a : A( value > 147)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R148"
+ when
+  $a : A( value > 148)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R149"
+ when
+  $a : A( value > 149)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R150"
+ when
+  $a : A( value > 150)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R151"
+ when
+  $a : A( value > 151)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R152"
+ when
+  $a : A( value > 152)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R153"
+ when
+  $a : A( value > 153)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R154"
+ when
+  $a : A( value > 154)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R155"
+ when
+  $a : A( value > 155)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R156"
+ when
+  $a : A( value > 156)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R157"
+ when
+  $a : A( value > 157)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R158"
+ when
+  $a : A( value > 158)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R159"
+ when
+  $a : A( value > 159)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R160"
+ when
+  $a : A( value > 160)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R161"
+ when
+  $a : A( value > 161)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R162"
+ when
+  $a : A( value > 162)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R163"
+ when
+  $a : A( value > 163)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R164"
+ when
+  $a : A( value > 164)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R165"
+ when
+  $a : A( value > 165)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R166"
+ when
+  $a : A( value > 166)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R167"
+ when
+  $a : A( value > 167)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R168"
+ when
+  $a : A( value > 168)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R169"
+ when
+  $a : A( value > 169)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R170"
+ when
+  $a : A( value > 170)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R171"
+ when
+  $a : A( value > 171)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R172"
+ when
+  $a : A( value > 172)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R173"
+ when
+  $a : A( value > 173)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R174"
+ when
+  $a : A( value > 174)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R175"
+ when
+  $a : A( value > 175)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R176"
+ when
+  $a : A( value > 176)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R177"
+ when
+  $a : A( value > 177)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R178"
+ when
+  $a : A( value > 178)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R179"
+ when
+  $a : A( value > 179)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R180"
+ when
+  $a : A( value > 180)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R181"
+ when
+  $a : A( value > 181)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R182"
+ when
+  $a : A( value > 182)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R183"
+ when
+  $a : A( value > 183)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R184"
+ when
+  $a : A( value > 184)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R185"
+ when
+  $a : A( value > 185)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R186"
+ when
+  $a : A( value > 186)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R187"
+ when
+  $a : A( value > 187)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R188"
+ when
+  $a : A( value > 188)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R189"
+ when
+  $a : A( value > 189)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R190"
+ when
+  $a : A( value > 190)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R191"
+ when
+  $a : A( value > 191)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R192"
+ when
+  $a : A( value > 192)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R193"
+ when
+  $a : A( value > 193)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R194"
+ when
+  $a : A( value > 194)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R195"
+ when
+  $a : A( value > 195)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R196"
+ when
+  $a : A( value > 196)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R197"
+ when
+  $a : A( value > 197)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R198"
+ when
+  $a : A( value > 198)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R199"
+ when
+  $a : A( value > 199)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R200"
+ when
+  $a : A( value > 200)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R201"
+ when
+  $a : A( value > 201)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R202"
+ when
+  $a : A( value > 202)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R203"
+ when
+  $a : A( value > 203)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R204"
+ when
+  $a : A( value > 204)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R205"
+ when
+  $a : A( value > 205)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R206"
+ when
+  $a : A( value > 206)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R207"
+ when
+  $a : A( value > 207)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R208"
+ when
+  $a : A( value > 208)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R209"
+ when
+  $a : A( value > 209)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R210"
+ when
+  $a : A( value > 210)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R211"
+ when
+  $a : A( value > 211)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R212"
+ when
+  $a : A( value > 212)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R213"
+ when
+  $a : A( value > 213)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R214"
+ when
+  $a : A( value > 214)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R215"
+ when
+  $a : A( value > 215)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R216"
+ when
+  $a : A( value > 216)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R217"
+ when
+  $a : A( value > 217)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R218"
+ when
+  $a : A( value > 218)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R219"
+ when
+  $a : A( value > 219)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R220"
+ when
+  $a : A( value > 220)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R221"
+ when
+  $a : A( value > 221)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R222"
+ when
+  $a : A( value > 222)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R223"
+ when
+  $a : A( value > 223)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R224"
+ when
+  $a : A( value > 224)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R225"
+ when
+  $a : A( value > 225)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R226"
+ when
+  $a : A( value > 226)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R227"
+ when
+  $a : A( value > 227)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R228"
+ when
+  $a : A( value > 228)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R229"
+ when
+  $a : A( value > 229)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R230"
+ when
+  $a : A( value > 230)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R231"
+ when
+  $a : A( value > 231)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R232"
+ when
+  $a : A( value > 232)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R233"
+ when
+  $a : A( value > 233)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R234"
+ when
+  $a : A( value > 234)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R235"
+ when
+  $a : A( value > 235)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R236"
+ when
+  $a : A( value > 236)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R237"
+ when
+  $a : A( value > 237)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R238"
+ when
+  $a : A( value > 238)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R239"
+ when
+  $a : A( value > 239)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R240"
+ when
+  $a : A( value > 240)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R241"
+ when
+  $a : A( value > 241)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R242"
+ when
+  $a : A( value > 242)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R243"
+ when
+  $a : A( value > 243)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R244"
+ when
+  $a : A( value > 244)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R245"
+ when
+  $a : A( value > 245)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R246"
+ when
+  $a : A( value > 246)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R247"
+ when
+  $a : A( value > 247)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R248"
+ when
+  $a : A( value > 248)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R249"
+ when
+  $a : A( value > 249)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R250"
+ when
+  $a : A( value > 250)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R251"
+ when
+  $a : A( value > 251)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R252"
+ when
+  $a : A( value > 252)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R253"
+ when
+  $a : A( value > 253)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R254"
+ when
+  $a : A( value > 254)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R255"
+ when
+  $a : A( value > 255)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R256"
+ when
+  $a : A( value > 256)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R257"
+ when
+  $a : A( value > 257)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R258"
+ when
+  $a : A( value > 258)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R259"
+ when
+  $a : A( value > 259)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R260"
+ when
+  $a : A( value > 260)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R261"
+ when
+  $a : A( value > 261)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R262"
+ when
+  $a : A( value > 262)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R263"
+ when
+  $a : A( value > 263)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R264"
+ when
+  $a : A( value > 264)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R265"
+ when
+  $a : A( value > 265)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R266"
+ when
+  $a : A( value > 266)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R267"
+ when
+  $a : A( value > 267)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R268"
+ when
+  $a : A( value > 268)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R269"
+ when
+  $a : A( value > 269)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R270"
+ when
+  $a : A( value > 270)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R271"
+ when
+  $a : A( value > 271)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R272"
+ when
+  $a : A( value > 272)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R273"
+ when
+  $a : A( value > 273)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R274"
+ when
+  $a : A( value > 274)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R275"
+ when
+  $a : A( value > 275)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R276"
+ when
+  $a : A( value > 276)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R277"
+ when
+  $a : A( value > 277)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R278"
+ when
+  $a : A( value > 278)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R279"
+ when
+  $a : A( value > 279)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R280"
+ when
+  $a : A( value > 280)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R281"
+ when
+  $a : A( value > 281)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R282"
+ when
+  $a : A( value > 282)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R283"
+ when
+  $a : A( value > 283)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R284"
+ when
+  $a : A( value > 284)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R285"
+ when
+  $a : A( value > 285)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R286"
+ when
+  $a : A( value > 286)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R287"
+ when
+  $a : A( value > 287)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R288"
+ when
+  $a : A( value > 288)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R289"
+ when
+  $a : A( value > 289)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R290"
+ when
+  $a : A( value > 290)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R291"
+ when
+  $a : A( value > 291)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R292"
+ when
+  $a : A( value > 292)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R293"
+ when
+  $a : A( value > 293)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R294"
+ when
+  $a : A( value > 294)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R295"
+ when
+  $a : A( value > 295)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R296"
+ when
+  $a : A( value > 296)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R297"
+ when
+  $a : A( value > 297)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R298"
+ when
+  $a : A( value > 298)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R299"
+ when
+  $a : A( value > 299)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R300"
+ when
+  $a : A( value > 300)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R301"
+ when
+  $a : A( value > 301)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R302"
+ when
+  $a : A( value > 302)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R303"
+ when
+  $a : A( value > 303)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R304"
+ when
+  $a : A( value > 304)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R305"
+ when
+  $a : A( value > 305)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R306"
+ when
+  $a : A( value > 306)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R307"
+ when
+  $a : A( value > 307)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R308"
+ when
+  $a : A( value > 308)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R309"
+ when
+  $a : A( value > 309)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R310"
+ when
+  $a : A( value > 310)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R311"
+ when
+  $a : A( value > 311)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R312"
+ when
+  $a : A( value > 312)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R313"
+ when
+  $a : A( value > 313)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R314"
+ when
+  $a : A( value > 314)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R315"
+ when
+  $a : A( value > 315)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R316"
+ when
+  $a : A( value > 316)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R317"
+ when
+  $a : A( value > 317)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R318"
+ when
+  $a : A( value > 318)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R319"
+ when
+  $a : A( value > 319)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R320"
+ when
+  $a : A( value > 320)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R321"
+ when
+  $a : A( value > 321)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R322"
+ when
+  $a : A( value > 322)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R323"
+ when
+  $a : A( value > 323)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R324"
+ when
+  $a : A( value > 324)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R325"
+ when
+  $a : A( value > 325)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R326"
+ when
+  $a : A( value > 326)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R327"
+ when
+  $a : A( value > 327)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R328"
+ when
+  $a : A( value > 328)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R329"
+ when
+  $a : A( value > 329)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R330"
+ when
+  $a : A( value > 330)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R331"
+ when
+  $a : A( value > 331)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R332"
+ when
+  $a : A( value > 332)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R333"
+ when
+  $a : A( value > 333)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R334"
+ when
+  $a : A( value > 334)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R335"
+ when
+  $a : A( value > 335)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R336"
+ when
+  $a : A( value > 336)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R337"
+ when
+  $a : A( value > 337)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R338"
+ when
+  $a : A( value > 338)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R339"
+ when
+  $a : A( value > 339)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R340"
+ when
+  $a : A( value > 340)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R341"
+ when
+  $a : A( value > 341)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R342"
+ when
+  $a : A( value > 342)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R343"
+ when
+  $a : A( value > 343)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R344"
+ when
+  $a : A( value > 344)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R345"
+ when
+  $a : A( value > 345)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R346"
+ when
+  $a : A( value > 346)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R347"
+ when
+  $a : A( value > 347)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R348"
+ when
+  $a : A( value > 348)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R349"
+ when
+  $a : A( value > 349)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R350"
+ when
+  $a : A( value > 350)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R351"
+ when
+  $a : A( value > 351)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R352"
+ when
+  $a : A( value > 352)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R353"
+ when
+  $a : A( value > 353)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R354"
+ when
+  $a : A( value > 354)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R355"
+ when
+  $a : A( value > 355)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R356"
+ when
+  $a : A( value > 356)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R357"
+ when
+  $a : A( value > 357)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R358"
+ when
+  $a : A( value > 358)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R359"
+ when
+  $a : A( value > 359)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R360"
+ when
+  $a : A( value > 360)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R361"
+ when
+  $a : A( value > 361)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R362"
+ when
+  $a : A( value > 362)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R363"
+ when
+  $a : A( value > 363)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R364"
+ when
+  $a : A( value > 364)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R365"
+ when
+  $a : A( value > 365)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R366"
+ when
+  $a : A( value > 366)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R367"
+ when
+  $a : A( value > 367)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R368"
+ when
+  $a : A( value > 368)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R369"
+ when
+  $a : A( value > 369)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R370"
+ when
+  $a : A( value > 370)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R371"
+ when
+  $a : A( value > 371)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R372"
+ when
+  $a : A( value > 372)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R373"
+ when
+  $a : A( value > 373)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R374"
+ when
+  $a : A( value > 374)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R375"
+ when
+  $a : A( value > 375)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R376"
+ when
+  $a : A( value > 376)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R377"
+ when
+  $a : A( value > 377)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R378"
+ when
+  $a : A( value > 378)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R379"
+ when
+  $a : A( value > 379)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R380"
+ when
+  $a : A( value > 380)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R381"
+ when
+  $a : A( value > 381)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R382"
+ when
+  $a : A( value > 382)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R383"
+ when
+  $a : A( value > 383)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R384"
+ when
+  $a : A( value > 384)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R385"
+ when
+  $a : A( value > 385)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R386"
+ when
+  $a : A( value > 386)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R387"
+ when
+  $a : A( value > 387)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R388"
+ when
+  $a : A( value > 388)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R389"
+ when
+  $a : A( value > 389)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R390"
+ when
+  $a : A( value > 390)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R391"
+ when
+  $a : A( value > 391)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R392"
+ when
+  $a : A( value > 392)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R393"
+ when
+  $a : A( value > 393)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R394"
+ when
+  $a : A( value > 394)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R395"
+ when
+  $a : A( value > 395)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R396"
+ when
+  $a : A( value > 396)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R397"
+ when
+  $a : A( value > 397)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R398"
+ when
+  $a : A( value > 398)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R399"
+ when
+  $a : A( value > 399)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R400"
+ when
+  $a : A( value > 400)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R401"
+ when
+  $a : A( value > 401)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R402"
+ when
+  $a : A( value > 402)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R403"
+ when
+  $a : A( value > 403)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R404"
+ when
+  $a : A( value > 404)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R405"
+ when
+  $a : A( value > 405)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R406"
+ when
+  $a : A( value > 406)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R407"
+ when
+  $a : A( value > 407)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R408"
+ when
+  $a : A( value > 408)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R409"
+ when
+  $a : A( value > 409)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R410"
+ when
+  $a : A( value > 410)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R411"
+ when
+  $a : A( value > 411)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R412"
+ when
+  $a : A( value > 412)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R413"
+ when
+  $a : A( value > 413)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R414"
+ when
+  $a : A( value > 414)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R415"
+ when
+  $a : A( value > 415)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R416"
+ when
+  $a : A( value > 416)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R417"
+ when
+  $a : A( value > 417)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R418"
+ when
+  $a : A( value > 418)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R419"
+ when
+  $a : A( value > 419)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R420"
+ when
+  $a : A( value > 420)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R421"
+ when
+  $a : A( value > 421)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R422"
+ when
+  $a : A( value > 422)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R423"
+ when
+  $a : A( value > 423)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R424"
+ when
+  $a : A( value > 424)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R425"
+ when
+  $a : A( value > 425)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R426"
+ when
+  $a : A( value > 426)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R427"
+ when
+  $a : A( value > 427)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R428"
+ when
+  $a : A( value > 428)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R429"
+ when
+  $a : A( value > 429)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R430"
+ when
+  $a : A( value > 430)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R431"
+ when
+  $a : A( value > 431)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R432"
+ when
+  $a : A( value > 432)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R433"
+ when
+  $a : A( value > 433)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R434"
+ when
+  $a : A( value > 434)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R435"
+ when
+  $a : A( value > 435)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R436"
+ when
+  $a : A( value > 436)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R437"
+ when
+  $a : A( value > 437)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R438"
+ when
+  $a : A( value > 438)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R439"
+ when
+  $a : A( value > 439)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R440"
+ when
+  $a : A( value > 440)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R441"
+ when
+  $a : A( value > 441)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R442"
+ when
+  $a : A( value > 442)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R443"
+ when
+  $a : A( value > 443)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R444"
+ when
+  $a : A( value > 444)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R445"
+ when
+  $a : A( value > 445)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R446"
+ when
+  $a : A( value > 446)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R447"
+ when
+  $a : A( value > 447)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R448"
+ when
+  $a : A( value > 448)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R449"
+ when
+  $a : A( value > 449)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R450"
+ when
+  $a : A( value > 450)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R451"
+ when
+  $a : A( value > 451)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R452"
+ when
+  $a : A( value > 452)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R453"
+ when
+  $a : A( value > 453)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R454"
+ when
+  $a : A( value > 454)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R455"
+ when
+  $a : A( value > 455)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R456"
+ when
+  $a : A( value > 456)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R457"
+ when
+  $a : A( value > 457)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R458"
+ when
+  $a : A( value > 458)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R459"
+ when
+  $a : A( value > 459)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R460"
+ when
+  $a : A( value > 460)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R461"
+ when
+  $a : A( value > 461)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R462"
+ when
+  $a : A( value > 462)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R463"
+ when
+  $a : A( value > 463)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R464"
+ when
+  $a : A( value > 464)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R465"
+ when
+  $a : A( value > 465)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R466"
+ when
+  $a : A( value > 466)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R467"
+ when
+  $a : A( value > 467)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R468"
+ when
+  $a : A( value > 468)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R469"
+ when
+  $a : A( value > 469)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R470"
+ when
+  $a : A( value > 470)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R471"
+ when
+  $a : A( value > 471)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R472"
+ when
+  $a : A( value > 472)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R473"
+ when
+  $a : A( value > 473)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R474"
+ when
+  $a : A( value > 474)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R475"
+ when
+  $a : A( value > 475)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R476"
+ when
+  $a : A( value > 476)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R477"
+ when
+  $a : A( value > 477)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R478"
+ when
+  $a : A( value > 478)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R479"
+ when
+  $a : A( value > 479)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R480"
+ when
+  $a : A( value > 480)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R481"
+ when
+  $a : A( value > 481)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R482"
+ when
+  $a : A( value > 482)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R483"
+ when
+  $a : A( value > 483)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R484"
+ when
+  $a : A( value > 484)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R485"
+ when
+  $a : A( value > 485)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R486"
+ when
+  $a : A( value > 486)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R487"
+ when
+  $a : A( value > 487)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R488"
+ when
+  $a : A( value > 488)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R489"
+ when
+  $a : A( value > 489)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R490"
+ when
+  $a : A( value > 490)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R491"
+ when
+  $a : A( value > 491)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R492"
+ when
+  $a : A( value > 492)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R493"
+ when
+  $a : A( value > 493)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R494"
+ when
+  $a : A( value > 494)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R495"
+ when
+  $a : A( value > 495)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R496"
+ when
+  $a : A( value > 496)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R497"
+ when
+  $a : A( value > 497)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R498"
+ when
+  $a : A( value > 498)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R499"
+ when
+  $a : A( value > 499)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R500"
+ when
+  $a : A( value > 500)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R501"
+ when
+  $a : A( value > 501)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R502"
+ when
+  $a : A( value > 502)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R503"
+ when
+  $a : A( value > 503)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R504"
+ when
+  $a : A( value > 504)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R505"
+ when
+  $a : A( value > 505)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R506"
+ when
+  $a : A( value > 506)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R507"
+ when
+  $a : A( value > 507)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R508"
+ when
+  $a : A( value > 508)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R509"
+ when
+  $a : A( value > 509)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R510"
+ when
+  $a : A( value > 510)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R511"
+ when
+  $a : A( value > 511)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R512"
+ when
+  $a : A( value > 512)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R513"
+ when
+  $a : A( value > 513)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R514"
+ when
+  $a : A( value > 514)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R515"
+ when
+  $a : A( value > 515)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R516"
+ when
+  $a : A( value > 516)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R517"
+ when
+  $a : A( value > 517)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R518"
+ when
+  $a : A( value > 518)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R519"
+ when
+  $a : A( value > 519)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R520"
+ when
+  $a : A( value > 520)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R521"
+ when
+  $a : A( value > 521)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R522"
+ when
+  $a : A( value > 522)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R523"
+ when
+  $a : A( value > 523)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R524"
+ when
+  $a : A( value > 524)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R525"
+ when
+  $a : A( value > 525)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R526"
+ when
+  $a : A( value > 526)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R527"
+ when
+  $a : A( value > 527)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R528"
+ when
+  $a : A( value > 528)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R529"
+ when
+  $a : A( value > 529)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R530"
+ when
+  $a : A( value > 530)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R531"
+ when
+  $a : A( value > 531)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R532"
+ when
+  $a : A( value > 532)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R533"
+ when
+  $a : A( value > 533)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R534"
+ when
+  $a : A( value > 534)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R535"
+ when
+  $a : A( value > 535)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R536"
+ when
+  $a : A( value > 536)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R537"
+ when
+  $a : A( value > 537)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R538"
+ when
+  $a : A( value > 538)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R539"
+ when
+  $a : A( value > 539)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R540"
+ when
+  $a : A( value > 540)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R541"
+ when
+  $a : A( value > 541)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R542"
+ when
+  $a : A( value > 542)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R543"
+ when
+  $a : A( value > 543)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R544"
+ when
+  $a : A( value > 544)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R545"
+ when
+  $a : A( value > 545)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R546"
+ when
+  $a : A( value > 546)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R547"
+ when
+  $a : A( value > 547)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R548"
+ when
+  $a : A( value > 548)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R549"
+ when
+  $a : A( value > 549)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R550"
+ when
+  $a : A( value > 550)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R551"
+ when
+  $a : A( value > 551)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R552"
+ when
+  $a : A( value > 552)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R553"
+ when
+  $a : A( value > 553)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R554"
+ when
+  $a : A( value > 554)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R555"
+ when
+  $a : A( value > 555)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R556"
+ when
+  $a : A( value > 556)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R557"
+ when
+  $a : A( value > 557)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R558"
+ when
+  $a : A( value > 558)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R559"
+ when
+  $a : A( value > 559)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R560"
+ when
+  $a : A( value > 560)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R561"
+ when
+  $a : A( value > 561)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R562"
+ when
+  $a : A( value > 562)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R563"
+ when
+  $a : A( value > 563)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R564"
+ when
+  $a : A( value > 564)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R565"
+ when
+  $a : A( value > 565)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R566"
+ when
+  $a : A( value > 566)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R567"
+ when
+  $a : A( value > 567)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R568"
+ when
+  $a : A( value > 568)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R569"
+ when
+  $a : A( value > 569)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R570"
+ when
+  $a : A( value > 570)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R571"
+ when
+  $a : A( value > 571)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R572"
+ when
+  $a : A( value > 572)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R573"
+ when
+  $a : A( value > 573)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R574"
+ when
+  $a : A( value > 574)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R575"
+ when
+  $a : A( value > 575)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R576"
+ when
+  $a : A( value > 576)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R577"
+ when
+  $a : A( value > 577)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R578"
+ when
+  $a : A( value > 578)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R579"
+ when
+  $a : A( value > 579)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R580"
+ when
+  $a : A( value > 580)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R581"
+ when
+  $a : A( value > 581)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R582"
+ when
+  $a : A( value > 582)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R583"
+ when
+  $a : A( value > 583)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R584"
+ when
+  $a : A( value > 584)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R585"
+ when
+  $a : A( value > 585)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R586"
+ when
+  $a : A( value > 586)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R587"
+ when
+  $a : A( value > 587)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R588"
+ when
+  $a : A( value > 588)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R589"
+ when
+  $a : A( value > 589)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R590"
+ when
+  $a : A( value > 590)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R591"
+ when
+  $a : A( value > 591)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R592"
+ when
+  $a : A( value > 592)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R593"
+ when
+  $a : A( value > 593)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R594"
+ when
+  $a : A( value > 594)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R595"
+ when
+  $a : A( value > 595)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R596"
+ when
+  $a : A( value > 596)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R597"
+ when
+  $a : A( value > 597)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R598"
+ when
+  $a : A( value > 598)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R599"
+ when
+  $a : A( value > 599)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R600"
+ when
+  $a : A( value > 600)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R601"
+ when
+  $a : A( value > 601)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R602"
+ when
+  $a : A( value > 602)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R603"
+ when
+  $a : A( value > 603)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R604"
+ when
+  $a : A( value > 604)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R605"
+ when
+  $a : A( value > 605)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R606"
+ when
+  $a : A( value > 606)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R607"
+ when
+  $a : A( value > 607)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R608"
+ when
+  $a : A( value > 608)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R609"
+ when
+  $a : A( value > 609)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R610"
+ when
+  $a : A( value > 610)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R611"
+ when
+  $a : A( value > 611)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R612"
+ when
+  $a : A( value > 612)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R613"
+ when
+  $a : A( value > 613)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R614"
+ when
+  $a : A( value > 614)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R615"
+ when
+  $a : A( value > 615)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R616"
+ when
+  $a : A( value > 616)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R617"
+ when
+  $a : A( value > 617)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R618"
+ when
+  $a : A( value > 618)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R619"
+ when
+  $a : A( value > 619)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R620"
+ when
+  $a : A( value > 620)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R621"
+ when
+  $a : A( value > 621)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R622"
+ when
+  $a : A( value > 622)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R623"
+ when
+  $a : A( value > 623)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R624"
+ when
+  $a : A( value > 624)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R625"
+ when
+  $a : A( value > 625)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R626"
+ when
+  $a : A( value > 626)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R627"
+ when
+  $a : A( value > 627)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R628"
+ when
+  $a : A( value > 628)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R629"
+ when
+  $a : A( value > 629)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R630"
+ when
+  $a : A( value > 630)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R631"
+ when
+  $a : A( value > 631)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R632"
+ when
+  $a : A( value > 632)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R633"
+ when
+  $a : A( value > 633)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R634"
+ when
+  $a : A( value > 634)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R635"
+ when
+  $a : A( value > 635)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R636"
+ when
+  $a : A( value > 636)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R637"
+ when
+  $a : A( value > 637)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R638"
+ when
+  $a : A( value > 638)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R639"
+ when
+  $a : A( value > 639)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R640"
+ when
+  $a : A( value > 640)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R641"
+ when
+  $a : A( value > 641)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R642"
+ when
+  $a : A( value > 642)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R643"
+ when
+  $a : A( value > 643)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R644"
+ when
+  $a : A( value > 644)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R645"
+ when
+  $a : A( value > 645)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R646"
+ when
+  $a : A( value > 646)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R647"
+ when
+  $a : A( value > 647)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R648"
+ when
+  $a : A( value > 648)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R649"
+ when
+  $a : A( value > 649)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R650"
+ when
+  $a : A( value > 650)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R651"
+ when
+  $a : A( value > 651)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R652"
+ when
+  $a : A( value > 652)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R653"
+ when
+  $a : A( value > 653)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R654"
+ when
+  $a : A( value > 654)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R655"
+ when
+  $a : A( value > 655)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R656"
+ when
+  $a : A( value > 656)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R657"
+ when
+  $a : A( value > 657)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R658"
+ when
+  $a : A( value > 658)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R659"
+ when
+  $a : A( value > 659)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R660"
+ when
+  $a : A( value > 660)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R661"
+ when
+  $a : A( value > 661)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R662"
+ when
+  $a : A( value > 662)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R663"
+ when
+  $a : A( value > 663)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R664"
+ when
+  $a : A( value > 664)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R665"
+ when
+  $a : A( value > 665)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R666"
+ when
+  $a : A( value > 666)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R667"
+ when
+  $a : A( value > 667)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R668"
+ when
+  $a : A( value > 668)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R669"
+ when
+  $a : A( value > 669)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R670"
+ when
+  $a : A( value > 670)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R671"
+ when
+  $a : A( value > 671)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R672"
+ when
+  $a : A( value > 672)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R673"
+ when
+  $a : A( value > 673)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R674"
+ when
+  $a : A( value > 674)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R675"
+ when
+  $a : A( value > 675)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R676"
+ when
+  $a : A( value > 676)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R677"
+ when
+  $a : A( value > 677)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R678"
+ when
+  $a : A( value > 678)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R679"
+ when
+  $a : A( value > 679)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R680"
+ when
+  $a : A( value > 680)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R681"
+ when
+  $a : A( value > 681)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R682"
+ when
+  $a : A( value > 682)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R683"
+ when
+  $a : A( value > 683)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R684"
+ when
+  $a : A( value > 684)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R685"
+ when
+  $a : A( value > 685)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R686"
+ when
+  $a : A( value > 686)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R687"
+ when
+  $a : A( value > 687)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R688"
+ when
+  $a : A( value > 688)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R689"
+ when
+  $a : A( value > 689)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R690"
+ when
+  $a : A( value > 690)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R691"
+ when
+  $a : A( value > 691)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R692"
+ when
+  $a : A( value > 692)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R693"
+ when
+  $a : A( value > 693)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R694"
+ when
+  $a : A( value > 694)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R695"
+ when
+  $a : A( value > 695)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R696"
+ when
+  $a : A( value > 696)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R697"
+ when
+  $a : A( value > 697)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R698"
+ when
+  $a : A( value > 698)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R699"
+ when
+  $a : A( value > 699)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R700"
+ when
+  $a : A( value > 700)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R701"
+ when
+  $a : A( value > 701)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R702"
+ when
+  $a : A( value > 702)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R703"
+ when
+  $a : A( value > 703)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R704"
+ when
+  $a : A( value > 704)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R705"
+ when
+  $a : A( value > 705)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R706"
+ when
+  $a : A( value > 706)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R707"
+ when
+  $a : A( value > 707)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R708"
+ when
+  $a : A( value > 708)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R709"
+ when
+  $a : A( value > 709)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R710"
+ when
+  $a : A( value > 710)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R711"
+ when
+  $a : A( value > 711)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R712"
+ when
+  $a : A( value > 712)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R713"
+ when
+  $a : A( value > 713)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R714"
+ when
+  $a : A( value > 714)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R715"
+ when
+  $a : A( value > 715)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R716"
+ when
+  $a : A( value > 716)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R717"
+ when
+  $a : A( value > 717)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R718"
+ when
+  $a : A( value > 718)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R719"
+ when
+  $a : A( value > 719)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R720"
+ when
+  $a : A( value > 720)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R721"
+ when
+  $a : A( value > 721)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R722"
+ when
+  $a : A( value > 722)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R723"
+ when
+  $a : A( value > 723)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R724"
+ when
+  $a : A( value > 724)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R725"
+ when
+  $a : A( value > 725)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R726"
+ when
+  $a : A( value > 726)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R727"
+ when
+  $a : A( value > 727)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R728"
+ when
+  $a : A( value > 728)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R729"
+ when
+  $a : A( value > 729)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R730"
+ when
+  $a : A( value > 730)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R731"
+ when
+  $a : A( value > 731)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R732"
+ when
+  $a : A( value > 732)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R733"
+ when
+  $a : A( value > 733)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R734"
+ when
+  $a : A( value > 734)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R735"
+ when
+  $a : A( value > 735)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R736"
+ when
+  $a : A( value > 736)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R737"
+ when
+  $a : A( value > 737)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R738"
+ when
+  $a : A( value > 738)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R739"
+ when
+  $a : A( value > 739)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R740"
+ when
+  $a : A( value > 740)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R741"
+ when
+  $a : A( value > 741)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R742"
+ when
+  $a : A( value > 742)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R743"
+ when
+  $a : A( value > 743)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R744"
+ when
+  $a : A( value > 744)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R745"
+ when
+  $a : A( value > 745)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R746"
+ when
+  $a : A( value > 746)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R747"
+ when
+  $a : A( value > 747)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R748"
+ when
+  $a : A( value > 748)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R749"
+ when
+  $a : A( value > 749)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R750"
+ when
+  $a : A( value > 750)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R751"
+ when
+  $a : A( value > 751)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R752"
+ when
+  $a : A( value > 752)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R753"
+ when
+  $a : A( value > 753)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R754"
+ when
+  $a : A( value > 754)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R755"
+ when
+  $a : A( value > 755)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R756"
+ when
+  $a : A( value > 756)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R757"
+ when
+  $a : A( value > 757)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R758"
+ when
+  $a : A( value > 758)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R759"
+ when
+  $a : A( value > 759)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R760"
+ when
+  $a : A( value > 760)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R761"
+ when
+  $a : A( value > 761)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R762"
+ when
+  $a : A( value > 762)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R763"
+ when
+  $a : A( value > 763)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R764"
+ when
+  $a : A( value > 764)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R765"
+ when
+  $a : A( value > 765)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R766"
+ when
+  $a : A( value > 766)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R767"
+ when
+  $a : A( value > 767)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R768"
+ when
+  $a : A( value > 768)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R769"
+ when
+  $a : A( value > 769)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R770"
+ when
+  $a : A( value > 770)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R771"
+ when
+  $a : A( value > 771)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R772"
+ when
+  $a : A( value > 772)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R773"
+ when
+  $a : A( value > 773)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R774"
+ when
+  $a : A( value > 774)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R775"
+ when
+  $a : A( value > 775)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R776"
+ when
+  $a : A( value > 776)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R777"
+ when
+  $a : A( value > 777)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R778"
+ when
+  $a : A( value > 778)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R779"
+ when
+  $a : A( value > 779)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R780"
+ when
+  $a : A( value > 780)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R781"
+ when
+  $a : A( value > 781)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R782"
+ when
+  $a : A( value > 782)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R783"
+ when
+  $a : A( value > 783)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R784"
+ when
+  $a : A( value > 784)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R785"
+ when
+  $a : A( value > 785)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R786"
+ when
+  $a : A( value > 786)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R787"
+ when
+  $a : A( value > 787)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R788"
+ when
+  $a : A( value > 788)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R789"
+ when
+  $a : A( value > 789)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R790"
+ when
+  $a : A( value > 790)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R791"
+ when
+  $a : A( value > 791)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R792"
+ when
+  $a : A( value > 792)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R793"
+ when
+  $a : A( value > 793)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R794"
+ when
+  $a : A( value > 794)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R795"
+ when
+  $a : A( value > 795)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R796"
+ when
+  $a : A( value > 796)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R797"
+ when
+  $a : A( value > 797)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R798"
+ when
+  $a : A( value > 798)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R799"
+ when
+  $a : A( value > 799)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R800"
+ when
+  $a : A( value > 800)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R801"
+ when
+  $a : A( value > 801)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R802"
+ when
+  $a : A( value > 802)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R803"
+ when
+  $a : A( value > 803)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R804"
+ when
+  $a : A( value > 804)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R805"
+ when
+  $a : A( value > 805)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R806"
+ when
+  $a : A( value > 806)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R807"
+ when
+  $a : A( value > 807)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R808"
+ when
+  $a : A( value > 808)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R809"
+ when
+  $a : A( value > 809)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R810"
+ when
+  $a : A( value > 810)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R811"
+ when
+  $a : A( value > 811)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R812"
+ when
+  $a : A( value > 812)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R813"
+ when
+  $a : A( value > 813)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R814"
+ when
+  $a : A( value > 814)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R815"
+ when
+  $a : A( value > 815)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R816"
+ when
+  $a : A( value > 816)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R817"
+ when
+  $a : A( value > 817)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R818"
+ when
+  $a : A( value > 818)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R819"
+ when
+  $a : A( value > 819)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R820"
+ when
+  $a : A( value > 820)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R821"
+ when
+  $a : A( value > 821)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R822"
+ when
+  $a : A( value > 822)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R823"
+ when
+  $a : A( value > 823)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R824"
+ when
+  $a : A( value > 824)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R825"
+ when
+  $a : A( value > 825)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R826"
+ when
+  $a : A( value > 826)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R827"
+ when
+  $a : A( value > 827)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R828"
+ when
+  $a : A( value > 828)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R829"
+ when
+  $a : A( value > 829)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R830"
+ when
+  $a : A( value > 830)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R831"
+ when
+  $a : A( value > 831)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R832"
+ when
+  $a : A( value > 832)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R833"
+ when
+  $a : A( value > 833)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R834"
+ when
+  $a : A( value > 834)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R835"
+ when
+  $a : A( value > 835)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R836"
+ when
+  $a : A( value > 836)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R837"
+ when
+  $a : A( value > 837)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R838"
+ when
+  $a : A( value > 838)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R839"
+ when
+  $a : A( value > 839)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R840"
+ when
+  $a : A( value > 840)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R841"
+ when
+  $a : A( value > 841)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R842"
+ when
+  $a : A( value > 842)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R843"
+ when
+  $a : A( value > 843)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R844"
+ when
+  $a : A( value > 844)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R845"
+ when
+  $a : A( value > 845)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R846"
+ when
+  $a : A( value > 846)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R847"
+ when
+  $a : A( value > 847)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R848"
+ when
+  $a : A( value > 848)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R849"
+ when
+  $a : A( value > 849)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R850"
+ when
+  $a : A( value > 850)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R851"
+ when
+  $a : A( value > 851)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R852"
+ when
+  $a : A( value > 852)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R853"
+ when
+  $a : A( value > 853)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R854"
+ when
+  $a : A( value > 854)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R855"
+ when
+  $a : A( value > 855)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R856"
+ when
+  $a : A( value > 856)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R857"
+ when
+  $a : A( value > 857)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R858"
+ when
+  $a : A( value > 858)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R859"
+ when
+  $a : A( value > 859)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R860"
+ when
+  $a : A( value > 860)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R861"
+ when
+  $a : A( value > 861)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R862"
+ when
+  $a : A( value > 862)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R863"
+ when
+  $a : A( value > 863)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R864"
+ when
+  $a : A( value > 864)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R865"
+ when
+  $a : A( value > 865)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R866"
+ when
+  $a : A( value > 866)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R867"
+ when
+  $a : A( value > 867)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R868"
+ when
+  $a : A( value > 868)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R869"
+ when
+  $a : A( value > 869)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R870"
+ when
+  $a : A( value > 870)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R871"
+ when
+  $a : A( value > 871)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R872"
+ when
+  $a : A( value > 872)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R873"
+ when
+  $a : A( value > 873)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R874"
+ when
+  $a : A( value > 874)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R875"
+ when
+  $a : A( value > 875)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R876"
+ when
+  $a : A( value > 876)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R877"
+ when
+  $a : A( value > 877)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R878"
+ when
+  $a : A( value > 878)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R879"
+ when
+  $a : A( value > 879)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R880"
+ when
+  $a : A( value > 880)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R881"
+ when
+  $a : A( value > 881)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R882"
+ when
+  $a : A( value > 882)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R883"
+ when
+  $a : A( value > 883)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R884"
+ when
+  $a : A( value > 884)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R885"
+ when
+  $a : A( value > 885)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R886"
+ when
+  $a : A( value > 886)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R887"
+ when
+  $a : A( value > 887)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R888"
+ when
+  $a : A( value > 888)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R889"
+ when
+  $a : A( value > 889)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R890"
+ when
+  $a : A( value > 890)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R891"
+ when
+  $a : A( value > 891)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R892"
+ when
+  $a : A( value > 892)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R893"
+ when
+  $a : A( value > 893)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R894"
+ when
+  $a : A( value > 894)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R895"
+ when
+  $a : A( value > 895)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R896"
+ when
+  $a : A( value > 896)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R897"
+ when
+  $a : A( value > 897)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R898"
+ when
+  $a : A( value > 898)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R899"
+ when
+  $a : A( value > 899)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R900"
+ when
+  $a : A( value > 900)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R901"
+ when
+  $a : A( value > 901)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R902"
+ when
+  $a : A( value > 902)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R903"
+ when
+  $a : A( value > 903)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R904"
+ when
+  $a : A( value > 904)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R905"
+ when
+  $a : A( value > 905)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R906"
+ when
+  $a : A( value > 906)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R907"
+ when
+  $a : A( value > 907)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R908"
+ when
+  $a : A( value > 908)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R909"
+ when
+  $a : A( value > 909)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R910"
+ when
+  $a : A( value > 910)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R911"
+ when
+  $a : A( value > 911)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R912"
+ when
+  $a : A( value > 912)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R913"
+ when
+  $a : A( value > 913)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R914"
+ when
+  $a : A( value > 914)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R915"
+ when
+  $a : A( value > 915)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R916"
+ when
+  $a : A( value > 916)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R917"
+ when
+  $a : A( value > 917)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R918"
+ when
+  $a : A( value > 918)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R919"
+ when
+  $a : A( value > 919)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R920"
+ when
+  $a : A( value > 920)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R921"
+ when
+  $a : A( value > 921)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R922"
+ when
+  $a : A( value > 922)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R923"
+ when
+  $a : A( value > 923)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R924"
+ when
+  $a : A( value > 924)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R925"
+ when
+  $a : A( value > 925)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R926"
+ when
+  $a : A( value > 926)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R927"
+ when
+  $a : A( value > 927)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R928"
+ when
+  $a : A( value > 928)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R929"
+ when
+  $a : A( value > 929)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R930"
+ when
+  $a : A( value > 930)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R931"
+ when
+  $a : A( value > 931)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R932"
+ when
+  $a : A( value > 932)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R933"
+ when
+  $a : A( value > 933)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R934"
+ when
+  $a : A( value > 934)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R935"
+ when
+  $a : A( value > 935)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R936"
+ when
+  $a : A( value > 936)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R937"
+ when
+  $a : A( value > 937)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R938"
+ when
+  $a : A( value > 938)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R939"
+ when
+  $a : A( value > 939)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R940"
+ when
+  $a : A( value > 940)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R941"
+ when
+  $a : A( value > 941)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R942"
+ when
+  $a : A( value > 942)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R943"
+ when
+  $a : A( value > 943)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R944"
+ when
+  $a : A( value > 944)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R945"
+ when
+  $a : A( value > 945)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R946"
+ when
+  $a : A( value > 946)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R947"
+ when
+  $a : A( value > 947)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R948"
+ when
+  $a : A( value > 948)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R949"
+ when
+  $a : A( value > 949)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R950"
+ when
+  $a : A( value > 950)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R951"
+ when
+  $a : A( value > 951)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R952"
+ when
+  $a : A( value > 952)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R953"
+ when
+  $a : A( value > 953)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R954"
+ when
+  $a : A( value > 954)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R955"
+ when
+  $a : A( value > 955)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R956"
+ when
+  $a : A( value > 956)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R957"
+ when
+  $a : A( value > 957)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R958"
+ when
+  $a : A( value > 958)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R959"
+ when
+  $a : A( value > 959)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R960"
+ when
+  $a : A( value > 960)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R961"
+ when
+  $a : A( value > 961)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R962"
+ when
+  $a : A( value > 962)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R963"
+ when
+  $a : A( value > 963)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R964"
+ when
+  $a : A( value > 964)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R965"
+ when
+  $a : A( value > 965)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R966"
+ when
+  $a : A( value > 966)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R967"
+ when
+  $a : A( value > 967)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R968"
+ when
+  $a : A( value > 968)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R969"
+ when
+  $a : A( value > 969)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R970"
+ when
+  $a : A( value > 970)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R971"
+ when
+  $a : A( value > 971)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R972"
+ when
+  $a : A( value > 972)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R973"
+ when
+  $a : A( value > 973)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R974"
+ when
+  $a : A( value > 974)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R975"
+ when
+  $a : A( value > 975)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R976"
+ when
+  $a : A( value > 976)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R977"
+ when
+  $a : A( value > 977)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R978"
+ when
+  $a : A( value > 978)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R979"
+ when
+  $a : A( value > 979)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R980"
+ when
+  $a : A( value > 980)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R981"
+ when
+  $a : A( value > 981)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R982"
+ when
+  $a : A( value > 982)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R983"
+ when
+  $a : A( value > 983)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R984"
+ when
+  $a : A( value > 984)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R985"
+ when
+  $a : A( value > 985)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R986"
+ when
+  $a : A( value > 986)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R987"
+ when
+  $a : A( value > 987)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R988"
+ when
+  $a : A( value > 988)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R989"
+ when
+  $a : A( value > 989)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R990"
+ when
+  $a : A( value > 990)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R991"
+ when
+  $a : A( value > 991)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R992"
+ when
+  $a : A( value > 992)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R993"
+ when
+  $a : A( value > 993)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R994"
+ when
+  $a : A( value > 994)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R995"
+ when
+  $a : A( value > 995)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R996"
+ when
+  $a : A( value > 996)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R997"
+ when
+  $a : A( value > 997)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R998"
+ when
+  $a : A( value > 998)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R999"
+ when
+  $a : A( value > 999)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
