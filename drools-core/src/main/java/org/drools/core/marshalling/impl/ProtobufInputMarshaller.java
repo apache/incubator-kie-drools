@@ -306,33 +306,7 @@ public class ProtobufInputMarshaller {
                                          RuleData _session) {
         for ( ProtobufMessages.NodeMemory _node : _session.getNodeMemoryList() ) {
             Object memory = null;
-            Object memory2 = null;
             switch ( _node.getNodeType() ) {
-                case ACCUMULATE : {
-                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
-                    for ( ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext _ctx : _node.getAccumulate().getContextList() ) {
-                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
-                    }
-                    memory = map;
-                    break;
-                }
-                case RIA : {
-                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
-                    for ( ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext _ctx : _node.getRia().getContextList() ) {
-                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
-                    }
-                    memory = map;
-                    break;
-                }
-                case FROM : {
-                    Map<TupleKey, List<ProtobufMessages.FactHandle>> map = new HashMap<>();
-                    for ( ProtobufMessages.NodeMemory.FromNodeMemory.FromContext _ctx : _node.getFrom().getContextList() ) {
-                        // have to instantiate a modifiable list
-                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new LinkedList<>(_ctx.getHandleList()) );
-                    }
-                    memory = map;
-                    break;
-                }
                 case QUERY_ELEMENT : {
                     Map<TupleKey, QueryElementContext> map = new HashMap<TupleKey, QueryElementContext>();
                     for ( ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx : _node.getQueryElement().getContextList() ) {
