@@ -95,7 +95,7 @@
             <configuration>
               <artifactSet>
                 <includes>
-				  <include>ch.obermuhlner:big-math</include> <!-- This library is not OSGi-fied, yet. -->
+                  <include>ch.obermuhlner:big-math</include> <!-- This library is not OSGi-fied, yet. -->
                 </includes>
               </artifactSet>
             </configuration>
