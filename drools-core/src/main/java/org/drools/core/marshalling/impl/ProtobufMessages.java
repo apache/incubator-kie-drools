@@ -29180,13 +29180,17 @@ public final class ProtobufMessages {
     int getStrategyIndex();
 
     /**
-     * <code>optional bytes object = 13;</code>
+     * <code>repeated bytes object = 13;</code>
      */
-    boolean hasObject();
+    java.util.List<com.google.protobuf.ByteString> getObjectList();
     /**
-     * <code>optional bytes object = 13;</code>
+     * <code>repeated bytes object = 13;</code>
      */
-    com.google.protobuf.ByteString getObject();
+    int getObjectCount();
+    /**
+     * <code>repeated bytes object = 13;</code>
+     */
+    com.google.protobuf.ByteString getObject(int index);
 
     /**
      * <code>optional int32 node_id = 14;</code>
@@ -29219,7 +29223,7 @@ public final class ProtobufMessages {
       logicalDependency_ = java.util.Collections.emptyList();
       evaluated_ = false;
       strategyIndex_ = 0;
-      object_ = com.google.protobuf.ByteString.EMPTY;
+      object_ = java.util.Collections.emptyList();
       nodeId_ = 0;
     }
 
@@ -29332,12 +29336,15 @@ public final class ProtobufMessages {
               break;
             }
             case 106: {
-              bitField0_ |= 0x00000200;
-              object_ = input.readBytes();
+              if (!((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+                object_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                mutable_bitField0_ |= 0x00000400;
+              }
+              object_.add(input.readBytes());
               break;
             }
             case 112: {
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000200;
               nodeId_ = input.readInt32();
               break;
             }
@@ -29351,6 +29358,9 @@ public final class ProtobufMessages {
       } finally {
         if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
           logicalDependency_ = java.util.Collections.unmodifiableList(logicalDependency_);
+        }
+        if (((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+          object_ = java.util.Collections.unmodifiableList(object_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -29638,18 +29648,25 @@ public final class ProtobufMessages {
     }
 
     public static final int OBJECT_FIELD_NUMBER = 13;
-    private com.google.protobuf.ByteString object_;
+    private java.util.List<com.google.protobuf.ByteString> object_;
     /**
-     * <code>optional bytes object = 13;</code>
+     * <code>repeated bytes object = 13;</code>
      */
-    public boolean hasObject() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+    public java.util.List<com.google.protobuf.ByteString>
+        getObjectList() {
+      return object_;
     }
     /**
-     * <code>optional bytes object = 13;</code>
+     * <code>repeated bytes object = 13;</code>
      */
-    public com.google.protobuf.ByteString getObject() {
-      return object_;
+    public int getObjectCount() {
+      return object_.size();
+    }
+    /**
+     * <code>repeated bytes object = 13;</code>
+     */
+    public com.google.protobuf.ByteString getObject(int index) {
+      return object_.get(index);
     }
 
     public static final int NODE_ID_FIELD_NUMBER = 14;
@@ -29658,7 +29675,7 @@ public final class ProtobufMessages {
      * <code>optional int32 node_id = 14;</code>
      */
     public boolean hasNodeId() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
      * <code>optional int32 node_id = 14;</code>
@@ -29709,10 +29726,10 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeInt32(12, strategyIndex_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBytes(13, object_);
+      for (int i = 0; i < object_.size(); i++) {
+        output.writeBytes(13, object_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeInt32(14, nodeId_);
       }
       unknownFields.writeTo(output);
@@ -29765,11 +29782,16 @@ public final class ProtobufMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, strategyIndex_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(13, object_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < object_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(object_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getObjectList().size();
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(14, nodeId_);
       }
@@ -29836,11 +29858,8 @@ public final class ProtobufMessages {
         result = result && (getStrategyIndex()
             == other.getStrategyIndex());
       }
-      result = result && (hasObject() == other.hasObject());
-      if (hasObject()) {
-        result = result && getObject()
-            .equals(other.getObject());
-      }
+      result = result && getObjectList()
+          .equals(other.getObjectList());
       result = result && (hasNodeId() == other.hasNodeId());
       if (hasNodeId()) {
         result = result && (getNodeId()
@@ -29899,9 +29918,9 @@ public final class ProtobufMessages {
         hash = (37 * hash) + STRATEGY_INDEX_FIELD_NUMBER;
         hash = (53 * hash) + getStrategyIndex();
       }
-      if (hasObject()) {
+      if (getObjectCount() > 0) {
         hash = (37 * hash) + OBJECT_FIELD_NUMBER;
-        hash = (53 * hash) + getObject().hashCode();
+        hash = (53 * hash) + getObjectList().hashCode();
       }
       if (hasNodeId()) {
         hash = (37 * hash) + NODE_ID_FIELD_NUMBER;
@@ -30061,7 +30080,7 @@ public final class ProtobufMessages {
         bitField0_ = (bitField0_ & ~0x00000100);
         strategyIndex_ = 0;
         bitField0_ = (bitField0_ & ~0x00000200);
-        object_ = com.google.protobuf.ByteString.EMPTY;
+        object_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000400);
         nodeId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000800);
@@ -30134,12 +30153,13 @@ public final class ProtobufMessages {
           to_bitField0_ |= 0x00000100;
         }
         result.strategyIndex_ = strategyIndex_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000200;
+        if (((bitField0_ & 0x00000400) == 0x00000400)) {
+          object_ = java.util.Collections.unmodifiableList(object_);
+          bitField0_ = (bitField0_ & ~0x00000400);
         }
         result.object_ = object_;
         if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000400;
+          to_bitField0_ |= 0x00000200;
         }
         result.nodeId_ = nodeId_;
         result.bitField0_ = to_bitField0_;
@@ -30227,8 +30247,15 @@ public final class ProtobufMessages {
         if (other.hasStrategyIndex()) {
           setStrategyIndex(other.getStrategyIndex());
         }
-        if (other.hasObject()) {
-          setObject(other.getObject());
+        if (!other.object_.isEmpty()) {
+          if (object_.isEmpty()) {
+            object_ = other.object_;
+            bitField0_ = (bitField0_ & ~0x00000400);
+          } else {
+            ensureObjectIsMutable();
+            object_.addAll(other.object_);
+          }
+          onChanged();
         }
         if (other.hasNodeId()) {
           setNodeId(other.getNodeId());
@@ -30893,37 +30920,74 @@ public final class ProtobufMessages {
         return this;
       }
 
-      private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>optional bytes object = 13;</code>
-       */
-      public boolean hasObject() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
+      private java.util.List<com.google.protobuf.ByteString> object_ = java.util.Collections.emptyList();
+      private void ensureObjectIsMutable() {
+        if (!((bitField0_ & 0x00000400) == 0x00000400)) {
+          object_ = new java.util.ArrayList<com.google.protobuf.ByteString>(object_);
+          bitField0_ |= 0x00000400;
+         }
       }
       /**
-       * <code>optional bytes object = 13;</code>
+       * <code>repeated bytes object = 13;</code>
        */
-      public com.google.protobuf.ByteString getObject() {
-        return object_;
+      public java.util.List<com.google.protobuf.ByteString>
+          getObjectList() {
+        return java.util.Collections.unmodifiableList(object_);
       }
       /**
-       * <code>optional bytes object = 13;</code>
+       * <code>repeated bytes object = 13;</code>
        */
-      public Builder setObject(com.google.protobuf.ByteString value) {
+      public int getObjectCount() {
+        return object_.size();
+      }
+      /**
+       * <code>repeated bytes object = 13;</code>
+       */
+      public com.google.protobuf.ByteString getObject(int index) {
+        return object_.get(index);
+      }
+      /**
+       * <code>repeated bytes object = 13;</code>
+       */
+      public Builder setObject(
+          int index, com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
-        object_ = value;
+  ensureObjectIsMutable();
+        object_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>optional bytes object = 13;</code>
+       * <code>repeated bytes object = 13;</code>
+       */
+      public Builder addObject(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureObjectIsMutable();
+        object_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes object = 13;</code>
+       */
+      public Builder addAllObject(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureObjectIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, object_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes object = 13;</code>
        */
       public Builder clearObject() {
+        object_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000400);
-        object_ = getDefaultInstance().getObject();
         onChanged();
         return this;
       }
@@ -31024,6 +31088,44 @@ public final class ProtobufMessages {
      * <code>repeated int32 handle_id = 1;</code>
      */
     int getHandleId(int index);
+
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    java.util.List<java.lang.Integer> getObjectStrategyIndexList();
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    int getObjectStrategyIndexCount();
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    int getObjectStrategyIndex(int index);
+
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    java.util.List<com.google.protobuf.ByteString> getObjectList();
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    int getObjectCount();
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    com.google.protobuf.ByteString getObject(int index);
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.Tuple}
@@ -31039,6 +31141,8 @@ public final class ProtobufMessages {
     }
     private Tuple() {
       handleId_ = java.util.Collections.emptyList();
+      objectStrategyIndex_ = java.util.Collections.emptyList();
+      object_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -31093,6 +31197,35 @@ public final class ProtobufMessages {
               input.popLimit(limit);
               break;
             }
+            case 64: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                objectStrategyIndex_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              objectStrategyIndex_.add(input.readInt32());
+              break;
+            }
+            case 66: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
+                objectStrategyIndex_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                objectStrategyIndex_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                object_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              object_.add(input.readBytes());
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -31103,6 +31236,12 @@ public final class ProtobufMessages {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           handleId_ = java.util.Collections.unmodifiableList(handleId_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          objectStrategyIndex_ = java.util.Collections.unmodifiableList(objectStrategyIndex_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          object_ = java.util.Collections.unmodifiableList(object_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -31142,6 +31281,62 @@ public final class ProtobufMessages {
       return handleId_.get(index);
     }
 
+    public static final int OBJECT_STRATEGY_INDEX_FIELD_NUMBER = 8;
+    private java.util.List<java.lang.Integer> objectStrategyIndex_;
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getObjectStrategyIndexList() {
+      return objectStrategyIndex_;
+    }
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    public int getObjectStrategyIndexCount() {
+      return objectStrategyIndex_.size();
+    }
+    /**
+     * <pre>
+     * the actual object reference
+     * </pre>
+     *
+     * <code>repeated int32 object_strategy_index = 8;</code>
+     */
+    public int getObjectStrategyIndex(int index) {
+      return objectStrategyIndex_.get(index);
+    }
+
+    public static final int OBJECT_FIELD_NUMBER = 9;
+    private java.util.List<com.google.protobuf.ByteString> object_;
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    public java.util.List<com.google.protobuf.ByteString>
+        getObjectList() {
+      return object_;
+    }
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    public int getObjectCount() {
+      return object_.size();
+    }
+    /**
+     * <code>repeated bytes object = 9;</code>
+     */
+    public com.google.protobuf.ByteString getObject(int index) {
+      return object_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -31156,6 +31351,12 @@ public final class ProtobufMessages {
                         throws java.io.IOException {
       for (int i = 0; i < handleId_.size(); i++) {
         output.writeInt32(1, handleId_.get(i));
+      }
+      for (int i = 0; i < objectStrategyIndex_.size(); i++) {
+        output.writeInt32(8, objectStrategyIndex_.get(i));
+      }
+      for (int i = 0; i < object_.size(); i++) {
+        output.writeBytes(9, object_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -31173,6 +31374,24 @@ public final class ProtobufMessages {
         }
         size += dataSize;
         size += 1 * getHandleIdList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < objectStrategyIndex_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(objectStrategyIndex_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getObjectStrategyIndexList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < object_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(object_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getObjectList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -31192,6 +31411,10 @@ public final class ProtobufMessages {
       boolean result = true;
       result = result && getHandleIdList()
           .equals(other.getHandleIdList());
+      result = result && getObjectStrategyIndexList()
+          .equals(other.getObjectStrategyIndexList());
+      result = result && getObjectList()
+          .equals(other.getObjectList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -31206,6 +31429,14 @@ public final class ProtobufMessages {
       if (getHandleIdCount() > 0) {
         hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getHandleIdList().hashCode();
+      }
+      if (getObjectStrategyIndexCount() > 0) {
+        hash = (37 * hash) + OBJECT_STRATEGY_INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getObjectStrategyIndexList().hashCode();
+      }
+      if (getObjectCount() > 0) {
+        hash = (37 * hash) + OBJECT_FIELD_NUMBER;
+        hash = (53 * hash) + getObjectList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -31338,6 +31569,10 @@ public final class ProtobufMessages {
         super.clear();
         handleId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
+        objectStrategyIndex_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        object_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -31366,6 +31601,16 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.handleId_ = handleId_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          objectStrategyIndex_ = java.util.Collections.unmodifiableList(objectStrategyIndex_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.objectStrategyIndex_ = objectStrategyIndex_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          object_ = java.util.Collections.unmodifiableList(object_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.object_ = object_;
         onBuilt();
         return result;
       }
@@ -31414,6 +31659,26 @@ public final class ProtobufMessages {
           } else {
             ensureHandleIdIsMutable();
             handleId_.addAll(other.handleId_);
+          }
+          onChanged();
+        }
+        if (!other.objectStrategyIndex_.isEmpty()) {
+          if (objectStrategyIndex_.isEmpty()) {
+            objectStrategyIndex_ = other.objectStrategyIndex_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureObjectStrategyIndexIsMutable();
+            objectStrategyIndex_.addAll(other.objectStrategyIndex_);
+          }
+          onChanged();
+        }
+        if (!other.object_.isEmpty()) {
+          if (object_.isEmpty()) {
+            object_ = other.object_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureObjectIsMutable();
+            object_.addAll(other.object_);
           }
           onChanged();
         }
@@ -31507,6 +31772,172 @@ public final class ProtobufMessages {
       public Builder clearHandleId() {
         handleId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> objectStrategyIndex_ = java.util.Collections.emptyList();
+      private void ensureObjectStrategyIndexIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          objectStrategyIndex_ = new java.util.ArrayList<java.lang.Integer>(objectStrategyIndex_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getObjectStrategyIndexList() {
+        return java.util.Collections.unmodifiableList(objectStrategyIndex_);
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public int getObjectStrategyIndexCount() {
+        return objectStrategyIndex_.size();
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public int getObjectStrategyIndex(int index) {
+        return objectStrategyIndex_.get(index);
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public Builder setObjectStrategyIndex(
+          int index, int value) {
+        ensureObjectStrategyIndexIsMutable();
+        objectStrategyIndex_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public Builder addObjectStrategyIndex(int value) {
+        ensureObjectStrategyIndexIsMutable();
+        objectStrategyIndex_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public Builder addAllObjectStrategyIndex(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureObjectStrategyIndexIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, objectStrategyIndex_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * the actual object reference
+       * </pre>
+       *
+       * <code>repeated int32 object_strategy_index = 8;</code>
+       */
+      public Builder clearObjectStrategyIndex() {
+        objectStrategyIndex_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.google.protobuf.ByteString> object_ = java.util.Collections.emptyList();
+      private void ensureObjectIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          object_ = new java.util.ArrayList<com.google.protobuf.ByteString>(object_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getObjectList() {
+        return java.util.Collections.unmodifiableList(object_);
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public int getObjectCount() {
+        return object_.size();
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public com.google.protobuf.ByteString getObject(int index) {
+        return object_.get(index);
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public Builder setObject(
+          int index, com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureObjectIsMutable();
+        object_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public Builder addObject(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureObjectIsMutable();
+        object_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public Builder addAllObject(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureObjectIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, object_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes object = 9;</code>
+       */
+      public Builder clearObject() {
+        object_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
@@ -55473,113 +55904,115 @@ public final class ProtobufMessages {
       "\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_ac" +
       "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logi" +
       "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\022" +
-      "\026\n\016strategy_index\030\014 \001(\005\022\016\n\006object\030\r \001(\014\022" +
-      "\017\n\007node_id\030\016 \001(\005\"\032\n\005Tuple\022\021\n\thandle_id\030\001" +
-      " \003(\005\"\227\001\n\026TruthMaintenanceSystem\0225\n\003key\030\001" +
-      " \003(\0132(.org.drools.core.marshalling.Equal" +
-      "ityKey\022F\n\026OBSOLETE_justification\030\002 \003(\0132&" +
-      ".org.drools.core.marshalling.BeliefSet\"<" +
-      "\n\027ObjectTypeConfiguration\022\014\n\004type\030\001 \001(\t\022" +
-      "\023\n\013tms_enabled\030\002 \001(\010\"\201\001\n\013EqualityKey\022\016\n\006" +
-      "status\030\001 \001(\005\022\021\n\thandle_id\030\002 \001(\005\022\024\n\014other" +
-      "_handle\030\003 \003(\005\0229\n\tbeliefSet\030\004 \001(\0132&.org.d" +
-      "rools.core.marshalling.BeliefSet\"i\n\tBeli" +
-      "efSet\022\021\n\thandle_id\030\001 \001(\005\022I\n\021logicalDepen" +
-      "dency\030\002 \003(\0132..org.drools.core.marshallin" +
-      "g.LogicalDependency\"\254\001\n\021LogicalDependenc" +
-      "y\022;\n\nactivation\030\002 \001(\0132\'.org.drools.core." +
-      "marshalling.Activation\022\035\n\025object_strateg" +
-      "y_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024value_s" +
-      "trategy_index\030\n \001(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013A" +
-      "ctionQueue\022?\n\006action\030\001 \003(\0132/.org.drools." +
-      "core.marshalling.ActionQueue.Action\032\264\005\n\006" +
-      "Action\022A\n\004type\030\001 \001(\01623.org.drools.core.m" +
-      "arshalling.ActionQueue.ActionType\022P\n\017beh" +
-      "avior_expire\030\002 \001(\01327.org.drools.core.mar" +
-      "shalling.ActionQueue.BehaviorExpire\022X\n\023d" +
-      "eactivate_callback\030\003 \001(\0132;.org.drools.co" +
-      "re.marshalling.ActionQueue.DeactivateCal" +
-      "lback\022P\n\017logical_retract\030\004 \001(\01327.org.dro" +
-      "ols.core.marshalling.ActionQueue.Logical" +
-      "Retract\022E\n\tpropagate\030\005 \001(\01322.org.drools." +
-      "core.marshalling.ActionQueue.Propagate\022?" +
-      "\n\006assert\030\006 \001(\0132/.org.drools.core.marshal" +
-      "ling.ActionQueue.Assert\022?\n\006expire\030\007 \001(\0132" +
-      "/.org.drools.core.marshalling.ActionQueu" +
-      "e.Expire\022?\n\006signal\030\010 \001(\0132/.org.drools.co" +
-      "re.marshalling.ActionQueue.Signal\022_\n\027sig" +
-      "nal_process_instance\030\t \001(\0132>.org.drools." +
-      "core.marshalling.ActionQueue.SignalProce" +
-      "ssInstance\032!\n\016BehaviorExpire\022\017\n\007node_id\030" +
-      "\001 \001(\005\032,\n\022DeactivateCallback\022\026\n\016ruleflow_" +
-      "group\030\001 \001(\t\032\207\001\n\016LogicalRetract\022\021\n\thandle" +
-      "_id\030\001 \001(\005\022;\n\nactivation\030\002 \001(\0132\'.org.droo" +
-      "ls.core.marshalling.Activation\022\025\n\rfully_" +
-      "retract\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\tPropaga" +
-      "te\022\017\n\007node_id\030\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle" +
-      "_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021upd" +
-      "ate_equals_map\030\003 \001(\010\022\027\n\017origin_pkg_name\030" +
-      "\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(\t\0221\n\005tuple" +
-      "\030\006 \001(\0132\".org.drools.core.marshalling.Tup" +
-      "le\032,\n\006Expire\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_" +
-      "id\030\002 \001(\005\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022\r\n\005even" +
-      "t\030\002 \001(\014\032Q\n\025SignalProcessInstance\022\014\n\004type" +
-      "\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023process_instanc" +
-      "e_id\030\003 \001(\003\"\237\001\n\nActionType\022\023\n\017BEHAVIOR_EX" +
-      "PIRE\020\001\022\027\n\023DEACTIVATE_CALLBACK\020\002\022\023\n\017LOGIC" +
-      "AL_RETRACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022" +
-      "\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCES" +
-      "S_INSTANCE\020\010\"\337\007\n\006Timers\0228\n\005timer\030\001 \003(\0132)" +
-      ".org.drools.core.marshalling.Timers.Time" +
-      "r\032\342\002\n\005Timer\022;\n\004type\030\001 \001(\0162-.org.drools.c" +
-      "ore.marshalling.Timers.TimerType\022?\n\006expi" +
-      "re\030\002 \001(\0132/.org.drools.core.marshalling.T" +
-      "imers.ExpireTimer\022G\n\nactivation\030\003 \001(\01323." +
-      "org.drools.core.marshalling.Timers.Activ" +
-      "ationTimer\022C\n\010behavior\030\004 \001(\01321.org.drool" +
-      "s.core.marshalling.Timers.BehaviorTimer\022" +
-      "F\n\ntimer_node\030\005 \001(\01322.org.drools.core.ma" +
-      "rshalling.Timers.TimerNodeTimer*\005\010d\020\310\001\032i" +
-      "\n\013ExpireTimer\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016entr" +
-      "y_point_id\030\002 \001(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023" +
-      "next_fire_timestamp\030\004 \001(\003\032\205\001\n\017Activation" +
-      "Timer\022;\n\nactivation\030\001 \001(\0132\'.org.drools.c" +
-      "ore.marshalling.Activation\0225\n\007trigger\030\002 " +
-      "\001(\0132$.org.drools.core.marshalling.Trigge" +
-      "r\032a\n\rBehaviorTimer\022\032\n\022DEPRECATED_node_id" +
-      "\030\001 \001(\005\022!\n\031DEPRECATED_behavior_index\030\002 \001(" +
-      "\005\022\021\n\thandle_id\030\003 \001(\005\032\213\001\n\016TimerNodeTimer\022" +
-      "\017\n\007node_id\030\001 \001(\005\0221\n\005tuple\030\002 \001(\0132\".org.dr" +
-      "ools.core.marshalling.Tuple\0225\n\007trigger\030\003" +
-      " \001(\0132$.org.drools.core.marshalling.Trigg" +
-      "er\"R\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATIO" +
-      "N\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_" +
-      "NODE\020\005\"\316\007\n\007Trigger\022>\n\004type\030\001 \001(\01620.org.d" +
-      "rools.core.marshalling.Trigger.TriggerTy" +
-      "pe\022>\n\004cron\030\002 \001(\01320.org.drools.core.marsh" +
-      "alling.Trigger.CronTrigger\022F\n\010interval\030\003" +
-      " \001(\01324.org.drools.core.marshalling.Trigg" +
-      "er.IntervalTrigger\022D\n\003pit\030\004 \001(\01327.org.dr" +
-      "ools.core.marshalling.Trigger.PointInTim" +
-      "eTrigger\022N\n\004cmdt\030\005 \001(\0132@.org.drools.core" +
-      ".marshalling.Trigger.CompositeMaxDuratio" +
-      "nTrigger\032\247\001\n\013CronTrigger\022\022\n\nstart_time\030\001" +
-      " \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003" +
-      " \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cron_expre" +
-      "ssion\030\005 \001(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rc" +
-      "alendar_name\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022" +
-      "\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014" +
-      "repeat_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005" +
-      "\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003" +
-      "\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022PointInTimeTr" +
-      "igger\022\026\n\016next_fire_time\030\001 \001(\003\032\221\001\n\033Compos" +
-      "iteMaxDurationTrigger\022\034\n\024maxDurationTime" +
-      "stamp\030\001 \001(\003\022\030\n\020timerCurrentDate\030\002 \001(\003\022:\n" +
-      "\014timerTrigger\030\003 \001(\0132$.org.drools.core.ma" +
-      "rshalling.Trigger\"T\n\013TriggerType\022\010\n\004CRON" +
-      "\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002\022\032\n\026C" +
-      "OMPOSITE_MAX_DURATION\020\003B4\n org.drools.co" +
-      "re.marshalling.implB\020ProtobufMessages"
+      "\026\n\016strategy_index\030\014 \001(\005\022\016\n\006object\030\r \003(\014\022" +
+      "\017\n\007node_id\030\016 \001(\005\"I\n\005Tuple\022\021\n\thandle_id\030\001" +
+      " \003(\005\022\035\n\025object_strategy_index\030\010 \003(\005\022\016\n\006o" +
+      "bject\030\t \003(\014\"\227\001\n\026TruthMaintenanceSystem\0225" +
+      "\n\003key\030\001 \003(\0132(.org.drools.core.marshallin" +
+      "g.EqualityKey\022F\n\026OBSOLETE_justification\030" +
+      "\002 \003(\0132&.org.drools.core.marshalling.Beli" +
+      "efSet\"<\n\027ObjectTypeConfiguration\022\014\n\004type" +
+      "\030\001 \001(\t\022\023\n\013tms_enabled\030\002 \001(\010\"\201\001\n\013Equality" +
+      "Key\022\016\n\006status\030\001 \001(\005\022\021\n\thandle_id\030\002 \001(\005\022\024" +
+      "\n\014other_handle\030\003 \003(\005\0229\n\tbeliefSet\030\004 \001(\0132" +
+      "&.org.drools.core.marshalling.BeliefSet\"" +
+      "i\n\tBeliefSet\022\021\n\thandle_id\030\001 \001(\005\022I\n\021logic" +
+      "alDependency\030\002 \003(\0132..org.drools.core.mar" +
+      "shalling.LogicalDependency\"\254\001\n\021LogicalDe" +
+      "pendency\022;\n\nactivation\030\002 \001(\0132\'.org.drool" +
+      "s.core.marshalling.Activation\022\035\n\025object_" +
+      "strategy_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024" +
+      "value_strategy_index\030\n \001(\005\022\r\n\005value\030\013 \001(" +
+      "\014\"\377\013\n\013ActionQueue\022?\n\006action\030\001 \003(\0132/.org." +
+      "drools.core.marshalling.ActionQueue.Acti" +
+      "on\032\264\005\n\006Action\022A\n\004type\030\001 \001(\01623.org.drools" +
+      ".core.marshalling.ActionQueue.ActionType" +
+      "\022P\n\017behavior_expire\030\002 \001(\01327.org.drools.c" +
+      "ore.marshalling.ActionQueue.BehaviorExpi" +
+      "re\022X\n\023deactivate_callback\030\003 \001(\0132;.org.dr" +
+      "ools.core.marshalling.ActionQueue.Deacti" +
+      "vateCallback\022P\n\017logical_retract\030\004 \001(\01327." +
+      "org.drools.core.marshalling.ActionQueue." +
+      "LogicalRetract\022E\n\tpropagate\030\005 \001(\01322.org." +
+      "drools.core.marshalling.ActionQueue.Prop" +
+      "agate\022?\n\006assert\030\006 \001(\0132/.org.drools.core." +
+      "marshalling.ActionQueue.Assert\022?\n\006expire" +
+      "\030\007 \001(\0132/.org.drools.core.marshalling.Act" +
+      "ionQueue.Expire\022?\n\006signal\030\010 \001(\0132/.org.dr" +
+      "ools.core.marshalling.ActionQueue.Signal" +
+      "\022_\n\027signal_process_instance\030\t \001(\0132>.org." +
+      "drools.core.marshalling.ActionQueue.Sign" +
+      "alProcessInstance\032!\n\016BehaviorExpire\022\017\n\007n" +
+      "ode_id\030\001 \001(\005\032,\n\022DeactivateCallback\022\026\n\016ru" +
+      "leflow_group\030\001 \001(\t\032\207\001\n\016LogicalRetract\022\021\n" +
+      "\thandle_id\030\001 \001(\005\022;\n\nactivation\030\002 \001(\0132\'.o" +
+      "rg.drools.core.marshalling.Activation\022\025\n" +
+      "\rfully_retract\030\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\t" +
+      "Propagate\022\017\n\007node_id\030\001 \001(\005\032\264\001\n\006Assert\022\021\n" +
+      "\thandle_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 \001(\010" +
+      "\022\031\n\021update_equals_map\030\003 \001(\010\022\027\n\017origin_pk" +
+      "g_name\030\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(\t\0221" +
+      "\n\005tuple\030\006 \001(\0132\".org.drools.core.marshall" +
+      "ing.Tuple\032,\n\006Expire\022\021\n\thandle_id\030\001 \001(\005\022\017" +
+      "\n\007node_id\030\002 \001(\005\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022" +
+      "\r\n\005event\030\002 \001(\014\032Q\n\025SignalProcessInstance\022" +
+      "\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022\033\n\023process_" +
+      "instance_id\030\003 \001(\003\"\237\001\n\nActionType\022\023\n\017BEHA" +
+      "VIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_CALLBACK\020\002\022\023" +
+      "\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006AS" +
+      "SERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL" +
+      "_PROCESS_INSTANCE\020\010\"\337\007\n\006Timers\0228\n\005timer\030" +
+      "\001 \003(\0132).org.drools.core.marshalling.Time" +
+      "rs.Timer\032\342\002\n\005Timer\022;\n\004type\030\001 \001(\0162-.org.d" +
+      "rools.core.marshalling.Timers.TimerType\022" +
+      "?\n\006expire\030\002 \001(\0132/.org.drools.core.marsha" +
+      "lling.Timers.ExpireTimer\022G\n\nactivation\030\003" +
+      " \001(\01323.org.drools.core.marshalling.Timer" +
+      "s.ActivationTimer\022C\n\010behavior\030\004 \001(\01321.or" +
+      "g.drools.core.marshalling.Timers.Behavio" +
+      "rTimer\022F\n\ntimer_node\030\005 \001(\01322.org.drools." +
+      "core.marshalling.Timers.TimerNodeTimer*\005" +
+      "\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\thandle_id\030\001 \001(\005\022" +
+      "\026\n\016entry_point_id\030\002 \001(\t\022\022\n\nclass_name\030\003 " +
+      "\001(\t\022\033\n\023next_fire_timestamp\030\004 \001(\003\032\205\001\n\017Act" +
+      "ivationTimer\022;\n\nactivation\030\001 \001(\0132\'.org.d" +
+      "rools.core.marshalling.Activation\0225\n\007tri" +
+      "gger\030\002 \001(\0132$.org.drools.core.marshalling" +
+      ".Trigger\032a\n\rBehaviorTimer\022\032\n\022DEPRECATED_" +
+      "node_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_ind" +
+      "ex\030\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\032\213\001\n\016TimerNod" +
+      "eTimer\022\017\n\007node_id\030\001 \001(\005\0221\n\005tuple\030\002 \001(\0132\"" +
+      ".org.drools.core.marshalling.Tuple\0225\n\007tr" +
+      "igger\030\003 \001(\0132$.org.drools.core.marshallin" +
+      "g.Trigger\"R\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nAC" +
+      "TIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\022\016\n" +
+      "\nTIMER_NODE\020\005\"\316\007\n\007Trigger\022>\n\004type\030\001 \001(\0162" +
+      "0.org.drools.core.marshalling.Trigger.Tr" +
+      "iggerType\022>\n\004cron\030\002 \001(\01320.org.drools.cor" +
+      "e.marshalling.Trigger.CronTrigger\022F\n\010int" +
+      "erval\030\003 \001(\01324.org.drools.core.marshallin" +
+      "g.Trigger.IntervalTrigger\022D\n\003pit\030\004 \001(\01327" +
+      ".org.drools.core.marshalling.Trigger.Poi" +
+      "ntInTimeTrigger\022N\n\004cmdt\030\005 \001(\0132@.org.droo" +
+      "ls.core.marshalling.Trigger.CompositeMax" +
+      "DurationTrigger\032\247\001\n\013CronTrigger\022\022\n\nstart" +
+      "_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_" +
+      "limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cro" +
+      "n_expression\030\005 \001(\t\022\026\n\016next_fire_time\030\006 \001" +
+      "(\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017IntervalTr" +
+      "igger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 " +
+      "\001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_coun" +
+      "t\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006perio" +
+      "d\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022PointI" +
+      "nTimeTrigger\022\026\n\016next_fire_time\030\001 \001(\003\032\221\001\n" +
+      "\033CompositeMaxDurationTrigger\022\034\n\024maxDurat" +
+      "ionTimestamp\030\001 \001(\003\022\030\n\020timerCurrentDate\030\002" +
+      " \001(\003\022:\n\014timerTrigger\030\003 \001(\0132$.org.drools." +
+      "core.marshalling.Trigger\"T\n\013TriggerType\022" +
+      "\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME" +
+      "\020\002\022\032\n\026COMPOSITE_MAX_DURATION\020\003B4\n org.dr" +
+      "ools.core.marshalling.implB\020ProtobufMess" +
+      "ages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -55766,7 +56199,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Tuple_descriptor,
-        new java.lang.String[] { "HandleId", });
+        new java.lang.String[] { "HandleId", "ObjectStrategyIndex", "Object", });
     internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_fieldAccessorTable = new
