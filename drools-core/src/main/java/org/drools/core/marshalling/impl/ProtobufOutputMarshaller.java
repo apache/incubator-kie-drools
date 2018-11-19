@@ -751,22 +751,24 @@ public class ProtobufOutputMarshaller {
 
         if (isDormient) {
             BaseTuple agendaItem1 = (BaseTuple) agendaItem;
-            InternalFactHandle factHandle = (agendaItem1).getFactHandle();
 
-            boolean b = sinkSourceIsNode(agendaItem1);
+            boolean sinkSourceIsFromNodeAccumulateNode = sinkSourceIsNode(agendaItem1);
 
             agendaItem1.toFactHandles();
 
+            Object[] objects = agendaItem1.toObjects();
 
+            for(Object o : objects) {
+                if(sinkSourceIsFromNodeAccumulateNode) {
+                    SerializedObject so = serializeObject(context, o);
 
-            if (factHandle != null && b) {
-                SerializedObject so = serializeObject(context, factHandle.getObject());
+                    _activation.addObject(so.serializedObject);
+                    _activation.setStrategyIndex(so.strategyIndex);
 
-                _activation.setObject(so.serializedObject);
-                _activation.setStrategyIndex(so.strategyIndex);
-                org.drools.core.spi.Tuple parent = (agendaItem1).getParent();
-                if (parent != null) {
-                    _activation.setNodeId(parent.getTupleSink().getId());
+                    org.drools.core.spi.Tuple parent = (agendaItem1).getParent();
+                    if (parent != null) {
+                        _activation.setNodeId(parent.getTupleSink().getId());
+                    }
                 }
             }
         }

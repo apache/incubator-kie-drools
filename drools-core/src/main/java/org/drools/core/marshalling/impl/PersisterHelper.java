@@ -125,14 +125,14 @@ public class PersisterHelper {
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = createTupleArray( _tuple );
+        Object[] tuple = createTupleArray( _tuple );
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final Tuple leftTuple) {
-        int[] tuple = createTupleArray( leftTuple );
+        Object[] tuple = createTupleArray( leftTuple );
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
@@ -147,8 +147,8 @@ public class PersisterHelper {
         return _tuple.build();
     }
     
-    public static int[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = new int[_tuple.getHandleIdCount()];
+    public static Object[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
+        Object[] tuple = new Object[_tuple.getHandleIdCount()];
         for ( int i = 0; i < tuple.length; i++ ) {
             // needs to reverse the tuple elements 
             tuple[i] = _tuple.getHandleId( tuple.length - i - 1 );
@@ -156,9 +156,9 @@ public class PersisterHelper {
         return tuple;
     }
 
-    public static int[] createTupleArray(final Tuple leftTuple) {
+    public static Object[] createTupleArray(final Tuple leftTuple) {
         if( leftTuple != null ) {
-            int[] tuple = new int[leftTuple.size()];
+            Object[] tuple = new Object[leftTuple.size()];
             // tuple iterations happens backwards
             int i = tuple.length;
             for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
@@ -170,16 +170,22 @@ public class PersisterHelper {
             }
             return tuple;
         } else {
-            return new int[0];
+            return new Object[0];
         }
     }
 
+    private static int[] toArrayOfInt(Object[] objects) {
+        int[] integers = new int[objects.length];
+        System.arraycopy(objects, 0, integers, 0, objects.length);
+        return integers;
+    }
+
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final ProtobufMessages.Tuple _tuple) {
-        return new ProtobufInputMarshaller.TupleKey( createTupleArray( _tuple ) );
+        return new ProtobufInputMarshaller.TupleKey( toArrayOfInt(createTupleArray( _tuple )) );
     }
     
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final Tuple leftTuple) {
-        return new ProtobufInputMarshaller.TupleKey( createTupleArray( leftTuple ) );
+        return new ProtobufInputMarshaller.TupleKey( toArrayOfInt(createTupleArray( leftTuple )) );
     }
     
     public static ProtobufMessages.Activation createActivation(final String packageName,

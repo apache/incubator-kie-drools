@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -656,31 +657,29 @@ public class ProtobufInputMarshaller {
 
         for ( ProtobufMessages.Activation _activation : _dormant ) {
             // this is a dormant activation
-
-            ActivationKey activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
-                                                                              _activation.getRuleName(),
-                                                                              _activation.getTuple());
-
-            final Optional<Object> deserializedObject;
-            if (_activation.hasStrategyIndex() && !_activation.getObject().isEmpty()) {
+            if (_activation.hasStrategyIndex() && !_activation.getObjectList().isEmpty()) {
                 ObjectMarshallingStrategy strategy = context.usedStrategies.get(_activation.getStrategyIndex());
                 try {
-                    Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
-                                                       context,
-                                                       _activation.getObject().toByteArray(),
-                                                       (context.kBase == null) ? null : context.kBase.getRootClassLoader());
 
-                    deserializedObject = Optional.of(object);
+
+                    List<Object> objects = new ArrayList<>();
+                    for(ByteString _object : _activation.getObjectList()) {
+                        Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
+                                                           context,
+                                                           _object.toByteArray(),
+                                                           (context.kBase == null) ? null : context.kBase.getRootClassLoader());
+
+                        objects.add(object);
+                    }
+
+                    ActivationKey activationKey = new ActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects.toArray());
+
+                    context.filter.getDormantActivationsMap().put(activationKey, null);
+
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-            } else {
-                deserializedObject = Optional.empty();
             }
-
-            context.filter.getDormantActivationsMap().put(activationKey,
-                                                          new PBActivationsFilter.ActivationWithObject(_activation, deserializedObject));
-
 
 
         }
@@ -774,39 +773,20 @@ public class ProtobufInputMarshaller {
             implements
             ActivationsFilter,
             AgendaFilter {
-        private Map<ActivationKey, ActivationWithObject> dormantActivations;
+        private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, Tuple>                       tuplesCache;
         private Queue<RuleAgendaItem>                           rneaToFire;
 
 
-        static class ActivationWithObject {
-
-            private final ProtobufMessages.Activation activation;
-            private final Optional<Object> object;
-
-            public ActivationWithObject(ProtobufMessages.Activation activation, Optional<Object> object) {
-                this.activation = activation;
-                this.object = object;
-            }
-
-            public ProtobufMessages.Activation getActivation() {
-                return activation;
-            }
-
-            public Optional<Object> getObject() {
-                return object;
-            }
-        }
-
         public PBActivationsFilter() {
-            this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ActivationWithObject>();
-            this.rneActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
-            this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, Tuple>();
-            this.rneaToFire = new ConcurrentLinkedQueue<RuleAgendaItem>();
+            this.dormantActivations = new HashMap<>();
+            this.rneActivations = new HashMap<>();
+            this.tuplesCache = new HashMap<>();
+            this.rneaToFire = new ConcurrentLinkedQueue<>();
         }
 
-        public Map<ActivationKey, ActivationWithObject> getDormantActivationsMap() {
+        public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
             return this.dormantActivations;
         }
 
@@ -821,35 +801,19 @@ public class ProtobufInputMarshaller {
                 return true;
             } else {
 
-                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
                 // add the tuple to the cache for correlation
-                this.tuplesCache.put( key, activation.getTuple() );
 
                 InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
 
-                for(InternalFactHandle factHandle : internalFactHandles) {
+                Object[] firedObjects = activation.getTuple().toObjects();
 
-                    final Tuple parent = ((BaseTuple) activation).getParent();
-                    if(parent != null) {
-                        int nodeId = parent.getTupleSink().getId();
+                ActivationKey key = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
 
-                        Optional<Map.Entry<ActivationKey, ActivationWithObject>> collect = this.dormantActivations.entrySet().stream()
-                                .filter(dormantActivation -> {
-                                    Optional<Object> optDrmantObject = dormantActivation.getValue().object;
-                                    int dormantNodeId = dormantActivation.getValue().activation.getNodeId();
-                                    return optDrmantObject.filter(dormantObject -> dormantNodeId == nodeId && dormantObject.equals(factHandle.getObject()))
-                                            .isPresent();
-                                })
-                                .findAny();
-
-                        if (collect.isPresent()) {
-                            return false;
-                        }
-                    }
-                }
+                this.tuplesCache.put( key, activation.getTuple() );
 
                 // check if there was an active activation for it
                 return !this.dormantActivations.containsKey( key );
+
 
 
             }
@@ -889,11 +853,11 @@ public class ProtobufInputMarshaller {
 
         private final String pkgName;
         private final String ruleName;
-        private final int[]  tuple;
+        private final Object[] tuple;
 
         public ActivationKey(String pkgName,
                              String ruleName,
-                             int[] tuple) {
+                             Object[] tuple) {
             this.pkgName = pkgName;
             this.ruleName = ruleName;
             this.tuple = tuple;
