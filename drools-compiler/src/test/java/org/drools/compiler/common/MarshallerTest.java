@@ -100,6 +100,58 @@ public class MarshallerTest {
     }
 
     @Test
+    public void testAgendaReconciliationFromWithCombinations() throws Exception {
+        String str =
+                "import java.util.Collection\n" +
+                        "rule R1 when\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "    String() from [ \"a\", \"b\", \"c\" ]\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
+            assertEquals(5, ksession.fireAllRules(5));
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertEquals(4, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
+    }
+
+    @Test
+    public void testAgendaReconciliationFrom4() throws Exception {
+        String str =
+                "import java.util.Collection\n" +
+                        "rule R1 when\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
+            assertEquals(2, ksession.fireAllRules(2));
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
+    }
+
+
+    @Test
     public void testAgendaReconciliationAccumulate() throws Exception {
 
         String str =
