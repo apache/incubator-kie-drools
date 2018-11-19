@@ -674,7 +674,7 @@ public class ProtobufInputMarshaller {
 
                     ActivationKey activationKey = new ActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects.toArray());
 
-                    context.filter.getDormantActivationsMap().put(activationKey, null);
+                    context.filter.getDormantActivationsMap().add(activationKey);
 
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -773,20 +773,20 @@ public class ProtobufInputMarshaller {
             implements
             ActivationsFilter,
             AgendaFilter {
-        private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
+        private Set<ActivationKey> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, Tuple>                       tuplesCache;
         private Queue<RuleAgendaItem>                           rneaToFire;
 
 
         public PBActivationsFilter() {
-            this.dormantActivations = new HashMap<>();
+            this.dormantActivations = new HashSet<>();
             this.rneActivations = new HashMap<>();
             this.tuplesCache = new HashMap<>();
             this.rneaToFire = new ConcurrentLinkedQueue<>();
         }
 
-        public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
+        public Set<ActivationKey> getDormantActivationsMap() {
             return this.dormantActivations;
         }
 
@@ -803,8 +803,6 @@ public class ProtobufInputMarshaller {
 
                 // add the tuple to the cache for correlation
 
-                InternalFactHandle[] internalFactHandles = activation.getTuple().toFactHandles();
-
                 Object[] firedObjects = activation.getTuple().toObjects();
 
                 ActivationKey key = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
@@ -812,7 +810,7 @@ public class ProtobufInputMarshaller {
                 this.tuplesCache.put( key, activation.getTuple() );
 
                 // check if there was an active activation for it
-                return !this.dormantActivations.containsKey( key );
+                return !this.dormantActivations.contains( key );
 
 
 
@@ -845,7 +843,7 @@ public class ProtobufInputMarshaller {
             // add the tuple to the cache for correlation
             this.tuplesCache.put( key, tuple );
             // check if there was an active activation for it
-            return !this.dormantActivations.containsKey( key );
+            return !this.dormantActivations.contains( key );
         }
     }
 
