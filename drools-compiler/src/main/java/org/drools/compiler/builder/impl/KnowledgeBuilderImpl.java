@@ -2492,12 +2492,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     // composite build lifecycle
 
     public void buildPackages( Collection<CompositePackageDescr> packages ) {
-        initPackageRegistries(packages);
-        normalizeTypeAnnotations( packages );
-        buildTypeDeclarations(packages);
-        buildEntryPoints( packages );
-        buildOtherDeclarations(packages);
-        normalizeRuleAnnotations( packages );
+        buildPackagesWithoutRules(packages);
         buildRules(packages);
     }
 
