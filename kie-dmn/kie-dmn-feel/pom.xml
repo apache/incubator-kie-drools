@@ -84,12 +84,34 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+				  <include>ch.obermuhlner:big-math</include> <!-- This library is not OSGi-fied, yet. -->
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+          	<!-- ch.obermuhlner is shaded, ref configutation of maven-shade-plugin. -->
             <Import-Package>
               org.antlr.v4.runtime.*,
+              !ch.obermuhlner.*,
               *
             </Import-Package>
             <Export-Package>
