@@ -368,20 +368,20 @@ public class ProtobufOutputMarshaller {
             if ( memory != null ) {
                 ProtobufMessages.NodeMemory _node = null;
                 switch ( memory.getNodeType() ) {
-                    case NodeTypeEnums.AccumulateNode: {
-                        _node = writeAccumulateNodeMemory( baseNode.getId(), memory );
-                        break;
-                    }
-                    case NodeTypeEnums.RightInputAdaterNode: {
-
-                        _node = writeRIANodeMemory( baseNode.getId(), baseNode, memories );
-                        break;
-                    }
-                    case NodeTypeEnums.FromNode:
-                    case NodeTypeEnums.ReactiveFromNode: {
-                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm, context);
-                        break;
-                    }
+//                    case NodeTypeEnums.AccumulateNode: {
+//                        _node = writeAccumulateNodeMemory( baseNode.getId(), memory );
+//                        break;
+//                    }
+//                    case NodeTypeEnums.RightInputAdaterNode: {
+//
+//                        _node = writeRIANodeMemory( baseNode.getId(), baseNode, memories );
+//                        break;
+//                    }
+//                    case NodeTypeEnums.FromNode:
+//                    case NodeTypeEnums.ReactiveFromNode: {
+//                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm, context);
+//                        break;
+//                    }
                     case NodeTypeEnums.QueryElementNode: {
                         _node = writeQueryElementNodeMemory( baseNode.getId(), memory, wm );
                         break;
