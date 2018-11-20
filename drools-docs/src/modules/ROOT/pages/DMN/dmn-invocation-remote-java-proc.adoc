@@ -1,7 +1,7 @@
 [id='dmn-invocation-remote-java-proc']
-= Executing DMN services remotely on {KIE_SERVER} (Java)
+= Executing DMN services remotely on {KIE_SERVER} (Java client API)
 
-The KIE remote API client provides a lightweight approach to invoking a remote DMN service either through the REST or JMS interfaces of {KIE_SERVER}. This approach reduces the number of runtime dependencies necessary to interact with a KIE base. Decoupling the calling code from the decision definition also increases flexibility by enabling them to iterate independently at the appropriate pace.
+The {KIE_SERVER} Java client API provides a lightweight approach to invoking a remote DMN service either through the REST or JMS interfaces of {KIE_SERVER}. This approach reduces the number of runtime dependencies necessary to interact with a KIE base. Decoupling the calling code from the decision definition also increases flexibility by enabling them to iterate independently at the appropriate pace.
 
 .Prerequisites
 * {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
