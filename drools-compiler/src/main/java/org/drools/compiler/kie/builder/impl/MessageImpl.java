@@ -38,6 +38,8 @@ public class MessageImpl implements Message {
 
     private String kieBaseName;
 
+    private Object detailed;
+
     public MessageImpl( long id,
                         Level level,
                         String path,
@@ -63,6 +65,7 @@ public class MessageImpl implements Message {
     public MessageImpl( long id,
                         KnowledgeBuilderResult result ) {
         this.id = id;
+        this.detailed = result;
         switch ( result.getSeverity() ) {
             case ERROR:
                 level = Level.ERROR;
@@ -145,4 +148,8 @@ public class MessageImpl implements Message {
                ", path=" + path + ", line=" + line + ", column=" + column + "\n   text=" + text + "]";
     }
 
+    @Override
+    public Object getDetailedIssueDescription() {
+        return detailed;
+    }
 }
