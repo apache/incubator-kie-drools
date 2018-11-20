@@ -31,6 +31,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
+import org.drools.core.rule.DialectRuntimeData;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
@@ -62,15 +63,7 @@ public class KieBaseUpdater implements Runnable {
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         boolean shouldRebuild = applyResourceChanges(pkgbuilder, ckbuilder);
-        // remove resources first
-        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values() ) {
-            if ( rcs.getChangeType() == ChangeType.REMOVED ) {
-                String resourceName = rcs.getResourceName();
-                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.currentKM, ctx.currentKieBaseModel, resourceName) ) {
-                    pkgbuilder.removeObjectsGeneratedFromResource( ctx.currentKM.getResource( resourceName ) );
-                }
-            }
-        }
+        removeResources(pkgbuilder);
 
         // remove all ObjectTypeNodes for the modified classes
         if (ctx.modifyingUsedClass) {
@@ -78,7 +71,10 @@ public class KieBaseUpdater implements Runnable {
                 clearInstancesOfModifiedClass( cls );
             }
             for (InternalKnowledgePackage pkg : ctx.kBase.getPackagesMap().values()) {
-                (( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" )).resetParserConfiguration();
+                DialectRuntimeData mvel = pkg.getDialectRuntimeRegistry().getDialectData("mvel");
+                if(mvel != null) {
+                    ((MVELDialectRuntimeData) mvel).resetParserConfiguration();
+                }
             }
         }
 
@@ -113,6 +109,18 @@ public class KieBaseUpdater implements Runnable {
                         final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn);
                         otn.setCompiledNetwork(compile);
                     });
+        }
+    }
+
+    protected void removeResources(KnowledgeBuilderImpl pkgbuilder) {
+        // remove resources first
+        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values()) {
+            if ( rcs.getChangeType() == ChangeType.REMOVED ) {
+                String resourceName = rcs.getResourceName();
+                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.currentKM, ctx.currentKieBaseModel, resourceName) ) {
+                    pkgbuilder.removeObjectsGeneratedFromResource( ctx.currentKM.getResource( resourceName ) );
+                }
+            }
         }
     }
 
@@ -155,13 +163,7 @@ public class KieBaseUpdater implements Runnable {
         boolean shouldRebuild = ctx.modifyingUsedClass;
         if (ctx.modifyingUsedClass) {
             // invalidate accessors for old class
-            for (Class<?> cls : ctx.modifiedClasses) {
-                InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) ctx.kBase.getKiePackage( cls.getPackage().getName() ) );
-                if (kpackage != null) {
-                    kpackage.getClassFieldAccessorStore().removeClass( cls );
-                }
-            }
-
+            invalidateAccessorForOldClass();
             // there are modified classes used by this kbase, so it has to be completely updated
             updateAllResources(pkgbuilder, ckbuilder);
         } else {
@@ -171,35 +173,50 @@ public class KieBaseUpdater implements Runnable {
         return shouldRebuild;
     }
 
+    protected void invalidateAccessorForOldClass() {
+        for (Class<?> cls : ctx.modifiedClasses) {
+            InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) ctx.kBase.getKiePackage(cls.getPackage().getName() ) );
+            if (kpackage != null) {
+                kpackage.getClassFieldAccessorStore().removeClass( cls );
+            }
+        }
+    }
+
     private int updateResourcesIncrementally(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
         int fileCount = ctx.modifiedClasses.size();
-        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values() ) {
-            if ( rcs.getChangeType() != ChangeType.REMOVED ) {
-                String resourceName = rcs.getResourceName();
-                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.newKM, ctx.newKieBaseModel, resourceName) ) {
-                    List<ResourceChange> changes = rcs.getChanges();
-                    if ( ! changes.isEmpty() ) {
-                        // we need to deal with individual parts of the resource
-                        fileCount += AbstractKieModule.updateResource(ckbuilder, ctx.newKM, resourceName, rcs) ? 1 : 0;
-                    } else {
-                        // the whole resource has to handled
-                        if( rcs.getChangeType() == ChangeType.UPDATED ) {
-                            Resource resource = ctx.currentKM.getResource(resourceName);
-                            kbuilder.removeObjectsGeneratedFromResource(resource);
-                        }
-                        fileCount += ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, resourceName, rcs) ? 1 : 0;
+        for ( ResourceChangeSet rcs : ctx.cs.getChanges().values()) {
+            fileCount += updateResource(kbuilder, ckbuilder, rcs);
+        }
+        return fileCount;
+    }
+
+    protected int updateResource(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder, ResourceChangeSet rcs) {
+        int fileCount = 0;
+        if ( rcs.getChangeType() != ChangeType.REMOVED ) {
+            String resourceName = rcs.getResourceName();
+            if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.newKM, ctx.newKieBaseModel, resourceName) ) {
+                List<ResourceChange> changes = rcs.getChanges();
+                if ( ! changes.isEmpty() ) {
+                    // we need to deal with individual parts of the resource
+                    fileCount += AbstractKieModule.updateResource(ckbuilder, ctx.newKM, resourceName, rcs) ? 1 : 0;
+                } else {
+                    // the whole resource has to handled
+                    if( rcs.getChangeType() == ChangeType.UPDATED ) {
+                        Resource resource = ctx.currentKM.getResource(resourceName);
+                        kbuilder.removeObjectsGeneratedFromResource(resource);
                     }
+                    fileCount += ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, resourceName, rcs) ? 1 : 0;
                 }
             }
+        }
 
-            for ( ResourceChangeSet.RuleLoadOrder loadOrder : rcs.getLoadOrder() ) {
-                KnowledgePackageImpl pkg = (KnowledgePackageImpl)ctx.kBase.getKiePackage( loadOrder.getPkgName() );
-                if( pkg != null ) {
-                    RuleImpl rule = pkg.getRule( loadOrder.getRuleName() );
-                    if ( rule != null ) {
-                        // rule can be null, if it didn't exist before
-                        rule.setLoadOrder( loadOrder.getLoadOrder() );
-                    }
+        for ( ResourceChangeSet.RuleLoadOrder loadOrder : rcs.getLoadOrder() ) {
+            KnowledgePackageImpl pkg = (KnowledgePackageImpl)ctx.kBase.getKiePackage(loadOrder.getPkgName() );
+            if( pkg != null ) {
+                RuleImpl rule = pkg.getRule(loadOrder.getRuleName() );
+                if ( rule != null ) {
+                    // rule can be null, if it didn't exist before
+                    rule.setLoadOrder( loadOrder.getLoadOrder() );
                 }
             }
         }
@@ -219,7 +236,7 @@ public class KieBaseUpdater implements Runnable {
         return false;
     }
 
-    private void updateAllResources(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
+    protected void updateAllResources(KnowledgeBuilderImpl kbuilder, CompositeKnowledgeBuilder ckbuilder) {
         for (String resourceName : ctx.currentKM.getFileNames()) {
             if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.currentKM, ctx.newKieBaseModel, resourceName) ) {
                 Resource resource = ctx.currentKM.getResource(resourceName);

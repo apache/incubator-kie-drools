@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -42,6 +42,13 @@ public class KieJarChangeSet {
 
     public boolean contains(String resourceName) {
         return changes.keySet().contains(resourceName);
+    }
+
+    public KieJarChangeSet merge(KieJarChangeSet other) {
+        KieJarChangeSet merged = new KieJarChangeSet();
+        merged.changes.putAll(this.changes);
+        merged.changes.putAll(other.changes);
+        return merged;
     }
 
     @Override

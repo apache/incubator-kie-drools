@@ -26,7 +26,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTestCanonicalKieModule;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
@@ -35,14 +35,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest {
+public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNIncrementalCompilationTest.class);
 
-    public DMNIncrementalCompilationTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
+    public DMNIncrementalCompilationTest(final boolean useExecModelCompiler, boolean canonicalKieModule) {
+        super(useExecModelCompiler, canonicalKieModule);
     }
 
     @Test
@@ -52,10 +52,10 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.0");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
-                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/20180731-pr1997.dmn", this.getClass())
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/20180731-pr1997.dmn", this.getClass())
                                        .setTargetPath("20180731-pr1997.dmn"),
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/Person.java", this.getClass())
-                                       .setTargetPath("acme/Person.java"));
+                                       .setTargetPath("acme/Person.java")));
         final KieContainer kieContainer = ks.newKieContainer(releaseId_v10);
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
 
@@ -64,10 +64,10 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.1");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v11,
-                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/20180731-pr1997.dmn", this.getClass())
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/20180731-pr1997.dmn", this.getClass())
                                        .setTargetPath("20180731-pr1997.dmn"),
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/Person.java", this.getClass())
-                                       .setTargetPath("acme/Person.java"));
+                                       .setTargetPath("acme/Person.java")));
         kieContainer.updateToVersion(releaseId_v11);
 
         checkTestUpgrade(kieContainer, runtime, "setFN", "setLN", "UPGRADED Hello John Doe, your age is: 47");
