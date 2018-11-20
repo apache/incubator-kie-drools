@@ -125,14 +125,14 @@ public class PersisterHelper {
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final ProtobufMessages.Tuple _tuple) {
-        Object[] tuple = createTupleArray( _tuple );
+        Object[] tuple = toArrayOfObject(createTupleArray( _tuple ));
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final Tuple leftTuple) {
-        Object[] tuple = createTupleArray( leftTuple );
+        Object[] tuple = toArrayOfObject(createTupleArray( leftTuple ));
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
@@ -147,8 +147,8 @@ public class PersisterHelper {
         return _tuple.build();
     }
     
-    public static Object[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
-        Object[] tuple = new Object[_tuple.getHandleIdCount()];
+    public static int[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
+        int[] tuple = new int[_tuple.getHandleIdCount()];
         for ( int i = 0; i < tuple.length; i++ ) {
             // needs to reverse the tuple elements 
             tuple[i] = _tuple.getHandleId( tuple.length - i - 1 );
@@ -156,9 +156,9 @@ public class PersisterHelper {
         return tuple;
     }
 
-    public static Object[] createTupleArray(final Tuple leftTuple) {
+    public static int[] createTupleArray(final Tuple leftTuple) {
         if( leftTuple != null ) {
-            Object[] tuple = new Object[leftTuple.size()];
+            int[] tuple = new int[leftTuple.size()];
             // tuple iterations happens backwards
             int i = tuple.length;
             for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
@@ -170,22 +170,24 @@ public class PersisterHelper {
             }
             return tuple;
         } else {
-            return new Object[0];
+            return new int[0];
         }
     }
 
-    private static int[] toArrayOfInt(Object[] objects) {
-        int[] integers = new int[objects.length];
-        System.arraycopy(objects, 0, integers, 0, objects.length);
-        return integers;
+    private static Object[] toArrayOfObject(int[] ints) {
+        Object[] objects = new Object[ints.length];
+        for(int i = 0; i < ints.length; i++) {
+            objects[i] = ints[0];
+        }
+        return objects;
     }
 
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final ProtobufMessages.Tuple _tuple) {
-        return new ProtobufInputMarshaller.TupleKey( toArrayOfInt(createTupleArray( _tuple )) );
+        return new ProtobufInputMarshaller.TupleKey( createTupleArray( _tuple ));
     }
     
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final Tuple leftTuple) {
-        return new ProtobufInputMarshaller.TupleKey( toArrayOfInt(createTupleArray( leftTuple )) );
+        return new ProtobufInputMarshaller.TupleKey( createTupleArray( leftTuple ) );
     }
     
     public static ProtobufMessages.Activation createActivation(final String packageName,
