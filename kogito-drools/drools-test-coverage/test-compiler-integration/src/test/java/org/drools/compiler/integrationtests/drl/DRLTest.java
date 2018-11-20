@@ -23,7 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.A;
+import org.drools.testcoverage.common.model.B;
+import org.drools.testcoverage.common.model.C;
 import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.D;
+import org.drools.testcoverage.common.model.E;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -355,6 +360,24 @@ public class DRLTest {
             assertEquals(1, rulesFired);
         } finally {
             ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testLargeDRL() {
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
+                                                                             "org/drools/compiler/integrationtests/largedrl.drl");
+        final KieSession kieSession = kieBase.newKieSession();
+        try {
+            kieSession.insert(new A(100000));
+            kieSession.insert(new B(100001));
+            kieSession.insert(new C(100002));
+            kieSession.insert(new D(100003));
+            kieSession.insert(new E(100004));
+
+            Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(50);
+        } finally {
+            kieSession.dispose();
         }
     }
 }
