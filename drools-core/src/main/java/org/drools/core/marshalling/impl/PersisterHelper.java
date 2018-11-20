@@ -177,7 +177,7 @@ public class PersisterHelper {
     private static Object[] toArrayOfObject(int[] ints) {
         Object[] objects = new Object[ints.length];
         for(int i = 0; i < ints.length; i++) {
-            objects[i] = ints[0];
+            objects[i] = ints[i];
         }
         return objects;
     }
