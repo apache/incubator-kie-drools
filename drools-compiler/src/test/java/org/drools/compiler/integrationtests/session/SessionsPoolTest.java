@@ -104,12 +104,6 @@ public class SessionsPoolTest {
                         } finally {
                             ksession.dispose();
                         }
-
-                        try {
-                            ksession.insert( "test2" );
-                            fail( "it shouldn't be possible to operate on a disposed session even if created from a pool" );
-                        } catch (IllegalStateException e) {
-                        }
                         return true;
                     } catch (final Exception e) {
                         return false;
