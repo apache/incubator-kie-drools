@@ -375,7 +375,7 @@ public class DRLTest {
             kieSession.insert(new D(100003));
             kieSession.insert(new E(100004));
 
-            Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1000);
+            Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(50);
         } finally {
             kieSession.dispose();
         }
