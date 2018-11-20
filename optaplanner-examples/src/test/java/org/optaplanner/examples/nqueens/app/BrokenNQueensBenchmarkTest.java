@@ -19,21 +19,24 @@ package org.optaplanner.examples.nqueens.app;
 import java.io.File;
 
 import org.junit.Test;
+import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
+import org.optaplanner.examples.nqueens.domain.NQueens;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Override
-    protected String createBenchmarkConfigResource() {
-        return "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
+    protected String createSolverConfigResource() {
+        return NQueensApp.SOLVER_CONFIG;
     }
 
     @Override
-    protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
-        PlannerBenchmarkFactory benchmarkFactory = super.buildPlannerBenchmarkFactory(unsolvedDataFile);
+    protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory() {
+        PlannerBenchmarkFactory benchmarkFactory = super.buildPlannerBenchmarkFactory();
         PlannerBenchmarkConfig benchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
         benchmarkConfig.setWarmUpSecondsSpentLimit(0L);
         benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
@@ -47,7 +50,11 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Test(timeout = 100000, expected = PlannerBenchmarkException.class)
     public void benchmarkBroken8queens() {
-        runBenchmarkTest(new File("data/nqueens/unsolved/8queens.xml"));
+        NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
+                .read(new File("data/nqueens/unsolved/8queens.xml"));
+        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory();
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark(problem);
+        plannerBenchmark.benchmark();
     }
 
 }

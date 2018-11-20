@@ -339,6 +339,8 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
 
 The following ``SolverBenchmarkBluePrintType``s are supported:
 
+* ``CONSTRUCTION_HEURISTIC_WITH_AND_WITHOUT_LOCAL_SEARCH``: Run the default Construction Heuristic type with and without the default Local Search type.
+
 * ``EVERY_CONSTRUCTION_HEURISTIC_TYPE``: Run every Construction Heuristic type (First Fit, First Fit Decreasing, Cheapest Insertion, ...).
 
 * ``EVERY_LOCAL_SEARCH_TYPE``: Run every Local Search type (Tabu Search, Late Acceptance, ...) with the default Construction Heuristic.

@@ -28,6 +28,10 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public enum SolverBenchmarkBluePrintType {
+    /*
+     * Run the default {@link ConstructionHeuristicType} with and without the default {@link LocalSearchType}.
+     */
+    CONSTRUCTION_HEURISTIC_WITH_AND_WITHOUT_LOCAL_SEARCH,
     /**
      * Run every {@link ConstructionHeuristicType}.
      */
@@ -43,6 +47,8 @@ public enum SolverBenchmarkBluePrintType {
 
     protected List<SolverBenchmarkConfig> buildSolverBenchmarkConfigList() {
         switch (this) {
+            case CONSTRUCTION_HEURISTIC_WITH_AND_WITHOUT_LOCAL_SEARCH:
+                return buildConstructionHeuristicWithAndWithoutLocalSearch();
             case EVERY_CONSTRUCTION_HEURISTIC_TYPE:
                 return buildEveryConstructionHeuristicType();
             case EVERY_LOCAL_SEARCH_TYPE:
@@ -55,11 +61,18 @@ public enum SolverBenchmarkBluePrintType {
         }
     }
 
+    private List<SolverBenchmarkConfig> buildConstructionHeuristicWithAndWithoutLocalSearch() {
+        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(2);
+        solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(null, false, null));
+        solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(null, true, null));
+        return solverBenchmarkConfigList;
+    }
+
     private List<SolverBenchmarkConfig> buildEveryConstructionHeuristicType() {
         ConstructionHeuristicType[] chTypes = ConstructionHeuristicType.getBluePrintTypes();
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(chTypes.length);
         for (ConstructionHeuristicType chType : chTypes) {
-            solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, null));
+            solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, false, null));
         }
         return solverBenchmarkConfigList;
     }
@@ -68,7 +81,7 @@ public enum SolverBenchmarkBluePrintType {
         LocalSearchType[] lsTypes = LocalSearchType.getBluePrintTypes();
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(lsTypes.length);
         for (LocalSearchType lsType : lsTypes) {
-            solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(null, lsType));
+            solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(null, true, lsType));
         }
         return solverBenchmarkConfigList;
     }
@@ -80,18 +93,26 @@ public enum SolverBenchmarkBluePrintType {
                 chTypes.length * lsTypes.length);
         for (ConstructionHeuristicType chType : chTypes) {
             for (LocalSearchType lsType : lsTypes) {
-                solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, lsType));
+                solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, true, lsType));
             }
         }
         return solverBenchmarkConfigList;
     }
 
-    protected SolverBenchmarkConfig buildSolverBenchmarkConfig(
-            ConstructionHeuristicType constructionHeuristicType, LocalSearchType localSearchType) {
+    protected SolverBenchmarkConfig buildSolverBenchmarkConfig(ConstructionHeuristicType constructionHeuristicType,
+            boolean localSearchEnabled, LocalSearchType localSearchType) {
         SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
-        String name = localSearchType == null ? constructionHeuristicType.name() :
-                constructionHeuristicType == null ? localSearchType.name() :
-                constructionHeuristicType.name() + "-" + localSearchType.name();
+        String constructionHeuristicName = constructionHeuristicType == null
+                ? "Construction Heuristic" : constructionHeuristicType.name();
+        String name;
+        if (!localSearchEnabled) {
+            name = constructionHeuristicName;
+        } else {
+            String localSearchName = localSearchType == null
+                    ? "Local Search" : localSearchType.name();
+            name = constructionHeuristicType == null ? localSearchName
+                    : constructionHeuristicName + " - " + localSearchName;
+        }
         solverBenchmarkConfig.setName(name);
         SolverConfig solverConfig = new SolverConfig();
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
@@ -100,9 +121,11 @@ public enum SolverBenchmarkBluePrintType {
             constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
         }
         phaseConfigList.add(constructionHeuristicPhaseConfig);
-        if (localSearchType != null) {
+        if (localSearchEnabled) {
             LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-            localSearchPhaseConfig.setLocalSearchType(localSearchType);
+            if (localSearchType != null) {
+                localSearchPhaseConfig.setLocalSearchType(localSearchType);
+            }
             phaseConfigList.add(localSearchPhaseConfig);
         }
         solverConfig.setPhaseConfigList(phaseConfigList);

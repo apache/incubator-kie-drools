@@ -41,13 +41,13 @@ public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<Meet
     @Test(timeout = 600000)
     public void solveModel() {
         File unsolvedDataFile = new File("data/meetingscheduling/unsolved/50meetings-160timegrains-5rooms.xlsx");
-        runSpeedTest(unsolvedDataFile, "-19hard/-115medium/-4046soft");
+        runSpeedTest(unsolvedDataFile, "-35hard/-86medium/-6090soft");
     }
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/meetingscheduling/unsolved/50meetings-160timegrains-5rooms.xlsx");
-        runSpeedTest(unsolvedDataFile, "-29hard/-70medium/-3399soft", EnvironmentMode.FAST_ASSERT);
+        runSpeedTest(unsolvedDataFile, "-36hard/-64medium/-5921soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

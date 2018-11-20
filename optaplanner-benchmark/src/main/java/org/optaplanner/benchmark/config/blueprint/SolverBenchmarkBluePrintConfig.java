@@ -51,4 +51,13 @@ public class SolverBenchmarkBluePrintConfig {
         }
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SolverBenchmarkBluePrintConfig withSolverBenchmarkBluePrintType(SolverBenchmarkBluePrintType solverBenchmarkBluePrintType) {
+        this.solverBenchmarkBluePrintType = solverBenchmarkBluePrintType;
+        return this;
+    }
+
 }
