@@ -48,6 +48,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.LayoutStyle;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
@@ -249,18 +250,27 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         GroupLayout toolBarLayout = new GroupLayout(toolBar);
         toolBar.setLayout(toolBarLayout);
 
-        importAction = new ImportAction();
-        importAction.setEnabled(solutionBusiness.hasImporter());
-        JButton importButton = new JButton(importAction);
+        JButton importButton;
+        if (solutionBusiness.hasImporter()) {
+            importAction = new ImportAction();
+            importButton = new JButton(importAction);
+        } else {
+            importButton = null;
+        }
         openAction = new OpenAction();
         openAction.setEnabled(true);
         JButton openButton = new JButton(openAction);
         saveAction = new SaveAction();
         saveAction.setEnabled(false);
         JButton saveButton = new JButton(saveAction);
-        exportAction = new ExportAction();
-        exportAction.setEnabled(false);
-        JButton exportButton = new JButton(exportAction);
+        JButton exportButton;
+        if (solutionBusiness.hasExporter()) {
+            exportAction = new ExportAction();
+            exportAction.setEnabled(false);
+            exportButton = new JButton(exportAction);
+        } else {
+            exportButton = null;
+        }
 
         progressBar = new JProgressBar(0, 100);
 
@@ -277,21 +287,32 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         solveButton.setMinimumSize(terminateSolvingEarlyButton.getMinimumSize());
         solveButton.setPreferredSize(terminateSolvingEarlyButton.getPreferredSize());
 
-        toolBarLayout.setHorizontalGroup(toolBarLayout.createSequentialGroup()
-                .addComponent(importButton)
-                .addComponent(openButton)
-                .addComponent(saveButton)
-                .addComponent(exportButton)
-                .addGap(10)
-                .addComponent(solvePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(progressBar, 20, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
-        toolBarLayout.setVerticalGroup(toolBarLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(importButton)
-                .addComponent(openButton)
-                .addComponent(saveButton)
-                .addComponent(exportButton)
-                .addComponent(solvePanel)
-                .addComponent(progressBar));
+        GroupLayout.SequentialGroup horizontalGroup = toolBarLayout.createSequentialGroup();
+        if (solutionBusiness.hasImporter()) {
+            horizontalGroup.addComponent(importButton);
+        }
+        horizontalGroup.addComponent(openButton);
+        horizontalGroup.addComponent(saveButton);
+        if (solutionBusiness.hasExporter()) {
+            horizontalGroup.addComponent(exportButton);
+        }
+        horizontalGroup.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                    GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        horizontalGroup.addComponent(solvePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+        horizontalGroup.addComponent(progressBar, 20, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+        toolBarLayout.setHorizontalGroup(horizontalGroup);
+        GroupLayout.ParallelGroup verticalGroup = toolBarLayout.createParallelGroup(GroupLayout.Alignment.CENTER);
+        if (solutionBusiness.hasImporter()) {
+            verticalGroup.addComponent(importButton);
+        }
+        verticalGroup.addComponent(openButton);
+        verticalGroup.addComponent(saveButton);
+        if (solutionBusiness.hasExporter()) {
+            verticalGroup.addComponent(exportButton);
+        }
+        verticalGroup.addComponent(solvePanel);
+        verticalGroup.addComponent(progressBar);
+        toolBarLayout.setVerticalGroup(verticalGroup);
         return toolBar;
     }
 
@@ -646,10 +667,14 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private void setSolvingState(boolean solving) {
         quickOpenUnsolvedJList.setEnabled(!solving);
         quickOpenSolvedJList.setEnabled(!solving);
-        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
+        if (solutionBusiness.hasImporter()) {
+            importAction.setEnabled(!solving);
+        }
         openAction.setEnabled(!solving);
         saveAction.setEnabled(!solving);
-        exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
+        if (solutionBusiness.hasExporter()) {
+            exportAction.setEnabled(!solving);
+        }
         solveAction.setEnabled(!solving);
         solveButton.setVisible(!solving);
         terminateSolvingEarlyAction.setEnabled(solving);
