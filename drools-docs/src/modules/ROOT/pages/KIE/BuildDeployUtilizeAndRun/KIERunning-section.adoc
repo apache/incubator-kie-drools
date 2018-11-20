@@ -191,7 +191,7 @@ image::KIE/BuildDeployUtilizeAndRun/ExecutionResults.png[align="center"]
 The `CommandExecutor` allows for commands to be executed on those sessions, the only difference being that the StatelessKieSession executes `fireAllRules()` at the end before disposing the session.
 The commands can be created using the `CommandExecutor` .The Javadocs provide the full list of the allowed comands using the ``CommandExecutor``.
 
-setGlobal and getGlobal are two commands relevant to both Drools and jBPM. 
+setGlobal and getGlobal are two commands relevant to both Drools and jBPM.
 
 Set Global calls setGlobal underneath.
 The optional boolean indicates whether the command should return the global's value as part of the ``ExecutionResults``.
@@ -261,7 +261,7 @@ In the above example multiple commands are executed, two of which populate the `
 The query command defaults to use the same identifier as the query name, but it can also be mapped to a different identifier.
 
 All commands support XML and jSON marshalling using XStream, as well as JAXB marshalling.
-This is covered in section <<_commandsapisection,Commands API>>. 
+This is covered in <<_ch.commands>>. 
 
 == StatelessKieSession
 
