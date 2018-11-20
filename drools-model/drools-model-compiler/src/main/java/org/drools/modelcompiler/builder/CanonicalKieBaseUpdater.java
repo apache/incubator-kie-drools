@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
@@ -38,6 +40,9 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
@@ -59,6 +64,13 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         List<RuleImpl> rulesToBeAdded;
 
         Map<String, AtomicInteger> globalsCounter = new HashMap<>();
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
+        KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
+        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
+        removeResources(pkgbuilder);
 
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
@@ -108,6 +120,8 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                     }
                 }
 
+                this.updateResource(pkgbuilder, ckbuilder, changeSet);
+
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();
                     if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.REMOVED) {
@@ -121,8 +135,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 break;
                             case RULE:
                                 RuleImpl removedRule = oldKpkg.getRule( changedItemName );
-                                rulesToBeRemoved.add( removedRule );
-                                oldKpkg.removeRule( removedRule );
+                                if(removedRule != null) {
+                                    rulesToBeRemoved.add(removedRule);
+                                    oldKpkg.removeRule(removedRule);
+                                }
                                 break;
                             case DECLARATION:
                                 oldKpkg.removeTypeDeclaration( changedItemName );
@@ -131,7 +147,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                                 throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
                         }
                     }
-                    if (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED) {
+                    if (kpkg != null && (change.getChangeType() == ChangeType.UPDATED || change.getChangeType() == ChangeType.ADDED)) {
                         switch (change.getType()) {
                             case GLOBAL:
                                 try {
@@ -159,6 +175,13 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                 }
             }
         }
+
+        if (ctx.modifyingUsedClass) {
+            invalidateAccessorForOldClass();
+            updateAllResources(pkgbuilder, ckbuilder);
+        }
+
+        ((CompositeKnowledgeBuilderImpl)ckbuilder).build(false);
 
         ctx.kBase.removeRules( rulesToBeRemoved );
         ctx.kBase.addRules( rulesToBeAdded );

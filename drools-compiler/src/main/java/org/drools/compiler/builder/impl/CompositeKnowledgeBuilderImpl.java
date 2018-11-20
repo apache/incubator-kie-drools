@@ -97,20 +97,24 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     public void build() {
+        build(true);
+    }
+
+    public void build(boolean buildRules) {
         buildException = null;
         kBuilder.registerBuildResources(getResources());
         buildResources();
-        buildPackages();
+        if(buildRules) {
+            kBuilder.buildPackages(buildPackageDescr());
+        } else {
+            kBuilder.buildPackagesWithoutRules(buildPackageDescr() );
+        }
         buildProcesses();
         buildOthers();
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;
         }
-    }
-
-    private void buildPackages() {
-        kBuilder.buildPackages( buildPackageDescr() );
     }
 
     private void buildProcesses() {

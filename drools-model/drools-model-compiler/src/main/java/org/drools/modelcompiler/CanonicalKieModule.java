@@ -35,10 +35,12 @@ import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.ProcessBuilder;
+import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -132,9 +134,24 @@ public class CanonicalKieModule implements InternalKieModule {
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
+
+        KnowledgePackagesBuildResult knowledgePackagesBuildResult = ((AbstractKieModule)internalKieModule).buildKnowledgePackages(kBaseModel, kieProject, messages);
+        if(knowledgePackagesBuildResult.hasErrors()) {
+            return null;
+        }
+
         CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf) );
         checkStreamMode( kBaseModel, conf, kpkgs.getKiePackages() );
-        return new KieBaseBuilder( kBaseModel, kBaseConf ).createKieBase(kpkgs);
+        InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
+
+        Collection<KiePackage> pkgs = knowledgePackagesBuildResult.getPkgs();
+        for(KiePackage pk : pkgs) {
+            if(kieBase.getPackage(pk.getName()) == null) {
+                kieBase.addPackages(pkgs);
+            }
+        }
+
+        return kieBase;
     }
 
     private CanonicalKiePackages createKiePackages( KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf ) {
@@ -332,7 +349,8 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         }
 
-        return result;
+        KieJarChangeSet internalChanges = internalKieModule.getChanges(((CanonicalKieModule) newKieModule).internalKieModule);
+        return result.merge(internalChanges);
     }
 
     private ResourceChangeSet buildAllItemsChangeSet( Model oldModel, ChangeType changeType ) {
