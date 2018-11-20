@@ -17,33 +17,18 @@
 package org.optaplanner.examples.conferencescheduling.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
-import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 

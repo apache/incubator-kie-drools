@@ -51,7 +51,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
     @Override
     public BiConsumer<SolutionBusiness<ConferenceSolution>, SolutionPanel<ConferenceSolution>> getConsumer() {
         return (solutionBusiness, solutionPanel) -> {
-            String[] cfpArray = {"devoxx-cfp"};
+            String[] cfpArray = {"cfp-devoxx"};
             JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
             JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
             Object[] dialogue = {
@@ -126,7 +126,8 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
                 throw new IllegalStateException("Importing was interrupted.", e);
             } catch (ExecutionException e) {
                 JOptionPane.showMessageDialog(solutionPanel,
-                        "CFP data imported failed.\nThe next dialog will explain the cause.");
+                        "CFP import failed.\nThe next dialog will explain the cause.\n\n"
+                        + "Fix it in ConferenceSchedulingCfpDevoxxImporter.java in the optaplanner repository.");
                 throw new IllegalStateException("Importing failed.", e.getCause());
             }
             solutionBusiness.setSolution(cfpProblem);

@@ -49,11 +49,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Import an instance of a Devoxx Conference from an API created from https://github.com/nicmarti/cfp-devoxx
+ * Import an instance of a Devoxx conference from the REST API created with https://github.com/nicmarti/cfp-devoxx
  */
 public class ConferenceSchedulingCfpDevoxxImporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConferenceSchedulingCfpDevoxxImporter.class);
+
+    // TODO expose these properties in the "import CFP dialog" or better yet, enhance the cfp-devoxx REST api to expose them
     private static final String ZONE_ID = "Europe/Paris";
     private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "Hands-on Labs", "bof", "BOF (Bird of a Feather)", "ignite", "Ignite Sessions"};
     private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "Tools-in-Action", "uni", "University",
