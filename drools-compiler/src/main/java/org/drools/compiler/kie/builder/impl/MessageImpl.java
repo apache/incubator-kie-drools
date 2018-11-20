@@ -38,7 +38,7 @@ public class MessageImpl implements Message {
 
     private String kieBaseName;
 
-    private Object detailed;
+    private Object metadata;
 
     public MessageImpl( long id,
                         Level level,
@@ -65,7 +65,7 @@ public class MessageImpl implements Message {
     public MessageImpl( long id,
                         KnowledgeBuilderResult result ) {
         this.id = id;
-        this.detailed = result;
+        this.metadata = result;
         switch ( result.getSeverity() ) {
             case ERROR:
                 level = Level.ERROR;
@@ -149,7 +149,7 @@ public class MessageImpl implements Message {
     }
 
     @Override
-    public Object getDetailedIssueDescription() {
-        return detailed;
+    public Object getMetadata() {
+        return metadata;
     }
 }
