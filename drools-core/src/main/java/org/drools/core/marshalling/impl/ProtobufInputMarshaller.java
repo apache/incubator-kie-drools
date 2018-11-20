@@ -657,11 +657,10 @@ public class ProtobufInputMarshaller {
 
         for ( ProtobufMessages.Activation _activation : _dormant ) {
             // this is a dormant activation
+            ActivationKey activationKey;
             if (_activation.hasStrategyIndex() && !_activation.getObjectList().isEmpty()) {
                 ObjectMarshallingStrategy strategy = context.usedStrategies.get(_activation.getStrategyIndex());
                 try {
-
-
                     List<Object> objects = new ArrayList<>();
                     for(ByteString _object : _activation.getObjectList()) {
                         Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
@@ -672,14 +671,17 @@ public class ProtobufInputMarshaller {
                         objects.add(object);
                     }
 
-                    ActivationKey activationKey = new ActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects.toArray());
-
-                    context.filter.getDormantActivationsMap().add(activationKey);
-
+                    activationKey = new ActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects.toArray());
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
+            } else {
+                activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
+                                                                    _activation.getRuleName(),
+                                                                    _activation.getTuple());
             }
+            context.filter.getDormantActivationsMap().add(activationKey);
+
 
 
         }
@@ -805,12 +807,14 @@ public class ProtobufInputMarshaller {
 
                 Object[] firedObjects = activation.getTuple().toObjects();
 
-                ActivationKey key = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
+                ActivationKey activationKeyWithDeserializedObject = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
+                ActivationKey activationKey = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
 
-                this.tuplesCache.put( key, activation.getTuple() );
+                this.tuplesCache.put( activationKeyWithDeserializedObject, activation.getTuple() );
+                this.tuplesCache.put( activationKey, activation.getTuple() );
 
                 // check if there was an active activation for it
-                return !this.dormantActivations.contains( key );
+                return !(this.dormantActivations.contains( activationKeyWithDeserializedObject ) || dormantActivations.contains(activationKey));
 
 
 
