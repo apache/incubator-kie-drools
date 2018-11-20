@@ -16,9 +16,13 @@
 
 package org.optaplanner.examples.conferencescheduling.app;
 
+import java.util.function.Consumer;
+
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
+import org.optaplanner.examples.conferencescheduling.swingui.ConferenceCFPImportAction;
 import org.optaplanner.examples.conferencescheduling.swingui.ConferenceSchedulingPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -51,4 +55,8 @@ public class ConferenceSchedulingApp extends CommonApp<ConferenceSolution> {
         return new ConferenceSchedulingXlsxFileIO();
     }
 
+    @Override
+    protected ExtraAction<ConferenceSolution>[] createExtraActions() {
+        return new ExtraAction[] {new ConferenceCFPImportAction()};
+    }
 }

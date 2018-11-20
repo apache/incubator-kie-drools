@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.app;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.function.BiConsumer;
 import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -112,7 +113,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public void init(Component centerForComponent, boolean exitOnClose) {
         solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame<>(solutionBusiness, createSolutionPanel());
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame<>(solutionBusiness, createSolutionPanel(), createExtraActions());
         solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
@@ -136,6 +137,10 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     protected abstract SolutionPanel<Solution_> createSolutionPanel();
 
+    protected ExtraAction<Solution_>[] createExtraActions() {
+        return new ExtraAction[0];
+    }
+
     /**
      * Used for the unsolved and solved directories,
      * not for the import and output directories, in the data directory.
@@ -144,11 +149,19 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     public abstract SolutionFileIO<Solution_> createSolutionFileIO();
 
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{};
+        return new AbstractSolutionImporter[0];
     }
 
     protected AbstractSolutionExporter createSolutionExporter() {
         return null;
+    }
+
+    public interface ExtraAction<Solution_> {
+
+        String getName();
+
+        BiConsumer<SolutionBusiness<Solution_>, SolutionPanel<Solution_>> getConsumer();
+
     }
 
 }
