@@ -1,0 +1,18 @@
+[id='dmn-boxed-expressions-con_{context}']
+= DMN decision logic in boxed expressions
+
+Boxed expressions in DMN are tables that you use to define the underlying logic of decision nodes and business knowledge models in a decision requirements diagram (DRD) or decision requirements graph (DRG). Some boxed expressions can contain other boxed expressions, but the top-level boxed expression corresponds to the decision logic of a single DRD artifact. While DRDs with one or more DRGs represent the flow of a DMN decision model, boxed expressions define the actual decision logic of individual nodes. DRDs and boxed expressions together form a complete and functional DMN decision model.
+
+The following are the types of DMN boxed expressions:
+
+* Decision tables
+* Literal expressions
+* Contexts
+* Relations
+* Functions
+* Invocations
+* Lists
+
+NOTE: {PRODUCT} does not provide boxed list expressions in {CENTRAL}, but supports a FEEL `list` data type that you can use in boxed literal expressions. For more information about the `list` data type and other FEEL data types in {PRODUCT}, see xref:dmn-data-types-ref_dmn-models[].
+
+All Friendly Enough Expression Language (FEEL) expressions that you use in your boxed expressions must conform to the FEEL syntax requirements in the OMG https://www.omg.org/spec/DMN[Decision Model and Notation specification].

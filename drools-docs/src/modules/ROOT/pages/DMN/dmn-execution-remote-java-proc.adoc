@@ -1,7 +1,15 @@
-[id='dmn-invocation-remote-java-proc']
-= Executing DMN services remotely on {KIE_SERVER} (Java client API)
+[id='dmn-execution-remote-java-proc']
+= Executing a DMN service using the {KIE_SERVER} Java client API
 
 The {KIE_SERVER} Java client API provides a lightweight approach to invoking a remote DMN service either through the REST or JMS interfaces of {KIE_SERVER}. This approach reduces the number of runtime dependencies necessary to interact with a KIE base. Decoupling the calling code from the decision definition also increases flexibility by enabling them to iterate independently at the appropriate pace.
+
+For more information about the {KIE_SERVER} Java client API, see
+ifdef::DM,PAM[]
+{URL_KIE_APIS}[_{KIE_APIS}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+xref:kie-server-java-api-con_kie-apis[].
+endif::[]
 
 .Prerequisites
 * {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
@@ -11,13 +19,22 @@ endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_installationandsetup>>.
 endif::[]
-* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model. For information about project packaging and deployment, see
+* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model, ideally compiled as an executable model for more efficient execution:
++
+--
+[source]
+----
+mvn clean install -DgenerateDMNModel=yes
+----
+
+For more information about project packaging and deployment and executable models, see
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
 endif::[]
+--
 * You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
 
 .Procedure
@@ -78,7 +95,7 @@ conf.setMarshallingFormat(MarshallingFormat.JSON);  // <2>
 KieServicesClient kieServicesClient = KieServicesFactory.newKieServicesClient(conf);
 ----
 <1> The connection information:
-* Example URL: http://localhost:8080/kie-server/services/rest/server
+* Example URL: `\http://localhost:8080/kie-server/services/rest/server`
 * The credentials should reference a user with the `kie-server` role.
 <2> The Marshalling format is an instance of `org.kie.server.api.marshalling.MarshallingFormat`. It controls whether the messages will be JSON or XML. Options for Marshalling format are JSON, JAXB, or XSTREAM.
 --
@@ -127,6 +144,6 @@ At this point, the `dmnResult` contains all the decision results from the evalua
 
 You can also execute only a specific DMN decision in the model by using alternative methods of the `DMNServicesClient`.
 
-TIP: If the KIE container only contains one DMN model, you can omit `$modelNamespace` and `$modelName` because the {KIE_SERVER} API selects it by default.
+NOTE: If the KIE container only contains one DMN model, you can omit `$modelNamespace` and `$modelName` because the {KIE_SERVER} API selects it by default.
 
 --

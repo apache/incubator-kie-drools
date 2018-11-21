@@ -1,80 +1,360 @@
+
 [id='dmn-model-example-ref_{context}']
 = DMN model example
 
-DMN defines an XML schema that enables DMN models to be used between different DMN authoring platforms. The DMN specification enables multiple software platforms to work with the same file for authoring, testing, and production execution. You must use a third-party authoring platform such as Trisotech or Signavio if you require visual authoring capabilities.
+The following is a real-world DMN model example that demonstrates how you can use decision modeling to reach a decision based on input data, circumstances, and company guidelines. In this scenario, a flight from San Diego to New York is canceled, requiring the affected airline to find alternate arrangements for its inconvenienced passengers.
 
-The following decision requirements diagram (DRD) example demonstrates a classification-type decision for the age categories of movie ticket purchases. This basic example demonstrates good form by creating classifications to avoid repeated calculations so that this mini-decision can be an input for other decisions.
+First, the airline collects the information necessary to determine how best to get the travelers to their destinations:
 
-.Decision requirements diagram for the age classification decision
-image::dmn/dmn-age-classification-drd.png[]
+Input data::
+* List of flights
+* List of passengers
 
-This example consists of a single numeric input value (`Age`), and produces a string output (`AgeClassification`). The inner workings of the `AgeClassification` decision is a basic table:
+Decisions::
+* Prioritize the passengers who will get seats on a new flight
+* Determine which flights those passengers will be offered
 
-.Decision table for the age classification decision
-image::dmn/dmn-age-classification-decision-table.png[]
+Business knowledge models::
+* The company process for determining passenger priority
+* Any flights that have space available
+* Company rules for determining how best to reassign inconvenienced passengers
+
+The airline then uses the DMN standard to model its decision process in the following decision requirements diagram (DRD) for determining the best rebooking solution:
 
-This table assigns a value to the `AgeClassification` output value using simple FEEL expressions to determine ranges on the age value. This decision model was created in the Trisotech DMN Authoring environment.
+.DRD for flight rebooking
+image::dmn/dmn-passenger-rebooking-drd.png[]
 
-The following output is the XML source of this decision model:
+Similar to flowcharts, DRDs use shapes to represent the different elements in a process. Ovals contain the two necessary input data, rectangles contain the decision points in the model, and rectangles with clipped corners (business knowledge models) contain reusable logic that can be repeatedly invoked.
+
+The DRD draws logic for each element from boxed expressions that provide variable definitions using FEEL expressions or data type values.
+
+Some boxed expressions are basic, such as the following decision for establishing a prioritized waiting list:
+
+.Boxed context expression example for prioritized wait list
+image::dmn/dmn-context-expression-example.png[]
+
+Some boxed expressions are more complex with greater detail and calculation, such as the following business knowledge model for reassigning the next delayed passenger:
+
+.Boxed function expression for passenger reassignment
+image::dmn/dmn-reassign-passenger.png[]
+
+The following is the DMN source file for this decision model:
 
 [source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
-                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                      namespace="http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a" <1>
-                      name="dmn-movieticket-ageclassification" <2>
-                      id="_99">
-  <semantic:extensionElements/>
-  <semantic:inputData displayName="Age" id="_1" name="Age">
-    <semantic:variable id="_2" name="Age" typeRef="feel:number"/>
-  </semantic:inputData>
-  <semantic:decision displayName="AgeClassification" id="_3" name="AgeClassification">
-    <semantic:variable id="_4" name="AgeClassification" typeRef="feel:string"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_1"/>
-    </semantic:informationRequirement>
-    <semantic:decisionTable hitPolicy="UNIQUE" id="_5" outputLabel="AgeClassification">
-      <semantic:input id="_6">
-        <semantic:inputExpression typeRef="feel:number">
-          <semantic:text>Age</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:output id="_7"/>
-      <semantic:rule id="_8">
-        <semantic:inputEntry id="_9">
-          <semantic:text>&lt; 13</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_10">
-          <semantic:text>"Child"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-      <semantic:rule id="_11">
-        <semantic:inputEntry id="_12">
-          <semantic:text>[13..65)</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_13">
-          <semantic:text>"Adult"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-      <semantic:rule id="_14">
-        <semantic:inputEntry id="_15">
-          <semantic:text>&gt;= 65</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_16">
-          <semantic:text>"Senior"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-    </semantic:decisionTable>
-  </semantic:decision>
-</semantic:definitions>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:kie="https://www.drools.org/kie-dmn" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" id="_0019_flight_rebooking" name="0019-flight-rebooking" namespace="https://www.drools.org/kie-dmn">
+  <itemDefinition id="_tFlight" name="tFlight">
+    <itemComponent id="_tFlight_Flight" name="Flight Number">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_From" name="From">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_To" name="To">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_Dep" name="Departure">
+      <typeRef>feel:dateTime</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_Arr" name="Arrival">
+      <typeRef>feel:dateTime</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_Capacity" name="Capacity">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+    <itemComponent id="_tFlight_Status" name="Status">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition id="_tFlightTable" isCollection="true" name="tFlightTable">
+    <typeRef>kie:tFlight</typeRef>
+  </itemDefinition>
+  <itemDefinition id="_tPassenger" name="tPassenger">
+    <itemComponent id="_tPassenger_Name" name="Name">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_tPassenger_Status" name="Status">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_tPassenger_Miles" name="Miles">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+    <itemComponent id="_tPassenger_Flight" name="Flight Number">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition id="_tPassengerTable" isCollection="true" name="tPassengerTable">
+    <typeRef>kie:tPassenger</typeRef>
+  </itemDefinition>
+  <itemDefinition id="_tFlightNumberList" isCollection="true" name="tFlightNumberList">
+    <typeRef>feel:string</typeRef>
+  </itemDefinition>
+  <inputData id="i_Flight_List" name="Flight List">
+    <variable name="Flight List" typeRef="kie:tFlightTable"/>
+  </inputData>
+  <inputData id="i_Passenger_List" name="Passenger List">
+    <variable name="Passenger List" typeRef="kie:tPassengerTable"/>
+  </inputData>
+  <decision name="Prioritized Waiting List" id="d_PrioritizedWaitingList">
+    <variable name="Prioritized Waiting List" typeRef="kie:tPassengerTable"/>
+    <informationRequirement>
+      <requiredInput href="#i_Passenger_List"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#i_Flight_List"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#b_PassengerPriority"/>
+    </knowledgeRequirement>
+    <context>
+      <contextEntry>
+        <variable name="Cancelled Flights" typeRef="kie:tFlightNumberList"/>
+        <literalExpression>
+          <text>Flight List[ Status = "cancelled" ].Flight Number</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry>
+        <variable name="Waiting List" typeRef="kie:tPassengerTable"/>
+        <literalExpression>
+          <text>Passenger List[ list contains( Cancelled Flights, Flight Number ) ]</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry>
+        <literalExpression>
+          <text>sort( Waiting List, passenger priority )</text>
+        </literalExpression>
+      </contextEntry>
+    </context>
+  </decision>
+  <decision name="Rebooked Passengers" id="d_RebookedPassengers">
+    <variable name="Rebooked Passengers" typeRef="kie:tPassengerTable"/>
+    <informationRequirement>
+      <requiredDecision href="#d_PrioritizedWaitingList"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#i_Flight_List"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#b_ReassignNextPassenger"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>reassign next passenger</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Waiting List"/>
+        <literalExpression>
+          <text>Prioritized Waiting List</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Reassigned Passengers List"/>
+        <literalExpression>
+          <text>[]</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Flights"/>
+        <literalExpression>
+          <text>Flight List</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <businessKnowledgeModel id="b_PassengerPriority" name="passenger priority">
+    <encapsulatedLogic>
+      <formalParameter name="Passenger1" typeRef="kie:tPassenger"/>
+      <formalParameter name="Passenger2" typeRef="kie:tPassenger"/>
+      <decisionTable hitPolicy="UNIQUE">
+        <input id="b_Passenger_Priority_dt_i_P1_Status" label="Passenger1.Status">
+          <inputExpression typeRef="feel:string">
+            <text>Passenger1.Status</text>
+          </inputExpression>
+          <inputValues>
+            <text>"gold", "silver", "bronze"</text>
+          </inputValues>
+        </input>
+        <input id="b_Passenger_Priority_dt_i_P2_Status" label="Passenger2.Status">
+          <inputExpression typeRef="feel:string">
+            <text>Passenger2.Status</text>
+          </inputExpression>
+          <inputValues>
+            <text>"gold", "silver", "bronze"</text>
+          </inputValues>
+        </input>
+        <input id="b_Passenger_Priority_dt_i_P1_Miles" label="Passenger1.Miles">
+          <inputExpression typeRef="feel:string">
+            <text>Passenger1.Miles</text>
+          </inputExpression>
+        </input>
+        <output id="b_Status_Priority_dt_o" label="Passenger1 has priority">
+          <outputValues>
+            <text>true, false</text>
+          </outputValues>
+          <defaultOutputEntry>
+            <text>false</text>
+          </defaultOutputEntry>
+        </output>
+        <rule id="b_Passenger_Priority_dt_r1">
+          <inputEntry id="b_Passenger_Priority_dt_r1_i1">
+            <text>"gold"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r1_i2">
+            <text>"gold"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r1_i3">
+            <text>>= Passenger2.Miles</text>
+          </inputEntry>
+          <outputEntry id="b_Passenger_Priority_dt_r1_o1">
+            <text>true</text>
+          </outputEntry>
+        </rule>
+        <rule id="b_Passenger_Priority_dt_r2">
+          <inputEntry id="b_Passenger_Priority_dt_r2_i1">
+            <text>"gold"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r2_i2">
+            <text>"silver","bronze"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r2_i3">
+            <text>-</text>
+          </inputEntry>
+          <outputEntry id="b_Passenger_Priority_dt_r2_o1">
+            <text>true</text>
+          </outputEntry>
+        </rule>
+        <rule id="b_Passenger_Priority_dt_r3">
+          <inputEntry id="b_Passenger_Priority_dt_r3_i1">
+            <text>"silver"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r3_i2">
+            <text>"silver"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r3_i3">
+            <text>>= Passenger2.Miles</text>
+          </inputEntry>
+          <outputEntry id="b_Passenger_Priority_dt_r3_o1">
+            <text>true</text>
+          </outputEntry>
+        </rule>
+        <rule id="b_Passenger_Priority_dt_r4">
+          <inputEntry id="b_Passenger_Priority_dt_r4_i1">
+            <text>"silver"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r4_i2">
+            <text>"bronze"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r4_i3">
+            <text>-</text>
+          </inputEntry>
+          <outputEntry id="b_Passenger_Priority_dt_r4_o1">
+            <text>true</text>
+          </outputEntry>
+        </rule>
+        <rule id="b_Passenger_Priority_dt_r5">
+          <inputEntry id="b_Passenger_Priority_dt_r5_i1">
+            <text>"bronze"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r5_i2">
+            <text>"bronze"</text>
+          </inputEntry>
+          <inputEntry id="b_Passenger_Priority_dt_r5_i3">
+            <text>>= Passenger2.Miles</text>
+          </inputEntry>
+          <outputEntry id="b_Passenger_Priority_dt_r5_o1">
+            <text>true</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <variable name="passenger priority" typeRef="feel:boolean"/>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="b_ReassignNextPassenger" name="reassign next passenger">
+    <encapsulatedLogic>
+      <formalParameter name="Waiting List" typeRef="kie:tPassengerTable"/>
+      <formalParameter name="Reassigned Passengers List" typeRef="kie:tPassengerTable"/>
+      <formalParameter name="Flights" typeRef="kie:tFlightTable"/>
+      <context>
+        <contextEntry>
+          <variable name="Next Passenger" typeRef="kie:tPassenger"/>
+          <literalExpression>
+            <text>Waiting List[1]</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Original Flight" typeRef="kie:tFlight"/>
+          <literalExpression>
+            <text>Flights[ Flight Number = Next Passenger.Flight Number ][1]</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Best Alternate Flight" typeRef="kie:tFlight"/>
+          <literalExpression>
+            <text>Flights[ From = Original Flight.From and To = Original Flight.To and Departure > Original Flight.Departure and Status = "scheduled" and has capacity( item, Reassigned Passengers List ) ][1]</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Reassigned Passenger" typeRef="kie:tPassenger"/>
+          <context>
+            <contextEntry>
+              <variable name="Name" typeRef="feel:string"/>
+              <literalExpression>
+                <text>Next Passenger.Name</text>
+              </literalExpression>
+            </contextEntry>
+            <contextEntry>
+              <variable name="Status" typeRef="feel:string"/>
+              <literalExpression>
+                <text>Next Passenger.Status</text>
+              </literalExpression>
+            </contextEntry>
+            <contextEntry>
+              <variable name="Miles" typeRef="feel:number"/>
+              <literalExpression>
+                <text>Next Passenger.Miles</text>
+              </literalExpression>
+            </contextEntry>
+            <contextEntry>
+              <variable name="Flight Number" typeRef="feel:string"/>
+              <literalExpression>
+                <text>Best Alternate Flight.Flight Number</text>
+              </literalExpression>
+            </contextEntry>
+          </context>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Remaining Waiting List" typeRef="kie:tPassengerTable"/>
+          <literalExpression>
+            <text>remove( Waiting List, 1 )</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Updated Reassigned Passengers List" typeRef="kie:tPassengerTable"/>
+          <literalExpression>
+            <text>append( Reassigned Passengers List, Reassigned Passenger )</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <literalExpression>
+            <text>if count( Remaining Waiting List ) > 0 then reassign next passenger( Remaining Waiting List, Updated Reassigned Passengers List, Flights ) else Updated Reassigned Passengers List</text>
+          </literalExpression>
+        </contextEntry>
+      </context>
+    </encapsulatedLogic>
+    <variable name="reassign next passenger" typeRef="kie:tPassengerTable"/>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#b_HasCapacity"/>
+    </knowledgeRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="b_HasCapacity" name="has capacity">
+    <encapsulatedLogic>
+      <formalParameter name="flight" typeRef="kie:tFlight"/>
+      <formalParameter name="rebooked list" typeRef="kie:tPassengerTable"/>
+      <literalExpression>
+        <text>flight.Capacity > count( rebooked list[ Flight Number = flight.Flight Number ] )</text>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable name="has capacity" typeRef="feel:boolean"/>
+  </businessKnowledgeModel>
+</definitions>
 ----
-<1> Model namespace
-<2> Model name
-
-This basic file captures enough information to encapsulate the business logic, the input and outputs of the overall decision, and enough detail to enable software tools to graphically represent the relationships consistently.
-
-The `namespace` and `name` attributes of the root `definitions` tag uniquely identify this decision model. Like much XML, the `namespace` value appears as a unique URL associated with the organization or individual that authored the document.

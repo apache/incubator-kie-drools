@@ -14,4 +14,4 @@ A DMN conformance level 2 implementation includes the requirements in conformanc
 Conformance level 3::
 A DMN conformance level 3 implementation includes the requirements in conformance levels 1 and 2, and supports Friendly Enough Expression Language (FEEL) expressions, the full set of boxed expressions, and fully executable decision models.
 
-{PRODUCT} includes full runtime support for DMN 1.2 models at conformance level 3, but currently does not include a built-in DMN model editor. Editors for DMN models will be added to the platform in the near future, but meanwhile you can use third-party DMN authoring platforms and implement DMN models in your decision services in {PRODUCT}.
+{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3. You can design your DMN models directly in {CENTRAL} or import existing DMN models into your {PRODUCT} projects for deployment and execution.

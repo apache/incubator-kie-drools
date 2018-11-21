@@ -1,0 +1,6 @@
+[id='dmn-feel-con_{context}']
+= Rule expressions in FEEL
+
+Friendly Enough Expression Language (FEEL) is an expression language defined by the Object Management Group (OMG) DMN specification. FEEL expressions define the logic of a decision in a DMN model. FEEL is designed to facilitate both decision modeling and execution by assigning semantics to the decision model constructs. FEEL expressions in decision requirements diagrams (DRDs) occupy table cells in boxed expressions for decision nodes and business knowledge models.
+
+For more information about FEEL in DMN, see the OMG https://www.omg.org/spec/DMN[Decision Model and Notation specification].

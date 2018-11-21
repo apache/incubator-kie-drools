@@ -1,19 +1,27 @@
-[id='dmn-invocation-embedded-proc']
+[id='dmn-execution-embedded-proc']
 = Embedding a DMN call directly in a Java application
 
 A KIE container is local when the knowledge assets are either embedded directly into the calling program or are physically pulled in using Maven dependencies for the KJAR. You typically embed knowledge assets directly into a project if there is a tight relationship between the version of the code and the version of the DMN definition. Any changes to the decision take effect after you have intentionally updated and redeployed the application. A benefit of this approach is that proper operation does not rely on any external dependencies to the run time, which can be a limitation of locked-down environments.
 
 Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
 
-.Prerequisite
-A KJAR containing the DMN model to execute has been created. For information about project packaging, see
+.Prerequisites
+* A KIE container is deployed in {KIE_SERVER} in the form of a KJAR that includes the DMN model, ideally compiled as an executable model for more efficient execution:
++
+--
+[source]
+----
+mvn clean install -DgenerateDMNModel=yes
+----
+
+For more information about project packaging and deployment and executable models, see
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
 endif::[]
-
+--
 
 .Procedure
 . In your client application, add the following dependencies to the relevant classpath of your Java project:
@@ -121,6 +129,7 @@ for (Integer age : Arrays.asList(1,12,13,64,65,66)) {
 <4> Each evaluation may result in one or more results, creating the loop.
 +
 --
+
 This example prints the following output:
 
 ----
@@ -130,5 +139,12 @@ Age 13 Decision 'AgeClassification' : Adult
 Age 64 Decision 'AgeClassification' : Adult
 Age 65 Decision 'AgeClassification' : Senior
 Age 66 Decision 'AgeClassification' : Senior
+----
+
+If the DMN model was not previously compiled as an executable model for more efficient execution, you can enable the following property when you execute your DMN models:
+
+[source]
+----
+-Dorg.kie.dmn.compiler.execmodel=true
 ----
 --

@@ -7,7 +7,7 @@ org.kie.dmn.strictConformance::
 When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
 +
 --
-Default value: false
+Default value: `false`
 
 [source]
 ----
@@ -19,7 +19,7 @@ org.kie.dmn.runtime.typecheck::
 When enabled, this property enables verification of actual values conforming to their declared types in the DMN model, as input or output of DRD elements. You can use this property to verify whether data supplied to the DMN model or produced by the DMN model is compliant with what is specified in the model.
 +
 --
-Default value: false
+Default value: `false`
 
 [source]
 ----
@@ -31,7 +31,7 @@ org.kie.dmn.decisionservice.coercesingleton::
 By default, this property makes the result of a decision service defining a single output decision be the single value of the output decision value. When disabled, this property makes the result of a decision service defining a single output decision be a `context` with the single entry for that decision. You can use this property to adjust your decision service outputs according to your project requirements.
 +
 --
-Default value: true
+Default value: `true`
 
 [source]
 ----
@@ -50,13 +50,10 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 --
 
 org.kie.dmn.compiler.execmodel::
-When enabled, this property enables DMN decision table logic to be compiled into executable rule models.
-You can use this property to evaluate DMN decision table logic more efficiently.
-This property is helpful when the compilation was not originally performed during project compile time.
-Enabling this property may result in added compile time during the first evaluation by the {ENGINE}, but subsequent compilations are more efficient.
+When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {ENGINE}, but subsequent compilations are more efficient.
 +
 --
-Default value: false
+Default value: `false`
 
 [source]
 ----
