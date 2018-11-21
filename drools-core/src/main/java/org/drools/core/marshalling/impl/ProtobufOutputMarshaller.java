@@ -64,23 +64,14 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AbstractTerminalNode;
-import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.FromNode;
-import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.spi.Activation;
@@ -108,6 +99,8 @@ import org.kie.api.runtime.rule.EntryPoint;
  * 
  */
 public class ProtobufOutputMarshaller {
+
+    private static final ObjectMarshallingStrategy DEFAULT_SERIALIZATION_STRATEGY = new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
 
     private static ProcessMarshaller processMarshaller = createProcessMarshaller();
 
@@ -381,33 +374,13 @@ public class ProtobufOutputMarshaller {
         }
     }
 
-    private static SerializedObject serializeObject(MarshallerWriteContext context, Object object) {
-
-        ObjectMarshallingStrategy strategy = new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-
-        Integer index = context.getStrategyIndex( strategy );
-
+    private static ByteString serializeObject(MarshallerWriteContext context, ObjectMarshallingStrategy strategy, Integer strategyIndex, Object object) {
         ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
-        byte[] serialized;
         try {
-            serialized = strategy.marshal(strategyContext,
-                                              context,
-                                              object);
+            byte[] serialized = strategy.marshal(strategyContext, context, object);
+            return ByteString.copyFrom(serialized);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        ByteString serializedObject = ByteString.copyFrom(serialized);
-
-        return new SerializedObject(index, serializedObject);
-    }
-
-    public static class SerializedObject {
-        public int strategyIndex;
-        public ByteString serializedObject;
-
-        public SerializedObject(int strategyIndex, ByteString object) {
-            this.strategyIndex = strategyIndex;
-            this.serializedObject = object;
         }
     }
 
@@ -729,7 +702,7 @@ public class ProtobufOutputMarshaller {
         RuleImpl rule = agendaItem.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
-        _activation.setTuple( writeTuple( agendaItem.getTuple() ) );
+        _activation.setTuple( writeTuple( context, agendaItem, isDormient ) );
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
         _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
@@ -749,52 +722,48 @@ public class ProtobufOutputMarshaller {
             }
         }
 
-        if (isDormient) {
-            BaseTuple agendaItem1 = (BaseTuple) agendaItem;
-
-            boolean sinkSourceIsFromNodeAccumulateNode = sinkSourceIsNode(agendaItem1);
-
-            agendaItem1.toFactHandles();
-
-            Object[] objects = agendaItem1.toObjects();
-
-            for(Object o : objects) {
-                if(sinkSourceIsFromNodeAccumulateNode) {
-                    SerializedObject so = serializeObject(context, o);
-
-                    _activation.addObject(so.serializedObject);
-                    _activation.setStrategyIndex(so.strategyIndex);
-
-                    org.drools.core.spi.Tuple parent = (agendaItem1).getParent();
-                    if (parent != null) {
-                        _activation.setNodeId(parent.getTupleSink().getId());
-                    }
-                }
-            }
-        }
-
         return _activation.build();
     }
 
-    private static boolean sinkSourceIsNode(BaseTuple agendaItem) {
-        Sink tupleSink = agendaItem.getTupleSink();
-        if (tupleSink instanceof AbstractTerminalNode) {
-            LeftTupleSource leftTupleSource = ((AbstractTerminalNode) tupleSink).getLeftTupleSource();
-            return leftTupleSource instanceof FromNode || leftTupleSource instanceof AccumulateNode;
-        }
-        return false;
-    }
-
-    public static Tuple writeTuple(org.drools.core.spi.Tuple tuple) {
+    public static Tuple writeTuple(MarshallerWriteContext context, AgendaItem<?> agendaItem, boolean isDormient) {
+        org.drools.core.spi.Tuple tuple = agendaItem.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
+
+        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) agendaItem);
+        Integer strategyIndex = null;
+        if (serializeObjects) {
+            strategyIndex = context.getStrategyIndex( DEFAULT_SERIALIZATION_STRATEGY );
+            _tb.setStrategyIndex(strategyIndex);
+        }
+
         for ( org.drools.core.spi.Tuple entry = tuple; entry != null; entry = entry.getParent() ) {
             InternalFactHandle handle = entry.getFactHandle();
             if ( handle != null ) {
                  // can be null for eval, not and exists that have no right input
                 _tb.addHandleId( handle.getId() );
+
+                if (serializeObjects) {
+                    _tb.addObject( serializeObject(context, DEFAULT_SERIALIZATION_STRATEGY, strategyIndex, handle.getObject()) );
+                }
             }
         }
+
         return _tb.build();
+    }
+
+    private static boolean hasNodeMemory(BaseTuple agendaItem) {
+        Sink tupleSink = agendaItem.getTupleSink();
+        if (tupleSink instanceof AbstractTerminalNode) {
+            return hasNodeMemory( ((AbstractTerminalNode) tupleSink).getLeftTupleSource() );
+        }
+        return false;
+    }
+
+    private static boolean hasNodeMemory(LeftTupleSource leftTupleSource) {
+        if (leftTupleSource == null) {
+            return false;
+        }
+        return NodeTypeEnums.hasNodeMemory( leftTupleSource ) ? true : hasNodeMemory(leftTupleSource.getLeftTupleSource());
     }
 
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,

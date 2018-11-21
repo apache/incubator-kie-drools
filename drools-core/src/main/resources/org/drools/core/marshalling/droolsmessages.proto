@@ -266,17 +266,13 @@ message Activation {
     optional int32 handle_id = 9;
     repeated int32 logical_dependency = 10;
     optional bool evaluated = 11;
-
-    optional int32 strategy_index = 12;
-    repeated bytes object = 13;
-    optional int32 node_id = 14;
 }
 
 message Tuple {
     repeated int32 handle_id = 1;
     // the actual object reference
-    repeated int32 object_strategy_index = 8;
-    repeated bytes object = 9;
+    optional int32 strategy_index = 2;
+    repeated bytes object = 3;
 }
 
 message TruthMaintenanceSystem {

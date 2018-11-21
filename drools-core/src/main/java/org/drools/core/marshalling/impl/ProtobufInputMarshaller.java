@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -59,7 +58,6 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -656,13 +654,14 @@ public class ProtobufInputMarshaller {
                                         List<ProtobufMessages.Activation> _rneas) {
 
         for ( ProtobufMessages.Activation _activation : _dormant ) {
+            ProtobufMessages.Tuple _tuple = _activation.getTuple();
             // this is a dormant activation
             ActivationKey activationKey;
-            if (_activation.hasStrategyIndex() && !_activation.getObjectList().isEmpty()) {
-                ObjectMarshallingStrategy strategy = context.usedStrategies.get(_activation.getStrategyIndex());
+            if (_tuple.hasStrategyIndex() && !_tuple.getObjectList().isEmpty()) {
+                ObjectMarshallingStrategy strategy = context.usedStrategies.get(_tuple.getStrategyIndex());
                 try {
                     List<Object> objects = new ArrayList<>();
-                    for(ByteString _object : _activation.getObjectList()) {
+                    for(ByteString _object : _tuple.getObjectList()) {
                         Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
                                                            context,
                                                            _object.toByteArray(),
@@ -678,7 +677,7 @@ public class ProtobufInputMarshaller {
             } else {
                 activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
                                                                     _activation.getRuleName(),
-                                                                    _activation.getTuple());
+                                                                    _tuple);
             }
             context.filter.getDormantActivationsMap().add(activationKey);
 
@@ -805,7 +804,7 @@ public class ProtobufInputMarshaller {
 
                 // add the tuple to the cache for correlation
 
-                Object[] firedObjects = activation.getTuple().toObjects();
+                Object[] firedObjects = activation.getTuple().toObjects(true);
 
                 ActivationKey activationKeyWithDeserializedObject = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
                 ActivationKey activationKey = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
@@ -815,9 +814,6 @@ public class ProtobufInputMarshaller {
 
                 // check if there was an active activation for it
                 return !(this.dormantActivations.contains( activationKeyWithDeserializedObject ) || dormantActivations.contains(activationKey));
-
-
-
             }
         }
 

@@ -43,7 +43,7 @@ public class MarshallerTest {
 
             assertEquals(0, ksession.fireAllRules());
             assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> {
-                return ml.getObjectList().size() > 0;
+                return ml.getTuple().getObjectList().size() > 0;
             }));
         } finally {
             if (ksession != null) {
@@ -53,7 +53,7 @@ public class MarshallerTest {
     }
 
     @Test
-    public void testAgendaReconciliationFrom() throws Exception {
+    public void testFromWithFireBeforeSerialization() throws Exception {
         String str =
                 "import java.util.Collection\n" +
                         "rule R1 when\n" +
@@ -78,7 +78,7 @@ public class MarshallerTest {
     }
 
     @Test
-    public void testAgendaReconciliationFrom2() throws Exception {
+    public void testFromWithFireAfterSerialization() throws Exception {
         String str =
                 "import java.util.Collection\n" +
                         "rule R1 when\n" +
@@ -102,14 +102,39 @@ public class MarshallerTest {
     }
 
     @Test
-    public void testAgendaReconciliationFromWithCombinations() throws Exception {
+    public void testFromWithPartialFiring() throws Exception {
         String str =
                 "import java.util.Collection\n" +
-                        "rule R1 when\n" +
-                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
-                        "    String() from [ \"a\", \"b\", \"c\" ]\n" +
-                        "then\n" +
-                        "end\n";
+                "rule R1 when\n" +
+                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
+            assertEquals(2, ksession.fireAllRules(2));
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertEquals(1, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
+    }
+
+    @Test
+    public void test2FromsWithPartialFiring() throws Exception {
+        String str =
+                "import java.util.Collection\n" +
+                "rule R1 when\n" +
+                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                "    String() from [ \"a\", \"b\", \"c\" ]\n" +
+                "then\n" +
+                "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
@@ -128,18 +153,20 @@ public class MarshallerTest {
     }
 
     @Test
-    public void testAgendaReconciliationFrom4() throws Exception {
+    public void testFromAndJoinWithPartialFiring() throws Exception {
         String str =
                 "import java.util.Collection\n" +
-                        "rule R1 when\n" +
-                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
-                        "then\n" +
-                        "end\n";
+                "rule R1 when\n" +
+                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                "    Integer()\n" +
+                "then\n" +
+                "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
             ksession = kbase.newKieSession();
+            ksession.insert( 42 );
             assertEquals(2, ksession.fireAllRules(2));
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -151,7 +178,6 @@ public class MarshallerTest {
             }
         }
     }
-
 
     @Test
     public void testAgendaReconciliationAccumulate() throws Exception {
