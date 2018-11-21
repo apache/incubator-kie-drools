@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.task.audit.variable;
+package org.jbpm.casemgmt.impl.audit;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.services.task.audit.impl.model.TaskVariableImpl;
-import org.kie.internal.task.api.TaskVariable;
-import org.kie.internal.task.api.TaskVariableIndexer;
+import org.jbpm.casemgmt.api.audit.CaseFileData;
+import org.jbpm.casemgmt.api.audit.CaseVariableIndexer;
 
 /**
- * Simple and default indexer for all task variables. It will keep the same name of the variable
+ * Simple and default indexer for all case variables. It will keep the same name of the variable
  * and will generate string representation based on <code>variable.toString()</code> method
  *
  * this indexer is always added at the end of the chain of indexers to allow custom implementations take
  * precedence over this one.
  */
-public class StringTaskVariableIndexer implements TaskVariableIndexer {
+public class StringCaseVariableIndexer implements CaseVariableIndexer {
 
     @Override
     public boolean accept(Object variable) {
@@ -38,14 +37,14 @@ public class StringTaskVariableIndexer implements TaskVariableIndexer {
     }
 
     @Override
-    public List<TaskVariable> index(String name, Object variable) {
-        List<TaskVariable> indexed = new ArrayList<TaskVariable>();
+    public List<CaseFileData> index(String name, Object variable) {
+        List<CaseFileData> indexed = new ArrayList<CaseFileData>();
         
-        TaskVariableImpl taskVariable = new TaskVariableImpl();
-        taskVariable.setName(name);
-        taskVariable.setValue(variable == null ? "" : variable.toString());
-        
-        indexed.add(taskVariable);
+        CaseFileDataLog caseVariable = new CaseFileDataLog();
+        caseVariable.setItemName(name);
+        caseVariable.setItemValue(variable == null ? "" : variable.toString());
+        caseVariable.setItemType(variable == null ? "" : variable.getClass().getName());
+        indexed.add(caseVariable);
         
         return indexed;
     }

@@ -268,8 +268,18 @@ public class AsyncTaskLifeCycleEventProducerTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("test", "value");
         logProducer.afterTaskInputVariableChangedEvent(event, vars);
-        
-        assertMessage(null, 2);
+                
+        ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+        verify(session).createTextMessage(argument.capture());
+        String messageContent = argument.getValue();
+        assertThat(messageContent)
+            .isNotNull()
+            .doesNotContain("<auditTask>")
+            .doesNotContain("<org.jbpm.services.task.audit.impl.model.TaskEventImpl>")
+            .contains("<taskInputs>");
+        verify(message, times(1)).setStringProperty(eq("LogType"), eq("Task"));        
+        verify(producer, times(1)).setPriority(eq(2));
+        verify(producer, times(1)).send(eq(message));
     }
     
     /*

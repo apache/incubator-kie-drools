@@ -77,7 +77,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
                 commandService = new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf());
             }
             
-            CaseEventListener auditEventListener = getCaseAuditEventListner(runtimeManager, commandService);
+            CaseEventListener auditEventListener = getCaseAuditEventListener(runtimeManager, commandService);
             caseEventListeners.add(auditEventListener);
             caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider));
             
@@ -151,7 +151,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
     }
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected CaseEventListener getCaseAuditEventListner(InternalRuntimeManager manager, TransactionalCommandService commandService) {
+    protected CaseEventListener getCaseAuditEventListener(InternalRuntimeManager manager, TransactionalCommandService commandService) {
         DeploymentDescriptor descriptor = manager.getDeploymentDescriptor();
         if (descriptor == null) {
             return CaseInstanceAuditLoggerFactory.newJPAInstance(commandService);

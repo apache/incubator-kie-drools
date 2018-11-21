@@ -42,6 +42,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
+import org.jbpm.casemgmt.api.audit.CaseFileData;
 import org.jbpm.casemgmt.impl.audit.CaseFileDataLog;
 import org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog;
 import org.jbpm.casemgmt.impl.model.AuditCaseInstanceData;
@@ -94,7 +95,7 @@ public class AsyncCaseInstanceAuditEventReceiver implements MessageListener {
                     }
                     
                     if (event.getCaseFileData() != null) {
-                        for (CaseFileDataLog caseFileData : event.getCaseFileData()) {
+                        for (CaseFileData caseFileData : event.getCaseFileData()) {
                             em.persist(caseFileData);
                         }
                     }

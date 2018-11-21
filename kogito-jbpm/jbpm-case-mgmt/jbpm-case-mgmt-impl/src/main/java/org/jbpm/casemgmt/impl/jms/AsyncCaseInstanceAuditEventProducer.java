@@ -16,12 +16,17 @@
 
 package org.jbpm.casemgmt.impl.jms;
 
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_DATA_ADDED_EVENT_TYPE;
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_DATA_REMOVED_EVENT_TYPE;
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_REOPEN_EVENT_TYPE;
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_ROLE_ASSIGNMENT_ADDED_EVENT_TYPE;
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_ROLE_ASSIGNMENT_REMOVED_EVENT_TYPE;
+import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.AFTER_CASE_STARTED_EVENT_TYPE;
 import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,8 +39,10 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.jbpm.casemgmt.api.audit.CaseFileData;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.event.CaseDataEvent;
+import org.jbpm.casemgmt.api.event.CaseEvent;
 import org.jbpm.casemgmt.api.event.CaseEventListener;
 import org.jbpm.casemgmt.api.event.CaseReopenEvent;
 import org.jbpm.casemgmt.api.event.CaseRoleAssignmentEvent;
@@ -43,6 +50,7 @@ import org.jbpm.casemgmt.api.event.CaseStartEvent;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.impl.audit.CaseFileDataLog;
+import org.jbpm.casemgmt.impl.audit.CaseIndexerManager;
 import org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog;
 import org.jbpm.casemgmt.impl.model.AuditCaseInstanceData;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
@@ -53,8 +61,6 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
-import static org.jbpm.casemgmt.impl.audit.CaseInstanceAuditConstants.*;
-
 
 public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, Cacheable {
 
@@ -64,6 +70,7 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
     private boolean transacted = true;
     private XStream xstream;
     
+    private CaseIndexerManager indexManager = CaseIndexerManager.get();
     
     public AsyncCaseInstanceAuditEventProducer() {
         initXStream();
@@ -131,21 +138,16 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
         }
         
         Map<String, Object> initialData = caseFile.getData();
-        List<CaseFileDataLog> caseFileDataLogs = new ArrayList<>();
+        List<CaseFileData> caseFileDataLogs = new ArrayList<>();
         if (!initialData.isEmpty()) {
         
         
             initialData.forEach((name, value) -> {
                 
                 if (value != null) {
-                    CaseFileDataLog caseFileDataLog = new CaseFileDataLog(event.getCaseId(), caseFile.getDefinitionId(), name);                
-                    caseFileDataLogs.add(caseFileDataLog);
-                    
-                    
-                    caseFileDataLog.setItemType(value.getClass().getName());
-                    caseFileDataLog.setItemValue(value.toString());
-                    caseFileDataLog.setLastModified(new Date());
-                    caseFileDataLog.setLastModifiedBy(event.getUser());
+                    List<CaseFileData> indexedValues = indexManager.index(event, name, value); 
+                                                        
+                    caseFileDataLogs.addAll(indexedValues);                    
                 }
             });
         }
@@ -154,7 +156,7 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
     
     @Override
     public void afterCaseReopen(CaseReopenEvent event) {
-        List<CaseFileDataLog> logs = updateCaseFileItems(event.getData(), event.getCaseId(), event.getCaseDefinitionId(), event.getUser());
+        List<CaseFileData> logs = updateCaseFileItems(event, event.getData(), event.getCaseId(), event.getCaseDefinitionId(), event.getUser());
                 
         sendMessage(AFTER_CASE_REOPEN_EVENT_TYPE, new AuditCaseInstanceData(event.getProcessInstanceId(), event.getCaseId(), logs, null), 4);    
     }    
@@ -177,7 +179,7 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
 
     @Override
     public void afterCaseDataAdded(CaseDataEvent event) {
-        List<CaseFileDataLog> logs = updateCaseFileItems(event.getData(), event.getCaseId(), event.getDefinitionId(), event.getUser());
+        List<CaseFileData> logs = updateCaseFileItems(event, event.getData(), event.getCaseId(), event.getDefinitionId(), event.getUser());
         
         if (logs != null && !logs.isEmpty()) {
             sendMessage(AFTER_CASE_DATA_ADDED_EVENT_TYPE, new AuditCaseInstanceData(event.getCaseId(), logs, null), 4);
@@ -186,7 +188,7 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
 
     @Override
     public void afterCaseDataRemoved(CaseDataEvent event) {
-        List<CaseFileDataLog> logs = event.getData().keySet()
+        List<CaseFileData> logs = event.getData().keySet()
                 .stream()
                 .map(name -> new CaseFileDataLog(event.getCaseId(), event.getDefinitionId(), name))
                 .collect(Collectors.toList());
@@ -253,24 +255,20 @@ public class AsyncCaseInstanceAuditEventProducer implements CaseEventListener, C
         }
     }
     
-    
-    protected List<CaseFileDataLog> updateCaseFileItems(Map<String, Object> addedData, String caseId, String caseDefinitionId, String user) {
+    protected List<CaseFileData> updateCaseFileItems(CaseEvent event, Map<String, Object> addedData, String caseId, String caseDefinitionId, String user) {
         
         if (addedData.isEmpty()) {
             return null;
         }
-        List<CaseFileDataLog> logs = new ArrayList<>();
+        List<CaseFileData> logs = new ArrayList<>();
         
         addedData.forEach((name, value) -> {
             
             if (value != null) {
-                CaseFileDataLog caseFileDataLog = new CaseFileDataLog(caseId, caseDefinitionId, name);                
-                caseFileDataLog.setItemType(value.getClass().getName());
-                caseFileDataLog.setItemValue(value.toString());
-                caseFileDataLog.setLastModified(new Date());
-                caseFileDataLog.setLastModifiedBy(user);
+                List<CaseFileData> indexedValues = indexManager.index(event, name, value); 
                 
-                logs.add(caseFileDataLog);
+                logs.addAll(indexedValues); 
+                
             }
         });
         return logs;

@@ -19,6 +19,7 @@ package org.jbpm.casemgmt.impl.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jbpm.casemgmt.api.audit.CaseFileData;
 import org.jbpm.casemgmt.impl.audit.CaseFileDataLog;
 import org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog;
 
@@ -30,17 +31,17 @@ public class AuditCaseInstanceData implements Serializable {
 
     private Long processInstanceId;
 
-    private List<CaseFileDataLog> caseFileData;
+    private List<CaseFileData> caseFileData;
 
     private List<CaseRoleAssignmentLog> caseRoleAssignments;
 
-    public AuditCaseInstanceData(String caseId, List<CaseFileDataLog> caseFileData, List<CaseRoleAssignmentLog> caseRoleAssignments) {
+    public AuditCaseInstanceData(String caseId, List<CaseFileData> caseFileData, List<CaseRoleAssignmentLog> caseRoleAssignments) {
         this.caseId = caseId;
         this.caseFileData = caseFileData;
         this.caseRoleAssignments = caseRoleAssignments;
     }
 
-    public AuditCaseInstanceData(Long processInstanceId, String caseId, List<CaseFileDataLog> caseFileData, List<CaseRoleAssignmentLog> caseRoleAssignments) {
+    public AuditCaseInstanceData(Long processInstanceId, String caseId, List<CaseFileData> caseFileData, List<CaseRoleAssignmentLog> caseRoleAssignments) {
         this.processInstanceId = processInstanceId;
         this.caseId = caseId;
         this.caseFileData = caseFileData;
@@ -55,11 +56,11 @@ public class AuditCaseInstanceData implements Serializable {
         this.caseId = caseId;
     }
 
-    public List<CaseFileDataLog> getCaseFileData() {
+    public List<CaseFileData> getCaseFileData() {
         return caseFileData;
     }
 
-    public void setCaseFileData(List<CaseFileDataLog> caseFileData) {
+    public void setCaseFileData(List<CaseFileData> caseFileData) {
         this.caseFileData = caseFileData;
     }
 

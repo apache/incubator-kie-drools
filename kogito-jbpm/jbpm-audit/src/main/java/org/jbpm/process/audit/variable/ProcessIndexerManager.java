@@ -29,20 +29,20 @@ import org.kie.internal.process.ProcessVariableIndexer;
  * Represents logic behind mechanism to index task variables.
  * Supports custom indexers to be loaded dynamically via JDK ServiceLoader
  * 
- * Adds default indexer (org.jbpm.services.task.audit.variable.StringTaskVariableIndexer) as the last indexer
+ * Adds default indexer (org.jbpm.process.audit.variable.StringTaskVariableIndexer) as the last indexer
  * as it accepts all types
  *
  */
 public class ProcessIndexerManager {
     
-    private static ServiceLoader<ProcessVariableIndexer> taskVariableIndexers = ServiceLoader.load(ProcessVariableIndexer.class);
+    private static ServiceLoader<ProcessVariableIndexer> processVariableIndexers = ServiceLoader.load(ProcessVariableIndexer.class);
     
     private static ProcessIndexerManager INSTANCE;
     
     private List<ProcessVariableIndexer> indexers = new ArrayList<ProcessVariableIndexer>();
     
     private ProcessIndexerManager() {
-        for (ProcessVariableIndexer indexer : taskVariableIndexers) {
+        for (ProcessVariableIndexer indexer : processVariableIndexers) {
             indexers.add(indexer);
         }
         

@@ -27,12 +27,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
+import org.jbpm.casemgmt.api.audit.CaseFileData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name = "caseFileDataLogIdSeq", sequenceName = "CASE_FILE_DATA_LOG_ID_SEQ", allocationSize = 1)
-public class CaseFileDataLog implements Serializable {
+public class CaseFileDataLog implements Serializable, CaseFileData {
 
     private static final Logger logger = LoggerFactory.getLogger(CaseFileDataLog.class);
     private static final long serialVersionUID = 7667968668409641210L;
@@ -77,6 +78,7 @@ public class CaseFileDataLog implements Serializable {
         this.id = id;
     }
     
+    @Override
     public String getCaseId() {
         return caseId;
     }
@@ -85,22 +87,25 @@ public class CaseFileDataLog implements Serializable {
         this.caseId = caseId;
     }
     
+    @Override
     public String getCaseDefId() {
         return caseDefId;
     }
-    
+        
     public void setCaseDefId(String caseDefId) {
         this.caseDefId = caseDefId;
     }
     
+    @Override
     public String getItemName() {
         return itemName;
     }
-    
+        
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
 
+    @Override
     public String getItemValue() {
         return itemValue;
     }
@@ -113,6 +118,7 @@ public class CaseFileDataLog implements Serializable {
         this.itemValue = itemValue;
     }
     
+    @Override
     public String getItemType() {
         return itemType;
     }
@@ -121,6 +127,7 @@ public class CaseFileDataLog implements Serializable {
         this.itemType = itemType;
     }
     
+    @Override
     public Date getLastModified() {
         return lastModified;
     }
@@ -129,6 +136,7 @@ public class CaseFileDataLog implements Serializable {
         this.lastModified = lastModified;
     }
     
+    @Override
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }

@@ -17,72 +17,27 @@
 package org.jbpm.casemgmt.impl;
 
 import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.bpmn2.objects.Person;
-import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
-import org.jbpm.casemgmt.api.CaseActiveException;
-import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
-import org.jbpm.casemgmt.api.CaseDefinitionNotFoundException;
-import org.jbpm.casemgmt.api.CaseNotFoundException;
-import org.jbpm.casemgmt.api.auth.AuthorizationManager;
-import org.jbpm.casemgmt.api.model.AdHocFragment;
-import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseFileItem;
-import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
-import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
-import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
-import org.jbpm.casemgmt.api.model.instance.CommentInstance;
-import org.jbpm.casemgmt.api.model.instance.CommentSortBy;
-import org.jbpm.casemgmt.api.model.instance.MilestoneStatus;
-import org.jbpm.casemgmt.api.model.instance.StageStatus;
 import org.jbpm.casemgmt.impl.marshalling.CaseMarshallerFactory;
-import org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl;
-import org.jbpm.casemgmt.impl.objects.EchoService;
 import org.jbpm.casemgmt.impl.objects.Patient;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
-import org.jbpm.document.Document;
-import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
-import org.jbpm.services.api.TaskNotFoundException;
-import org.jbpm.services.api.model.NodeInstanceDesc;
-import org.jbpm.services.api.model.ProcessInstanceDesc;
-import org.jbpm.services.api.model.VariableDesc;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Test;
-import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.query.QueryContext;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.KieInternalServices;
-import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.NamedObjectModel;
@@ -121,6 +76,14 @@ public class CaseWithJPADataTest extends AbstractCaseServicesBaseTest {
             Patient patientFromCase = (Patient) cInstance.getCaseFile().getData("patient");
             Assertions.assertThat(patientFromCase).isNotNull();
             Assertions.assertThat(patient.getName()).isEqualTo(patientFromCase.getName());
+            
+            Collection<CaseFileItem> logs = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            Assertions.assertThat(logs).hasSize(3);
+            
+            Map<String, CaseFileItem> mappedLogs = logs.stream().collect(toMap(CaseFileItem::getName, t -> t));
+            // there is special org.jbpm.casemgmt.impl.audit.PatientCaseVariableIndexer so it produces multiple entries for single variable
+            Assertions.assertThat(mappedLogs).containsKey("patient");
+            Assertions.assertThat(mappedLogs).containsKey("patient_name");
 
             caseService.cancelCase(caseId);
             CaseInstance instance = caseService.getCaseInstance(caseId);
