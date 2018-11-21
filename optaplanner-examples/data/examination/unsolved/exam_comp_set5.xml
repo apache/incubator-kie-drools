@@ -1,6 +1,6 @@
 <Examination id="1">
   <id>0</id>
-  <institutionParametrization id="2">
+  <constraintConfiguration id="2">
     <id>0</id>
     <twoInARowPenalty>40</twoInARowPenalty>
     <twoInADayPenalty>15</twoInADayPenalty>
@@ -10,7 +10,7 @@
     <frontLoadLargeTopicSize>250</frontLoadLargeTopicSize>
     <frontLoadLastPeriodSize>30</frontLoadLastPeriodSize>
     <frontLoadPenalty>10</frontLoadPenalty>
-  </institutionParametrization>
+  </constraintConfiguration>
   <studentList id="3">
     <Student id="4">
       <id>0</id>

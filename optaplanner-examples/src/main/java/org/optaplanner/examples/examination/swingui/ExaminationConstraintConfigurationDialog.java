@@ -31,9 +31,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import org.optaplanner.examples.examination.domain.Examination;
-import org.optaplanner.examples.examination.domain.InstitutionParametrization;
+import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
 
-public class InstitutionParametrizationDialog extends JDialog {
+public class ExaminationConstraintConfigurationDialog extends JDialog {
 
     protected final ExaminationPanel examinationPanel;
 
@@ -48,8 +48,8 @@ public class InstitutionParametrizationDialog extends JDialog {
     protected final AbstractAction saveAction;
     protected final AbstractAction cancelAction;
 
-    public InstitutionParametrizationDialog(Frame owner, ExaminationPanel examinationPanel) {
-        super(owner, "Edit institution score parametrization", true);
+    public ExaminationConstraintConfigurationDialog(Frame owner, ExaminationPanel examinationPanel) {
+        super(owner, "Edit examination constraint configuration", true);
         this.examinationPanel = examinationPanel;
         JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -105,15 +105,15 @@ public class InstitutionParametrizationDialog extends JDialog {
         return formPanel;
     }
 
-    public void setInstitutionParametrization(InstitutionParametrization institutionParametrization) {
-        twoInARowPenaltyField.setValue(institutionParametrization.getTwoInARowPenalty());
-        twoInADayPenaltyField.setValue(institutionParametrization.getTwoInADayPenalty());
-        periodSpreadLengthField.setValue(institutionParametrization.getPeriodSpreadLength());
-        periodSpreadPenaltyField.setValue(institutionParametrization.getPeriodSpreadPenalty());
-        mixedDurationPenaltyField.setValue(institutionParametrization.getMixedDurationPenalty());
-        frontLoadLargeTopicSizeField.setValue(institutionParametrization.getFrontLoadLargeTopicSize());
-        frontLoadLastPeriodSizeField.setValue(institutionParametrization.getFrontLoadLastPeriodSize());
-        frontLoadPenaltyField.setValue(institutionParametrization.getFrontLoadPenalty());
+    public void setInstitutionParametrization(ExaminationConstraintConfiguration constraintConfiguration) {
+        twoInARowPenaltyField.setValue(constraintConfiguration.getTwoInARowPenalty());
+        twoInADayPenaltyField.setValue(constraintConfiguration.getTwoInADayPenalty());
+        periodSpreadLengthField.setValue(constraintConfiguration.getPeriodSpreadLength());
+        periodSpreadPenaltyField.setValue(constraintConfiguration.getPeriodSpreadPenalty());
+        mixedDurationPenaltyField.setValue(constraintConfiguration.getMixedDurationPenalty());
+        frontLoadLargeTopicSizeField.setValue(constraintConfiguration.getFrontLoadLargeTopicSize());
+        frontLoadLastPeriodSizeField.setValue(constraintConfiguration.getFrontLoadLastPeriodSize());
+        frontLoadPenaltyField.setValue(constraintConfiguration.getFrontLoadPenalty());
         setLocationRelativeTo(examinationPanel.getTopLevelAncestor());
     }
 
@@ -129,17 +129,17 @@ public class InstitutionParametrizationDialog extends JDialog {
         setVisible(false);
         examinationPanel.doProblemFactChange(scoreDirector -> {
             Examination examination = scoreDirector.getWorkingSolution();
-            InstitutionParametrization institutionParametrization = examination.getInstitutionParametrization();
-            scoreDirector.beforeProblemPropertyChanged(institutionParametrization);
-            institutionParametrization.setTwoInARowPenalty(twoInARowPenalty);
-            institutionParametrization.setTwoInADayPenalty(twoInADayPenalty);
-            institutionParametrization.setPeriodSpreadLength(periodSpreadLength);
-            institutionParametrization.setPeriodSpreadPenalty(periodSpreadPenalty);
-            institutionParametrization.setMixedDurationPenalty(mixedDurationPenalty);
-            institutionParametrization.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
-            institutionParametrization.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
-            institutionParametrization.setFrontLoadPenalty(frontLoadPenalty);
-            scoreDirector.afterProblemPropertyChanged(institutionParametrization);
+            ExaminationConstraintConfiguration constraintConfiguration = examination.getConstraintConfiguration();
+            scoreDirector.beforeProblemPropertyChanged(constraintConfiguration);
+            constraintConfiguration.setTwoInARowPenalty(twoInARowPenalty);
+            constraintConfiguration.setTwoInADayPenalty(twoInADayPenalty);
+            constraintConfiguration.setPeriodSpreadLength(periodSpreadLength);
+            constraintConfiguration.setPeriodSpreadPenalty(periodSpreadPenalty);
+            constraintConfiguration.setMixedDurationPenalty(mixedDurationPenalty);
+            constraintConfiguration.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
+            constraintConfiguration.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
+            constraintConfiguration.setFrontLoadPenalty(frontLoadPenalty);
+            scoreDirector.afterProblemPropertyChanged(constraintConfiguration);
         }, true);
     }
 

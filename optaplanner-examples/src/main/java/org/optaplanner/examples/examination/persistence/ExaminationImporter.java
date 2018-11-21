@@ -42,8 +42,8 @@ import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
 import org.optaplanner.examples.examination.domain.FollowingExam;
-import org.optaplanner.examples.examination.domain.InstitutionParametrization;
 import org.optaplanner.examples.examination.domain.LeadingExam;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.PeriodPenalty;
@@ -392,23 +392,23 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         }
 
         private void readInstitutionalWeighting() throws IOException {
-            InstitutionParametrization institutionParametrization = new InstitutionParametrization();
-            institutionParametrization.setId(0L);
+            ExaminationConstraintConfiguration constraintConfiguration = new ExaminationConstraintConfiguration();
+            constraintConfiguration.setId(0L);
             String[] lineTokens;
             lineTokens = readInstitutionalWeightingProperty("TWOINAROW", 2);
-            institutionParametrization.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
+            constraintConfiguration.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("TWOINADAY", 2);
-            institutionParametrization.setTwoInADayPenalty(Integer.parseInt(lineTokens[1]));
+            constraintConfiguration.setTwoInADayPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("PERIODSPREAD", 2);
-            institutionParametrization.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
-            institutionParametrization.setPeriodSpreadPenalty(1); // constant
+            constraintConfiguration.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
+            constraintConfiguration.setPeriodSpreadPenalty(1); // constant
             lineTokens = readInstitutionalWeightingProperty("NONMIXEDDURATIONS", 2);
-            institutionParametrization.setMixedDurationPenalty(Integer.parseInt(lineTokens[1]));
+            constraintConfiguration.setMixedDurationPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("FRONTLOAD", 4);
-            institutionParametrization.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
-            institutionParametrization.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
-            institutionParametrization.setFrontLoadPenalty(Integer.parseInt(lineTokens[3]));
-            examination.setInstitutionParametrization(institutionParametrization);
+            constraintConfiguration.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
+            constraintConfiguration.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
+            constraintConfiguration.setFrontLoadPenalty(Integer.parseInt(lineTokens[3]));
+            examination.setConstraintConfiguration(constraintConfiguration);
         }
 
         private String[] readInstitutionalWeightingProperty(String property,
@@ -433,7 +433,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                             .toComparison();
                 }
             });
-            int frontLoadLargeTopicSize = examination.getInstitutionParametrization().getFrontLoadLargeTopicSize();
+            int frontLoadLargeTopicSize = examination.getConstraintConfiguration().getFrontLoadLargeTopicSize();
             if (frontLoadLargeTopicSize == 0) {
                 return;
             }
@@ -451,7 +451,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void tagFrontLoadLastPeriods() {
             List<Period> periodList = examination.getPeriodList();
-            int frontLoadLastPeriodSize = examination.getInstitutionParametrization().getFrontLoadLastPeriodSize();
+            int frontLoadLastPeriodSize = examination.getConstraintConfiguration().getFrontLoadLastPeriodSize();
             if (frontLoadLastPeriodSize == 0) {
                 return;
             }

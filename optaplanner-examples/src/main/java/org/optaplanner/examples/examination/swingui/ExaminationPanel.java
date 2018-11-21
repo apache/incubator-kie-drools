@@ -57,7 +57,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
 
     private final TimeTablePanel<Room, Period> roomsPanel;
 
-    private InstitutionParametrizationDialog institutionParametrizationDialog;
+    private ExaminationConstraintConfigurationDialog examinationConstraintConfigurationDialog;
     private AbstractAction institutionParametrizationEditAction;
 
     private int maximumPeriodDuration;
@@ -75,7 +75,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
 
     private JPanel createFooterPanel() {
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        institutionParametrizationEditAction = new AbstractAction("Edit scoring parameters") {
+        institutionParametrizationEditAction = new AbstractAction("Edit constraint weights") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (solutionBusiness.isSolving()) {
@@ -86,9 +86,9 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                             "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                institutionParametrizationDialog.setInstitutionParametrization(
-                        getSolution().getInstitutionParametrization());
-                institutionParametrizationDialog.setVisible(true);
+                examinationConstraintConfigurationDialog.setInstitutionParametrization(
+                        getSolution().getConstraintConfiguration());
+                examinationConstraintConfigurationDialog.setVisible(true);
             }
         };
         institutionParametrizationEditAction.setEnabled(false);
@@ -99,7 +99,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
     @Override
     public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
         super.setSolverAndPersistenceFrame(solverAndPersistenceFrame);
-        institutionParametrizationDialog = new InstitutionParametrizationDialog(solverAndPersistenceFrame, this);
+        examinationConstraintConfigurationDialog = new ExaminationConstraintConfigurationDialog(solverAndPersistenceFrame, this);
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
-import org.optaplanner.examples.examination.domain.InstitutionParametrization;
+import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.PeriodPenalty;
 import org.optaplanner.examples.examination.domain.PeriodPenaltyType;
@@ -133,47 +133,41 @@ end
 // Two exams in a row which share students
 rule "twoExamsInARow"
     when
-        $institutionParametrization : InstitutionParametrization(twoInARowPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
             Math.abs($leftPeriodIndex - periodIndex) == 1)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext,
-                $topicConflict.getStudentSize() * (- $institutionParametrization.getTwoInARowPenalty()));
+        scoreHolder.penalize(kcontext, $topicConflict.getStudentSize());
 end
 
 // TODO check if merging twoExamsInARow and twoExamsInADay can be a noticeable performance boost
 // Two exams in a day which share students
 rule "twoExamsInADay"
     when
-        $institutionParametrization : InstitutionParametrization(twoInADayPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
             Math.abs($leftPeriodIndex - periodIndex) > 1)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext,
-                $topicConflict.getStudentSize() * (- $institutionParametrization.getTwoInADayPenalty()));
+        scoreHolder.penalize(kcontext, $topicConflict.getStudentSize());
 end
 
 // Exams which share students have to few periods between them
 rule "periodSpread"
     when
-        $institutionParametrization : InstitutionParametrization(periodSpreadPenalty != 0)
+        $constraintConfiguration : ExaminationConstraintConfiguration()
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, period != null,
-            Math.abs($leftPeriodIndex - periodIndex) < ($institutionParametrization.getPeriodSpreadLength() + 1))
+            Math.abs($leftPeriodIndex - periodIndex) < ($constraintConfiguration.getPeriodSpreadLength() + 1))
     then
-        scoreHolder.addSoftConstraintMatch(kcontext,
-                $topicConflict.getStudentSize() * (- $institutionParametrization.getPeriodSpreadPenalty()));
+        scoreHolder.penalize(kcontext, $topicConflict.getStudentSize());
 end
 
 // Several exams in the same room and period have different durations
 rule "mixedDurations"
     when
-        $institutionParametrization : InstitutionParametrization(mixedDurationPenalty != 0)
         $leftExam : Exam($leftId : id, period != null, $period : period, room != null, $room : room,
             $leftTopicDuration : topicDuration)
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
@@ -189,16 +183,15 @@ rule "mixedDurations"
             topicDuration == $rightTopicDuration
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $institutionParametrization.getMixedDurationPenalty());
+        scoreHolder.penalize(kcontext);
 end
 
 // Larger Exams towards the beginning of the examination session
 rule "frontLoad"
     when
-        $institutionParametrization : InstitutionParametrization(frontLoadPenalty != 0)
         $exam : Exam(topicFrontLoadLarge == true, periodFrontLoadLast == true)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $institutionParametrization.getFrontLoadPenalty());
+        scoreHolder.penalize(kcontext);
 end
 
 // Period Penalty

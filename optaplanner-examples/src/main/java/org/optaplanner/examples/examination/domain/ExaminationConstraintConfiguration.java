@@ -17,6 +17,9 @@
 package org.optaplanner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 /**
@@ -25,8 +28,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
  * <p>
  * Each {@link Examination} has only 1 instance of this class.
  */
-@XStreamAlias("InstitutionParametrization")
-public class InstitutionParametrization extends AbstractPersistable {
+@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.examination.solver")
+@XStreamAlias("ExaminationConstraintConfiguration")
+public class ExaminationConstraintConfiguration extends AbstractPersistable {
 
     private int twoInARowPenalty;
     private int twoInADayPenalty;
@@ -36,6 +40,32 @@ public class InstitutionParametrization extends AbstractPersistable {
     private int frontLoadLargeTopicSize;
     private int frontLoadLastPeriodSize;
     private int frontLoadPenalty;
+
+    @ConstraintWeight("twoExamsInARow")
+    public HardSoftScore getTwoInARowPenaltyAsScore() {
+        return HardSoftScore.ofSoft(twoInARowPenalty);
+    }
+
+    @ConstraintWeight("twoExamsInADay")
+    public HardSoftScore getTwoInADayPenaltyAsScore() {
+        return HardSoftScore.ofSoft(twoInADayPenalty);
+    }
+
+    @ConstraintWeight("periodSpread")
+    public HardSoftScore getPeriodSpreadPenaltyAsScore() {
+        return HardSoftScore.ofSoft(periodSpreadPenalty);
+    }
+
+    @ConstraintWeight("mixedDurations")
+    public HardSoftScore getMixedDurationPenaltyAsScore() {
+        return HardSoftScore.ofSoft(mixedDurationPenalty);
+    }
+
+    @ConstraintWeight("frontLoad")
+    public HardSoftScore getFrontLoadPenaltyAsScore() {
+        return HardSoftScore.ofSoft(frontLoadPenalty);
+    }
+
 
     public int getTwoInARowPenalty() {
         return twoInARowPenalty;
