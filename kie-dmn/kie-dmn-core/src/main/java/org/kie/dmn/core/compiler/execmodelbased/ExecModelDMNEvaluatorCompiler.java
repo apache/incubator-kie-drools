@@ -368,9 +368,16 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     if (testClass == null) {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
-                        testsBuilder.append( "\n" );
                         instancesBuilder.append( "    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n" );
-                        testsBuilder.append( feel.getSourceForUnaryTest( pkgName, testClass, input, ctx, dTableModel.getColumns().get(j).getType() ) );
+
+                        String sourceCode = feel.compileUnaryTests(
+                                input,
+                                ctx,
+                                dTableModel.getColumns().get(j).getType())
+                                .setName(testClass).toString();
+
+                        testsBuilder.append( "\n" );
+                        testsBuilder.append( sourceCode );
                         testsBuilder.append( "\n" );
                     }
                     testArrayBuilder.append( testClass ).append( "_INSTANCE" );

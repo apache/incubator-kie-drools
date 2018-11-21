@@ -90,6 +90,16 @@ public interface FEEL {
     CompiledExpression compile(String expression, CompilerContext ctx);
 
     /**
+     * Compiles the string expression using the given
+     * compiler context.
+     *
+     * @param expression a FEEL expression for unary tests
+     * @param ctx a compiler context
+     * @return the compiled unary tests
+     */
+    CompiledExpression compileUnaryTests(String expression, CompilerContext ctx);
+
+    /**
      * Evaluates the given FEEL expression and returns
      * the result
      *
