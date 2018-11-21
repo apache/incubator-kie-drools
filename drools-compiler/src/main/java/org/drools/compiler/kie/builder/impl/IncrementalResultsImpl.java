@@ -40,10 +40,10 @@ public class IncrementalResultsImpl implements IncrementalResults {
     }
 
     public void addMessage(KnowledgeBuilderResult result, String kieBaseName ) {
-        addedMessages.add( new MessageImpl( idGenerator++, result ).setKieBaseName( kieBaseName ) );
+        addedMessages.add(result.asMessage(idGenerator++).setKieBaseName(kieBaseName));
     }
 
     public void removeMessage(KnowledgeBuilderResult result, String kieBaseName) {
-        removedMessages.add( new MessageImpl( idGenerator++, result ).setKieBaseName( kieBaseName ) );
+        removedMessages.add(result.asMessage(idGenerator++).setKieBaseName(kieBaseName));
     }
 }

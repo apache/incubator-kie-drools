@@ -15,11 +15,13 @@
  */
 package org.drools.compiler.compiler;
 
+import java.util.Arrays;
+
+import org.drools.core.kie.impl.MessageImpl;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.api.io.Resource;
-
-import java.util.Arrays;
 
 /**
  * A base abstract class for all Knowledge Builder results
@@ -81,5 +83,10 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
     public int hashCode() {
         int hash = (29 * getMessage().hashCode()) + (31 * Arrays.hashCode(getLines()));
         return resource != null ? hash + (37 * resource.hashCode()) : hash;
+    }
+
+    @Override
+    public InternalMessage asMessage(long id) {
+        return new MessageImpl(id, this);
     }
 }

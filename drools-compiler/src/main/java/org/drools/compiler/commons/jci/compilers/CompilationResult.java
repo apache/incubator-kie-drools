@@ -20,7 +20,7 @@ package org.drools.compiler.commons.jci.compilers;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * A CompilationResult represents the result of a compilation.

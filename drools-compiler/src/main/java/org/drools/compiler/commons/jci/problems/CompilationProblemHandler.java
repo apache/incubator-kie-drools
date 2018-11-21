@@ -17,6 +17,7 @@
 
 package org.drools.compiler.commons.jci.problems;
 
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * A CompilationProblemHandler gets access to a problem
