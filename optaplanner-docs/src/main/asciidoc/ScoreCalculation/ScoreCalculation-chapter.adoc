@@ -64,7 +64,7 @@ regardless if the constraints are positive or negative.
 
 Most planning problems have only negative constraints and therefore have a negative score.
 In that case, the score is the sum of the weight of the negative constraints being broken, with a perfect score of 0.
-This explains why the score of a solution of four queens is the negative of the number of queen pairs which can attack each other.
+For example in n queens, the score is the negative of the number of queen pairs which can attack each other.
 
 Negative and positive constraints can be combined, even in the same score level.
 
@@ -88,8 +88,8 @@ In that case, the positive constraints maximize revenue and the negative constra
 Alternatively, score weighting is also often used to create social <<fairnessScoreConstraints,fairness>>.
 For example, a nurse, who requests a free day, pays a higher weight on New Years eve than on a normal day.
 
-The weight of a constraint match can be dynamically based on the planning entities involved.
-For example in cloud balance, the weight of the soft constraint match for an active `Computer`
+The weight of a constraint match can depend on the planning entities involved.
+For example in cloud balancing, the weight of the soft constraint match for an active `Computer`
 is the maintenance `cost` of that `Computer` (which differs per computer).
 
 Putting a good weight on a constraint can be a difficult analytical decision, because it is about making choices and tradeoffs with other constraints.
@@ -101,7 +101,8 @@ image::ScoreCalculation/scoreTradeoffInPerspective.png[align="center"]
 
 [NOTE]
 ====
-When deciding the weights of some constraints is debatable, it's recommended to make them configurable at runtime, as demonstrated in the exam timetabling example with the `InstitutionParametrization` class.
+When deciding the weights of some constraints is debatable,
+it's recommended to make them configurable at runtime, as demonstrated in the exam timetabling example with the `ExaminationConstraintConfiguration` class.
 This allow the end-user to recalibrate constraint weights in the user interface and immediately discover the impact of the new weights by running the solver again.
 ====
 
@@ -418,24 +419,25 @@ you'll need to write custom glue code too.
 
 There are several ways to calculate the `Score` of a ``Solution``:
 
-* **Easy Java score calculation**: implement a single Java method
-* **Incremental Java score calculation**: implement multiple Java methods
-* *Drools score calculation* (recommended): implement score rules
+* **<<easyJavaScoreCalculation,Easy Java score calculation>>**: Implement all constraints together in a single method in Java (or another JVM language). Does not scale.
+* **<<constraintStreams,Constraint streams score calculation>>**: Implement each constraint as a separate ConstraintStream in Java (or another JVM language). Fast and scalable.
+* **<<incrementalJavaScoreCalculation,Incremental Java score calculation>>** (not recommended): Implement multiple low-level methods in Java (or another JVM language). Fast and scalable. Very difficult to implement and maintain.
+* **<<droolsScoreCalculation,Drools score calculation>>**: Implement each constraint as a separate score rule in DRL. Scalable.
 
-Every score calculation type can use any Score definition.
-For example, easy Java score calculation can output a ``HardSoftScore``.
-
+Every score calculation type can work with any Score definition (such as ``HardSoftScore`` or ``HardMediumSoftScore``).
 All score calculation types are Object Oriented and can reuse existing Java code.
 
 [IMPORTANT]
 ====
 The score calculation must be read-only.
 It must not change the planning entities or the problem facts in any way.
-For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
-This does not apply to _logically inserted_ objects, which can be changed by the score rules that logically inserted them in the first place.
+For example, it must not call a setter method on a planning entity in the score calculation.
 
-Planner will not recalculate the score of a `Solution` if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled). For example, after a winning step is done, there is no need to calculate the score because that move was done and undone earlier.
-As a result, there is no guarantee that such changes applied during score calculation are actually done.
+Planner will not recalculate the score of a `Solution` if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled).
+For example, after a winning step is done, there is no need to calculate the score because that move was done and undone earlier.
+As a result, there is no guarantee that changes applied during score calculation actually happen.
+
+To update planning entities when the planning variable change, use <<shadowVariable,shadow variables>> instead.
 ====
 
 
@@ -755,261 +757,6 @@ public class MachineReassignmentIncrementalScoreCalculator
 That `getConstraintMatchTotals()` code often duplicates some of the logic of the normal `IncrementalScoreCalculator` methods.
 Drools Score Calculation doesn't have this disadvantage, because it is constraint match aware automatically when needed,
 without any extra domain-specific code.
-
-[[droolsScoreCalculation]]
-=== Drools Score Calculation
-
-
-[[droolsScoreCalculationOverview]]
-==== Overview
-
-Implement your score calculation using the Drools rule engine.
-Every score constraint is written as one or more score rules.
-
-* Advantages:
-** Incremental score calculation for free
-*** Because most DRL syntax uses forward chaining, it does incremental calculation without any extra code
-** Score constraints are isolated as separate rules
-*** Easy to add or edit existing score rules
-** Flexibility to augment your score constraints by
-*** Defining them in decision tables
-**** Excel (XLS) spreadsheet
-**** KIE Workbench WebUI
-*** Translate them into natural language with DSL
-*** Store and release in the KIE Workbench repository
-** Performance optimizations in future versions for free
-*** In every release, the Drools rule engine tends to become faster
-* Disadvantages:
-** DRL learning curve
-** Usage of DRL
-*** Polyglot fear can prohibit the use of a new language such as DRL in some organizations
-
-
-[[droolsScoreRulesConfiguration]]
-==== Drools Score Rules Configuration
-
-There are several ways to define where your score rules live.
-
-
-[[droolsScoreCalculationScoreDrl]]
-===== A scoreDrl Resource on the Classpath
-
-This is the easy way.
-The score rules live in a DRL file which is provided as a classpath resource.
-Just add the score rules DRL file in the solver configuration as a `<scoreDrl>` element:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
-  </scoreDirectorFactory>
-----
-
-In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl` (even for a war project).
-
-[NOTE]
-====
-The `<scoreDrl>` element expects a classpath resource, as defined by ``ClassLoader.getResource(String)``, it does not accept a ``File``, nor an URL, nor a webapp resource.
-See below to use a `File` instead.
-====
-
-Add multiple `<scoreDrl>` elements if the score rules are split across multiple DRL files.
-
-Optionally, you can also set drools configuration properties:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
-    <kieBaseConfigurationProperties>
-      <drools.equalityBehavior>...</drools.equalityBehavior>
-    </kieBaseConfigurationProperties>
-  </scoreDirectorFactory>
-----
-
-To enable property reactive by default, without a `@propertyReactive` on the domain classes,
-add `<drools.propertySpecific>ALWAYS</drools.propertySpecific>` in there.
-Otherwise Planner automatically changes the Drools default to `ALLOWED` so property reactive is not active by default.
-
-
-[[droolsScoreCalculationScoreDrlFile]]
-===== A scoreDrlFile
-
-To use `File` on the local file system, instead of a classpath resource, add the score rules DRL file in the solver configuration as a `<scoreDrlFile>` element:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensScoreRules.drl</scoreDrlFile>
-  </scoreDirectorFactory>
-----
-
-[WARNING]
-====
-For portability reasons, a classpath resource is recommended over a File.
-An application build on one computer, but used on another computer, might not find the file on the same location.
-Worse, if they use a different Operating System, it is hard to choose a portable file path.
-====
-
-Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
-
-
-[[droolsScoreCalculationKsessionName]]
-===== A ksessionName in a Kjar from a Maven repository
-
-This way allows you to use score rules defined by the Workbench or build a kjar and deploy it to the Execution Server.
-Both the score rules and the solver configuration are resources in a kjar.
-Clients can obtain that kjar either from the local classpath, from a local Maven repository or even from a remote Maven repository.
-
-The score rules still live in a DRL file, but the `KieContainer` finds that DRL file through the `META-INF/kmodule.xml` file:
-
-[source,xml,options="nowrap"]
-----
-<kmodule xmlns="http://www.drools.org/xsd/kmodule">
-  <configuration>
-    <!-- Don't enable propertyReactive unless there is a @PropertyReactive annotation on the domain classes -->
-    <property key="drools.propertySpecific" value="ALLOWED"/>
-  </configuration>
-  <kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver">
-    <ksession name="nQueensKsession"/>
-  </kbase>
-</kmodule>
-----
-
-The kmodule above will pick up all the DRL files in the package ``org.optaplanner.examples.nqueens.solver``.
-A kbase can even extend another kbase.
-
-[NOTE]
-====
-Starting from version 7.0, Drools enables property reactive by default for all classes.
-This means if you have a non-simple getter and forget to apply `@Modifies` correctly, corruption occurs.
-To avoid this, simply set `drools.propertySpecific` to `ALLOWED` as shown above.
-====
-
-Add the ksession name in the solver configuration as a `<ksessionName>` element:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <ksessionName>nQueensKsession</ksessionName>
-  </scoreDirectorFactory>
-----
-
-In this approach, it's required to use a `SolverFactory.createFromKieContainerXmlResource(...)` method to <<solverConfigurationByXML,build the `SolverFactory`>>.
-If no `<ksessionName>` element is specified, the default ksession of the `kmodule.xml` is used.
-
-
-[[implementingAScoreRule]]
-==== Implementing a Score Rule
-
-Here is an example of a score constraint implemented as a score rule in a DRL file:
-
-[source,options="nowrap"]
-----
-rule "multipleQueensHorizontal"
-    when
-        Queen($id : id, row != null, $i : rowIndex)
-        Queen(id > $id, rowIndex == $i)
-    then
-        scoreHolder.addConstraintMatch(kcontext, -1);
-end
-----
-
-This score rule will fire once for every two queens with the same ``rowIndex``.
-The `(id > $id)` condition is needed to assure that for two queens A and B, it can only fire for (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of four queens:
-
-image::ScoreCalculation/unsolvedNQueens04.png[align="center"]
-
-In this solution the multipleQueensHorizontal score rule will fire for six queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
-An optimal solution of four queens has a score of ``0``.
-
-[NOTE]
-====
-Notice that every score rule will relate to at least one planning entity class (directly or indirectly through a logically inserted fact).
-
-This is a normal case.
-It would be a waste of time to write a score rule that only relates to problem facts, as the consequence will never change during planning, no matter what the possible solution.
-====
-
-[NOTE]
-====
-The `kcontext` variable is a magic variable in Drools Expert.
-The ``scoreHolder``'s method uses it to do incremental score calculation correctly and to create a `ConstraintMatch` instance.
-====
-
-
-[[weighingScoreRules]]
-==== Weighing Score Rules
-
-A `ScoreHolder` instance is asserted into the `KieSession` as a global called ``scoreHolder``.
-The score rules need to (directly or indirectly) update that instance.
-
-[source,options="nowrap"]
-----
-global SimpleScoreHolder scoreHolder;
-
-rule "multipleQueensHorizontal"
-    when
-        Queen($id : id, row != null, $i : rowIndex)
-        Queen(id > $id, rowIndex == $i)
-    then
-        scoreHolder.addConstraintMatch(kcontext, -1);
-end
-
-// multipleQueensVertical is obsolete because it is always 0
-
-rule "multipleQueensAscendingDiagonal"
-    when
-        Queen($id : id, row != null, $i : ascendingDiagonalIndex)
-        Queen(id > $id, ascendingDiagonalIndex == $i)
-    then
-        scoreHolder.addConstraintMatch(kcontext, -1);
-end
-
-rule "multipleQueensDescendingDiagonal"
-    when
-        Queen($id : id, row != null, $i : descendingDiagonalIndex)
-        Queen(id > $id, descendingDiagonalIndex == $i)
-    then
-        scoreHolder.addConstraintMatch(kcontext, -1);
-end
-----
-
-[NOTE]
-====
-To learn more about the Drools rule language (DRL), consult https://drools.org/learn/documentation.html[the Drools documentation].
-====
-
-Most use cases also weigh their constraint types or even their matches differently, by using a specific weight for each constraint match.
-For example in <<curriculumCourse,course scheduling>>, assigning a `Lecture` to a `Room` that is lacking two seats is weighted equally bad as having one isolated `Lecture` in a ``Curriculum``:
-
-[source,options="nowrap"]
-----
-global HardSoftScoreHolder scoreHolder;
-
-// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
-// than the number of seats of all the rooms that host its lectures.
-rule "roomCapacity"
-    when
-        $room : Room($capacity : capacity)
-        $lecture : Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
-    then
-        // Each student above the capacity counts as one point of penalty.
-        scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
-end
-
-// CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
-// to each other (i.e., in consecutive periods).
-// For a given curriculum we account for a violation every time there is one lecture not adjacent
-// to any other lecture within the same day.
-rule "curriculumCompactness"
-    when
-        ...
-    then
-        // Each isolated lecture in a curriculum counts as two points of penalty.
-        scoreHolder.addSoftConstraintMatch(kcontext, -2);
-end
-----
 
 
 [[initializingScoreTrend]]

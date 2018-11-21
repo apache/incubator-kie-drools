@@ -1,0 +1,35 @@
+[[constraintStreams]]
+= Constraint Streams Score Calculation
+:doctype: book
+:imagesdir: ..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+
+Coming soon.
+
+Constraint streams are an FP form of incremental score calculation in plain Java 8+ that is fast, scalable and debuggable.
+
+[[constraintStreamsIntroduction]]
+== Introduction
+
+Using Java 8's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
+that uses a functional approach:
+
+[source,java,options="nowrap"]
+----
+List<Talk> talkList = schedule.getTalkList();
+talkList.stream()
+        .filter(talk -> talk.hasAnyUnavailableSpeaker())
+        .forEach(talk -> penalize(talk.getDurationInMinutes()));
+----
+
+However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>.
+When the planning variable of a single `Talk` changes, to recalculate the score,
+the normal Streams API has to execute the entire stream from scratch.
+It doesn't use <<incrementalScoreCalculation,deltas>>. Nor does it support <<explainingTheScore,justifications>>.
+
+The ConstraintStreams API does.
+
