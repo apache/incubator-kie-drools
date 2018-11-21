@@ -130,4 +130,9 @@ public class PathExpressionNode
         return new ASTNode[] { expression, name };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
 }

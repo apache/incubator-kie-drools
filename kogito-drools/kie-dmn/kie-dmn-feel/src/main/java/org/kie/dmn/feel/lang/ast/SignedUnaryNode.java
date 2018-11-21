@@ -82,4 +82,8 @@ public class SignedUnaryNode
         return new ASTNode[] { expression };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

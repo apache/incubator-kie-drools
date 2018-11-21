@@ -91,5 +91,8 @@ public class ContextNode
         return entries.toArray( new ASTNode[entries.size()] );
     }
 
-
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

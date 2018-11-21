@@ -73,4 +73,9 @@ public class ContextEntryNode
     public ASTNode[] getChildrenNode() {
         return new ASTNode[] { name, value };
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

@@ -30,11 +30,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.javaparser.ast.expr.Expression;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
-import org.kie.dmn.feel.codegen.feel11.DirectCompilerVisitor;
 import org.kie.dmn.feel.codegen.feel11.FEELCompilationError;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -47,6 +47,7 @@ import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -128,8 +129,9 @@ public class FEELImpl
                 return CompiledFEELSupport.compiledError(expression, errorListener.event().getMessage());
             }
             try {
-                DirectCompilerVisitor v = new DirectCompilerVisitor(ctx.getInputVariableTypes());
-                DirectCompilerResult directResult = v.visit(tree);
+                ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
+                BaseNode node = v.visit(tree);
+                DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
                 Expression expr = directResult.getExpression();
                 return new CompilerBytecodeLoader().makeFromJPExpression(expression, expr, directResult.getFieldDeclarations());
             } catch (FEELCompilationError e) {
@@ -244,7 +246,7 @@ public class FEELImpl
         }
         CompiledExpressionImpl compiledExpression = (CompiledExpressionImpl) compileExpressionList( expression, ctx );
         if( compiledExpression != null ) {
-            ListNode listNode = (ListNode) compiledExpression.getExpression();
+            UnaryTestListNode listNode = (UnaryTestListNode) compiledExpression.getExpression();
             List<BaseNode> tests = new ArrayList<>(  );
             for( BaseNode o : listNode.getElements() ) {
                 if ( o == null ) {

@@ -17,11 +17,13 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
@@ -52,7 +54,7 @@ public class CompiledFEELSemanticMappings {
         Comparable left = asComparable(lowEndPoint);
         Comparable right = asComparable(highEndPoint);
         if (left == null || right == null || !compatible(left, right)) {
-            ctx.notifyEvt( () -> new ASTEventBase(
+            ctx.notifyEvt(() -> new ASTEventBase(
                     FEELEvent.Severity.ERROR,
                     Msg.createMessage(
                             Msg.INCOMPATIBLE_TYPE_FOR_RANGE,
@@ -77,7 +79,7 @@ public class CompiledFEELSemanticMappings {
                 return ((Range) range).includes(param);
             } catch (ClassCastException e) {
                 // e.g. java.base/java.time.Duration cannot be cast to java.base/java.time.Period
-                ctx.notifyEvt( () -> new ASTEventBase(
+                ctx.notifyEvt(() -> new ASTEventBase(
                         FEELEvent.Severity.ERROR,
                         Msg.createMessage(
                                 Msg.INCOMPATIBLE_TYPE_FOR_RANGE,
@@ -87,8 +89,8 @@ public class CompiledFEELSemanticMappings {
             }
         } else if (range instanceof List) {
             return ((List) range).contains(param);
-        } else if (range == null){
-            ctx.notifyEvt( () -> new ASTEventBase(
+        } else if (range == null) {
+            ctx.notifyEvt(() -> new ASTEventBase(
                     FEELEvent.Severity.ERROR,
                     Msg.createMessage(
                             Msg.IS_NULL,
@@ -111,7 +113,7 @@ public class CompiledFEELSemanticMappings {
 
         if (!(tests instanceof List)) {
             if (tests == null) {
-                ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null) );
+                ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null));
                 return null;
             }
             return applyUnaryTest(ctx, tests, target);
@@ -119,7 +121,9 @@ public class CompiledFEELSemanticMappings {
 
         for (Object test : (List) tests) {
             Boolean r = applyUnaryTest(ctx, test, target);
-            if (Boolean.TRUE.equals(r)) return true;
+            if (Boolean.TRUE.equals(r)) {
+                return true;
+            }
         }
 
         return false;
@@ -130,7 +134,7 @@ public class CompiledFEELSemanticMappings {
             Boolean result = ((UnaryTest) test).apply(ctx, target);
             return result != null && result;
         } else if (test == null) {
-            return target == null? true : null;
+            return target == null ? true : null;
         } else {
             return Objects.equals(test, target);
         }
@@ -138,7 +142,7 @@ public class CompiledFEELSemanticMappings {
 
     /**
      * Implements a negated exists.
-     *
+     * <p>
      * Returns <strong>false</strong> when at least one of the elements of the list
      * <strong>matches</strong> the target.
      * The list may contain both objects (equals) and UnaryTests (apply)
@@ -150,7 +154,9 @@ public class CompiledFEELSemanticMappings {
 
         for (Object test : tests) {
             Boolean r = applyUnaryTest(ctx, test, target);
-            if (r == null || r) return false;
+            if (r == null || r) {
+                return false;
+            }
         }
 
         return true;
@@ -175,13 +181,15 @@ public class CompiledFEELSemanticMappings {
     }
 
     public static Boolean coerceToBoolean(EvaluationContext ctx, Object value) {
-        if (value instanceof Boolean) return (Boolean) value;
+        if (value == null || value instanceof Boolean) {
+            return (Boolean) value;
+        }
 
-        ctx.notifyEvt( () -> new ASTEventBase(
+        ctx.notifyEvt(() -> new ASTEventBase(
                 FEELEvent.Severity.ERROR,
                 Msg.createMessage(
                         Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE,
-                        value == null? "null" : value.getClass(),
+                        value == null ? "null" : value.getClass(),
                         "Boolean"),
                 null));
 
@@ -190,42 +198,42 @@ public class CompiledFEELSemanticMappings {
 
     public static <T> T coerceTo(Class<?> paramType, Object value) {
         Object actual;
-        if( paramType.isAssignableFrom( value.getClass() ) ) {
+        if (paramType.isAssignableFrom(value.getClass())) {
             actual = value;
         } else {
             // try to coerce
-            if( value instanceof Number ) {
-                if( paramType == byte.class || paramType == Byte.class ) {
-                    actual = ((Number)value).byteValue();
-                } else if( paramType == short.class || paramType == Short.class ) {
+            if (value instanceof Number) {
+                if (paramType == byte.class || paramType == Byte.class) {
+                    actual = ((Number) value).byteValue();
+                } else if (paramType == short.class || paramType == Short.class) {
                     actual = ((Number) value).shortValue();
-                } else if( paramType == int.class || paramType == Integer.class ) {
+                } else if (paramType == int.class || paramType == Integer.class) {
                     actual = ((Number) value).intValue();
-                } else if( paramType == long.class || paramType == Long.class ) {
+                } else if (paramType == long.class || paramType == Long.class) {
                     actual = ((Number) value).longValue();
-                } else if( paramType == float.class || paramType == Float.class ) {
+                } else if (paramType == float.class || paramType == Float.class) {
                     actual = ((Number) value).floatValue();
-                } else if( paramType == double.class || paramType == Double.class ) {
+                } else if (paramType == double.class || paramType == Double.class) {
                     actual = ((Number) value).doubleValue();
                 } else if (paramType == Object[].class) {
-                    actual = new Object[]{ value };
+                    actual = new Object[]{value};
                 } else {
-                    throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
+                    throw new IllegalArgumentException("Unable to coerce parameter " + value + ". Expected " + paramType + " but found " + value.getClass());
                 }
-            } else if ( value instanceof String
+            } else if (value instanceof String
                     && ((String) value).length() == 1
-                    && (paramType == char.class || paramType == Character.class) ) {
+                    && (paramType == char.class || paramType == Character.class)) {
                 actual = ((String) value).charAt(0);
-            } else if ( value instanceof Boolean && paramType == boolean.class ) {
+            } else if (value instanceof Boolean && paramType == boolean.class) {
                 // Because Boolean can be also null, boolean.class is not assignable from Boolean.class. So we must coerce this.
                 actual = value;
             } else {
-                throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
+                throw new IllegalArgumentException("Unable to coerce parameter " + value + ". Expected " + paramType + " but found " + value.getClass());
             }
         }
         return (T) actual;
     }
-    
+
     /**
      * Represent a [e1, e2, e3] construct.
      */
@@ -250,15 +258,15 @@ public class CompiledFEELSemanticMappings {
     public static Object and(Object left, Object right) {
         return InfixOpNode.and(left, right, null);
     }
-    
+
     public static Object and(boolean left, Object right) {
-        if ( left == true ) {
-            return EvalHelper.getBooleanOrNull( right );
+        if (left == true) {
+            return EvalHelper.getBooleanOrNull(right);
         } else {
             return false;
         }
     }
-    
+
     public static Object and(boolean left, boolean right) {
         return left && right;
     }
@@ -270,15 +278,15 @@ public class CompiledFEELSemanticMappings {
     public static Object or(Object left, Object right) {
         return InfixOpNode.or(left, right, null);
     }
-    
+
     public static Object or(Object left, boolean right) {
-        if ( right == true ) {
+        if (right == true) {
             return true;
         } else {
-            return EvalHelper.getBooleanOrNull( left );
+            return EvalHelper.getBooleanOrNull(left);
         }
     }
-    
+
     public static Object or(boolean left, boolean right) {
         return left || right;
     }
@@ -317,7 +325,11 @@ public class CompiledFEELSemanticMappings {
 
     // to ground to null if right = 0
     public static Object div(Object left, BigDecimal right) {
-        return right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
+        return right == null || right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
+    }
+
+    public static Object pow(Object left, Object right) {
+        return InfixOpNode.math(left, right, null, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
     }
 
     /**
@@ -370,17 +382,26 @@ public class CompiledFEELSemanticMappings {
 
     public static Boolean between(EvaluationContext ctx,
                                   Object value, Object start, Object end) {
-        if ( value == null ) { ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null) ); return null; }
-        if ( start == null ) { ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start"), null) ); return null; }
-        if ( end == null )   { ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end"), null) ); return null; }
+        if (value == null) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value"), null));
+            return null;
+        }
+        if (start == null) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start"), null));
+            return null;
+        }
+        if (end == null) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end"), null));
+            return null;
+        }
 
         if (!value.getClass().isAssignableFrom(start.getClass())) {
-            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start"), null) );
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start"), null));
             return null;
         }
 
         if (!value.getClass().isAssignableFrom(end.getClass())) {
-            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end"), null) );
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end"), null));
             return null;
         }
 
@@ -394,14 +415,14 @@ public class CompiledFEELSemanticMappings {
         return not(EvalHelper.isEqual(left, right, null));
     }
 
-    public static Object negateTest( Object param ) {
-        if( param instanceof Boolean) {
+    public static Object negateTest(Object param) {
+        if (param instanceof Boolean) {
             return param.equals(Boolean.FALSE);
-        } else if ( param instanceof UnaryTest ) {
+        } else if (param instanceof UnaryTest) {
             UnaryTest orig = (UnaryTest) param;
             UnaryTest t = negatedUnaryTest(orig);
             return t;
-        } else if ( param instanceof Range ) {
+        } else if (param instanceof Range) {
             UnaryTest t = (c, left) -> not(includes(c, param, left));
             return t;
         } else {
@@ -413,7 +434,9 @@ public class CompiledFEELSemanticMappings {
     private static UnaryTest negatedUnaryTest(UnaryTest orig) {
         return (c, left) -> {
             Boolean r = orig.apply(c, left);
-            if (r == null) return null;
+            if (r == null) {
+                return null;
+            }
             return r.equals(Boolean.FALSE);
         };
     }

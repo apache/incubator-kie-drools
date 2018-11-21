@@ -30,9 +30,11 @@ import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEELParserTest;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -480,8 +482,9 @@ public class DirectCompilerTest {
 
         ParseTree tree = parser.compilation_unit();
 
-        DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes);
-        DirectCompilerResult directResult = v.visit(tree);
+        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+        BaseNode node = v.visit(tree);
+        DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
         
         Expression expr = directResult.getExpression();
         CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());

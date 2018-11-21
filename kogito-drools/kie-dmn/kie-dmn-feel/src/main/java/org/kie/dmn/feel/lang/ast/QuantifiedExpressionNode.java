@@ -197,4 +197,9 @@ public class QuantifiedExpressionNode
         return children;
     }
 
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }
