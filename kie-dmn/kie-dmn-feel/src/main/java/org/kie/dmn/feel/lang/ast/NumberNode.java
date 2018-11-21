@@ -51,4 +51,9 @@ public class NumberNode
     public Type getResultType() {
         return BuiltInType.NUMBER;
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

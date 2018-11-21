@@ -108,4 +108,8 @@ public class InNode
         return new ASTNode[] { value, exprs };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

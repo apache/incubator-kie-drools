@@ -48,6 +48,7 @@ import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
@@ -101,7 +102,7 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitBooleanLiteral(FEEL_1_1Parser.BooleanLiteralContext ctx) {
+    public BaseNode visitBoolLiteral(FEEL_1_1Parser.BoolLiteralContext ctx) {
         return ASTBuilderFactory.newBooleanNode( ctx );
     }
 
@@ -477,19 +478,20 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitUnaryTests_empty(FEEL_1_1Parser.UnaryTests_emptyContext ctx) {
-        return ASTBuilderFactory.newListNode(ctx, Collections.singletonList(ASTBuilderFactory.newDashNode(ctx)));
+        return ASTBuilderFactory.newUnaryTestListNode(ctx, Collections.singletonList(ASTBuilderFactory.newDashNode(ctx)), UnaryTestListNode.State.Positive);
     }
 
     @Override
     public BaseNode visitUnaryTests_positive(FEEL_1_1Parser.UnaryTests_positiveContext ctx) {
-        return visit( ctx.positiveUnaryTests() );
+        ListNode list = (ListNode) visit(ctx.positiveUnaryTests());
+        return ASTBuilderFactory.newUnaryTestListNode(ctx, list.getElements(), UnaryTestListNode.State.Positive);
     }
 
     @Override
     public BaseNode visitUnaryTests_negated(FEEL_1_1Parser.UnaryTests_negatedContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx, "not", BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
         ListNode value = (ListNode) visit( ctx.positiveUnaryTests() );
-        return ASTBuilderFactory.newListNode(ctx, Collections.singletonList(buildNotCall(ctx, name, value)))    ;
+        return ASTBuilderFactory.newUnaryTestListNode(ctx, value.getElements(), UnaryTestListNode.State.Negated);
     }
 
     private BaseNode buildNotCall(ParserRuleContext ctx, BaseNode name, ListNode params) {

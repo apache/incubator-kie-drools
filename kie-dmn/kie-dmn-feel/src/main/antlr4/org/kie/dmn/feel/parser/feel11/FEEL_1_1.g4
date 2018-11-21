@@ -56,23 +56,23 @@ textualExpression
 
 // #41
 parameters
-    : '(' ')'                       #parametersEmpty
-    | '(' namedParameters ')'       #parametersNamed
-    | '(' positionalParameters ')'  #parametersPositional
+    : LPAREN RPAREN                       #parametersEmpty
+    | LPAREN namedParameters RPAREN       #parametersNamed
+    | LPAREN positionalParameters RPAREN  #parametersPositional
     ;
 
 // #42 #43
 namedParameters
-    : namedParameter (',' namedParameter)*
+    : namedParameter (COMMA namedParameter)*
     ;
 
 namedParameter
-    : name=nameDefinition ':' value=expression
+    : name=nameDefinition COLON value=expression
     ;
 
 // #44
 positionalParameters
-    : expression ( ',' expression )*
+    : expression ( COMMA expression )*
     ;
 
 // #46
@@ -83,21 +83,21 @@ forExpression
 @after {
     helper.popScope();
 }
-    : for_key iterationContexts return_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}
+    : FOR iterationContexts RETURN {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}
     ;
 
 iterationContexts
-    : iterationContext ( ',' iterationContext )*
+    : iterationContext ( COMMA iterationContext )*
     ;
 
 iterationContext
-    : {helper.isFeatDMN12EnhancedForLoopEnabled()}? nameDefinition in_key expression '..' expression
-    | nameDefinition in_key expression
+    : {helper.isFeatDMN12EnhancedForLoopEnabled()}? nameDefinition IN expression '..' expression
+    | nameDefinition IN expression
     ;
     
 // #47
 ifExpression
-    : if_key c=expression then_key t=expression else_key e=expression
+    : IF c=expression THEN t=expression ELSE e=expression
     ;
 
 // #48
@@ -108,19 +108,19 @@ quantifiedExpression
 @after {
     helper.popScope();
 }
-    : some_key iterationContexts satisfies_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}    #quantExprSome
-    | every_key iterationContexts satisfies_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}   #quantExprEvery
+    : SOME iterationContexts SATISFIES {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}    #quantExprSome
+    | EVERY iterationContexts SATISFIES {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}   #quantExprEvery
     ;
 
 // #54
 type
-    : ( function_key | qualifiedName )
+    : ( FUNCTION | qualifiedName )
     ;
 
 // #56
 list
-    : '[' ']'
-    | '[' expressionList ']'
+    : LBRACK RBRACK
+    | LBRACK expressionList RBRACK
     ;
 
 // #57
@@ -131,11 +131,11 @@ functionDefinition
 @after {
     helper.popScope();
 }
-    : function_key '(' formalParameters? ')' external=external_key? {helper.enableDynamicResolution();} body=expression {helper.disableDynamicResolution();}
+    : FUNCTION LPAREN formalParameters? RPAREN external=EXTERNAL? {helper.enableDynamicResolution();} body=expression {helper.disableDynamicResolution();}
     ;
 
 formalParameters
-    : formalParameter ( ',' formalParameter )*
+    : formalParameter ( COMMA formalParameter )*
     ;
 
 // #58
@@ -151,18 +151,18 @@ context
 @after {
     helper.popScope();
 }
-    : '{' '}'
-    | '{' contextEntries '}'
+    : LBRACE RBRACE
+    | LBRACE contextEntries RBRACE
     ;
 
 contextEntries
-    : contextEntry ( ',' contextEntry )*
+    : contextEntry ( COMMA contextEntry )*
     ;
 
 // #60
 contextEntry
     : key { helper.pushName( $key.ctx ); }
-      ':' expression { helper.popName(); helper.defineVariable( $key.ctx ); }
+      COLON expression { helper.popName(); helper.defineVariable( $key.ctx ); }
     ;
 
 // #61
@@ -187,66 +187,72 @@ nameDefinitionTokens
 
 
 additionalNameSymbol
-    : ( '.' | '/' | '-' | '\'' | '+' | '*' )
+    : //( '.' | '/' | '-' | '\'' | '+' | '*' )
+    DOT | DIV | SUB | ADD | MUL | QUOTE
     ;
 
 conditionalOrExpression
 	:	conditionalAndExpression                                                 #condOrAnd
- 	|	left=conditionalOrExpression op=or_key right=conditionalAndExpression    #condOr
+ 	|	left=conditionalOrExpression op=OR right=conditionalAndExpression    #condOr
 	;
 
 conditionalAndExpression
 	:	comparisonExpression                                                   #condAndComp
-	|	left=conditionalAndExpression op=and_key right=comparisonExpression      #condAnd
+	|	left=conditionalAndExpression op=AND right=comparisonExpression      #condAnd
 	;
 
 comparisonExpression
 	:	relationalExpression                                                                   #compExpressionRel
-	|   left=comparisonExpression op=('<'|'>'|'<='|'>='|'='|'!=') right=relationalExpression   #compExpression
+	|   left=comparisonExpression op=(LT |
+                                      GT |
+                                      LE |
+                                      GE |
+                                      EQUAL |
+                                      NOTEQUAL) right=relationalExpression   #compExpression
 	;
 
 relationalExpression
 	:	additiveExpression                                                                           #relExpressionAdd
-	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
-	|   val=relationalExpression in_key '(' positiveUnaryTests ')'                                     #relExpressionTestList
-    |   val=relationalExpression in_key expression                                                   #relExpressionValue        // includes simpleUnaryTest
-    |   val=relationalExpression instance_key of_key type                                            #relExpressionInstanceOf
+	|	val=relationalExpression BETWEEN start=additiveExpression AND end=additiveExpression   #relExpressionBetween
+	|   val=relationalExpression IN LPAREN positiveUnaryTests RPAREN                                     #relExpressionTestList
+    |   val=relationalExpression IN expression                                                   #relExpressionValue        // includes simpleUnaryTest
+    |   val=relationalExpression INSTANCE OF type                                            #relExpressionInstanceOf
 	;
 
 expressionList
-    :   expression  (',' expression)*
+    :   expression  (COMMA expression)*
     ;
 
 additiveExpression
 	:	multiplicativeExpression                            #addExpressionMult
-	|	additiveExpression op='+' multiplicativeExpression  #addExpression
-	|	additiveExpression op='-' multiplicativeExpression  #addExpression
+	|	additiveExpression op=ADD multiplicativeExpression  #addExpression
+	|	additiveExpression op=SUB multiplicativeExpression  #addExpression
 	;
 
 multiplicativeExpression
 	:	powerExpression                                              #multExpressionPow
-	|	multiplicativeExpression op=( '*' | '/' ) powerExpression    #multExpression
+	|	multiplicativeExpression op=( MUL | DIV ) powerExpression    #multExpression
 	;
 
 powerExpression
     :   filterPathExpression                           #powExpressionUnary
-    |   powerExpression op='**' filterPathExpression   #powExpression
+    |   powerExpression op=POW filterPathExpression   #powExpression
     ;
 
 filterPathExpression
     :   unaryExpression
-    |   filterPathExpression '[' {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} ']'
-    |   filterPathExpression '.' {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
+    |   filterPathExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
+    |   filterPathExpression DOT {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
     ;
 
 unaryExpression
-	:	'-' unaryExpression                      #signedUnaryExpressionMinus
+	:	SUB unaryExpression                      #signedUnaryExpressionMinus
 	|   unaryExpressionNotPlusMinus              #nonSignedUnaryExpression
-    |	'+' unaryExpressionNotPlusMinus          #signedUnaryExpressionPlus
+    |	ADD unaryExpressionNotPlusMinus          #signedUnaryExpressionPlus
 	;
 
 unaryExpressionNotPlusMinus
-	: primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
+	: primary (DOT {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary
@@ -257,7 +263,7 @@ primary
     | interval                    #primaryInterval
     | list                        #primaryList
     | context                     #primaryContext
-    | '(' expression ')'          #primaryParens
+    | LPAREN expression RPAREN          #primaryParens
     | simplePositiveUnaryTest     #primaryUnaryTest
     | qualifiedName parameters?   #primaryName
     ;
@@ -266,14 +272,14 @@ primary
 literal
     :	IntegerLiteral          #numberLiteral
     |	FloatingPointLiteral    #numberLiteral
-    |	booleanLiteral          #boolLiteral
+    |	BooleanLiteral          #boolLiteral
     |	StringLiteral           #stringLiteral
-    |	null_key                #nullLiteral
+    |	NULL                #nullLiteral
     ;
 
-booleanLiteral
-    :   true_key
-    |   false_key
+BooleanLiteral
+    :   TRUE
+    |   FALSE
     ;
 
 /**************************
@@ -282,27 +288,27 @@ booleanLiteral
 
 // #7
 simplePositiveUnaryTest
-    : op='<'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op='>'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op='<=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op='>=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op='='  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op='!=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    : op=LT  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=GT  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=LE {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=GE {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=EQUAL  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=NOTEQUAL {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     ;
 
 
 // #13
 simplePositiveUnaryTests
-    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
+    : simplePositiveUnaryTest ( COMMA simplePositiveUnaryTest )*
     ;
 
 
 // #14
 simpleUnaryTests
     : simplePositiveUnaryTests                     #positiveSimplePositiveUnaryTests
-    | not_key '(' simplePositiveUnaryTests ')'     #negatedSimplePositiveUnaryTests
-    | '-'                                          #positiveUnaryTestDash
+    | NOT LPAREN simplePositiveUnaryTests RPAREN     #negatedSimplePositiveUnaryTests
+    | SUB                                          #positiveUnaryTestDash
     ;
 
 // #15
@@ -312,7 +318,7 @@ positiveUnaryTest
 
 // #16
 positiveUnaryTests
-    : positiveUnaryTest ( ',' positiveUnaryTest )* 
+    : positiveUnaryTest ( COMMA positiveUnaryTest )*
     ;
 
 
@@ -323,9 +329,9 @@ unaryTestsRoot
 // #17 (root for decision tables)
 unaryTests
     :
-    not_key '(' positiveUnaryTests ')' #unaryTests_negated
+    NOT LPAREN positiveUnaryTests RPAREN #unaryTests_negated
     | positiveUnaryTests               #unaryTests_positive
-    | '-'                              #unaryTests_empty
+    | SUB                              #unaryTests_empty
     ;
 
 // #18
@@ -335,15 +341,15 @@ endpoint
 
 // #8-#12
 interval
-    : low='(' start=endpoint '..' end=endpoint up=')'
-    | low='(' start=endpoint '..' end=endpoint up='['
-    | low='(' start=endpoint '..' end=endpoint up=']'
-    | low=']' start=endpoint '..' end=endpoint up=')'
-    | low=']' start=endpoint '..' end=endpoint up='['
-    | low=']' start=endpoint '..' end=endpoint up=']'
-    | low='[' start=endpoint '..' end=endpoint up=')'
-    | low='[' start=endpoint '..' end=endpoint up='['
-    | low='[' start=endpoint '..' end=endpoint up=']'
+    : low=LPAREN start=endpoint ELIPSIS end=endpoint up=RPAREN
+    | low=LPAREN start=endpoint ELIPSIS end=endpoint up=LBRACK
+    | low=LPAREN start=endpoint ELIPSIS end=endpoint up=RBRACK
+    | low=RBRACK start=endpoint ELIPSIS end=endpoint up=RPAREN
+    | low=RBRACK start=endpoint ELIPSIS end=endpoint up=LBRACK
+    | low=RBRACK start=endpoint ELIPSIS end=endpoint up=RBRACK
+    | low=LBRACK start=endpoint ELIPSIS end=endpoint up=RPAREN
+    | low=LBRACK start=endpoint ELIPSIS end=endpoint up=LBRACK
+    | low=LBRACK start=endpoint ELIPSIS end=endpoint up=RBRACK
     ;
 
 // #20
@@ -358,7 +364,7 @@ qualifiedName
         helper.dismissScope();
 }
     : n1=nameRef { name = getOriginalText( $n1.ctx ); qn.add( name ); helper.validateVariable( $n1.ctx, qn, name ); }
-        ( '.'
+        ( DOT
             {helper.recoverScope( name ); count++;}
             n2=nameRef
             {name=getOriginalText( $n2.ctx );  qn.add( name ); helper.validateVariable( $n1.ctx, qn, name ); }
@@ -371,114 +377,116 @@ nameRef
        )  nameRefOtherToken*
     ;
 
-nameRefOtherToken // added some special cases here: we should rework a bit the lexing part, though --ev
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}'|'>'|'<'|'='|'!'|'/'|'*'|'in'|',')
+nameRefOtherToken
+    : { helper.followUp( _input.LT(1), _localctx==null ) }?
+        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|DIV|MUL|IN|COMMA)
     ;
 
 /********************************
  *      KEYWORDS
  ********************************/
 reusableKeywords
-    : for_key
-    | return_key
-    | if_key
-    | then_key
-    | else_key
-    | some_key
-    | every_key
-    | satisfies_key
-    | instance_key
-    | of_key
-    | function_key
-    | external_key
-    | or_key
-    | and_key
-    | between_key
-    | not_key
-    | null_key
-    | true_key
-    | false_key
+    : FOR
+    | RETURN
+    | IF
+    | THEN
+    | ELSE
+    | SOME
+    | EVERY
+    | SATISFIES
+    | INSTANCE
+    | OF
+    | FUNCTION
+    | EXTERNAL
+    | OR
+    | AND
+    | BETWEEN
+    | NOT
+    | NULL
+    | TRUE
+    | FALSE
     ;
 
-for_key
+FOR
     : 'for'
     ;
 
-return_key
+RETURN
     : 'return'
     ;
 
 // can't be reused
-in_key
+IN
     : 'in'
     ;
 
-if_key
+IF
     : 'if'
     ;
 
-then_key
+THEN
     : 'then'
     ;
 
-else_key
+ELSE
     : 'else'
     ;
 
-some_key
+SOME
     : 'some'
     ;
 
-every_key
+EVERY
     : 'every'
     ;
 
-satisfies_key
+SATISFIES
     : 'satisfies'
     ;
 
-instance_key
+INSTANCE
     : 'instance'
     ;
 
-of_key
+OF
     : 'of'
     ;
 
-function_key
+FUNCTION
     : 'function'
     ;
 
-external_key
+EXTERNAL
     : 'external'
     ;
 
-or_key
+OR
     : 'or'
     ;
 
-and_key
+AND
     : 'and'
     ;
 
-between_key
+BETWEEN
     : 'between'
     ;
 
-not_key
-    : NOT
-    ;
-
-null_key
+NULL
     : 'null'
     ;
 
-true_key
+TRUE
     : 'true'
     ;
 
-false_key
+FALSE
     : 'false'
+    ;
+
+QUOTE
+    :
+    '\''
     ;
 
 /********************************
@@ -702,10 +710,14 @@ ADD : '+';
 SUB : '-';
 MUL : '*';
 DIV : '/';
+BANG
+    : '!'
+    ;
 
 NOT
     : 'not'
     ;
+
 
 Identifier
 	:	JavaLetter JavaLetterOrDigit*

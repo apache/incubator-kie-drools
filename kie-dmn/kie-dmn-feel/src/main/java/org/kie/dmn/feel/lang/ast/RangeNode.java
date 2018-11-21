@@ -182,4 +182,8 @@ public class RangeNode
         return new ASTNode[] { start, end };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

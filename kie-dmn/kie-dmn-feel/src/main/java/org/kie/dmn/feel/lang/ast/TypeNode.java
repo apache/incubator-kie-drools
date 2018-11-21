@@ -32,4 +32,9 @@ public class TypeNode
     public Type evaluate(EvaluationContext ctx) {
         return BuiltInType.determineTypeFromName( getText() );
     }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

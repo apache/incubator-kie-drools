@@ -52,6 +52,10 @@ public class ASTBuilderFactory {
         return new BetweenNode( ctx, value, start, end );
     }
 
+    public static UnaryTestListNode newUnaryTestListNode(ParserRuleContext ctx, List<BaseNode> exprs, UnaryTestListNode.State state) {
+        return new UnaryTestListNode( ctx, exprs, state );
+    }
+
     public static ListNode newListNode(ParserRuleContext ctx, List<BaseNode> exprs) {
         return new ListNode( ctx, exprs );
     }
@@ -102,6 +106,10 @@ public class ASTBuilderFactory {
 
     public static NameRefNode newNameRefNode( ParserRuleContext ctx, Type type ) {
         return new NameRefNode( ctx, type );
+    }
+
+    public static NameRefNode newNameRefNode( ParserRuleContext ctx, String name, Type type ) {
+        return new NameRefNode( ctx, name, type );
     }
 
     public static QualifiedNameNode newQualifiedNameNode(ParserRuleContext ctx, ArrayList<NameRefNode> parts, Type type ) {

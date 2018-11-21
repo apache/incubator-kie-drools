@@ -27,7 +27,10 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -96,7 +99,7 @@ public class DirectCompilerUnaryTestsTest {
 
     @Test
     public void test_simpleUnaryTest_forRANGE() {
-        assertThat(parseCompileEvaluate("[1..2]", 1), is(Arrays.asList(true)));
+        assertThat(parseCompileEvaluate("[1..2]", 1), is(Collections.singletonList(true)));
         assertThat(parseCompileEvaluate("[1..2], [2..3]", 1), is(Arrays.asList(true, false)));
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 1), is(Arrays.asList(false, false)));
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 2), is(Arrays.asList(true, true)));
@@ -114,8 +117,10 @@ public class DirectCompilerUnaryTestsTest {
         if (listener.isError()) {
             directResult = CompiledFEELSupport.compiledErrorUnaryTest(listener.event().getMessage());
         } else {
-            DirectCompilerVisitor v = new DirectCompilerVisitor(inputTypes, true);
-            directResult = v.visit(tree);
+            ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+            BaseNode node = v.visit(tree);
+            BaseNode transformed = node.accept(new ASTUnaryTestTransform()).node();
+            directResult = transformed.accept(new ASTCompilerVisitor());
         }
         Expression expr = directResult.getExpression();
         CompiledFEELUnaryTests cu = new CompilerBytecodeLoader().makeFromJPUnaryTestsExpression(input, expr, directResult.getFieldDeclarations());

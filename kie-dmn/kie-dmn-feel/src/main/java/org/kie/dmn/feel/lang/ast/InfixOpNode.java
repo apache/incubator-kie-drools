@@ -386,4 +386,8 @@ public class InfixOpNode
         return new ASTNode[] { left, right };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }

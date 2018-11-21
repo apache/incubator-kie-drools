@@ -240,4 +240,8 @@ public class UnaryTestNode
         return new ASTNode[] { value };
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 }
