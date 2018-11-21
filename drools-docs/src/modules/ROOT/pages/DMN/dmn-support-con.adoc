@@ -1,11 +1,15 @@
 [id='dmn-support-con_{context}']
 = DMN support in {PRODUCT}
 
-{PRODUCT} includes full runtime support for DMN 1.2 models at conformance level 3, but currently does not include a built-in DMN model editor. Editors for DMN models will be added to the platform in the near future, but meanwhile you can use third-party DMN authoring platforms to create DMN models and then integrate the DMN models in your decision services in {PRODUCT}. You can import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*) or package the DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}. In addition to all DMN conformance level 3 requirements, {PRODUCT} also includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}.
+{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
 
-From a platform perspective, DMN models are like any other business asset in {PRODUCT}, such as DRL files or uploaded decision tables, that you can include in your {PRODUCT} project and deploy to {KIE_SERVER} in order to start your DMN decision services. This enables you to use your preferred DMN authoring tool to design your DMN models that you then deploy with your existing {PRODUCT} assets. For example, you might have BPMN models that directly invoke DMN decision services from their decision task nodes.
+* Design your DMN models directly in {CENTRAL} using the DMN designer
+* Import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*)
+* Package DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}
 
-For more information about including assets such as DMN files with your project packaging and deployment method, see
+In addition to all DMN conformance level 3 requirements, {PRODUCT} also includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. From a platform perspective, DMN models are like any other business asset in {PRODUCT}, such as DRL files or uploaded decision tables, that you can include in your {PRODUCT} project and deploy to {KIE_SERVER} in order to start your DMN decision services.
+
+For more information about including external DMN files with your {PRODUCT} project packaging and deployment method, see
 ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]

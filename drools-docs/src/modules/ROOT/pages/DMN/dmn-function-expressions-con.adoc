@@ -1,0 +1,19 @@
+[id='dmn-function-expressions-con_{context}']
+= Boxed function expressions
+
+A boxed function expression in DMN is a parameterized boxed expression containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type. By default, all business knowledge models are defined as boxed function expressions. You use boxed function expressions to call functions on your decision logic and to define all business knowledge models.
+
+For example, the following boxed function expression determines airline flight capacity in a flight-rebooking decision model:
+
+.Boxed function expression for flight capacity
+image::dmn/dmn-function-expression-example.png[]
+
+The following boxed function expression contains a basic Java function as a context expression for determining absolute value in a decision model calculation:
+
+.Boxed function expression for absolute value
+image::dmn/dmn-function-expression-example2.png[]
+
+The following boxed function expression determines a monthly mortgage installment as a business knowledge model in a lending decision, with the function value defined as a nested context expression:
+
+.Boxed function expression for installment calculation in business knowledge model
+image::dmn/dmn-function-expression-example3.png[]

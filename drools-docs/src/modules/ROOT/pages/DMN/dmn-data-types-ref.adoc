@@ -16,7 +16,7 @@ Friendly Enough Expression Language (FEEL) supports the following data types:
 * Ranges (or intervals)
 * Lists
 
-NOTE: Functions, contexts, ranges, and lists are not explicitly supported in the DMN specification as data types, but they are supported by extension in {PRODUCT}.
+NOTE: The DMN specification currently does not provide an explicit way of declaring a variable as a `function`, `context`, `range`, or `list`, but {PRODUCT} extends the DMN built-in types to support variables of these types.
 
 The following are descriptions of each data type:
 
@@ -52,7 +52,7 @@ FEEL uses three-valued boolean logic, so a boolean logic expression may have val
 
 
 Dates::
-FEEL does not have date literals, but you can use the built-in `date()` function to construct date values. Date strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#date[XML Schema Part 2: Datatypes] document. The format is `"YYYY-MM-DD"` where `YYYY` is the year with four digits, `MM` is the number of the month with
+Date literals are not supported in FEEL, but you can use the built-in `date()` function to construct date values. Date strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#date[XML Schema Part 2: Datatypes] document. The format is `"YYYY-MM-DD"` where `YYYY` is the year with four digits, `MM` is the number of the month with
 two digits, and `DD` is the number of the day.
 +
 --
@@ -65,7 +65,7 @@ Date objects have time equal to `"00:00:00"`, which is midnight. The dates are c
 --
 
 Time::
-FEEL does not have time literals, but you can use the built-in `time()` function to construct time values. Time strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#time[XML Schema Part 2: Datatypes] document. The format is `"hh:mm:ss[.uuu][(+-)hh:mm]"` where `hh` is the hour of the day (from `00` to `23`), `mm` is the minutes in the hour, and `ss` is the number of seconds in the minute. Optionally, the string may define the number of milliseconds (`uuu`) within the second and contain a positive (`+`) or negative (`-`) offset from UTC time to define its timezone. Instead of using an offset, you can use the letter `z` to represent the UTC time, which is the same as an offset of `-00:00`. If no offset is defined, the time is considered to be local.
+Time literals are not supported in FEEL, but you can use the built-in `time()` function to construct time values. Time strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#time[XML Schema Part 2: Datatypes] document. The format is `"hh:mm:ss[.uuu][(+-)hh:mm]"` where `hh` is the hour of the day (from `00` to `23`), `mm` is the minutes in the hour, and `ss` is the number of seconds in the minute. Optionally, the string may define the number of milliseconds (`uuu`) within the second and contain a positive (`+`) or negative (`-`) offset from UTC time to define its timezone. Instead of using an offset, you can use the letter `z` to represent the UTC time, which is the same as an offset of `-00:00`. If no offset is defined, the time is considered to be local.
 +
 --
 Examples:
@@ -80,7 +80,7 @@ Time values that define an offset or a timezone cannot be compared to local time
 --
 
 Date and time::
-FEEL does not have date and time literals, but you can use the built-in `date and time()` function to construct date and time values. Date and time strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#dateTime[XML Schema Part 2: Datatypes] document. The format is `"<date>T<time>"`, where `<date>` and `<time>` follow the prescribed XML schema formatting, conjoined by `T`.
+Date and time literals are not supported in FEEL, but you can use the built-in `date and time()` function to construct date and time values. Date and time strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#dateTime[XML Schema Part 2: Datatypes] document. The format is `"<date>T<time>"`, where `<date>` and `<time>` follow the prescribed XML schema formatting, conjoined by `T`.
 +
 --
 Examples:
@@ -99,7 +99,7 @@ IMPORTANT: If your implementation of the DMN specification does not support spac
 --
 
 Days and time duration::
-FEEL does not have days and time duration literals, but you can use the built-in `duration()` function to construct days and time duration values. Days and time duration strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2: Datatypes] document, but are restricted to only days, hours, minutes and seconds. Months and years are not supported.
+Days and time duration literals are not supported in FEEL, but you can use the built-in `duration()` function to construct days and time duration values. Days and time duration strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2: Datatypes] document, but are restricted to only days, hours, minutes and seconds. Months and years are not supported.
 +
 --
 Examples:
@@ -115,7 +115,7 @@ IMPORTANT: If your implementation of the DMN specification does not support spac
 --
 
 Years and months duration::
-FEEL does not have years and months duration literals, but you can use the built-in `duration()` function to construct days and time duration values. Years and months duration strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2: Datatypes] document, but are restricted to only years and months. Days, hours, minutes, or seconds are not supported.
+Years and months duration literals are not supported in FEEL, but you can use the built-in `duration()` function to construct days and time duration values. Years and months duration strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#duration[XML Schema Part 2: Datatypes] document, but are restricted to only years and months. Days, hours, minutes, or seconds are not supported.
 +
 --
 Examples:
@@ -131,7 +131,7 @@ IMPORTANT: If your implementation of the DMN specification does not support spac
 --
 
 Functions::
-FEEL supports `function` literals (or anonymous functions) that you can use to create functions. FEEL does not provide an explicit way of declaring a variable as a `function` in the DMN specification, but {PRODUCT} extends the DMN built-in types to support functions.
+FEEL has `function` literals (or anonymous functions) that you can use to create functions. The DMN specification currently does not provide an explicit way of declaring a variable as a `function`, but {PRODUCT} extends the DMN built-in types to support variables of functions.
 +
 --
 Example:
@@ -139,14 +139,11 @@ Example:
 function(a, b) a + b
 ----
 In this example, the FEEL expression creates a function that adds the parameters `a` and `b` and returns the result.
-
-IMPORTANT: A `function` datatype is an extension of the DMN specification and is subject to change if the DMN specification provides a standard way to declare functions in the future.
-
 --
 
 Contexts::
-FEEL supports `context` literals that you can use to create contexts. A `context` in FEEL is a list of key and value pairs,
-similar to maps in languages like Java. FEEL does not provide an explicit way of declaring a variable as a `context` in the DMN specification, but {PRODUCT} extends the DMN built-in types to support contexts.
+FEEL has `context` literals that you can use to create contexts. A `context` in FEEL is a list of key and value pairs,
+similar to maps in languages like Java. The DMN specification currently does not provide an explicit way of declaring a variable as a `context`, but {PRODUCT} extends the DMN built-in types to support variables of contexts.
 +
 --
 Example:
@@ -161,13 +158,10 @@ The {PRODUCT} DMN API supports DMN `ItemDefinition` structural types in a `DMNCo
 
 * User-defined Java type: Must be a valid JavaBeans object defining properties and getters for each of the components in the DMN `ItemDefinition`. If necessary, you can also use the `@FEELProperty` annotation for those getters representing a component name which would result in an invalid Java identifier.
 * `java.util.Map` interface: The map needs to define the appropriate entries, with the keys corresponding to the component name in the DMN `ItemDefinition`.
-
-IMPORTANT: A `context` data type is an extension of the DMN specification and is subject to change if the DMN specification provides a standard way to declare contexts in the future.
-
 --
 
 Ranges (or intervals)::
-FEEL supports `range` literals that you can use to create ranges or intervals. A `range` in FEEL is a value that defines a lower and an upper bound, where either can be open or closed. FEEL does not provide an explicit way of declaring a variable as a `range` in the DMN specification (unless it is within another expression), but {PRODUCT} extends the DMN built-in types to support ranges.
+FEEL has `range` literals that you can use to create ranges or intervals. A `range` in FEEL is a value that defines a lower and an upper bound, where either can be open or closed. The DMN specification currently does not provide an explicit way of declaring a variable as a `range`, but {PRODUCT} extends the DMN built-in types to support variables of ranges.
 +
 --
 The syntax of a range is defined in the following formats:
@@ -202,13 +196,10 @@ You can use ranges in decision tables to test for ranges of values, or use range
 ----
 x in [ 1 .. 100 ]
 ----
-
-IMPORTANT: A `range` data type is an extension of the DMN specification and is subject to change if the DMN specification provides a standard way to declare contexts in the future.
-
 --
 
 Lists::
-Lists in FEEL are represented by a comma-separated list of values enclosed in square brackets. FEEL does not provide an explicit way of declaring a variable as a `list` in the DMN specification, but {PRODUCT} extends the DMN built-in types to support contexts.
+FEEL has `list` literals that you can use to create lists of items. A `list` in FEEL is represented by a comma-separated list of values enclosed in square brackets. The DMN specification currently does not provide an explicit way of declaring a variable as a `list`, but {PRODUCT} extends the DMN built-in types to support variables of lists.
 +
 --
 Example:
@@ -229,7 +220,4 @@ The following expression returns the second-to-last element of a list `x`:
 ----
 x[-2]
 ----
-
-IMPORTANT: A `list` data type is an extension of the DMN specification and is subject to change if the DMN specification provides a standard way to declare contexts in the future.
-
 --
