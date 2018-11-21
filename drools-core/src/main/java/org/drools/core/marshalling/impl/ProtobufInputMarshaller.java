@@ -48,6 +48,7 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
@@ -220,11 +221,6 @@ public class ProtobufInputMarshaller {
             clock.advanceTime( _session.getTime(),
                                TimeUnit.MILLISECONDS );
         }
-
-        // RuleFlowGroups need to reference the session
-        //        for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
-        //            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
-        //        }
 
         context.wm = session;
 
@@ -660,30 +656,25 @@ public class ProtobufInputMarshaller {
             if (_tuple.hasStrategyIndex() && !_tuple.getObjectList().isEmpty()) {
                 ObjectMarshallingStrategy strategy = context.usedStrategies.get(_tuple.getStrategyIndex());
                 try {
-                    List<Object> objects = new ArrayList<>();
-                    for(ByteString _object : _tuple.getObjectList()) {
-                        Object object = strategy.unmarshal(context.strategyContexts.get(strategy),
+                    Object[] objects = new Object[_tuple.getObjectList().size()];
+                    int i = 0;
+                    for (ByteString _object : _tuple.getObjectList()) {
+                        objects[i++] = strategy.unmarshal(context.strategyContexts.get(strategy),
                                                            context,
                                                            _object.toByteArray(),
                                                            (context.kBase == null) ? null : context.kBase.getRootClassLoader());
-
-                        objects.add(object);
                     }
 
-                    activationKey = new ActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects.toArray());
+                    activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects);
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
-                                                                    _activation.getRuleName(),
-                                                                    _tuple);
+                activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(), _activation.getRuleName(), _tuple);
             }
-            context.filter.getDormantActivationsMap().add(activationKey);
-
-
-
+            context.filter.addDormantActivation(activationKey);
         }
+
         for ( ProtobufMessages.Activation _activation : _rneas ) {
             // this is an active rule network evaluator
             context.filter.getRneActivations().put( PersisterHelper.createActivationKey( _activation.getPackageName(),
@@ -787,8 +778,8 @@ public class ProtobufInputMarshaller {
             this.rneaToFire = new ConcurrentLinkedQueue<>();
         }
 
-        public Set<ActivationKey> getDormantActivationsMap() {
-            return this.dormantActivations;
+        public void addDormantActivation(ActivationKey key) {
+            this.dormantActivations.add( key );
         }
 
         public boolean accept(Activation activation,
@@ -802,18 +793,14 @@ public class ProtobufInputMarshaller {
                 return true;
             } else {
 
-                // add the tuple to the cache for correlation
+                RuleImpl rule = activation.getRule();
+                ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) ?
+                        PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple().toObjects(true)) :
+                        PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple() );
 
-                Object[] firedObjects = activation.getTuple().toObjects(true);
-
-                ActivationKey activationKeyWithDeserializedObject = new ActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), firedObjects);
-                ActivationKey activationKey = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
-
-                this.tuplesCache.put( activationKeyWithDeserializedObject, activation.getTuple() );
                 this.tuplesCache.put( activationKey, activation.getTuple() );
 
-                // check if there was an active activation for it
-                return !(this.dormantActivations.contains( activationKeyWithDeserializedObject ) || dormantActivations.contains(activationKey));
+                return !dormantActivations.contains(activationKey);
             }
         }
 

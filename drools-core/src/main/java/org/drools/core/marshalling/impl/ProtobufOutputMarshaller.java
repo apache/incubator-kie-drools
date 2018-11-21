@@ -63,10 +63,8 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.BaseTuple;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -74,6 +72,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
@@ -753,17 +752,10 @@ public class ProtobufOutputMarshaller {
 
     private static boolean hasNodeMemory(BaseTuple agendaItem) {
         Sink tupleSink = agendaItem.getTupleSink();
-        if (tupleSink instanceof AbstractTerminalNode) {
-            return hasNodeMemory( ((AbstractTerminalNode) tupleSink).getLeftTupleSource() );
+        if (tupleSink instanceof TerminalNode ) {
+            return PersisterHelper.hasNodeMemory( (TerminalNode) tupleSink );
         }
         return false;
-    }
-
-    private static boolean hasNodeMemory(LeftTupleSource leftTupleSource) {
-        if (leftTupleSource == null) {
-            return false;
-        }
-        return NodeTypeEnums.hasNodeMemory( leftTupleSource ) ? true : hasNodeMemory(leftTupleSource.getLeftTupleSource());
     }
 
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,
