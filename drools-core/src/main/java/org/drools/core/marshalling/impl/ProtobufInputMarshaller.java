@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -653,22 +652,23 @@ public class ProtobufInputMarshaller {
             ProtobufMessages.Tuple _tuple = _activation.getTuple();
             // this is a dormant activation
             ActivationKey activationKey;
-            if (_tuple.hasStrategyIndex() && !_tuple.getObjectList().isEmpty()) {
-                ObjectMarshallingStrategy strategy = context.usedStrategies.get(_tuple.getStrategyIndex());
-                try {
-                    Object[] objects = new Object[_tuple.getObjectList().size()];
-                    int i = 0;
-                    for (ByteString _object : _tuple.getObjectList()) {
-                        objects[i++] = strategy.unmarshal(context.strategyContexts.get(strategy),
-                                                           context,
-                                                           _object.toByteArray(),
-                                                           (context.kBase == null) ? null : context.kBase.getRootClassLoader());
-                    }
+            if (!_tuple.getObjectList().isEmpty()) {
+                Object[] objects = new Object[_tuple.getObjectList().size()];
+                int i = 0;
+                for (ProtobufMessages.SerializedObject _object : _tuple.getObjectList()) {
+                    ObjectMarshallingStrategy strategy = context.usedStrategies.get( _object.getStrategyIndex() );
 
-                    activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(), _activation.getRuleName(), objects);
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    try {
+                        objects[i++] = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                                           context,
+                                                           _object.getObject().toByteArray(),
+                                                           (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
+                    } catch (IOException | ClassNotFoundException e) {
+                        throw new RuntimeException( e );
+                    }
                 }
+                activationKey = PersisterHelper.createActivationKey( _activation.getPackageName(), _activation.getRuleName(), objects );
+
             } else {
                 activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(), _activation.getRuleName(), _tuple);
             }

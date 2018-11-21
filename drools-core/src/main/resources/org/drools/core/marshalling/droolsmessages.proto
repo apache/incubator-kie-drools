@@ -270,9 +270,12 @@ message Activation {
 
 message Tuple {
     repeated int32 handle_id = 1;
-    // the actual object reference
-    optional int32 strategy_index = 2;
-    repeated bytes object = 3;
+    repeated SerializedObject object = 2;
+}
+
+message SerializedObject {
+    optional int32 strategy_index = 1;
+    optional bytes object = 2;
 }
 
 message TruthMaintenanceSystem {

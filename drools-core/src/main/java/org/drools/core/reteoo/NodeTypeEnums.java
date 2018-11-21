@@ -107,6 +107,6 @@ public class NodeTypeEnums {
     }
 
     public static boolean hasNodeMemory(NetworkNode node) {
-        return node.getType() == FromNode || node.getType() == AccumulateNode;
+        return node.getType() == FromNode || node.getType() == ReactiveFromNode || node.getType() == AccumulateNode;
     }
 }

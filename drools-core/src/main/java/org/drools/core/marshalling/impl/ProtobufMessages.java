@@ -30762,34 +30762,28 @@ public final class ProtobufMessages {
     int getHandleId(int index);
 
     /**
-     * <pre>
-     * the actual object reference
-     * </pre>
-     *
-     * <code>optional int32 strategy_index = 2;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
-    boolean hasStrategyIndex();
+    java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> 
+        getObjectList();
     /**
-     * <pre>
-     * the actual object reference
-     * </pre>
-     *
-     * <code>optional int32 strategy_index = 2;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
-    int getStrategyIndex();
-
+    org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getObject(int index);
     /**
-     * <code>repeated bytes object = 3;</code>
-     */
-    java.util.List<com.google.protobuf.ByteString> getObjectList();
-    /**
-     * <code>repeated bytes object = 3;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
     int getObjectCount();
     /**
-     * <code>repeated bytes object = 3;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
-    com.google.protobuf.ByteString getObject(int index);
+    java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder> 
+        getObjectOrBuilderList();
+    /**
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+     */
+    org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.Tuple}
@@ -30805,7 +30799,6 @@ public final class ProtobufMessages {
     }
     private Tuple() {
       handleId_ = java.util.Collections.emptyList();
-      strategyIndex_ = 0;
       object_ = java.util.Collections.emptyList();
     }
 
@@ -30861,17 +30854,13 @@ public final class ProtobufMessages {
               input.popLimit(limit);
               break;
             }
-            case 16: {
-              bitField0_ |= 0x00000001;
-              strategyIndex_ = input.readInt32();
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                object_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-                mutable_bitField0_ |= 0x00000004;
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                object_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject>();
+                mutable_bitField0_ |= 0x00000002;
               }
-              object_.add(input.readBytes());
+              object_.add(
+                  input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.PARSER, extensionRegistry));
               break;
             }
           }
@@ -30885,7 +30874,7 @@ public final class ProtobufMessages {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           handleId_ = java.util.Collections.unmodifiableList(handleId_);
         }
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           object_ = java.util.Collections.unmodifiableList(object_);
         }
         this.unknownFields = unknownFields.build();
@@ -30904,7 +30893,6 @@ public final class ProtobufMessages {
               org.drools.core.marshalling.impl.ProtobufMessages.Tuple.class, org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder.class);
     }
 
-    private int bitField0_;
     public static final int HANDLE_ID_FIELD_NUMBER = 1;
     private java.util.List<java.lang.Integer> handleId_;
     /**
@@ -30927,48 +30915,38 @@ public final class ProtobufMessages {
       return handleId_.get(index);
     }
 
-    public static final int STRATEGY_INDEX_FIELD_NUMBER = 2;
-    private int strategyIndex_;
+    public static final int OBJECT_FIELD_NUMBER = 2;
+    private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> object_;
     /**
-     * <pre>
-     * the actual object reference
-     * </pre>
-     *
-     * <code>optional int32 strategy_index = 2;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
-    public boolean hasStrategyIndex() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <pre>
-     * the actual object reference
-     * </pre>
-     *
-     * <code>optional int32 strategy_index = 2;</code>
-     */
-    public int getStrategyIndex() {
-      return strategyIndex_;
-    }
-
-    public static final int OBJECT_FIELD_NUMBER = 3;
-    private java.util.List<com.google.protobuf.ByteString> object_;
-    /**
-     * <code>repeated bytes object = 3;</code>
-     */
-    public java.util.List<com.google.protobuf.ByteString>
-        getObjectList() {
+    public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> getObjectList() {
       return object_;
     }
     /**
-     * <code>repeated bytes object = 3;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+     */
+    public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder> 
+        getObjectOrBuilderList() {
+      return object_;
+    }
+    /**
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
     public int getObjectCount() {
       return object_.size();
     }
     /**
-     * <code>repeated bytes object = 3;</code>
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
      */
-    public com.google.protobuf.ByteString getObject(int index) {
+    public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getObject(int index) {
+      return object_.get(index);
+    }
+    /**
+     * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+     */
+    public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
+        int index) {
       return object_.get(index);
     }
 
@@ -30987,11 +30965,8 @@ public final class ProtobufMessages {
       for (int i = 0; i < handleId_.size(); i++) {
         output.writeInt32(1, handleId_.get(i));
       }
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(2, strategyIndex_);
-      }
       for (int i = 0; i < object_.size(); i++) {
-        output.writeBytes(3, object_.get(i));
+        output.writeMessage(2, object_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -31010,18 +30985,9 @@ public final class ProtobufMessages {
         size += dataSize;
         size += 1 * getHandleIdList().size();
       }
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      for (int i = 0; i < object_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, strategyIndex_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < object_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(object_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getObjectList().size();
+          .computeMessageSize(2, object_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -31041,11 +31007,6 @@ public final class ProtobufMessages {
       boolean result = true;
       result = result && getHandleIdList()
           .equals(other.getHandleIdList());
-      result = result && (hasStrategyIndex() == other.hasStrategyIndex());
-      if (hasStrategyIndex()) {
-        result = result && (getStrategyIndex()
-            == other.getStrategyIndex());
-      }
       result = result && getObjectList()
           .equals(other.getObjectList());
       result = result && unknownFields.equals(other.unknownFields);
@@ -31062,10 +31023,6 @@ public final class ProtobufMessages {
       if (getHandleIdCount() > 0) {
         hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getHandleIdList().hashCode();
-      }
-      if (hasStrategyIndex()) {
-        hash = (37 * hash) + STRATEGY_INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getStrategyIndex();
       }
       if (getObjectCount() > 0) {
         hash = (37 * hash) + OBJECT_FIELD_NUMBER;
@@ -31196,16 +31153,19 @@ public final class ProtobufMessages {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getObjectFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         handleId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
-        strategyIndex_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        object_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        if (objectBuilder_ == null) {
+          object_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          objectBuilder_.clear();
+        }
         return this;
       }
 
@@ -31229,22 +31189,20 @@ public final class ProtobufMessages {
       public org.drools.core.marshalling.impl.ProtobufMessages.Tuple buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Tuple result = new org.drools.core.marshalling.impl.ProtobufMessages.Tuple(this);
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           handleId_ = java.util.Collections.unmodifiableList(handleId_);
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.handleId_ = handleId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000001;
+        if (objectBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            object_ = java.util.Collections.unmodifiableList(object_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.object_ = object_;
+        } else {
+          result.object_ = objectBuilder_.build();
         }
-        result.strategyIndex_ = strategyIndex_;
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          object_ = java.util.Collections.unmodifiableList(object_);
-          bitField0_ = (bitField0_ & ~0x00000004);
-        }
-        result.object_ = object_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -31296,18 +31254,31 @@ public final class ProtobufMessages {
           }
           onChanged();
         }
-        if (other.hasStrategyIndex()) {
-          setStrategyIndex(other.getStrategyIndex());
-        }
-        if (!other.object_.isEmpty()) {
-          if (object_.isEmpty()) {
-            object_ = other.object_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureObjectIsMutable();
-            object_.addAll(other.object_);
+        if (objectBuilder_ == null) {
+          if (!other.object_.isEmpty()) {
+            if (object_.isEmpty()) {
+              object_ = other.object_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureObjectIsMutable();
+              object_.addAll(other.object_);
+            }
+            onChanged();
           }
-          onChanged();
+        } else {
+          if (!other.object_.isEmpty()) {
+            if (objectBuilder_.isEmpty()) {
+              objectBuilder_.dispose();
+              objectBuilder_ = null;
+              object_ = other.object_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              objectBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getObjectFieldBuilder() : null;
+            } else {
+              objectBuilder_.addAllMessages(other.object_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -31403,124 +31374,244 @@ public final class ProtobufMessages {
         return this;
       }
 
-      private int strategyIndex_ ;
-      /**
-       * <pre>
-       * the actual object reference
-       * </pre>
-       *
-       * <code>optional int32 strategy_index = 2;</code>
-       */
-      public boolean hasStrategyIndex() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <pre>
-       * the actual object reference
-       * </pre>
-       *
-       * <code>optional int32 strategy_index = 2;</code>
-       */
-      public int getStrategyIndex() {
-        return strategyIndex_;
-      }
-      /**
-       * <pre>
-       * the actual object reference
-       * </pre>
-       *
-       * <code>optional int32 strategy_index = 2;</code>
-       */
-      public Builder setStrategyIndex(int value) {
-        bitField0_ |= 0x00000002;
-        strategyIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * the actual object reference
-       * </pre>
-       *
-       * <code>optional int32 strategy_index = 2;</code>
-       */
-      public Builder clearStrategyIndex() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        strategyIndex_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.util.List<com.google.protobuf.ByteString> object_ = java.util.Collections.emptyList();
+      private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> object_ =
+        java.util.Collections.emptyList();
       private void ensureObjectIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          object_ = new java.util.ArrayList<com.google.protobuf.ByteString>(object_);
-          bitField0_ |= 0x00000004;
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          object_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject>(object_);
+          bitField0_ |= 0x00000002;
          }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder> objectBuilder_;
+
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
-      public java.util.List<com.google.protobuf.ByteString>
-          getObjectList() {
-        return java.util.Collections.unmodifiableList(object_);
+      public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> getObjectList() {
+        if (objectBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(object_);
+        } else {
+          return objectBuilder_.getMessageList();
+        }
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
       public int getObjectCount() {
-        return object_.size();
+        if (objectBuilder_ == null) {
+          return object_.size();
+        } else {
+          return objectBuilder_.getCount();
+        }
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
-      public com.google.protobuf.ByteString getObject(int index) {
-        return object_.get(index);
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getObject(int index) {
+        if (objectBuilder_ == null) {
+          return object_.get(index);
+        } else {
+          return objectBuilder_.getMessage(index);
+        }
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
       public Builder setObject(
-          int index, com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureObjectIsMutable();
-        object_.set(index, value);
-        onChanged();
+          int index, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject value) {
+        if (objectBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureObjectIsMutable();
+          object_.set(index, value);
+          onChanged();
+        } else {
+          objectBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
-      public Builder addObject(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureObjectIsMutable();
-        object_.add(value);
-        onChanged();
+      public Builder setObject(
+          int index, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder builderForValue) {
+        if (objectBuilder_ == null) {
+          ensureObjectIsMutable();
+          object_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          objectBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public Builder addObject(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject value) {
+        if (objectBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureObjectIsMutable();
+          object_.add(value);
+          onChanged();
+        } else {
+          objectBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public Builder addObject(
+          int index, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject value) {
+        if (objectBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureObjectIsMutable();
+          object_.add(index, value);
+          onChanged();
+        } else {
+          objectBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public Builder addObject(
+          org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder builderForValue) {
+        if (objectBuilder_ == null) {
+          ensureObjectIsMutable();
+          object_.add(builderForValue.build());
+          onChanged();
+        } else {
+          objectBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public Builder addObject(
+          int index, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder builderForValue) {
+        if (objectBuilder_ == null) {
+          ensureObjectIsMutable();
+          object_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          objectBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
       public Builder addAllObject(
-          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
-        ensureObjectIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, object_);
-        onChanged();
+          java.lang.Iterable<? extends org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject> values) {
+        if (objectBuilder_ == null) {
+          ensureObjectIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, object_);
+          onChanged();
+        } else {
+          objectBuilder_.addAllMessages(values);
+        }
         return this;
       }
       /**
-       * <code>repeated bytes object = 3;</code>
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
        */
       public Builder clearObject() {
-        object_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
+        if (objectBuilder_ == null) {
+          object_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          objectBuilder_.clear();
+        }
         return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public Builder removeObject(int index) {
+        if (objectBuilder_ == null) {
+          ensureObjectIsMutable();
+          object_.remove(index);
+          onChanged();
+        } else {
+          objectBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder getObjectBuilder(
+          int index) {
+        return getObjectFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
+          int index) {
+        if (objectBuilder_ == null) {
+          return object_.get(index);  } else {
+          return objectBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder> 
+           getObjectOrBuilderList() {
+        if (objectBuilder_ != null) {
+          return objectBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(object_);
+        }
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder addObjectBuilder() {
+        return getObjectFieldBuilder().addBuilder(
+            org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder addObjectBuilder(
+          int index) {
+        return getObjectFieldBuilder().addBuilder(
+            index, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
+       */
+      public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder> 
+           getObjectBuilderList() {
+        return getObjectFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder> 
+          getObjectFieldBuilder() {
+        if (objectBuilder_ == null) {
+          objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder>(
+                  object_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          object_ = null;
+        }
+        return objectBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -31566,6 +31657,576 @@ public final class ProtobufMessages {
     }
 
     public org.drools.core.marshalling.impl.ProtobufMessages.Tuple getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SerializedObjectOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.drools.core.marshalling.SerializedObject)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int32 strategy_index = 1;</code>
+     */
+    boolean hasStrategyIndex();
+    /**
+     * <code>optional int32 strategy_index = 1;</code>
+     */
+    int getStrategyIndex();
+
+    /**
+     * <code>optional bytes object = 2;</code>
+     */
+    boolean hasObject();
+    /**
+     * <code>optional bytes object = 2;</code>
+     */
+    com.google.protobuf.ByteString getObject();
+  }
+  /**
+   * Protobuf type {@code org.drools.core.marshalling.SerializedObject}
+   */
+  public  static final class SerializedObject extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:org.drools.core.marshalling.SerializedObject)
+      SerializedObjectOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SerializedObject.newBuilder() to construct.
+    private SerializedObject(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SerializedObject() {
+      strategyIndex_ = 0;
+      object_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SerializedObject(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              strategyIndex_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              object_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.class, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int STRATEGY_INDEX_FIELD_NUMBER = 1;
+    private int strategyIndex_;
+    /**
+     * <code>optional int32 strategy_index = 1;</code>
+     */
+    public boolean hasStrategyIndex() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional int32 strategy_index = 1;</code>
+     */
+    public int getStrategyIndex() {
+      return strategyIndex_;
+    }
+
+    public static final int OBJECT_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString object_;
+    /**
+     * <code>optional bytes object = 2;</code>
+     */
+    public boolean hasObject() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional bytes object = 2;</code>
+     */
+    public com.google.protobuf.ByteString getObject() {
+      return object_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, strategyIndex_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, object_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, strategyIndex_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, object_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject)) {
+        return super.equals(obj);
+      }
+      org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject other = (org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject) obj;
+
+      boolean result = true;
+      result = result && (hasStrategyIndex() == other.hasStrategyIndex());
+      if (hasStrategyIndex()) {
+        result = result && (getStrategyIndex()
+            == other.getStrategyIndex());
+      }
+      result = result && (hasObject() == other.hasObject());
+      if (hasObject()) {
+        result = result && getObject()
+            .equals(other.getObject());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasStrategyIndex()) {
+        hash = (37 * hash) + STRATEGY_INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getStrategyIndex();
+      }
+      if (hasObject()) {
+        hash = (37 * hash) + OBJECT_FIELD_NUMBER;
+        hash = (53 * hash) + getObject().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.drools.core.marshalling.SerializedObject}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.drools.core.marshalling.SerializedObject)
+        org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.class, org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.Builder.class);
+      }
+
+      // Construct using org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        strategyIndex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        object_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
+      }
+
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getDefaultInstanceForType() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.getDefaultInstance();
+      }
+
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject build() {
+        org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject buildPartial() {
+        org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject result = new org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.strategyIndex_ = strategyIndex_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.object_ = object_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject) {
+          return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject other) {
+        if (other == org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.getDefaultInstance()) return this;
+        if (other.hasStrategyIndex()) {
+          setStrategyIndex(other.getStrategyIndex());
+        }
+        if (other.hasObject()) {
+          setObject(other.getObject());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int strategyIndex_ ;
+      /**
+       * <code>optional int32 strategy_index = 1;</code>
+       */
+      public boolean hasStrategyIndex() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int32 strategy_index = 1;</code>
+       */
+      public int getStrategyIndex() {
+        return strategyIndex_;
+      }
+      /**
+       * <code>optional int32 strategy_index = 1;</code>
+       */
+      public Builder setStrategyIndex(int value) {
+        bitField0_ |= 0x00000001;
+        strategyIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 strategy_index = 1;</code>
+       */
+      public Builder clearStrategyIndex() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        strategyIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes object = 2;</code>
+       */
+      public boolean hasObject() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bytes object = 2;</code>
+       */
+      public com.google.protobuf.ByteString getObject() {
+        return object_;
+      }
+      /**
+       * <code>optional bytes object = 2;</code>
+       */
+      public Builder setObject(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        object_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes object = 2;</code>
+       */
+      public Builder clearObject() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        object_ = getDefaultInstance().getObject();
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:org.drools.core.marshalling.SerializedObject)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.drools.core.marshalling.SerializedObject)
+    private static final org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject();
+    }
+
+    public static org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<SerializedObject>
+        PARSER = new com.google.protobuf.AbstractParser<SerializedObject>() {
+      public SerializedObject parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SerializedObject(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SerializedObject> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SerializedObject> getParserForType() {
+      return PARSER;
+    }
+
+    public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -55223,6 +55884,11 @@ public final class ProtobufMessages {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -55485,113 +56151,115 @@ public final class ProtobufMessages {
       "\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_ac" +
       "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logi" +
       "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\"" +
-      "B\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\022\026\n\016strategy_" +
-      "index\030\002 \001(\005\022\016\n\006object\030\003 \003(\014\"\227\001\n\026TruthMai" +
-      "ntenanceSystem\0225\n\003key\030\001 \003(\0132(.org.drools" +
-      ".core.marshalling.EqualityKey\022F\n\026OBSOLET" +
-      "E_justification\030\002 \003(\0132&.org.drools.core." +
-      "marshalling.BeliefSet\"<\n\027ObjectTypeConfi" +
-      "guration\022\014\n\004type\030\001 \001(\t\022\023\n\013tms_enabled\030\002 " +
-      "\001(\010\"\201\001\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021\n\th" +
-      "andle_id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\0229\n\t" +
-      "beliefSet\030\004 \001(\0132&.org.drools.core.marsha" +
-      "lling.BeliefSet\"i\n\tBeliefSet\022\021\n\thandle_i" +
-      "d\030\001 \001(\005\022I\n\021logicalDependency\030\002 \003(\0132..org" +
-      ".drools.core.marshalling.LogicalDependen" +
-      "cy\"\254\001\n\021LogicalDependency\022;\n\nactivation\030\002" +
-      " \001(\0132\'.org.drools.core.marshalling.Activ" +
-      "ation\022\035\n\025object_strategy_index\030\010 \001(\005\022\016\n\006" +
-      "object\030\t \001(\014\022\034\n\024value_strategy_index\030\n \001" +
-      "(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013ActionQueue\022?\n\006act" +
-      "ion\030\001 \003(\0132/.org.drools.core.marshalling." +
-      "ActionQueue.Action\032\264\005\n\006Action\022A\n\004type\030\001 " +
-      "\001(\01623.org.drools.core.marshalling.Action" +
-      "Queue.ActionType\022P\n\017behavior_expire\030\002 \001(" +
-      "\01327.org.drools.core.marshalling.ActionQu" +
-      "eue.BehaviorExpire\022X\n\023deactivate_callbac" +
-      "k\030\003 \001(\0132;.org.drools.core.marshalling.Ac" +
-      "tionQueue.DeactivateCallback\022P\n\017logical_" +
-      "retract\030\004 \001(\01327.org.drools.core.marshall" +
-      "ing.ActionQueue.LogicalRetract\022E\n\tpropag" +
-      "ate\030\005 \001(\01322.org.drools.core.marshalling." +
-      "ActionQueue.Propagate\022?\n\006assert\030\006 \001(\0132/." +
-      "org.drools.core.marshalling.ActionQueue." +
-      "Assert\022?\n\006expire\030\007 \001(\0132/.org.drools.core" +
-      ".marshalling.ActionQueue.Expire\022?\n\006signa" +
-      "l\030\010 \001(\0132/.org.drools.core.marshalling.Ac" +
-      "tionQueue.Signal\022_\n\027signal_process_insta" +
-      "nce\030\t \001(\0132>.org.drools.core.marshalling." +
-      "ActionQueue.SignalProcessInstance\032!\n\016Beh" +
-      "aviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n\022Deactiva" +
-      "teCallback\022\026\n\016ruleflow_group\030\001 \001(\t\032\207\001\n\016L" +
-      "ogicalRetract\022\021\n\thandle_id\030\001 \001(\005\022;\n\nacti" +
-      "vation\030\002 \001(\0132\'.org.drools.core.marshalli" +
-      "ng.Activation\022\025\n\rfully_retract\030\003 \001(\010\022\016\n\006" +
-      "update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030\001 \001" +
-      "(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016remo" +
-      "ve_logical\030\002 \001(\010\022\031\n\021update_equals_map\030\003 " +
-      "\001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origin_r" +
-      "ule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\".org.droo" +
-      "ls.core.marshalling.Tuple\032,\n\006Expire\022\021\n\th" +
-      "andle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Signa" +
-      "l\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025Signal" +
-      "ProcessInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002" +
-      " \001(\014\022\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n\nAc" +
-      "tionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIV" +
-      "ATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tP" +
-      "ROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SI" +
-      "GNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\337\007\n\006" +
-      "Timers\0228\n\005timer\030\001 \003(\0132).org.drools.core." +
-      "marshalling.Timers.Timer\032\342\002\n\005Timer\022;\n\004ty" +
-      "pe\030\001 \001(\0162-.org.drools.core.marshalling.T" +
-      "imers.TimerType\022?\n\006expire\030\002 \001(\0132/.org.dr" +
-      "ools.core.marshalling.Timers.ExpireTimer" +
-      "\022G\n\nactivation\030\003 \001(\01323.org.drools.core.m" +
-      "arshalling.Timers.ActivationTimer\022C\n\010beh" +
-      "avior\030\004 \001(\01321.org.drools.core.marshallin" +
-      "g.Timers.BehaviorTimer\022F\n\ntimer_node\030\005 \001" +
-      "(\01322.org.drools.core.marshalling.Timers." +
-      "TimerNodeTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\t" +
-      "handle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022" +
-      "\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_timesta" +
-      "mp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactivati" +
-      "on\030\001 \001(\0132\'.org.drools.core.marshalling.A" +
-      "ctivation\0225\n\007trigger\030\002 \001(\0132$.org.drools." +
-      "core.marshalling.Trigger\032a\n\rBehaviorTime" +
-      "r\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPRECA" +
-      "TED_behavior_index\030\002 \001(\005\022\021\n\thandle_id\030\003 " +
-      "\001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001(\005\022" +
-      "1\n\005tuple\030\002 \001(\0132\".org.drools.core.marshal" +
-      "ling.Tuple\0225\n\007trigger\030\003 \001(\0132$.org.drools" +
-      ".core.marshalling.Trigger\"R\n\tTimerType\022\n" +
-      "\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003" +
-      "\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020\005\"\316\007\n\007Trigge" +
-      "r\022>\n\004type\030\001 \001(\01620.org.drools.core.marsha" +
-      "lling.Trigger.TriggerType\022>\n\004cron\030\002 \001(\0132" +
-      "0.org.drools.core.marshalling.Trigger.Cr" +
-      "onTrigger\022F\n\010interval\030\003 \001(\01324.org.drools" +
-      ".core.marshalling.Trigger.IntervalTrigge" +
-      "r\022D\n\003pit\030\004 \001(\01327.org.drools.core.marshal" +
-      "ling.Trigger.PointInTimeTrigger\022N\n\004cmdt\030" +
-      "\005 \001(\0132@.org.drools.core.marshalling.Trig" +
-      "ger.CompositeMaxDurationTrigger\032\247\001\n\013Cron" +
-      "Trigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030" +
-      "\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_co" +
-      "unt\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(\t\022\026\n\016ne" +
-      "xt_fire_time\030\006 \001(\003\022\025\n\rcalendar_name\030\007 \003(" +
-      "\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_time\030\001 \001(" +
-      "\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(" +
-      "\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_fire_tim" +
-      "e\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar_name" +
-      "\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016next_fir" +
-      "e_time\030\001 \001(\003\032\221\001\n\033CompositeMaxDurationTri" +
-      "gger\022\034\n\024maxDurationTimestamp\030\001 \001(\003\022\030\n\020ti" +
-      "merCurrentDate\030\002 \001(\003\022:\n\014timerTrigger\030\003 \001" +
-      "(\0132$.org.drools.core.marshalling.Trigger" +
-      "\"T\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022" +
-      "\021\n\rPOINT_IN_TIME\020\002\022\032\n\026COMPOSITE_MAX_DURA" +
-      "TION\020\003B4\n org.drools.core.marshalling.im" +
-      "plB\020ProtobufMessages"
+      "Y\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\022=\n\006object\030\002 " +
+      "\003(\0132-.org.drools.core.marshalling.Serial" +
+      "izedObject\":\n\020SerializedObject\022\026\n\016strate" +
+      "gy_index\030\001 \001(\005\022\016\n\006object\030\002 \001(\014\"\227\001\n\026Truth" +
+      "MaintenanceSystem\0225\n\003key\030\001 \003(\0132(.org.dro" +
+      "ols.core.marshalling.EqualityKey\022F\n\026OBSO" +
+      "LETE_justification\030\002 \003(\0132&.org.drools.co" +
+      "re.marshalling.BeliefSet\"<\n\027ObjectTypeCo" +
+      "nfiguration\022\014\n\004type\030\001 \001(\t\022\023\n\013tms_enabled" +
+      "\030\002 \001(\010\"\201\001\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021" +
+      "\n\thandle_id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\022" +
+      "9\n\tbeliefSet\030\004 \001(\0132&.org.drools.core.mar" +
+      "shalling.BeliefSet\"i\n\tBeliefSet\022\021\n\thandl" +
+      "e_id\030\001 \001(\005\022I\n\021logicalDependency\030\002 \003(\0132.." +
+      "org.drools.core.marshalling.LogicalDepen" +
+      "dency\"\254\001\n\021LogicalDependency\022;\n\nactivatio" +
+      "n\030\002 \001(\0132\'.org.drools.core.marshalling.Ac" +
+      "tivation\022\035\n\025object_strategy_index\030\010 \001(\005\022" +
+      "\016\n\006object\030\t \001(\014\022\034\n\024value_strategy_index\030" +
+      "\n \001(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013ActionQueue\022?\n\006" +
+      "action\030\001 \003(\0132/.org.drools.core.marshalli" +
+      "ng.ActionQueue.Action\032\264\005\n\006Action\022A\n\004type" +
+      "\030\001 \001(\01623.org.drools.core.marshalling.Act" +
+      "ionQueue.ActionType\022P\n\017behavior_expire\030\002" +
+      " \001(\01327.org.drools.core.marshalling.Actio" +
+      "nQueue.BehaviorExpire\022X\n\023deactivate_call" +
+      "back\030\003 \001(\0132;.org.drools.core.marshalling" +
+      ".ActionQueue.DeactivateCallback\022P\n\017logic" +
+      "al_retract\030\004 \001(\01327.org.drools.core.marsh" +
+      "alling.ActionQueue.LogicalRetract\022E\n\tpro" +
+      "pagate\030\005 \001(\01322.org.drools.core.marshalli" +
+      "ng.ActionQueue.Propagate\022?\n\006assert\030\006 \001(\013" +
+      "2/.org.drools.core.marshalling.ActionQue" +
+      "ue.Assert\022?\n\006expire\030\007 \001(\0132/.org.drools.c" +
+      "ore.marshalling.ActionQueue.Expire\022?\n\006si" +
+      "gnal\030\010 \001(\0132/.org.drools.core.marshalling" +
+      ".ActionQueue.Signal\022_\n\027signal_process_in" +
+      "stance\030\t \001(\0132>.org.drools.core.marshalli" +
+      "ng.ActionQueue.SignalProcessInstance\032!\n\016" +
+      "BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n\022Deact" +
+      "ivateCallback\022\026\n\016ruleflow_group\030\001 \001(\t\032\207\001" +
+      "\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(\005\022;\n\na" +
+      "ctivation\030\002 \001(\0132\'.org.drools.core.marsha" +
+      "lling.Activation\022\025\n\rfully_retract\030\003 \001(\010\022" +
+      "\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030" +
+      "\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016r" +
+      "emove_logical\030\002 \001(\010\022\031\n\021update_equals_map" +
+      "\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origi" +
+      "n_rule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\".org.d" +
+      "rools.core.marshalling.Tuple\032,\n\006Expire\022\021" +
+      "\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Si" +
+      "gnal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025Sig" +
+      "nalProcessInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005even" +
+      "t\030\002 \001(\014\022\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n" +
+      "\nActionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEAC" +
+      "TIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r" +
+      "\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n" +
+      "\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\337" +
+      "\007\n\006Timers\0228\n\005timer\030\001 \003(\0132).org.drools.co" +
+      "re.marshalling.Timers.Timer\032\342\002\n\005Timer\022;\n" +
+      "\004type\030\001 \001(\0162-.org.drools.core.marshallin" +
+      "g.Timers.TimerType\022?\n\006expire\030\002 \001(\0132/.org" +
+      ".drools.core.marshalling.Timers.ExpireTi" +
+      "mer\022G\n\nactivation\030\003 \001(\01323.org.drools.cor" +
+      "e.marshalling.Timers.ActivationTimer\022C\n\010" +
+      "behavior\030\004 \001(\01321.org.drools.core.marshal" +
+      "ling.Timers.BehaviorTimer\022F\n\ntimer_node\030" +
+      "\005 \001(\01322.org.drools.core.marshalling.Time" +
+      "rs.TimerNodeTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022" +
+      "\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001" +
+      "(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_time" +
+      "stamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactiv" +
+      "ation\030\001 \001(\0132\'.org.drools.core.marshallin" +
+      "g.Activation\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
+      "ls.core.marshalling.Trigger\032a\n\rBehaviorT" +
+      "imer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPR" +
+      "ECATED_behavior_index\030\002 \001(\005\022\021\n\thandle_id" +
+      "\030\003 \001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001" +
+      "(\005\0221\n\005tuple\030\002 \001(\0132\".org.drools.core.mars" +
+      "halling.Tuple\0225\n\007trigger\030\003 \001(\0132$.org.dro" +
+      "ols.core.marshalling.Trigger\"R\n\tTimerTyp" +
+      "e\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIO" +
+      "R\020\003\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020\005\"\316\007\n\007Tri" +
+      "gger\022>\n\004type\030\001 \001(\01620.org.drools.core.mar" +
+      "shalling.Trigger.TriggerType\022>\n\004cron\030\002 \001" +
+      "(\01320.org.drools.core.marshalling.Trigger" +
+      ".CronTrigger\022F\n\010interval\030\003 \001(\01324.org.dro" +
+      "ols.core.marshalling.Trigger.IntervalTri" +
+      "gger\022D\n\003pit\030\004 \001(\01327.org.drools.core.mars" +
+      "halling.Trigger.PointInTimeTrigger\022N\n\004cm" +
+      "dt\030\005 \001(\0132@.org.drools.core.marshalling.T" +
+      "rigger.CompositeMaxDurationTrigger\032\247\001\n\013C" +
+      "ronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_ti" +
+      "me\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat" +
+      "_count\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(\t\022\026\n" +
+      "\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar_name\030\007" +
+      " \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_time\030\001" +
+      " \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003" +
+      " \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_fire_" +
+      "time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar_n" +
+      "ame\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016next_" +
+      "fire_time\030\001 \001(\003\032\221\001\n\033CompositeMaxDuration" +
+      "Trigger\022\034\n\024maxDurationTimestamp\030\001 \001(\003\022\030\n" +
+      "\020timerCurrentDate\030\002 \001(\003\022:\n\014timerTrigger\030" +
+      "\003 \001(\0132$.org.drools.core.marshalling.Trig" +
+      "ger\"T\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL" +
+      "\020\001\022\021\n\rPOINT_IN_TIME\020\002\022\032\n\026COMPOSITE_MAX_D" +
+      "URATION\020\003B4\n org.drools.core.marshalling" +
+      ".implB\020ProtobufMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -55778,39 +56446,45 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Tuple_descriptor,
-        new java.lang.String[] { "HandleId", "StrategyIndex", "Object", });
-    internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor =
+        new java.lang.String[] { "HandleId", "Object", });
+    internal_static_org_drools_core_marshalling_SerializedObject_descriptor =
       getDescriptor().getMessageTypes().get(14);
+    internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_drools_core_marshalling_SerializedObject_descriptor,
+        new java.lang.String[] { "StrategyIndex", "Object", });
+    internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor =
+      getDescriptor().getMessageTypes().get(15);
     internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor,
         new java.lang.String[] { "Key", "OBSOLETEJustification", });
     internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_descriptor,
         new java.lang.String[] { "Type", "TmsEnabled", });
     internal_static_org_drools_core_marshalling_EqualityKey_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_org_drools_core_marshalling_EqualityKey_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_EqualityKey_descriptor,
         new java.lang.String[] { "Status", "HandleId", "OtherHandle", "BeliefSet", });
     internal_static_org_drools_core_marshalling_BeliefSet_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_org_drools_core_marshalling_BeliefSet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_BeliefSet_descriptor,
         new java.lang.String[] { "HandleId", "LogicalDependency", });
     internal_static_org_drools_core_marshalling_LogicalDependency_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_org_drools_core_marshalling_LogicalDependency_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_LogicalDependency_descriptor,
         new java.lang.String[] { "Activation", "ObjectStrategyIndex", "Object", "ValueStrategyIndex", "Value", });
     internal_static_org_drools_core_marshalling_ActionQueue_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_org_drools_core_marshalling_ActionQueue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_ActionQueue_descriptor,
@@ -55870,7 +56544,7 @@ public final class ProtobufMessages {
         internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_descriptor,
         new java.lang.String[] { "Type", "Event", "ProcessInstanceId", });
     internal_static_org_drools_core_marshalling_Timers_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_org_drools_core_marshalling_Timers_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Timers_descriptor,
@@ -55906,7 +56580,7 @@ public final class ProtobufMessages {
         internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor,
         new java.lang.String[] { "NodeId", "Tuple", "Trigger", });
     internal_static_org_drools_core_marshalling_Trigger_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_org_drools_core_marshalling_Trigger_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Trigger_descriptor,

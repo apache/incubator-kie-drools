@@ -16,10 +16,8 @@
 
 package org.drools.core.impl;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.runtime.Environment;
@@ -92,18 +90,6 @@ public class EnvironmentImpl implements Environment {
                return super.containsValue(NULL);
            }
            return super.containsValue(value);
-        }
-        
-        public void putAll(Map<? extends K, ? extends V> m) { 
-            throw new UnsupportedOperationException("The putAll(Map<K, V> m) method is not supported on this implementation.");
-        }
-        
-        public Collection<V> values() { 
-            throw new UnsupportedOperationException("The values() method is not supported on this implementation.");
-        }
-        
-        public Set<Map.Entry<K, V>> entrySet() {
-            throw new UnsupportedOperationException("The entrySet() method is not supported on this implementation.");
         }
     }
 }

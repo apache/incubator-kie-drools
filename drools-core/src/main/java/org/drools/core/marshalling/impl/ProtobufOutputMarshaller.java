@@ -99,8 +99,6 @@ import org.kie.api.runtime.rule.EntryPoint;
  */
 public class ProtobufOutputMarshaller {
 
-    private static final ObjectMarshallingStrategy DEFAULT_SERIALIZATION_STRATEGY = new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-
     private static ProcessMarshaller processMarshaller = createProcessMarshaller();
 
     private static ProcessMarshaller createProcessMarshaller() {
@@ -373,7 +371,7 @@ public class ProtobufOutputMarshaller {
         }
     }
 
-    private static ByteString serializeObject(MarshallerWriteContext context, ObjectMarshallingStrategy strategy, Integer strategyIndex, Object object) {
+    private static ByteString serializeObject(MarshallerWriteContext context, ObjectMarshallingStrategy strategy, Object object) {
         ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
         try {
             byte[] serialized = strategy.marshal(strategyContext, context, object);
@@ -729,11 +727,6 @@ public class ProtobufOutputMarshaller {
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
         boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) agendaItem);
-        Integer strategyIndex = null;
-        if (serializeObjects) {
-            strategyIndex = context.getStrategyIndex( DEFAULT_SERIALIZATION_STRATEGY );
-            _tb.setStrategyIndex(strategyIndex);
-        }
 
         for ( org.drools.core.spi.Tuple entry = tuple; entry != null; entry = entry.getParent() ) {
             InternalFactHandle handle = entry.getFactHandle();
@@ -742,7 +735,13 @@ public class ProtobufOutputMarshaller {
                 _tb.addHandleId( handle.getId() );
 
                 if (serializeObjects) {
-                    _tb.addObject( serializeObject(context, DEFAULT_SERIALIZATION_STRATEGY, strategyIndex, handle.getObject()) );
+                    ObjectMarshallingStrategy marshallingStrategy = context.objectMarshallingStrategyStore.getStrategyObject( handle.getObject() );
+                    Integer strategyIndex = context.getStrategyIndex( marshallingStrategy );
+
+                    ProtobufMessages.SerializedObject.Builder _so = ProtobufMessages.SerializedObject.newBuilder();
+                    _so.setObject( serializeObject(context, marshallingStrategy, handle.getObject()) );
+                    _so.setStrategyIndex( strategyIndex );
+                    _tb.addObject( _so.build() );
                 }
             }
         }

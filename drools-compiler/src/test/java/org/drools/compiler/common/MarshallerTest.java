@@ -2,19 +2,42 @@ package org.drools.compiler.common;
 
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ReadSessionResult;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+@RunWith(Parameterized.class)
 public class MarshallerTest {
+
+    private Environment env;
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[] { new JavaSerializableResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT ),
+                              new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT ) };
+    }
+
+    public MarshallerTest(ObjectMarshallingStrategy strategy) {
+        this.env = EnvironmentFactory.newEnvironment();
+        this.env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{ strategy } );
+    }
 
     @Test
     public void testAgendaDoNotSerializeObject() throws Exception {
@@ -28,7 +51,7 @@ public class MarshallerTest {
                             "end\n";
 
             KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
 
             ksession.insert("x");
             ksession.insert("y");
@@ -64,7 +87,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
             assertEquals(3, ksession.fireAllRules());
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -89,7 +112,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
@@ -113,7 +136,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
             assertEquals(2, ksession.fireAllRules(2));
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -139,7 +162,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
             assertEquals(5, ksession.fireAllRules(5));
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -165,7 +188,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
             ksession.insert( 42 );
             assertEquals(2, ksession.fireAllRules(2));
 
@@ -195,7 +218,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
 
             ksession.insert(new Person("Mark", 37));
             ksession.insert(new Person("Edson", 35));
@@ -229,7 +252,7 @@ public class MarshallerTest {
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
 
             ksession.insert(new Person("Mark", 37));
             ksession.insert(new Person("Edson", 35));
@@ -259,7 +282,7 @@ public class MarshallerTest {
         KieSession ksession = null;
 
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
 
             ksession.insert("Luca");
             ksession.insert(2L);
@@ -297,7 +320,7 @@ public class MarshallerTest {
         KieSession ksession = null;
 
         try {
-            ksession = kbase.newKieSession();
+            ksession = kbase.newKieSession(null, env);
             ksession.insert("Luca");
             ksession.insert(2L);
 
