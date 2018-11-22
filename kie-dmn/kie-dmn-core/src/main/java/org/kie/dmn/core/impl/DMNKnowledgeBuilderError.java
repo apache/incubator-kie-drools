@@ -38,7 +38,22 @@ public class DMNKnowledgeBuilderError extends DroolsError {
      * @return
      */
     public static DMNKnowledgeBuilderError from(Resource resource, String namespace, DMNMessage m) {
-        DMNKnowledgeBuilderError res = new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, namespace, m.getMessage());
+        ResultSeverity rs = ResultSeverity.ERROR;
+        switch (m.getLevel()) {
+            case ERROR:
+                rs = ResultSeverity.ERROR;
+                break;
+            case INFO:
+                rs = ResultSeverity.INFO;
+                break;
+            case WARNING:
+                rs = ResultSeverity.WARNING;
+                break;
+            default:
+                rs = ResultSeverity.ERROR;
+                break;
+        }
+        DMNKnowledgeBuilderError res = new DMNKnowledgeBuilderError(rs, resource, namespace, m.getMessage());
         res.dmnMessage = m;
         return res;
     }

@@ -102,7 +102,7 @@ public class DMNEvaluatorCompiler {
         if ( expression == null ) {
             if( node instanceof DecisionNode ) {
                 MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
+                                       DMNMessage.Severity.WARN,
                                        node.getSource(),
                                        model,
                                        null,
@@ -111,7 +111,7 @@ public class DMNEvaluatorCompiler {
                                        node.getIdentifierString() );
             } else if( node instanceof BusinessKnowledgeModelNode ) {
                 MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
+                                       DMNMessage.Severity.WARN,
                                        node.getSource(),
                                        model,
                                        null,
