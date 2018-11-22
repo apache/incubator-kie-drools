@@ -3,13 +3,16 @@
   <groupId>org.drools</groupId>
   <artifactId>test20181121</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		    <drools-version>7.15.0-SNAPSHOT</drools-version>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <drools-version>7.15.0-SNAPSHOT</drools-version>
     <slf4j-version>1.7.25</slf4j-version>
     <junit-version>4.12</junit-version>
+    <generateModel>YES</generateModel>
+    <generateDMNModel>YES</generateDMNModel>
   </properties>
+
 
   <dependencyManagement>
     <dependencies>
@@ -20,7 +23,7 @@
         <version>${drools-version}</version>
         <scope>import</scope>
       </dependency>
-            <dependency>
+      <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
         <type>pom</type>
@@ -31,33 +34,35 @@
 
   </dependencyManagement>
 
+
+  <packaging>kjar</packaging>
+
   <dependencies>
 
     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <scope>test</scope>
-      </dependency>
-          <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-ci</artifactId>
-        <scope>test</scope>
-      </dependency>
-<dependency>
-  <groupId>org.drools</groupId>
-  <artifactId>drools-canonical-model</artifactId>
-  <scope>provided</scope>
-</dependency>
-<dependency>
-  <groupId>org.drools</groupId>
-  <artifactId>drools-model-compiler</artifactId>
-  <scope>provided</scope>
-</dependency> 
-<dependency>
-  <groupId>org.kie</groupId>
-  <artifactId>kie-dmn-core</artifactId>
-  <scope>test</scope>
-</dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-canonical-model</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -65,12 +70,12 @@
       <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
-    		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -78,4 +83,15 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>7.15.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
