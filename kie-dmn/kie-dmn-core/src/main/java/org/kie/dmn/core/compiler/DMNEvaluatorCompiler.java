@@ -579,6 +579,9 @@ public class DMNEvaluatorCompiler {
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
                 String expressionText = le.getText();
+                if (expressionText == null || expressionText.isEmpty()) {
+                    expressionText = "null"; // addendum to DROOLS-2075 Allow empty output cell on DTs
+                }
                 CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(
                         ctx,
                         expressionText,
