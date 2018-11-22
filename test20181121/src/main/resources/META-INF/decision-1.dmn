@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.12.201811161023" id="_17396034-163a-48aa-9a7f-c6eb17f9cc6c" name="Car Damage Responsibility" namespace="http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <tc:testCases>
+      <tc:testCase id="_3ae598ba-8dc5-415d-b965-7a0c9f660e3a" name="Gold never pay">
+        <tc:inputNode name="Damage Types">
+          <tc:value xsi:type="xsd:string">Engine</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Membership Level">
+          <tc:value xsi:type="xsd:string">Gold</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Responsibility">
+          <tc:value xsi:type="xsd:string">Driver</tc:value>
+        </tc:inputNode>
+        <tc:resultNode name="Car Damage Responsibility">
+          <tc:expected>
+            <tc:component name="EU Rent">
+              <tc:value xsi:type="xsd:double">100</tc:value>
+            </tc:component>
+            <tc:component name="Renter">
+              <tc:value xsi:type="xsd:double">0</tc:value>
+            </tc:component>
+          </tc:expected>
+        </tc:resultNode>
+      </tc:testCase>
+      <tc:testCase id="_092b0ea4-f34c-4408-8603-787ca6f6e6b9" name="Silver 1">
+        <tc:inputNode name="Damage Types">
+          <tc:value xsi:type="xsd:string">Tires</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Membership Level">
+          <tc:value xsi:type="xsd:string">Silver</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Responsibility">
+          <tc:value xsi:type="xsd:string">Driver</tc:value>
+        </tc:inputNode>
+        <tc:resultNode name="Car Damage Responsibility">
+          <tc:expected>
+            <tc:component name="EU Rent">
+              <tc:value xsi:type="xsd:double">20</tc:value>
+            </tc:component>
+            <tc:component name="Renter">
+              <tc:value xsi:type="xsd:double">80</tc:value>
+            </tc:component>
+          </tc:expected>
+        </tc:resultNode>
+      </tc:testCase>
+      <tc:testCase id="_9365be70-1c0e-41e0-9d76-2e2fed5fefc6" name="Silver 2">
+        <tc:inputNode name="Damage Types">
+          <tc:value xsi:type="xsd:string">Tires</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Membership Level">
+          <tc:value xsi:type="xsd:string">Silver</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Responsibility">
+          <tc:value xsi:type="xsd:string">3rd Party</tc:value>
+        </tc:inputNode>
+        <tc:resultNode name="Car Damage Responsibility">
+          <tc:expected>
+            <tc:component name="EU Rent">
+              <tc:value xsi:type="xsd:double">50</tc:value>
+            </tc:component>
+            <tc:component name="Renter">
+              <tc:value xsi:type="xsd:double">50</tc:value>
+            </tc:component>
+          </tc:expected>
+        </tc:resultNode>
+      </tc:testCase>
+      <tc:testCase id="_cbacf6a7-4668-4c31-8ecc-10826d203da1" name="No Membership">
+        <tc:inputNode name="Damage Types">
+          <tc:value xsi:type="xsd:string">Tires</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Membership Level">
+          <tc:value xsi:type="xsd:string">None</tc:value>
+        </tc:inputNode>
+        <tc:inputNode name="Responsibility">
+          <tc:value xsi:type="xsd:string">3rd Party</tc:value>
+        </tc:inputNode>
+        <tc:resultNode name="Car Damage Responsibility">
+          <tc:expected>
+            <tc:component name="EU Rent">
+              <tc:value xsi:type="xsd:double">0</tc:value>
+            </tc:component>
+            <tc:component name="Renter">
+              <tc:value xsi:type="xsd:double">100</tc:value>
+            </tc:component>
+          </tc:expected>
+        </tc:resultNode>
+      </tc:testCase>
+    </tc:testCases>
+  </dmn11:extensionElements>
+  <dmn11:itemDefinition label="tDamageTypes" name="tDamageTypes">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"Tires","Glass","Body","Engine"</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:itemDefinition label="tMembershipLevel" name="tMembershipLevel">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"Gold","Silver","None"</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:itemDefinition label="tResponsibility" name="tResponsibility">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"Driver","3rd Party"</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:itemDefinition label="tPercent" name="tPercent">
+    <dmn11:typeRef>feel:number</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="simple">
+      <dmn11:text>[0..100]</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:itemDefinition label="tCarDamageResponsibility" name="tCarDamageResponsibility">
+    <dmn11:itemComponent id="_b8bbf07b-da22-4624-84a9-25071ab07051" name="EU Rent">
+      <dmn11:typeRef>tPercent</dmn11:typeRef>
+    </dmn11:itemComponent>
+    <dmn11:itemComponent id="_02c5857e-0985-4966-a0fa-cf2d8f456d34" name="Renter">
+      <dmn11:typeRef>tPercent</dmn11:typeRef>
+    </dmn11:itemComponent>
+  </dmn11:itemDefinition>
+  <dmn11:decision id="_5693fada-33cb-4a9e-bcfa-6fc343505538" name="Car Damage Responsibility">
+    <dmn11:variable id="_1aedbc56-e4eb-4636-8a24-2742bf1fda8e" name="Car Damage Responsibility" typeRef="tCarDamageResponsibility"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_e6ef89a8-1ad7-4791-aabe-c668d6bb56c4"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable hitPolicy="UNIQUE" id="_bbac1dae-01c9-4ea6-85b6-7ae32e181017" outputLabel="Car Damage Responsibility" typeRef="tCarDamageResponsibility">
+      <dmn11:input id="_4980210f-16ed-4226-a5bb-223867a02c47">
+        <dmn11:inputExpression typeRef="tMembershipLevel">
+          <dmn11:text>Membership Level</dmn11:text>
+        </dmn11:inputExpression>
+        <dmn11:inputValues triso:constraintsType="enumeration">
+          <dmn11:text>"Gold","Silver","None"</dmn11:text>
+        </dmn11:inputValues>
+      </dmn11:input>
+      <dmn11:input id="_39948a03-4099-423a-bc58-fc6d217db679">
+        <dmn11:inputExpression typeRef="tResponsibility">
+          <dmn11:text>Responsibility</dmn11:text>
+        </dmn11:inputExpression>
+        <dmn11:inputValues triso:constraintsType="enumeration">
+          <dmn11:text>"Driver","3rd Party"</dmn11:text>
+        </dmn11:inputValues>
+      </dmn11:input>
+      <dmn11:input id="_bdc56805-fdca-4e23-8ddc-e9955636dc61">
+        <dmn11:inputExpression typeRef="tDamageTypes">
+          <dmn11:text>Damage Types</dmn11:text>
+        </dmn11:inputExpression>
+        <dmn11:inputValues triso:constraintsType="enumeration">
+          <dmn11:text>"Tires","Glass","Body","Engine"</dmn11:text>
+        </dmn11:inputValues>
+      </dmn11:input>
+      <dmn11:output id="_71592adf-a200-46e8-a64b-e0b5d757e5f7" name="EU Rent" typeRef="tPercent">
+        <dmn11:outputValues triso:constraintsType="simple">
+          <dmn11:text>[0..100]</dmn11:text>
+        </dmn11:outputValues>
+      </dmn11:output>
+      <dmn11:output id="_945dd8be-36e3-4b83-a46b-1555461569e6" name="Renter" typeRef="tPercent">
+        <dmn11:outputValues triso:constraintsType="simple">
+          <dmn11:text>[0..100]</dmn11:text>
+        </dmn11:outputValues>
+      </dmn11:output>
+      <dmn11:rule id="_1b1f0ded-be2e-4399-ac94-ec9365e2ee6f">
+        <dmn11:inputEntry id="_a73096de-b901-468e-9aa1-04395d0d846a">
+          <dmn11:text>"Gold"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_d6215125-523e-4fd5-b70f-9b52bff58b76">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_26bded10-f3c6-4c3e-a792-b616234dca1d">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_f536d4dd-d134-46eb-a89b-6e99e2e5c7f1">
+          <dmn11:text>100</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_c890ca62-f9b8-4033-bb19-013581c3f3ef">
+          <dmn11:text>0</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_f9fb342c-56ed-4a21-920e-7fe3f681c42e">
+        <dmn11:inputEntry id="_451cfaf4-c190-441b-9caf-9ec5e904a81e">
+          <dmn11:text>"Silver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_c903b4dc-9239-45cf-82a6-53415abebe05">
+          <dmn11:text>"3rd Party"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_69f9b3a4-25e4-44b8-b07b-52d3e8b2aca1">
+          <dmn11:text>"Tires", "Glass"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_18cf0002-dc00-4229-9528-679f60d8a125">
+          <dmn11:text>50</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_545826f7-654c-4827-b479-35cc9890a794">
+          <dmn11:text>50</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_9c497034-c513-4c9d-9115-efe87b63050f">
+        <dmn11:inputEntry id="_d2ce6526-6508-4852-8959-deb86def87f0">
+          <dmn11:text>"Silver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_0376c5f2-e9ee-4cc1-875d-2123d2d18dbf">
+          <dmn11:text>"3rd Party"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_be3ecddd-c013-46b7-a067-47df4f04ae7f">
+          <dmn11:text>"Body","Engine"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_da0a677a-d745-4d86-a10b-a7b7c86ff2c6">
+          <dmn11:text>80</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_e12de3d6-a3a8-4b38-9595-242714454b49">
+          <dmn11:text>20</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_448bafe1-c5eb-4b29-9f7c-9328413f5387">
+        <dmn11:inputEntry id="_3ab8f8c4-b0b2-4df0-b40a-5325b80091ae">
+          <dmn11:text>"Silver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_2c6900f5-edb9-4fba-861e-d5514b5d586d">
+          <dmn11:text>"Driver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_72b5391d-ca30-4000-9cf7-363b37a7571d">
+          <dmn11:text>"Tires", "Glass"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_a88be399-72f0-446b-be1a-21f54a507663">
+          <dmn11:text>20</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_b014eb32-aff5-42a1-bdec-d29ae3d20666">
+          <dmn11:text>80</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_1d3452b5-657f-477c-809f-35c8ca65e046">
+        <dmn11:inputEntry id="_8d0f43ef-0319-4e16-858d-b1b47f42f6f4">
+          <dmn11:text>"Silver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_1220633a-e510-48be-b93a-6a6e650fd947">
+          <dmn11:text>"Driver"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_3b6a4116-f6ab-4ba3-9300-fc2e6f306aec">
+          <dmn11:text>"Body", "Engine"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_e8822939-443b-41e8-bd21-a8f6c9a2b764">
+          <dmn11:text>40</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_28323d02-3f51-4c71-948d-46729720a3d9">
+          <dmn11:text>60</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_f0fe234a-3ae7-4a6f-89cb-f7ed2498f69e">
+        <dmn11:inputEntry id="_869466b3-85c5-475b-856c-3d4dcefbe4a6">
+          <dmn11:text>"None"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_8eb2e35e-639a-4c59-94c0-956f34f44e8b">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_632b8e19-8b45-45fd-a727-b9d5bb49cb12">
+          <dmn11:text>"Engine"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_976579d8-96b9-4a9a-bc5e-26325b71a396">
+          <dmn11:text>15</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_b5d738ac-356b-4061-959b-20f6c1766c1c">
+          <dmn11:text>85</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_b8b6f475-b829-4e49-a540-2aebca999262">
+        <dmn11:inputEntry id="_ee124d5a-5c74-4bd2-8af8-45ec3a0f3113">
+          <dmn11:text>"None"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_ed7fc69c-efba-463b-821a-eaf8b1ea3f66">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="_dee2936d-08cd-4dc9-9a4d-ec99909cfdf1">
+          <dmn11:text>"Body","Tires","Glass"</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_6e2deecd-ef79-4e4c-83ad-326f034fa462">
+          <dmn11:text>0</dmn11:text>
+        </dmn11:outputEntry>
+        <dmn11:outputEntry id="_2938c797-af5d-4558-99a8-e0b5e66825a9">
+          <dmn11:text>100</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+  <dmn11:inputData id="_90aab494-9458-4b43-bdf4-0a82c22761b3" name="Membership Level">
+    <dmn11:variable id="_231079a9-c20d-4772-9748-a63025a37898" name="Membership Level" typeRef="tMembershipLevel"/>
+  </dmn11:inputData>
+  <dmn11:knowledgeSource id="_48fa7a11-feea-4fbc-843d-ddba575cb43e" name="Membership Database">
+    <dmn11:authorityRequirement>
+      <dmn11:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </dmn11:authorityRequirement>
+  </dmn11:knowledgeSource>
+  <dmn11:inputData id="_46252761-a3a1-4628-ae06-4b3652116f61" name="Damage Types">
+    <dmn11:variable id="_72b9a541-6594-4d0b-b77f-cfbecbe708ac" name="Damage Types" typeRef="tDamageTypes"/>
+  </dmn11:inputData>
+  <dmn11:knowledgeSource id="_08793113-0699-46bc-b9ea-101caafae621" name="Reservation System">
+    <dmn11:authorityRequirement>
+      <dmn11:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </dmn11:authorityRequirement>
+  </dmn11:knowledgeSource>
+  <dmn11:inputData id="_e6ef89a8-1ad7-4791-aabe-c668d6bb56c4" name="Responsibility">
+    <dmn11:variable id="_6db69b20-cb67-454f-afc4-4c4f98dbcd16" name="Responsibility" typeRef="tResponsibility"/>
+  </dmn11:inputData>
+  <dmn11:textAnnotation id="_2be598cb-09bc-43c4-af77-646ca21eae45">
+    <dmn11:text>Question: Repair cost split
+Answers: Renter %, EU-Rent %</dmn11:text>
+  </dmn11:textAnnotation>
+  <dmn11:association id="_dacfeefd-7fe2-4dfd-8d0c-d99d963a785c">
+    <dmn11:sourceRef href="#_5693fada-33cb-4a9e-bcfa-6fc343505538"/>
+    <dmn11:targetRef href="#_2be598cb-09bc-43c4-af77-646ca21eae45"/>
+  </dmn11:association>
+</dmn11:definitions>
