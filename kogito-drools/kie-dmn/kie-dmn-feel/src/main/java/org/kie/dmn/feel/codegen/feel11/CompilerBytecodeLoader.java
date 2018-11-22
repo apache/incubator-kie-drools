@@ -19,9 +19,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -89,9 +87,12 @@ public class CompilerBytecodeLoader {
         return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
     }
 
-    private <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        CompilationUnit cu = getCompilationUnitForUnaryTests( clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations );
+    public <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+        CompilationUnit cu = getCompilationUnit(clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations );
+        return compileUnit(cuPackage, cuClass, cu);
+    }
 
+    public  <T> T compileUnit(String cuPackage, String cuClass, CompilationUnit cu) {
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
             pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
@@ -119,13 +120,13 @@ public class CompilerBytecodeLoader {
     }
 
     public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        CompilationUnit cu = getCompilationUnitForUnaryTests( CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations );
+        CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations );
         ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).get();
         classSource.setStatic( true );
         return classSource.toString();
     }
 
-    private <T> CompilationUnit getCompilationUnitForUnaryTests( Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations ) {
+    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations ) {
         CompilationUnit cu = JavaParser.parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
         cu.setPackageDeclaration(cuPackage);
         ClassOrInterfaceDeclaration classSource = cu.getClassByName( templateResourcePath.substring( 1, templateResourcePath.length()-5 ) ).get();

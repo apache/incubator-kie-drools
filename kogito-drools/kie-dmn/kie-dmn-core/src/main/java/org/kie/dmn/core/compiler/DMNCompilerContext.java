@@ -5,6 +5,10 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
+import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 public class DMNCompilerContext {
 
@@ -38,6 +42,23 @@ public class DMNCompilerContext {
             variables.putAll( scope.getVariables() );
         }
         return variables;
+    }
+
+    public CompilerContext toCompilerContext() {
+        CompilerContext compilerContext = feelHelper.newCompilerContext();
+        compilerContext.getListeners().clear();
+        for ( Map.Entry<String, DMNType> entry : this.getVariables().entrySet() ) {
+            compilerContext.addInputVariableType(
+                    entry.getKey(),
+                    dmnToFeelType((BaseDMNTypeImpl) entry.getValue())
+            );
+        }
+        return compilerContext;
+    }
+
+    private static Type dmnToFeelType(BaseDMNTypeImpl v) {
+        if (v.isCollection()) return BuiltInType.LIST;
+        else return v.getFeelType();
     }
 
     public DMNFEELHelper getFeelHelper() {

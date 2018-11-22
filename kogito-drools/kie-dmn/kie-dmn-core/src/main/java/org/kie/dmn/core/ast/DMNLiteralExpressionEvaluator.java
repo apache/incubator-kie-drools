@@ -26,8 +26,8 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 
 /**
@@ -36,13 +36,22 @@ import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 public class DMNLiteralExpressionEvaluator
         implements DMNExpressionEvaluator {
     private CompiledExpression expression;
+    private boolean isFunctionDef;
 
     public DMNLiteralExpressionEvaluator(CompiledExpression expression) {
         this.expression = expression;
+        if (expression instanceof CompiledExpressionImpl) {
+            this.isFunctionDef = ((CompiledExpressionImpl) expression).isFunctionDef();
+        } else if (expression instanceof ProcessedExpression) {
+            this.isFunctionDef = ((ProcessedExpression) expression).getInterpreted().isFunctionDef();
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot create DMNLiteralExpressionEvaluator: unsupported type " + expression.getClass());
+        }
     }
 
     public boolean isFunctionDefinition() {
-        return expression instanceof CompiledExpressionImpl && ((CompiledExpressionImpl)expression).getExpression() instanceof FunctionDefNode;
+        return isFunctionDef;
     }
 
     public CompiledExpression getExpression() {
