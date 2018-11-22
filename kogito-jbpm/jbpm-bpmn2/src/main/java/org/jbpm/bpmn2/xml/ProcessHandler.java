@@ -329,7 +329,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					NodeImpl nodeImpl = (NodeImpl) source;
 					Constraint constraint = buildConstraint(connection, nodeImpl);
 					if (constraint != null) {
-						nodeImpl.addConstraint(new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+						nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
 								constraint);
 					}
 					
@@ -337,7 +337,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					Split split = (Split) source;
 					Constraint constraint = buildConstraint(connection, split);
 					split.addConstraint(
-						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+						new ConnectionRef(connection.getId(), target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
 						constraint);
 				}
 			}

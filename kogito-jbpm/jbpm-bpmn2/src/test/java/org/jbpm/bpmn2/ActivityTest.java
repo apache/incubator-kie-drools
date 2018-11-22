@@ -2138,4 +2138,20 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             System.clearProperty("org.jbpm.correlationkey.length");
         }
     }
+    
+    @Test
+    public void testXORWithSameTargetProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("build/XORSameTarget.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("choice", 1);
+        ProcessInstance processInstance = ksession.startProcess("XORTest.XOR2", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        params = new HashMap<>();
+        params.put("choice", 2);
+        processInstance = ksession.startProcess("XORTest.XOR2", params);
+        assertProcessInstanceCompleted(processInstance);
+    }
 }

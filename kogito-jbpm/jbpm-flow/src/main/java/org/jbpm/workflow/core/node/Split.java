@@ -83,7 +83,7 @@ public class Split extends NodeImpl implements Constrainable {
         }
 
         if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
-            ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+            ConnectionRef ref = new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
             Constraint constraint = this.constraints.get(ref);
             String defaultConnection = (String) getMetaData().get("Default");
             String connectionId = (String) connection.getMetaData().get("UniqueId");
@@ -105,7 +105,7 @@ public class Split extends NodeImpl implements Constrainable {
         }
 
         if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
-            ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+            ConnectionRef ref = new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
             return this.constraints.get(ref);
         }
         throw new UnsupportedOperationException( "Constraints are " + 
@@ -126,7 +126,7 @@ public class Split extends NodeImpl implements Constrainable {
                 throw new IllegalArgumentException("connection is unknown:" + connection);
             }
             addConstraint(
-                new ConnectionRef(connection.getTo().getId(), connection.getToType()),
+                new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType()),
                 constraint);
         } else {
             throw new UnsupportedOperationException( "Constraints are " + 
@@ -175,7 +175,7 @@ public class Split extends NodeImpl implements Constrainable {
     }
     
     public void removeConstraint(Connection connection) {
-    	ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+    	ConnectionRef ref = new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
         internalRemoveConstraint(ref);
     }
     

@@ -294,7 +294,7 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         }
 
         
-       ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+       ConnectionRef ref = new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
        return this.constraints.get(ref);
        
     }
@@ -312,7 +312,7 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
             throw new IllegalArgumentException("connection is unknown:" + connection);
         }
         addConstraint(
-            new ConnectionRef(connection.getTo().getId(), connection.getToType()),
+            new ConnectionRef((String)connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType()),
             constraint);
 
     }

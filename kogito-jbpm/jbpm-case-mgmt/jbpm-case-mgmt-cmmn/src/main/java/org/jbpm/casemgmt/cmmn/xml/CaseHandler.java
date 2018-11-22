@@ -215,7 +215,7 @@ public class CaseHandler extends BaseAbstractHandler implements Handler {
                     NodeImpl nodeImpl = (NodeImpl) source;
                     Constraint constraint = buildConstraint(connection, nodeImpl);
                     if (constraint != null) {
-                        nodeImpl.addConstraint(new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+                        nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
                                                constraint);
                     }
 
