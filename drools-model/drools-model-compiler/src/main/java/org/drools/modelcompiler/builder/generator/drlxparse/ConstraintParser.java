@@ -119,34 +119,11 @@ public class ConstraintParser {
             return parsePointFreeExpr( (PointFreeExpr) drlxExpr, patternType, bindingId, constraint, hasBind, isPositional, exprId );
         }
 
-        if (drlxExpr instanceof MethodCallExpr) {
+        if (patternType == null && drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
-
-            Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter(m -> m.getName().equals(methodCallExpr.getName())).findFirst();
+            Optional<MethodDeclaration> functionCall = packageModel.getFunctions().stream().filter( m -> m.getName().equals(methodCallExpr.getName())).findFirst();
             if (functionCall.isPresent()) {
-                // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
-                List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
-                        .filter(ThisExpr.class::isInstance)
-                        .map(ThisExpr.class::cast)
-                        .collect(Collectors.toList());
-                for (ThisExpr t : rewriteThisExprs) {
-                    methodCallExpr.replace(t, new NameExpr("_this"));
-                }
-
-                Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
-                NodeList<Expression> arguments = methodCallExpr.getArguments();
-                List<String> usedDeclarations = new ArrayList<>();
-                for (Expression arg : arguments) {
-                    if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
-                        usedDeclarations.add(arg.toString());
-                    } else if (arg instanceof CastExpr) {
-                        usedDeclarations.add((((CastExpr)arg).getExpression().toString()));
-                    } else if (arg instanceof MethodCallExpr) {
-                        TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
-                        usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
-                    }
-                }
-                return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
+                return parseFunctionInEval( methodCallExpr, patternType, bindingId, exprId, isPositional, functionCall );
             }
         }
 
@@ -194,6 +171,32 @@ public class ConstraintParser {
             TypedExpression left = optLeft.get();
             return new SingleDrlxParseSuccess(null, exprId, bindingId, drlxExpr, left.getType()).setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
         }
+    }
+
+    private DrlxParseResult parseFunctionInEval( MethodCallExpr methodCallExpr, Class<?> patternType, String bindingId, String exprId, boolean isPositional, Optional<MethodDeclaration> functionCall ) {
+        // when the methodCallExpr will be placed in the model/DSL, any parameter being a "this" need to be implemented as _this by convention.
+        List<ThisExpr> rewriteThisExprs = recurseCollectArguments(methodCallExpr).stream()
+                .filter(ThisExpr.class::isInstance)
+                .map(ThisExpr.class::cast)
+                .collect( Collectors.toList());
+        for (ThisExpr t : rewriteThisExprs) {
+            methodCallExpr.replace(t, new NameExpr("_this"));
+        }
+
+        Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
+        NodeList<Expression> arguments = methodCallExpr.getArguments();
+        List<String> usedDeclarations = new ArrayList<>();
+        for (Expression arg : arguments) {
+            if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
+                usedDeclarations.add(arg.toString());
+            } else if (arg instanceof CastExpr ) {
+                usedDeclarations.add((((CastExpr)arg).getExpression().toString()));
+            } else if (arg instanceof MethodCallExpr) {
+                TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
+                usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
+            }
+        }
+        return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
     }
 
     private DrlxParseResult parseNameExpr( NameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId ) {
