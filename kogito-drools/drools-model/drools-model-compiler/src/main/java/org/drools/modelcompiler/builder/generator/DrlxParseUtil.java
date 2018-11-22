@@ -1,19 +1,3 @@
-/*
- * Copyright 2005 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Field;
@@ -48,7 +32,6 @@ import org.drools.drlx.DrlxParser;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
@@ -162,11 +145,7 @@ public class DrlxParseUtil {
         try {
             Field field = clazz.getField( name );
             if (scope == null) {
-                if ( Modifier.isStatic( field.getModifiers() ) ) {
-                    scope = new NameExpr(clazz.getCanonicalName());
-                } else {
-                    throw new IllegalArgumentException( "Unknown field " + name + " on " + type );
-                }
+                scope = new NameExpr(Modifier.isStatic( field.getModifiers() ) ? clazz.getCanonicalName() : "_this");
             }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
@@ -767,5 +746,13 @@ public class DrlxParseUtil {
 
     public static void clearAccessorCache() {
         accessorsCache.clear();
+    }
+
+    public static Field getField( Class<?> clazz, String name ) {
+        try {
+            return clazz.getField( name );
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
     }
 }

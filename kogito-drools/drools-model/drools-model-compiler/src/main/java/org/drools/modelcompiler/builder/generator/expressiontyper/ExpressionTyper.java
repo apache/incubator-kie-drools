@@ -1,6 +1,8 @@
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
@@ -197,9 +199,9 @@ public class ExpressionTyper {
                     );
 
             return optLeft.map(left ->
-                                       new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left, this), left.getType())
-                                               .setStatic(opSpec.isStatic())
-                                               .setLeft(left));
+                                new TypedExpression(opSpec.getExpression(ruleContext, transformedToPointFree, left, this), left.getType())
+                                        .setStatic(opSpec.isStatic())
+                                        .setLeft(left));
 
         } else if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
@@ -661,73 +663,70 @@ public class ExpressionTyper {
     }
 
     private Optional<TypedExpressionCursor> nameExpr(Expression drlxExpr, NameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
-        Optional<TypedExpressionCursor> teCursor;
         String firstName = firstNode.getName().getIdentifier();
         Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
         if (declarationById.isPresent()) {
             // do NOT append any reactOnProperties.
             // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
             context.addUsedDeclarations(firstName);
-            final java.lang.reflect.Type typeCursor;
-            if (!isInLineCast) {
-                typeCursor = declarationById.get().getDeclarationClass();
-            } else {
-                typeCursor = originalTypeCursor;
-            }
-            teCursor = of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
-        } else if(packageModel.getGlobals().containsKey(firstName)){
+            java.lang.reflect.Type typeCursor = isInLineCast ? originalTypeCursor : declarationById.get().getDeclarationClass();
+            return of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
+        }
+
+        if(packageModel.getGlobals().containsKey(firstName)) {
             context.addUsedDeclarations(firstName);
             return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
-        } else {
-
-            final java.lang.reflect.Type typeCursor;
-
-            // In OOPath a declaration is based on a position rather than a name.
-            // Only an OOPath chunk can have a backreference expression
-            Optional<DeclarationSpec> backReference = empty();
-            if(firstNode.getBackReferencesCount() > 0) {
-                List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
-                DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
-                typeCursor = backReferenceDeclaration.getDeclarationClass();
-                backReference = of(backReferenceDeclaration);
-                context.addUsedDeclarations(backReferenceDeclaration.getBindingId());
-            } else {
-                typeCursor = originalTypeCursor;
-            }
-
-            Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? toRawClass(typeCursor) : patternType, firstName);
-            if (firstAccessor != null) {
-                // Hack to review - if a property is upper case it's probably not a react on property
-                if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
-                    context.addReactOnProperties(firstName);
-                }
-                final java.lang.reflect.Type typeOfFirstAccessor;
-                if (!isInLineCast) {
-                    typeOfFirstAccessor = firstAccessor.getGenericReturnType();
-                } else {
-                    typeOfFirstAccessor = typeCursor;
-                }
-                NameExpr thisAccessor = new NameExpr("_this");
-                final NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
-                teCursor = of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
-            } else {
-                try {
-                    Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstName );
-                    return of( new TypedExpressionCursor( new NameExpr(firstName), resolvedType ));
-                } catch (ClassNotFoundException e) {
-                    // ignore
-                }
-
-                final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);
-                rootNode.ifPresent(n -> {
-                    // In the error messages HalfBinary are transformed to Binary
-                    Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
-                    ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
-                });
-                teCursor = empty();
-            }
         }
-        return teCursor;
+
+        final java.lang.reflect.Type typeCursor;
+
+        // In OOPath a declaration is based on a position rather than a name.
+        // Only an OOPath chunk can have a backreference expression
+        Optional<DeclarationSpec> backReference = empty();
+        if(firstNode.getBackReferencesCount() > 0) {
+            List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
+            DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
+            typeCursor = backReferenceDeclaration.getDeclarationClass();
+            backReference = of(backReferenceDeclaration);
+            context.addUsedDeclarations(backReferenceDeclaration.getBindingId());
+        } else {
+            typeCursor = originalTypeCursor;
+        }
+
+        Class<?> classCursor = toRawClass(typeCursor);
+        Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? classCursor : patternType, firstName);
+        if (firstAccessor != null) {
+            // Hack to review - if a property is upper case it's probably not a react on property
+            if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
+                context.addReactOnProperties(firstName);
+            }
+
+            java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+            NameExpr thisAccessor = new NameExpr("_this");
+            NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
+            return of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
+        }
+
+        Field field = DrlxParseUtil.getField( classCursor, firstName );
+        if (field != null) {
+            NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : "_this" );
+            return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
+        }
+
+        try {
+            Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstName );
+            return of( new TypedExpressionCursor( new NameExpr(firstName), resolvedType ));
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
+
+        final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);
+        rootNode.ifPresent(n -> {
+            // In the error messages HalfBinary are transformed to Binary
+            Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
+            ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
+        });
+        return empty();
     }
 
     private TypedExpressionCursor thisExpr(Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
