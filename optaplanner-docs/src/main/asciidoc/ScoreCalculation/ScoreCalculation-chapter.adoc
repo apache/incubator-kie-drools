@@ -834,16 +834,20 @@ but to verify that the score rules implement the real business needs,
 [[scoreCalculationPerformanceTricksOverview]]
 === Overview
 
-The `Solver` will normally spend most of its execution time running the score calculation (which is called in its deepest loops). Faster score calculation will return the same solution in less time with the same algorithm, which normally means a better solution in equal time.
+The `Solver` will normally spend most of its execution time running the score calculation
+(which is called in its deepest loops).
+Faster score calculation will return the same solution in less time with the same algorithm,
+which normally means a better solution in equal time.
 
 
 [[scoreCalculationSpeed]]
 === Score Calculation Speed
 
 After solving a problem, the `Solver` will log the __score calculation speed per second__.
-This is a good measurement of Score calculation performance, despite that it is affected by non score calculation execution time.
+This is a good measurement of Score calculation performance,
+despite that it is affected by non score calculation execution time.
 It depends on the problem scale of the problem dataset.
-Normally, even for high scale problems, it is higher than ``1000``, except when you are using an ``EasyScoreCalculator``.
+Normally, even for high scale problems, it is higher than ``1000``, except if you are using an ``EasyScoreCalculator``.
 
 [IMPORTANT]
 ====
@@ -851,15 +855,16 @@ When improving your score calculation, focus on maximizing the score calculation
 A big improvement in score calculation can sometimes yield little or no best score improvement, for example when the algorithm is stuck in a local or global optima.
 If you are watching the calculation speed instead, score calculation improvements are far more visible.
 
-Furthermore, watching the calculation speed, allows you to remove or add score constraints, and still compare it with the original calculation speed.
-Comparing the best score with the original would be wrong, because it is comparing apples and oranges.
+Furthermore, watching the calculation speed allows you to remove or add score constraints,
+and still compare it with the original's calculation speed.
+Comparing the best score with the original's best score is pointless: it's comparing apples and oranges.
 ====
 
 
 [[incrementalScoreCalculation]]
 === Incremental Score Calculation (with Deltas)
 
-When a `Solution` changes, incremental score calculation (AKA delta based score calculation),
+When a `Solution` changes, incremental score calculation (AKA delta based score calculation)
 calculates the delta with the previous state to find the new ``Score``,
 instead of recalculating the entire score on every solution evaluation.
 
@@ -885,7 +890,8 @@ Notice that the speedup is relative to the size of your planning problem (your _
 Do not call remote services in your score calculation (except if you are bridging `EasyScoreCalculator` to a legacy system). The network latency will kill your score calculation performance.
 Cache the results of those remote services if possible.
 
-If some parts of a constraint can be calculated once, when the `Solver` starts, and never change during solving, then turn them into <<cachedProblemFact,cached problem facts>>.
+If some parts of a constraint can be calculated once, when the `Solver` starts, and never change during solving,
+then turn them into <<cachedProblemFact,cached problem facts>>.
 
 
 [[pointlessConstraints]]
@@ -907,22 +913,31 @@ There is no need to dynamically change your score calculation based on the datas
 === Built-in Hard Constraint
 
 Instead of implementing a hard constraint, it can sometimes be built in.
-For example, if `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution, so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint). Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
+For example, if `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution,
+so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint).
+Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
 
-This can give a good performance gain in some use cases, not just because the score calculation is faster, but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
+This can give a good performance gain in some use cases, not just because the score calculation is faster,
+but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
 However, usually this not a good idea because there is a real risk of trading short term benefits for long term harm:
 
-* Many optimization algorithms rely on the freedom to break hard constraints when changing planning entities, to get out of local optima.
-* Both implementation approaches have limitations (feature compatibility, disabling automatic performance optimizations), as explained in their documentation.
+* Many optimization algorithms rely on the freedom to break hard constraints when changing planning entities,
+to get out of local optima.
+* Both implementation approaches have limitations (feature compatibility, disabling automatic performance optimizations),
+as explained in their documentation.
 
 
 [[otherScoreCalculationPerformanceTricks]]
 === Other Score Calculation Performance Tricks
 
-* Verify that your score calculation happens in the correct `Number` type. If you are making the sum of `int` values, do not let Drools sum it in a `double` which takes longer.
-* For optimal performance, always use server mode (``java -server``). We have seen performance increases of 50% by turning on server mode.
-* For optimal performance, use the latest Java version. For example, in the past we have seen performance increases of 30% by switching from java 1.5 to 1.6.
-* Always remember that premature optimization is the root of all evil. Make sure your design is flexible enough to allow configuration based tweaking.
+* Verify that your score calculation happens in the correct `Number` type.
+If you are making the sum of `int` values, do not let Drools sum it in a `double` which takes longer.
+* For optimal performance, always use server mode (``java -server``).
+We have seen performance increases of 50% by turning on server mode.
+* For optimal performance, use the latest Java version.
+For example, in the past we have seen performance increases of 30% by switching from java 1.5 to 1.6.
+* Always remember that premature optimization is the root of all evil.
+Make sure your design is flexible enough to allow configuration based tweaking.
 
 
 [[scoreTrap]]
@@ -1007,7 +1022,7 @@ When the workload is perfectly balanced, the user often likes to see a `0` score
 == Explaining the Score: Which Constraints Are Broken?
 
 The easiest way to explain the score during development is to print the return value of `explainBestScore()`,
-but only use this method for diagnostic purposes:
+but only use that method for diagnostic purposes:
 
 [source,java,options="nowrap"]
 ----
@@ -1100,7 +1115,8 @@ The sum of `ConstraintMatchTotal.getScoreTotal()` equals the overall score.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>
+support constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
@@ -1137,7 +1153,8 @@ because multiple ``Indictment``s can share the same `ConstraintMatch`.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports indictments and constraint matches automatically,
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>
+support constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
