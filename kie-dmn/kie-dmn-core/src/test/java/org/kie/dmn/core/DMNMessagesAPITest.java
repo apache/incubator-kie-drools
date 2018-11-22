@@ -1,8 +1,8 @@
 package org.kie.dmn.core;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
@@ -17,7 +17,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
-import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.internal.builder.InternalKieBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -38,15 +37,13 @@ public class DMNMessagesAPITest {
         kie_messages.forEach(System.out::println);
         assertThat(kie_messages.size(), is(3));
 
-        List<DMNKnowledgeBuilderError> dmnKnowledgeBuilderErrors = new ArrayList<>();
-        for (Message m : kie_messages) {
-            if (m.getMetadata() instanceof DMNKnowledgeBuilderError) {
-                dmnKnowledgeBuilderErrors.add((DMNKnowledgeBuilderError) m.getMetadata());
-            }
-        }
-        assertThat(dmnKnowledgeBuilderErrors.size(), is(1));
+        List<DMNMessage> dmnMessages = kie_messages.stream()
+                                                   .filter(DMNMessage.class::isInstance)
+                                                   .map(DMNMessage.class::cast)
+                                                   .collect(Collectors.toList());
+        assertThat(dmnMessages.size(), is(1));
 
-        DMNMessage dmnMessage = dmnKnowledgeBuilderErrors.get(0).getDmnMessage();
+        DMNMessage dmnMessage = dmnMessages.get(0);
         assertThat(dmnMessage.getSourceId(), is("_c990c3b2-e322-4ef9-931d-79bcdac99686"));
         assertThat(dmnMessage.getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
     }
