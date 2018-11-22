@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -107,6 +108,18 @@ public class DocumentsMarshallingStrategyTest {
         unmarshalledDocument.setContent("updated content".getBytes());
         marshalledDocument = docMarshallingStrategy.marshal(null, null, unmarshalledDocument);
         assertEquals(2, counter.get());
+    }
+	
+	@Test
+    public void testSingleDocMarshallUnmarshallNoAttribtues() throws IOException, ClassNotFoundException {
+        DocumentMarshallingStrategy docMarshallingStrategy = new DocumentMarshallingStrategy();
+        Document document = getDocument("docOne-noattr");
+        document.setAttributes(new HashMap<>());
+        byte[] marshalledDocument = docMarshallingStrategy.marshal(null, null, document);
+        Document unmarshalledDocument = (Document) docMarshallingStrategy.unmarshal(null, null, marshalledDocument, this.getClass().getClassLoader());
+    
+        assertEquals(document.getName(), unmarshalledDocument.getName());
+        assertEquals(document.getLink(), unmarshalledDocument.getLink());
     }
 	
 	private Document getDocument(String documentName) {

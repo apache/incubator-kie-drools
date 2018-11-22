@@ -67,6 +67,12 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
             // store via service only when it was actually updated
             documentStorageService.saveDocument(document, document.getContent());
             document.addAttribute(Document.UPDATED_ATTRIBUTE, "false");
+        } else {
+            // make sure that when document does not exist it is created even if the flag was not marked to be stored
+            if (document.getIdentifier() == null || documentStorageService.getDocument(document.getIdentifier()) == null) {
+                documentStorageService.saveDocument(document, document.getContent());
+                document.addAttribute(Document.UPDATED_ATTRIBUTE, "false");    
+            }
         }
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(buff);
