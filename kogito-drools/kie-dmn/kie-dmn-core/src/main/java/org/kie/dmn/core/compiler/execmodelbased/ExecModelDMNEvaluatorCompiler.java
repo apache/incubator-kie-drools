@@ -26,7 +26,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.runtime.rule.DataSource;
@@ -41,6 +40,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

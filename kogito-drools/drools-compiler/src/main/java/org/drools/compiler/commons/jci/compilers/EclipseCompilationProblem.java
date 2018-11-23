@@ -17,8 +17,8 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.eclipse.jdt.core.compiler.IProblem;
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Wrapping an Eclipse compiler problem

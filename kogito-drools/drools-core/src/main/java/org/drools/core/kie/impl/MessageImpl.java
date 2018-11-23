@@ -13,19 +13,20 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.kie.builder.impl;
+package org.drools.core.kie.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.kie.api.builder.Message;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageImpl implements Message {
+public class MessageImpl implements InternalMessage {
 
     protected static final transient Logger logger = LoggerFactory.getLogger( MessageImpl.class );
 
@@ -115,10 +116,12 @@ public class MessageImpl implements Message {
         return text;
     }
 
+    @Override
     public String getKieBaseName() {
         return kieBaseName;
     }
 
+    @Override
     public MessageImpl setKieBaseName( String kieBaseName ) {
         this.kieBaseName = kieBaseName;
         return this;

@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.internal.jci.CompilationProblem;;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;

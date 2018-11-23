@@ -21,12 +21,12 @@ import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.jci.CompilationProblem;
 
 import java.util.ArrayList;
 import java.util.HashMap;

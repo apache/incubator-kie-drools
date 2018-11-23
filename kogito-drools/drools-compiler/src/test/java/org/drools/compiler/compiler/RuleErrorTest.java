@@ -19,10 +19,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
+import org.kie.internal.jci.CompilationProblem;
 
 public class RuleErrorTest {
 

@@ -16,9 +16,9 @@
 
 package org.drools.modelcompiler.builder.errors;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.DroolsError;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.jci.CompilationProblem;
 
 public class CompilationProblemErrorResult extends DroolsError {
 

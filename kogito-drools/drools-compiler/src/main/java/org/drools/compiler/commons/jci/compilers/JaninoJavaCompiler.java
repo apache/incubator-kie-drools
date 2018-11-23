@@ -39,9 +39,9 @@ import org.codehaus.janino.util.StringPattern;
 import org.codehaus.janino.util.resource.Resource;
 import org.codehaus.janino.util.resource.ResourceCreator;
 import org.codehaus.janino.util.resource.ResourceFinder;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.internal.jci.CompilationProblem;
 
 public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 

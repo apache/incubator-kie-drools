@@ -16,20 +16,6 @@
 
 package org.drools.core.util.asm;
 
-import org.drools.core.base.ClassFieldReader;
-import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.ResultSeverity;
-import org.mvel2.asm.AnnotationVisitor;
-import org.mvel2.asm.Attribute;
-import org.mvel2.asm.ClassReader;
-import org.mvel2.asm.ClassVisitor;
-import org.mvel2.asm.FieldVisitor;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
-
-import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -45,6 +31,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.ClassFieldReader;
+import org.drools.core.kie.impl.MessageImpl;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.InternalMessage;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.Attribute;
+import org.mvel2.asm.ClassReader;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -567,6 +568,12 @@ public class ClassFieldInspector {
         public Resource getResource() {
             return null;
         }
+
+        @Override
+        public InternalMessage asMessage(long id) {
+            return new MessageImpl(id, this);
+        }
+
     }
 
 

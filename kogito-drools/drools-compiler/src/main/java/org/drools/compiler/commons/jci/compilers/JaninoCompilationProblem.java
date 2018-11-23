@@ -19,7 +19,7 @@ package org.drools.compiler.commons.jci.compilers;
 
 import org.codehaus.janino.Location;
 import org.codehaus.janino.util.LocatedException;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Janino version of a CompilationProblem

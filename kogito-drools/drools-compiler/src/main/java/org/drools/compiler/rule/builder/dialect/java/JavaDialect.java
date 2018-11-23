@@ -36,7 +36,6 @@ import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -105,6 +104,7 @@ import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.jci.CompilationProblem;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class JavaDialect

@@ -15,10 +15,10 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
-
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+
+import org.kie.internal.jci.CompilationProblem;
 
 public class NativeCompilationProblem implements CompilationProblem {
 
