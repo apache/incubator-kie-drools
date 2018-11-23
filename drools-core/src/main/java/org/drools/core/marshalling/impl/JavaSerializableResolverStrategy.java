@@ -83,4 +83,11 @@ public class JavaSerializableResolverStrategy
         // no need for context
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "JavaSerializableResolverStrategy{" +
+                "acceptor=" + acceptor +
+                '}';
+    }
 }

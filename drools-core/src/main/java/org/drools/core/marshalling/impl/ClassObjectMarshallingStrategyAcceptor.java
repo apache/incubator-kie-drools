@@ -47,4 +47,8 @@ public class ClassObjectMarshallingStrategyAcceptor implements ObjectMarshalling
         return ClassUtils.isMatched( this.patterns, object.getClass().getName() );
     }
 
+    @Override
+    public String toString() {
+        return "ClassObjectMarshallingStrategyAcceptor for " + patterns.keySet();
+    }
 }

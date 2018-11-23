@@ -97,5 +97,11 @@ public class SerializablePlaceholderResolverStrategy
             oos.writeObject( this.data );
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return "SerializablePlaceholderResolverStrategy{" +
+                "acceptor=" + acceptor +
+                '}';
+    }
 }
