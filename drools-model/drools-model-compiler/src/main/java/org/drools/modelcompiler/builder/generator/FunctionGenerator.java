@@ -6,9 +6,10 @@ import java.util.List;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.TryStmt;
 
 import static org.drools.javaparser.JavaParser.parseType;
 import static org.drools.javaparser.ast.NodeList.nodeList;
@@ -28,8 +29,12 @@ public class FunctionGenerator {
 
         EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC);
         MethodDeclaration methodDeclaration = new MethodDeclaration(modifiers, desc.getName(), parseType(desc.getReturnType()), nodeList(parameters));
-        methodDeclaration.setThrownExceptions(NodeList.nodeList(DrlxParseUtil.toClassOrInterfaceType("java.lang.Exception")));
-        methodDeclaration.setBody(DrlxParseUtil.parseBlock(desc.getBody()));
+
+        BlockStmt block = DrlxParseUtil.parseBlock("try {} catch (Exception e) { throw new RuntimeException(e); }");
+        TryStmt tryStmt = (TryStmt) block.getStatement( 0 );
+        tryStmt.setTryBlock( DrlxParseUtil.parseBlock(desc.getBody() ) );
+
+        methodDeclaration.setBody( block );
 
         return methodDeclaration;
     }
