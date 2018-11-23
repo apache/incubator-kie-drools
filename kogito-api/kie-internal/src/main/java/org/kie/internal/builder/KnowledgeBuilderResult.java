@@ -44,4 +44,6 @@ public interface KnowledgeBuilderResult {
      * @return
      */
     Resource getResource();
+
+    InternalMessage asMessage(long id);
 }
