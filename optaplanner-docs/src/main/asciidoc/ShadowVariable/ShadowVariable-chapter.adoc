@@ -76,15 +76,17 @@ public class CloudComputer {
 }
 ----
 
-<<shadowVariableIntroduction,Register this class as a planning entity.>>
-The `sourceVariableName` property is the name of the genuine planning variable on the return type of the getter (so the name of the genuine planning variable on the _other_ side).
+<<shadowVariableIntroduction,Register this class as a planning entity>>,
+otherwise Planner won't detect it and the shadow variable won't update.
+The `sourceVariableName` property is the name of the genuine planning variable on the return type of the getter
+(so the name of the genuine planning variable on the _other_ side).
 
 [NOTE]
 ====
-The shadow property, which is a ``Collection``, can never be ``null``.
-If no genuine variable is referencing that shadow entity, then it is an empty ``Collection``.
-Furthermore it must be a mutable `Collection` because once the Solver starts initializing or changing genuine planning variables,
-it will add and remove to the ``Collection``s of those shadow variables accordingly.
+The shadow property, which is ``Collection`` (usually `List`, `Set` or `SortedSet`), can never be ``null``.
+If no genuine variable references that shadow entity, then it is an empty collection.
+Furthermore it must be a mutable `Collection` because once Planner starts initializing or changing genuine planning variables,
+it will add and remove elements to the ``Collection``s of those shadow variables accordingly.
 ====
 
 For a chained planning variable, the bi-directional relationship is always a one to one relationship.
@@ -120,7 +122,8 @@ public class Standstill {
 }
 ----
 
-<<shadowVariableIntroduction,Register this class as a planning entity.>>
+<<shadowVariableIntroduction,Register this class as a planning entity>>,
+otherwise Planner won't detect it and the shadow variable won't update.
 
 [WARNING]
 ====
@@ -149,7 +152,7 @@ public class Customer {
 }
 ----
 
-<<shadowVariableIntroduction,Register this class as a planning entity.>>
+<<shadowVariableIntroduction,This class should already be registered as a planning entity.>>
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
 
 
@@ -174,13 +177,15 @@ implement the interface and annotate it on the shadow variable that needs to cha
     }
 ----
 
-<<shadowVariableIntroduction,Register this class as a planning entity.>>
+<<shadowVariableIntroduction,Register this class as a planning entity>> if it hasn't already.
 The `variableName` is the (genuine or shadow) variable that triggers changes to this shadow variable.
 
 [NOTE]
 ====
-If the class of the trigger variable is different than the shadow variable, also specify the `entityClass` on ``@PlanningVariableReference``.
-In that case, make sure that `entityClass` is also properly configured as a planning entity class in the solver config, or the `VariableListener` will simply never trigger.
+If the source variable's class is different than the shadow variable's class,
+also specify the `entityClass` in the ``@PlanningVariableReference`` annotation
+and make sure the shadow variable's class is <<shadowVariableIntroduction,registered as a planning entity>>,
+otherwise Planner won't detect it and the shadow variable won't update.
 ====
 
 For example, the `VehicleUpdatingVariableListener` assures that every `Customer` in a chain has the same ``Vehicle``, namely the chain's anchor.
