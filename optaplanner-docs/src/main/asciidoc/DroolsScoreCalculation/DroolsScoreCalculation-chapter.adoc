@@ -166,18 +166,22 @@ end
 This score rule will fire once for every two queens with the same ``rowIndex``.
 The `(id > $id)` condition is needed to assure that for two queens A and B, it can only fire for (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of four queens:
 
-image::ScoreCalculation/unsolvedNQueens04.png[align="center"]
+image::DroolsScoreCalculation/unsolvedNQueens04.png[align="center"]
 
 In this solution the multipleQueensHorizontal score rule will fire for six queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
 An optimal solution of four queens has a score of ``0``.
 
 [NOTE]
 ====
-Notice that every score rule will relate to at least one planning entity class (directly or indirectly through a logically inserted fact).
+Notice that every score rule uses at least one planning entity class
+(directly or indirectly through a logically inserted fact).
 
-This is a normal case.
-It would be a waste of time to write a score rule that only relates to problem facts, as the consequence will never change during planning, no matter what the possible solution.
+It is a waste of time to write a score rule that only relates to problem facts,
+as the consequence will never change during planning, no matter what the possible solution.
 ====
+
+A `ScoreHolder` instance is asserted into the `KieSession` as a global called ``scoreHolder``.
+The score rules need to (directly or indirectly) update that instance to influence the score of a solution state.
 
 [NOTE]
 ====
@@ -189,8 +193,11 @@ The ``scoreHolder``'s method uses it to do incremental score calculation correct
 [[weighingScoreRules]]
 == Weighing Score Rules
 
-A `ScoreHolder` instance is asserted into the `KieSession` as a global called ``scoreHolder``.
-The score rules need to (directly or indirectly) update that instance.
+If you've configured a <<constraintConfiguration,constraint configuration>>,
+the score level and score weight of each constraint are beautifully decoupled from the constraint implementation,
+so they can be changed by the business users more easily.
+
+In that case, use the `reward()` and `penalize()` methods of the `ScoreHolder`:
 
 [source,options="nowrap"]
 ----
@@ -201,7 +208,7 @@ rule "multipleQueensHorizontal"
         Queen($id : id, row != null, $i : rowIndex)
         Queen(id > $id, rowIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.penalize(kcontext);
 end
 
 // multipleQueensVertical is obsolete because it is always 0
@@ -211,7 +218,7 @@ rule "multipleQueensAscendingDiagonal"
         Queen($id : id, row != null, $i : ascendingDiagonalIndex)
         Queen(id > $id, ascendingDiagonalIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.penalize(kcontext);
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -219,17 +226,43 @@ rule "multipleQueensDescendingDiagonal"
         Queen($id : id, row != null, $i : descendingDiagonalIndex)
         Queen(id > $id, descendingDiagonalIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        scoreHolder.penalize(kcontext);
 end
 ----
+
+They automatically impact the score for each constraint match
+by the score weight defined in the <<constraintConfiguration,constraint configuration>>.
 
 [NOTE]
 ====
 To learn more about the Drools rule language (DRL), consult https://drools.org/learn/documentation.html[the Drools documentation].
 ====
 
-Most use cases also weigh their constraint types or even their matches differently, by using a specific weight for each constraint match.
-For example in <<curriculumCourse,course scheduling>>, assigning a `Lecture` to a `Room` that is lacking two seats is weighted equally bad as having one isolated `Lecture` in a ``Curriculum``:
+The score weight of some constraints depends on the constraint match.
+In these cases, provide a match weight to the `reward()` or `penalize()` methods.
+The score impact is the constraint weight multiplied with the match weight.
+
+For example in conference scheduling, the impact of a content conflict,
+depends on the number of shared content tags between 2 overlapping talks:
+
+[source,options="nowrap"]
+----
+rule "Content conflict"
+    when
+        $talk1 : Talk(...)
+        $talk2 : Talk(...)
+    then
+        scoreHolder.penalize(kcontext,
+                $talk2.overlappingContentCount($talk1));
+end
+----
+
+Presume its constraint weight is set to `100soft`.
+So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
+But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
+
+If there is no <<constraintConfiguration,constraint configuration>>,
+you'll need to hard-code the weight in the constraint implementations:
 
 [source,options="nowrap"]
 ----
@@ -258,3 +291,7 @@ rule "curriculumCompactness"
         scoreHolder.addSoftConstraintMatch(kcontext, -2);
 end
 ----
+
+Notice how `addSoftConstraintMatch()` specifies that it's a soft constraint,
+and needs a negative number to penalize each match. Otherwise it would reward such matches.
+The parameter `($capacity - $studentSize)` always results into a negative number because `studentSize > $capacity`.

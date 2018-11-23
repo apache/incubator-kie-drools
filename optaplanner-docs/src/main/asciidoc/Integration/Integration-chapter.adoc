@@ -605,8 +605,8 @@ Many human planners fail to accept this, often because they feel threatened by a
 But despite that, both can benefit if the human planner becomes the supervisor of Planner:
 
 * *The human planner defines, validates and tweaks the score function.*
-** Some examples expose a `Parametrization` object, which defines the weight for each score constraint.
-The human planner can then tweak those weights at runtime.
+** The human planner tweaks the constraint weights of the <<constraintConfiguration, constraint configuration>> in a UI,
+as the business priorities change over time.
 ** When the business changes, the score function often needs to change too.
 The human planner can notify the developers to add, change or remove score constraints.
 * *The human planner is always in control of Planner.*
@@ -619,8 +619,6 @@ The feature should be kept available as a reassurance for the humans,
 and in the event that the business changes dramatically before the score constraints are adjusted accordingly.
 
 For this reason, it is recommended the human planner is actively involved in your project.
-
-image::Integration/parameterizeTheScoreWeights.png[align="center"]
 
 image::Integration/keepTheUserInControl.png[align="center"]
 

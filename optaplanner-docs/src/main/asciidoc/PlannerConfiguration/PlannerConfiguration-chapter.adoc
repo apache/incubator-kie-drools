@@ -1140,12 +1140,14 @@ Some use cases use <<scoreType,other score types>>.
 This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
 
 
-[[getProblemFacts]]
+[[problemFacts]]
 ==== Problem Facts of a Solution (``@ProblemFactCollectionProperty``)
 
-For <<droolsScoreCalculation,Drools score calculation>>, Planner needs to extract the problem fact instances from the solution instance.
+For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+Planner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
-All objects returned by those methods will be inserted into the Drools session, so the score rules can access them.
+All objects returned by those methods will be inserted into the ConstrainStreams or Drools session,
+so the constraint steams or score rules can access them.
 For example in `NQueens` all `Column` and `Row` instances are problem facts.
 
 [source,java,options="nowrap"]

@@ -92,19 +92,15 @@ The weight of a constraint match can depend on the planning entities involved.
 For example in cloud balancing, the weight of the soft constraint match for an active `Computer`
 is the maintenance `cost` of that `Computer` (which differs per computer).
 
-Putting a good weight on a constraint can be a difficult analytical decision, because it is about making choices and tradeoffs with other constraints.
-Don't spend too much time on it at the start of an implementation.
+Putting a good weight on a constraint is often a difficult analytical decision,
+because it is about making choices and trade offs against other constraints.
+Different stakeholders have different priorities.
+*Don't waste time with constraint weight discussions at the start of an implementation,
+instead add a <<constraintConfiguration, constraint configuration>>
+and  allow users to change them through a UI.*
 A non-accurate weight is less damaging than mediocre algorithms:
 
 image::ScoreCalculation/scoreTradeoffInPerspective.png[align="center"]
-
-
-[NOTE]
-====
-When deciding the weights of some constraints is debatable,
-it's recommended to make them configurable at runtime, as demonstrated in the exam timetabling example with the `ExaminationConstraintConfiguration` class.
-This allow the end-user to recalibrate constraint weights in the user interface and immediately discover the impact of the new weights by running the solver again.
-====
 
 Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSoftScore>>.
 
@@ -1018,6 +1014,174 @@ It is just more work to implement (because the average needs to be known) and tr
 When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
 
+[[constraintConfiguration]]
+== Constraint Configuration: Adjust Constraint Weights dynamically
+
+Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint
+is not easy. It often involves negotiating with different stakeholders and their priorities.
+Furthermore, quantifying the impact of soft constraints is often a new experience for business managers,
+so they 'll need a number of iterations to get it right.
+
+Don't get stuck between a rock and a hard place.
+Provide a UI to adjust the constraint weights and visualize the resulting solution,
+so the business managers can tweak the constraint weights themselves:
+
+image::ScoreCalculation/parameterizeTheScoreWeights.png[align="center"]
+
+
+[[createAConstraintConfiguration]]
+=== Create a Constraint Configuration
+
+First, create a new class to hold the constraint weights and other constraint parameters.
+Annotate it with `@ConstraintConfiguration`:
+
+[source,java,options="nowrap"]
+----
+@ConstraintConfiguration
+public class ConferenceConstraintConfiguration {
+    ...
+}
+----
+
+There will be exactly one instance of this class per planning solution.
+The planning solution and the constraint configuration have a one to one relationship,
+but they serve a different purpose, so they aren't merged into a single class.
+A `@ConstraintConfiguration` class can extend a parent `@ConstraintConfiguration` class,
+which can be useful in international use cases with many regional constraints.
+
+Add the constraint configuration on the planning solution
+and annotate that field or property with `@ConstraintConfigurationProvider`:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class ConferenceSolution {
+
+    @ConstraintConfigurationProvider
+    private ConferenceConstraintConfiguration constraintConfiguration;
+
+    ...
+}
+----
+
+The `@ConstraintConfigurationProvider` annotation automatically exposes the constraint configuration
+as a <<problemFacts,problem fact>>, there is no need to add a `@ProblemFactProperty` annotation.
+
+The constraint configuration class holds the <<constraintWeight, constraint weights>>,
+but it can also hold constraint parameters.
+For example in conference scheduling, the minimum pause constraint has a constraint weight (like any other constraint),
+but it also has a constraint parameter that defines the length of the minimum pause between two talks of the same speaker.
+That pause length depends on the conference (= the planning problem):
+in some big conferences 20 minutes isn't enough to go from one room to the other.
+That pause length is a field in the constraint configuration without a `@ConstraintWeight` annotation.
+
+
+[[constraintWeight]]
+=== Add a Constraint Weight for each Constraint
+
+In the constraint configuration class, add a `@ConstraintWeight` field or property for each constraint:
+
+[source,java,options="nowrap"]
+----
+@ConstraintConfiguration(constraintPackage = "...conferencescheduling.solver")
+public class ConferenceConstraintConfiguration {
+
+    @ConstraintWeight("Speaker conflict")
+    private HardMediumSoftScore speakerConflict = HardMediumSoftScore.ofHard(10);
+
+    @ConstraintWeight("Theme track conflict")
+    private HardMediumSoftScore themeTrackConflict = HardMediumSoftScore.ofSoft(10);
+    @ConstraintWeight("Content conflict")
+    private HardMediumSoftScore contentConflict = HardMediumSoftScore.ofSoft(100);
+
+    ...
+}
+----
+
+The type of the constraint weights must be the same score class as <<scoreOfASolution,the planning solution's score member>>.
+For example in conference scheduling, `ConferenceSolution.getScore()` and `ConferenceConstraintConfiguration.getSpeakerConflict()`
+both return a `HardMediumSoftScore`.
+
+A constraint weight cannot be null.
+Give each constraint weight a default value, but expose them in a UI so the business users can tweak them.
+The example above uses the `ofHard()`, `ofMedium()` and `ofSoft()` methods do that.
+Notice how it defaults the _content conflict_ constraint as ten times more important than the _theme track conflict_ constraint.
+Normally, a constraint weight only uses one score level,
+but it's possible to use multiple score levels (at a small performance cost).
+
+Each constraint has a constraint package and a constraint name, together they form the constraint id.
+These connect the constraint weight with the constraint implementation.
+*For each constraint weight, there must be a constraint implementation with the same package and the same name.*
+
+* The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
+Most cases with <<droolsScoreCalculation,Drools score calculation>>, need to override that because the DRL's use another package.
+For example, the DRL below uses the package `...conferencescheduling.solver`,
+so the constraint configuration above specifies a `constraintPackage`.
+Cases with <<constraintStreams,Constraint streams>>, normally don't need to specify it.
+
+* The `@ConstraintWeight` annotation has a `value` which is the constraint name (for example "Speaker conflict").
+It inherits the constraint package from the `@ConstraintConfiguration`,
+but it can override that, for example `@ConstraintWeight(constraintPackage = "...region.france", ...)`
+to use a different constraint package than some of the other weights.
+
+So every constraint weight ends up with a constraint package and a constraint name.
+Each constraint weight links with a constraint implementation, for example in <<droolsScoreCalculation,Drools score calculation>>:
+
+[source,options="nowrap"]
+----
+package ...conferencescheduling.solver;
+
+rule "Speaker conflict"
+    when
+        ...
+    then
+        scoreHolder.penalize(kcontext);
+end
+
+rule "Theme track conflict"
+    when
+        ...
+    then
+        scoreHolder.penalize(kcontext, ...);
+end
+
+rule "Content conflict"
+    when
+        ...
+    then
+        scoreHolder.penalize(kcontext, ...);
+end
+----
+
+Each of the constraint weights defines the score level and score weight of their constraint.
+The constraint implementation calls `reward()` or `penalize()` and the constraint weight is automatically applied.
+
+If the constraint implementation provides a match weight, that *match weight is multiplied with the constraint weight*.
+For example, the _content conflict_ constraint weight defaults to `100soft`
+and the constraint implementation penalizes each match based on the number of shared content tags:
+
+[source,java,options="nowrap"]
+----
+    @ConstraintWeight("Content conflict")
+    private HardMediumSoftScore contentConflict = HardMediumSoftScore.ofSoft(100);
+----
+
+[source,options="nowrap"]
+----
+rule "Content conflict"
+    when
+        $talk1 : Talk(...)
+        $talk2 : Talk(...)
+    then
+        scoreHolder.penalize(kcontext,
+                $talk2.overlappingContentCount($talk1));
+end
+----
+
+So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
+But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
+
+
 [[explainingTheScore]]
 == Explaining the Score: Which Constraints Are Broken?
 
@@ -1038,8 +1202,8 @@ Explanation of score (-1hard/-806soft):
         -1hard: constraint (Speaker required room tag) has 1 matches:
             -1hard: justifications ([S51])
         -340soft: constraint (Theme track conflict) has 32 matches:
-            -20soft: justifications ([S68, S66, ConferenceParametrization-0])
-            -20soft: justifications ([S61, S44, ConferenceParametrization-0])
+            -20soft: justifications ([S68, S66])
+            -20soft: justifications ([S61, S44])
             ...
         ...
     Indictments (top 5 of 72):

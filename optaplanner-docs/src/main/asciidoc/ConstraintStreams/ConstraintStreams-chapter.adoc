@@ -34,3 +34,4 @@ Nor does it support <<explainingTheScore,justifications>>.
 
 The ConstraintStreams API does do <<incrementalScoreCalculation,deltas>> and support <<explainingTheScore,justifications>>.
 
+Implementation coming soon.
