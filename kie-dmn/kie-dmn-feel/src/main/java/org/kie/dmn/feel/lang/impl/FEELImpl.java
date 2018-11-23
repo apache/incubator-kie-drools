@@ -105,7 +105,7 @@ public class FEELImpl
                 expression,
                 ctx,
                 ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
-                profiles);
+                profiles).getResult();
     }
 
     @Override
