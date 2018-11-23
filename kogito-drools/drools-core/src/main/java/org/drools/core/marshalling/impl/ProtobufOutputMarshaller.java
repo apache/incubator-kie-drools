@@ -63,26 +63,16 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.reteoo.AbstractTerminalNode;
-import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BaseTuple;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.FromNode;
-import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
@@ -368,20 +358,6 @@ public class ProtobufOutputMarshaller {
             if ( memory != null ) {
                 ProtobufMessages.NodeMemory _node = null;
                 switch ( memory.getNodeType() ) {
-                    case NodeTypeEnums.AccumulateNode: {
-                        _node = writeAccumulateNodeMemory( baseNode.getId(), memory );
-                        break;
-                    }
-                    case NodeTypeEnums.RightInputAdaterNode: {
-
-                        _node = writeRIANodeMemory( baseNode.getId(), baseNode, memories );
-                        break;
-                    }
-                    case NodeTypeEnums.FromNode:
-                    case NodeTypeEnums.ReactiveFromNode: {
-                        _node = writeFromNodeMemory( baseNode.getId(), memory, wm, context);
-                        break;
-                    }
                     case NodeTypeEnums.QueryElementNode: {
                         _node = writeQueryElementNodeMemory( baseNode.getId(), memory, wm );
                         break;
@@ -395,162 +371,13 @@ public class ProtobufOutputMarshaller {
         }
     }
 
-    private static ProtobufMessages.NodeMemory writeAccumulateNodeMemory(final int nodeId,
-                                                                         final Memory memory) {
-        // for accumulate nodes, we need to store the ID of created (result) handles
-        AccumulateMemory accmem = (AccumulateMemory) memory;
-        if ( accmem.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
-            ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder _accumulate = ProtobufMessages.NodeMemory.AccumulateNodeMemory.newBuilder();
-
-            final org.drools.core.util.Iterator<LeftTuple> tupleIter = accmem.getBetaMemory().getLeftTupleMemory().iterator();
-            for ( LeftTuple leftTuple = tupleIter.next(); leftTuple != null; leftTuple = tupleIter.next() ) {
-                AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                if ( accctx.getResultFactHandle() != null ) {
-                    FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
-                            .setId( accctx.getResultFactHandle().getId() )
-                            .setRecency( accctx.getResultFactHandle().getRecency() )
-                            .build();
-                    _accumulate.addContext(
-                            ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.newBuilder()
-                                    .setTuple( PersisterHelper.createTuple( leftTuple ) )
-                                    .setResultHandle( _handle )
-                                    .build() );
-                }
-            }
-
-            return ProtobufMessages.NodeMemory.newBuilder()
-                    .setNodeId( nodeId )
-                    .setNodeType( ProtobufMessages.NodeMemory.NodeType.ACCUMULATE )
-                    .setAccumulate( _accumulate.build() )
-                    .build();
-        }
-        return null;
-    }
-
-    private static ProtobufMessages.NodeMemory writeRIANodeMemory(final int nodeId,
-                                                                  final BaseNode node,
-                                                                  final NodeMemories memories) {
-        RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
-
-        ObjectSink[] sinks = riaNode.getObjectSinkPropagator().getSinks();
-        BetaNode betaNode = (BetaNode) sinks[0];
-
-        Memory betaMemory = memories.peekNodeMemory( betaNode );
-        if ( betaMemory == null ) {
-            return null;
-        }
-        BetaMemory bm;
-        if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
-            bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
-        } else {
-            bm =  (BetaMemory) betaMemory;
-        }
-
-        // for RIA nodes, we need to store the ID of the created handles
-        bm.getRightTupleMemory().iterator();
-        if ( bm.getRightTupleMemory().size() > 0 ) {
-            ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
-            final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
-
-            // iterates over all propagated handles and assert them to the new sink
-            for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
-                LeftTuple leftTuple = entry instanceof LeftTuple ?
-                                      (LeftTuple) entry : // with phreak the entry is always both a right and a left tuple
-                                      (LeftTuple) entry.getFactHandle().getObject(); // this is necessary only for reteoo
-                InternalFactHandle handle = (InternalFactHandle) leftTuple.getFactHandle();
-                if (handle == null) {
-                    continue;
-                }
-                FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
-                        .setId( handle.getId() )
-                        .setRecency( handle.getRecency() )
-                        .build();
-                _ria.addContext( ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.newBuilder()
-                        .setTuple( PersisterHelper.createTuple( leftTuple ) )
-                        .setResultHandle( _handle )
-                        .build() );
-            }
-
-            return ProtobufMessages.NodeMemory.newBuilder()
-                    .setNodeId( nodeId )
-                    .setNodeType( ProtobufMessages.NodeMemory.NodeType.RIA )
-                    .setRia( _ria.build() )
-                    .build();
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static ProtobufMessages.NodeMemory writeFromNodeMemory(final int nodeId,
-                                                                   final Memory memory, InternalWorkingMemory wm, MarshallerWriteContext context) {
-        FromMemory fromMemory = (FromMemory) memory;
-
-        if ( fromMemory.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
-            ProtobufMessages.NodeMemory.FromNodeMemory.Builder _from = ProtobufMessages.NodeMemory.FromNodeMemory.newBuilder();
-
-            final org.drools.core.util.Iterator<LeftTuple> tupleIter = fromMemory.getBetaMemory().getLeftTupleMemory().iterator();
-            for ( LeftTuple leftTuple = tupleIter.next(); leftTuple != null; leftTuple = tupleIter.next() ) {
-                Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
-                ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
-                        .setTuple( PersisterHelper.createTuple( leftTuple ) );
-                for(Object object : matches.keySet()) {
-                    ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder fromObjectBuilder = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.newBuilder();
-
-                    SerializedObject so = serializeObject(context, object);
-                    _context.addObject(fromObjectBuilder
-                                               .setStrategyIndex(so.strategyIndex)
-                                               .setObject(so.serializedObject)
-                                               .build());
-                }
-
-
-                for ( RightTuple rightTuple : matches.values() ) {
-                    // add objects to agenda
-                    FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
-                            .setId( rightTuple.getFactHandle().getId() )
-                            .setRecency( rightTuple.getFactHandle().getRecency() )
-                            .build();
-                    _context.addHandle( _handle );
-                }
-                _from.addContext( _context.build() );
-            }
-
-            return ProtobufMessages.NodeMemory.newBuilder()
-                    .setNodeId( nodeId )
-                    .setNodeType( ProtobufMessages.NodeMemory.NodeType.FROM )
-                    .setFrom( _from.build() )
-                    .build();
-        }
-        return null;
-    }
-
-    private static SerializedObject serializeObject(MarshallerWriteContext context, Object object) {
-
-        ObjectMarshallingStrategy strategy = new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
-
-        Integer index = context.getStrategyIndex( strategy );
-
+    private static ByteString serializeObject(MarshallerWriteContext context, ObjectMarshallingStrategy strategy, Object object) {
         ObjectMarshallingStrategy.Context strategyContext = context.strategyContext.get(strategy);
-        byte[] serialized;
         try {
-            serialized = strategy.marshal(strategyContext,
-                                              context,
-                                              object);
+            byte[] serialized = strategy.marshal(strategyContext, context, object);
+            return ByteString.copyFrom(serialized);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        ByteString serializedObject = ByteString.copyFrom(serialized);
-
-        return new SerializedObject(index, serializedObject);
-    }
-
-    public static class SerializedObject {
-        public int strategyIndex;
-        public ByteString serializedObject;
-
-        public SerializedObject(int strategyIndex, ByteString object) {
-            this.strategyIndex = strategyIndex;
-            this.serializedObject = object;
         }
     }
 
@@ -872,7 +699,7 @@ public class ProtobufOutputMarshaller {
         RuleImpl rule = agendaItem.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
-        _activation.setTuple( writeTuple( agendaItem.getTuple() ) );
+        _activation.setTuple( writeTuple( context, agendaItem, isDormient ) );
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
         _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
@@ -892,44 +719,42 @@ public class ProtobufOutputMarshaller {
             }
         }
 
-        if (isDormient) {
-            InternalFactHandle factHandle = ((BaseTuple) agendaItem).getFactHandle();
-
-            boolean b = sinkSourceIsNode((BaseTuple) agendaItem);
-            if (factHandle != null && b) {
-                SerializedObject so = serializeObject(context, factHandle.getObject());
-
-                _activation.setObject(so.serializedObject);
-                _activation.setStrategyIndex(so.strategyIndex);
-                org.drools.core.spi.Tuple parent = ((BaseTuple) agendaItem).getParent();
-                if (parent != null) {
-                    _activation.setNodeId(parent.getTupleSink().getId());
-                }
-            }
-        }
-
         return _activation.build();
     }
 
-    private static boolean sinkSourceIsNode(BaseTuple agendaItem) {
-        Sink tupleSink = agendaItem.getTupleSink();
-        if (tupleSink instanceof AbstractTerminalNode) {
-            LeftTupleSource leftTupleSource = ((AbstractTerminalNode) tupleSink).getLeftTupleSource();
-            return leftTupleSource instanceof FromNode || leftTupleSource instanceof AccumulateNode;
-        }
-        return false;
-    }
-
-    public static Tuple writeTuple(org.drools.core.spi.Tuple tuple) {
+    public static Tuple writeTuple(MarshallerWriteContext context, AgendaItem<?> agendaItem, boolean isDormient) {
+        org.drools.core.spi.Tuple tuple = agendaItem.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
+
+        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) agendaItem);
+
         for ( org.drools.core.spi.Tuple entry = tuple; entry != null; entry = entry.getParent() ) {
             InternalFactHandle handle = entry.getFactHandle();
             if ( handle != null ) {
                  // can be null for eval, not and exists that have no right input
                 _tb.addHandleId( handle.getId() );
+
+                if (serializeObjects) {
+                    ObjectMarshallingStrategy marshallingStrategy = context.objectMarshallingStrategyStore.getStrategyObject( handle.getObject() );
+                    Integer strategyIndex = context.getStrategyIndex( marshallingStrategy );
+
+                    ProtobufMessages.SerializedObject.Builder _so = ProtobufMessages.SerializedObject.newBuilder();
+                    _so.setObject( serializeObject(context, marshallingStrategy, handle.getObject()) );
+                    _so.setStrategyIndex( strategyIndex );
+                    _tb.addObject( _so.build() );
+                }
             }
         }
+
         return _tb.build();
+    }
+
+    private static boolean hasNodeMemory(BaseTuple agendaItem) {
+        Sink tupleSink = agendaItem.getTupleSink();
+        if (tupleSink instanceof TerminalNode ) {
+            return PersisterHelper.hasNodeMemory( (TerminalNode) tupleSink );
+        }
+        return false;
     }
 
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,

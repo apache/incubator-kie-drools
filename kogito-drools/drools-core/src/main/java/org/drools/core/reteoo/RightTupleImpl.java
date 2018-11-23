@@ -231,7 +231,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     }
 
     @Override
-    public Object[] toObjects() {
+    public Object[] toObjects(boolean reverse) {
         return new Object[] { getFactHandle().getObject() };
     }
 

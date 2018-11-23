@@ -28,6 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ByteString.Output;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
 import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
@@ -38,18 +42,16 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssert
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
-
-import com.google.protobuf.ByteString;
-import com.google.protobuf.ByteString.Output;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.Message;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
@@ -125,14 +127,18 @@ public class PersisterHelper {
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = createTupleArray( _tuple );
-        return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
+        return createActivationKey( pkgName, ruleName, toArrayOfObject(createTupleArray( _tuple )) );
     }
 
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final Tuple leftTuple) {
-        int[] tuple = createTupleArray( leftTuple );
+        return createActivationKey( pkgName, ruleName, toArrayOfObject(createTupleArray( leftTuple )) );
+    }
+
+    public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
+                                                                            final String ruleName,
+                                                                            final Object[] tuple) {
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
@@ -174,8 +180,16 @@ public class PersisterHelper {
         }
     }
 
+    private static Object[] toArrayOfObject(int[] ints) {
+        Object[] objects = new Object[ints.length];
+        for(int i = 0; i < ints.length; i++) {
+            objects[i] = ints[i];
+        }
+        return objects;
+    }
+
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final ProtobufMessages.Tuple _tuple) {
-        return new ProtobufInputMarshaller.TupleKey( createTupleArray( _tuple ) );
+        return new ProtobufInputMarshaller.TupleKey( createTupleArray( _tuple ));
     }
     
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final Tuple leftTuple) {
@@ -426,7 +440,16 @@ public class PersisterHelper {
                + ((((long)b[5]) & 0xFF) << 16)
                + ((((long)b[6]) & 0xFF) << 8)
                + (((long)b[7]) & 0xFF);
-    }    
+    }
 
+    public static boolean hasNodeMemory(TerminalNode terminalNode) {
+        return hasNodeMemory( terminalNode.getLeftTupleSource() );
+    }
 
+    private static boolean hasNodeMemory( LeftTupleSource leftTupleSource) {
+        if (leftTupleSource == null) {
+            return false;
+        }
+        return NodeTypeEnums.hasNodeMemory( leftTupleSource ) ? true : hasNodeMemory(leftTupleSource.getLeftTupleSource());
+    }
 }

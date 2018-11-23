@@ -46,7 +46,11 @@ public interface Tuple extends Serializable, Entry<Tuple> {
 
     Object getObject(Declaration declaration);
 
-    Object[] toObjects();
+    default Object[] toObjects() {
+        return toObjects(false);
+    }
+
+    Object[] toObjects(boolean reverse);
 
     /**
      * Returns the <code>FactHandle</code> for the given pattern index. If the pattern is empty

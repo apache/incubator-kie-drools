@@ -266,14 +266,16 @@ message Activation {
     optional int32 handle_id = 9;
     repeated int32 logical_dependency = 10;
     optional bool evaluated = 11;
-
-    optional int32 strategy_index = 12;
-    optional bytes object = 13;
-    optional int32 node_id = 14;
 }
 
 message Tuple {
     repeated int32 handle_id = 1;
+    repeated SerializedObject object = 2;
+}
+
+message SerializedObject {
+    optional int32 strategy_index = 1;
+    optional bytes object = 2;
 }
 
 message TruthMaintenanceSystem {
