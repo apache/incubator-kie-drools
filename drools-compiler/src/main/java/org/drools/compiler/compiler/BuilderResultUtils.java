@@ -1,6 +1,6 @@
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Utility class for compilation results

@@ -47,11 +47,12 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
+
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.IoUtils;
+import org.kie.internal.jci.CompilationProblem;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 

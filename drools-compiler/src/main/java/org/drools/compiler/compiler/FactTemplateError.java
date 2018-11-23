@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.kie.internal.jci.CompilationProblem;
 
 public class FactTemplateError extends DroolsError {
     private Package   pkg;
