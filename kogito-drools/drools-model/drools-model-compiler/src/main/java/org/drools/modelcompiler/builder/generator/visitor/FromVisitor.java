@@ -2,9 +2,9 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
@@ -134,21 +134,17 @@ public class FromVisitor {
         final DrlxExpression drlxExpression = DrlxParseUtil.parseExpression(expression);
 
         final Expression parsedExpression = drlxExpression.getExpr();
-        Optional<TypedExpression> staticField = Optional.empty();
-        if (parsedExpression instanceof FieldAccessExpr) {
-            staticField = ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver());
-        }
+        Optional<TypedExpression> staticField = parsedExpression instanceof FieldAccessExpr ?
+                ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver()) :
+                Optional.empty();
 
-        Expression fromCall;
         if (staticField.isPresent()) {
-            fromCall = createSupplier(parsedExpression);
-        } else if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
-            fromCall = createFromCall(expression, optContainsBinding, bindingId);
-        } else {
-            fromCall = createUnitDataCall(optContainsBinding, bindingId);
+            return of( createSupplier(parsedExpression) );
         }
-
-        return of(fromCall);
+        if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+            return of( createFromCall(expression, bindingId, optContainsBinding.isPresent()) );
+        }
+        return of(createUnitDataCall(bindingId));
     }
 
     private Expression createSupplier(Expression parsedExpression) {
@@ -173,48 +169,51 @@ public class FromVisitor {
             }
         }
 
-        return bindingId != null ? of(addLambdaToFromExpression( expression, of(bindingId), bindingId, fromCall )) : Optional.empty();
+        return bindingId != null ?
+                of(addLambdaToFromExpression( expression, bindingId, fromCall )) :
+                of(addNoArgLambdaToFromExpression( expression, fromCall ));
     }
 
     private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
-        final Optional<Expression> bindingIdViaScope = findViaScopeWithPredicate(methodCallExpr, e -> {
-            if(e instanceof NameExpr) {
+        return findViaScopeWithPredicate(methodCallExpr, e -> {
+            if (e instanceof NameExpr) {
                 final String name = ((NameExpr) e).getName().toString();
                 return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
             }
             return false;
-        });
-
-        if(bindingIdViaScope.isPresent()) {
-            final String binding = bindingIdViaScope.get().asNameExpr().toString();
-            return of(createFromCall(expression, of(binding), binding));
-        }
-        return Optional.empty();
+        })
+        .filter( Expression::isNameExpr )
+        .map( e -> createFromCall(expression, e.asNameExpr().toString(), true) );
     }
 
-    private Expression createFromCall( String expression, Optional<String> optContainsBinding, String bindingId ) {
+    private Expression createFromCall( String expression, String bindingId, boolean hasBinding ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
         fromCall.addArgument( context.getVarExpr(bindingId));
-        return addLambdaToFromExpression( expression, optContainsBinding, bindingId, fromCall );
+        return hasBinding ? addLambdaToFromExpression( expression, bindingId, fromCall ) : fromCall;
     }
 
-    private Expression addLambdaToFromExpression( String expression, Optional<String> optContainsBinding, String bindingId, MethodCallExpr fromCall ) {
-        Expression exprArg = createArg( expression, optContainsBinding, bindingId );
+    private Expression addLambdaToFromExpression( String expression, String bindingId, MethodCallExpr fromCall ) {
+        Expression exprArg = createArg( expression, bindingId );
         if (exprArg != null) {
             fromCall.addArgument( exprArg );
         }
         return fromCall;
     }
 
-    private Expression createArg( String expression, Optional<String> optContainsBinding, String bindingId ) {
-        return optContainsBinding.map( containsBinding -> {
+    private Expression addNoArgLambdaToFromExpression( String expression, MethodCallExpr fromCall ) {
+        fromCall.addArgument( generateLambdaWithoutParameters( Collections.emptyList(), DrlxParseUtil.parseExpression( expression ).getExpr(), true ) );
+        return fromCall;
+    }
+
+    private Expression createArg( String expression, String bindingId ) {
+        if (bindingId != null) {
             DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
             DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
-                SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
+                SingleDrlxParseSuccess singleResult = ( SingleDrlxParseSuccess ) drlxParseResult;
                 TypedExpression left = singleResult.getLeft();
                 if ( left != null && !isCompatibleWithFromReturnType( patternType, left.getRawClass() ) ) {
                     context.addCompilationError( new InvalidExpressionErrorResult(
@@ -224,10 +223,11 @@ public class FromVisitor {
                 Expression parsedExpression = drlxParseSuccess.getExpr();
                 return generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression );
             } );
-        } ).orElse( null );
+        }
+        return null;
     }
 
-    private Expression createUnitDataCall( Optional<String> optContainsBinding, String bindingId ) {
+    private Expression createUnitDataCall( String bindingId ) {
         return JavaParser.parseExpression(DrlxParseUtil.toVar(bindingId));
     }
 }
