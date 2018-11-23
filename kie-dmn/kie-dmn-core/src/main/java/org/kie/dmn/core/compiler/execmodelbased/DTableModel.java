@@ -141,8 +141,15 @@ public class DTableModel {
         }
     }
 
-    private CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
-        return compilationCache.computeIfAbsent(expr, e -> e == null || e.isEmpty() ? ctx -> null : (CompiledFEELExpression ) feel.compile( model, element, msg, dtName, e, feelctx, index ) );
+    protected CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
+        System.out.println("+++++++++++ HEREEEE");
+        return compilationCache.computeIfAbsent(expr, e -> {
+            if (e == null || e.isEmpty()) {
+                return ctx -> null;
+            } else {
+                return (CompiledFEELExpression) feel.compile(model, element, msg, dtName, e, feelctx, index);
+            }
+        });
     }
 
     private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
