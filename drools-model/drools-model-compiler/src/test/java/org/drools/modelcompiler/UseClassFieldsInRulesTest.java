@@ -83,4 +83,60 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
         ksession.insert(new ClassWithFields());
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testMethodInFrom() {
+        String str =
+                "import " + ClassWithFields.class.getCanonicalName() + "\n" +
+                "import static " + UseClassFieldsInRulesTest.class.getCanonicalName() + ".*\n" +
+                "rule R when\n" +
+                "    Boolean (booleanValue == true) from greaterThanMethod( ClassWithFields.STATIC_FIELD, 2 )\n" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMethodInEval() {
+        String str =
+                "import " + ClassWithFields.class.getCanonicalName() + "\n" +
+                "import static " + UseClassFieldsInRulesTest.class.getCanonicalName() + ".*\n" +
+                "rule R when\n" +
+                "    eval( greaterThanMethod( ClassWithFields.STATIC_FIELD, 2 ) )\n" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testFunctionInFrom() {
+        String str =
+                "import " + ClassWithFields.class.getCanonicalName() + "\n" +
+                "function boolean greaterThan(int i1, int i2) { return i1 > i2; }\n" +
+                "rule R when\n" +
+                "    Boolean (booleanValue == true) from greaterThan( ClassWithFields.STATIC_FIELD, 2 )\n" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testFunctionWithEval() {
+        String str =
+                "import " + ClassWithFields.class.getCanonicalName() + "\n" +
+                "function boolean greaterThan(int i1, int i2) { return i1 > i2; }\n" +
+                "rule R when\n" +
+                "    eval( greaterThan( ClassWithFields.STATIC_FIELD, 2 ) )\n" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
