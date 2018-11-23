@@ -413,10 +413,10 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;\n" );
             sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;" );
             sb.append( "import org.kie.dmn.feel.lang.EvaluationContext;\n" );
-            sb.append( "import " ).append( CompiledDTTest.class.getCanonicalName() ).append( ";\n" );
+            sb.append( "import " ).append( CompiledDTTExpression.class.getCanonicalName() ).append( ";\n" );
             sb.append( "import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n" );
             sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "UnaryTests {\n" );
+            sb.append( "public class " ).append( clasName ).append( "FeelExpression {\n" );
             sb.append( "\n" );
             sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName) );
             sb.append( "}\n" );
@@ -445,7 +445,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     if (testClass == null) {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
-                        instancesBuilder.append( "    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n" );
+                        instancesBuilder.append( "    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n" );
 
                         String sourceCode = feel.generateFeelExpressionSource(
                                 input,

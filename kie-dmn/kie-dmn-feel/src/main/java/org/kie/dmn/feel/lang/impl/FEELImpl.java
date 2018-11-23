@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.drools.javaparser.ast.CompilationUnit;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
@@ -106,6 +107,14 @@ public class FEELImpl
                 ctx,
                 ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
                 profiles).getResult();
+    }
+
+    public CompilationUnit generateExpressionSource(String expression, CompilerContext ctx) {
+        return new ProcessedExpression(
+                expression,
+                ctx,
+                ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
+                profiles).getSourceCode();
     }
 
     @Override

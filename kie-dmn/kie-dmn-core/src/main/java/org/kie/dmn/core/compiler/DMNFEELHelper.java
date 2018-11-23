@@ -243,8 +243,15 @@ public class DMNFEELHelper {
                 .setStatic(true);
     }
 
-    public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, DMNCompilerContext ctx, Type type) {
-        return null;
+    public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, DMNCompilerContext ctx, Type inputColumnType) {
+        CompilerContext compilerContext =
+                ctx.toCompilerContext()
+                        .addInputVariableType("?", inputColumnType);
+
+        CompilationUnit compilationUnit = ((FEELImpl) feel).generateExpressionSource(input, compilerContext);
+        return compilationUnit.getType(0)
+                .asClassOrInterfaceDeclaration()
+                .setStatic(true);
     }
 
     public static class FEELEventsListenerImpl implements FEELEventListener {
