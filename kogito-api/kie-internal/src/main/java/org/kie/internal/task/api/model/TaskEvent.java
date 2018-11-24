@@ -15,10 +15,9 @@
  */
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
 import java.util.Date;
 
-public interface TaskEvent extends Externalizable {
+public interface TaskEvent {
 
     public enum TaskEventType{ADDED, UPDATED, STARTED, ACTIVATED, COMPLETED,
                                 STOPPED, EXITED, FAILED,
