@@ -9,7 +9,9 @@ The DMN designer in {PRODUCT} {PRODUCT_VERSION} is a Technology Preview feature 
 
 To enable the DMN designer preview in {CENTRAL}, in the upper-right corner of the window, click *Settings* -> *Roles*, select a role from the left panel, click *Editors* -> *DMN Designer* -> *Read*, and click *Save* to save the changes.
 
+ifdef::PAM,DM[]
 For more information about Red Hat Technology Preview support, see https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+endif::[]
 ====
 
 .Procedure
