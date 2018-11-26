@@ -32,11 +32,15 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class DMNMessagesAPITest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNMessagesAPITest.class);
 
     @Test
     public void testAPIUsage() {
@@ -48,7 +52,7 @@ public class DMNMessagesAPITest {
 
         Results verify = kieContainer.verify();
         List<Message> kie_messages = verify.getMessages();
-        kie_messages.forEach(System.out::println);
+        kie_messages.forEach(m -> LOG.info("{}", m));
         assertThat(kie_messages.size(), is(3));
         assertThat(kie_messages.stream().filter(m -> m.getPath().equals("duff.drl")).count(), is(2L));
 
