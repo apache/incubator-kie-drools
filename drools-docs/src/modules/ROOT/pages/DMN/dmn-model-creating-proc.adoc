@@ -3,6 +3,15 @@
 
 You can use the DMN designer in {CENTRAL} to design DMN decision requirements diagrams (DRDs) and define decision logic for a complete and functional DMN decision model. {PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3, and includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}.
 
+[IMPORTANT]
+====
+The DMN designer in {PRODUCT} {PRODUCT_VERSION} is a Technology Preview feature and is disabled by default in {CENTRAL}. Technology Preview features are not supported with Red Hat production service level agreements (SLAs), might not be functionally complete, and are not recommended for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+To enable the DMN designer preview in {CENTRAL}, in the upper-right corner of the window, click *Settings* -> *Roles*, select a role from the left panel, click *Editors* -> *DMN Designer* -> *Read*, and click *Save* to save the changes.
+
+For more information about Red Hat Technology Preview support, see https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
+====
+
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects* and click the project name.
 . Create or import a DMN file in your {CENTRAL} project.
@@ -13,6 +22,9 @@ To create a DMN file, click *Add Asset* -> *DMN*, enter an informative DMN model
 To import an existing DMN file, click *Import*, enter the DMN model name, select the appropriate *Package*, select the DMN file to upload, and click *Ok*.
 
 The new DMN file is now listed in the *DMN* panel of the *Project Explorer*, and the DMN decision requirements diagram (DRD) canvas appears.
+
+NOTE: If you imported a DMN file that does not contain layout information, the imported decision requirements diagram (DRD) is formatted automatically in the DMN designer. Click *Save* in the DMN designer to save the DRD layout.
+
 --
 . Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar.
 +
@@ -60,7 +72,7 @@ The following is an example decision table for a decision node that determines c
 .Decision node decision table for credit score rating
 image::dmn/dmn-decision-table-example1a.png[]
 
-The following is an example boxed function expression for a business knowledge model that calculates mortgage payments based on principal, interest, taxes, and insurance (PITI):
+The following is an example boxed function expression for a business knowledge model that calculates mortgage payments based on principal, interest, taxes, and insurance (PITI) as a literal expression:
 
 .Business knowledge model function for PITI calculation
 image::dmn/dmn-function-expression-example4.png[]
@@ -94,7 +106,9 @@ image::dmn/dmn-input-connection-example.png[]
 image::dmn/dmn-input-connection-example2.png[]
 --
 . Continue adding and defining the remaining DRD components of your decision model. Periodically click *Save* in the DMN designer to save your work.
-. After you add and define all components of the DRD, click *Save* to save and validate the completed DRD and click the *Play* icon (image:dmn/dmn-play-icon.png[]) in the upper-right toolbar to verify the decision flow.
+. After you add and define all components of the DRD, click *Save* to save and validate the completed DRD.
+
+//and click the *Play* icon (image:dmn/dmn-play-icon.png[]) in the upper-right toolbar to verify the decision flow. [Disabled for now. Stetson, 26 Nov 2018]
 +
 --
 The following is an example DRD for a loan prequalification decision model:
