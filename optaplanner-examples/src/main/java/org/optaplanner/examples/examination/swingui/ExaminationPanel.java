@@ -86,7 +86,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                             "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                examinationConstraintConfigurationDialog.setInstitutionParametrization(
+                examinationConstraintConfigurationDialog.setExaminationConstraintConfiguration(
                         getSolution().getConstraintConfiguration());
                 examinationConstraintConfigurationDialog.setVisible(true);
             }

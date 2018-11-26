@@ -105,7 +105,7 @@ public class ExaminationConstraintConfigurationDialog extends JDialog {
         return formPanel;
     }
 
-    public void setInstitutionParametrization(ExaminationConstraintConfiguration constraintConfiguration) {
+    public void setExaminationConstraintConfiguration(ExaminationConstraintConfiguration constraintConfiguration) {
         twoInARowPenaltyField.setValue(constraintConfiguration.getTwoInARowPenalty());
         twoInADayPenaltyField.setValue(constraintConfiguration.getTwoInADayPenalty());
         periodSpreadLengthField.setValue(constraintConfiguration.getPeriodSpreadLength());

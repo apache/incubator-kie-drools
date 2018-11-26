@@ -93,7 +93,7 @@ For example in cloud balancing, the weight of the soft constraint match for an a
 is the maintenance `cost` of that `Computer` (which differs per computer).
 
 Putting a good weight on a constraint is often a difficult analytical decision,
-because it is about making choices and trade offs against other constraints.
+because it is about making choices and trade-offs against other constraints.
 Different stakeholders have different priorities.
 *Don't waste time with constraint weight discussions at the start of an implementation,
 instead add a <<constraintConfiguration, constraint configuration>>
@@ -1104,7 +1104,7 @@ both return a `HardMediumSoftScore`.
 
 A constraint weight cannot be null.
 Give each constraint weight a default value, but expose them in a UI so the business users can tweak them.
-The example above uses the `ofHard()`, `ofMedium()` and `ofSoft()` methods do that.
+The example above uses the `ofHard()`, `ofMedium()` and `ofSoft()` methods to do that.
 Notice how it defaults the _content conflict_ constraint as ten times more important than the _theme track conflict_ constraint.
 Normally, a constraint weight only uses one score level,
 but it's possible to use multiple score levels (at a small performance cost).
@@ -1125,7 +1125,8 @@ but it can override that, for example `@ConstraintWeight(constraintPackage = "..
 to use a different constraint package than some of the other weights.
 
 So every constraint weight ends up with a constraint package and a constraint name.
-Each constraint weight links with a constraint implementation, for example in <<droolsScoreCalculation,Drools score calculation>>:
+Each constraint weight links with a constraint implementation,
+for example in <<droolsScoreCalculation,Drools score calculation>>:
 
 [source,options="nowrap"]
 ----

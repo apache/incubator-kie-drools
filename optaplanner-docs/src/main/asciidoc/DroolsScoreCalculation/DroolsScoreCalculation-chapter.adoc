@@ -201,6 +201,8 @@ In that case, use the `reward()` and `penalize()` methods of the `ScoreHolder`:
 
 [source,options="nowrap"]
 ----
+package org.optaplanner.examples.nqueens.solver;
+...
 global SimpleScoreHolder scoreHolder;
 
 rule "multipleQueensHorizontal"
@@ -233,9 +235,13 @@ end
 They automatically impact the score for each constraint match
 by the score weight defined in the <<constraintConfiguration,constraint configuration>>.
 
+The drl file must define a `package` (otherwise Drools defaults to `defaultpkg`)
+and it must match with the <<constraintConfiguration,constraint configuration>>'s `constraintPackage`.
+
 [NOTE]
 ====
-To learn more about the Drools rule language (DRL), consult https://drools.org/learn/documentation.html[the Drools documentation].
+To learn more about the Drools rule language (DRL),
+consult https://drools.org/learn/documentation.html[the Drools documentation].
 ====
 
 The score weight of some constraints depends on the constraint match.

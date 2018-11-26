@@ -8,9 +8,8 @@
 :experimental:
 
 
-Coming soon.
-
-Constraint streams are an FP form of incremental score calculation in plain Java 8+ that is fast, scalable and debuggable.
+Constraint streams are an Functional Programming form of incremental score calculation in plain Java 8+
+that is fast, scalable and debuggable.
 
 [[constraintStreamsIntroduction]]
 == Introduction
@@ -34,4 +33,4 @@ Nor does it support <<explainingTheScore,justifications>>.
 
 The ConstraintStreams API does do <<incrementalScoreCalculation,deltas>> and support <<explainingTheScore,justifications>>.
 
-Implementation coming soon.
+*Constraints stream will be implemented soon.*
