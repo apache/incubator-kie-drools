@@ -142,7 +142,6 @@ public class DTableModel {
     }
 
     protected CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
-        System.out.println("+++++++++++ HEREEEE");
         return compilationCache.computeIfAbsent(expr, e -> {
             if (e == null || e.isEmpty()) {
                 return ctx -> null;

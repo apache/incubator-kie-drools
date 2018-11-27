@@ -28,6 +28,9 @@ import java.util.stream.Stream;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.ConstructorDeclaration;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -447,14 +450,20 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testClassesByInput.put(input, testClass);
                         instancesBuilder.append( "    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n" );
 
-                        String sourceCode = feel.generateFeelExpressionSource(
+                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
                                 input,
                                 ctx,
-                                dTableModel.getColumns().get(j).getType())
-                                .setName(testClass).toString();
+                                dTableModel.getColumns().get(j).getType());
+
+                        final String finalTestClass = testClass;
+                        classOrInterfaceDeclaration
+                                .setName(finalTestClass);
+
+                        classOrInterfaceDeclaration.findAll(ConstructorDeclaration.class)
+                                .forEach(n -> n.replace(new ConstructorDeclaration(finalTestClass)));
 
                         testsBuilder.append( "\n" );
-                        testsBuilder.append( sourceCode );
+                        testsBuilder.append( classOrInterfaceDeclaration.toString() );
                         testsBuilder.append( "\n" );
                     }
                     testArrayBuilder.append( testClass ).append( "_INSTANCE" );
