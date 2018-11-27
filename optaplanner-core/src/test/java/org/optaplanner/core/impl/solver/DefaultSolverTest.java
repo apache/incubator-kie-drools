@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -30,6 +31,9 @@ import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -111,4 +115,25 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
+    @Test(timeout = 600_000)
+    public void zeroEntity() {
+        SolverFactory<TestdataChainedSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataChainedSolution.class, TestdataChainedEntity.class);
+
+        LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(1));
+        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
+
+        Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
+
+        TestdataChainedSolution solution = new TestdataChainedSolution("1");
+        solution.setChainedEntityList(Collections.singletonList(new TestdataChainedEntity("3")));
+        solution.setChainedAnchorList(Collections.singletonList(new TestdataChainedAnchor("4")));
+
+        try {
+            solver.solve(solution);
+        } catch (Exception exception) {
+            assertTrue(exception instanceof IllegalStateException);
+        }
+    }
 }
