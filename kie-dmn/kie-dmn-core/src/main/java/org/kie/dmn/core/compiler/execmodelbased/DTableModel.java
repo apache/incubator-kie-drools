@@ -121,7 +121,7 @@ public class DTableModel {
         return outputs.stream().allMatch( o -> o.compiledDefault != null );
     }
 
-    private void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         int index = 1;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
@@ -132,7 +132,7 @@ public class DTableModel {
         }
     }
 
-    private void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         int index = 1;
         for (DRowModel row : rows) {
             int rowIndex = index;

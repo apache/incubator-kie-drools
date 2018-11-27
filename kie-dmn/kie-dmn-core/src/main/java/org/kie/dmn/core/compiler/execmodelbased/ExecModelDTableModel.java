@@ -28,19 +28,26 @@ public class ExecModelDTableModel extends DTableModel {
     }
 
     @Override
+    protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        // read init rows from here
+        super.initRows(feelctx, compilationCache);
+    }
+
+    @Override
+    protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        // read init input clauses from here
+        super.initInputClauses(feelctx, compilationCache);
+    }
+
+    @Override
     protected CompiledFEELExpression compileFeelExpression(DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index) {
         // load from class loader
-
         final String className = getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION);
-
         Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
 
         return generatedClass.map(gc -> {
             try {
                 Class<?> clazz = rootClassLoader.loadClass(gc);
-
-                CompiledFEELExpression compiledFEELExpression = super.compileFeelExpression(element, feel, feelctx, msg, compilationCache, expr, index);
-
 
                 logger.debug("Read compiled Feel Expression from class loader: " + className);
 
@@ -51,11 +58,7 @@ public class ExecModelDTableModel extends DTableModel {
                 throw new RuntimeException(e);
             }
 
-        }).orElseGet(() -> {
-            CompiledFEELExpression compiledFEELExpression = super.compileFeelExpression(element, feel, feelctx, msg, compilationCache, expr, index);
-            return compiledFEELExpression;
-        });
-
+        }).orElseThrow(() -> new RuntimeException("Cannot instantiate evaluator"));
 
 
     }
