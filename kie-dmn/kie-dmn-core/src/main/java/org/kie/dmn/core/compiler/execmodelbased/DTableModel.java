@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -149,6 +151,22 @@ public class DTableModel {
                 return (CompiledFEELExpression) feel.compile(model, element, msg, dtName, e, feelctx, index);
             }
         });
+    }
+
+    protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
+        List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
+        for (DColumnModel column : columns) {
+            String inputValuesText = getInputValuesText( column.inputClause );
+            if (inputValuesText != null && !inputValuesText.isEmpty()) {
+                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
+            }
+            inputClauses.add(generateSource( feel, feelctx, column.getName()));
+        }
+        return inputClauses;
+    }
+
+    protected ClassOrInterfaceDeclaration generateSource(DMNFEELHelper feel, CompilerContext feelctx, String expr) {
+        return feel.generateFeelExpressionSource(expr, feelctx);
     }
 
     private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {

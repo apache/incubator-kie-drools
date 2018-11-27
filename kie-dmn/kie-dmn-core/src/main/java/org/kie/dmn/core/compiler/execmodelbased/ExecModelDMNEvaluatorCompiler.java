@@ -30,7 +30,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.ast.body.ConstructorDeclaration;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -452,10 +451,12 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
                         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
                                 input,
-                                ctx,
-                                dTableModel.getColumns().get(j).getType());
+                                dTableModel.getColumns().get(j).getType(), ctx.toCompilerContext());
 
                         renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
+
+                        List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = dTableModel.generateInputClauses(ctx.toCompilerContext());
+                        System.out.println("classOrInterfaceDeclaration = " + classOrInterfaceDeclarations);
 
                         testsBuilder.append( "\n" );
                         testsBuilder.append( classOrInterfaceDeclaration.toString() );
@@ -499,8 +500,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
                         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
                                 input,
-                                ctx,
-                                dTableModel.getColumns().get(j).getType());
+                                dTableModel.getColumns().get(j).getType(), ctx.toCompilerContext());
 
                         renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
