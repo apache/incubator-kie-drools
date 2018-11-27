@@ -30,11 +30,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public abstract class AbstractMove<Solution_> implements Move<Solution_> {
 
     @Override
-    public String getSimpleMoveTypeDescription() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
     public final AbstractMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
         AbstractMove<Solution_> undoMove = createUndoMove(scoreDirector);
         doMoveOnGenuineVariables(scoreDirector);

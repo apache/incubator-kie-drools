@@ -1305,11 +1305,14 @@ As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 [[whichMoveTypesMightBeMissing]]
 === Which Move Types Might be Missing in my Implementation?
 
-To determine which move types might be missing in your implementation, run a <<benchmarker,Benchmarker>> __for a short amount of time__ and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
+To determine which move types might be missing in your implementation,
+run a <<benchmarker,Benchmarker>> __for a short amount of time__
+and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
 Take a look at such a best solution: it will likely be a local optima.
 Try to figure out if there's a move that could get out of that local optima faster.
 
-If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against the previous configurations to see if you want to keep it.
+If you find one, implement that coarse-grained move, mix it with the existing moves
+and benchmark it against the previous configurations to see if you want to keep it.
 
 
 [[customMovesIntroduction]]
@@ -1322,8 +1325,7 @@ A custom `Move` can be tailored to work to the advantage of your constraints.
 For example in examination scheduling, changing the period of an exam A
 would also change the period of all the other exams that need to coincide with exam A.
 
-A custom `Move` is also slightly faster than a generic ``Move``.
-However, it's far more work to implement and much harder to avoid bugs.
+A custom `Move` is far more work to implement and much harder to avoid bugs than a generic ``Move``.
 After implementing a custom ``Move``, turn on `environmentMode` ``FULL_ASSERT`` to check for score corruptions.
 
 
@@ -1337,6 +1339,7 @@ All moves implement the `Move` interface:
 public interface Move<Solution_> {
 
     boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector);
+
     Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
     ...
@@ -1431,7 +1434,57 @@ A solver phase might do and undo the same `Move` more than once.
 In fact, many solver phases will iteratively do and undo a number of moves to evaluate them,
 before selecting one of those and doing that move again (without undoing it the last time).
 
-A `Move` must also implement the `getPlanningEntities()` and `getPlanningValues()` methods.
+Always implement the `toString()` method to keep Planner's logs readable. Don't make it verbose:
+
+[source,java,options="nowrap"]
+----
+    public String toString() {
+        return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
+    }
+----
+
+Optionally, implement the `getSimpleMoveTypeDescription()` method to support
+<<benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic, picked move statistics>>:
+
+[source,java,options="nowrap"]
+----
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        return "CloudComputerChangeMove(CloudProcess.computer)";
+    }
+----
+
+
+==== Custom move: rebase()
+
+For <<multithreadedIncrementalSolving,multithreaded incremental solving>>,
+the custom move must implement the `rebase()` method:
+
+[source,java,options="nowrap"]
+----
+    @Override
+    public CloudComputerChangeMove rebase(ScoreDirector<CloudBalance> destinationScoreDirector) {
+        return new CloudComputerChangeMove(destinationScoreDirector.lookUpWorkingObject(cloudProcess),
+                destinationScoreDirector.lookUpWorkingObject(toCloudComputer));
+    }
+----
+
+Rebasing a move takes a move generated of one working solution and creates a new move
+that does the same change as the original move,
+but rewired as if was generated off of the destination working solution.
+This allows multithreaded solving to migrate moves from one thread to another.
+
+The `lookUpWorkingObject()` method translates a planning entity instance or problem fact instance
+from one working solution to that of the destination's working solution.
+Internally it often uses a mapping technique based on the <<planningId,planning ID>>.
+
+To rebase lists or arrays in bulk, use `rebaseList()` and `rebaseArray()` on `AbstractMove`.
+
+
+[[customMoveGetPlanningEntitiesAndGetPlanningValues]]
+==== Custom move: getPlanningEntities() and getPlanningValues()
+
+A custom move should also implement the `getPlanningEntities()` and `getPlanningValues()` methods.
 Those are used by <<tabuSearch,entity tabu and value tabu>> respectively.
 They are called after the `Move` has already been done.
 
@@ -1465,6 +1518,10 @@ and return all their values (to which they are changing) in ``getPlanningValues(
     }
 ----
 
+
+[[customMoveEqualsAndHashCode]]
+==== Custom move: equals() and hashCode()
+
 A `Move` must implement the `equals()` and `hashCode()` methods for <<tabuSearch,move tabu>>.
 Two moves which make the same change on a solution, should be equal ideally.
 
@@ -1495,29 +1552,18 @@ Two moves which make the same change on a solution, should be equal ideally.
 ----
 
 Notice that it checks if the other move is an instance of the same move type.
-This `instanceof` check is important because a move will be compared to a move with another move type
-if you have multiple move selectors.
+This `instanceof` check is important because a move are compared to a move of another move type.
+For example a `ChangeMove` and `SwapMove` are compared.
 
-Implement the `toString()` method to keep Planner's logs readable:
 
-[source,java,options="nowrap"]
-----
-    public String toString() {
-        return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
-    }
-----
+[[generatingCustomMoves]]
+=== Generating custom moves
 
-Now, let's generate instances of this custom ``Move`` class.
-
-[WARNING]
-====
-Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure
-that they do not move <<immovablePlanningEntities, immovable entities>>.
-====
+Now, let's generate instances of this custom ``Move`` class. There are 2 ways:
 
 
 [[moveListFactory]]
-=== ``MoveListFactory``: the Easy Way to Generate Custom Moves
+==== ``MoveListFactory``: the Easy Way to Generate Custom Moves
 
 The easiest way to generate custom moves is by implementing the interface ``MoveListFactory``:
 
@@ -1574,9 +1620,15 @@ Because the `MoveListFactory` generates all moves at once in a ``List<Move>``,
 it does not support `cacheType` ``JUST_IN_TIME``.
 Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly.
 
+[WARNING]
+====
+A custom `MoveListFactory`implementation must ensure
+that it does not move <<immovablePlanningEntities, immovable entities>>.
+====
+
 
 [[moveIteratorFactory]]
-=== ``MoveIteratorFactory``: Generate Custom Moves Just in Time
+==== ``MoveIteratorFactory``: Generate Custom Moves Just in Time
 
 Use this advanced form to generate custom moves Just In Time
 by implementing the `MoveIteratorFactory` interface:
@@ -1624,3 +1676,9 @@ Advanced configuration:
       <moveIteratorFactoryClass>...</moveIteratorFactoryClass>
     </moveIteratorFactory>
 ----
+
+[WARNING]
+====
+A custom `MoveIteratorFactory` implementation must ensure
+that it does not move <<immovablePlanningEntities, immovable entities>>.
+====

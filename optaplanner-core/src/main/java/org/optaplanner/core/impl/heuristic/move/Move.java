@@ -127,7 +127,9 @@ public interface Move<Solution_> {
      * The format is not formalized. Never parse the {@link String} returned by this method.
      * @return never null
      */
-    String getSimpleMoveTypeDescription();
+    default String getSimpleMoveTypeDescription() {
+        return getClass().getSimpleName();
+    }
 
     /**
      * Returns all planning entities that are being changed by this move.
@@ -140,7 +142,10 @@ public interface Move<Solution_> {
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
      * @return never null
      */
-    Collection<? extends Object> getPlanningEntities();
+    default Collection<? extends Object> getPlanningEntities() {
+        throw new UnsupportedOperationException("The custom move class (" + getClass()
+                + ") doesn't implement the getPlanningEntities() method, so Entity Tabu Search is impossible.");
+    }
 
     /**
      * Returns all planning values that entities are being assigned to by this move.
@@ -153,6 +158,9 @@ public interface Move<Solution_> {
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
      * @return never null
      */
-    Collection<? extends Object> getPlanningValues();
+    default Collection<? extends Object> getPlanningValues() {
+        throw new UnsupportedOperationException("The custom move class (" + getClass()
+                + ") doesn't implement the getPlanningEntities() method, so Value Tabu Search is impossible.");
+    }
 
 }
