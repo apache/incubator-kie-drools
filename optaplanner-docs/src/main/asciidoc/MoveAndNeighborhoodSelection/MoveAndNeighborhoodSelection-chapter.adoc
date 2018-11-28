@@ -106,8 +106,46 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 == Generic MoveSelectors
 
 
+[[genericMoveSelectorsOverview]]
+=== Generic MoveSelectors Overview
+
+[cols="1,2a,2a"]
+|===
+|Name |Description |`toString()` example
+
+|<<changeMoveSelector,Change move>>
+|Change 1 entity's variable
+|`Process-A {Computer-1 -> Computer-2}`
+
+|<<swapMoveSelector,Swap move>>
+|Swap all variables of 2 entities
+|`Process-A {Computer-1} <-> Process-B {Computer-2}`
+
+|<<pillarChangeMoveSelector,Pillar change move>>
+|Change a set of entities with the same value
+|`[Process-A, Process-B, Process-C] {Computer-1 -> Computer-2}`
+
+|<<pillarSwapMoveSelector,Pillar swap move>>
+|Swap 2 sets of entities with the same values
+|`[Process-A, Process-B, Process-C] {Computer-1} <-> [Process-E, Process-F] {Computer-2}`
+
+|<<tailChainSwapMoveSelector,Tail chain swap move>>
+|Swap 2 tails chains
+|`Visit-A5 {Visit-A4} <-tailChainSwap-> Visit-B3 {Visit-B2}`
+
+|<<subChainChangeMoveSelector,Sub chain change move>>
+|Cut a subchain and paste it into another chain
+|`[Visit-A5..Visit-A8] {Visit-A4 -> Visit-B2}`
+
+|<<subChainSwapMoveSelector,Sub chain swap move>>
+|Swap 2 subchains
+|`[Visit-A5..Visit-A8] {Visit-A4} <-> [Visit-B3..Visit-B9] {Visit-B2}`
+
+|===
+
+
 [[changeMoveSelector]]
-=== changeMoveSelector
+=== ChangeMoveSelector
 
 For one planning variable, the `ChangeMove` selects one planning entity and one planning value and assigns the entity's variable to that value.
 
@@ -152,7 +190,7 @@ This move selector only supports <<cacheType,phase or solver caching>> if it doe
 
 
 [[swapMoveSelector]]
-=== swapMoveSelector
+=== SwapMoveSelector
 
 The `SwapMove` selects two different planning entities and swaps the planning values of all their planning variables.
 
@@ -200,7 +238,7 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on any <<chainedPlanningVariable,chained>> variables.
 
 [[pillarChangeMoveSelector]]
-=== pillarChangeMoveSelector
+=== PillarChangeMoveSelector
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects one entity pillar (or subset of those) and changes the value of one variable (which is the same for all entities) to another value.
 
@@ -254,7 +292,7 @@ and step caching scales badly memory wise.
 
 
 [[pillarSwapMoveSelector]]
-=== pillarSwapMoveSelector
+=== PillarSwapMoveSelector
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects two different entity pillars and swaps the values of all their variables for all their entities.
 
@@ -301,7 +339,7 @@ and step caching scales badly memory wise.
 
 
 [[tailChainSwapMoveSelector]]
-=== tailChainSwapMoveSelector or 2-opt (chained variables only)
+=== TailChainSwapMoveSelector or 2-opt (chained variables only)
 
 A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
 The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
@@ -344,7 +382,7 @@ Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include alm
 This move selector does not support <<cacheType,phase or solver caching>>.
 
 [[subChainChangeMoveSelector]]
-=== subChainChangeMoveSelector (chained variables only)
+=== SubChainChangeMoveSelector (chained variables only)
 
 A _subChain_ is a set of planning entities with a chained planning variable which form part of a chain.
 The `subChainChangeMoveSelector` selects a subChain and moves it to another place (in a different or the same anchor chain).
@@ -393,7 +431,7 @@ and step caching scales badly memory wise.
 
 
 [[subChainSwapMoveSelector]]
-=== subChainSwapMoveSelector (chained variables only)
+=== SubChainSwapMoveSelector (chained variables only)
 
 The `subChainSwapMoveSelector` selects two different subChains and moves them to another place in a different or the same anchor chain.
 
@@ -1434,7 +1472,8 @@ A solver phase might do and undo the same `Move` more than once.
 In fact, many solver phases will iteratively do and undo a number of moves to evaluate them,
 before selecting one of those and doing that move again (without undoing it the last time).
 
-Always implement the `toString()` method to keep Planner's logs readable. Don't make it verbose:
+Always implement the `toString()` method to keep Planner's logs readable.
+Keep it non-verbose and make it consistent with <<genericMoveSelectorsOverview,the generic moves>>:
 
 [source,java,options="nowrap"]
 ----
