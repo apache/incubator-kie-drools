@@ -40,6 +40,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
@@ -423,7 +424,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;\n");
             sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;");
             sb.append("import org.kie.dmn.feel.lang.EvaluationContext;\n");
-            sb.append("import ").append(CompiledDTTExpression.class.getCanonicalName()).append(";\n");
+            sb.append("import ").append(CompiledFEELExpression.class.getCanonicalName()).append(";\n");
             sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
             sb.append("\n");
             sb.append("public class ").append(clasName).append("FeelExpression {\n");
