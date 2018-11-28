@@ -65,7 +65,7 @@ public class DTableModel {
     private final HitPolicy hitPolicy;
 
     protected final List<DColumnModel> columns;
-` `    protected final List<DRowModel> rows;
+    protected final List<DRowModel> rows;
     private final List<DOutputModel> outputs;
 
     private final Map<String, Type> variableTypes;
