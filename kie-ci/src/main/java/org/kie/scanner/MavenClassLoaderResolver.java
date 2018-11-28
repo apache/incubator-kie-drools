@@ -89,7 +89,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         }
 
         internalKModule.setUnresolvedDependencies(unresolvedDeps);
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
+        return new KieURLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
 }
