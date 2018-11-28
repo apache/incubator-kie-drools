@@ -116,7 +116,7 @@ public class DefaultSolverTest {
     }
 
     @Test(timeout = 600_000)
-    public void solveThrowsWhenZeroEntity() {
+    public void solveThrowsExceptionWhenZeroEntity() {
         SolverFactory<TestdataChainedSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataChainedSolution.class, TestdataChainedEntity.class);
 
@@ -133,9 +133,9 @@ public class DefaultSolverTest {
         try {
             solver.solve(solution);
         } catch (Exception exception) {
-            assertEquals(true,exception instanceof IllegalStateException);
-            assertEquals(true,exception.getMessage().contains("annotated member"));
-            assertEquals(true,exception.getMessage().contains("must not return"));
+            assertEquals(true, exception instanceof IllegalStateException);
+            assertEquals(true, exception.getMessage().contains("annotated member"));
+            assertEquals(true, exception.getMessage().contains("must not return"));
         }
     }
 }
