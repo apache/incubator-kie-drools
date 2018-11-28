@@ -75,6 +75,7 @@
         <exclude>**/*.jpg</exclude>
         <exclude>**/*.css</exclude>
         <exclude>**/*.ico</exclude>
+        <exclude>**/*.png</exclude>
       </excludes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
@@ -89,6 +90,7 @@
         <include>**/*.jpg</include>
         <include>**/*.css</include>
         <include>**/*.ico</include>
+        <include>**/*.png</include>
       </includes>
       <excludes>
         <exclude>**/*.html</exclude>
