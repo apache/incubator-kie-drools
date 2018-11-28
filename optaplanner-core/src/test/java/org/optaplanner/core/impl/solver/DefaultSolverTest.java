@@ -132,7 +132,8 @@ public class DefaultSolverTest {
 
         try {
             solver.solve(solution);
-        } catch (Exception exception) {
+            fail("There was no RuntimeException thrown.");
+        } catch (RuntimeException exception) {
             assertEquals(true, exception instanceof IllegalStateException);
             assertEquals(true, exception.getMessage().contains("annotated member"));
             assertEquals(true, exception.getMessage().contains("must not return"));
