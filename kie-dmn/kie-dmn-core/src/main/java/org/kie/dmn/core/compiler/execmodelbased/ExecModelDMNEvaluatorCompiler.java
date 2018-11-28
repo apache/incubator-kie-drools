@@ -431,6 +431,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName));
             sb.append("\n");
             sb.append(getInputClause(ctx, dTableModel));
+            sb.append("\n");
+            sb.append(getOutputClause(ctx, dTableModel));
             sb.append("}\n");
 
             String source = sb.toString();
@@ -451,17 +453,26 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
                 testArrayBuilder.append("            { ");
                 DTableModel.DRowModel row = dTableModel.getRows().get(i);
-                for (int j = 0; j < row.getInputs().size(); j++) {
-                    String input = row.getInputs().get(j);
+                List<String> inputs = row.getInputs();
+                List<String> merged = new ArrayList<>(inputs);
+//                merged.addAll(row.getOutputs());
+                for (int j = 0; j < merged.size(); j++) {
+                    String input = merged.get(j);
                     String testClass = testClassesByInput.get(input);
                     if (testClass == null) {
                         testClass = className + "r" + i + "c" + j+ "expression";
                         testClassesByInput.put(input, testClass);
                         instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
-                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
-                                input,
-                                dTableModel.getColumns().get(j).getType(), ctx.toCompilerContext());
+                        DTableModel.DColumnModel dColumnModel = dTableModel.getColumns().get(j);
+                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = null;
+                        if(dColumnModel != null) {
+                            classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
+                                    input,
+                                    dColumnModel.getType(), ctx.toCompilerContext());
+                        } else {
+//                            dTableModel.get
+                        }
 
                         renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
@@ -470,7 +481,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testsBuilder.append("\n");
                     }
                     testArrayBuilder.append(testClass).append("_INSTANCE");
-                    if (j < row.getInputs().size() - 1) {
+                    if (j < merged.size() - 1) {
                         testArrayBuilder.append(", ");
                     }
                 }
@@ -487,17 +498,42 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         }
 
         public String getInputClause(DMNCompilerContext ctx, DTableModel dTableModel) {
-            StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
             List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
-            testArrayBuilder.append("    public static final CompiledDTTExpression[] FEEL_EXPRESSION_INPUT_CLAUSES = new CompiledDTTExpression[] {\n");
 
-            int i = 0;
+            int i = 1;
             for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
                 String testClass = "inputClause" + i;
+                instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
+
+                renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
+
+                testsBuilder.append("\n");
+                testsBuilder.append(classOrInterfaceDeclaration.toString());
+                testsBuilder.append("\n");
+                i++;
+
+            }
+
+
+            return instancesBuilder + "\n" + testsBuilder;
+        }
+
+        public String getOutputClause(DMNCompilerContext ctx, DTableModel dTableModel) {
+            StringBuilder testArrayBuilder = new StringBuilder();
+            StringBuilder testsBuilder = new StringBuilder();
+            StringBuilder instancesBuilder = new StringBuilder();
+
+            List<ClassOrInterfaceDeclaration> outputClauses = dTableModel.generateOutputClauses(ctx.toCompilerContext());
+            testArrayBuilder.append("    public static final CompiledDTTExpression[] FEEL_EXPRESSION_OUTPUT_CLAUSES = new CompiledDTTExpression[] {\n");
+
+            int i = 0;
+            for (Iterator<ClassOrInterfaceDeclaration> iterator = outputClauses.iterator(); iterator.hasNext(); ) {
+                ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
+                String testClass = "outputClause" + i;
                 instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
                 renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);

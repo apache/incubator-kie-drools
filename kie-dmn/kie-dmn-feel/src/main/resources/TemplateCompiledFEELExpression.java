@@ -9,10 +9,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class TemplateCompiledFEELExpression implements CompiledFEELExpression {
 
-    public TemplateCompiledFEELExpression() {
-        System.out.println("\"new instance\" = " + "new instance");
-    }
-
     @Override
     public Object apply(EvaluationContext feelExprCtx) {
         return null;

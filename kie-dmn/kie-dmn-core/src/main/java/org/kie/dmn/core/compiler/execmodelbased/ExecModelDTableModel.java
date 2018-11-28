@@ -1,5 +1,6 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +39,24 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         // read init input clauses from here
-        super.initInputClauses(feelctx, compilationCache);
+        final String className = getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION);
+
+        try {
+            Class<?> clazz = rootClassLoader.loadClass(className);
+
+            logger.debug("Read compiled input clause from class loader: " + className);
+
+            int index = 1;
+
+            for (DColumnModel column : columns) {
+                Field feel_expression_input_clauses = clazz.getField("inputClause" + index + "_INSTANCE");
+                column.compiledInputClause = (CompiledFEELExpression) feel_expression_input_clauses.get(clazz);
+                index++;
+            }
+
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -46,7 +64,6 @@ public class ExecModelDTableModel extends DTableModel {
         // load from class loader
         final String className = getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION);
         Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
-        System.out.println("generated class" + generatedClass);
 
         return generatedClass.map(gc -> {
             try {

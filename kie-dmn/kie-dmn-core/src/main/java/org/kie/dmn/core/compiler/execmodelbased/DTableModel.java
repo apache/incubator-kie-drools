@@ -64,7 +64,7 @@ public class DTableModel {
     private final String tableName;
     private final HitPolicy hitPolicy;
 
-    private final List<DColumnModel> columns;
+    protected final List<DColumnModel> columns;
     private final List<DRowModel> rows;
     private final List<DOutputModel> outputs;
 
@@ -123,17 +123,6 @@ public class DTableModel {
         return outputs.stream().allMatch( o -> o.compiledDefault != null );
     }
 
-    protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        int index = 1;
-        for (DColumnModel column : columns) {
-            String inputValuesText = getInputValuesText( column.inputClause );
-            if (inputValuesText != null && !inputValuesText.isEmpty()) {
-                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
-            }
-            column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
-        }
-    }
-
     protected void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         int index = 1;
         for (DRowModel row : rows) {
@@ -153,6 +142,17 @@ public class DTableModel {
         });
     }
 
+    protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        int index = 1;
+        for (DColumnModel column : columns) {
+            String inputValuesText = getInputValuesText( column.inputClause );
+            if (inputValuesText != null && !inputValuesText.isEmpty()) {
+                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
+            }
+            column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
+        }
+    }
+
     protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
         for (DColumnModel column : columns) {
@@ -163,6 +163,18 @@ public class DTableModel {
             inputClauses.add(generateSource( feel, feelctx, column.getName()));
         }
         return inputClauses;
+    }
+
+    protected List<ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
+        List<ClassOrInterfaceDeclaration> outputClauses = new ArrayList<>();
+        for (DOutputModel output : outputs) {
+            output.outputValues = getOutputValuesTests( output );
+            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
+            if (defaultValue != null && !defaultValue.isEmpty()) {
+                outputClauses.add(generateSource( feel, feelctx, defaultValue));
+            }
+        }
+        return outputClauses;
     }
 
     protected ClassOrInterfaceDeclaration generateSource(DMNFEELHelper feel, CompilerContext feelctx, String expr) {
@@ -263,6 +275,10 @@ public class DTableModel {
             return inputs;
         }
 
+        public List<String> getOutputs() {
+            return outputs;
+        }
+
         public Object evaluate(EvaluationContext ctx, int pos) {
             return compiledOutputs.get( pos ).apply( ctx );
         }
@@ -274,7 +290,7 @@ public class DTableModel {
         private final Type type;
 
         private List<UnaryTest> inputTests;
-        private CompiledFEELExpression compiledInputClause;
+        protected CompiledFEELExpression compiledInputClause;
 
         DColumnModel(InputClause inputClause) {
             this.inputClause = inputClause;
