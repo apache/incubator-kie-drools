@@ -33,12 +33,6 @@ mvn clean spring-boot:run
 http://localhost:8090
 ```
 
-Depending on the app type you select when building your app (more details on this below)
-Your starting page should look like this:
-
-![alt text](sample.png?raw=true "Sample index page of your generated app")
-
-
 Building and starting your application with launch scripts
 -----------------------------------
 An alternative option to build and lanuch your application is with the build scripts. Your application

@@ -9,62 +9,61 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <style>
+        .topbackground {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: inherit;
+            width: 100%;
+        }
+    </style>
 </head>
-<body bgcolor="#00bfff">
-<nav class="navbar navbar-dark bg-dark">
-    <div class="navbar-header">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <span class="fa fa-desktop">&nbsp;&nbsp;</span>
-                ${artifactId}-${version} &nbsp;|&nbsp; KIE Version: ${kieVersion}
-            </a>
+<body>
+<div class="container">
+    <nav class="navbar navbar-light bg-light">
+        ${artifactId}-${version}
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Learn more
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="http://jbpm.org" target="_blank">jBPM.org</a>
+                <a class="dropdown-item" href="https://groups.google.com/forum/#!forum/jbpm-setup" target="_blank">jBPM Forum</a>
+                <a class="dropdown-item" href="http://jbpm.org/businessapps/gettingStarted.html" target="_blank">Business App Docs</a>
+                <a class="dropdown-item" href="https://github.com/business-applications" target="_blank">Business App Examples</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jumbotron" style="background-image: url('img/bgimage.png'); background-size: cover; color: #000000;">
+        <div class="card topbackground">
+            <p>
+            <h1 class="text-center"><strong>Welcome to your Business Application!</strong></h1></p>
+            <p><h5 class="text-center"><strong>Application has successfully started
+            <br/> with following capabilities:</strong></h5></p>
         </div>
     </div>
-</nav>
-<div class="container-fluid p-3 mb-2 bg-light text-dark">
-    <div class="row justify-content-center">
-        <div class="text-center">
-            <h1>
-                <strong>Welcome to your new KIE Services App!</strong>
-            </h1>
+
+    <div class="row text-center" style="margin-right: 0px !important; margin-left: 0px !important;">
+        <div class="col-lg-4 INDEX_CSS_MARKER_BA border">
             <br/>
+            <i class="fa fa-cogs fa-2x"></i><h4>Business Automation</h4>
+            <hr width="80%"/>
             <br/>
-            <p class="lead">Service has successfully started with following capabilities:</p>
-            <br>
-            <div class="container">
-                <div class="row">
-                    <div class="INDEX_CSS_MARKER_BA col-xs-6" style="width: 33%">
-                        <div class="row">
-                            <div class="col-1 alert-icon-col">
-                                <span class="INDEX_ICON_MARKER_BA"></span>
-                            </div>
-                            <div class="col fa fa-cogs fa-3x">
-                                <h4><strong>Business Automation</strong></h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="INDEX_CSS_MARKER_DM col-xs-6" style="width: 33%">
-                        <div class="row">
-                            <div class="col-1 alert-icon-col">
-                                <span class="INDEX_ICON_MARKER_DM"></span>
-                            </div>
-                            <div class="col fa fa-lightbulb-o fa-3x">
-                                <h4><strong>Decision Management</strong></h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="INDEX_CSS_MARKER_BO col-xs-6" style="width: 33%">
-                        <div class="row">
-                            <div class="col-1 alert-icon-col">
-                                <span class="INDEX_ICON_MARKER_BO"></span>
-                            </div>
-                            <div class="col fa fa-sliders fa-3x">
-                                <h4><strong>Business Optimization</strong></h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <p>Covers features for process management, case management, decision management and optimisation.</p>
+        </div>
+        <div class="col-lg-4 INDEX_CSS_MARKER_DM border">
+            <br/>
+            <i class="fa fa-lightbulb-o fa-2x"></i><h4>Decision Management</h4>
+            <hr width="80%"/>
+            <br/>
+            <p>Covers decision and rules related features (backed by Drools project)</p>
+        </div>
+        <div class="col-lg-4 INDEX_CSS_MARKER_BO border">
+            <br/>
+            <i class="fa fa-sliders fa-2x"></i><h4>Business Optimization</h4>
+            <hr width="80%"/>
+            <br/>
+            <p>Covers planning problems and solutions related features (backed by OptaPlanner project)</p>
         </div>
     </div>
 </div>
