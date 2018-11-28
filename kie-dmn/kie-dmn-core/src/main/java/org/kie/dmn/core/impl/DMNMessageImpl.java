@@ -16,22 +16,28 @@
 
 package org.kie.dmn.core.impl;
 
+import javax.xml.stream.Location;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.internal.builder.InternalMessage;
 
-public class DMNMessageImpl
-        implements DMNMessage {
+public class DMNMessageImpl implements DMNMessage {
     private Severity                 severity;
     private String                   message;
     private DMNMessageType           messageType;
     private DMNModelInstrumentedBase source;
     private Throwable                exception;
     private FEELEvent                feelEvent;
+    private long id = 0;
+    private String path;
+    private String kieBaseName;
 
     public DMNMessageImpl() {
+
     }
 
     public DMNMessageImpl(Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source) {
@@ -91,14 +97,9 @@ public class DMNMessageImpl
 
     @Override
     public String toString() {
-        return "DMNMessage{" +
-               " severity=" + severity +
-               ", type=" + messageType +
-               ", message='" + (message!=null?message:"") + '\'' +
-               ", sourceId='" + getSourceId() + '\'' +
-               ", exception='" + (exception != null ? (exception.getClass().getSimpleName() + " : " + exception.getMessage()) : "") + "'" +
-               ", feelEvent='" + (feelEvent != null ? (feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage()) : "") + "'" +
-               "}";
+        // similar to MessageImpl
+        return "Message [id=" 
+               + id + (kieBaseName != null ? ", kieBase=" + kieBaseName : "") + ", level=" + getLevel() + ", path=" + path + ", line=" + getLine() + ", column=" + getColumn() + "\n   text=" + getText() + "]";
     }
 
     @Override
@@ -126,5 +127,101 @@ public class DMNMessageImpl
         result = 31 * result + (exception != null ? exception.hashCode() : 0);
         result = 31 * result + (feelEvent != null ? feelEvent.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public long getId() {
+        return this.id;
+    }
+
+    @Override
+    public Level getLevel() {
+        switch (severity) {
+            case ERROR:
+                return Level.ERROR;
+            case INFO:
+                return Level.INFO;
+            case TRACE:
+                return Level.INFO;
+            case WARN:
+                return Level.WARNING;
+            default:
+                return Level.ERROR;
+        }
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public int getLine() {
+        if (source != null) {
+            Location l = source.getLocation();
+            if (l != null) {
+                return l.getLineNumber();
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int getColumn() {
+        if (source != null) {
+            Location l = source.getLocation();
+            if (l != null) {
+                return l.getColumnNumber();
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public String getText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DMN: ");
+        sb.append(this.message);
+        sb.append(" (");
+        if (this.getPath() != null) {
+            sb.append("resource: ");
+            sb.append(this.getPath());
+            sb.append(", ");
+        }
+        if (this.getSourceId() != null) { // if toString() via org.kie.api.builder.Message would be helpful to report this 
+            sb.append("DMN id: ");
+            sb.append(this.getSourceId());
+            sb.append(", ");
+        }
+        sb.append(this.getMessageType().getDescription());
+        sb.append(") ");
+        return sb.toString();
+    }
+
+    @Override
+    public String getKieBaseName() {
+        return kieBaseName;
+    }
+
+    @Override
+    public InternalMessage setKieBaseName(String kieBaseName) {
+        this.kieBaseName = kieBaseName;
+        return this;
+    }
+
+    public InternalMessage cloneWith(long id, String path) {
+        DMNMessageImpl r = new DMNMessageImpl();
+        r.id = id;
+        r.path = path;
+        
+        r.severity    = this.severity   ; 
+        r.message     = this.message    ;
+        r.messageType = this.messageType;
+        r.source      = this.source     ;
+        r.exception   = this.exception  ;
+        r.feelEvent   = this.feelEvent  ;
+        r.kieBaseName = this.kieBaseName;
+
+        return r;
     }
 }

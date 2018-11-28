@@ -16,31 +16,42 @@
 
 package org.kie.dmn.api.core;
 
+import org.kie.api.builder.Message;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.internal.builder.InternalMessage;
 
 /**
  * A general message interface for all DMN related messages
  * raised during compilation and execution.
  */
-public interface DMNMessage {
+public interface DMNMessage extends InternalMessage {
 
     enum Severity {
-        TRACE, INFO, WARN, ERROR;
+        /**
+         * @deprecated use {@link #INFO} level.
+         */
+        @Deprecated
+        TRACE,
+        INFO,
+        WARN,
+        ERROR;
     }
 
     /**
      * Returns the severity of the message. Either TRACE, INFO, WARN or ERROR
      *
-     * @return
+     * @deprecated use {@link Message#getLevel()} instead.
      */
+    @Deprecated
     Severity getSeverity();
 
     /**
      * Returns a human readable text with the explanation of the event that
      * raised the message.
      *
-     * @return
+     * @deprecated use {@link Message#getText()} instead.
      */
+    @Deprecated
     String getMessage();
     
     /**

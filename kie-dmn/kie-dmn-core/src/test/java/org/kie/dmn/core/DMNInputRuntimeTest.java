@@ -19,6 +19,7 @@ package org.kie.dmn.core;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -346,10 +347,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testMissingInputData() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("missing_input_data.dmn", getClass());
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0", "Upgrade Based On Promotions");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(true));
-        assertThat(dmnModel.getMessages().get(0).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("missing_input_data.dmn", getClass());
+        assertThat(messages.get(0).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
     }
 }
