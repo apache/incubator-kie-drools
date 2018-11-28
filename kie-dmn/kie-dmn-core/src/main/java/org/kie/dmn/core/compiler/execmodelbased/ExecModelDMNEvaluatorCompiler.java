@@ -50,6 +50,7 @@ import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
+
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
 
     public ExecModelDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
@@ -66,7 +67,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         String type;
         SourceGenerator sourceGenerator;
 
-        GeneratorsEnum( String type, SourceGenerator sourceGenerator) {
+        GeneratorsEnum(String type, SourceGenerator sourceGenerator) {
             this.type = type;
             this.sourceGenerator = sourceGenerator;
         }
@@ -75,11 +76,11 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     private ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
 
     @Override
-    protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
+    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         String decisionName = getDecisionTableName(dtName, dt);
         DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
-        AbstractModelEvaluator evaluator = generateEvaluator( ctx, dTableModel );
-        if(evaluator != null) {
+        AbstractModelEvaluator evaluator = generateEvaluator(ctx, dTableModel);
+        if (evaluator != null) {
             evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
         }
         return evaluator;
@@ -107,7 +108,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         return decisionName;
     }
 
-    public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
+    public AbstractModelEvaluator generateEvaluator(DMNCompilerContext ctx, DTableModel dTableModel) {
         String pkgName = dTableModel.getNamespace();
         String clasName = dTableModel.getTableName();
 
@@ -127,11 +128,11 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = GeneratorsEnum.values()[i];
             String className = dTableModel.getGeneratedClassName(generator);
-            String fileName = "src/main/java/" + className.replace( '.', '/' ) + ".java";
+            String fileName = "src/main/java/" + className.replace('.', '/') + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
             generatedSources.add(new GeneratedSource(fileName, javaSource));
-            srcMfs.write( fileNames[i], javaSource.getBytes() );
+            srcMfs.write(fileNames[i], javaSource.getBytes());
         }
     }
 
@@ -159,211 +160,216 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     interface SourceGenerator {
-        String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel );
+
+        String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel);
     }
 
     public static class EvaluatorSourceGenerator implements SourceGenerator {
-        public String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel ) {
+
+        public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "package " ).append( pkgName ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "import java.util.List;\n" );
-            sb.append( "import org.drools.model.Rule;\n" );
-            sb.append( "import " ).append( DMNUnit.class.getCanonicalName() ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "Evaluator extends " + AbstractModelEvaluator.class.getCanonicalName() + "{\n" );
-            sb.append( "\n" );
-            sb.append( "    @Override\n" );
-            sb.append( "    protected List<Rule> getRules() {\n" );
-            sb.append( "        return " ).append( clasName ).append( "ExecModel.getRules();\n" );
-            sb.append( "    }\n" );
-            sb.append( "\n" );
-            sb.append( "    @Override\n" );
-            sb.append( "    protected DMNUnit getDMNUnit() {\n" );
-            sb.append( "        return new " ).append( clasName ).append( "DTUnit();\n" );
-            sb.append( "    }\n" );
-            sb.append( "}\n" );
+            sb.append("package ").append(pkgName).append(";\n");
+            sb.append("\n");
+            sb.append("import java.util.List;\n");
+            sb.append("import org.drools.model.Rule;\n");
+            sb.append("import ").append(DMNUnit.class.getCanonicalName()).append(";\n");
+            sb.append("\n");
+            sb.append("public class ").append(clasName).append("Evaluator extends " + AbstractModelEvaluator.class.getCanonicalName() + "{\n");
+            sb.append("\n");
+            sb.append("    @Override\n");
+            sb.append("    protected List<Rule> getRules() {\n");
+            sb.append("        return ").append(clasName).append("ExecModel.getRules();\n");
+            sb.append("    }\n");
+            sb.append("\n");
+            sb.append("    @Override\n");
+            sb.append("    protected DMNUnit getDMNUnit() {\n");
+            sb.append("        return new ").append(clasName).append("DTUnit();\n");
+            sb.append("    }\n");
+            sb.append("}\n");
 
             String source = sb.toString();
             if (logger.isDebugEnabled()) {
-                logger.debug( clasName + ":\n" + source );
+                logger.debug(clasName + ":\n" + source);
             }
             return source;
         }
     }
 
     public static class ExecModelSourceGenerator implements SourceGenerator {
-        public String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel ) {
+
+        public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "package " ).append( pkgName ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "import java.util.List;\n" );
-            sb.append( "import " + FeelValue.class.getCanonicalName() + ";\n" );
-            sb.append( "import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n" );
-            sb.append( "import org.kie.api.runtime.rule.DataSource;\n" );
-            sb.append( "import org.drools.model.*;\n" );
-            sb.append( "import org.drools.modelcompiler.dsl.pattern.D;\n" );
-            sb.append( "import static " ).append( pkgName ).append( "." ).append( clasName ).append( "UnaryTests.TEST_ARRAY;\n" );
-            sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "ExecModel {\n" );
-            sb.append( "\n" );
-            sb.append( "    public static List<Rule> getRules() {\n" );
-            sb.append( "        return java.util.Arrays.asList( " );
-            sb.append( IntStream.range( 0, dTableModel.getRows().size() ).mapToObj( i -> "rule_" + clasName + "_" + i + "()" ).collect( joining(", ") ) );
-            sb.append( " );\n" );
-            sb.append( "    }\n" );
+            sb.append("package ").append(pkgName).append(";\n");
+            sb.append("\n");
+            sb.append("import java.util.List;\n");
+            sb.append("import " + FeelValue.class.getCanonicalName() + ";\n");
+            sb.append("import " + DecisionTableEvaluator.class.getCanonicalName() + ";\n");
+            sb.append("import org.kie.api.runtime.rule.DataSource;\n");
+            sb.append("import org.drools.model.*;\n");
+            sb.append("import org.drools.modelcompiler.dsl.pattern.D;\n");
+            sb.append("import static ").append(pkgName).append(".").append(clasName).append("UnaryTests.TEST_ARRAY;\n");
+            sb.append("\n");
+            sb.append("public class ").append(clasName).append("ExecModel {\n");
+            sb.append("\n");
+            sb.append("    public static List<Rule> getRules() {\n");
+            sb.append("        return java.util.Arrays.asList( ");
+            sb.append(IntStream.range(0, dTableModel.getRows().size()).mapToObj(i -> "rule_" + clasName + "_" + i + "()").collect(joining(", ")));
+            sb.append(" );\n");
+            sb.append("    }\n");
 
             int exprCounter = 0;
 
-            sb.append( "\n" );
-            sb.append( "    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n" );
+            sb.append("\n");
+            sb.append("    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n");
             for (int j = 0; j < dTableModel.getOutputSize(); j++) {
-                sb.append( "    private static final UnitData<List> var_output" + j + " = D.unitData(List.class, \"output" + j + "\");\n" );
+                sb.append("    private static final UnitData<List> var_output" + j + " = D.unitData(List.class, \"output" + j + "\");\n");
             }
             for (int j = 0; j < dTableModel.getInputSize(); j++) {
-                sb.append( "    private static final UnitData<DataSource> var_input" + j + " = D.unitData(DataSource.class, \"input" + j + "\");\n" );
-                sb.append( "    private static final Variable<FeelValue> var_$pattern$" + j + "$ = D.declarationOf(FeelValue.class, \"$pattern$" + j + "$\", var_input" + j + ");\n" );
+                sb.append("    private static final UnitData<DataSource> var_input" + j + " = D.unitData(DataSource.class, \"input" + j + "\");\n");
+                sb.append("    private static final Variable<FeelValue> var_$pattern$" + j + "$ = D.declarationOf(FeelValue.class, \"$pattern$" + j + "$\", var_input" + j + ");\n");
             }
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
                 DTableModel.DRowModel row = dTableModel.getRows().get(i);
 
-                sb.append( "\n" );
-                sb.append( "    private static Rule rule_" + clasName + "_" + i + "() {\n" );
-                sb.append( "        return D.rule(\"" + pkgName + "\", \"" + clasName + "_" + i + "\")\n" );
-                sb.append( "                .unit(" + pkgName + "." + clasName + "DTUnit.class)\n" );
-                sb.append( "                .build( \n" );
+                sb.append("\n");
+                sb.append("    private static Rule rule_" + clasName + "_" + i + "() {\n");
+                sb.append("        return D.rule(\"" + pkgName + "\", \"" + clasName + "_" + i + "\")\n");
+                sb.append("                .unit(" + pkgName + "." + clasName + "DTUnit.class)\n");
+                sb.append("                .build( \n");
 
                 for (int j = 0; j < dTableModel.getInputSize(); j++) {
-                    sb.append( "                       D.pattern(var_$pattern$" + j + "$).expr(TEST_ARRAY[" + i + "][" + j + "].getName(), var_evaluator,\n" );
-                    sb.append( "                           (_this, evaluator) -> TEST_ARRAY[" + i + "][" + j + "].test( evaluator.getEvalCtx(" + j + "), _this.getValue() )),\n" );
+                    sb.append("                       D.pattern(var_$pattern$" + j + "$).expr(TEST_ARRAY[" + i + "][" + j + "].getName(), var_evaluator,\n");
+                    sb.append("                           (_this, evaluator) -> TEST_ARRAY[" + i + "][" + j + "].test( evaluator.getEvalCtx(" + j + "), _this.getValue() )),\n");
                 }
 
-                sb.append( "                       D.on( var_evaluator, " );
-                sb.append( IntStream.range( 0, dTableModel.getOutputSize() ).mapToObj( j -> "var_output" + j ).collect( joining(", ") ) );
-                sb.append( " ).execute(( evaluator, " );
-                sb.append( IntStream.range( 0, dTableModel.getOutputSize() ).mapToObj( j -> "output" + j ).collect( joining(", ") ) );
-                sb.append( " ) -> {\n" );
+                sb.append("                       D.on( var_evaluator, ");
+                sb.append(IntStream.range(0, dTableModel.getOutputSize()).mapToObj(j -> "var_output" + j).collect(joining(", ")));
+                sb.append(" ).execute(( evaluator, ");
+                sb.append(IntStream.range(0, dTableModel.getOutputSize()).mapToObj(j -> "output" + j).collect(joining(", ")));
+                sb.append(" ) -> {\n");
                 for (int j = 0; j < dTableModel.getOutputSize(); j++) {
-                    sb.append( "                            output" + j + ".add(evaluator.getOutput(" + i + ", " + j + "));\n" );
+                    sb.append("                            output" + j + ".add(evaluator.getOutput(" + i + ", " + j + "));\n");
                 }
-                sb.append( "                            evaluator.registerFire(" + i + ");\n" );
+                sb.append("                            evaluator.registerFire(" + i + ");\n");
 
-                sb.append( "                       }\n" );
-                sb.append( "        ));\n" );
-                sb.append( "    }\n" );
+                sb.append("                       }\n");
+                sb.append("        ));\n");
+                sb.append("    }\n");
             }
 
-            sb.append( "}\n" );
+            sb.append("}\n");
 
             String source = sb.toString();
             if (logger.isDebugEnabled()) {
-                logger.debug( clasName + ":\n" + source );
+                logger.debug(clasName + ":\n" + source);
             }
             return source;
         }
     }
 
     public static class UnitSourceGenerator implements SourceGenerator {
-        public String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel ) {
+
+        public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "package " ).append( pkgName ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "import java.util.List;\n" );
-            sb.append( "import java.util.ArrayList;\n" );
-            sb.append( "import " ).append( DataSource.class.getCanonicalName() ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "DTUnit extends " + DMNUnit.class.getCanonicalName() + " {\n" );
+            sb.append("package ").append(pkgName).append(";\n");
+            sb.append("\n");
+            sb.append("import java.util.List;\n");
+            sb.append("import java.util.ArrayList;\n");
+            sb.append("import ").append(DataSource.class.getCanonicalName()).append(";\n");
+            sb.append("\n");
+            sb.append("public class ").append(clasName).append("DTUnit extends " + DMNUnit.class.getCanonicalName() + " {\n");
 
             for (int i = 0; i < dTableModel.getInputSize(); i++) {
-                sb.append( "\n" );
-                sb.append( "    private DataSource<Object> input" ).append( i ).append( ";\n" );
-                sb.append( "    public DataSource<Object> getInput" ).append( i ).append( "() {\n" );
-                sb.append( "        return input" ).append( i ).append( ";\n" );
-                sb.append( "    }\n" );
+                sb.append("\n");
+                sb.append("    private DataSource<Object> input").append(i).append(";\n");
+                sb.append("    public DataSource<Object> getInput").append(i).append("() {\n");
+                sb.append("        return input").append(i).append(";\n");
+                sb.append("    }\n");
             }
 
             for (int i = 0; i < dTableModel.getOutputSize(); i++) {
-                sb.append( "\n" );
-                sb.append( "    private List<Object> output" + i + " = new ArrayList<Object>();\n" );
-                sb.append( "    public List<Object> getOutput" + i + "() {\n" );
-                sb.append( "        return output" + i + ";\n" );
-                sb.append( "    }\n" );
+                sb.append("\n");
+                sb.append("    private List<Object> output" + i + " = new ArrayList<Object>();\n");
+                sb.append("    public List<Object> getOutput" + i + "() {\n");
+                sb.append("        return output" + i + ";\n");
+                sb.append("    }\n");
             }
 
-            sb.append( "\n" );
-            sb.append( "    @Override\n" );
-            sb.append( "    public void onStart() {\n" );
+            sb.append("\n");
+            sb.append("    @Override\n");
+            sb.append("    public void onStart() {\n");
             for (int i = 0; i < dTableModel.getInputSize(); i++) {
-                sb.append( "        input" ).append( i ).append( " = DataSource.create( getValue(" ).append( i ).append( ") );\n" );
+                sb.append("        input").append(i).append(" = DataSource.create( getValue(").append(i).append(") );\n");
             }
-            sb.append( "    }\n" );
+            sb.append("    }\n");
 
-            sb.append( "\n" );
-            sb.append( "    @Override\n" );
-            sb.append( "    public void onEnd() {\n" );
-            sb.append( "        result = applyHitPolicy( " );
-            sb.append( IntStream.range( 0, dTableModel.getOutputSize() ).mapToObj( i -> "output" + i ).collect( joining(", ") ) );
-            sb.append( " );\n" );
-            sb.append( "    }\n" );
-            sb.append( "}\n" );
+            sb.append("\n");
+            sb.append("    @Override\n");
+            sb.append("    public void onEnd() {\n");
+            sb.append("        result = applyHitPolicy( ");
+            sb.append(IntStream.range(0, dTableModel.getOutputSize()).mapToObj(i -> "output" + i).collect(joining(", ")));
+            sb.append(" );\n");
+            sb.append("    }\n");
+            sb.append("}\n");
 
             String source = sb.toString();
             if (logger.isDebugEnabled()) {
-                logger.debug( clasName + ":\n" + source );
+                logger.debug(clasName + ":\n" + source);
             }
             return source;
         }
     }
 
     public static class UnaryTestsSourceGenerator implements SourceGenerator {
-        public String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel ) {
+
+        public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "package " ).append( pkgName ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "import java.util.List;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n" );
-            sb.append( "import org.kie.dmn.feel.runtime.UnaryTest;\n" );
-            sb.append( "import org.kie.dmn.feel.lang.EvaluationContext;\n" );
-            sb.append( "import " ).append( CompiledDTTest.class.getCanonicalName() ).append( ";\n" );
-            sb.append( "import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n" );
-            sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "UnaryTests {\n" );
-            sb.append( "\n" );
-            sb.append( getUnaryTestsSource(ctx, feel, dTableModel, pkgName, clasName) );
-            sb.append( "}\n" );
+            sb.append("package ").append(pkgName).append(";\n");
+            sb.append("\n");
+            sb.append("import java.util.List;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n");
+            sb.append("import org.kie.dmn.feel.runtime.UnaryTest;\n");
+            sb.append("import org.kie.dmn.feel.lang.EvaluationContext;\n");
+            sb.append("import ").append(CompiledDTTest.class.getCanonicalName()).append(";\n");
+            sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
+            sb.append("\n");
+            sb.append("public class ").append(clasName).append("UnaryTests {\n");
+            sb.append("\n");
+            sb.append(getUnaryTestsSource(ctx, feel, dTableModel, pkgName, clasName));
+            sb.append("}\n");
 
             String source = sb.toString();
             if (logger.isDebugEnabled()) {
-                logger.debug( clasName + ":\n" + source );
+                logger.debug(clasName + ":\n" + source);
             }
             return source;
         }
 
-        public String getUnaryTestsSource( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className ) {
+        public String getUnaryTestsSource(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className) {
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
             Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append( "    public static final CompiledDTTest[][] TEST_ARRAY = new CompiledDTTest[][] {\n" );
+            testArrayBuilder.append("    public static final CompiledDTTest[][] TEST_ARRAY = new CompiledDTTest[][] {\n");
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
-                testArrayBuilder.append( "            { " );
+                testArrayBuilder.append("            { ");
                 DTableModel.DRowModel row = dTableModel.getRows().get(i);
                 for (int j = 0; j < row.getInputs().size(); j++) {
                     String input = row.getInputs().get(j);
@@ -371,7 +377,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     if (testClass == null) {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
-                        instancesBuilder.append( "    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n" );
+                        instancesBuilder.append("    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n");
 
                         String sourceCode = feel.generateUnaryTestsSource(
                                 input,
@@ -379,67 +385,68 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                                 dTableModel.getColumns().get(j).getType())
                                 .setName(testClass).toString();
 
-                        testsBuilder.append( "\n" );
-                        testsBuilder.append( sourceCode );
-                        testsBuilder.append( "\n" );
+                        testsBuilder.append("\n");
+                        testsBuilder.append(sourceCode);
+                        testsBuilder.append("\n");
                     }
-                    testArrayBuilder.append( testClass ).append( "_INSTANCE" );
-                    if (j < row.getInputs().size()-1) {
-                        testArrayBuilder.append( ", " );
+                    testArrayBuilder.append(testClass).append("_INSTANCE");
+                    if (j < row.getInputs().size() - 1) {
+                        testArrayBuilder.append(", ");
                     }
                 }
-                if (i < dTableModel.getRows().size()-1) {
-                    testArrayBuilder.append( " },\n" );
+                if (i < dTableModel.getRows().size() - 1) {
+                    testArrayBuilder.append(" },\n");
                 } else {
-                    testArrayBuilder.append( " }\n" );
+                    testArrayBuilder.append(" }\n");
                 }
             }
 
-            testArrayBuilder.append( "    };\n" );
+            testArrayBuilder.append("    };\n");
 
             return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
     }
 
     public static class FeelExpressionSourceGenerator implements SourceGenerator {
-        public String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel ) {
+
+        public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "package " ).append( pkgName ).append( ";\n" );
-            sb.append( "\n" );
-            sb.append( "import java.util.List;\n" );
-            sb.append( "import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;\n" );
-            sb.append( "import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;" );
-            sb.append( "import org.kie.dmn.feel.lang.EvaluationContext;\n" );
-            sb.append( "import " ).append( CompiledDTTExpression.class.getCanonicalName() ).append( ";\n" );
-            sb.append( "import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n" );
-            sb.append( "\n" );
-            sb.append( "public class " ).append( clasName ).append( "FeelExpression {\n" );
-            sb.append( "\n" );
-            sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName) );
-            sb.append( "}\n" );
+            sb.append("package ").append(pkgName).append(";\n");
+            sb.append("\n");
+            sb.append("import java.util.List;\n");
+            sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;\n");
+            sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;");
+            sb.append("import org.kie.dmn.feel.lang.EvaluationContext;\n");
+            sb.append("import ").append(CompiledDTTExpression.class.getCanonicalName()).append(";\n");
+            sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
+            sb.append("\n");
+            sb.append("public class ").append(clasName).append("FeelExpression {\n");
+            sb.append("\n");
+            sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName));
+            sb.append("}\n");
 
             String source = sb.toString();
             if (logger.isDebugEnabled()) {
-                logger.debug( clasName + ":\n" + source );
+                logger.debug(clasName + ":\n" + source);
             }
             return source;
         }
 
-        public String getFeelExpressionSource(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className ) {
+        public String getFeelExpressionSource(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className) {
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
             Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append( "    public static final CompiledDTTExpression[][] TEST_ARRAY = new CompiledDTTExpression[][] {\n" );
+            testArrayBuilder.append("    public static final CompiledDTTExpression[][] TEST_ARRAY = new CompiledDTTExpression[][] {\n");
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
-                testArrayBuilder.append( "            { " );
+                testArrayBuilder.append("            { ");
                 DTableModel.DRowModel row = dTableModel.getRows().get(i);
                 for (int j = 0; j < row.getInputs().size(); j++) {
                     String input = row.getInputs().get(j);
@@ -447,7 +454,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     if (testClass == null) {
                         testClass = className + "r" + i + "c" + j;
                         testClassesByInput.put(input, testClass);
-                        instancesBuilder.append( "    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n" );
+                        instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
                         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
                                 input,
@@ -455,72 +462,50 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
                         renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
-                        List<ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = dTableModel.generateInputClauses(ctx.toCompilerContext());
-                        System.out.println("classOrInterfaceDeclaration = " + classOrInterfaceDeclarations);
-
-                        testsBuilder.append( "\n" );
-                        testsBuilder.append( classOrInterfaceDeclaration.toString() );
-                        testsBuilder.append( "\n" );
+                        testsBuilder.append("\n");
+                        testsBuilder.append(classOrInterfaceDeclaration.toString());
+                        testsBuilder.append("\n");
                     }
-                    testArrayBuilder.append( testClass ).append( "_INSTANCE" );
-                    if (j < row.getInputs().size()-1) {
-                        testArrayBuilder.append( ", " );
+                    testArrayBuilder.append(testClass).append("_INSTANCE");
+                    if (j < row.getInputs().size() - 1) {
+                        testArrayBuilder.append(", ");
                     }
                 }
-                if (i < dTableModel.getRows().size()-1) {
-                    testArrayBuilder.append( " },\n" );
+                if (i < dTableModel.getRows().size() - 1) {
+                    testArrayBuilder.append(" },\n");
                 } else {
-                    testArrayBuilder.append( " }\n" );
+                    testArrayBuilder.append(" }\n");
                 }
             }
 
-            testArrayBuilder.append( "    };\n" );
+            testArrayBuilder.append("    };\n");
 
             return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
 
-        public String getInitClauses(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className ) {
+        public String getInputClause(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className) {
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
-            Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append( "    public static final CompiledDTTExpression[][] TEST_ARRAY = new CompiledDTTExpression[][] {\n" );
+            List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
 
-            for (int i = 0; i < dTableModel.getRows().size(); i++) {
-                testArrayBuilder.append( "            { " );
-                DTableModel.DRowModel row = dTableModel.getRows().get(i);
-                for (int j = 0; j < row.getInputs().size(); j++) {
-                    String input = row.getInputs().get(j);
-                    String testClass = testClassesByInput.get(input);
-                    if (testClass == null) {
-                        testClass = className + "r" + i + "c" + j;
-                        testClassesByInput.put(input, testClass);
-                        instancesBuilder.append( "    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n" );
+            int i = 0;
+            for (ClassOrInterfaceDeclaration classOrInterfaceDeclaration : inputClauses) {
+                String testClass = "inputClause" + i;
+                instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
-                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
-                                input,
-                                dTableModel.getColumns().get(j).getType(), ctx.toCompilerContext());
+                renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
-                        renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
-
-                        testsBuilder.append( "\n" );
-                        testsBuilder.append( classOrInterfaceDeclaration.toString() );
-                        testsBuilder.append( "\n" );
-                    }
-                    testArrayBuilder.append( testClass ).append( "_INSTANCE" );
-                    if (j < row.getInputs().size()-1) {
-                        testArrayBuilder.append( ", " );
-                    }
-                }
-                if (i < dTableModel.getRows().size()-1) {
-                    testArrayBuilder.append( " },\n" );
-                } else {
-                    testArrayBuilder.append( " }\n" );
-                }
+                testsBuilder.append("\n");
+                testsBuilder.append(classOrInterfaceDeclaration.toString());
+                testsBuilder.append("\n");
+                testArrayBuilder.append(testClass).append("_INSTANCE");
             }
 
-            testArrayBuilder.append( "    };\n" );
+            testArrayBuilder.append("    public static final CompiledDTTExpression[] INPUT_CLAUSES = new CompiledDTTExpression[] {\n");
+
+            testArrayBuilder.append("    };\n");
 
             return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
