@@ -119,22 +119,9 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testNAME_INVALID() {
-        List<DMNMessage> validate = validator.validate( getReader( "NAME_INVALID.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
-    }
-
-    @Test
-    public void testNAME_INVALID_bis() {
-        /* in the file NAME_INVALID_bis.dmn there are 3 invalid "names" but only the one for the Decision node should be reported.
-         * <definitions id="NAME_INVALID" name="code in list of codes" ...
-            <decision name="code in list of codes" id="d_GreetingMessage">
-             <variable name="code in list of codes" typeRef="feel:string"/>
-         */
-        List<DMNMessage> validate = validator.validate( getReader( "NAME_INVALID_bis.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
+    public void testNAME_IS_VALID() {
+        List<DMNMessage> validate = validator.validate( getReader( "NAME_IS_VALID.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 0 ) );
     }
 
     @Test
