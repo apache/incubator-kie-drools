@@ -132,16 +132,6 @@ public class DTableModel {
         }
     }
 
-    protected CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
-        return compilationCache.computeIfAbsent(expr, e -> {
-            if (e == null || e.isEmpty()) {
-                return ctx -> null;
-            } else {
-                return (CompiledFEELExpression) feel.compile(model, element, msg, dtName, e, feelctx, index);
-            }
-        });
-    }
-
     protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         int index = 1;
         for (DColumnModel column : columns) {
@@ -160,25 +150,9 @@ public class DTableModel {
             if (inputValuesText != null && !inputValuesText.isEmpty()) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            inputClauses.add(generateSource( feel, feelctx, column.getName()));
+            inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx));
         }
         return inputClauses;
-    }
-
-    protected List<ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
-        List<ClassOrInterfaceDeclaration> outputClauses = new ArrayList<>();
-        for (DOutputModel output : outputs) {
-            output.outputValues = getOutputValuesTests( output );
-            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
-            if (defaultValue != null && !defaultValue.isEmpty()) {
-                outputClauses.add(generateSource( feel, feelctx, defaultValue));
-            }
-        }
-        return outputClauses;
-    }
-
-    protected ClassOrInterfaceDeclaration generateSource(DMNFEELHelper feel, CompilerContext feelctx, String expr) {
-        return feel.generateFeelExpressionSource(expr, feelctx);
     }
 
     private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
@@ -189,6 +163,28 @@ public class DTableModel {
                 output.compiledDefault = compileFeelExpression( output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue, 0 );
             }
         }
+    }
+
+    protected List<ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
+        List<ClassOrInterfaceDeclaration> outputClauses = new ArrayList<>();
+        for (DOutputModel output : outputs) {
+            output.outputValues = getOutputValuesTests( output );
+            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
+            if (defaultValue != null && !defaultValue.isEmpty()) {
+                outputClauses.add(feel.generateFeelExpressionSource(defaultValue, feelctx));
+            }
+        }
+        return outputClauses;
+    }
+
+    protected CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
+        return compilationCache.computeIfAbsent(expr, e -> {
+            if (e == null || e.isEmpty()) {
+                return ctx -> null;
+            } else {
+                return (CompiledFEELExpression) feel.compile(model, element, msg, dtName, e, feelctx, index);
+            }
+        });
     }
 
     private List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
