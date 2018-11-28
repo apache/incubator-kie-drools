@@ -8,6 +8,8 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
@@ -44,6 +46,7 @@ public class ExecModelDTableModel extends DTableModel {
         // load from class loader
         final String className = getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION);
         Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
+        System.out.println("generated class" + generatedClass);
 
         return generatedClass.map(gc -> {
             try {
@@ -51,7 +54,12 @@ public class ExecModelDTableModel extends DTableModel {
 
                 logger.debug("Read compiled Feel Expression from class loader: " + className);
 
-                CompiledFEELExpression expression1 = null;
+                CompiledFEELExpression expression1 = new CompiledFEELExpression() {
+                    @Override
+                    public Object apply(EvaluationContext evaluationContext) {
+                        return null;
+                    }
+                };
 
                 return expression1;
             } catch (ClassNotFoundException e) {

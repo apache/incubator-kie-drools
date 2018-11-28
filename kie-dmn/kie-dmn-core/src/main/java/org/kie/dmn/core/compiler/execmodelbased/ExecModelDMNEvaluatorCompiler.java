@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler.execmodelbased;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -428,6 +429,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append("public class ").append(clasName).append("FeelExpression {\n");
             sb.append("\n");
             sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName));
+            sb.append("\n");
+            sb.append(getInputClause(ctx, dTableModel));
             sb.append("}\n");
 
             String source = sb.toString();
@@ -443,7 +446,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             StringBuilder instancesBuilder = new StringBuilder();
 
             Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append("    public static final CompiledDTTExpression[][] TEST_ARRAY = new CompiledDTTExpression[][] {\n");
+            testArrayBuilder.append("    public static final CompiledDTTExpression[][] FEEL_EXPRESSION_ARRAY = new CompiledDTTExpression[][] {\n");
 
             for (int i = 0; i < dTableModel.getRows().size(); i++) {
                 testArrayBuilder.append("            { ");
@@ -452,7 +455,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                     String input = row.getInputs().get(j);
                     String testClass = testClassesByInput.get(input);
                     if (testClass == null) {
-                        testClass = className + "r" + i + "c" + j;
+                        testClass = className + "r" + i + "c" + j+ "expression";
                         testClassesByInput.put(input, testClass);
                         instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
@@ -483,15 +486,17 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
 
-        public String getInputClause(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className) {
+        public String getInputClause(DMNCompilerContext ctx, DTableModel dTableModel) {
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
             List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
+            testArrayBuilder.append("    public static final CompiledDTTExpression[] FEEL_EXPRESSION_INPUT_CLAUSES = new CompiledDTTExpression[] {\n");
 
             int i = 0;
-            for (ClassOrInterfaceDeclaration classOrInterfaceDeclaration : inputClauses) {
+            for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
+                ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
                 String testClass = "inputClause" + i;
                 instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
 
@@ -501,9 +506,13 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                 testsBuilder.append(classOrInterfaceDeclaration.toString());
                 testsBuilder.append("\n");
                 testArrayBuilder.append(testClass).append("_INSTANCE");
-            }
+                i++;
 
-            testArrayBuilder.append("    public static final CompiledDTTExpression[] INPUT_CLAUSES = new CompiledDTTExpression[] {\n");
+
+                if(iterator.hasNext()) {
+                    testArrayBuilder.append(" ,\n");
+                }
+            }
 
             testArrayBuilder.append("    };\n");
 
