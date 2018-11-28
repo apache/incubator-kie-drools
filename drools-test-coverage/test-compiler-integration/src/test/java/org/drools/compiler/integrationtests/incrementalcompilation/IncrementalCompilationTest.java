@@ -3991,4 +3991,74 @@ public class IncrementalCompilationTest {
         final Results updateResults = kc.updateToVersion(id2);
         assertFalse(updateResults.hasMessages(Level.ERROR));
     }
+
+    @Test
+    public void testRemoveRulesWithLogicalAssertions() {
+        // DROOLS-2646
+        final String DRL1 =
+                "declare MyInt\n" +
+                "    val : Integer @key\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    String(this == \"I'm active\")\n" +
+                "    $i : Integer(intValue == 1)\n" +
+                "then\n" +
+                "    insertLogical(new MyInt($i));\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    String()\n" +
+                "    $i : Integer(intValue == 2)\n" +
+                "then\n" +
+                "    insertLogical(new MyInt($i));\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    String(this == \"I'm active\")\n" +
+                "    $i : Integer(intValue == 3)\n" +
+                "then\n" +
+                "    insertLogical(new MyInt($i));\n" +
+                "end";
+
+
+        KieServices ks = KieServices.get();
+        final ReleaseId id = ks.newReleaseId("org.test", "logical", "1.0.0");
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(id);
+        kfs.write(ks.getResources()
+                .newReaderResource(new StringReader(DRL1))
+                .setResourceType(ResourceType.DRL)
+                .setSourcePath("rules.drl"));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        kieBuilder.buildAll();
+        KieModule kieModule = kieBuilder.getKieModule();
+        KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
+        KieSession kieSession = kieContainer.newKieSession();
+
+        kieSession.insert("I'm active");
+        kieSession.insert(1);
+        kieSession.insert(2);
+        kieSession.insert(3);
+        assertEquals(4, kieSession.getObjects().size());
+
+        kieSession.fireAllRules();
+        assertEquals(7, kieSession.getObjects().size());
+
+        ReleaseId id2 = ks.newReleaseId("org.test", "logical", "2.0.0");
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+
+        KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
+        kfs2.generateAndWritePomXML(id2);
+
+        kieBuilder = ks.newKieBuilder(kfs2);
+        kieBuilder.buildAll();
+        kieModule = kieBuilder.getKieModule();
+        kieContainer.updateToVersion(id2);
+
+        kieSession.fireAllRules();
+        assertEquals(4, kieSession.getObjects().size());
+    }
 }
