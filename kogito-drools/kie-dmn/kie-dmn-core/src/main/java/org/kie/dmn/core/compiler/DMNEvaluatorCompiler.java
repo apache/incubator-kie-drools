@@ -102,7 +102,7 @@ public class DMNEvaluatorCompiler {
         if ( expression == null ) {
             if( node instanceof DecisionNode ) {
                 MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
+                                       DMNMessage.Severity.WARN,
                                        node.getSource(),
                                        model,
                                        null,
@@ -111,7 +111,7 @@ public class DMNEvaluatorCompiler {
                                        node.getIdentifierString() );
             } else if( node instanceof BusinessKnowledgeModelNode ) {
                 MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
+                                       DMNMessage.Severity.WARN,
                                        node.getSource(),
                                        model,
                                        null,
@@ -579,6 +579,9 @@ public class DMNEvaluatorCompiler {
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
                 String expressionText = le.getText();
+                if (expressionText == null || expressionText.isEmpty()) {
+                    expressionText = "null"; // addendum to DROOLS-2075 Allow empty output cell on DTs
+                }
                 CompiledExpression compiledExpression = ctx.getFeelHelper().compileFeelExpression(
                         ctx,
                         expressionText,

@@ -21,8 +21,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Assert;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
@@ -37,8 +44,12 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * A type-check safe runtime creation helper.
@@ -67,6 +78,22 @@ public final class DMNRuntimeUtil {
         return runtime;
     }
     
+    public static List<DMNMessage> createExpectingDMNMessages(final String resourceName, final Class testClass) {
+        final KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = getKieContainerIgnoringErrors(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                        ks.getResources().newClassPathResource(resourceName, testClass));
+
+        Results verify = kieContainer.verify();
+        List<Message> kie_messages = verify.getMessages();
+        LOG.debug("{}", kie_messages);
+        List<DMNMessage> dmnMessages = kie_messages.stream()
+                                                   .filter(DMNMessage.class::isInstance)
+                                                   .map(DMNMessage.class::cast)
+                                                   .collect(Collectors.toList());
+        assertThat(dmnMessages.isEmpty(), is(false));
+        return dmnMessages;
+    }
+
     public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {
         final KieServices ks = KieServices.Factory.get();
         Resource mainResource = ks.getResources().newClassPathResource(resourceName, testClass);
@@ -132,5 +159,37 @@ public final class DMNRuntimeUtil {
 
     private DMNRuntimeUtil() {
         // No constructor for util class.
+    }
+
+    public static KieContainer getKieContainerIgnoringErrors(ReleaseId releaseId,
+                                                             Resource... resources) {
+        KieServices ks = KieServices.Factory.get();
+        createAndDeployJarIgnoringErrors(ks, releaseId, resources);
+        return ks.newKieContainer(releaseId);
+    }
+
+    public static KieModule createAndDeployJarIgnoringErrors(KieServices ks,
+                                                             ReleaseId releaseId,
+                                                             Resource... resources) {
+        byte[] jar = createJarIgnoringErrors(ks, releaseId, resources);
+
+        KieModule km = KieHelper.deployJarIntoRepository(ks, jar);
+        return km;
+    }
+
+    public static byte[] createJarIgnoringErrors(KieServices ks, ReleaseId releaseId, Resource... resources) {
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(releaseId);
+        for (int i = 0; i < resources.length; i++) {
+            if (resources[i] != null) {
+                kfs.write(resources[i]);
+            }
+        }
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        ((InternalKieBuilder) kieBuilder).buildAll(o -> true);
+
+        InternalKieModule kieModule = (InternalKieModule) ((InternalKieBuilder) kieBuilder).getKieModuleIgnoringErrors();
+
+        byte[] jar = kieModule.getBytes();
+        return jar;
     }
 }

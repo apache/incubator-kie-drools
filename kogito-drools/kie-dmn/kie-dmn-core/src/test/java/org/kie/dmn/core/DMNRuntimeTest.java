@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -323,14 +322,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testErrorMessages() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("car_damage_responsibility2.dmn", this.getClass() );
-
-        runtime.addListener( DMNRuntimeUtil.createListener() );
-
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_dcc63ab0-3a53-4628-8bee-3ae1f1ad683b", "Car Damage Responsibility" );
-        assertThat( dmnModel, notNullValue() );
-
-        assertThat( dmnModel.hasErrors(), is( true ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("car_damage_responsibility2.dmn", this.getClass());
+        assertThat(messages.isEmpty(), is(false));
     }
 
     @Test
@@ -793,10 +786,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInvalidVariableNames() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid-variable-names.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.hasErrors(), is(true) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("invalid-variable-names.dmn", this.getClass());
+        assertThat(messages.isEmpty(), is(false));
     }
 
     @Test
@@ -824,7 +815,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testInvalidUHitPolicy() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Invalid_U_hit_policy.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_7cf49108-9b55-4f35-b5ef-f83448061757", "Greater than 5 - Invalid U hit policy" );
@@ -843,15 +834,10 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInvalidModel() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Loan_Prequalification_Condensed_Invalid.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b",
-                "Loan Prequalification Condensed" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 2 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" ) );
-        assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee" ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("Loan_Prequalification_Condensed_Invalid.dmn", this.getClass());
+        assertThat(messages.size(), is(2));
+        assertThat(messages.get(0).getSourceId(), is("_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48"));
+        assertThat(messages.get(1).getSourceId(), is("_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee"));
     }
 
     @Test
@@ -950,13 +936,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testPriority_table_missing_output_values() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DTABLE_PRIORITY_MISSING_OUTVALS.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "https://github.com/kiegroup/kie-dmn",
-                "DTABLE_PRIORITY_MISSING_OUTVALS" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 1 ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("DTABLE_PRIORITY_MISSING_OUTVALS.dmn", this.getClass());
+        assertThat(messages.size(), is(1));
     }
 
     @Test
@@ -1001,21 +982,16 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testWrongConstraintsInItemDefinition() {
         // DROOLS-1503
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("WrongConstraintsInItemDefinition.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "http://www.trisotech.com/dmn/definitions/_81d8fefe-9cd7-43b8-922a-ff245c434457",
-                "Dessin 1" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 3 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getSourceReference(), is( instanceOf( ItemDefinition.class ) ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
-        assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_e794c655-4fdf-45d1-b7b7-d990df513f92" ) );
-        assertThat( dmnModel.getMessages().get( 1 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("WrongConstraintsInItemDefinition.dmn", this.getClass());
+        assertThat(DMNRuntimeUtil.formatMessages(messages), messages.size(), is(3));
+        assertThat(messages.get(0).getSourceReference(), is(instanceOf(ItemDefinition.class)));
+        assertThat(messages.get(0).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
+        assertThat(messages.get(1).getSourceId(), is("_e794c655-4fdf-45d1-b7b7-d990df513f92"));
+        assertThat(messages.get(1).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
         
         // The DecisionTable does not define typeRef for the single OutputClause, but neither the enclosing Decision define typeRef for its variable
-        assertThat( dmnModel.getMessages().get( 2 ).getSourceId(), is( "_31911de7-e184-411c-99d1-f33977971270" ) );
-        assertThat( dmnModel.getMessages().get( 2 ).getMessageType(), is( DMNMessageType.MISSING_TYPE_REF ) );
+        assertThat(messages.get(2).getSourceId(), is("_31911de7-e184-411c-99d1-f33977971270"));
+        assertThat(messages.get(2).getMessageType(), is(DMNMessageType.MISSING_TYPE_REF));
     }
     
     @Test
@@ -1142,27 +1118,17 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testUnknownVariable1() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("unknown_variable1.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
-                "Loan Recommendation - context" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 2 ) );
-        assertEquals(1, dmnModel.getMessages().stream().filter( m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL) )
-                                                       .filter( m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'") )
-                                                       .count());
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("unknown_variable1.dmn", this.getClass());
+        assertEquals(1, messages.stream().filter(m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL))
+                                .filter(m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'"))
+                                .count());
     }
 
     @Test
     public void testUnknownVariable2() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("unknown_variable2.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
-                "Loan Recommendation - context" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'Borrower.liquidAssetsAmt'" ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("unknown_variable2.dmn", this.getClass());
+        assertThat(messages.get(0).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
+        assertThat(messages.get(0).getMessage(), containsString("Unknown variable 'Borrower.liquidAssetsAmt'"));
     }
 
     @Test
@@ -1268,15 +1234,10 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testJavaFunctionContext_withErrors() {
         // DROOLS-1568
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("java_function_context_with_errors.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel(
-                "http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314",
-                "Dessin 1" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 2 ) );
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("java_function_context_with_errors.dmn", this.getClass());
+        assertThat(messages.size(), is(2));
 
-        final List<String> sourceIDs = dmnModel.getMessages().stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
+        final List<String> sourceIDs = messages.stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
         assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34320") );
         assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
     }
@@ -2213,13 +2174,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testBoxedInvocationMissingExpression() {
         // DROOLS-2813 DMN boxed invocation missing expression NPE and Validator issue
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", this.getClass());
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", this.getClass());
 
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7e400266-b8ff-4418-bc81-03bf8d642ee3", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(true));
-
-        assertTrue(dmnModel.getMessages().stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
+        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
     }
 
     @Test
@@ -2294,15 +2251,12 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testWrongTypeRefForDRGElement() {
         // DROOLS-2917 DMN resolveTypeRef returning null in BKM causes NPE during KieContainer compilation
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("WrongTypeRefForDRGElement.dmn", this.getClass());
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
-        
-        DMNRuntimeUtil.formatMessages(dmnModel.getMessages());
-        assertThat(dmnModel.hasErrors(), is(true));
-        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)), is(true));
-        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_561d31ba-a34b-4cf3-b9a4-537e21ce1013")), is(true));
-        assertThat(dmnModel.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_45fa8674-f4f0-4c06-b2fd-52bbd17d8550")), is(true));
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("WrongTypeRefForDRGElement.dmn", this.getClass());
+        DMNRuntimeUtil.formatMessages(messages);
+        assertThat(messages.isEmpty(), is(false));
+        assertThat(messages.stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)), is(true));
+        assertThat(messages.stream().anyMatch(m -> m.getSourceId().equals("_561d31ba-a34b-4cf3-b9a4-537e21ce1013")), is(true));
+        assertThat(messages.stream().anyMatch(m -> m.getSourceId().equals("_45fa8674-f4f0-4c06-b2fd-52bbd17d8550")), is(true));
     }
 
     @Test

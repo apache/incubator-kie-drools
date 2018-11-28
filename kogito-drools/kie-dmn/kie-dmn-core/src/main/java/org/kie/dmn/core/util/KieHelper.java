@@ -65,7 +65,7 @@ public final class KieHelper {
         return jar;
     }
 
-    private static KieModule deployJarIntoRepository(KieServices ks, byte[] jar) {
+    public static KieModule deployJarIntoRepository(KieServices ks, byte[] jar) {
         Resource jarRes = ks.getResources().newByteArrayResource(jar);
         KieModule km = ks.getRepository().addKieModule(jarRes);
         return km;
@@ -74,4 +74,5 @@ public final class KieHelper {
     private KieHelper() {
         // Constructing instances is not allowed for this class
     }
+
 }

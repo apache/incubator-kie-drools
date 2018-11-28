@@ -42,6 +42,8 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -56,6 +58,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionTableRuntimeTest.class);
 
     public DMNDecisionTableRuntimeTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
@@ -341,6 +345,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "MonthlyPmt", BigDecimal.valueOf( 1 ) );
         context.set( "MonthlyIncome", BigDecimal.valueOf( 1 ) );
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        LOG.debug("{}", dmnResult);
         assertThat( dmnResult.hasErrors(), is( false ) );
         assertNull( dmnResult.getContext().get("Logique de décision 1") );
     }

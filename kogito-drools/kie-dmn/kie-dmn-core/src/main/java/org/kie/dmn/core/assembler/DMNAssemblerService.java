@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -36,6 +37,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
@@ -167,6 +169,9 @@ public class DMNAssemblerService implements KieAssemblerService {
                 }
             }
             dmnpkg.addModel( model.getName(), model );
+            for (DMNMessage m : model.getMessages()) {
+                kbuilderImpl.addBuilderResult(DMNKnowledgeBuilderError.from(resource, namespace, m));
+            }
             dmnpkg.addProfiles(kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl)));
         } else {
             kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, "Unable to compile DMN model for the resource"));
