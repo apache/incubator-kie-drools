@@ -125,10 +125,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.internal.runtime.KieRuntimeService;
-import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.runtime.beliefs.Mode;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Calendars;
@@ -137,6 +134,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -244,7 +242,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private volatile InternalProcessRuntime processRuntime;
 
-    private Map<String, Object> runtimeServices;
+    private transient KieRuntimeFactory runtimeFactory;
 
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
@@ -421,36 +419,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public <T> T getKieRuntime(Class<T> cls) {
-        //  Only ever one KieRuntimeManager is created, using the two-tone pattern.
-
-        T runtime;
-        if (runtimeServices == null) {
-            runtime = createRuntimeService(cls);
-        } else {
-            runtime = (T) runtimeServices.get(cls.getName());
-            if (runtime == null) {
-                runtime = createRuntimeService(cls);
-            }
-        }
-
-        return runtime;
+        return createRuntimeService(cls);
     }
 
     public synchronized <T> T createRuntimeService(Class<T> cls) {
         // This is sychronized to ensure that only ever one is created, using the two-tone pattern.
-        if (runtimeServices == null) {
-            runtimeServices = new HashMap<String, Object>();
+        if (runtimeFactory == null) {
+            runtimeFactory = KieRuntimeFactory.of(getKieBase());
         }
 
-        T runtime = (T) runtimeServices.get(cls.getName());
-        if (runtime == null) {
-            KieRuntimes runtimes = ServiceRegistry.getInstance().get(KieRuntimes.class);
-
-            KieRuntimeService service = (KieRuntimeService) runtimes.getRuntimes().get(cls.getName());
-            runtime  = (T) service.newKieRuntime(this);
-        }
-
-        return runtime;
+        return runtimeFactory.get(cls);
     }
 
     public WorkingMemoryEntryPoint getEntryPoint(String name) {
