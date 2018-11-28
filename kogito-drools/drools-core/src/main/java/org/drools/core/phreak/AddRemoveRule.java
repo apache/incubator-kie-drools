@@ -922,9 +922,9 @@ public class AddRemoveRule {
 
                     if (lt.getHandlePrevious() != null) {
                         lt.getHandlePrevious().setHandleNext( nextLt );
-                    }
-                    if (nextLt != null) {
-                        nextLt.setHandlePrevious( lt.getHandlePrevious() );
+                        if (nextLt != null) {
+                            nextLt.setHandlePrevious( lt.getHandlePrevious() );
+                        }
                     }
                 }
             });
@@ -1122,6 +1122,10 @@ public class AddRemoveRule {
             } else {
                 // is the LT for the LIAN, if so we need to process the FH too
                 fh.removeLeftTuple(removingLt);
+                if (leftPrevious == null) {
+                    // The removed tuple was first in linked list, add the peer at its original position
+                    fh.addFirstLeftTuple( nextPeerLt );
+                }
             }
 
             if ( rightParent != null ) {
