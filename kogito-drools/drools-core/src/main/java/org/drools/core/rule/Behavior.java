@@ -16,13 +16,14 @@
 
 package org.drools.core.rule;
 
+import java.util.Collection;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-
-import java.util.Collection;
+import org.drools.core.time.JobHandle;
 
 /**
  * An interface for all behavior implementations
@@ -31,6 +32,14 @@ public interface Behavior extends RuleComponent, Cloneable {
 
     interface Context {
         Collection<EventFactHandle> getFactHandles();
+
+        default JobHandle getJobHandle() {
+            return null;
+        }
+
+        default void setJobHandle(JobHandle jobHandle) {
+            throw new UnsupportedOperationException();
+        }
     }
     
     enum BehaviorType {

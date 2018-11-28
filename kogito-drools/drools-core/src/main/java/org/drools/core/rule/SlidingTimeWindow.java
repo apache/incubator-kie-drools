@@ -156,6 +156,9 @@ public class SlidingTimeWindow
                                       nodeId);
             } else {
                 queue.remove( handle );
+                if ( queue.isEmpty() && queue.getJobHandle() != null ) {
+                    workingMemory.getTimerService().removeJob( queue.getJobHandle() );
+                }
             }
         }
     }
@@ -228,9 +231,18 @@ public class SlidingTimeWindow
 
         private PriorityQueue<EventFactHandle> queue;
         private EventFactHandle                expiringHandle;
+        private JobHandle                      jobHandle;
 
         public SlidingTimeWindowContext() {
             this.queue = new PriorityQueue<EventFactHandle>( 16 ); // arbitrary size... can we improve it?
+        }
+
+        public JobHandle getJobHandle() {
+            return this.jobHandle;
+        }
+
+        public void setJobHandle(JobHandle jobHandle) {
+            this.jobHandle = jobHandle;
         }
 
         @SuppressWarnings("unchecked")
@@ -265,6 +277,10 @@ public class SlidingTimeWindow
             queue.remove( handle );
         }
 
+        public boolean isEmpty() {
+            return queue.isEmpty();
+        }
+
         public EventFactHandle peek() {
             return queue.peek( );
         }
@@ -294,18 +310,6 @@ public class SlidingTimeWindow
 
             EventFactHandle handle = slCtx.peek();
             outputCtx.writeInt( handle.getId() );
-
-//            BetaNode node = (BetaNode) handle.getTupleSink();
-//            outputCtx.writeInt( node.getId() );
-//
-//            Behavior[] behaviors = node.getBehaviors();
-//            int i = 0;
-//            for ( ; i < behaviors.length; i++ ) {
-//                if ( behaviors[i] == bjobCtx.behavior ) {
-//                    break;
-//                }
-//            }
-//            outputCtx.writeInt( i );
         }
 
         public Timer serialize(JobContext jobCtx,
@@ -353,7 +357,6 @@ public class SlidingTimeWindow
         public int                   nodeId;
         public Behavior              behavior;
         public Behavior.Context      behaviorContext;
-        public JobHandle             handle;
 
         public BehaviorJobContext(int                   nodeId,
                                   InternalWorkingMemory workingMemory,
@@ -367,11 +370,11 @@ public class SlidingTimeWindow
         }
 
         public JobHandle getJobHandle() {
-            return this.handle;
+            return behaviorContext.getJobHandle();
         }
 
         public void setJobHandle(JobHandle jobHandle) {
-            this.handle = jobHandle;
+            behaviorContext.setJobHandle( jobHandle );
         }
 
         public void readExternal(ObjectInput in) throws IOException,

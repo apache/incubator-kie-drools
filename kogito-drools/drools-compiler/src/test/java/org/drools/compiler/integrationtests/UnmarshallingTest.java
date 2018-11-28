@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -25,17 +23,21 @@ import java.io.StringReader;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.api.runtime.KieSession;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UnmarshallingTest {
 
@@ -128,4 +130,32 @@ public class UnmarshallingTest {
         }
     }
 
+    @Test
+    public void testMarshallWithTimer() throws Exception {
+        // DROOLS-2210
+        String drl =
+                "declare String @role(event) end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "        $s : String( ) over window:time( 5s )\n" +
+                "    then\n" +
+                "        delete( $s );\n" +
+                "end\n";
+
+        KieBase kBase = initializeKnowledgeBase( drl );
+
+        KieSession ksession = kBase.newKieSession();
+        ksession.insert( "test" );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Marshaller marshaller = KieServices.get().getMarshallers().newMarshaller(kBase);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        marshaller.marshall( baos, ksession );
+
+        ksession.dispose();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
+        ksession = marshaller.unmarshall( bais );
+        assertEquals( 0, ksession.fireAllRules() );
+    }
 }

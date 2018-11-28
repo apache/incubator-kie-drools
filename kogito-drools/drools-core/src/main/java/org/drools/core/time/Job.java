@@ -17,5 +17,5 @@
 package org.drools.core.time;
 
 public interface Job {
-    public void execute(JobContext ctx);
+    void execute(JobContext ctx);
 }

@@ -27,7 +27,7 @@ public interface SchedulerService {
      * 
      * @return
      */
-    public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
+    JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
 
     /**
      * Remove the job identified by the given job handle from the 
@@ -37,5 +37,5 @@ public interface SchedulerService {
      * 
      * @return
      */
-    public boolean removeJob(JobHandle jobHandle);
+    boolean removeJob(JobHandle jobHandle);
 }
