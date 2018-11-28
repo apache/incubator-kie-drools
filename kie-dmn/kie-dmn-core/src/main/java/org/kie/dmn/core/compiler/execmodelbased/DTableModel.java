@@ -132,6 +132,15 @@ public class DTableModel {
         }
     }
 
+    protected ClassOrInterfaceDeclaration[][] generateRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        List<ClassOrInterfaceDeclaration[]> allRows = new ArrayList<>();
+        for (DRowModel row : rows) {
+            ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map( expr -> feel.generateFeelExpressionSource(expr, feelctx) ).toArray(ClassOrInterfaceDeclaration[]::new);
+            allRows.add(rowCompiledOutputs);
+        }
+        return allRows.toArray(new ClassOrInterfaceDeclaration[0][0]);
+    }
+
     protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         int index = 1;
         for (DColumnModel column : columns) {
