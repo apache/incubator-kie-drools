@@ -116,7 +116,7 @@ public class DefaultSolverTest {
     }
 
     @Test(timeout = 600_000)
-    public void zeroEntity() {
+    public void solveThrowsWhenZeroEntity() {
         SolverFactory<TestdataChainedSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataChainedSolution.class, TestdataChainedEntity.class);
 
@@ -127,13 +127,15 @@ public class DefaultSolverTest {
         Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
 
         TestdataChainedSolution solution = new TestdataChainedSolution("1");
-        solution.setChainedEntityList(Collections.singletonList(new TestdataChainedEntity("3")));
+        solution.setChainedEntityList(Collections.EMPTY_LIST);
         solution.setChainedAnchorList(Collections.singletonList(new TestdataChainedAnchor("4")));
 
         try {
             solver.solve(solution);
         } catch (Exception exception) {
-            assertTrue(exception instanceof IllegalStateException);
+            assertEquals(true,exception instanceof IllegalStateException);
+            assertEquals(true,exception.getMessage().contains("annotated member"));
+            assertEquals(true,exception.getMessage().contains("must not return"));
         }
     }
 }
