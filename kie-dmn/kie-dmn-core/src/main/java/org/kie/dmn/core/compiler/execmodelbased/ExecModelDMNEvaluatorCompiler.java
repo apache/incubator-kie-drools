@@ -503,7 +503,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
             List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
 
-            int i = 1;
+            int i = 0;
             for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
                 String testClass = "inputClause" + i;

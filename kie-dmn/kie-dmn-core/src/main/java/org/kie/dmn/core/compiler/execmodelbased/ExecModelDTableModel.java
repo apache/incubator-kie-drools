@@ -34,34 +34,14 @@ public class ExecModelDTableModel extends DTableModel {
 
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-
         try {
-
-            logger.debug("Read compiled input clause from class loader: " + className);
-
-            int index = 1;
-
-            for (DColumnModel column : columns) {
-                Field feel_expression_input_clauses = clazz.getField("inputClause" + index + "_INSTANCE");
-                column.compiledInputClause = (CompiledFEELExpression) feel_expression_input_clauses.get(clazz);
-                index++;
+            for (int i = 0; i < columns.size(); i++) {
+                DColumnModel column = columns.get(i);
+                Field inputClauseField = clazz.getField("inputClause" + i + "_INSTANCE");
+                column.compiledInputClause = (CompiledFEELExpression) inputClauseField.get(clazz);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected CompiledFEELExpression compileFeelExpression(DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index) {
-        logger.debug("Read compiled Feel Expression from class loader: " + className);
-
-        CompiledFEELExpression expression1 = new CompiledFEELExpression() {
-            @Override
-            public Object apply(EvaluationContext evaluationContext) {
-                return null;
-            }
-        };
-
-        return expression1;
     }
 }
