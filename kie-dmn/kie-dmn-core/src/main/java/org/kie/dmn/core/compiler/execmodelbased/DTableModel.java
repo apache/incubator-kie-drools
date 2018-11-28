@@ -132,7 +132,7 @@ public class DTableModel {
         }
     }
 
-    protected ClassOrInterfaceDeclaration[][] generateRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected ClassOrInterfaceDeclaration[][] generateRows(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration[]> allRows = new ArrayList<>();
         for (DRowModel row : rows) {
             ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map( expr -> feel.generateFeelExpressionSource(expr, feelctx) ).toArray(ClassOrInterfaceDeclaration[]::new);

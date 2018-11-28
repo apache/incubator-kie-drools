@@ -428,7 +428,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append("\n");
             sb.append("public class ").append(clasName).append("FeelExpression {\n");
             sb.append("\n");
-            sb.append(getFeelExpressionSource(ctx, feel, dTableModel, pkgName, clasName));
+            sb.append(getInitRows(ctx, dTableModel, clasName));
             sb.append("\n");
             sb.append(getInputClause(ctx, dTableModel));
             sb.append("\n");
@@ -442,50 +442,34 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             return source;
         }
 
-        public String getFeelExpressionSource(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel, String pkgName, String className) {
+        public String getInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className) {
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
-            Map<String, String> testClassesByInput = new HashMap<>();
-            testArrayBuilder.append("    public static final CompiledDTTExpression[][] FEEL_EXPRESSION_ARRAY = new CompiledDTTExpression[][] {\n");
+            testArrayBuilder.append("    public static final CompiledFEELExpression[][] FEEL_EXPRESSION_ARRAY = new CompiledFEELExpression[][] {\n");
 
-            for (int i = 0; i < dTableModel.getRows().size(); i++) {
+            ClassOrInterfaceDeclaration[][] rows = dTableModel.generateRows(ctx.toCompilerContext());
+
+            for (int i = 0; i < rows.length; i++) {
                 testArrayBuilder.append("            { ");
-                DTableModel.DRowModel row = dTableModel.getRows().get(i);
-                List<String> inputs = row.getInputs();
-                List<String> merged = new ArrayList<>(inputs);
-//                merged.addAll(row.getOutputs());
-                for (int j = 0; j < merged.size(); j++) {
-                    String input = merged.get(j);
-                    String testClass = testClassesByInput.get(input);
-                    if (testClass == null) {
-                        testClass = className + "r" + i + "c" + j+ "expression";
-                        testClassesByInput.put(input, testClass);
-                        instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
+                ClassOrInterfaceDeclaration[] cols = rows[i];
+                for (int j = 0; j < cols.length; j++) {
+                    ClassOrInterfaceDeclaration feelExpressionSource = cols[j];
+                    String testClass = className + "r" + i + "c" + j + "expression";
+                    instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
 
-                        DTableModel.DColumnModel dColumnModel = dTableModel.getColumns().get(j);
-                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = null;
-                        if(dColumnModel != null) {
-                            classOrInterfaceDeclaration = feel.generateFeelExpressionSource(
-                                    input,
-                                    dColumnModel.getType(), ctx.toCompilerContext());
-                        } else {
-//                            dTableModel.get
-                        }
+                    renameFeelExpressionClass(testClass, feelExpressionSource);
 
-                        renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
-
-                        testsBuilder.append("\n");
-                        testsBuilder.append(classOrInterfaceDeclaration.toString());
-                        testsBuilder.append("\n");
-                    }
+                    testsBuilder.append("\n");
+                    testsBuilder.append(feelExpressionSource.toString());
+                    testsBuilder.append("\n");
                     testArrayBuilder.append(testClass).append("_INSTANCE");
-                    if (j < merged.size() - 1) {
+                    if (j < cols.length - 1) {
                         testArrayBuilder.append(", ");
                     }
                 }
-                if (i < dTableModel.getRows().size() - 1) {
+                if (i < rows.length - 1) {
                     testArrayBuilder.append(" },\n");
                 } else {
                     testArrayBuilder.append(" }\n");
