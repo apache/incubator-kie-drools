@@ -65,7 +65,7 @@ public class DTableModel {
     private final HitPolicy hitPolicy;
 
     protected final List<DColumnModel> columns;
-    private final List<DRowModel> rows;
+` `    protected final List<DRowModel> rows;
     private final List<DOutputModel> outputs;
 
     private final Map<String, Type> variableTypes;
@@ -265,9 +265,9 @@ public class DTableModel {
     public static class DRowModel {
 
         private final List<String> inputs;
-        private final List<String> outputs;
+        protected final List<String> outputs;
 
-        private List<CompiledFEELExpression> compiledOutputs;
+        protected List<CompiledFEELExpression> compiledOutputs;
 
         DRowModel(DecisionRule dr) {
             this.inputs = dr.getInputEntry().stream()
