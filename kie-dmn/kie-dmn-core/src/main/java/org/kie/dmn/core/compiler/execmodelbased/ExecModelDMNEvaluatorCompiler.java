@@ -513,13 +513,13 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             StringBuilder instancesBuilder = new StringBuilder();
 
             List<ClassOrInterfaceDeclaration> outputClauses = dTableModel.generateOutputClauses(ctx.toCompilerContext());
-            testArrayBuilder.append("    public static final CompiledDTTExpression[] FEEL_EXPRESSION_OUTPUT_CLAUSES = new CompiledDTTExpression[] {\n");
+            testArrayBuilder.append("    public static final CompiledFEELExpression[] FEEL_EXPRESSION_OUTPUT_CLAUSES = new CompiledFEELExpression[] {\n");
 
             int i = 0;
             for (Iterator<ClassOrInterfaceDeclaration> iterator = outputClauses.iterator(); iterator.hasNext(); ) {
                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
                 String testClass = "outputClause" + i;
-                instancesBuilder.append("    private static final CompiledDTTExpression " + testClass + "_INSTANCE = new CompiledDTTExpression( new " + testClass + "() );\n");
+                instancesBuilder.append("    private static final CompiledFEELExpression " + testClass + "_INSTANCE = new CompiledFEELExpression( new " + testClass + "() );\n");
 
                 renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
