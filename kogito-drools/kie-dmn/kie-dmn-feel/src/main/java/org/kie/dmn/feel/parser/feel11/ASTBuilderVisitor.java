@@ -270,6 +270,20 @@ public class ASTBuilderVisitor
     }
 
     @Override
+    public BaseNode visitIterationNameDefinition(FEEL_1_1Parser.IterationNameDefinitionContext ctx) {
+        List<String> tokenStrs = new ArrayList<>();
+        List<Token> tokens = new ArrayList<>(  );
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
+            visit( ctx.getChild( i ) );
+        }
+        ParserHelper.getAllTokens( ctx, tokens );
+        for( Token t : tokens ) {
+            tokenStrs.add( t.getText() );
+        }
+        return ASTBuilderFactory.newNameDefNode( ctx, tokenStrs );
+    }
+
+    @Override
     public BaseNode visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
         return ASTBuilderFactory.newNameDefNode( ctx, ctx.getText() );
     }
@@ -330,7 +344,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
-        NameDefNode name = (NameDefNode) visit( ctx.nameDefinition() );
+        NameDefNode name = (NameDefNode) visit( ctx.iterationNameDefinition() );
         BaseNode expr = visit(ctx.expression().get(0));
         if (ctx.expression().size() == 1) {
             return ASTBuilderFactory.newIterationContextNode(ctx, name, expr);

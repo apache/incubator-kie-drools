@@ -91,8 +91,8 @@ iterationContexts
     ;
 
 iterationContext
-    : {helper.isFeatDMN12EnhancedForLoopEnabled()}? nameDefinition IN expression '..' expression
-    | nameDefinition IN expression
+    : {helper.isFeatDMN12EnhancedForLoopEnabled()}? iterationNameDefinition IN expression '..' expression
+    | iterationNameDefinition IN expression
     ;
     
 // #47
@@ -176,6 +176,21 @@ nameDefinition
     ;
 
 nameDefinitionTokens
+    : Identifier
+        ( Identifier
+        | additionalNameSymbol
+        | IntegerLiteral
+        | FloatingPointLiteral
+        | reusableKeywords
+        | IN
+        )*
+    ;
+
+iterationNameDefinition
+    : iterationNameDefinitionTokens { helper.defineVariable( $iterationNameDefinitionTokens.ctx ); }
+    ;
+
+iterationNameDefinitionTokens
     : Identifier
         ( Identifier
         | additionalNameSymbol
@@ -379,7 +394,7 @@ nameRef
 
 nameRefOtherToken
     : { helper.followUp( _input.LT(1), _localctx==null ) }?
-        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|DIV|MUL|IN|COMMA)
+        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|DIV|MUL|COMMA)
     ;
 
 /********************************
