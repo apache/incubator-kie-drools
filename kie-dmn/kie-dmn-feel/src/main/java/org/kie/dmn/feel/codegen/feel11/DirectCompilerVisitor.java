@@ -1212,7 +1212,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         Expression curForCallTail = forCall;
         IterationContextsContext iCtxs = ctx.iterationContexts();
         for (FEEL_1_1Parser.IterationContextContext ic : iCtxs.iterationContext()) {
-            DirectCompilerResult name = visit(ic.nameDefinition());
+            DirectCompilerResult name = visit(ic.iterationNameDefinition());
             DirectCompilerResult expr = visit(ic.expression().get(0));
             fds.addAll(name.getFieldDeclarations());
             fds.addAll(expr.getFieldDeclarations());
@@ -1323,7 +1323,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         Expression curForCallTail = forCall;
         IterationContextsContext iCtxs = iterationContexts;
         for (FEEL_1_1Parser.IterationContextContext ic : iCtxs.iterationContext()) {
-            DirectCompilerResult name = visit(ic.nameDefinition());
+            DirectCompilerResult name = visit(ic.iterationNameDefinition());
             DirectCompilerResult expr = visit(ic.expression().get(0));
             fds.addAll(name.getFieldDeclarations());
             fds.addAll(expr.getFieldDeclarations());
