@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -111,7 +110,11 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
         }
 
         public void readConstantLine(String constantRegex) throws IOException {
-            String line = bufferedReader.readLine();
+            readConstantLine(bufferedReader, constantRegex);
+        }
+
+        public void readConstantLine(BufferedReader subBufferedReader, String constantRegex) throws IOException {
+            String line = subBufferedReader.readLine();
             if (line == null) {
                 throw new IllegalArgumentException("File ends before a line is expected to be a constant regex ("
                         + constantRegex + ").");

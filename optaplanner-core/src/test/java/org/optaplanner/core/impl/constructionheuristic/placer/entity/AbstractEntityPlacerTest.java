@@ -22,10 +22,12 @@ import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class AbstractEntityPlacerTest {
+public abstract class AbstractEntityPlacerTest {
 
     public static void assertEntityPlacement(Placement placement, String entityCode, String... valueCodes) {
         Iterator<Move> iterator = placement.iterator();

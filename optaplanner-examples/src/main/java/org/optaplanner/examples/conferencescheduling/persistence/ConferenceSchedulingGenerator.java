@@ -48,7 +48,6 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ConferenceSchedulingGenerator extends LoggingMain {
 
-
     public static void main(String[] args) {
         ConferenceSchedulingGenerator generator = new ConferenceSchedulingGenerator();
         generator.writeConferenceSolution(1, 5);
@@ -57,6 +56,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         generator.writeConferenceSolution(3, 10);
         generator.writeConferenceSolution(3, 20);
     }
+
     private final StringDataGenerator conferenceNameGenerator = new StringDataGenerator()
             .addPart(true, 0,
                     "Javoxx",
@@ -350,17 +350,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Set<Timeslot> unavailableTimeslotSet;
             List<Timeslot> timeslotList = solution.getTimeslotList();
             if (random.nextDouble() < 0.10) {
-                if (random.nextDouble() < 0.25) {
+                double segnmentRandom = random.nextDouble();
+                if (segnmentRandom < 0.25) {
                     // No mornings
                     unavailableTimeslotSet = timeslotList.stream()
                             .filter(timeslot -> timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
                             .collect(Collectors.toCollection(LinkedHashSet::new));
-                } else if (random.nextDouble() < 0.25) {
+                } else if (segnmentRandom < 0.50) {
                     // No afternoons
                     unavailableTimeslotSet = timeslotList.stream()
                             .filter(timeslot -> !timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
                             .collect(Collectors.toCollection(LinkedHashSet::new));
-                } else if (random.nextDouble() < 0.25) {
+                } else if (segnmentRandom < 0.75) {
                     // Only 1 day available
                     LocalDate availableDate = timeslotList.get(random.nextInt(timeslotList.size())).getDate();
                     unavailableTimeslotSet = timeslotList.stream()
@@ -459,7 +460,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setMutuallyExclusiveTalksTagSet(new LinkedHashSet<>());
             talk.setPrerequisiteTalkSet(new LinkedHashSet<>());
             talk.setFavoriteCount(random.nextInt(1000));
-            talk.setCrowdControlRisk(random.nextInt(5));
+            talk.setCrowdControlRisk(0); // Disabled for now: the unsolved schedules must have a feasible solution
             logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
                     talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);

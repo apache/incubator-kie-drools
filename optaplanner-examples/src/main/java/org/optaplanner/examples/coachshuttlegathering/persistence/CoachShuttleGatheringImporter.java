@@ -117,7 +117,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             long locationId = 0L;
             try (BufferedReader subBufferedReader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                subBufferedReader.readLine(); // Ignore first line (comment)
+                readConstantLine(subBufferedReader, "X_COORD;Y_COORD");
                 for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
                     if (line.isEmpty()) {
                         continue;
@@ -153,7 +153,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             int locationListIndex = 0;
             try (BufferedReader subBufferedReader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                subBufferedReader.readLine(); // Ignore first line (comment)
+                readConstantLine(subBufferedReader, "Quadratic matrix with as many rows as DistanceTimesCoordinates");
                 for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
                     if (line.isEmpty()) {
                         continue;
@@ -180,7 +180,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             int locationListIndex = 0;
             try (BufferedReader subBufferedReader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                subBufferedReader.readLine(); // Ignore first line (comment)
+                readConstantLine(subBufferedReader, "Quadratic matrix with as many rows as DistanceTimesCoordinates");
                 for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
                     if (line.isEmpty()) {
                         continue;
@@ -206,7 +206,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             List<Shuttle> shuttleList = new ArrayList<>();
             try (BufferedReader subBufferedReader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                subBufferedReader.readLine(); // Ignore first line (comment)
+                readConstantLine(subBufferedReader, "TYPE;VEHICLE_ID;CAPACITY;MAX_NUM_STOPS;COSTS \\[MU/km\\];COSTS \\[MU/USAGE\\];X_COORD;Y_COORD");
                 for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
                     if (line.isEmpty()) {
                         continue;
@@ -267,7 +267,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         private void readBusStopList() throws IOException {
             List<BusStop> busStopList = new ArrayList<>();
-            bufferedReader.readLine(); // Ignore first line (comment)
+            readConstantLine("LOCATION_TYPE;LOCATION_ID;POST_CODE;CITY;X_COORD;Y_COORD;QUANTITY;MAX_TRANSPORT_TIME");
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 if (line.isEmpty()) {
                     continue;

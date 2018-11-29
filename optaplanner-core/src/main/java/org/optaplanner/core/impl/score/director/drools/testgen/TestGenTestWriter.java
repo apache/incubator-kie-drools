@@ -20,8 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,9 +50,9 @@ class TestGenTestWriter {
     private boolean constraintMatchEnabled;
     private TestGenCorruptedScoreException scoreEx;
 
-    public void print(TestGenKieSessionJournal journal, Writer w) {
+    public void print(TestGenKieSessionJournal journal, StringWriter w) {
         print(journal);
-        writeTest(w);
+        w.append(sb);
     }
 
     public void print(TestGenKieSessionJournal journal, File testFile) {
@@ -191,34 +191,15 @@ class TestGenTestWriter {
                 logger.warn("Couldn't create directory: {}", parent);
             }
         }
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(file);
-        } catch (FileNotFoundException ex) {
-            logger.error("Cannot open test file: {}", file, ex);
-            return;
-        }
-        OutputStreamWriter osw;
-        try {
-            osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("Can't open", ex);
-            return;
-        }
-        writeTest(osw);
-    }
-
-    private void writeTest(Writer w) {
-        try {
-            w.append(sb);
-        } catch (IOException ex) {
-            logger.error("Can't write", ex);
-        } finally {
-            try {
-                w.close();
-            } catch (IOException ex) {
-                logger.error("Can't close", ex);
-            }
+        try (FileOutputStream fos = new FileOutputStream(file);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8.name())) {
+            osw.append(sb);
+        } catch (FileNotFoundException e) {
+            logger.error("Failed to open test file ({}).", file, e);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("Failed to open writer.", e);
+        } catch (IOException e) {
+            logger.error("Failed to write test file ({}).", file, e);
         }
     }
 
