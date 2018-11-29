@@ -17,6 +17,7 @@ package org.drools.verifier.core.checks;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -43,13 +44,13 @@ public class DetectRedundantRowsCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new Issue(severity,
-                         checkType,
-                         new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1,
-                                                     other.getRowIndex() + 1))
-        );
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+
+        return Arrays.asList(new Issue(severity,
+                                       checkType,
+                                       new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1,
+                                                                   other.getRowIndex() + 1))));
     }
 
     @Override

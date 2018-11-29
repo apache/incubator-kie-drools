@@ -15,6 +15,9 @@
  */
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
@@ -53,11 +56,13 @@ public class SingleHitCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new SingleHitLostIssue(severity,
-                                      checkType,
-                                      Integer.toString(ruleInspector.getRowIndex() + 1),
-                                      Integer.toString(other.getRowIndex() + 1));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> result = new ArrayList<>();
+        result.add(new SingleHitLostIssue(severity,
+                                          checkType,
+                                          Integer.toString(ruleInspector.getRowIndex() + 1),
+                                          Integer.toString(other.getRowIndex() + 1)));
+        return result;
     }
 }

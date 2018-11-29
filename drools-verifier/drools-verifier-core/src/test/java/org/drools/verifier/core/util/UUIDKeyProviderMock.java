@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.verifier.core.checks.base;
+package org.drools.verifier.core.util;
 
-import java.util.List;
+import org.drools.verifier.core.index.keys.UUIDKeyProvider;
 
-import org.drools.verifier.api.reporting.Issue;
-import org.drools.verifier.core.configuration.CheckConfiguration;
+public class UUIDKeyProviderMock
+        extends UUIDKeyProvider {
 
-public interface Check {
+    private long index = Long.SIZE;
 
-    boolean check();
-
-    List<Issue> getIssues();
-
-    boolean hasIssues();
-
-    boolean isActive(final CheckConfiguration checkConfiguration);
+    @Override
+    protected String newUUID() {
+        return Long.toString(index--);
+    }
 }
