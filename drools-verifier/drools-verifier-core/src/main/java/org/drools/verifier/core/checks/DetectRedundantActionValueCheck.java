@@ -16,8 +16,10 @@
 
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -58,14 +60,17 @@ public class DetectRedundantActionValueCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new ValueForActionIsSetTwiceIssue(severity,
-                                                 checkType,
-                                                 result.get(0)
-                                                         .toHumanReadableString(),
-                                                 result.get(1)
-                                                         .toHumanReadableString(),
-                                                 new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> result = new ArrayList<Issue>();
+        result.add(new ValueForActionIsSetTwiceIssue(severity,
+                                                     checkType,
+                                                     this.result.get(0)
+                                                             .toHumanReadableString(),
+                                                     this.result.get(1)
+                                                             .toHumanReadableString(),
+                                                     new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))));
+
+        return result;
     }
 }

@@ -16,7 +16,9 @@
 
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.drools.verifier.api.reporting.CheckType;
@@ -64,18 +66,21 @@ public class DetectImpossibleMatchCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new ImpossibleMatchIssue(severity,
-                                        checkType,
-                                        Integer.toString(ruleInspector.getRowIndex() + 1),
-                                        getFactType(),
-                                        getFieldName(),
-                                        toHumanReadableString(conflict.getOrigin()
-                                                                      .getConflictedItem()),
-                                        toHumanReadableString(conflict.getOrigin()
-                                                                      .getConflictingItem()),
-                                        Collections.singleton(ruleInspector.getRowIndex() + 1));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> result = new ArrayList<Issue>();
+
+        result.add(new ImpossibleMatchIssue(severity,
+                                            checkType,
+                                            Integer.toString(ruleInspector.getRowIndex() + 1),
+                                            getFactType(),
+                                            getFieldName(),
+                                            toHumanReadableString(conflict.getOrigin()
+                                                                          .getConflictedItem()),
+                                            toHumanReadableString(conflict.getOrigin()
+                                                                          .getConflictingItem()),
+                                            Collections.singleton(ruleInspector.getRowIndex() + 1)));
+        return result;
     }
 
     private String getFieldName() {

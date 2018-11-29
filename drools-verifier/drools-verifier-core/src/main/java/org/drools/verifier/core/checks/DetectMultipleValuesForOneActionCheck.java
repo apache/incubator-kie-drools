@@ -16,8 +16,10 @@
 
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -61,12 +63,16 @@ public class DetectMultipleValuesForOneActionCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new MultipleValuesForOneActionIssue(severity,
-                                                   checkType,
-                                                   HumanReadable.toHumanReadableString(conflict.getConflictedItem()),
-                                                   HumanReadable.toHumanReadableString(conflict.getConflictingItem()),
-                                                   new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> result = new ArrayList<Issue>();
+
+        result.add(new MultipleValuesForOneActionIssue(severity,
+                                                       checkType,
+                                                       HumanReadable.toHumanReadableString(conflict.getConflictedItem()),
+                                                       HumanReadable.toHumanReadableString(conflict.getConflictingItem()),
+                                                       new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))));
+
+        return result;
     }
 }

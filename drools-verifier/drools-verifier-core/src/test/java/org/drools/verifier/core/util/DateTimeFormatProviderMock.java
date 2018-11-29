@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.verifier.core.util;
 
-package org.drools.verifier.core.checks.base;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import java.util.List;
+import org.drools.verifier.core.configuration.DateTimeFormatProvider;
 
-import org.drools.verifier.api.reporting.Issue;
-import org.drools.verifier.core.configuration.CheckConfiguration;
+public class DateTimeFormatProviderMock
+        implements DateTimeFormatProvider {
 
-public interface Check {
-
-    boolean check();
-
-    List<Issue> getIssues();
-
-    boolean hasIssues();
-
-    boolean isActive(final CheckConfiguration checkConfiguration);
+    @Override
+    public String format(final Date dateValue) {
+        return new SimpleDateFormat("dd-MMM-yyyy").format(dateValue);
+    }
 }
