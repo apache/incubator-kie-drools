@@ -350,18 +350,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Set<Timeslot> unavailableTimeslotSet;
             List<Timeslot> timeslotList = solution.getTimeslotList();
             if (random.nextDouble() < 0.10) {
-                double segnmentRandom = random.nextDouble();
-                if (segnmentRandom < 0.25) {
+                double segmentRandom = random.nextDouble();
+                if (segmentRandom < 0.25) {
                     // No mornings
                     unavailableTimeslotSet = timeslotList.stream()
                             .filter(timeslot -> timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
                             .collect(Collectors.toCollection(LinkedHashSet::new));
-                } else if (segnmentRandom < 0.50) {
+                } else if (segmentRandom < 0.50) {
                     // No afternoons
                     unavailableTimeslotSet = timeslotList.stream()
                             .filter(timeslot -> !timeslot.getStartDateTime().toLocalTime().isBefore(LocalTime.of(12,0)))
                             .collect(Collectors.toCollection(LinkedHashSet::new));
-                } else if (segnmentRandom < 0.75) {
+                } else if (segmentRandom < 0.75) {
                     // Only 1 day available
                     LocalDate availableDate = timeslotList.get(random.nextInt(timeslotList.size())).getDate();
                     unavailableTimeslotSet = timeslotList.stream()
