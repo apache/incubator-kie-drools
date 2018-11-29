@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
@@ -934,7 +934,22 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(var2).isNull();
         assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
-    
+
+    @Test
+    public void testVariableRefInIntermediateThrowEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-WorkingMessageModel.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new DoNothingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new DoNothingWorkItemHandler());
+
+        HashMap<String, Object> parameters = new HashMap<>();
+        parameters.put("messageContent", "some text");
+        ProcessInstance processInstance = ksession.startProcess("workingMessageModel", parameters);
+
+        assertThat(processInstance).isNotNull();
+    }
+
     public static void runTestSignallingExceptionServiceTask(KieSession ksession) throws Exception {
         // Setup
         String eventType = "exception-signal";

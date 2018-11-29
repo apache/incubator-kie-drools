@@ -79,10 +79,12 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 			// if name is given use it as variable name instead of id
 			if (name != null && name.length() > 0) {
 			    variable.setName(name);
+                variable.setMetaData(name, variable.getName());
 			} else {
 			    variable.setName(id);
 			}
 			variable.setMetaData("ItemSubjectRef", itemSubjectRef);
+            variable.setMetaData(id, variable.getName());
 			variables.add(variable);
 			
 			((ProcessBuildData) parser.getData()).setMetaData("Variable", variable);
