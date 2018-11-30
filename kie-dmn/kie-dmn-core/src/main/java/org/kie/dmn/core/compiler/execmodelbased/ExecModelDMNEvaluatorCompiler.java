@@ -494,6 +494,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             for (int i = 0; i < rows.length; i++) {
                 testArrayBuilder.append("            { ");
                 ClassOrInterfaceDeclaration[] cols = rows[i];
+
+                // OGNI DUE DEVE ESSERCI UN ARRAY
                 for (int j = 0; j < cols.length; j++) {
                     ClassOrInterfaceDeclaration feelExpressionSource = cols[j];
                     String testClass = className + "r" + i + "c" + j + "expression";
