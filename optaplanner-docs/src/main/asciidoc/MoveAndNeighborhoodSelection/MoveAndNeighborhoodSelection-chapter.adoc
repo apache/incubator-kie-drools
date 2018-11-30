@@ -115,31 +115,31 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 |<<changeMoveSelector,Change move>>
 |Change 1 entity's variable
-|`Process-A {Computer-1 -> Computer-2}`
+|`+Process-A {Computer-1 -> Computer-2}+`
 
 |<<swapMoveSelector,Swap move>>
 |Swap all variables of 2 entities
-|`Process-A {Computer-1} <-> Process-B {Computer-2}`
+|`+Process-A {Computer-1} <-> Process-B {Computer-2}+`
 
 |<<pillarChangeMoveSelector,Pillar change move>>
 |Change a set of entities with the same value
-|`[Process-A, Process-B, Process-C] {Computer-1 -> Computer-2}`
+|`+[Process-A, Process-B, Process-C] {Computer-1 -> Computer-2}+`
 
 |<<pillarSwapMoveSelector,Pillar swap move>>
 |Swap 2 sets of entities with the same values
-|`[Process-A, Process-B, Process-C] {Computer-1} <-> [Process-E, Process-F] {Computer-2}`
+|`+[Process-A, Process-B, Process-C] {Computer-1} <-> [Process-E, Process-F] {Computer-2}+`
 
 |<<tailChainSwapMoveSelector,Tail chain swap move>>
 |Swap 2 tails chains
-|`Visit-A5 {Visit-A4} <-tailChainSwap-> Visit-B3 {Visit-B2}`
+|`+Visit-A5 {Visit-A4} <-tailChainSwap-> Visit-B3 {Visit-B2}+`
 
 |<<subChainChangeMoveSelector,Sub chain change move>>
 |Cut a subchain and paste it into another chain
-|`[Visit-A5..Visit-A8] {Visit-A4 -> Visit-B2}`
+|`+[Visit-A5..Visit-A8] {Visit-A4 -> Visit-B2}+`
 
 |<<subChainSwapMoveSelector,Sub chain swap move>>
 |Swap 2 subchains
-|`[Visit-A5..Visit-A8] {Visit-A4} <-> [Visit-B3..Visit-B9] {Visit-B2}`
+|`+[Visit-A5..Visit-A8] {Visit-A4} <-> [Visit-B3..Visit-B9] {Visit-B2}+`
 
 |===
 
