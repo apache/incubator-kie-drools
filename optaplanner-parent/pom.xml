@@ -28,6 +28,12 @@
 
   <properties>
     <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <jacoco.agent.line/>
+    <surefire.argLine>
+      -Dfile.encoding=${project.build.sourceEncoding}
+      ${jacoco.agent.line}
+    </surefire.argLine>
+    <version.jacoco.plugin>0.8.2</version.jacoco.plugin>
   </properties>
 
   <repositories>
@@ -90,6 +96,11 @@
         <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
         <version>1.0.4</version>
       </dependency>
+      <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>org.jacoco.agent</artifactId>
+        <version>${version.jacoco.plugin}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -105,6 +116,84 @@
         <module>optaplanner-docs</module>
         <module>optaplanner-distribution</module>
       </modules>
+    </profile>
+
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
+        <jacoco.excludes>*Lexer:org.optaplanner.core.impl.testdata.domain.*:*TestdataAbstractSolutionBasedSolution</jacoco.excludes>
+        <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.jacoco</groupId>
+          <artifactId>org.jacoco.agent</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <configuration>
+                  <properties>
+                    <cargo.start.jvmargs>${jacoco.agent.line}</cargo.start.jvmargs>
+                  </properties>
+                </configuration>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>net.ltgt.gwt.maven</groupId>
+              <artifactId>gwt-maven-plugin</artifactId>
+              <configuration>
+                <skipCompilation>true</skipCompilation>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>${surefire.argLine}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <!--
+        See .travis.yml for how to run the coverage report
+      -->
+      <id>report-code-coverage</id>
+      <properties>
+        <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
+        <sonar.jacoco.reportPaths>${jacoco.master.exec.file}</sonar.jacoco.reportPaths>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${version.jacoco.plugin}</version>
+              <configuration>
+                <fileSets>
+                  <fileSet>
+                    <directory>${project.build.directory}</directory>
+                    <includes>
+                      <include>*.exec</include>
+                    </includes>
+                  </fileSet>
+                </fileSets>
+                <destFile>${jacoco.master.exec.file}</destFile>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 

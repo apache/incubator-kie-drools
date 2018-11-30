@@ -5,6 +5,7 @@
 /.*
 !.gitignore
 !.gitattributes
+!.travis.yml
 /nbproject
 /*.ipr
 /*.iws
