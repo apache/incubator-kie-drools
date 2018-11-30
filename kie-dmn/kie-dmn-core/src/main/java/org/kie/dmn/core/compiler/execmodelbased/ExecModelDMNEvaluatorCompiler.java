@@ -467,7 +467,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append("\n");
             sb.append(getInputClause(ctx, dTableModel, cu));
             sb.append("\n");
-            sb.append(getOutputClause(ctx, dTableModel));
             sb.append("}\n");
 
             String source = sb.toString();
@@ -613,38 +612,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             return instancesBuilder + "\n" + testsBuilder;
         }
 
-        public String getOutputClause(DMNCompilerContext ctx, DTableModel dTableModel) {
-            StringBuilder testArrayBuilder = new StringBuilder();
-            StringBuilder testsBuilder = new StringBuilder();
-            StringBuilder instancesBuilder = new StringBuilder();
-
-            List<ClassOrInterfaceDeclaration> outputClauses = dTableModel.generateOutputClauses(ctx.toCompilerContext());
-            testArrayBuilder.append("    public static final CompiledFEELExpression[] FEEL_EXPRESSION_OUTPUT_CLAUSES = new CompiledFEELExpression[] {\n");
-
-            int i = 0;
-            for (Iterator<ClassOrInterfaceDeclaration> iterator = outputClauses.iterator(); iterator.hasNext(); ) {
-                ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
-                String testClass = "outputClause" + i;
-                instancesBuilder.append("    private static final CompiledFEELExpression " + testClass + "_INSTANCE = new CompiledFEELExpression( new " + testClass + "() );\n");
-
-                renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
-
-                testsBuilder.append("\n");
-                testsBuilder.append(classOrInterfaceDeclaration.toString());
-                testsBuilder.append("\n");
-                testArrayBuilder.append(testClass).append("_INSTANCE");
-                i++;
-
-
-                if(iterator.hasNext()) {
-                    testArrayBuilder.append(" ,\n");
-                }
-            }
-
-            testArrayBuilder.append("    };\n");
-
-            return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
-        }
     }
 
     private static void renameFeelExpressionClass(String testClass, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
