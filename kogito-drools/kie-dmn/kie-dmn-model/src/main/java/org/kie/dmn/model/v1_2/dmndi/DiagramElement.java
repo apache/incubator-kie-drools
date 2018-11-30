@@ -27,7 +27,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
 
     protected org.kie.dmn.model.api.dmndi.DiagramElement.Extension extension;
     protected org.kie.dmn.model.api.dmndi.Style style;
-    protected Object sharedStyle;
+    protected org.kie.dmn.model.api.dmndi.Style sharedStyle;
     protected String id;
 
     /**
@@ -88,7 +88,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link Object }
      *     
      */
-    public Object getSharedStyle() {
+    public org.kie.dmn.model.api.dmndi.Style getSharedStyle() {
         return sharedStyle;
     }
 
@@ -100,7 +100,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
      *     {@link Object }
      *     
      */
-    public void setSharedStyle(Object value) {
+    public void setSharedStyle(org.kie.dmn.model.api.dmndi.Style value) {
         this.sharedStyle = value;
     }
 

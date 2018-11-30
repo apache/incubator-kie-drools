@@ -30,9 +30,9 @@ public interface DiagramElement extends DMNModelInstrumentedBase {
 
     public void setStyle(Style value);
 
-    public Object getSharedStyle();
+    public Style getSharedStyle();
 
-    public void setSharedStyle(Object value);
+    public void setSharedStyle(Style value);
 
     public String getId();
 

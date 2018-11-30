@@ -70,4 +70,8 @@ public interface DMNDI extends DMNModelInstrumentedBase {
      */
     List<DMNStyle> getDMNStyle();
 
+    /**
+     * Internal model: mutates the current DMNDI to resolve xml's IDREFs
+     */
+    void normalize();
 }

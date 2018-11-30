@@ -18,10 +18,15 @@ package org.kie.dmn.model.v1_2.dmndi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.model.api.dmndi.DMNDiagram;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
+import org.kie.dmn.model.api.dmndi.DiagramElement;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_2.dmndi.Style.IDREFStubStyle;
 
 
 public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.DMNDI {
@@ -87,6 +92,30 @@ public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
             dmnStyle = new ArrayList<DMNStyle>();
         }
         return this.dmnStyle;
+    }
+
+    @Override
+    public void normalize() {
+        if (dmnStyle == null || dmnDiagram == null) {
+            return;
+        }
+        Map<String, DMNStyle> styleById = dmnStyle.stream().collect(Collectors.toMap(DMNStyle::getId, Function.identity()));
+        for (DMNDiagram diagram : dmnDiagram) {
+            for (DiagramElement element : diagram.getDMNDiagramElement()) {
+                replaceSharedStyleIfStubbed(element, styleById);
+                if (element instanceof DMNShape) {
+                    DMNShape dmnShape = (DMNShape) element;
+                    replaceSharedStyleIfStubbed(dmnShape.getDMNLabel(), styleById);
+                }
+            }
+        }
+    }
+
+    private void replaceSharedStyleIfStubbed(DiagramElement element, Map<String, DMNStyle> styleById) {
+        if (element.getSharedStyle() instanceof IDREFStubStyle) {
+            DMNStyle locatedStyle = styleById.get(element.getSharedStyle().getId());
+            element.setSharedStyle(locatedStyle);
+        }
     }
 
 }
