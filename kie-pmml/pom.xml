@@ -170,8 +170,11 @@
           </execution>
         </executions>
         <configuration>
-          <executable>${env.JAVA_HOME}/bin/xjc</executable>
+          <executable>${env.JAVA_HOME}/bin/java</executable>
           <arguments>
+            <argument>-cp</argument>
+            <argument>${project.basedir}/lib/*</argument>
+            <argument>com.sun.tools.xjc.XJCFacade</argument>
             <argument>-enableIntrospection</argument>
             <argument>-p</argument>
             <argument>org.dmg.pmml.pmml_4_2.descr</argument>
