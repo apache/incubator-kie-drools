@@ -15,25 +15,26 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.kie.api.runtime.ExecutableRunner;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.common.InternalFactHandle;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.api.runtime.Context;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("unchecked")
 public class GetFactHandlesCommandTest {

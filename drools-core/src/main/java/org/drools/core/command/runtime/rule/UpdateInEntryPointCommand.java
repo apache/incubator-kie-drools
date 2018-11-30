@@ -21,13 +21,13 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class UpdateInEntryPointCommand
