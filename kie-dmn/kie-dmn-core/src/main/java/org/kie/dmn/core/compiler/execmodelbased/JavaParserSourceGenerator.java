@@ -1,6 +1,7 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.ArrayCreationLevel;
@@ -17,20 +18,19 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.type.ArrayType;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.javaparser.ast.type.Type;
 
 public class JavaParserSourceGenerator {
 
     private ClassOrInterfaceDeclaration firstClass;
     private CompilationUnit compilationUnit;
-    private String className;
 
     public static EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
 
-    public JavaParserSourceGenerator(CompilationUnit compilationUnit, String className) {
-        firstClass = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new RuntimeException("Cannot find Class"));
-        this.compilationUnit = compilationUnit;
-        this.className = className;
+    public JavaParserSourceGenerator(String className, String namespace, String packageName) {
+        this.compilationUnit = JavaParser.parse("public class " + className + namespace + "{ }");
+        this.compilationUnit.setPackageDeclaration(packageName);
+        firstClass = this.compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new RuntimeException("Cannot find Class"));
+        String className1 = className;
     }
 
     public void addImports(Class<?>... classes) {
@@ -48,19 +48,28 @@ public class JavaParserSourceGenerator {
         firstClass.addMember(feelExpressionSource);
     }
 
-    public void addField(String testClass, Type type, String instanceName) {
-        ClassOrInterfaceType innerClassType = JavaParser.parseClassOrInterfaceType(testClass);
+    public void addField(String testClass, Class<?> type, String instanceName) {
+        ClassOrInterfaceType innerClassType = getType(testClass);
         ObjectCreationExpr newInstanceOfInnerClass = new ObjectCreationExpr(null, innerClassType, NodeList.nodeList());
-        VariableDeclarator variableDeclarator = new VariableDeclarator(type, instanceName, newInstanceOfInnerClass);
+        VariableDeclarator variableDeclarator = new VariableDeclarator(getType(type), instanceName, newInstanceOfInnerClass);
         firstClass.addMember(new FieldDeclaration(PUBLIC_STATIC_FINAL, variableDeclarator));
     }
 
-    public void addTwoDimensionalArray(NodeList<Expression> arrayInitializer, String arrayName, Type type) {
+    public void addTwoDimensionalArray(List<Expression> arrayInitializer, String arrayName, Class<?> type) {
         NodeList<ArrayCreationLevel> arrayCreationLevels = NodeList.nodeList(new ArrayCreationLevel(), new ArrayCreationLevel());
-        ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(arrayInitializer);
-        ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr(type, arrayCreationLevels, initializerMainArray);
-        VariableDeclarator variable = new VariableDeclarator(new ArrayType(new ArrayType(type)), arrayName, arrayCreationExpr);
+        ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(NodeList.nodeList(arrayInitializer));
+        ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr(getType(type), arrayCreationLevels, initializerMainArray);
+        VariableDeclarator variable = new VariableDeclarator(new ArrayType(new ArrayType(getType(type))), arrayName, arrayCreationExpr);
         addMember(new FieldDeclaration(PUBLIC_STATIC_FINAL, variable));
+    }
+
+
+    private ClassOrInterfaceType getType(String canonicalName) {
+        return JavaParser.parseClassOrInterfaceType(canonicalName);
+    }
+
+    private ClassOrInterfaceType getType(Class<?> clazz) {
+        return JavaParser.parseClassOrInterfaceType(clazz.getCanonicalName());
     }
 
     private void renameFeelExpressionClass(String testClass, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
@@ -70,5 +79,9 @@ public class JavaParserSourceGenerator {
 
         classOrInterfaceDeclaration.findAll(ConstructorDeclaration.class)
                 .forEach(n -> n.replace(new ConstructorDeclaration(finalTestClass)));
+    }
+
+    public String getSource() {
+        return compilationUnit.toString();
     }
 }
