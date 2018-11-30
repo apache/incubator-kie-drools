@@ -79,7 +79,9 @@ public class DefinitionsConverter
         } else if (child instanceof BusinessContextElement ) {
             def.getBusinessContextElement().add((BusinessContextElement) child);
         } else if (child instanceof DMNDI) {
-            def.setDMNDI((DMNDI) child);
+            DMNDI dmndi = (DMNDI) child;
+            dmndi.normalize();
+            def.setDMNDI(dmndi);
         } else {
             super.assignChildElement( def, nodeName, child );
         }

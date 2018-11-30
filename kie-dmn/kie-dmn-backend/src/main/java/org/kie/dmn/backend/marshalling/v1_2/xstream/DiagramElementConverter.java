@@ -56,9 +56,9 @@ public abstract class DiagramElementConverter extends DMNModelInstrumentedBaseCo
             abs.setId(id);
         }
 
-        String sharedStyle = reader.getAttribute(SHARED_STYLE);
-        if (sharedStyle != null) {
-            abs.setSharedStyle(sharedStyle);
+        String sharedStyleXmlSerialization = reader.getAttribute(SHARED_STYLE);
+        if (sharedStyleXmlSerialization != null) {
+            abs.setSharedStyle(new org.kie.dmn.model.v1_2.dmndi.Style.IDREFStubStyle(sharedStyleXmlSerialization));
         }
     }
 
@@ -85,7 +85,7 @@ public abstract class DiagramElementConverter extends DMNModelInstrumentedBaseCo
         }
 
         if (abs.getSharedStyle() != null) {
-            writer.addAttribute(SHARED_STYLE, abs.getSharedStyle().toString());
+            writer.addAttribute(SHARED_STYLE, abs.getSharedStyle().getId());
         }
     }
 

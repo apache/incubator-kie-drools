@@ -113,4 +113,11 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
 
     }
 
+    public static class IDREFStubStyle extends Style {
+
+        public IDREFStubStyle(String id) {
+            this.id = id;
+        }
+    }
+
 }

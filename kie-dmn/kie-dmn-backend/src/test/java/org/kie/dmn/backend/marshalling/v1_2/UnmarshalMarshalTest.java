@@ -33,6 +33,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.dmndi.DMNShape;
+import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +58,7 @@ import static org.junit.Assert.assertTrue;
 public class UnmarshalMarshalTest {
 
     private static final StreamSource DMN12_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN12.xsd").getFile());
+    private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
     protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
     
     @Test
@@ -83,9 +87,18 @@ public class UnmarshalMarshalTest {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "hardcoded-java-max-call.dmn");
     }
 
+    @Test
+    public void test_FontSize_sharedStyle() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "test-FontSize-sharedStyle.dmn");
+        Definitions definitions = MARSHALLER.unmarshal(new InputStreamReader(this.getClass().getResourceAsStream("test-FontSize-sharedStyle.dmn")));
+        DMNShape shape0 = (DMNShape) definitions.getDMNDI().getDMNDiagram().get(0).getDMNDiagramElement().get(0);
+        DMNStyle shape0sharedStyle = (DMNStyle) shape0.getDMNLabel().getSharedStyle();
+        assertEquals("LS_4d396200-362f-4939-830d-32d2b4c87042_0", shape0sharedStyle.getId());
+        assertEquals(21d, shape0sharedStyle.getFontSize(), 0.0d);
+    }
+
     public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
-        DMNMarshaller marshaller = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
-        testRoundTrip(subdir, xmlfile, marshaller, DMN12_SCHEMA_SOURCE);
+        testRoundTrip(subdir, xmlfile, MARSHALLER, DMN12_SCHEMA_SOURCE);
     }
 
     public void testRoundTrip(String subdir, String xmlfile, DMNMarshaller marshaller, Source schemaSource) throws Exception {
