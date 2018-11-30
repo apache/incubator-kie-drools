@@ -16,6 +16,11 @@
 
 package org.jbpm.services.ejb.timer;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -31,10 +36,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.util.concurrent.atomic.AtomicLong;
+import org.kie.api.runtime.EnvironmentName;
 
 
 public class EjbSchedulerService implements GlobalSchedulerService {
@@ -131,7 +133,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
         return true;	    
 	}
 	
-	private String getJobName(JobContext ctx, Long id) {
+    protected String getJobName(JobContext ctx, Long id) {
 
         String jobname = null;
         
@@ -139,7 +141,8 @@ public class EjbSchedulerService implements GlobalSchedulerService {
             ProcessJobContext processCtx = (ProcessJobContext) ctx;
             jobname = processCtx.getSessionId() + "-" + processCtx.getProcessInstanceId() + "-" + processCtx.getTimer().getId();
             if (processCtx instanceof StartProcessJobContext) {
-                jobname = "StartProcess-"+((StartProcessJobContext) processCtx).getProcessId()+ "-" + processCtx.getTimer().getId();
+                String deploymentId = (String) processCtx.getKnowledgeRuntime().getEnvironment().get(EnvironmentName.DEPLOYMENT_ID);
+                jobname = deploymentId + "-StartProcess-" + ((StartProcessJobContext) processCtx).getProcessId() + "-" + processCtx.getTimer().getId();
             }
         } else if (ctx instanceof NamedJobContext) {
             jobname = ((NamedJobContext) ctx).getJobName();
