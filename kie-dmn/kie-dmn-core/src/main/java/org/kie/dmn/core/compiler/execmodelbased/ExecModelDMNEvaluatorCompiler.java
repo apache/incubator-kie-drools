@@ -441,6 +441,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             String clasName = dTableModel.getTableName();
 
             CompilationUnit cu = JavaParser.parse("public class " + clasName + "FeelExpression { }");
+            cu.setPackageDeclaration(pkgName);
             cu.addImport(CompiledFEELSemanticMappings.class);
             cu.addImport(CompiledCustomFEELFunction.class);
             cu.addImport(CompiledFEELExpression.class);
@@ -475,7 +476,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             }
             String source2 = cu.toString();
 
-            return source;
+            return source2;
         }
 
         ClassOrInterfaceType COMPILED_FEEL_EXPRESSION_TYPE = JavaParser.parseClassOrInterfaceType(CompiledFEELExpression.class.getCanonicalName());
