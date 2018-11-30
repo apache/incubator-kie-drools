@@ -43,7 +43,7 @@ public class ExecModelDTableModel extends DTableModel {
         try {
             for (int i = 0; i < columns.size(); i++) {
                 DColumnModel column = columns.get(i);
-                Field inputClauseField = clazz.getField(ExecModelDMNEvaluatorCompiler.FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE + i + "_INSTANCE");
+                Field inputClauseField = clazz.getField(FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE + i + "_INSTANCE");
                 column.compiledInputClause = (CompiledFEELExpression) inputClauseField.get(clazz);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
