@@ -1,3 +1,19 @@
+/*
+ * Copyright 2005 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
@@ -6,19 +22,16 @@ import java.util.List;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
-import org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings;
-import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompiler.SourceGenerator {
 
-    static final Logger logger = LoggerFactory.getLogger(FeelExpressionSourceGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(FeelExpressionSourceGenerator.class);
 
-    public static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
+    static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
 
     private Class<?> COMPILED_FEEL_EXPRESSION_TYPE = CompiledFEELExpression.class;
 
@@ -26,22 +39,21 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
 
     public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
         String pkgName = dTableModel.getNamespace();
-        String className = dTableModel.getTableName();
+        String dTableName = dTableModel.getTableName();
 
-        sourceGenerator = new JavaParserSourceGenerator(className, "FeelExpression", pkgName);
-        sourceGenerator.addImports(CompiledFEELSemanticMappings.class,
-                                   CompiledCustomFEELFunction.class,
-                                   CompiledFEELExpression.class,
-                                   CompiledFEELSupport.class,
+        sourceGenerator = new JavaParserSourceGenerator(dTableName, ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION.type, pkgName);
+        sourceGenerator.addImports(org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction.class,
+                                   org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression.class,
+                                   org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.class,
                                    EvaluationContext.class,
                                    CompiledFEELExpression.class);
 
-        generateInitRows(ctx, dTableModel, className);
+        generateInitRows(ctx, dTableModel, dTableName);
         generateInputClauses(ctx, dTableModel);
 
         String source = sourceGenerator.getSource();
         if (logger.isDebugEnabled()) {
-            logger.debug(className + ":\n" + source);
+            logger.debug(dTableName + ":\n" + source);
         }
         return source;
     }
