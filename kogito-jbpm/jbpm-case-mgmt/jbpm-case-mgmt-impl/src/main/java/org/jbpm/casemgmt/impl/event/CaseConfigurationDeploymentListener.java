@@ -70,6 +70,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
         InternalRuntimeManager runtimeManager = (InternalRuntimeManager) event.getDeployedUnit().getRuntimeManager();
         if (runtimeManager instanceof PerCaseRuntimeManager) {
             List<CaseEventListener> caseEventListeners = getEventListenerFromDescriptor(runtimeManager);
+            
             logger.debug("Adding following case event listeners {} for deployment {}", caseEventListeners, event.getDeploymentId());
                         
             TransactionalCommandService commandService = transactionalCommandService;
@@ -79,9 +80,8 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
             
             CaseEventListener auditEventListener = getCaseAuditEventListener(runtimeManager, commandService);
             caseEventListeners.add(auditEventListener);
-            caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider));
-            
-            CaseEventSupport caseEventSupport = new CaseEventSupport(identityProvider, caseEventListeners);
+            caseEventListeners.add(new NotifyParentCaseEventListener(identityProvider, runtimeManager));
+            CaseEventSupport caseEventSupport = new CaseEventSupport(identityProvider, caseEventListeners);            
             ((PerCaseRuntimeManager) runtimeManager).setCaseEventSupport(caseEventSupport);
             logger.debug("CaseEventSupport configured for deployment {}", event.getDeploymentId());
         }

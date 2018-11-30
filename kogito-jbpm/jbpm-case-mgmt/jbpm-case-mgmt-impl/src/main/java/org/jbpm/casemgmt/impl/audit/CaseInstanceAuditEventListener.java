@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jbpm.casemgmt.api.audit.CaseFileData;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
@@ -92,22 +93,6 @@ public class CaseInstanceAuditEventListener implements CaseEventListener, Cachea
             CaseRoleAssignmentLog assignmentLog = new CaseRoleAssignmentLog(event.getProcessInstanceId(), event.getCaseId(), "*", TaskModelProvider.getFactory().newGroup(AuthorizationManager.PUBLIC_GROUP));
             commandService.execute(new PersistObjectCommand(assignmentLog));
         }
-        
-        Map<String, Object> initialData = caseFile.getData();
-        if (initialData.isEmpty()) {
-            return;
-        }
-        List<CaseFileData> insert = new ArrayList<>();
-        initialData.forEach((name, value) -> {
-            
-            if (value != null) {
-                
-                List<CaseFileData> indexedValues = indexManager.index(event, name, value);               
-                insert.addAll(indexedValues);
-                
-            }
-        });
-        commandService.execute(new PersistObjectCommand(insert.toArray()));
 
     }
     
@@ -162,9 +147,17 @@ public class CaseInstanceAuditEventListener implements CaseEventListener, Cachea
     @Override
     public void afterCaseDataRemoved(CaseDataEvent event) {
         Map<String, Object> parameters = new HashMap<>();
+        List<String> names = new ArrayList<>();
+        for (Entry<String, Object> entry : event.getData().entrySet()) {
+        
+            List<String> indexedNames = indexManager.getIndexNames(entry.getKey(), entry.getValue());
+            if (indexedNames != null) {
+                names.addAll(indexedNames);
+            }
+        }
         
         parameters.put("caseId", event.getCaseId());
-        parameters.put("itemNames", new ArrayList<>(event.getData().keySet()));
+        parameters.put("itemNames", names);
         UpdateStringCommand updateCommand = new UpdateStringCommand(DELETE_CASE_DATA_BY_NAME_QUERY, parameters);
         commandService.execute(updateCommand);
     }

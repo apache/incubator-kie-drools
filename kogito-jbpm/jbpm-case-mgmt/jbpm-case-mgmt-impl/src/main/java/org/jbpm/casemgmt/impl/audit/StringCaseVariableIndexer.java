@@ -17,6 +17,7 @@
 package org.jbpm.casemgmt.impl.audit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jbpm.casemgmt.api.audit.CaseFileData;
@@ -47,6 +48,11 @@ public class StringCaseVariableIndexer implements CaseVariableIndexer {
         indexed.add(caseVariable);
         
         return indexed;
+    }
+
+    @Override
+    public List<String> getIndexNames(String name) {
+        return Collections.singletonList(name);
     }
 
 }

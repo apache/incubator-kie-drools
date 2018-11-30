@@ -18,6 +18,7 @@ package org.jbpm.casemgmt.impl.wih;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,14 +29,18 @@ import org.jbpm.casemgmt.api.event.CaseDestroyEvent;
 import org.jbpm.casemgmt.api.event.CaseEvent;
 import org.jbpm.casemgmt.api.event.CaseEventListener;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
@@ -47,10 +52,13 @@ public class NotifyParentCaseEventListener extends DefaultProcessEventListener i
     private static final Logger logger = LoggerFactory.getLogger(NotifyParentCaseEventListener.class);
     
     private IdentityProvider identityProvider;
+    private RuntimeManager runtimeManager;
+    private CaseEventSupport emptyCaseEventSupport;
     
-    
-    public NotifyParentCaseEventListener(IdentityProvider identityProvider) {
+    public NotifyParentCaseEventListener(IdentityProvider identityProvider, RuntimeManager runtimeManager) {
         this.identityProvider = identityProvider;
+        this.runtimeManager = runtimeManager;
+        this.emptyCaseEventSupport = new CaseEventSupport(identityProvider, Collections.emptyList());
     }
     
     @Override
@@ -88,6 +96,40 @@ public class NotifyParentCaseEventListener extends DefaultProcessEventListener i
             }
         }
     }
+    
+    @Override
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        if (event.getVariableId().startsWith("caseFile_")) {
+            CaseFileInstance caseFile = getCaseFile((KieSession) event.getKieRuntime());
+            if (caseFile != null) {
+                CaseEventSupport caseEventSupport = getCaseEventSupport();
+                String itemName = event.getVariableId().replaceFirst("caseFile_", "");
+                Map<String, Object> parameters = Collections.singletonMap(itemName, event.getNewValue());
+                if (event.getNewValue() == null) {
+                    caseEventSupport.fireBeforeCaseDataRemoved(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
+                } else {
+                    caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        if (event.getVariableId().startsWith("caseFile_")) {
+            CaseFileInstance caseFile = getCaseFile((KieSession) event.getKieRuntime());
+            if (caseFile != null) {
+                CaseEventSupport caseEventSupport = getCaseEventSupport();
+                String itemName = event.getVariableId().replaceFirst("caseFile_", "");
+                Map<String, Object> parameters = Collections.singletonMap(itemName, event.getNewValue());
+                if (event.getNewValue() == null) {
+                    caseEventSupport.fireAfterCaseDataRemoved(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
+                } else {
+                    caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile, caseFile.getDefinitionId(), parameters);
+                }
+            }
+        }
+    }
 
     protected void notifyParentOnCompletion(CaseEvent event) {
         CaseFileInstanceImpl caseFileInstance = (CaseFileInstanceImpl) event.getCaseFile();
@@ -116,6 +158,17 @@ public class NotifyParentCaseEventListener extends DefaultProcessEventListener i
         CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next(); 
         
         return caseFile;
+    }
+    
+    protected CaseEventSupport getCaseEventSupport() {                
+        if (runtimeManager instanceof PerCaseRuntimeManager) {
+            CaseEventSupport caseEventSupport = (CaseEventSupport) ((PerCaseRuntimeManager) runtimeManager).getCaseEventSupport();
+            if (caseEventSupport != null) {
+                return caseEventSupport;
+            }
+        }
+        
+        return emptyCaseEventSupport;
     }
 
     @Override

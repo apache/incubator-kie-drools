@@ -84,6 +84,14 @@ public class CaseWithJPADataTest extends AbstractCaseServicesBaseTest {
             // there is special org.jbpm.casemgmt.impl.audit.PatientCaseVariableIndexer so it produces multiple entries for single variable
             Assertions.assertThat(mappedLogs).containsKey("patient");
             Assertions.assertThat(mappedLogs).containsKey("patient_name");
+            
+            caseService.removeDataFromCaseFile(caseId, "patient");
+            
+            logs = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            Assertions.assertThat(logs).hasSize(1);
+            
+            mappedLogs = logs.stream().collect(toMap(CaseFileItem::getName, t -> t));
+            Assertions.assertThat(mappedLogs).doesNotContainKeys("patient", "patient_name");
 
             caseService.cancelCase(caseId);
             CaseInstance instance = caseService.getCaseInstance(caseId);

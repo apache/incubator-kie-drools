@@ -6,9 +6,9 @@
             targetNamespace="http://www.omg.org/spec/CMMN/20151109/CMMNDI" 
             elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:import namespace="http://www.omg.org/spec/CMMN/20151109/DC" 
-                    schemaLocation="DC.xsd"/>
+                    schemaLocation="CMMNDC.xsd"/>
 	<xsd:import namespace="http://www.omg.org/spec/CMMN/20151109/DI"
-                    schemaLocation="DI.xsd"/>	
+                    schemaLocation="CMMNDI.xsd"/>	
 	<xsd:element name="CMMNDI" type="cmmndi:CMMNDI"/>
 	<xsd:element name="CMMNDiagram" type="cmmndi:CMMNDiagram"/>
 	<xsd:element name="CMMNDiagramElement" type="di:DiagramElement">

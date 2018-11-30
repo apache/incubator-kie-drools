@@ -118,7 +118,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
     }
 
     @Override
-    public byte[] marshal(Context context, ObjectOutputStream os, Object object) throws IOException {
+    public byte[] marshal(Context context, ObjectOutputStream os, Object object) throws IOException {        
         logger.debug("About to marshal {}", object);
         CaseFileInstanceImpl caseFile = (CaseFileInstanceImpl) object;
         Map<String, Object> caseFileContent = new HashMap<>();

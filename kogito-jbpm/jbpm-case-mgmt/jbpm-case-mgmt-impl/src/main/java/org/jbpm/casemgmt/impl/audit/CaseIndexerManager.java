@@ -17,6 +17,7 @@
 package org.jbpm.casemgmt.impl.audit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -72,6 +73,21 @@ public class CaseIndexerManager {
                     return dataItems;
 
                 }
+            }
+        }
+        
+        return null;
+    }
+    
+    public List<String> getIndexNames(String variableName, Object variable) {
+        if (variable == null) {
+            return Collections.singletonList(variableName);
+        }
+        for (CaseVariableIndexer indexer : indexers) {
+            if (indexer.accept(variable)) {
+                List<String> indexed = indexer.getIndexNames(variableName);
+                
+                return indexed;                
             }
         }
         

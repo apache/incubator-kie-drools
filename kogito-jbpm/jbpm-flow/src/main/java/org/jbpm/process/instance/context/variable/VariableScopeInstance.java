@@ -96,7 +96,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
             throw new IllegalArgumentException(
                 "The name of a variable may not be null!");
         }
-        Object oldValue = variables.get(name);
+        Object oldValue = getVariable(name);
         if (oldValue == null) {
         	if (value == null) {
         		return;
@@ -127,7 +127,11 @@ public class VariableScopeInstance extends AbstractContextInstance {
                 CaseData caseFile = (CaseData) caseFiles.iterator().next();
                 FactHandle factHandle = getProcessInstance().getKnowledgeRuntime().getFactHandle(caseFile);
                 
-                caseFile.add(nameInCaseFile, value);
+                if (value == null) {
+                    caseFile.remove(nameInCaseFile);
+                } else {
+                    caseFile.add(nameInCaseFile, value);
+                }
                 getProcessInstance().getKnowledgeRuntime().update(factHandle, caseFile);
                 ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
                 return;
@@ -145,7 +149,9 @@ public class VariableScopeInstance extends AbstractContextInstance {
     public void setContextInstanceContainer(ContextInstanceContainer contextInstanceContainer) {
     	super.setContextInstanceContainer(contextInstanceContainer);
     	for (Variable variable : getVariableScope().getVariables()) {
-            setVariable(variable.getName(), variable.getValue());
+            if (variable.getValue() != null) {
+                setVariable(variable.getName(), variable.getValue());
+            }
         }
     	if (contextInstanceContainer instanceof CompositeContextNodeInstance) {
     		this.variableIdPrefix = ((Node) ((CompositeContextNodeInstance) contextInstanceContainer).getNode()).getUniqueId();

@@ -16,6 +16,8 @@
 
 package org.jbpm.casemgmt.api.audit;
 
+import java.util.List;
+
 import org.kie.internal.utils.VariableIndexer;
 
 /**
@@ -24,4 +26,5 @@ import org.kie.internal.utils.VariableIndexer;
  */
 public interface CaseVariableIndexer extends VariableIndexer<CaseFileData> {
 
+    List<String> getIndexNames(String name);
 }

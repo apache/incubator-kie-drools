@@ -17,6 +17,7 @@
 package org.jbpm.casemgmt.impl.audit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbpm.casemgmt.api.audit.CaseFileData;
@@ -51,6 +52,12 @@ public class PatientCaseVariableIndexer implements CaseVariableIndexer {
         indexed.add(caseVariableMapped);
         
         return indexed;
+    }
+
+    @Override
+    public List<String> getIndexNames(String name) {
+        
+        return Arrays.asList(name, name + "_name");
     }
 
 }
