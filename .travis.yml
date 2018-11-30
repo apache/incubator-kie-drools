@@ -5,7 +5,7 @@ install: true
 jdk:
 - oraclejdk8
 script:
-- mvn --quiet clean install -Prun-code-coverage
+- mvn -e --quiet clean install -Prun-code-coverage
 - mvn --quiet jacoco:report jacoco:merge sonar:sonar -Preport-code-coverage -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kiegroup -Dsonar.login=$SONARCLOUD_TOKEN -Dsonar.projectKey=org.optaplanner:optaplanner
 cache:
   directories:
