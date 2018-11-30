@@ -6,7 +6,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <drools-version>7.15.0-SNAPSHOT</drools-version>
+    <drools-version>7.16.0-SNAPSHOT</drools-version>
     <slf4j-version>1.7.25</slf4j-version>
     <junit-version>4.12</junit-version>
     <generateModel>YES</generateModel>
@@ -89,7 +89,7 @@
       <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
-        <version>7.15.0-SNAPSHOT</version>
+        <version>7.16.0-SNAPSHOT</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
