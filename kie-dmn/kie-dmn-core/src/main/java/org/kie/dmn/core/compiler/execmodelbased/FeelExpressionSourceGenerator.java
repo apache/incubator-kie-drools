@@ -1,7 +1,6 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.javaparser.JavaParser;
@@ -37,6 +36,9 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
 
     public static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
 
+    private ClassOrInterfaceType COMPILED_FEEL_EXPRESSION_TYPE = JavaParser.parseClassOrInterfaceType(CompiledFEELExpression.class.getCanonicalName());
+    private EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+
     public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
         String pkgName = dTableModel.getNamespace();
         String clasName = dTableModel.getTableName();
@@ -50,45 +52,17 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         cu.addImport(EvaluationContext.class);
         cu.addImport(CompiledFEELExpression.class);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("package ").append(pkgName).append(";\n");
-        sb.append("\n");
-        sb.append("import java.util.List;\n");
-        sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
-        sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;\n");
-        sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;\n");
-        sb.append("import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;");
-        sb.append("import org.kie.dmn.feel.lang.EvaluationContext;\n");
-        sb.append("import ").append(CompiledFEELExpression.class.getCanonicalName()).append(";\n");
-        sb.append("import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;\n");
-        sb.append("\n");
-        sb.append("public class ").append(clasName).append("FeelExpression {\n");
-        sb.append("\n");
-        sb.append(getInitRows(ctx, dTableModel, clasName, cu));
-        sb.append("\n");
-        sb.append(getInputClause(ctx, dTableModel, cu));
-        sb.append("\n");
-        sb.append("}\n");
+        getInitRows(ctx, dTableModel, clasName, cu);
+        getInputClause(ctx, dTableModel, cu);
 
-        String source = sb.toString();
+        String source = cu.toString();
         if (logger.isDebugEnabled()) {
             logger.debug(clasName + ":\n" + source);
         }
-        String source2 = cu.toString();
-
-        return source2;
+        return source;
     }
 
-    ClassOrInterfaceType COMPILED_FEEL_EXPRESSION_TYPE = JavaParser.parseClassOrInterfaceType(CompiledFEELExpression.class.getCanonicalName());
-    EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
-
-    public String getInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className, CompilationUnit parentCU) {
-
-        StringBuilder testArrayBuilder = new StringBuilder();
-        StringBuilder testsBuilder = new StringBuilder();
-        StringBuilder instancesBuilder = new StringBuilder();
-
-        testArrayBuilder.append("    public static final CompiledFEELExpression[][] FEEL_EXPRESSION_ARRAY = new CompiledFEELExpression[][] {\n");
+    public void getInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className, CompilationUnit parentCU) {
 
         ClassOrInterfaceDeclaration[][] rows = dTableModel.generateRows(ctx.toCompilerContext());
 
@@ -99,7 +73,6 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
                                 NodeList<Expression> arrayInitializer = NodeList.nodeList();
 
                                 for (int i = 0; i < rows.length; i++) {
-                                    testArrayBuilder.append("            { ");
                                     ClassOrInterfaceDeclaration[] cols = rows[i];
 
                                     NodeList<Expression> arrayInitializerInner = NodeList.nodeList();
@@ -107,14 +80,8 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
                                     for (int j = 0; j < cols.length; j++) {
                                         ClassOrInterfaceDeclaration feelExpressionSource = cols[j];
                                         String testClass = className + "r" + i + "c" + j + "expression";
-                                        instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
 
                                         renameFeelExpressionClass(testClass, feelExpressionSource);
-
-                                        testsBuilder.append("\n");
-                                        testsBuilder.append(feelExpressionSource.toString());
-                                        testsBuilder.append("\n");
-                                        testArrayBuilder.append(testClass).append("_INSTANCE");
 
                                         NameExpr node = new NameExpr(testClass + "_INSTANCE");
 
@@ -128,21 +95,10 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
                                         coid.addMember(feelExpressionSource);
 
                                         arrayInitializerInner.add(node);
-
-                                        if (j < cols.length - 1) {
-                                            testArrayBuilder.append(", ");
-                                        }
-                                    }
-                                    if (i < rows.length - 1) {
-                                        testArrayBuilder.append(" },\n");
-                                    } else {
-                                        testArrayBuilder.append(" }\n");
                                     }
 
                                     arrayInitializer.add(new ArrayInitializerExpr(arrayInitializerInner));
                                 }
-
-                                testArrayBuilder.append("    };\n");
 
                                 NodeList<ArrayCreationLevel> arrayCreationLevels = NodeList.nodeList(new ArrayCreationLevel(), new ArrayCreationLevel());
                                 ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(arrayInitializer);
@@ -153,32 +109,21 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
                             }
                         }
                 , null);
-
-        return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
     }
 
-    public String getInputClause(DMNCompilerContext ctx, DTableModel dTableModel, CompilationUnit parentCU) {
-        StringBuilder testsBuilder = new StringBuilder();
-        StringBuilder instancesBuilder = new StringBuilder();
+    public void getInputClause(DMNCompilerContext ctx, DTableModel dTableModel, CompilationUnit parentCU) {
 
         List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
 
         parentCU.accept(new VoidVisitorAdapter<Void>() {
                             @Override
                             public void visit(ClassOrInterfaceDeclaration coid, Void arg) {
-
                                 int i = 0;
-                                for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
-                                    ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
+                                for (ClassOrInterfaceDeclaration classOrInterfaceDeclaration : inputClauses) {
                                     String testClass = INPUT_CLAUSE_NAMESPACE + i;
-
-                                    instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
 
                                     renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
 
-                                    testsBuilder.append("\n");
-                                    testsBuilder.append(classOrInterfaceDeclaration.toString());
-                                    testsBuilder.append("\n");
                                     i++;
 
                                     NameExpr node = new NameExpr(testClass + "_INSTANCE");
@@ -194,8 +139,6 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
                             }
                         }
                 , null);
-
-        return instancesBuilder + "\n" + testsBuilder;
     }
 
     private static void renameFeelExpressionClass(String testClass, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
