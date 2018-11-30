@@ -47,6 +47,7 @@ import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
+import org.drools.javaparser.ast.type.ArrayType;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.kie.api.runtime.rule.DataSource;
@@ -433,6 +434,8 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     public static class FeelExpressionSourceGenerator implements SourceGenerator {
 
+        public static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
+
         public String generate(DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel) {
             String pkgName = dTableModel.getNamespace();
             String clasName = dTableModel.getTableName();
@@ -462,7 +465,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append("\n");
             sb.append(getInitRows(ctx, dTableModel, clasName, cu));
             sb.append("\n");
-            sb.append(getInputClause(ctx, dTableModel));
+            sb.append(getInputClause(ctx, dTableModel, cu));
             sb.append("\n");
             sb.append(getOutputClause(ctx, dTableModel));
             sb.append("}\n");
@@ -476,82 +479,82 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             return source;
         }
 
+        ClassOrInterfaceType COMPILED_FEEL_EXPRESSION_TYPE = JavaParser.parseClassOrInterfaceType(CompiledFEELExpression.class.getCanonicalName());
+        EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+
         public String getInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className, CompilationUnit parentCU) {
 
             StringBuilder testArrayBuilder = new StringBuilder();
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
-            ClassOrInterfaceType COMPILED_FEEL_EXPRESSION_TYPE = JavaParser.parseClassOrInterfaceType(CompiledFEELExpression.class.getCanonicalName());
-            EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+
 
             testArrayBuilder.append("    public static final CompiledFEELExpression[][] FEEL_EXPRESSION_ARRAY = new CompiledFEELExpression[][] {\n");
 
             ClassOrInterfaceDeclaration[][] rows = dTableModel.generateRows(ctx.toCompilerContext());
-            NodeList<FieldDeclaration> innerClassFieldDeclarations = NodeList.nodeList();
-            NodeList<ClassOrInterfaceDeclaration> innerClasses = NodeList.nodeList();
-
-            for (int i = 0; i < rows.length; i++) {
-                testArrayBuilder.append("            { ");
-                ClassOrInterfaceDeclaration[] cols = rows[i];
-
-                // OGNI DUE DEVE ESSERCI UN ARRAY
-                for (int j = 0; j < cols.length; j++) {
-                    ClassOrInterfaceDeclaration feelExpressionSource = cols[j];
-                    String testClass = className + "r" + i + "c" + j + "expression";
-                    instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
-
-                    renameFeelExpressionClass(testClass, feelExpressionSource);
-
-                    innerClasses.add(feelExpressionSource);
-
-                    testsBuilder.append("\n");
-                    testsBuilder.append(feelExpressionSource.toString());
-                    testsBuilder.append("\n");
-                    testArrayBuilder.append(testClass).append("_INSTANCE");
-
-                    NameExpr node = new NameExpr(testClass + "_INSTANCE");
-
-                    ClassOrInterfaceType innerClassType = JavaParser.parseClassOrInterfaceType(testClass);
-                    ObjectCreationExpr newInstanceOfInnerClass = new ObjectCreationExpr(null, innerClassType, NodeList.nodeList());
-                    VariableDeclarator variableDeclarator = new VariableDeclarator(COMPILED_FEEL_EXPRESSION_TYPE, node.getName(), newInstanceOfInnerClass);
-
-                    innerClassFieldDeclarations.add(new FieldDeclaration(PUBLIC_STATIC_FINAL, variableDeclarator ));
-                    if (j < cols.length - 1) {
-                        testArrayBuilder.append(", ");
-                    }
-                }
-                if (i < rows.length - 1) {
-                    testArrayBuilder.append(" },\n");
-                } else {
-                    testArrayBuilder.append(" }\n");
-                }
-            }
-
-            testArrayBuilder.append("    };\n");
-
-
 
             parentCU.accept(new VoidVisitorAdapter<Void>() {
                           @Override
                           public void visit(ClassOrInterfaceDeclaration coid, Void arg) {
 
-                              for(FieldDeclaration fieldDeclaration : innerClassFieldDeclarations) {
-                                  coid.addMember(fieldDeclaration);
+                              NodeList<Expression> arrayInitializer = NodeList.nodeList();
+
+
+                              for (int i = 0; i < rows.length; i++) {
+                                  testArrayBuilder.append("            { ");
+                                  ClassOrInterfaceDeclaration[] cols = rows[i];
+
+                                  NodeList<Expression> arrayInitializerInner = NodeList.nodeList();
+
+                                  for (int j = 0; j < cols.length; j++) {
+                                      ClassOrInterfaceDeclaration feelExpressionSource = cols[j];
+                                      String testClass = className + "r" + i + "c" + j + "expression";
+                                      instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
+
+                                      renameFeelExpressionClass(testClass, feelExpressionSource);
+
+
+
+                                      testsBuilder.append("\n");
+                                      testsBuilder.append(feelExpressionSource.toString());
+                                      testsBuilder.append("\n");
+                                      testArrayBuilder.append(testClass).append("_INSTANCE");
+
+                                      NameExpr node = new NameExpr(testClass + "_INSTANCE");
+
+                                      ClassOrInterfaceType innerClassType = JavaParser.parseClassOrInterfaceType(testClass);
+                                      ObjectCreationExpr newInstanceOfInnerClass = new ObjectCreationExpr(null, innerClassType, NodeList.nodeList());
+                                      VariableDeclarator variableDeclarator = new VariableDeclarator(COMPILED_FEEL_EXPRESSION_TYPE, node.getName(), newInstanceOfInnerClass);
+
+                                      FieldDeclaration fieldDeclaration = new FieldDeclaration(PUBLIC_STATIC_FINAL, variableDeclarator);
+                                      coid.addMember(fieldDeclaration);
+
+                                      coid.addMember(feelExpressionSource);
+
+                                      arrayInitializerInner.add(node);
+
+                                      if (j < cols.length - 1) {
+                                          testArrayBuilder.append(", ");
+                                      }
+                                  }
+                                  if (i < rows.length - 1) {
+                                      testArrayBuilder.append(" },\n");
+                                  } else {
+                                      testArrayBuilder.append(" }\n");
+                                  }
+
+                                  arrayInitializer.add(new ArrayInitializerExpr(arrayInitializerInner));
                               }
 
-                              List<Expression> innerClassNames = innerClassFieldDeclarations.stream().map(in -> new NameExpr(in.getVariables().get(0).getNameAsString())).collect(Collectors.toList());
+                              testArrayBuilder.append("    };\n");
 
                               NodeList<ArrayCreationLevel> arrayCreationLevels = NodeList.nodeList(new ArrayCreationLevel(), new ArrayCreationLevel());
-                              NodeList<Expression> nodes = NodeList.nodeList(innerClassNames);
-                              ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr(COMPILED_FEEL_EXPRESSION_TYPE, arrayCreationLevels, new ArrayInitializerExpr(nodes));
-                              VariableDeclarator variable = new VariableDeclarator(COMPILED_FEEL_EXPRESSION_TYPE, "FEEL_EXPRESSION_ARRAY", arrayCreationExpr);
+                              ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(arrayInitializer);
+                              ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr(COMPILED_FEEL_EXPRESSION_TYPE, arrayCreationLevels, initializerMainArray);
+                              VariableDeclarator variable = new VariableDeclarator(new ArrayType(new ArrayType(COMPILED_FEEL_EXPRESSION_TYPE)) , "FEEL_EXPRESSION_ARRAY", arrayCreationExpr);
                               FieldDeclaration fieldDeclaration = new FieldDeclaration(PUBLIC_STATIC_FINAL, variable);
                               coid.addMember(fieldDeclaration);
-
-                              for(ClassOrInterfaceDeclaration innerClass : innerClasses) {
-                                  coid.addMember(innerClass);
-                              }
 
                           }
                       }
@@ -560,26 +563,51 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             return instancesBuilder + "\n" + testArrayBuilder + "\n" + testsBuilder;
         }
 
-        public String getInputClause(DMNCompilerContext ctx, DTableModel dTableModel) {
+        public String getInputClause(DMNCompilerContext ctx, DTableModel dTableModel, CompilationUnit parentCU) {
             StringBuilder testsBuilder = new StringBuilder();
             StringBuilder instancesBuilder = new StringBuilder();
 
             List<ClassOrInterfaceDeclaration> inputClauses = dTableModel.generateInputClauses(ctx.toCompilerContext());
 
-            int i = 0;
-            for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
-                ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
-                String testClass = "inputClause" + i;
-                instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
+            parentCU.accept(new VoidVisitorAdapter<Void>() {
+                                @Override
+                                public void visit(ClassOrInterfaceDeclaration coid, Void arg) {
 
-                renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
+                                    int i = 0;
+                                    for (Iterator<ClassOrInterfaceDeclaration> iterator = inputClauses.iterator(); iterator.hasNext(); ) {
+                                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = iterator.next();
+                                        String testClass = INPUT_CLAUSE_NAMESPACE + i;
 
-                testsBuilder.append("\n");
-                testsBuilder.append(classOrInterfaceDeclaration.toString());
-                testsBuilder.append("\n");
-                i++;
 
-            }
+                                        instancesBuilder.append("    public static final CompiledFEELExpression " + testClass + "_INSTANCE = new " + testClass + "();\n");
+
+                                        renameFeelExpressionClass(testClass, classOrInterfaceDeclaration);
+
+
+                                        testsBuilder.append("\n");
+                                        testsBuilder.append(classOrInterfaceDeclaration.toString());
+                                        testsBuilder.append("\n");
+                                        i++;
+
+                                        NameExpr node = new NameExpr(testClass + "_INSTANCE");
+                                        ClassOrInterfaceType innerClassType = JavaParser.parseClassOrInterfaceType(testClass);
+                                        ObjectCreationExpr newInstanceOfInnerClass = new ObjectCreationExpr(null, innerClassType, NodeList.nodeList());
+                                        VariableDeclarator variableDeclarator = new VariableDeclarator(COMPILED_FEEL_EXPRESSION_TYPE, node.getName(), newInstanceOfInnerClass);
+
+                                        FieldDeclaration fieldDeclaration = new FieldDeclaration(PUBLIC_STATIC_FINAL, variableDeclarator);
+                                        coid.addMember(fieldDeclaration);
+
+
+                                        coid.addMember(classOrInterfaceDeclaration);
+
+
+                                    }
+
+                                }
+                            }
+                    , null);
+
+
 
 
             return instancesBuilder + "\n" + testsBuilder;
