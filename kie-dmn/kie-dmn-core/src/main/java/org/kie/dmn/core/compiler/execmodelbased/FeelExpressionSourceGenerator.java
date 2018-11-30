@@ -3,11 +3,7 @@ package org.kie.dmn.core.compiler.execmodelbased;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.expr.ArrayInitializerExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.NameExpr;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;
@@ -53,24 +49,23 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
     private void generateInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className) {
 
         ClassOrInterfaceDeclaration[][] rows = dTableModel.generateRows(ctx.toCompilerContext());
-        List<Expression> arrayInitializer = new ArrayList<>();
+        List<List<String>> arrayInitializer = new ArrayList<>();
 
         for (int i = 0; i < rows.length; i++) {
             ClassOrInterfaceDeclaration[] columns = rows[i];
 
-            NodeList<Expression> arrayInitializerInner = NodeList.nodeList();
+            List<String> arrayInitializerInner = new ArrayList<>();
             for (int j = 0; j < columns.length; j++) {
                 String testClass = className + "r" + i + "c" + j + "expression";
+                String node = instanceName(testClass);
 
-                NameExpr node = instanceName(testClass);
-
-                sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, node.getNameAsString());
+                sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, node);
                 sourceGenerator.addInnerClassWithName(columns[j], testClass);
 
                 arrayInitializerInner.add(node);
             }
 
-            arrayInitializer.add(new ArrayInitializerExpr(arrayInitializerInner));
+            arrayInitializer.add(new ArrayList<>(arrayInitializerInner));
         }
 
         sourceGenerator.addTwoDimensionalArray(arrayInitializer, "FEEL_EXPRESSION_ARRAY", COMPILED_FEEL_EXPRESSION_TYPE);
@@ -83,12 +78,12 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         for (int i = 0; i < inputClauses.size(); i++) {
             String testClass = INPUT_CLAUSE_NAMESPACE + i;
 
-            sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, instanceName(testClass).getNameAsString());
+            sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, instanceName(testClass));
             sourceGenerator.addInnerClassWithName(inputClauses.get(i), testClass);
         }
     }
 
-    private NameExpr instanceName(String testClass) {
-        return new NameExpr(testClass + "_INSTANCE");
+    private String instanceName(String testClass) {
+        return testClass + "_INSTANCE";
     }
 }

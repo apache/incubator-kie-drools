@@ -15,6 +15,7 @@ import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.expr.ArrayCreationExpr;
 import org.drools.javaparser.ast.expr.ArrayInitializerExpr;
 import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.javaparser.ast.type.ArrayType;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
@@ -55,9 +56,19 @@ public class JavaParserSourceGenerator {
         firstClass.addMember(new FieldDeclaration(PUBLIC_STATIC_FINAL, variableDeclarator));
     }
 
-    public void addTwoDimensionalArray(List<Expression> arrayInitializer, String arrayName, Class<?> type) {
+    public void addTwoDimensionalArray(List<List<String>> initializers, String arrayName, Class<?> type) {
         NodeList<ArrayCreationLevel> arrayCreationLevels = NodeList.nodeList(new ArrayCreationLevel(), new ArrayCreationLevel());
-        ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(NodeList.nodeList(arrayInitializer));
+
+        NodeList<Expression> arrayInitializers = NodeList.nodeList();
+        for(List<String> innerInitializer : initializers) {
+            NodeList<Expression> arrayInitializerInner = NodeList.nodeList();
+            for(String instanceName : innerInitializer) {
+                arrayInitializerInner.add(new NameExpr(instanceName));
+            }
+            arrayInitializers.add(new ArrayInitializerExpr(arrayInitializerInner));
+        }
+
+        ArrayInitializerExpr initializerMainArray = new ArrayInitializerExpr(arrayInitializers);
         ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr(getType(type), arrayCreationLevels, initializerMainArray);
         VariableDeclarator variable = new VariableDeclarator(new ArrayType(new ArrayType(getType(type))), arrayName, arrayCreationExpr);
         addMember(new FieldDeclaration(PUBLIC_STATIC_FINAL, variable));
