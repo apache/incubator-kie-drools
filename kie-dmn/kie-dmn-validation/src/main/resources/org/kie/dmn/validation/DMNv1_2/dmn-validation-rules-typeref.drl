@@ -57,7 +57,8 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
 when
-  $o: Expression( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  Definitions($ns : namespace)
+  $o: Expression( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import($importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
@@ -71,7 +72,8 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
 when
-  $o: InformationItem( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  Definitions($ns : namespace)
+  $o: InformationItem( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import($importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
@@ -85,7 +87,8 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
 when
-  $o: ItemDefinition( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  Definitions($ns : namespace)
+  $o: ItemDefinition( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import($importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
@@ -99,7 +102,8 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
 when
-  $o: OutputClause( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef).namespaceURI != getURIFEEL(), $typeRef : typeRef )
+  Definitions($ns : namespace)
+  $o: OutputClause( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
        (not (and Import($importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
