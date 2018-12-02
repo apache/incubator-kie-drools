@@ -17,6 +17,11 @@
 package org.kie.dmn.core.v1_2;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -60,4 +65,32 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision"), is(LocalDateTime.of(2018, 9, 28, 16, 7).plusDays(1)));
     }
 
+    @Test
+    public void testItemDefCollection() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01");
+        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false));
+
+        final Object[][] data = new Object[][]{{7792, 10, "Clark"},
+                                               {7934, 10, "Miller"},
+                                               {7976, 20, "Adams"},
+                                               {7902, 20, "Ford"},
+                                               {7900, 30, "James"}};
+        final List<Map<String, Object>> employees = new ArrayList<>();
+        for (Object[] aData : data) {
+            final Map<String, Object> e = new HashMap<>();
+            e.put("id", aData[0]);
+            e.put("dept", aData[1]);
+            e.put("name", aData[2]);
+            employees.add(e);
+        }
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Employees", employees);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getContext().get("filter01"), is(Arrays.asList("Adams", "Ford")));
+    }
 }
