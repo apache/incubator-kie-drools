@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -141,56 +142,45 @@ public class DTableModel {
         return allRows.toArray(new ClassOrInterfaceDeclaration[0][0]);
     }
 
-    protected void iterateOverInputClauses( CompilerContext feelctx, InputFeelExpressionGeneration inputFeelExpressionGeneration) {
+    protected void iterateOverInputClauses(BiConsumer<DColumnModel, Integer> inputFeelExpressionGeneration) {
         int index = 0;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
             if (inputValuesText != null && !inputValuesText.isEmpty()) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            inputFeelExpressionGeneration.generate(feelctx, column, index);
+            inputFeelExpressionGeneration.accept(column, index);
             index++;
         }
     }
 
-    protected interface InputFeelExpressionGeneration {
-
-        void generate(CompilerContext feelctx,  DColumnModel column, int index);
-    }
-
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> column.compiledInputClause = compileFeelExpression(column.inputClause, feel, feelctx1, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index));
+        iterateOverInputClauses((column, index) -> column.compiledInputClause = compileFeelExpression(column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index));
     }
 
     protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
-        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx1)));
+        iterateOverInputClauses((column, index) -> inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx)));
         return inputClauses;
     }
 
-    protected interface OuputFeelExpressionGeneration {
-
-        void generate(CompilerContext feelctx, DOutputModel output, String defaultValue);
-    }
-
-    protected void iterateOverOutputClauses( CompilerContext feelctx, OuputFeelExpressionGeneration ouputFeelExpressionGeneration) {
+    protected void iterateOverOutputClauses(BiConsumer<DOutputModel, String> ouputFeelExpressionGeneration) {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                ouputFeelExpressionGeneration.generate(feelctx, output, defaultValue);
+                ouputFeelExpressionGeneration.accept(output, defaultValue);
             }
         }
     }
 
     protected void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        iterateOverOutputClauses(feelctx,
-                                 (feelctx1, output, defaultValue) -> output.compiledDefault = compileFeelExpression(output.outputClause, feel, feelctx1, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue,  0));
+        iterateOverOutputClauses((output, defaultValue) -> output.compiledDefault = compileFeelExpression(output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue,  0));
     }
 
     public  Map<String, ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
         Map<String, ClassOrInterfaceDeclaration> outputClauses = new HashMap<>();
-        iterateOverOutputClauses(feelctx, (feelctx1, output, defaultValue) -> outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx1)));
+        iterateOverOutputClauses((output, defaultValue) -> outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx)));
         return outputClauses;
     }
 

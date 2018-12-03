@@ -55,13 +55,13 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + columns.size() + " columns from class loader");
-        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + index)));
+        iterateOverInputClauses((column, index) -> column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + index)));
     }
 
     @Override
     protected void initOutputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + outputs.size() + " outputs from class loader");
-        iterateOverOutputClauses(feelctx, (feelctx1, output, defaultValue) -> output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue))));
+        iterateOverOutputClauses((output, defaultValue) -> output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue))));
     }
 
     private Object readFieldWithRuntimeCheck(String fieldName) {
