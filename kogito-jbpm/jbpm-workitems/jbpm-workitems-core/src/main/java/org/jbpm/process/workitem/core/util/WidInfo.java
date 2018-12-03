@@ -33,6 +33,7 @@ public class WidInfo {
     private String defaultHandler;
     private String defaultHandlerNoType;
     private String defaultHandlerUnEscaped;
+    private String defaultHandlerNoTypeUnEscaped;
     private String documentation;
     private Map<String, InternalWidParamsAndResults> parameters;
     private Map<String, InternalWidParameterValues> parameterValues;
@@ -68,6 +69,9 @@ public class WidInfo {
                                                                  wid.defaultHandler().replaceAll("\"",
                                                                                                  "\\\\\"")));
             this.defaultHandlerUnEscaped = wid.defaultHandler();
+
+            this.defaultHandlerNoTypeUnEscaped = removeType(setParamValue(this.defaultHandler,
+                                                                          wid.defaultHandler()));
 
             this.documentation = setParamValue(this.documentation,
                                                wid.documentation());
@@ -592,5 +596,13 @@ public class WidInfo {
 
     public void setDefaultHandlerUnEscaped(String defaultHandlerUnEscaped) {
         this.defaultHandlerUnEscaped = defaultHandlerUnEscaped;
+    }
+
+    public String getDefaultHandlerNoTypeUnEscaped() {
+        return defaultHandlerNoTypeUnEscaped;
+    }
+
+    public void setDefaultHandlerNoTypeUnEscaped(String defaultHandlerNoTypeUnEscaped) {
+        this.defaultHandlerNoTypeUnEscaped = defaultHandlerNoTypeUnEscaped;
     }
 }

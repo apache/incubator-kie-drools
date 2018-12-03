@@ -265,7 +265,7 @@ public class WidProcessorTest {
                     "\n" +
                     "@Wid(widfile = \"mywidfile.wid\", name = \"MyTest\",\n" +
                     "        displayName = \"My Test Class\", icon = \"/my/icons/myicon.png\",\n" +
-                    "        defaultHandler = \"mvel: new com.sample.MyWorkItemHandler()\",\n" +
+                    "        defaultHandler = \"mvel: new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")\",\n" +
                     "        parameters = {\n" +
                     "                @WidParameter(name = \"sampleParam\", required = true),\n" +
                     "                @WidParameter(name = \"sampleParamTwo\", required = true)\n" +
@@ -828,7 +828,7 @@ public class WidProcessorTest {
                      widInfo.icon());
         assertEquals("mywidfile.wid",
                      widInfo.widfile());
-        assertEquals("mvel: new com.sample.MyWorkItemHandler()",
+        assertEquals("mvel: new com.sample.MyWorkItemHandler(\"testAccessToken\")",
                      widInfo.defaultHandler());
 
         WidParameter[] widParameters = widInfo.parameters();
@@ -911,6 +911,13 @@ public class WidProcessorTest {
         assertNotNull(service.authinfo().referencesite());
         assertEquals("https://test.developer.com",
                      service.authinfo().referencesite());
+
+        WidInfo widInfoObj = new WidInfo(widInfoList);
+        assertNotNull(widInfoObj);
+        assertEquals("mvel: new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")", widInfoObj.getDefaultHandler());
+        assertEquals("mvel: new com.sample.MyWorkItemHandler(\"testAccessToken\")", widInfoObj.getDefaultHandlerUnEscaped());
+        assertEquals("new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")", widInfoObj.getDefaultHandlerNoType());
+        assertEquals("new com.sample.MyWorkItemHandler(\"testAccessToken\")", widInfoObj.getDefaultHandlerNoTypeUnEscaped());
     }
 
     private Compiler compileWithGenerator() {
