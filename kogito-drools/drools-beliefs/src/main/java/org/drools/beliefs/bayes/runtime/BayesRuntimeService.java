@@ -15,14 +15,13 @@
 
 package org.drools.beliefs.bayes.runtime;
 
-import org.drools.core.common.InternalKnowledgeRuntime;
+import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
-import org.kie.api.runtime.KieRuntime;
 
 public class BayesRuntimeService implements KieRuntimeService<BayesRuntime> {
     @Override
-    public BayesRuntime newKieRuntime(KieRuntime session ) {
-        return new BayesRuntimeImpl( (InternalKnowledgeRuntime) session );
+    public BayesRuntime newKieRuntime(KieBase kieBase) {
+        return new BayesRuntimeImpl( kieBase );
     }
 
     @Override
