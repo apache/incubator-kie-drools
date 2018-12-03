@@ -18,7 +18,6 @@ package org.jbpm.casemgmt.impl.command;
 
 import java.util.Map;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.StageNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
@@ -30,6 +29,7 @@ import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.identity.IdentityProvider;
 
 /**

@@ -16,7 +16,6 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.services.api.NodeInstanceNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -26,6 +25,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.command.RegistryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.kie.services.impl.admin.TimerInstanceImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -42,6 +41,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.command.RegistryContext;
 
 public class ListTimersCommand implements ExecutableCommand<List<TimerInstance>>, ProcessInstanceIdCommand {
 

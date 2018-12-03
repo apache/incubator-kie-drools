@@ -16,18 +16,18 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import java.util.Collection;
+
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
-
-import java.util.Collection;
 
 /**
  * Modifies case role assignments

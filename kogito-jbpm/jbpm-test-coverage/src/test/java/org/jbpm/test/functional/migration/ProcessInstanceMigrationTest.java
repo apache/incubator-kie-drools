@@ -24,7 +24,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.test.JbpmTestCase;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -44,6 +43,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.command.RegistryContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

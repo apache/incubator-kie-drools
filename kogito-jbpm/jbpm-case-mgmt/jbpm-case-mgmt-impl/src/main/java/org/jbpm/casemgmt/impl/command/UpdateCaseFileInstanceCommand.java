@@ -16,16 +16,15 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-
 import java.util.Collection;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
 
 /**
  * Updates case file meta data

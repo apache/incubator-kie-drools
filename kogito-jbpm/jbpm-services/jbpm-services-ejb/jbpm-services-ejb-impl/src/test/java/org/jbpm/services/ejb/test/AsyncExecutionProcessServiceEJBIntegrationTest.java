@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.ejb.EJB;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.command.impl.RegistryContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -46,6 +45,7 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.RegistryContext;
 import org.kie.scanner.KieMavenRepository;
 
 import static org.junit.Assert.assertNotNull;

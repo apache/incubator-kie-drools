@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -39,6 +38,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.command.RegistryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

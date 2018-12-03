@@ -16,20 +16,20 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.RegistryContext;
-import org.jbpm.casemgmt.api.auth.AuthorizationManager;
-import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
-import org.jbpm.casemgmt.impl.event.CaseEventSupport;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.ClassObjectFilter;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
+import org.kie.internal.identity.IdentityProvider;
 
 /**
  * Updates case file with new data

@@ -16,7 +16,6 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.StageNotFoundException;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
@@ -26,6 +25,7 @@ import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.identity.IdentityProvider;
 
 /**

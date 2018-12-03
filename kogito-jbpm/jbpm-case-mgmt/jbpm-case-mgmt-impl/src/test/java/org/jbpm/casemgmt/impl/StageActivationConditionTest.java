@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl;
@@ -31,6 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
@@ -30,6 +29,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.identity.IdentityProvider;
 
 public abstract class CaseCommand<T> implements ExecutableCommand<T> {

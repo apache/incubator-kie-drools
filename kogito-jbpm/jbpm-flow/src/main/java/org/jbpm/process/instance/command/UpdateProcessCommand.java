@@ -22,12 +22,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement(name="update-process-command")
 @XmlAccessorType(XmlAccessType.NONE)
