@@ -66,7 +66,7 @@ public class DTableModel {
 
     protected final List<DColumnModel> columns;
     protected final List<DRowModel> rows;
-    private final List<DOutputModel> outputs;
+    protected final List<DOutputModel> outputs;
 
     private final Map<String, Type> variableTypes;
     private final org.kie.dmn.feel.runtime.decisiontables.DecisionTable dtable;
@@ -164,7 +164,7 @@ public class DTableModel {
         return inputClauses;
     }
 
-    private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
@@ -174,13 +174,13 @@ public class DTableModel {
         }
     }
 
-    protected List<ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
-        List<ClassOrInterfaceDeclaration> outputClauses = new ArrayList<>();
+    protected Map<String, ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
+        Map<String, ClassOrInterfaceDeclaration> outputClauses = new HashMap<>();
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                outputClauses.add(feel.generateFeelExpressionSource(defaultValue, feelctx));
+                outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx));
             }
         }
         return outputClauses;
@@ -196,7 +196,7 @@ public class DTableModel {
         });
     }
 
-    private List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
+    protected List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
         String outputValuesText = Optional.ofNullable( output.outputClause.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
         output.typeRef = inferTypeRef(model, dt, output.outputClause);
         if (outputValuesText != null && !outputValuesText.isEmpty()) {
@@ -343,9 +343,9 @@ public class DTableModel {
     }
 
     public static class DOutputModel {
-        private final OutputClause outputClause;
-        private List<UnaryTest> outputValues;
-        private CompiledFEELExpression compiledDefault;
+        protected final OutputClause outputClause;
+        protected List<UnaryTest> outputValues;
+        protected CompiledFEELExpression compiledDefault;
         private BaseDMNTypeImpl typeRef;
 
         DOutputModel( OutputClause outputClause ) {

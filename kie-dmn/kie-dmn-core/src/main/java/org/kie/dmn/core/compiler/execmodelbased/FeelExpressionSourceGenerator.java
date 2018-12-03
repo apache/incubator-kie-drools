@@ -18,10 +18,12 @@ package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
 
     static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
     static final  String FEEL_EXPRESSION_ARRAY_NAME = "FEEL_EXPRESSION_ARRAY";
+    static final String OUTPUT_NAME = "Output";
 
     private Class<?> COMPILED_FEEL_EXPRESSION_TYPE = CompiledFEELExpression.class;
 
@@ -52,12 +55,26 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
 
         generateInitRows(ctx, dTableModel, dTableName);
         generateInputClauses(ctx, dTableModel);
+        generateOutputClauses(ctx, dTableModel);
 
         String source = sourceGenerator.getSource();
         if (logger.isDebugEnabled()) {
             logger.debug(dTableName + ":\n" + source);
         }
         return source;
+    }
+
+    private void generateOutputClauses(DMNCompilerContext ctx, DTableModel dTableModel) {
+        Map<String, ClassOrInterfaceDeclaration> classOrInterfaceDeclarations = dTableModel.generateOutputClauses(ctx.toCompilerContext());
+        for(Map.Entry<String, ClassOrInterfaceDeclaration> output : classOrInterfaceDeclarations.entrySet() ) {
+            String className = getOutputName(output.getKey());
+            sourceGenerator.addInnerClassWithName(output.getValue(), className);
+            sourceGenerator.addField(className, COMPILED_FEEL_EXPRESSION_TYPE, instanceName(className));
+        }
+    }
+
+    public static String getOutputName(String key) {
+        return CodegenStringUtil.escapeIdentifier(key + OUTPUT_NAME);
     }
 
     private void generateInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className) {
@@ -71,12 +88,12 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
             List<String> arrayInitializerInner = new ArrayList<>();
             for (int j = 0; j < columns.length; j++) {
                 String testClass = className + "r" + i + "c" + j + "expression";
-                String node = instanceName(testClass);
+                String instanceName = instanceName(testClass);
 
-                sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, node);
+                sourceGenerator.addField(testClass, COMPILED_FEEL_EXPRESSION_TYPE, instanceName);
                 sourceGenerator.addInnerClassWithName(columns[j], testClass);
 
-                arrayInitializerInner.add(node);
+                arrayInitializerInner.add(instanceName);
             }
 
             arrayInitializer.add(new ArrayList<>(arrayInitializerInner));
@@ -97,7 +114,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         }
     }
 
-    private String instanceName(String testClass) {
+    public static String instanceName(String testClass) {
         return testClass + "_INSTANCE";
     }
 }

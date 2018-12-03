@@ -28,6 +28,10 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE;
+import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.getOutputName;
+import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGenerator.instanceName;
+
 public class ExecModelDTableModel extends DTableModel {
 
     static final Logger logger = LoggerFactory.getLogger(ExecModelDTableModel.class);
@@ -59,11 +63,28 @@ public class ExecModelDTableModel extends DTableModel {
         try {
             for (int i = 0; i < columns.size(); i++) {
                 DColumnModel column = columns.get(i);
-                Field inputClauseField = clazz.getField(FeelExpressionSourceGenerator.INPUT_CLAUSE_NAMESPACE + i + "_INSTANCE");
+                Field inputClauseField = clazz.getField( instanceName(INPUT_CLAUSE_NAMESPACE + i));
                 column.compiledInputClause = (CompiledFEELExpression) inputClauseField.get(clazz);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void initOutputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        logger.info("Reading " + outputs.size() + " outputs from class loader");
+        for (DOutputModel output : outputs) {
+            output.outputValues = getOutputValuesTests( output );
+            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
+            if (defaultValue != null && !defaultValue.isEmpty()) {
+                try {
+                    Field outputClauseField = clazz.getField(instanceName(getOutputName(defaultValue)));
+                    output.compiledDefault = (CompiledFEELExpression) outputClauseField.get(clazz);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }

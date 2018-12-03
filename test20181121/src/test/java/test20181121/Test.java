@@ -1,6 +1,7 @@
 package test20181121;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -10,6 +11,17 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -17,6 +29,7 @@ import org.kie.dmn.core.util.KieHelper;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
 public class Test {
@@ -38,6 +51,96 @@ public class Test {
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c", "Car Damage Responsibility");
         assertThat(dmnModel, notNullValue());
 
+    }
+
+    static class MockEventListener implements DMNRuntimeEventListener {
+
+            private List<Integer> selected;
+            private List<Integer> matches;
+
+            @Override
+            public void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event) {
+
+            }
+
+            @Override
+            public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
+
+            }
+
+            @Override
+            public void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {
+
+            }
+
+            @Override
+            public void afterEvaluateBKM(AfterEvaluateBKMEvent event) {
+
+            }
+
+            @Override
+            public void beforeEvaluateContextEntry(BeforeEvaluateContextEntryEvent event) {
+
+            }
+
+            @Override
+            public void afterEvaluateContextEntry(AfterEvaluateContextEntryEvent event) {
+
+            }
+
+            @Override
+            public void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event) {
+
+            }
+
+            @Override
+            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+                matches = event.getMatches();
+                selected = event.getSelected();
+            }
+
+            @Override
+            public void beforeEvaluateDecisionService(BeforeEvaluateDecisionServiceEvent event) {
+
+            }
+
+            @Override
+            public void afterEvaluateDecisionService(AfterEvaluateDecisionServiceEvent event) {
+
+            }
+
+        public List<Integer> getSelected() {
+            return selected;
+        }
+
+        public List<Integer> getMatches() {
+            return matches;
+        }
+    }
+
+    @org.junit.Test
+    public void testDecisionTableDefaultValue() {
+        final DMNRuntime runtime = createRuntime( "decisiontable-default-value.dmn", this.getClass() );
+        final MockEventListener listener = new MockEventListener();
+        runtime.addListener( listener );
+
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "decisiontable-default-value" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set( "Age", new BigDecimal( 16 ) );
+        context.set( "RiskCategory", "Medium" );
+        context.set( "isAffordable", true );
+
+        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.getMessages().toString(), dmnResult.hasErrors(), is( false ) );
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+
+        assertThat(listener.matches, is(empty()));
+        assertThat(listener.selected, is(empty()));
     }
 
     public static DMNRuntime createRuntime(final String resourceName, final Class testClass) {
