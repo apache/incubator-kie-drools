@@ -15,10 +15,10 @@
  */
 package org.jbpm.process.workitem.core.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 
 import org.jbpm.process.workitem.core.util.service.WidService;
 
@@ -32,6 +32,7 @@ public class WidInfo {
     private String description;
     private String defaultHandler;
     private String defaultHandlerNoType;
+    private String defaultHandlerUnEscaped;
     private String documentation;
     private Map<String, InternalWidParamsAndResults> parameters;
     private Map<String, InternalWidParameterValues> parameterValues;
@@ -60,10 +61,13 @@ public class WidInfo {
             this.description = setParamValue(this.description,
                                              wid.description());
             this.defaultHandler = setParamValue(this.defaultHandler,
-                                                wid.defaultHandler());
+                                                wid.defaultHandler().replaceAll("\"",
+                                                                                "\\\\\""));
 
             this.defaultHandlerNoType = removeType(setParamValue(this.defaultHandler,
-                                                                 wid.defaultHandler()));
+                                                                 wid.defaultHandler().replaceAll("\"",
+                                                                                                 "\\\\\"")));
+            this.defaultHandlerUnEscaped = wid.defaultHandler();
 
             this.documentation = setParamValue(this.documentation,
                                                wid.documentation());
@@ -245,6 +249,7 @@ public class WidInfo {
         private String description;
         private InternalServiceTrigger trigger;
         private InternalServiceAction action;
+        private InternalServiceAuth authInfo;
 
         public InternalServiceInfo(WidService service) {
             if (service.category().length() > 0 && service.description().length() > 0) {
@@ -268,6 +273,12 @@ public class WidInfo {
                 hasTrigger = false;
                 hasAction = false;
             }
+
+            this.authInfo = new InternalServiceAuth(service.authinfo().required(),
+                                                    service.authinfo().params(),
+                                                    service.authinfo().paramsdescription(),
+                                                    service.authinfo().description(),
+                                                    service.authinfo().referencesite());
         }
 
         public boolean isHasTrigger() {
@@ -324,6 +335,14 @@ public class WidInfo {
 
         public void setAction(InternalServiceAction action) {
             this.action = action;
+        }
+
+        public InternalServiceAuth getAuthInfo() {
+            return authInfo;
+        }
+
+        public void setAuthInfo(InternalServiceAuth authInfo) {
+            this.authInfo = authInfo;
         }
     }
 
@@ -391,6 +410,67 @@ public class WidInfo {
 
         public void setRequiredFieldsOnly(boolean requiredFieldsOnly) {
             this.requiredFieldsOnly = requiredFieldsOnly;
+        }
+    }
+
+    public class InternalServiceAuth {
+
+        public InternalServiceAuth(boolean required,
+                                   String[] params,
+                                   String[] paramsDescription,
+                                   String description,
+                                   String referencesite) {
+            this.required = required;
+            this.params = params;
+            this.paramsDescription = paramsDescription;
+            this.description = description;
+            this.referencesite = referencesite;
+        }
+
+        private boolean required;
+        private String[] params;
+        private String[] paramsDescription;
+        private String description;
+        private String referencesite;
+
+        public boolean isRequired() {
+            return required;
+        }
+
+        public void setRequired(boolean required) {
+            this.required = required;
+        }
+
+        public String[] getParams() {
+            return params;
+        }
+
+        public void setParams(String[] params) {
+            this.params = params;
+        }
+
+        public String[] getParamsDescription() {
+            return paramsDescription;
+        }
+
+        public void setParamsDescription(String[] paramsDescription) {
+            this.paramsDescription = paramsDescription;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getReferencesite() {
+            return referencesite;
+        }
+
+        public void setReferencesite(String referencesite) {
+            this.referencesite = referencesite;
         }
     }
 
@@ -504,5 +584,13 @@ public class WidInfo {
 
     public void setServiceInfo(InternalServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
+    }
+
+    public String getDefaultHandlerUnEscaped() {
+        return defaultHandlerUnEscaped;
+    }
+
+    public void setDefaultHandlerUnEscaped(String defaultHandlerUnEscaped) {
+        this.defaultHandlerUnEscaped = defaultHandlerUnEscaped;
     }
 }

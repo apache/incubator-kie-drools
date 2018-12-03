@@ -18,24 +18,14 @@ package org.jbpm.process.workitem.core.util.service;
 import java.lang.annotation.Documented;
 
 /**
- * Defines an annotated class that is of type Service.
- * Used for WorkItemHandler implmenentations to define
- * values for the Service configuration.
- * Can be used to auto-generate stand-alone Service applets.
+ * Used within the <code>Service</code> annotation to describe
+ * the authentication needed for this workitem handler.
  */
-
 @Documented
-public @interface WidService {
-
-    String category() default "";
-
+public @interface WidAuth {
+    boolean required() default false;
+    String[] params() default "";
+    String[] paramsdescription() default "";
     String description() default "";
-
-    String keywords() default "";
-
-    WidTrigger trigger() default @WidTrigger;
-
-    WidAction action() default @WidAction;
-
-    WidAuth authinfo() default @WidAuth;
+    String referencesite() default "";
 }
