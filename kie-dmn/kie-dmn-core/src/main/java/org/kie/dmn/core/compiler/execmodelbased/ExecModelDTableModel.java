@@ -55,10 +55,7 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + columns.size() + " columns from class loader");
-        for (int i = 0; i < columns.size(); i++) {
-            DColumnModel column = columns.get(i);
-            column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + i));
-        }
+        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + index)));
     }
 
     @Override

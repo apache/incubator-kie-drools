@@ -141,40 +141,44 @@ public class DTableModel {
         return allRows.toArray(new ClassOrInterfaceDeclaration[0][0]);
     }
 
-    protected void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        int index = 1;
+    protected void iterateOverInputClauses( CompilerContext feelctx, InputFeelExpressionGeneration inputFeelExpressionGeneration) {
+        int index = 0;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
             if (inputValuesText != null && !inputValuesText.isEmpty()) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
+            inputFeelExpressionGeneration.generate(feelctx, column, index);
+            index++;
         }
+    }
+
+    protected interface InputFeelExpressionGeneration {
+
+        void generate(CompilerContext feelctx,  DColumnModel column, int index);
+    }
+
+    protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> column.compiledInputClause = compileFeelExpression(column.inputClause, feel, feelctx1, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index));
     }
 
     protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
-        for (DColumnModel column : columns) {
-            String inputValuesText = getInputValuesText( column.inputClause );
-            if (inputValuesText != null && !inputValuesText.isEmpty()) {
-                column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
-            }
-            inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx));
-        }
+        iterateOverInputClauses(feelctx, (feelctx1, column, index) -> inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx1)));
         return inputClauses;
     }
 
-    protected interface OutputClassGeneration {
+    protected interface OuputFeelExpressionGeneration {
 
-        void generateDefaultClause(CompilerContext feelctx, DOutputModel output, String defaultValue);
+        void generate(CompilerContext feelctx, DOutputModel output, String defaultValue);
     }
 
-    protected void iterateOverOutputClauses( CompilerContext feelctx, OutputClassGeneration outputClassGeneration) {
+    protected void iterateOverOutputClauses( CompilerContext feelctx, OuputFeelExpressionGeneration ouputFeelExpressionGeneration) {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                outputClassGeneration.generateDefaultClause(feelctx, output, defaultValue);
+                ouputFeelExpressionGeneration.generate(feelctx, output, defaultValue);
             }
         }
     }
