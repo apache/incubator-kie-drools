@@ -1,9 +1,11 @@
 package test20181121;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.drools.javaparser.ast.CompilationUnit;
 import org.junit.Assert;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -26,6 +28,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -120,6 +123,14 @@ public class Test {
 
     @org.junit.Test
     public void testDecisionTableDefaultValue() {
+        List<CompilationUnit> generatedClasses = new ArrayList<>();
+        CompilerBytecodeLoader.generateClassListener = new CompilerBytecodeLoader.GenerateClassListener() {
+            @Override
+            public void generatedClass(CompilationUnit cu) {
+                generatedClasses.add(cu);
+            }
+        };
+
         final DMNRuntime runtime = createRuntime( "decisiontable-default-value.dmn", this.getClass() );
         final MockEventListener listener = new MockEventListener();
         runtime.addListener( listener );
@@ -141,6 +152,7 @@ public class Test {
 
         assertThat(listener.matches, is(empty()));
         assertThat(listener.selected, is(empty()));
+        assertThat(generatedClasses, is(empty()));
     }
 
     public static DMNRuntime createRuntime(final String resourceName, final Class testClass) {
