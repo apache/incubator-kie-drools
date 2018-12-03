@@ -34,7 +34,7 @@ import static org.kie.dmn.core.compiler.execmodelbased.FeelExpressionSourceGener
 
 public class ExecModelDTableModel extends DTableModel {
 
-    static final Logger logger = LoggerFactory.getLogger(ExecModelDTableModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExecModelDTableModel.class);
     private final Class<?> clazz;
 
     public ExecModelDTableModel(DMNFEELHelper feel, DMNModelImpl model, String dtName, String tableName, DecisionTable dt, Class<?> feelExpressionClass) {
@@ -44,7 +44,7 @@ public class ExecModelDTableModel extends DTableModel {
 
     @Override
     protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-        logger.info("Reading " + rows.size() + " rows from class loader");
+        logger.info("Reading " + rows.size() + " rows from class loader");;
         CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) readFieldWithRuntimeCheck(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
         for (int i = 0; i < rows.size(); i++) {
             DRowModel row = rows.get(i);

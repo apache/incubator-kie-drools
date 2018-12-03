@@ -26,6 +26,8 @@ import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.model.functions.Block3;
+import org.drools.model.functions.Function2;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -124,21 +126,24 @@ public class DTableModel {
         return outputs.stream().allMatch( o -> o.compiledDefault != null );
     }
 
-    protected void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        int index = 1;
+    protected void iterateOverRows(BiConsumer<DRowModel, Integer> rowsFeelExpressionGeneration) {
+        int rowIndex = 1;
         for (DRowModel row : rows) {
-            int rowIndex = index;
-            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) ).collect( toList() );
-            index++;
+            rowsFeelExpressionGeneration.accept(row, rowIndex);
+            rowIndex++;
         }
+    }
+
+    protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        iterateOverRows((row, rowIndex) -> row.compiledOutputs = row.outputs.stream().map(expr -> compileFeelExpression(dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex)).collect(toList()));
     }
 
     protected ClassOrInterfaceDeclaration[][] generateRows(CompilerContext feelctx) {
         List<ClassOrInterfaceDeclaration[]> allRows = new ArrayList<>();
-        for (DRowModel row : rows) {
-            ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map( expr -> feel.generateFeelExpressionSource(expr, feelctx) ).toArray(ClassOrInterfaceDeclaration[]::new);
+        iterateOverRows((row, integer) -> {
+            ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map(expr -> feel.generateFeelExpressionSource(expr, feelctx)).toArray(ClassOrInterfaceDeclaration[]::new);
             allRows.add(rowCompiledOutputs);
-        }
+        });
         return allRows.toArray(new ClassOrInterfaceDeclaration[0][0]);
     }
 
