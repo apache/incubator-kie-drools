@@ -283,10 +283,6 @@ public class DTableModel {
             return inputs;
         }
 
-        public List<String> getOutputs() {
-            return outputs;
-        }
-
         public Object evaluate(EvaluationContext ctx, int pos) {
             return compiledOutputs.get( pos ).apply( ctx );
         }

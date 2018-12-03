@@ -274,17 +274,6 @@ public class DMNFEELHelper {
         return compiled;
     }
 
-    public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, Type inputColumnType, CompilerContext compilerContext1) {
-        CompilerContext compilerContext =
-                compilerContext1
-                        .addInputVariableType("?", inputColumnType);
-
-        CompilationUnit compilationUnit = ((FEELImpl) feel).generateExpressionSource(input, compilerContext);
-        return compilationUnit.getType(0)
-                .asClassOrInterfaceDeclaration()
-                .setStatic(true);
-    }
-
     public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, CompilerContext compilerContext1) {
 
         CompilationUnit compilationUnit = ((FEELImpl) feel).generateExpressionSource(input, compilerContext1);
