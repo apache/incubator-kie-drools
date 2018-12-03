@@ -53,6 +53,19 @@
           "justification": "add sessions pool"
         },
         {
+          "code": "java.method.parameterTypeChanged",
+          "old": "parameter T org.kie.api.internal.runtime.KieRuntimeService<T>::newKieRuntime(===org.kie.api.runtime.KieRuntime===)",
+          "new": "parameter T org.kie.api.internal.runtime.KieRuntimeService<T>::newKieRuntime(===org.kie.api.KieBase===)",
+          "oldType": "org.kie.api.runtime.KieRuntime",
+          "newType": "org.kie.api.KieBase",
+          "package": "org.kie.api.internal.runtime",
+          "classSimpleName": "KieRuntimeService",
+          "methodName": "newKieRuntime",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "KieRuntimeService instances often do not require a whole KieRuntime (session) to be created -- DMN does not"
+        },
+        {
           "code": "java.method.addedToInterface",
           "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::addCalendar(java.lang.String, java.lang.String)",
           "package": "org.kie.api.builder.model",
