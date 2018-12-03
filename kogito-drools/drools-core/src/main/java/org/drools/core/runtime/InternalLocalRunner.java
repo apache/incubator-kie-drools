@@ -16,7 +16,8 @@
 
 package org.drools.core.runtime;
 
-import org.drools.core.command.impl.RegistryContext;
+import java.util.List;
+
 import org.drools.core.fluent.impl.Batch;
 import org.drools.core.fluent.impl.BatchImpl;
 import org.drools.core.fluent.impl.InternalExecutable;
@@ -27,8 +28,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
-
-import java.util.List;
+import org.kie.internal.command.RegistryContext;
 
 import static java.util.Collections.singletonList;
 

@@ -19,11 +19,11 @@ package org.drools.core.command;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.internal.command.RegistryContext;
 
 public class AddDataSourceCommand<E>
         implements

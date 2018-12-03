@@ -22,12 +22,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement(name="get-session-time")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -17,11 +17,11 @@ package org.drools.core.command.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.RegistryContext;
 
 public class GetRuleRuntimeEventListenersCommand
     implements

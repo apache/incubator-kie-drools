@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -34,6 +33,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.command.RegistryContext;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsInEntryPointCommand

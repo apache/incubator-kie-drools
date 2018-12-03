@@ -16,7 +16,10 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.api.runtime.ExecutableRunner;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.command.GetSessionClockCommand;
 import org.drools.core.command.runtime.AddEventListenerCommand;
 import org.drools.core.command.runtime.DestroySessionCommand;
@@ -81,6 +84,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -98,13 +102,10 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleFlowGroup;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -556,7 +557,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
     
     public KieSessionConfiguration getSessionConfiguration() {
-        return ((RegistryContext) runner.createContext()).lookup( KieSession.class ).getSessionConfiguration();
+        return ((RegistryContext) runner.createContext()).lookup(KieSession.class ).getSessionConfiguration();
     }
 
     @Override

@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -31,6 +30,7 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand

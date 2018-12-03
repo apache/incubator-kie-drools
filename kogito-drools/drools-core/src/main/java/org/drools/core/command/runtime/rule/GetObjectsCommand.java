@@ -27,13 +27,13 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.core.ClassObjectSerializationFilter;
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.internal.command.RegistryContext;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsCommand

@@ -21,13 +21,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.InternalWorkingMemory;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

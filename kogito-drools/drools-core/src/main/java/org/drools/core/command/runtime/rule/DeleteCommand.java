@@ -21,12 +21,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
