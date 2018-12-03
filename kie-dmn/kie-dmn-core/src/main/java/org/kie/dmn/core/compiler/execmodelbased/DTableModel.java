@@ -164,25 +164,29 @@ public class DTableModel {
         return inputClauses;
     }
 
-    protected void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected interface OutputClassGeneration {
+
+        void generateDefaultClause(CompilerContext feelctx, DOutputModel output, String defaultValue);
+    }
+
+    protected void iterateOverOutputClauses( CompilerContext feelctx, OutputClassGeneration outputClassGeneration) {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                output.compiledDefault = compileFeelExpression( output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue, 0 );
+                outputClassGeneration.generateDefaultClause(feelctx, output, defaultValue);
             }
         }
     }
 
-    protected Map<String, ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
+    protected void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        iterateOverOutputClauses(feelctx,
+                                 (feelctx1, output, defaultValue) -> output.compiledDefault = compileFeelExpression(output.outputClause, feel, feelctx1, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue,  0));
+    }
+
+    public  Map<String, ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
         Map<String, ClassOrInterfaceDeclaration> outputClauses = new HashMap<>();
-        for (DOutputModel output : outputs) {
-            output.outputValues = getOutputValuesTests( output );
-            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
-            if (defaultValue != null && !defaultValue.isEmpty()) {
-                outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx));
-            }
-        }
+        iterateOverOutputClauses(feelctx, (feelctx1, output, defaultValue) -> outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx1)));
         return outputClauses;
     }
 

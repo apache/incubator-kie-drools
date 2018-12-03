@@ -64,13 +64,7 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initOutputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + outputs.size() + " outputs from class loader");
-        for (DOutputModel output : outputs) {
-            output.outputValues = getOutputValuesTests(output);
-            String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
-            if (defaultValue != null && !defaultValue.isEmpty()) {
-                output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue)));
-            }
-        }
+        iterateOverOutputClauses(feelctx, (feelctx1, output, defaultValue) -> output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue))));
     }
 
     private Object readFieldWithRuntimeCheck(String fieldName) {
