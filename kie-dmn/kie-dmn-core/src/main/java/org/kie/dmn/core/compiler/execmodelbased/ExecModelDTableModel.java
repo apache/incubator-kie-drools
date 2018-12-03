@@ -45,29 +45,19 @@ public class ExecModelDTableModel extends DTableModel {
     @Override
     protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + rows.size() + " rows from class loader");
-        try {
-            Field inputClauseField = clazz.getField(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
-            CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) inputClauseField.get(clazz);
-            for (int i = 0; i < rows.size(); i++) {
-                DRowModel row = rows.get(i);
-                row.compiledOutputs = Arrays.asList(array[i]);
-            }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+        CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) readFieldWithRuntimeCheck(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
+        for (int i = 0; i < rows.size(); i++) {
+            DRowModel row = rows.get(i);
+            row.compiledOutputs = Arrays.asList(array[i]);
         }
     }
 
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + columns.size() + " columns from class loader");
-        try {
-            for (int i = 0; i < columns.size(); i++) {
-                DColumnModel column = columns.get(i);
-                Field inputClauseField = clazz.getField( instanceName(INPUT_CLAUSE_NAMESPACE + i));
-                column.compiledInputClause = (CompiledFEELExpression) inputClauseField.get(clazz);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        for (int i = 0; i < columns.size(); i++) {
+            DColumnModel column = columns.get(i);
+            column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + i));
         }
     }
 
@@ -75,16 +65,20 @@ public class ExecModelDTableModel extends DTableModel {
     protected void initOutputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + outputs.size() + " outputs from class loader");
         for (DOutputModel output : outputs) {
-            output.outputValues = getOutputValuesTests( output );
+            output.outputValues = getOutputValuesTests(output);
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                try {
-                    Field outputClauseField = clazz.getField(instanceName(getOutputName(defaultValue)));
-                    output.compiledDefault = (CompiledFEELExpression) outputClauseField.get(clazz);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+                output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(instanceName(getOutputName(defaultValue))));
             }
+        }
+    }
+
+    private Object readFieldWithRuntimeCheck(String fieldName) {
+        try {
+            Field field = clazz.getField(fieldName);
+            return field.get(clazz);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
     }
 }
