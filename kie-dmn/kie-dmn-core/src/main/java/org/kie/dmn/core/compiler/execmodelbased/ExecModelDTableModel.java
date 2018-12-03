@@ -68,7 +68,7 @@ public class ExecModelDTableModel extends DTableModel {
             output.outputValues = getOutputValuesTests(output);
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(instanceName(getOutputName(defaultValue))));
+                output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue)));
             }
         }
     }
