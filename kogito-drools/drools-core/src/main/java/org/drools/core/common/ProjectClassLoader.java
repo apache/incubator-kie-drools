@@ -25,14 +25,11 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
 
@@ -56,7 +53,7 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
 
     private Map<String, ClassBytecode> definedTypes;
 
-    private final Set<String> nonExistingClasses = new HashSet<String>();
+    private final Set<String> nonExistingClasses = ConcurrentHashMap.newKeySet();
 
     private ClassLoader droolsClassLoader;
 
