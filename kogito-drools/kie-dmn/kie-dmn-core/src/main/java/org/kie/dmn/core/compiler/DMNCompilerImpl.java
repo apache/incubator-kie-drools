@@ -521,7 +521,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      */
     public DMNType resolveTypeRef(DMNModelImpl dmnModel, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
-            QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef);
+            QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef, dmnModel.getNamespace());
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
             if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
@@ -566,7 +566,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param typeRef the typeRef to be resolved.
      * @return
      */
-    public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef) {
+    public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef, String modelNamespace) {
         if (localElement instanceof KieDMNModelInstrumentedBase) {
             if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
@@ -593,7 +593,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     return new QName(alias.getValue().getNamespaceURI(), typeRef.getLocalPart().replace(prefix, ""));
                 }
             }
-            return new QName(localElement.getNamespaceURI(""), typeRef.getLocalPart());
+            return new QName(modelNamespace, typeRef.getLocalPart());
         }
     }
 
