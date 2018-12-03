@@ -16,14 +16,15 @@
 
 package org.drools.core.command.impl;
 
-import org.drools.core.world.impl.ContextManagerImpl;
-import org.kie.api.runtime.Context;
-import org.kie.internal.command.ContextManager;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.drools.core.world.impl.ContextManagerImpl;
+import org.kie.api.runtime.Context;
+import org.kie.internal.command.ContextManager;
+import org.kie.internal.command.RegistryContext;
 
 public class ContextImpl implements RegistryContext {
 
