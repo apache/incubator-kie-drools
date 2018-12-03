@@ -47,7 +47,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
             defaultResult = getInterpreted();
         }
 
-        return defaultResult;
+        return this;
     }
 
     private DirectCompilerResult getCompilerResult() {
@@ -98,6 +98,6 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
     @Override
     public Object apply(EvaluationContext evaluationContext) {
-        return getResult().apply(evaluationContext);
+        return defaultResult.apply(evaluationContext);
     }
 }
