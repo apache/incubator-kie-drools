@@ -50,6 +50,12 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
+    private GeneratorsEnum[] GENERATORS_WITHOUT_EXPRESSIONS = new GeneratorsEnum[] {
+            GeneratorsEnum.EVALUATOR,
+            GeneratorsEnum.UNIT,
+            GeneratorsEnum.EXEC_MODEL,
+            GeneratorsEnum.UNARY_TESTS
+    };
 
     public ExecModelDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
         super(compiler);
@@ -112,7 +118,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
-        String[] fileNames = new String[GeneratorsEnum.values().length];
+        String[] fileNames = new String[getGenerators().length];
         List<GeneratedSource> generatedSources = new ArrayList<>();
 
         generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
@@ -124,7 +130,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<GeneratedSource> generatedSources) {
         for (int i = 0; i < fileNames.length; i++) {
-            GeneratorsEnum generator = GeneratorsEnum.values()[i];
+            GeneratorsEnum generator = getGenerators()[i];
             String className = dTableModel.getGeneratedClassName(generator);
             String fileName = "src/main/java/" + className.replace('.', '/') + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
@@ -132,6 +138,10 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             generatedSources.add(new GeneratedSource(fileName, javaSource));
             srcMfs.write(fileNames[i], javaSource.getBytes());
         }
+    }
+
+    protected GeneratorsEnum[] getGenerators() {
+        return GENERATORS_WITHOUT_EXPRESSIONS;
     }
 
     private AbstractModelEvaluator createInvoker(String pkgName, String clasName) {

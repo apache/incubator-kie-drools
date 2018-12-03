@@ -32,6 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompiler {
+    private GeneratorsEnum[] ALL_GENERATORS = new GeneratorsEnum[] {
+            GeneratorsEnum.EVALUATOR,
+            GeneratorsEnum.UNIT,
+            GeneratorsEnum.EXEC_MODEL,
+            GeneratorsEnum.UNARY_TESTS,
+            GeneratorsEnum.FEEL_EXPRESSION,
+
+    };
+
     List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
 
     public void register(AfterGeneratingSourcesListener listener) {
@@ -65,5 +74,10 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
         }
 
         return null;
+    }
+
+    @Override
+    protected GeneratorsEnum[] getGenerators() {
+        return ALL_GENERATORS;
     }
 }
