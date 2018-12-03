@@ -32,6 +32,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
     private static final Logger logger = LoggerFactory.getLogger(FeelExpressionSourceGenerator.class);
 
     static final String INPUT_CLAUSE_NAMESPACE = "InputClause";
+    static final  String FEEL_EXPRESSION_ARRAY_NAME = "FEEL_EXPRESSION_ARRAY";
 
     private Class<?> COMPILED_FEEL_EXPRESSION_TYPE = CompiledFEELExpression.class;
 
@@ -45,6 +46,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         sourceGenerator.addImports(org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.class,
+                                   org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.class,
                                    EvaluationContext.class,
                                    CompiledFEELExpression.class);
 
@@ -80,7 +82,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
             arrayInitializer.add(new ArrayList<>(arrayInitializerInner));
         }
 
-        sourceGenerator.addTwoDimensionalArray(arrayInitializer, "FEEL_EXPRESSION_ARRAY", COMPILED_FEEL_EXPRESSION_TYPE);
+        sourceGenerator.addTwoDimensionalArray(arrayInitializer, FEEL_EXPRESSION_ARRAY_NAME, COMPILED_FEEL_EXPRESSION_TYPE);
     }
 
     private void generateInputClauses(DMNCompilerContext ctx, DTableModel dTableModel) {

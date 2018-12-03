@@ -42,7 +42,7 @@ public class ExecModelDTableModel extends DTableModel {
     protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
         logger.info("Reading " + rows.size() + " rows from class loader");
         try {
-            Field inputClauseField = clazz.getField("FEEL_EXPRESSION_ARRAY");
+            Field inputClauseField = clazz.getField(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
             CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) inputClauseField.get(clazz);
             for (int i = 0; i < rows.size(); i++) {
                 DRowModel row = rows.get(i);
