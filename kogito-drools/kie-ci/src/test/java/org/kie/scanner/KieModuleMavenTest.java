@@ -44,6 +44,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieTypeResolver;
 import org.appformer.maven.integration.MavenRepository;
 import org.appformer.maven.support.DependencyFilter;
 
@@ -164,6 +165,10 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
                 .getJarDependencies( DependencyFilter.TAKE_ALL_FILTER );
         assertNotNull(dependencies);
         assertEquals(5, dependencies.size());
+        
+        ClassLoader kieContainerCL = kieContainer.getClassLoader();
+        assertTrue("Kie Container class loader must be of KieTypeResolver type", kieContainerCL instanceof KieTypeResolver);
+        assertTrue("Kie Container parent class loader must be of KieTypeResolver type", kieContainerCL.getParent() instanceof KieTypeResolver);
 
         boolean matchedAll = dependencies.containsAll(expectedDependencies);
         assertTrue(matchedAll);
