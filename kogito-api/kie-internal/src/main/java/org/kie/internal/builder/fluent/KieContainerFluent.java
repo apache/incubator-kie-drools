@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.api.runtime.builder;
 
-import org.kie.api.task.TaskService;
+package org.kie.internal.builder.fluent;
 
-/**
- * See {@link TaskService}
- *
- */
-public interface TaskFluent<T> {
+import java.util.function.BiFunction;
 
+import org.kie.api.runtime.KieContainer;
+
+public interface KieContainerFluent {
+
+    KieSessionFluent newSession();
+
+    KieSessionFluent newSession(String sessionName);
+
+    KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieContainer> customizer);
+
+    RuleUnitExecutorFluent newRuleUnitExecutor();
+
+    RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName);
 }

@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime.builder;
+package org.kie.internal.builder.fluent;
 
-import org.kie.api.runtime.rule.DataSource;
-
-/**
- * See {@link DataSource}
- */
-public interface DataSourceFluent<E, U extends RuleUnitFluent> {
-
-    DataSourceFluent<E, U> addBinding(String dataSourceName);
-
-    DataSourceFluent<E, U> insert(E object);
-
-    U buildDataSource();
+public interface RuleUnitExecutorFluent
+    extends RuleUnitFluent<RuleUnitExecutorFluent, ExecutableBuilder>,
+    ProcessFluent<RuleUnitExecutorFluent, ExecutableBuilder>,
+    ContextFluent<RuleUnitExecutorFluent, ExecutableBuilder>,
+    TimeFluent<RuleUnitExecutorFluent> {
 
 }
