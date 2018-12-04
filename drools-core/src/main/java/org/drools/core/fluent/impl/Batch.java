@@ -16,10 +16,10 @@
 
 package org.drools.core.fluent.impl;
 
+import java.util.List;
+
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-
-import java.util.List;
 
 public interface Batch extends BatchExecutionCommand {
 
