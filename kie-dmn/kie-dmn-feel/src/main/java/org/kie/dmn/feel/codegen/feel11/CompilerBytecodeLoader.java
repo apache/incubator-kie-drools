@@ -171,7 +171,7 @@ public class CompilerBytecodeLoader {
                 .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
                 .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
-        if(generateClassListener != null) {
+        if (generateClassListener != null) {
             generateClassListener.generatedClass(cu);
         }
 
