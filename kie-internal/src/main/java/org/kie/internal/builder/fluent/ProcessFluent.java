@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.api.runtime.builder;
+package org.kie.internal.builder.fluent;
 
 import java.util.Map;
 

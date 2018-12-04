@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime.builder;
+package org.kie.internal.builder.fluent;
 
-public interface KieSessionFluent
-    extends RuleFluent<KieSessionFluent, ExecutableBuilder>,
-    ProcessFluent<KieSessionFluent, ExecutableBuilder>,
-    ContextFluent<KieSessionFluent, ExecutableBuilder>,
-    TimeFluent<KieSessionFluent> {
-
+public enum Scope {
+    REQUEST, CONVERSATION, APPLICATION;
 }

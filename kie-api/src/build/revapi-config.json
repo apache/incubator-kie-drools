@@ -100,6 +100,110 @@
           "methodName": "getRoles",
           "elementKind": "method",
           "justification": "ElasticSearch event emitter for runtime events"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.ContextFluent<T extends java.lang.Object, E extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "ContextFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.DataSourceFluent<E extends java.lang.Object, U extends org.kie.api.runtime.builder.RuleUnitFluent>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "DataSourceFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.ExecutableBuilder",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "ExecutableBuilder",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.KieContainerFluent",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "KieContainerFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.KieSessionFluent",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "KieSessionFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.ProcessFluent<T extends java.lang.Object, U extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "ProcessFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.RuleFluent<T extends java.lang.Object, U extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "RuleFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.RuleUnitExecutorFluent",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "RuleUnitExecutorFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.RuleUnitFluent<T extends org.kie.api.runtime.builder.RuleUnitFluent, U extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "RuleUnitFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "enum org.kie.api.runtime.builder.Scope",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "Scope",
+          "elementKind": "enum",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.TaskFluent<T extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "TaskFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.TimeFluent<T extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "TimeFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "interface org.kie.api.runtime.builder.WorkItemManagerFluent<T extends java.lang.Object, P extends java.lang.Object, U extends java.lang.Object>",
+          "package": "org.kie.api.runtime.builder",
+          "classSimpleName": "WorkItemManagerFluent",
+          "elementKind": "interface",
+          "justification": "Moved fluent builder interfaces to kie-internal"
         }
       ]
     }

@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime.builder;
+package org.kie.internal.builder.fluent;
 
-import java.util.function.BiFunction;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.RuleRuntime;
+import org.kie.api.runtime.rule.StatefulRuleSession;
 
-import org.kie.api.runtime.KieContainer;
+/**
+ * See {@link RuleRuntime} and {@link StatefulRuleSession}
+ */
+public interface RuleFluent<T, U> {
 
-public interface KieContainerFluent {
+    T fireAllRules();
 
-    KieSessionFluent newSession();
+    T setGlobal( String identifier, Object object );
 
-    KieSessionFluent newSession(String sessionName);
+    T getGlobal(String identifier);
 
-    KieSessionFluent newSessionCustomized(String sessionName, BiFunction<String, KieContainer, KieContainer> customizer);
+    T insert(Object object);
 
-    RuleUnitExecutorFluent newRuleUnitExecutor();
+    T update( FactHandle handle, Object object );
 
-    RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName);
+    T delete(FactHandle handle);
+
+    U dispose();
+
 }

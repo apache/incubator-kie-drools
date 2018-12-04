@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.api.runtime.builder;
+package org.kie.internal.builder.fluent;
 
 import java.util.Map;
 
