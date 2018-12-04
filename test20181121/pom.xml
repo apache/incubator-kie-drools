@@ -63,6 +63,12 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
