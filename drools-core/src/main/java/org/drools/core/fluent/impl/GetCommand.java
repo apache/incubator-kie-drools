@@ -19,9 +19,10 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.RequestContextImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.builder.Scope;
+import org.kie.internal.builder.fluent.Scope;
 
 public class GetCommand<T> implements ExecutableCommand<T> {
+
     private String name;
     private Scope scope;
 
@@ -29,17 +30,17 @@ public class GetCommand<T> implements ExecutableCommand<T> {
         this.name = name;
     }
 
-    public  GetCommand(String name, Scope scope) {
+    public GetCommand(String name, Scope scope) {
         this.name = name;
         this.scope = scope;
     }
 
     @Override
     public T execute(Context context) {
-        RequestContextImpl reqContext = (RequestContextImpl)context;
+        RequestContextImpl reqContext = (RequestContextImpl) context;
 
         T object = null;
-        if ( reqContext.has(name)) {
+        if (reqContext.has(name)) {
             object = (T) reqContext.get(name);
             reqContext.setLastSetOrGet(name);
         }
@@ -50,8 +51,8 @@ public class GetCommand<T> implements ExecutableCommand<T> {
     @Override
     public String toString() {
         return "SetCommand{" +
-               "name='" + name + '\'' +
-               ", scope=" + scope +
-               '}';
+                "name='" + name + '\'' +
+                ", scope=" + scope +
+                '}';
     }
 }

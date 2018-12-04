@@ -28,9 +28,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.builder.KieSessionFluent;
-import org.kie.api.runtime.builder.Scope;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
+import org.kie.internal.builder.fluent.KieSessionFluent;
+import org.kie.internal.builder.fluent.Scope;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

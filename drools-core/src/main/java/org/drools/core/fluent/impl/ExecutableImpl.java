@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.command.ExecutableCommand;
-import org.kie.api.runtime.builder.ExecutableBuilder;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
 
 public class ExecutableImpl implements InternalExecutable {
 

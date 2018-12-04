@@ -22,6 +22,7 @@ import org.kie.api.runtime.Context;
 import org.kie.internal.command.RegistryContext;
 
 public class GetContextCommand<Void> implements ExecutableCommand<Void> {
+
     private String name;
 
     public GetContextCommand(String name) {
@@ -30,15 +31,15 @@ public class GetContextCommand<Void> implements ExecutableCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        Context returned = ( (RegistryContext) context ).getContextManager().getContext( name );
-        ((RequestContextImpl)context).setApplicationContext(returned);
+        Context returned = ((RegistryContext) context).getContextManager().getContext(name);
+        ((RequestContextImpl) context).setApplicationContext(returned);
         return null;
     }
 
     @Override
     public String toString() {
         return "GetContextCommand{" +
-               "name='" + name + '\'' +
-               '}';
+                "name='" + name + '\'' +
+                '}';
     }
 }
