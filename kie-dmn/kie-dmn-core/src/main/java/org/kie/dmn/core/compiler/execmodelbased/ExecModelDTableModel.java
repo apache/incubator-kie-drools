@@ -44,7 +44,7 @@ public class ExecModelDTableModel extends DTableModel {
 
     @Override
     protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-        logger.info("Reading " + rows.size() + " rows from class loader");;
+        logger.debug("Reading " + rows.size() + " rows from class loader");;
         CompiledFEELExpression[][] array = (CompiledFEELExpression[][]) readFieldWithRuntimeCheck(FeelExpressionSourceGenerator.FEEL_EXPRESSION_ARRAY_NAME);
         for (int i = 0; i < rows.size(); i++) {
             DRowModel row = rows.get(i);
@@ -54,13 +54,13 @@ public class ExecModelDTableModel extends DTableModel {
 
     @Override
     protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-        logger.info("Reading " + columns.size() + " columns from class loader");
+        logger.debug("Reading " + columns.size() + " columns from class loader");
         iterateOverInputClauses((column, index) -> column.compiledInputClause = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(INPUT_CLAUSE_NAMESPACE + index)));
     }
 
     @Override
     protected void initOutputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
-        logger.info("Reading " + outputs.size() + " outputs from class loader");
+        logger.debug("Reading " + outputs.size() + " outputs from class loader");
         iterateOverOutputClauses((output, defaultValue) -> output.compiledDefault = (CompiledFEELExpression) readFieldWithRuntimeCheck(instanceName(getOutputName(defaultValue))));
     }
 

@@ -64,6 +64,6 @@ public class ExecModelDMNClassLoaderCompiler extends DMNEvaluatorCompiler {
             } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
                 throw new RuntimeException("Cannot instantiate class" + e);
             }
-        }).orElseThrow(() -> new RuntimeException("No evaluator class find in file: " + dmnRuleClassFile));
+        }).orElseThrow(() -> new RuntimeException("No evaluator class found in file: " + dmnRuleClassFile));
     }
 }
