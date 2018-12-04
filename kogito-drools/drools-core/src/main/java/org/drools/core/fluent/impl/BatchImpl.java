@@ -16,12 +16,13 @@
 
 package org.drools.core.fluent.impl;
 
-import org.kie.api.command.Command;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.api.command.Command;
+
 public class BatchImpl implements Batch {
+
     private final long distance;
 
     private List<Command> commands = new ArrayList<Command>();

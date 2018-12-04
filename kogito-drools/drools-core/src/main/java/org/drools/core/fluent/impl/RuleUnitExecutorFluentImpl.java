@@ -24,10 +24,10 @@ import org.drools.core.command.RunUnitCommand;
 import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.builder.DataSourceFluent;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.builder.RuleUnitExecutorFluent;
 import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.internal.builder.fluent.DataSourceFluent;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
+import org.kie.internal.builder.fluent.RuleUnitExecutorFluent;
 
 public class RuleUnitExecutorFluentImpl extends BaseBatchWithProcessFluent<RuleUnitExecutorFluent, ExecutableBuilder> implements RuleUnitExecutorFluent {
 

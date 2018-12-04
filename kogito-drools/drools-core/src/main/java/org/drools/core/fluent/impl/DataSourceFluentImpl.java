@@ -21,9 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.core.command.AddDataSourceCommand;
-import org.kie.api.runtime.builder.DataSourceFluent;
-import org.kie.api.runtime.builder.RuleUnitFluent;
 import org.kie.api.runtime.rule.DataSource;
+import org.kie.internal.builder.fluent.DataSourceFluent;
+import org.kie.internal.builder.fluent.RuleUnitFluent;
 
 public class DataSourceFluentImpl<E, U extends RuleUnitFluent> implements DataSourceFluent<E, U> {
 

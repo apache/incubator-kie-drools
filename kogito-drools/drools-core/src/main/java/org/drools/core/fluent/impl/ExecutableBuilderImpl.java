@@ -21,8 +21,8 @@ import org.drools.core.command.SetKieContainerCommand;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.builder.KieContainerFluent;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
+import org.kie.internal.builder.fluent.KieContainerFluent;
 
 public class ExecutableBuilderImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements ExecutableBuilder {
 

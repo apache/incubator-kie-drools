@@ -25,9 +25,9 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
 
 import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 import static org.junit.Assert.assertEquals;

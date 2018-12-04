@@ -19,9 +19,10 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.RequestContextImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.builder.Scope;
+import org.kie.internal.builder.fluent.Scope;
 
 public class SetCommand<T> implements ExecutableCommand<T> {
+
     private String name;
     private Scope scope = Scope.REQUEST;
 
@@ -36,32 +37,32 @@ public class SetCommand<T> implements ExecutableCommand<T> {
 
     @Override
     public T execute(Context context) {
-        RequestContextImpl reqContext = (RequestContextImpl)context;
+        RequestContextImpl reqContext = (RequestContextImpl) context;
         T returned = (T) reqContext.getResult();
 
-        if ( scope == Scope.REQUEST ) {
+        if (scope == Scope.REQUEST) {
             reqContext.set(name, returned);
-        } else if ( scope == Scope.CONVERSATION ) {
-            if ( reqContext.getConversationContext() == null ) {
+        } else if (scope == Scope.CONVERSATION) {
+            if (reqContext.getConversationContext() == null) {
                 throw new IllegalStateException("No Conversation Context Exists");
             }
             reqContext.getConversationContext().set(name, returned);
-        } else  if ( scope == Scope.APPLICATION ) {
-            if ( reqContext.getApplicationContext() == null ) {
+        } else if (scope == Scope.APPLICATION) {
+            if (reqContext.getApplicationContext() == null) {
                 throw new IllegalStateException("No Application Context Exists");
             }
             reqContext.getApplicationContext().set(name, returned);
         }
 
-        ((RequestContextImpl)context).setLastSetOrGet(name);
+        ((RequestContextImpl) context).setLastSetOrGet(name);
         return returned;
     }
 
     @Override
     public String toString() {
         return "SetCommand{" +
-               "name='" + name + '\'' +
-               ", scope=" + scope +
-               '}';
+                "name='" + name + '\'' +
+                ", scope=" + scope +
+                '}';
     }
 }

@@ -22,8 +22,8 @@ import org.drools.core.command.LeaveConversationCommand;
 import org.drools.core.command.OutCommand;
 import org.drools.core.command.StartConversationCommand;
 import org.kie.api.command.ExecutableCommand;
-import org.kie.api.runtime.builder.ContextFluent;
-import org.kie.api.runtime.builder.Scope;
+import org.kie.internal.builder.fluent.ContextFluent;
+import org.kie.internal.builder.fluent.Scope;
 
 public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
 

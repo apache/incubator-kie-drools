@@ -21,10 +21,10 @@ import java.util.function.BiFunction;
 import org.drools.core.command.NewKieSessionCommand;
 import org.drools.core.command.NewRuleUnitExecutorCommand;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.builder.KieContainerFluent;
-import org.kie.api.runtime.builder.KieSessionFluent;
-import org.kie.api.runtime.builder.RuleUnitExecutorFluent;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
+import org.kie.internal.builder.fluent.KieContainerFluent;
+import org.kie.internal.builder.fluent.KieSessionFluent;
+import org.kie.internal.builder.fluent.RuleUnitExecutorFluent;
 
 public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements KieContainerFluent {
 

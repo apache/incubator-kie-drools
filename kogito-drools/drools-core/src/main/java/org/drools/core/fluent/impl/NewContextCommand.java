@@ -22,6 +22,7 @@ import org.kie.api.runtime.Context;
 import org.kie.internal.command.RegistryContext;
 
 public class NewContextCommand<Void> implements ExecutableCommand<Void> {
+
     private String name;
 
     public NewContextCommand(String name) {
@@ -30,8 +31,8 @@ public class NewContextCommand<Void> implements ExecutableCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        Context returned = ( (RegistryContext) context ).getContextManager().createContext( name );
-        ((RequestContextImpl)context).setApplicationContext(returned);
+        Context returned = ((RegistryContext) context).getContextManager().createContext(name);
+        ((RequestContextImpl) context).setApplicationContext(returned);
         return null;
     }
 }
