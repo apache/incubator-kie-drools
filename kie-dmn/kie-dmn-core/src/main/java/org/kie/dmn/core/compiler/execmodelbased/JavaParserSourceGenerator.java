@@ -47,7 +47,6 @@ public class JavaParserSourceGenerator {
         this.compilationUnit = JavaParser.parse("public class " + className + namespace + "{ }");
         this.compilationUnit.setPackageDeclaration(packageName);
         firstClass = this.compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new RuntimeException("Cannot find Class"));
-        String className1 = className;
     }
 
     public void addImports(Class<?>... classes) {
