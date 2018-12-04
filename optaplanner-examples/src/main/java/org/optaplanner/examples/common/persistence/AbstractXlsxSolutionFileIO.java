@@ -507,9 +507,14 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             });
             nextRow();
             nextRow();
-            constraintMatchTotals.stream().sorted(Comparator.<ConstraintMatchTotal, Score>comparing(ConstraintMatchTotal::getScore)
-                    .thenComparing(ConstraintMatchTotal::getConstraintPackage)
-                    .thenComparing(ConstraintMatchTotal::getConstraintName)).forEach(constraintMatchTotal -> {
+
+            Comparator<ConstraintMatchTotal> c1 = Comparator.<ConstraintMatchTotal, Score>comparing(ConstraintMatchTotal::getScore);
+            Comparator<ConstraintMatchTotal> c2 = c1.thenComparing(ConstraintMatchTotal::getConstraintPackage)
+                    .thenComparing(ConstraintMatchTotal::getConstraintName);
+
+            Comparator<ConstraintMatch> c3 = Comparator.<ConstraintMatch, Score>comparing(ConstraintMatch::getScore);
+
+            constraintMatchTotals.stream().sorted(c2).forEach(constraintMatchTotal -> {
                 nextRow();
                 nextHeaderCell(constraintMatchTotal.getConstraintName());
                 Score constraintWeight = constraintMatchTotal.getConstraintWeight();
@@ -517,7 +522,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
                 nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
                 constraintMatchTotal.getConstraintMatchSet().stream()
-                        .sorted(Comparator.<ConstraintMatch, Score>comparing(ConstraintMatch::getScore)).forEach(constraintMatch -> {
+                        .sorted(c3).forEach(constraintMatch -> {
                     nextRow();
                     nextCell();
                     nextCell();
