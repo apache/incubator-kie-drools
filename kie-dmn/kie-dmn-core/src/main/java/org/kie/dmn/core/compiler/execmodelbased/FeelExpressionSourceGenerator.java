@@ -74,7 +74,7 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
     }
 
     public static String getOutputName(String key) {
-        return CodegenStringUtil.escapeIdentifier(key + OUTPUT_NAME);
+        return CodegenStringUtil.escapeIdentifier(OUTPUT_NAME + key);
     }
 
     private void generateInitRows(DMNCompilerContext ctx, DTableModel dTableModel, String className) {
