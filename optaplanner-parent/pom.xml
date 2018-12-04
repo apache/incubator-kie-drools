@@ -28,12 +28,6 @@
 
   <properties>
     <findbugs.failOnViolation>true</findbugs.failOnViolation>
-    <jacoco.agent.line/>
-    <surefire.argLine>
-      -Dfile.encoding=${project.build.sourceEncoding}
-      ${jacoco.agent.line}
-    </surefire.argLine>
-    <version.jacoco.plugin>0.8.2</version.jacoco.plugin>
   </properties>
 
   <repositories>
@@ -96,11 +90,6 @@
         <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
         <version>1.0.4</version>
       </dependency>
-      <dependency>
-        <groupId>org.jacoco</groupId>
-        <artifactId>org.jacoco.agent</artifactId>
-        <version>${version.jacoco.plugin}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -124,13 +113,11 @@
         <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
         <jacoco.excludes>*Lexer:org.optaplanner.core.impl.testdata.domain.*:*TestdataAbstractSolutionBasedSolution</jacoco.excludes>
         <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
+        <surefire.argLine>
+          -Dfile.encoding=${project.build.sourceEncoding}
+          ${jacoco.agent.line}
+        </surefire.argLine>
       </properties>
-      <dependencies>
-        <dependency>
-          <groupId>org.jacoco</groupId>
-          <artifactId>org.jacoco.agent</artifactId>
-        </dependency>
-      </dependencies>
       <build>
         <pluginManagement>
           <plugins>
@@ -157,6 +144,13 @@
               <configuration>
                 <argLine>${surefire.argLine}</argLine>
               </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>org.jacoco.agent</artifactId>
+                  <version>${version.jacoco.plugin}</version>
+                </dependency>
+              </dependencies>
             </plugin>
           </plugins>
         </pluginManagement>
